@@ -105,6 +105,9 @@ module.exports = {
               next(e);
             });
         }
+      })
+      .catch(e => {
+        next(e);
       });
   },
 
@@ -292,6 +295,9 @@ module.exports = {
                 ];
                 next();
               });
+            })
+            .catch(e => {
+              next(e);
             });
         } else {
           _mysql.commitTransaction(() => {

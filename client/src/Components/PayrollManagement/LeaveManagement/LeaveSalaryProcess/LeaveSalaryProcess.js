@@ -8,35 +8,27 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 
+import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import {
-  AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehFormGroup
-} from "../../../Wrapper/algaehWrapper";
-import {
-  texthandle,
+  // texthandle,
   LeaveSalProcess,
   ClearData,
   employeeSearch,
-  dateFormater
+  dateFormater,
+  SaveLeaveSalary
 } from "./LeaveSalaryProcessEvents.js";
 import Options from "../../../../Options.json";
+import LeaveSalaryProcessIOputs from "../../../../Models/LeaveSalaryProcess";
 
 class LeaveSalaryProcess extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      year: moment().year(),
-      month: moment(new Date()).format("M"),
-      employee_name: null,
-      employee_id: null,
-      leave_salary_detail: [],
-      ProcessBtn: true,
-      encash_type: null,
-      PayBtn: true,
-      leave_period: null
-    };
+    this.state = {};
+  }
+
+  componentWillMount() {
+    let IOputs = LeaveSalaryProcessIOputs.inputParam();
+    this.setState(IOputs);
   }
 
   componentDidMount() {
@@ -99,8 +91,8 @@ class LeaveSalaryProcess extends Component {
                 }}
               />
               <h6>
-                {this.state.encashment_number
-                  ? this.state.encashment_number
+                {this.state.leave_salary_number
+                  ? this.state.leave_salary_number
                   : "*** NEW ***"}
               </h6>
             </div>
@@ -230,13 +222,13 @@ class LeaveSalaryProcess extends Component {
                         // }
                       },
                       {
-                        fieldName: "GrossSalary",
+                        fieldName: "gross_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Gross Salary" }} />
                         )
                       },
                       {
-                        fieldName: "NetSalary",
+                        fieldName: "net_amount",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Net Salary" }} />
                         )
@@ -286,13 +278,13 @@ class LeaveSalaryProcess extends Component {
                         }
                       },
                       {
-                        fieldName: "leave_type",
+                        fieldName: "leave_category",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
                         ),
                         displayTemplate: row => {
-                          let display = GlobalVariables.LEAVE_TYPE.filter(
-                            f => f.value === row.leave_type
+                          let display = GlobalVariables.LEAVE_CATEGORY.filter(
+                            f => f.value === row.leave_category
                           );
 
                           return (
@@ -330,7 +322,12 @@ class LeaveSalaryProcess extends Component {
                 }}
               />
               <h6>
-                <span>{this.state.leave_period}</span> Days
+                <span>
+                  {this.state.leave_period === null
+                    ? 0
+                    : this.state.leave_period}
+                </span>
+                Days
               </h6>
             </div>
             <div className="col">
@@ -339,7 +336,9 @@ class LeaveSalaryProcess extends Component {
                   forceLabel: "Leave Salary"
                 }}
               />
-              <h6>263,364.00</h6>
+              <h6>
+                {this.state.leave_amount === null ? 0 : this.state.leave_amount}
+              </h6>
             </div>
             <div className="col">
               <AlgaehLabel
@@ -347,23 +346,31 @@ class LeaveSalaryProcess extends Component {
                   forceLabel: "Airfare"
                 }}
               />
-              <h6>0.00</h6>
+              <h6>
+                {this.state.airfare_amount === null
+                  ? 0
+                  : this.state.airfare_amount}
+              </h6>
             </div>
-            <div className="col">
+            {/* <div className="col">
               <AlgaehLabel
                 label={{
                   forceLabel: "Extra Airfare Allowance"
                 }}
               />
               <h6>0.00</h6>
-            </div>
+            </div> */}
             <div className="col">
               <AlgaehLabel
                 label={{
                   forceLabel: "Net Salary"
                 }}
               />
-              <h6>8,364.00</h6>
+              <h6>
+                {this.state.salary_amount === null
+                  ? 0
+                  : this.state.salary_amount}
+              </h6>
             </div>
             <div className="col">
               <AlgaehLabel
@@ -371,7 +378,9 @@ class LeaveSalaryProcess extends Component {
                   forceLabel: "Total Salary"
                 }}
               />
-              <h6>270,364.00</h6>
+              <h6>
+                {this.state.total_amount === null ? 0 : this.state.total_amount}
+              </h6>
             </div>
           </div>
         </div>
@@ -382,9 +391,10 @@ class LeaveSalaryProcess extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                disabled={this.state.PayBtn}
+                disabled={this.state.SaveBtn}
+                onClick={SaveLeaveSalary.bind(this, this)}
               >
-                <AlgaehLabel label={{ forceLabel: "Pay", returnText: true }} />
+                <AlgaehLabel label={{ forceLabel: "Save", returnText: true }} />
               </button>
             </div>
           </div>

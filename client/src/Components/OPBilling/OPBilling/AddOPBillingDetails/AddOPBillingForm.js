@@ -29,6 +29,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import Enumerable from "linq";
 
 class AddOPBillingForm extends Component {
   constructor(props) {
@@ -66,14 +67,14 @@ class AddOPBillingForm extends Component {
       this.props.opbilservices === undefined ||
       this.props.opbilservices.length === 0
     ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "opbilservices"
-        }
-      });
+      // this.props.getServices({
+      //   uri: "/serviceType/getService",
+      //   method: "GET",
+      //   redux: {
+      //     type: "SERVICES_GET_DATA",
+      //     mappingName: "opbilservices"
+      //   }
+      // });
 
       this.props.getServices({
         uri: "/serviceType/getService",
@@ -95,105 +96,127 @@ class AddOPBillingForm extends Component {
 
   ProcessToBill(context, e) {
     let $this = this;
-    if (this.state.patient_id !== null && this.state.visit_id !== null) {
-      if (this.state.s_service_type !== null && this.state.s_service !== null) {
-        let applydiscount = false;
-        let serviceInput = [
-          {
-            insured: this.state.insured,
-            vat_applicable: this.state.vat_applicable,
-            hims_d_services_id: this.state.s_service,
-            primary_insurance_provider_id: this.state.insurance_provider_id,
-            primary_network_office_id: this.state
-              .hims_d_insurance_network_office_id,
-            primary_network_id: this.state.network_id,
-            sec_insured: this.state.sec_insured,
-            secondary_insurance_provider_id: this.state
-              .secondary_insurance_provider_id,
-            secondary_network_id: this.state.secondary_network_id,
-            secondary_network_office_id: this.state.secondary_network_office_id
-          }
-        ];
 
-        algaehApiCall({
-          uri: "/billing/getBillDetails",
-          method: "POST",
-          data: serviceInput,
-          onSuccess: response => {
-            if (response.data.success) {
-              let data = response.data.records;
+    let SelectedService = Enumerable.from(this.state.billdetails)
+      .where(
+        w =>
+          w.service_type_id === $this.state.s_service_type &&
+          w.services_id === $this.state.s_service
+      )
+      .toArray();
 
-              if (data.billdetails[0].pre_approval === "Y") {
-                successfulMessage({
-                  message:
-                    "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
-                  title: "Warning",
-                  icon: "warning"
-                });
-              } else {
-                let existingservices = $this.state.billdetails;
+    if (SelectedService.length === 0) {
+      if (this.state.patient_id !== null && this.state.visit_id !== null) {
+        if (
+          this.state.s_service_type !== null &&
+          this.state.s_service !== null
+        ) {
+          let applydiscount = false;
+          let serviceInput = [
+            {
+              insured: this.state.insured,
+              vat_applicable: this.state.vat_applicable,
+              hims_d_services_id: this.state.s_service,
+              primary_insurance_provider_id: this.state.insurance_provider_id,
+              primary_network_office_id: this.state
+                .hims_d_insurance_network_office_id,
+              primary_network_id: this.state.network_id,
+              sec_insured: this.state.sec_insured,
+              secondary_insurance_provider_id: this.state
+                .secondary_insurance_provider_id,
+              secondary_network_id: this.state.secondary_network_id,
+              secondary_network_office_id: this.state
+                .secondary_network_office_id
+            }
+          ];
 
-                if (data.billdetails.length !== 0) {
-                  data.billdetails[0].created_date = new Date();
-                  existingservices.splice(0, 0, data.billdetails[0]);
-                }
+          algaehApiCall({
+            uri: "/billing/getBillDetails",
+            method: "POST",
+            data: serviceInput,
+            onSuccess: response => {
+              if (response.data.success) {
+                let data = response.data.records;
 
-                if (this.state.mode_of_pay === "Insurance") {
-                  applydiscount = true;
-                }
-                if (context !== null) {
-                  context.updateState({
-                    billdetails: existingservices,
-                    applydiscount: applydiscount,
-                    // s_service_type: null,
-                    s_service: null,
-                    saveEnable: false
+                if (data.billdetails[0].pre_approval === "Y") {
+                  successfulMessage({
+                    message:
+                      "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+                    title: "Warning",
+                    icon: "warning"
                   });
-                }
+                } else {
+                  let existingservices = $this.state.billdetails;
 
-                algaehApiCall({
-                  uri: "/billing/billingCalculations",
-                  method: "POST",
-                  data: { billdetails: existingservices },
-                  onSuccess: response => {
-                    if (response.data.success) {
-                      if (context !== null) {
-                        response.data.records.patient_payable_h =
-                          response.data.records.patient_payable ||
-                          $this.state.patient_payable;
+                  if (data.billdetails.length !== 0) {
+                    data.billdetails[0].created_date = new Date();
+                    existingservices.splice(0, 0, data.billdetails[0]);
+                  }
 
-                        response.data.records.billDetails = false;
-                        context.updateState({ ...response.data.records });
-                      }
-                    }
-                  },
-                  onFailure: error => {
-                    swalMessage({
-                      title: error.message,
-                      type: "error"
+                  if (this.state.mode_of_pay === "Insurance") {
+                    applydiscount = true;
+                  }
+                  if (context !== null) {
+                    context.updateState({
+                      billdetails: existingservices,
+                      applydiscount: applydiscount,
+                      // s_service_type: null,
+                      s_service: null,
+                      saveEnable: false
                     });
                   }
-                });
+
+                  algaehApiCall({
+                    uri: "/billing/billingCalculations",
+                    method: "POST",
+                    data: { billdetails: existingservices },
+                    onSuccess: response => {
+                      if (response.data.success) {
+                        if (context !== null) {
+                          response.data.records.patient_payable_h =
+                            response.data.records.patient_payable ||
+                            $this.state.patient_payable;
+
+                          response.data.records.billDetails = false;
+                          context.updateState({ ...response.data.records });
+                        }
+                      }
+                    },
+                    onFailure: error => {
+                      swalMessage({
+                        title: error.message,
+                        type: "error"
+                      });
+                    }
+                  });
+                }
               }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
             }
-          },
-          onFailure: error => {
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
+          });
+        } else {
+          successfulMessage({
+            message:
+              "Invalid Input. Please select the Service and Service Type.",
+            title: "Warning",
+            icon: "warning"
+          });
+        }
       } else {
         successfulMessage({
-          message: "Invalid Input. Please select the Service and Service Type.",
+          message: "Invalid Input. Please select the patient and visit.",
           title: "Warning",
           icon: "warning"
         });
       }
     } else {
       successfulMessage({
-        message: "Invalid Input. Please select the patient and visit.",
+        message: "Invalid Input. Selected Service already exists.",
         title: "Warning",
         icon: "warning"
       });
@@ -255,7 +278,7 @@ class AddOPBillingForm extends Component {
     }
   }
 
-  updateBillDetail(context, e) {
+  updateBillDetail(context, row, e) {
     algaehApiCall({
       uri: "/billing/billingCalculations",
       method: "POST",

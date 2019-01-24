@@ -224,6 +224,11 @@ module.exports = {
                               .logger()
                               .log("leave_ids: ", leave_ids);
 
+                            utilities
+                              .AlgaehUtilities()
+                              .logger()
+                              .log("month_name: ", month_name);
+
                             if (leave_ids.length > 0) {
                               _mysql
                                 .executeQuery({

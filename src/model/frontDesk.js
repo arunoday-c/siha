@@ -470,7 +470,7 @@ let selectFrontDesk = (req, res, next) => {
           if (result.length != 0) {
             let hims_d_patient_id = result[0]["hims_d_patient_id"];
             connection.query(
-              "SELECT 0 radioselect, `hims_f_patient_visit_id`, `patient_id`,`visit_code`\
+              "SELECT 0 radioselect, `hims_f_patient_visit_id`, `patient_id`,`visit_code`,`visit_status`\
             , `visit_type`, `visit_date`, `department_id`, `sub_department_id`\
             , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
             , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`, `no_free_visit`,`visit_expiery_date`\

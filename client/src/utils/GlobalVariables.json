@@ -797,5 +797,11 @@
     { "name": "Resigned", "value": "RES" },
     { "name": "Retirement", "value": "RET" },
     { "name": "Terminate", "value": "TER" }
+  ],
+
+  "LEAVE_CATEGORY": [
+    { "name": "Others", "value": "O" },
+    { "name": "Annual", "value": "A" },
+    { "name": "Maternity", "value": "M" }
   ]
 }
