@@ -338,4 +338,63 @@ let deleteHoliday = (req, res, next) => {
   }
 };
 
-module.exports = { addWeekOffs, getAllHolidays, addHoliday, deleteHoliday };
+//created by irfan: connect to other db
+let getMSDb = (req, res, next) => {
+  try {
+    var sql = require("mssql");
+
+    // config for your database
+    var config = {
+      user: "sa",
+      password: "sa123",
+      // server: "192.168.0.169:DESKTOP-AKT60JU\SQLEXPRESS",
+      server: "192.168.0.169",
+      database: "datacosec"
+    };
+
+
+    debugLog("am in get MS DB");
+    debugLog("sql",sql);
+    
+
+    // connect to your database
+    sql.connect(
+      config,
+      function(err) {
+           if (err){
+
+          debugLog("connection error");
+
+        } 
+        // create Request object
+        var request = new sql.Request();
+     
+        // query to the database and get the records
+        request.query(" select * from Mx_DATDTrn ", function(err, result) {
+          if (err){
+
+            debugLog("query error");
+
+          } 
+          //request.close();
+          
+          debugLog("result:",result);
+          // send records as a response
+          req.records = result;
+          sql.close();
+          next();
+        });
+      }
+    );
+  } catch (e) {
+    next(e);
+  }
+};
+
+module.exports = {
+  addWeekOffs,
+  getAllHolidays,
+  addHoliday,
+  deleteHoliday,
+  getMSDb
+};

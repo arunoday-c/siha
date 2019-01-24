@@ -318,7 +318,7 @@ class EmployeeReceipts extends Component {
             <div
               className="row"
               style={{
-                border: " 1px solid #ced4d9",
+                border: "1px solid #ced4d9",
                 borderRadius: 5,
                 marginLeft: 0
               }}

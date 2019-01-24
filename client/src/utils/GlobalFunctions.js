@@ -26,7 +26,6 @@ export function removeGlobal(name) {
 }
 
 export function getYears() {
-  debugger;
   var min = new Date().getFullYear(),
     max = min + 10;
 
@@ -36,6 +35,18 @@ export function getYears() {
     allYears.push({ name: x, value: x });
   }
   return allYears;
+}
+
+export function getDays() {
+  let monthDays = [];
+  for (let i = 1; i <= 31; i++) {
+    monthDays.push({
+      name: i,
+      value: i
+    });
+  }
+
+  return monthDays;
 }
 
 export function resizeImage(options) {

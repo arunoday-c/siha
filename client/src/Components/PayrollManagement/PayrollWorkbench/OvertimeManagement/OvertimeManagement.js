@@ -298,6 +298,7 @@ class OvertimeManagement extends Component {
                 <div className="row">
                   {/* <AlagehAutoComplete
                     div={{ className: "col-12 form-group" }}
+<<<<<<< HEAD
                     label={{ forceLabel: "OT Type", isImp: fals...
 
 
@@ -308,6 +309,10 @@ new messages
 12:45 PM
 Untitled 
       selector={{
+=======
+                    label={{ forceLabel: "OT Type", isImp: false }}
+                    selector={{
+>>>>>>> 115f53f9382e5b08b0619aa1001b5012390780ec
                       name: "",
                       className: "select-fld",
                       dataSource: {},

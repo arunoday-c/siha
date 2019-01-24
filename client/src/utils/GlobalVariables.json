@@ -798,7 +798,58 @@
     { "name": "Retirement", "value": "RET" },
     { "name": "Terminate", "value": "TER" }
   ],
+  "AUTH_LEVEL3": [
+    { "name": "1 Level", "value": "1" },
+    { "name": "2 Level", "value": "2" },
+    { "name": "3 Level", "value": "3" }
+  ],
 
+  "AUTH_LEVEL2": [
+    { "name": "1 Level", "value": "1" },
+    { "name": "2 Level", "value": "2" }
+  ],
+  "ADV_DEDUCTION": [
+    { "name": "Current Month", "value": "CM" },
+    { "name": "Next Month", "value": "NM" }
+  ],
+  "EOS_CALC": [
+    { "name": "Annualized", "value": "AN" },
+    { "name": "Fixed", "value": "FI" }
+  ],
+  "ATTENDANCE_TYPE": [
+    { "name": "Monthly", "value": "M" },
+    { "name": "Daily", "value": "D" }
+  ],
+  "OT_PAYMENTS": [
+    { "name": "None", "value": "N" },
+    { "name": "Comp Off", "value": "C" },
+    { "name": "Encash", "value": "E" },
+    { "name": "Both", "value": "B" }
+  ],
+  "OT_CALC": [
+    { "name": "None", "value": "N" },
+    { "name": "Daily", "value": "D" },
+    { "name": "Hourly", "value": "H" }
+  ],
+  "OT_HOUR_CALC": [
+    { "name": "Total Hours (INTIME- OUTTIME)", "value": "T" },
+    { "name": "Out Time Hours", "value": "O" }
+  ],
+  "BIOMETRIC_DBS": [
+    { "name": "MSACCESS", "value": "MSACCESS" },
+    { "name": "ORACLE", "value": "ORACLE" },
+    { "name": "MYSQL", "value": "MYSQL" },
+    { "name": "SQL", "value": "SQL" }
+  ],
+  "SWIPE_CARD_TYPE": [
+    { "name": "Numeric", "value": "N" },
+    { "name": "String", "value": "S" }
+  ],
+  "LEAVE_CTGRY": [
+    { "name": "Other", "value": "O" },
+    { "name": "Annual", "value": "A" },
+    { "name": "Maternity", "value": "M" }
+  ],
   "LEAVE_CATEGORY": [
     { "name": "Others", "value": "O" },
     { "name": "Annual", "value": "A" },

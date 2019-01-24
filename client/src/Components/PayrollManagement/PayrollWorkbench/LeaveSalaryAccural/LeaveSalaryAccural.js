@@ -150,23 +150,28 @@ export default class LeaveSalaryAccural extends Component {
             </div>
           </div>
         </div>
-        <div className="col">
-          <div className="row">
-            <div className="col-3">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Leave Salary"
-                }}
-              />
-              <h6>0.00</h6>
-            </div>
-            <div className="col-3">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Airfare Amount"
-                }}
-              />
-              <h6>0.00</h6>
+
+        <div className="col-12">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-body">
+              <div className="row">
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Leave Salary"
+                    }}
+                  />
+                  <h6>0.00</h6>
+                </div>
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Airfare Amount"
+                    }}
+                  />
+                  <h6>0.00</h6>
+                </div>
+              </div>
             </div>
           </div>
         </div>

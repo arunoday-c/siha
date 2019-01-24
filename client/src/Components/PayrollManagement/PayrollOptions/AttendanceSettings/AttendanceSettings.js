@@ -1,16 +1,106 @@
 import React, { Component } from "react";
 import "./AttendanceSettings.css";
-
+import { getDays } from "../../../../utils/GlobalFunctions";
 import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import {
+  AUTH_LEVEL2,
+  AUTH_LEVEL3,
+  ADV_DEDUCTION,
+  EOS_CALC,
+  ATTENDANCE_TYPE,
+  OT_PAYMENTS,
+  OT_HOUR_CALC,
+  OT_CALC,
+  BIOMETRIC_DBS,
+  SWIPE_CARD_TYPE
+} from "../../../../utils/GlobalVariables.json";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default class AttendanceSettings extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+    this.getOptions();
+  }
+
+  getOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/getHrmsOptions",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState(res.data.result[0]);
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  saveOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/updateHrmsOptions",
+      method: "PUT",
+      module: "hrManagement",
+      data: this.state,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Updated Successfully",
+            type: "success"
+          });
+          this.getOptions();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  textHandler(e) {
+    switch (e.target.name) {
+      case "salary_calendar":
+        e.target.value === "P"
+          ? this.setState({
+              [e.target.name]: e.target.value,
+              salary_calendar_fixed_days: null
+            })
+          : this.setState({
+              [e.target.name]: e.target.value
+            });
+        break;
+
+      default:
+        this.setState({
+          [e.target.name]: e.target.value
+        });
+        break;
+    }
+  }
+
   render() {
+    let allDays = getDays();
+
     return (
       <div className="row TransactionAttendanceScreen">
         <div className="col-12">
@@ -24,148 +114,150 @@ export default class AttendanceSettings extends Component {
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Salary Starts from", isImp: false }}
+                  label={{ forceLabel: "Salary Process Date", isImp: true }}
                   selector={{
-                    name: "",
+                    name: "salary_process_date",
+                    value: this.state.salary_process_date,
                     className: "select-fld",
-                    dataSource: {},
-                    others: {}
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: allDays
+                    },
+                    onChange: this.dropDownHandler.bind(this)
                   }}
                 />
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Process Leaves", isImp: false }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Salary Process Date", isImp: false }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
+
+                <div className="col-2">
+                  <label>Pay salary before processing</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        name="salary_pay_before_end_date"
+                        checked={this.state.salary_pay_before_end_date === "Y"}
+                        onChange={this.textHandler.bind(this)}
+                        type="radio"
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        name="salary_pay_before_end_date"
+                        checked={this.state.salary_pay_before_end_date === "N"}
+                        onChange={this.textHandler.bind(this)}
+                        type="radio"
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Payroll Payment Date", isImp: false }}
                   selector={{
-                    name: "",
+                    name: "payroll_payment_date",
+                    value: this.state.payroll_payment_date,
                     className: "select-fld",
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Salary Calc. based on", isImp: false }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{
-                    forceLabel: "Salary hourly calc. factor",
-                    isImp: false
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col form-group" }}
-                  label={{
-                    forceLabel: "Establishment ID",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "",
-                    value: "",
-                    events: {},
-                    others: {
-                      type: "text"
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: allDays
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        payroll_payment_date: null
+                      });
                     }
                   }}
                 />
 
-                <AlagehFormGroup
-                  div={{ className: "col form-group" }}
-                  label={{
-                    forceLabel: "Banking Route Code",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "",
-                    value: "",
-                    events: {},
-                    others: {
-                      type: "text"
-                    }
-                  }}
-                />
-                <div className="col">
-                  <div className="customCheckbox">
-                    <label className="checkbox inline">
-                      <input type="checkbox" />
-                      <span>Pay salary before processing </span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="col">
-                  <div className="customCheckbox">
-                    <label className="checkbox inline">
-                      <input type="checkbox" />
-                      <span>Validate Dept. wise </span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="col">
-                  <label>Salary Calculation with</label>
+                <div className="col-2">
+                  <label>Salary Calendar</label>
                   <div className="customRadio">
                     <label className="radio inline">
-                      <input type="radio" />
+                      <input
+                        type="radio"
+                        value="P"
+                        name="salary_calendar"
+                        checked={this.state.salary_calendar === "P"}
+                        onChange={this.textHandler.bind(this)}
+                      />
                       <span>Periodical</span>
                     </label>
 
                     <label className="radio inline">
-                      <input type="radio" />
+                      <input
+                        type="radio"
+                        value="F"
+                        name="salary_calendar"
+                        checked={this.state.salary_calendar === "F"}
+                        onChange={this.textHandler.bind(this)}
+                      />
                       <span>Fixed</span>
                     </label>
                   </div>
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col form-group" }}
-                      label={{ forceLabel: "Select Date", isImp: false }}
-                      selector={{
-                        name: "",
-                        className: "select-fld",
-                        dataSource: {},
-                        others: {}
-                      }}
-                    />
+                </div>
+
+                {this.state.salary_calendar === "F" ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col-2 form-group" }}
+                    label={{ forceLabel: "Days", isImp: true }}
+                    selector={{
+                      name: "salary_calendar_fixed_days",
+                      value: this.state.salary_calendar_fixed_days,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: allDays
+                      },
+                      onChange: this.dropDownHandler.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          salary_calendar_fixed_days: null
+                        });
+                      }
+                    }}
+                  />
+                ) : null}
+
+                <div className="col-2">
+                  <label>Gratuity in Final Settlement</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        name="gratuity_in_final_settle"
+                        checked={this.state.gratuity_in_final_settle === "Y"}
+                        onChange={this.textHandler.bind(this)}
+                        type="radio"
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        name="gratuity_in_final_settle"
+                        checked={this.state.gratuity_in_final_settle === "N"}
+                        onChange={this.textHandler.bind(this)}
+                        type="radio"
+                      />
+                      <span>No</span>
+                    </label>
                   </div>
                 </div>
               </div>
+
               <div className="row">
                 <AlagehAutoComplete
                   div={{ className: "col-3 form-group" }}
@@ -174,10 +266,20 @@ export default class AttendanceSettings extends Component {
                     isImp: false
                   }}
                   selector={{
-                    name: "",
+                    name: "leave_level",
+                    value: this.state.leave_level,
                     className: "select-fld",
-                    dataSource: {},
-                    others: {}
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: AUTH_LEVEL3
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        leave_level: null
+                      });
+                    }
                   }}
                 />
                 <AlagehAutoComplete
@@ -187,10 +289,20 @@ export default class AttendanceSettings extends Component {
                     isImp: false
                   }}
                   selector={{
-                    name: "",
+                    name: "loan_level",
+                    value: this.state.loan_level,
                     className: "select-fld",
-                    dataSource: {},
-                    others: {}
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: AUTH_LEVEL2
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        loan_level: null
+                      });
+                    }
                   }}
                 />
                 <AlagehAutoComplete
@@ -200,71 +312,135 @@ export default class AttendanceSettings extends Component {
                     isImp: false
                   }}
                   selector={{
-                    name: "",
+                    name: "review_auth_level",
+                    value: this.state.review_auth_level,
                     className: "select-fld",
-                    dataSource: {},
-                    others: {}
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: AUTH_LEVEL3
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        review_auth_level: null
+                      });
+                    }
                   }}
                 />
                 <AlagehAutoComplete
                   div={{ className: "col-3 form-group" }}
                   label={{ forceLabel: "Leave encashment level", isImp: false }}
                   selector={{
-                    name: "",
+                    name: "leave_encash_level",
+                    value: this.state.leave_encash_level,
                     className: "select-fld",
-                    dataSource: {},
-                    others: {}
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: AUTH_LEVEL2
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        leave_encash_level: null
+                      });
+                    }
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{ forceLabel: "Advance deduction", isImp: false }}
+                  selector={{
+                    name: "advance_deduction",
+                    value: this.state.advance_deduction,
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: ADV_DEDUCTION
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        advance_deduction: null
+                      });
+                    }
                   }}
                 />
 
                 <AlagehAutoComplete
                   div={{ className: "col-3 form-group" }}
                   label={{
-                    forceLabel: "Appraisal Process through",
+                    forceLabel: "End of Service Calculation",
                     isImp: false
                   }}
                   selector={{
-                    name: "",
+                    name: "end_of_service_calculation",
+                    value: this.state.end_of_service_calculation,
                     className: "select-fld",
-                    dataSource: {},
-                    others: {}
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: EOS_CALC
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        end_of_service_calculation: null
+                      });
+                    }
                   }}
                 />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
+                <AlagehFormGroup
+                  div={{ className: "col-2 form-group" }}
                   label={{
-                    forceLabel: "Leave Encashment Process",
-                    isImp: false
+                    forceLabel: "Yearly Working Days",
+                    isImp: true
                   }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-                    dataSource: {},
-                    others: {}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "yearly_working_days",
+                    value: this.state.yearly_working_days,
+                    events: {
+                      onChange: this.textHandler.bind(this)
+                    },
+                    others: {
+                      type: "number"
+                    }
                   }}
                 />
-                <div className="col-3">
-                  <label>Advance deduction</label>
-                  <div className="customCheckbox">
-                    <label className="checkbox inline">
-                      <input type="checkbox" />
-                      <span>Use roundoff</span>
+                {/* 
+                <div className="col-2">
+                  <label>Allow Round Off</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        name="allow_round_off"
+                        checked={this.state.allow_round_off === "Y"}
+                        onChange={this.textHandler.bind(this)}
+                        type="radio"
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        name="allow_round_off"
+                        checked={this.state.allow_round_off === "N"}
+                        onChange={this.textHandler.bind(this)}
+                        type="radio"
+                      />
+                      <span>No</span>
                     </label>
                   </div>
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col form-group" }}
-                      // label={{ forceLabel: "Select Date", isImp: false }}
-                      selector={{
-                        name: "",
-                        className: "select-fld",
-                        dataSource: {},
-                        others: {}
-                      }}
-                    />
-                  </div>
                 </div>
+              */}
               </div>
             </div>
           </div>
@@ -286,37 +462,73 @@ export default class AttendanceSettings extends Component {
                         isImp: false
                       }}
                       selector={{
-                        name: "",
+                        name: "attendance_type",
+                        value: this.state.attendance_type,
                         className: "select-fld",
-                        dataSource: {},
-                        others: {}
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: ATTENDANCE_TYPE
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            attendance_type: null
+                          });
+                        }
                       }}
                     />
 
                     <div className="col-8">
                       <label>Fetch machine data for reporting purpose</label>
-                      <div className="customCheckbox">
-                        <label className="checkbox inline">
+                      <div className="customRadio">
+                        <label className="radio inline">
                           <input
-                            type="checkbox"
-                            value="yes"
-                            name="fetchMachineData"
+                            type="radio"
+                            value="Y"
+                            name="fetch_punch_data_reporting"
+                            checked={
+                              this.state.fetch_punch_data_reporting === "Y"
+                            }
+                            onChange={this.textHandler.bind(this)}
                           />
                           <span>Yes</span>
+                        </label>
+                        <label className="radio inline">
+                          <input
+                            type="radio"
+                            value="N"
+                            checked={
+                              this.state.fetch_punch_data_reporting === "N"
+                            }
+                            onChange={this.textHandler.bind(this)}
+                            name="fetch_punch_data_reporting"
+                          />
+                          <span>No</span>
                         </label>
                       </div>
                     </div>
 
-                    <AlagehAutoComplete
+                    {/* <AlagehAutoComplete
                       div={{ className: "col form-group" }}
                       label={{ forceLabel: "Type of Overtime", isImp: false }}
                       selector={{
-                        name: "",
+                        name: "overtime_payment",
+                        value: this.state.overtime_payment,
                         className: "select-fld",
-                        dataSource: {},
-                        others: {}
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: OT_PAYMENTS
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            overtime_payment: null
+                          });
+                        }
                       }}
-                    />
+                    /> */}
 
                     <AlagehAutoComplete
                       div={{ className: "col form-group" }}
@@ -325,10 +537,20 @@ export default class AttendanceSettings extends Component {
                         isImp: false
                       }}
                       selector={{
-                        name: "",
+                        name: "overtime_calculation",
+                        value: this.state.overtime_calculation,
                         className: "select-fld",
-                        dataSource: {},
-                        others: {}
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: OT_CALC
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            overtime_calculation: null
+                          });
+                        }
                       }}
                     />
 
@@ -339,24 +561,44 @@ export default class AttendanceSettings extends Component {
                         isImp: false
                       }}
                       selector={{
-                        name: "",
+                        name: "overtime_payment",
+                        value: this.state.overtime_payment,
                         className: "select-fld",
-                        dataSource: {},
-                        others: {}
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: OT_PAYMENTS
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            overtime_payment: null
+                          });
+                        }
                       }}
                     />
 
                     <AlagehAutoComplete
                       div={{ className: "col form-group" }}
                       label={{
-                        forceLabel: "Daily OT Calc Type",
+                        forceLabel: "Hourly OT Calc Type",
                         isImp: false
                       }}
                       selector={{
-                        name: "",
+                        name: "overtime_hourly_calculation",
+                        value: this.state.overtime_hourly_calculation,
                         className: "select-fld",
-                        dataSource: {},
-                        others: {}
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: OT_HOUR_CALC
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            overtime_hourly_calculation: null
+                          });
+                        }
                       }}
                     />
                   </div>
@@ -376,9 +618,11 @@ export default class AttendanceSettings extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "standard_intime",
+                          value: this.state.standard_intime,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "time"
                           }
@@ -392,28 +636,13 @@ export default class AttendanceSettings extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "standard_outime",
+                          value: this.state.standard_outime,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "time"
-                          }
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
-                        label={{
-                          forceLabel: "Number of working hr/day",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
-                          others: {
-                            type: "number"
                           }
                         }}
                       />
@@ -426,9 +655,30 @@ export default class AttendanceSettings extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "standard_break_hours",
+                          value: this.state.standard_break_hours,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
+                          others: {
+                            type: "number"
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-3 form-group" }}
+                        label={{
+                          forceLabel: "Number of working hr/day",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "standard_working_hours",
+                          value: this.state.standard_working_hours,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "number"
                           }
@@ -491,10 +741,20 @@ export default class AttendanceSettings extends Component {
                         div={{ className: "col-12 form-group" }}
                         label={{ forceLabel: "Database Type", isImp: false }}
                         selector={{
-                          name: "",
+                          name: "biometric_database",
+                          value: this.state.biometric_database,
                           className: "select-fld",
-                          dataSource: {},
-                          others: {}
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: BIOMETRIC_DBS
+                          },
+                          onChange: this.dropDownHandler.bind(this),
+                          onClear: () => {
+                            this.setState({
+                              biometric_database: null
+                            });
+                          }
                         }}
                       />
 
@@ -506,9 +766,11 @@ export default class AttendanceSettings extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "biometric_server_name",
+                          value: this.state.biometric_server_name,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "text"
                           }
@@ -523,9 +785,11 @@ export default class AttendanceSettings extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "biometric_database_login",
+                          value: this.state.biometric_database_login,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "text"
                           }
@@ -540,9 +804,11 @@ export default class AttendanceSettings extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "biometric_database_password",
+                          value: this.state.biometric_database_password,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "password"
                           }
@@ -557,9 +823,11 @@ export default class AttendanceSettings extends Component {
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "biometric_database_name",
+                          value: this.state.biometric_database_name,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
                           others: {
                             type: "text"
                           }
@@ -568,12 +836,22 @@ export default class AttendanceSettings extends Component {
 
                       <AlagehAutoComplete
                         div={{ className: "col-12 form-group" }}
-                        label={{ forceLabel: "Swipe card type", isImp: false }}
+                        label={{ forceLabel: "Swipe Card Type", isImp: false }}
                         selector={{
-                          name: "",
+                          name: "biometric_swipe_id",
+                          value: this.state.biometric_swipe_id,
                           className: "select-fld",
-                          dataSource: {},
-                          others: {}
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: SWIPE_CARD_TYPE
+                          },
+                          onChange: this.dropDownHandler.bind(this),
+                          onClear: () => {
+                            this.setState({
+                              biometric_swipe_id: null
+                            });
+                          }
                         }}
                       />
                     </div>
@@ -589,15 +867,14 @@ export default class AttendanceSettings extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  //   onClick={SaveDoctorCommission.bind(this, this)}
-                  //disabled={this.state.saveEnable}
+                  onClick={this.saveOptions.bind(this)}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Save", returnText: true }}
+                    label={{ forceLabel: "Update", returnText: true }}
                   />
                 </button>
 
-                <button
+                {/* <button
                   type="button"
                   className="btn btn-default"
                   //onClick={ClearData.bind(this, this)}
@@ -605,7 +882,7 @@ export default class AttendanceSettings extends Component {
                   <AlgaehLabel
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
-                </button>
+                </button> */}
               </div>
             </div>
           </div>
