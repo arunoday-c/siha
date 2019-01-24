@@ -72,6 +72,7 @@ import DepreciationReversal from "./Components/AssetManagement/DepreciationRever
 import Disposal from "./Components/AssetManagement/Disposal/Disposal";
 import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/PurchaseSwitch";
 import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
+import FinanceMapping from "./Components/Finance/FinanceMapping/FinanceMapping";
 import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellation";
 import OPCreditSettlement from "./Components/OPCreditSettlement/OPCreditSettlement";
 import POSCreditSettlement from "./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement";
@@ -92,6 +93,7 @@ import LoanManagement from "./Components/PayrollManagement/LoanManagement/LoanMa
 import PayrollWorkbench from "./Components/PayrollManagement/PayrollWorkbench/PayrollWorkbench";
 import PerformanceManagement from "./Components/PayrollManagement/PerformanceManagement/PerformanceManagement";
 import EmployeeDocuments from "./Components/EmployeeManagement/EmployeeDocuments/EmployeeDocuments";
+import PayrollOptions from "./Components/PayrollManagement/PayrollOptions/PayrollOptions";
 
 const componts = (selectedLang, breadStyle) => {
   return {
@@ -170,6 +172,7 @@ const componts = (selectedLang, breadStyle) => {
     VendorSetup: <VendorSetup SelectLanguage={selectedLang} />,
 
     DayEndProcess: <DayEndProcess SelectLanguage={selectedLang} />,
+    FinanceMapping: <FinanceMapping SelectLanguage={selectedLang} />,
 
     DeliveryNoteEntry: <DeliveryNoteEntry SelectLanguage={selectedLang} />,
     PurchaseOrderEntry: <PurchaseOrderEntry SelectLanguage={selectedLang} />,
@@ -206,7 +209,8 @@ const componts = (selectedLang, breadStyle) => {
     PerformanceManagement: (
       <PerformanceManagement selectedLang={selectedLang} />
     ),
-    EmployeeDocuments: <EmployeeDocuments selectedLang={selectedLang} />
+    EmployeeDocuments: <EmployeeDocuments selectedLang={selectedLang} />,
+    PayrollOptions: <PayrollOptions selectedLang={selectedLang} />
   };
 };
 

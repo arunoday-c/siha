@@ -51,7 +51,7 @@ class PerformanceManagement extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Salary Apprisal"
+                      forceLabel: "SALARY APPRAISAL"
                     }}
                   />
                 }

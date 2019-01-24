@@ -306,15 +306,10 @@ let getLeaveMaster = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    //, , , ,
-    // , , , , ,
-    // , , , ,
-    //, , , ,
-    // ,
-    // created_by, created_date, updated_by, updated_date, record_status
+
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_leave_id, leave_code,  leave_description, leave_category,\
+        "select hims_d_leave_id, leave_code,  leave_description, leave_category, calculation_type,\
          leave_type, include_weekoff, encashment_percentage, religion_required,\
       include_holiday, holiday_reimbursement,  leave_mode, leave_accrual, leave_encash, leave_carry_forward,\
       exit_permit_required,  proportionate_leave, document_mandatory, carry_forward_percentage,\

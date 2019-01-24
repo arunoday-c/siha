@@ -23,6 +23,7 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import LeaveEncashmentProcessIOputs from "../../../../Models/LeaveEncashmentProcess";
 import Options from "../../../../Options.json";
+import { getYears } from "../../../../utils/GlobalFunctions";
 
 class LeaveEncashmentProcess extends Component {
   constructor(props) {
@@ -68,11 +69,36 @@ class LeaveEncashmentProcess extends Component {
   }
 
   render() {
+    let allYears = getYears();
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
           <div className="row inner-top-search" data-validate="loadEncash">
-            <AlagehFormGroup
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Select a Year.",
+                isImp: true
+              }}
+              selector={{
+                name: "year",
+                className: "select-fld",
+                value: this.state.year,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
+                },
+                onChange: texthandler.bind(this, this),
+
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
+                }
+              }}
+            />
+            {/* <AlagehFormGroup
               div={{ className: "col" }}
               label={{
                 forceLabel: "Year",
@@ -91,7 +117,7 @@ class LeaveEncashmentProcess extends Component {
                   disabled: this.state.lockEarnings
                 }
               }}
-            />
+            /> */}
 
             <AlagehFormGroup
               div={{ className: "col form-group" }}

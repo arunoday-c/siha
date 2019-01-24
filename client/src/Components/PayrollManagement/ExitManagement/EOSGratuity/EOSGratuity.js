@@ -366,19 +366,35 @@ class EOSGratuity extends Component {
                         Components Included
                       </label>
                       <div className="row">
-                        <div className="col">
-                          <ul>
+                        {/* <ul>
                             {EosData.componentList.map((data, index) => (
-                              <li key={data.hims_d_employee_earnings_id}>
+                              <li >
                                 <span>{data.short_desc}</span> ->
                                 <span>{getAmountFormart(data.amount)}</span>
                               </li>
                             ))}
-                          </ul>
-                          <span>
-                            Total:{" "}
+                          </ul> */}
+                        {EosData.componentList.map((data, index) => (
+                          <div
+                            className="col-4"
+                            key={data.hims_d_employee_earnings_id}
+                          >
+                            <label className="style_Label ">
+                              {data.short_desc}
+                            </label>
+                            <h6>{getAmountFormart(data.amount)}</h6>
+                          </div>
+                        ))}
+                      </div>
+                      <div
+                        className="row"
+                        style={{ borderTop: "1px solid #c1c1c1" }}
+                      >
+                        <div className="col-12">
+                          <label className="style_Label ">Total</label>
+                          <h6>
                             {getAmountFormart(EosData.totalEarningComponents)}
-                          </span>
+                          </h6>
                         </div>
                       </div>
                     </div>

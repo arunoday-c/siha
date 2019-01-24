@@ -8,6 +8,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import { getYears } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 export default class MiscEarningsDeductions extends Component {
@@ -290,6 +291,7 @@ export default class MiscEarningsDeductions extends Component {
   }
 
   render() {
+    let allYears = getYears();
     return (
       <React.Fragment>
         <div className="misc_earn_dedc">
@@ -340,24 +342,29 @@ export default class MiscEarningsDeductions extends Component {
                 }
               }}
             />
-
-            <AlagehFormGroup
+            <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
-                forceLabel: "Year",
+                forceLabel: "Select a Year.",
                 isImp: true
               }}
-              textBox={{
-                className: "txt-fld",
+              selector={{
                 name: "year",
+                className: "select-fld",
                 value: this.state.year,
-                events: {
-                  onChange: this.textHandler.bind(this)
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
                 },
+                onChange: this.dropDownHandler.bind(this),
                 others: {
-                  type: "number",
-                  min: moment().year(),
                   disabled: this.state.lockEarnings
+                },
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
                 }
               }}
             />

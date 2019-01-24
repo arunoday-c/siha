@@ -25,6 +25,30 @@ export function removeGlobal(name) {
   }
 }
 
+export function getYears() {
+  var min = new Date().getFullYear(),
+    max = min + 10;
+
+  min = min - 10;
+  let allYears = [];
+  for (let x = min; x <= max; x++) {
+    allYears.push({ name: x, value: x });
+  }
+  return allYears;
+}
+
+export function getDays() {
+  let monthDays = [];
+  for (let i = 1; i <= 31; i++) {
+    monthDays.push({
+      name: i,
+      value: i
+    });
+  }
+
+  return monthDays;
+}
+
 export function resizeImage(options) {
   let settings = { maxWidth: 400, maxHeight: 400, ...options };
   let canvas = document.createElement("canvas");
@@ -169,7 +193,6 @@ export function displayFileFromServer(options) {
     },
     others: { responseType: "blob" },
     onSuccess: response => {
-      
       if (response.data) {
         let reader = new FileReader();
 
@@ -291,7 +314,7 @@ export function AlgaehValidation(options) {
         //     _lable = _Validateerror[i].previousSibling;
         //   }
         // } else {
-        //   
+        //
         //   if (
         //     _Validateerror[i].parentElement.previousElementSibling.tagName ===
         //     "LABEL"
@@ -446,7 +469,6 @@ export function SetBulkState(options) {
   }
 
   if (options.state !== undefined) {
-    
     const _object = { ...options.state.state, ..._objectCreation };
     options.state.setState(_object, () => {
       if (

@@ -146,26 +146,57 @@ module.exports = {
                cancel ,sum(absent_duration) as absent_days\
               from hims_f_absent where record_status='A' and cancel='N' and employee_id=?\
               and date(absent_date) between date(?) and date(?) group by  employee_id",
-                      values: [
-                        empResult[i]["hims_d_employee_id"],
-                        startOfMonth,
-                        endOfMonth
-                      ]
-                    })
-                    .then(absentResult => {
-                      if (absentResult.length > 0) {
-                        empResult[i]["defaults"].emp_absent_days =
-                          absentResult[0].absent_days;
-                      }
+                        values: [
+                          empResult[i]["hims_d_employee_id"],
+                          startOfMonth,
+                          endOfMonth
+                        ]
+                      })
+                      .then(absentResult => {
+                        if (absentResult.length > 0) {
+                          empResult[i]["defaults"].emp_absent_days =
+                            absentResult[0].absent_days;
+                        }
 
-                      //HOLIDAYS CALCULATION------------------------------------------
-                      let other_religion_holidays = _.chain(_holidayResult)
-                        .filter(obj => {
-                          return (
-                            obj.weekoff == "N" &&
-                            obj.holiday == "Y" &&
-                            obj.holiday_type == "RS" &&
-                            obj.religion_id != empResult[i]["religion_id"]
+                        //HOLIDAYS CALCULATION------------------------------------------
+                        let other_religion_holidays = _.chain(_holidayResult)
+                          .filter(obj => {
+                            return (
+                              obj.weekoff == "N" &&
+                              obj.holiday == "Y" &&
+                              obj.holiday_type == "RS" &&
+                              obj.religion_id != empResult[i]["religion_id"]
+                            );
+                          })
+                          .value();
+
+                        empResult[i]["defaults"].emp_total_holidays =
+                          other_religion_holidays.length === 0
+                            ? _holidayResult.length
+                            : _holidayResult.length -
+                              other_religion_holidays.length;
+
+                        utilities
+                          .AlgaehUtilities()
+                          .logger()
+                          .log("_holidayResult: ", _holidayResult);
+
+                        //WEEK OFF CALCULATION---------------------------------------------
+                        empResult[i]["defaults"].total_week_off = _.filter(
+                          _holidayResult,
+                          obj => {
+                            return (
+                              obj.weekoff === "Y" && obj.holiday_type === "RE"
+                            );
+                          }
+                        ).length;
+
+                        utilities
+                          .AlgaehUtilities()
+                          .logger()
+                          .log(
+                            "total_week_off: ",
+                            empResult[i]["defaults"].total_week_off
                           );
                         })
                         .value();

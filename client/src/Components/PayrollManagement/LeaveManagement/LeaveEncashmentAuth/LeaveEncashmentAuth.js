@@ -22,6 +22,7 @@ import {
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import { getYears } from "../../../../utils/GlobalFunctions";
 
 class LeaveEncashmentAuth extends Component {
   constructor(props) {
@@ -103,11 +104,12 @@ class LeaveEncashmentAuth extends Component {
   }
 
   render() {
+    let allYears = getYears();
     return (
       <div className="leave_en_auth row">
         <div className="col-12">
           <div className="row inner-top-search" data-validate="loadEncashAuth">
-            <AlagehFormGroup
+            {/* <AlagehFormGroup
               div={{ className: "col" }}
               label={{
                 forceLabel: "Year",
@@ -123,6 +125,31 @@ class LeaveEncashmentAuth extends Component {
                 others: {
                   type: "number",
                   min: moment().year()
+                }
+              }}
+            /> */}
+
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Select a Year.",
+                isImp: true
+              }}
+              selector={{
+                name: "year",
+                className: "select-fld",
+                value: this.state.year,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
+                },
+                onChange: texthandler.bind(this, this),
+
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
                 }
               }}
             />

@@ -210,6 +210,11 @@ export default class HolidayMaster extends Component {
                 type: "success"
               });
               this.getHolidayMaster(this.state.hospital_id);
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.records.message,
+                type: "warning"
+              });
             }
           },
           onFailure: err => {}
@@ -544,7 +549,14 @@ export default class HolidayMaster extends Component {
                         fieldName: "holiday_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Date" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.holiday_date).format("DD-MM-YYYY")}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "holiday_description",

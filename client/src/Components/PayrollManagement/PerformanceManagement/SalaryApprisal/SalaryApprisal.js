@@ -114,7 +114,9 @@ class SalaryApprisal extends Component {
                       }
                     }}
                   />
-                  <div className="col">
+                </div>
+                <div className="row">
+                  <div className="col form-group">
                     <label className="style_Label ">Computed Percentage</label>
                     <h6>0.00</h6>
                   </div>
@@ -132,6 +134,20 @@ class SalaryApprisal extends Component {
                       others: {
                         type: "number"
                       }
+                    }}
+                  />
+                  <div className="col form-group">
+                    <label className="style_Label ">Computed Ratings</label>
+                    <h6>Out Standing</h6>
+                  </div>
+                  <AlagehAutoComplete
+                    div={{ className: "col form-group" }}
+                    label={{ forceLabel: "Final Ratings", isImp: false }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      dataSource: {},
+                      others: {}
                     }}
                   />
                 </div>
@@ -304,64 +320,42 @@ class SalaryApprisal extends Component {
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-4 algaehLabelFormGroup">
+                    <div className="col-lg-6 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">
                         Employer Contribution
                       </label>
                       <div className="row">
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">
                             Monthly Present
                           </label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Monthly New</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Yearly Present</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-6">
+                        <div className="col">
                           <label className="style_Label ">Yearly Old</label>
                           <h6>0.00</h6>
                         </div>
                       </div>
                     </div>
-                    <div className="col-lg-4 algaehLabelFormGroup">
-                      <label className="algaehLabelGroup">Perks</label>
-                      <div className="row">
-                        <div className="col-6">
-                          <label className="style_Label ">
-                            Monthly Present
-                          </label>
-                          <h6>0.00</h6>
-                        </div>{" "}
-                        <div className="col-6">
-                          <label className="style_Label ">Monthly New</label>
-                          <h6>0.00</h6>
-                        </div>{" "}
-                        <div className="col-6">
-                          <label className="style_Label ">Yearly Present</label>
-                          <h6>0.00</h6>
-                        </div>{" "}
-                        <div className="col-6">
-                          <label className="style_Label ">Yearly Old</label>
-                          <h6>0.00</h6>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-lg-4 algaehLabelFormGroup">
+
+                    <div className="col-lg-6 algaehLabelFormGroup">
                       <label className="algaehLabelGroup">
                         Immediate effect of Increment on
                       </label>
                       <div className="row">
-                        <div className="col-12">
+                        <div className="col">
                           <label className="style_Label ">Gratuity</label>
                           <h6>0.00</h6>
                         </div>{" "}
-                        <div className="col-12">
+                        <div className="col">
                           <label className="style_Label ">Arrears CTC</label>
                           <h6>0.00</h6>
                         </div>
@@ -369,29 +363,105 @@ class SalaryApprisal extends Component {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-6">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Employee Earnings</h3>
+                    </div>
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12" id="NewAppraisalEarnings_Cntr">
+                        <AlgaehDataGrid
+                          id="NewAppraisalEarnings"
+                          datavalidate="NewAppraisalEarnings"
+                          columns={[
+                            {
+                              fieldName: "EarningDesc.",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Earning Desc." }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "PMAmount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "PM Amount" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "NMAmount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "NM Amount" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "PYAmount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "PY Amount" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "NYAmount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "NY Amount" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId=""
+                          dataSource={{ data: [] }}
+                          isEditable={false}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="col-6">
                 <div className="row">
-                  <div className="col-6">
+                  <div className="col-12">
                     <div className="portlet portlet-bordered margin-bottom-15">
                       <div className="portlet-title">
                         <div className="caption">
-                          <h3 className="caption-subject">Employee Earnings</h3>
+                          <h3 className="caption-subject">
+                            Employee Deductions
+                          </h3>
                         </div>
                       </div>
                       <div className="portlet-body">
                         <div className="row">
                           <div
                             className="col-12"
-                            id="NewAppraisalEarnings_Cntr"
+                            id="NewAppraisalDeductions_Cntr"
                           >
                             <AlgaehDataGrid
-                              id="NewAppraisalEarnings"
-                              datavalidate="NewAppraisalEarnings"
+                              id="NewAppraisalDeductions"
+                              datavalidate="NewAppraisalDeductions"
                               columns={[
                                 {
                                   fieldName: "EarningDesc.",
                                   label: (
                                     <AlgaehLabel
-                                      label={{ forceLabel: "Earning Desc." }}
+                                      label={{
+                                        forceLabel: "Deductions Desc."
+                                      }}
                                     />
                                   )
                                 },
@@ -440,7 +510,7 @@ class SalaryApprisal extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="col-6">
+                  <div className="col-12">
                     <div className="portlet portlet-bordered margin-bottom-15">
                       <div className="portlet-title">
                         <div className="caption">
@@ -460,145 +530,12 @@ class SalaryApprisal extends Component {
                               datavalidate="NewAppraisalContributions"
                               columns={[
                                 {
-                                  fieldName: "EarningDesc.",
+                                  fieldName: "ContributionsDesc.",
                                   label: (
                                     <AlgaehLabel
-                                      label={{ forceLabel: "Earning Desc." }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "PMAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "PM Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "NMAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "NM Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "PYAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "PY Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "NYAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "NY Amount" }}
-                                    />
-                                  )
-                                }
-                              ]}
-                              keyId=""
-                              dataSource={{ data: [] }}
-                              isEditable={false}
-                              paging={{ page: 0, rowsPerPage: 10 }}
-                              events={{}}
-                              others={{}}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="col-6">
-                    <div className="portlet portlet-bordered margin-bottom-15">
-                      <div className="portlet-title">
-                        <div className="caption">
-                          <h3 className="caption-subject">Perks</h3>
-                        </div>
-                      </div>
-                      <div className="portlet-body">
-                        <div className="row">
-                          <div className="col-12" id="NewAppraisalPerks_Cntr">
-                            <AlgaehDataGrid
-                              id="NewAppraisalPerks"
-                              datavalidate="NewAppraisalPerks"
-                              columns={[
-                                {
-                                  fieldName: "EarningDesc.",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Earning Desc." }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "PMAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "PM Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "NMAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "NM Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "PYAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "PY Amount" }}
-                                    />
-                                  )
-                                },
-                                {
-                                  fieldName: "NYAmount",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "NY Amount" }}
-                                    />
-                                  )
-                                }
-                              ]}
-                              keyId=""
-                              dataSource={{ data: [] }}
-                              isEditable={false}
-                              paging={{ page: 0, rowsPerPage: 10 }}
-                              events={{}}
-                              others={{}}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-6">
-                    <div className="portlet portlet-bordered margin-bottom-15">
-                      <div className="portlet-title">
-                        <div className="caption">
-                          <h3 className="caption-subject">Others</h3>
-                        </div>
-                      </div>
-                      <div className="portlet-body">
-                        <div className="row">
-                          <div className="col-12" id="NewAppraisalOther_Cntr">
-                            <AlgaehDataGrid
-                              id="NewAppraisalPerks"
-                              datavalidate="NewAppraisalPerks"
-                              columns={[
-                                {
-                                  fieldName: "EarningDesc.",
-                                  label: (
-                                    <AlgaehLabel
-                                      label={{ forceLabel: "Earning Desc." }}
+                                      label={{
+                                        forceLabel: "Contributions Desc."
+                                      }}
                                     />
                                   )
                                 },

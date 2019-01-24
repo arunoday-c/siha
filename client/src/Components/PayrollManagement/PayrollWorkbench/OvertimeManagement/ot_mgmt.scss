@@ -1,7 +1,12 @@
 .ot_mgmt {
-  #OverTimeMgmntGrid_Cntr {
+  #OverTimeMgmntMonthlyGrid_Cntr {
     .ReactTable {
-      max-height: 35vh !important;
+      max-height: 29vh !important;
+    }
+  }
+  #OverTimeMgmntDailyGrid_Cntr {
+    .ReactTable {
+      max-height: 39vh !important;
     }
   }
 }

@@ -1,20 +1,14 @@
 import React, { Component } from "react";
-
 import "./MonthlyAttendance.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
-  AlgaehDateHandler,
-  AlagehFormGroup
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import {
-  algaehApiCall,
-  swalMessage,
-  dateFomater
-} from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { getYears } from "../../../../utils/GlobalFunctions";
 
 export default class MonthlyAttendance extends Component {
   constructor(props) {
@@ -285,41 +279,30 @@ export default class MonthlyAttendance extends Component {
   }
 
   render() {
+    let allYears = getYears();
     return (
       <div className="monthly_attendance">
         <div className="row inner-top-search">
-          {/* <AlgaehDateHandler
-            div={{ className: "col mandatory" }}
-            label={{ forceLabel: "Select Month & Year", isImp: true }}
-            textBox={{
-              className: "txt-fld",
-              name: "yearAndMonth"
-            }}
-            maxDate={new Date()}
-            events={{
-              onChange: this.monthSelectionHandler.bind(this)
-            }}
-            others={{
-              type: "month"
-            }}
-            value={dateFomater(this.state.yearAndMonth)}
-          /> */}
-
-          <AlagehFormGroup
-            div={{ className: "col-lg-1 mandatory" }}
+          <AlagehAutoComplete
+            div={{ className: "col" }}
             label={{
-              forceLabel: "Year",
+              forceLabel: "Select a Year.",
               isImp: true
             }}
-            textBox={{
-              className: "txt-fld",
+            selector={{
               name: "year",
+              className: "select-fld",
               value: this.state.year,
-              events: {
-                onChange: this.textHandler.bind(this)
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: allYears
               },
-              others: {
-                type: "number"
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  year: null
+                });
               }
             }}
           />
