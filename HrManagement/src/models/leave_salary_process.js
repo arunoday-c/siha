@@ -4,7 +4,7 @@ import utilities from "algaeh-utilities";
 import moment from "moment";
 import { processAttendance } from "./attendance";
 import { processSalary, getSalaryProcess } from "./salary";
-import Sync from "sync";
+
 module.exports = {
   getLeaveSalaryProcess: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -151,15 +151,25 @@ module.exports = {
         printQuery: true
       })
       .then(employee_result => {
-        let hospital_id = employee_result.hospital_id;
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("employee_result:", employee_result[0].hospital_id);
 
-        while (start_date <= end_date) {
-          Sync(() => {
+        req.query.hospital_id = employee_result[0].hospital_id;
+        req.query.employee_id = req.query.hims_d_employee_id;
+
+        const syscCall = async function() {
+          // while (start_date <= end_date) {
+          while (start_date <= end_date) {
             try {
               let fromDate_lastDate = null;
 
               let date_year = moment(start_date).year();
               let date_month = moment(start_date).format("M");
+
+              req.query.year = date_year;
+              req.query.month = date_month;
 
               utilities
                 .AlgaehUtilities()
@@ -170,7 +180,10 @@ module.exports = {
                 .logger()
                 .log("date_month:", date_month);
               req.query.leave_salary = "N";
-              req.query.yearAndMonth = date_year + "-" + date_month + "-01";
+              req.query.yearAndMonth = moment(
+                date_year + "-" + date_month + "-01",
+                "YYYY-MM-DD"
+              )._d;
               if (end_date_month == date_month) {
                 req.query.leave_end_date = end_date;
                 req.query.leave_salary = "Y";
@@ -183,69 +196,14 @@ module.exports = {
 
               req.mySQl = _mysql;
               // processAttendance(req, res, next);
-
-              let _attendance = processAttendance.sync(null, req, res, next);
-              let _attendance_result = _attendance.result;
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("_attendance_result:", _attendance_result);
-              _attendance_result
-                .then(attendance_result => {
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("attendance_result:", attendance_result);
-
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = attendance_result;
-                    next();
-                  });
-                  // delete req.query;
-
-                  // req.query.year = date_year;
-                  // req.query.month = date_month;
-                  // req.query.hospital_id = hospital_id;
-                  // req.query.employee_id = req.query.employee_id;
-
-                  // req.query.leave_salary = "N";
-                  // if (end_date_month == date_month) {
-                  //   req.query.leave_salary = "Y";
-                  // }
-
-                  // utilities
-                  //   .AlgaehUtilities()
-                  //   .logger()
-                  //   .log("req.query:", req.query);
-
-                  // processSalary
-                  //   .sync(null, req, res, next)
-                  //   .then(salary_result => {
-                  //     utilities
-                  //       .AlgaehUtilities()
-                  //       .logger()
-                  //       .log("salary_result:", salary_result);
-
-                  //     getSalaryProcess.sync(null, req, res, next).then(res => {
-                  //       _mysql.commitTransaction(() => {
-                  //         _mysql.releaseConnection();
-                  //         req.records = {};
-                  //         next();
-                  //       });
-                  //     });
-                  //   })
-                  //   .catch(e => {
-                  //     _mysql.rollBackTransaction(() => {
-                  //       next(e);
-                  //     });
-                  //   });
-                })
-                .catch(e => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
+              console.log("before process");
+              await processAttendance(req, res, next);
+              console.log("after process");
+              // yield;
+              console.log("before salary process");
+              await processSalary(req, res, next);
+              console.log("after salary process");
+              // yield;
 
               fromDate_lastDate = moment(start_date)
                 .endOf("month")
@@ -257,8 +215,20 @@ module.exports = {
             } catch (e) {
               console.log("error", e);
             }
-          });
-        }
+          }
+        };
+        syscCall();
+        // const resl = syscCall();
+        // resl.next();
+        // console.log("Inside while", resl);
+        // resl.next();
+        console.log("before commit", resl);
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = {};
+          next();
+        });
+        // resl.next();
       })
       .catch(e => {
         _mysql.rollBackTransaction(() => {
