@@ -213,6 +213,48 @@ module.exports = {
       });
   },
 
+  getLeaveSettleTopayment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const _FSDetails = req.query;
+
+    let _stringData =
+      _FSDetails.employee_id != null ? " and LS.employee_id=? " : "";
+
+    _stringData +=
+      _FSDetails.hospital_id != null ? " and emp.hospital_id=? " : "";
+    _stringData +=
+      _FSDetails.leave_salary_number != null
+        ? " and LS.leave_salary_number=? "
+        : "";
+
+    /* Select statemwnt  */
+
+    _mysql
+      .executeQuery({
+        query:
+          "select LS.hims_f_leave_salary_header_id, LS.leave_salary_number as request_number, LS.employee_id, \
+          LS.total_amount as payment_amount, emp.employee_code, emp.full_name from hims_f_leave_salary_header LS, \
+          hims_d_employee emp where LS.status = 'PEN' and LS.employee_id = emp.hims_d_employee_id" +
+          _stringData,
+        values: _.valuesIn(_FSDetails),
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        req.records = result.map(data => {
+          return {
+            ...data,
+            payment_type: "LS"
+          };
+        });
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
   InsertEmployeePayment: (req, res, next) => {
     const _mysql = new algaehMysql();
     let inputParam = { ...req.body };
@@ -229,8 +271,8 @@ module.exports = {
               "INSERT INTO `hims_f_employee_payments` (payment_application_code,employee_id,employee_advance_id,\
             employee_loan_id,employee_leave_encash_id,employee_end_of_service_id,employee_final_settlement_id,\
             employee_leave_settlement_id,payment_type,payment_date,remarks,earnings_id,deduction_month,year,payment_amount,\
-            payment_mode,cheque_number,created_date,created_by,updated_date,updated_by)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            payment_mode,cheque_number,bank_id,created_date,created_by,updated_date,updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               generatedNumbers[0],
               inputParam.employee_id,
@@ -249,6 +291,7 @@ module.exports = {
               inputParam.payment_amount,
               inputParam.payment_mode,
               inputParam.cheque_number,
+              inputParam.bank_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -417,6 +460,26 @@ module.exports = {
                   next(error);
                 });
             } else if (inputParam.payment_type == "LS") {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_leave_salary_header` SET `status`='PRO' \
+                    where hims_f_leave_salary_header_id=?",
+                  values: [inputParam.employee_leave_settlement_id]
+                })
+                .then(LeaveSettleResult => {
+                  let result = {
+                    payment_application_code: payment_application_code
+                  };
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result;
+                    next();
+                  });
+                })
+                .catch(error => {
+                  next(error);
+                });
             }
           })
           .catch(e => {
@@ -583,6 +646,23 @@ module.exports = {
               next(error);
             });
         } else if (inputParam.payment_type == "LS") {
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_f_leave_salary_header` SET `status`='PEN' \
+                    where hims_f_leave_salary_header_id=?",
+              values: [inputParam.employee_leave_settlement_id]
+            })
+            .then(LeaveSettleResult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = LeaveSettleResult;
+                next();
+              });
+            })
+            .catch(error => {
+              next(error);
+            });
         }
       })
       .catch(e => {
@@ -600,7 +680,7 @@ module.exports = {
         query:
           "select hims_f_employee_payments_id,employee_advance_id,employee_loan_id,employee_leave_encash_id,\
           employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
-          payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, \
+          payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
           emp.employee_code, emp.full_name from hims_f_employee_payments, hims_d_employee emp where \
         hims_f_employee_payments.employee_id = emp.hims_d_employee_id;",
         printQuery: true

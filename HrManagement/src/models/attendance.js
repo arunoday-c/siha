@@ -167,7 +167,7 @@ module.exports = {
 
                         empResult[i]["defaults"].emp_total_holidays =
                           other_religion_holidays.length === 0
-                            ? _holidayResult.length
+                            ? 0
                             : _holidayResult.length -
                               other_religion_holidays.length;
 
@@ -223,6 +223,11 @@ module.exports = {
                               .AlgaehUtilities()
                               .logger()
                               .log("leave_ids: ", leave_ids);
+
+                            utilities
+                              .AlgaehUtilities()
+                              .logger()
+                              .log("month_name: ", month_name);
 
                             if (leave_ids.length > 0) {
                               _mysql

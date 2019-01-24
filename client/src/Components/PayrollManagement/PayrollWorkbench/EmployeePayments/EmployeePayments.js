@@ -83,6 +83,17 @@ class EmployeePayment extends Component {
       });
     }
 
+    if (this.props.banks === undefined || this.props.banks.length === 0) {
+      this.props.getBanks({
+        uri: "/masters/getBank",
+        method: "GET",
+        redux: {
+          type: "BANK_GET_DATA",
+          mappingName: "banks"
+        }
+      });
+    }
+
     getEmployeePayments(this, this);
   }
 
@@ -131,7 +142,9 @@ class EmployeePayment extends Component {
                 className: "txt-fld",
                 name: "document_num",
                 value: this.state.document_num,
-                events: {},
+                events: {
+                  onChange: texthandle.bind(this, this)
+                },
                 option: {
                   type: "text"
                 },
@@ -402,7 +415,7 @@ class EmployeePayment extends Component {
                       </div>
                       <div className="row">
                         <AlagehAutoComplete
-                          div={{ className: "col-6 form-group" }}
+                          div={{ className: "col-6 form-group mandatory" }}
                           label={{
                             forceLabel: "Mode of Payment",
                             isImp: true
@@ -420,7 +433,7 @@ class EmployeePayment extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
+                          div={{ className: "col-4 form-group mandatory" }}
                           label={{
                             forceLabel: "Payment Amount",
                             isImp: true
@@ -442,25 +455,25 @@ class EmployeePayment extends Component {
                       {this.state.payment_mode === "CH" ? (
                         <div className="row">
                           <AlagehAutoComplete
-                            div={{ className: "col-6  form-group" }}
+                            div={{ className: "col mandatory" }}
                             label={{
                               forceLabel: "Select a Bank",
-                              isImp:
-                                this.state.payment_mode === "CH" ? true : false
+                              isImp: true
                             }}
                             selector={{
-                              name: "hospital_id",
+                              name: "bank_id",
                               className: "select-fld",
-                              value: this.state.hospital_id,
+                              value: this.state.bank_id,
                               dataSource: {
-                                textField: "hospital_name",
-                                valueField: "hims_d_hospital_id",
-                                data: this.props.organizations
-                              }
+                                textField: "bank_name",
+                                valueField: "hims_d_bank_id",
+                                data: this.props.banks
+                              },
+                              onChange: texthandle.bind(this, this)
                             }}
                           />
                           <AlagehFormGroup
-                            div={{ className: "col-6 form-group" }}
+                            div={{ className: "col mandatory" }}
                             label={{
                               forceLabel: "Cheque No.",
                               isImp:
@@ -470,7 +483,9 @@ class EmployeePayment extends Component {
                               className: "txt-fld",
                               name: "cheque_number",
                               value: this.state.cheque_number,
-                              onChange: texthandle.bind(this, this),
+                              events: {
+                                onChange: texthandle.bind(this, this)
+                              },
                               option: {
                                 type: "text"
                               }
@@ -481,7 +496,7 @@ class EmployeePayment extends Component {
                       {this.state.sel_payment_type === "AD" ? (
                         <div className="row">
                           <AlagehAutoComplete
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-4 mandatory" }}
                             label={{
                               forceLabel: "Deduct in Month",
                               isImp:
@@ -502,7 +517,7 @@ class EmployeePayment extends Component {
                             }}
                           />
                           <AlagehFormGroup
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-4 mandatory" }}
                             label={{
                               forceLabel: "Year",
                               isImp:
@@ -514,14 +529,16 @@ class EmployeePayment extends Component {
                               className: "txt-fld",
                               name: "year",
                               value: this.state.year,
-                              onChange: texthandle.bind(this, this),
+                              events: {
+                                onChange: texthandle.bind(this, this)
+                              },
                               option: {
                                 type: "text"
                               }
                             }}
                           />
                           <AlagehAutoComplete
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-4 mandatory" }}
                             label={{
                               forceLabel: "Earning",
                               isImp:
@@ -702,12 +719,25 @@ class EmployeePayment extends Component {
                             }
                           },
                           {
-                            fieldName: "",
+                            fieldName: "bank_id",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Bank Details" }}
                               />
-                            )
+                            ),
+                            displayTemplate: row => {
+                              let display = this.props.banks.filter(
+                                f => f.hims_d_bank_id === row.bank_id
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].bank_name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
                             fieldName: "cheque_number",
@@ -727,7 +757,20 @@ class EmployeePayment extends Component {
                                   forceLabel: "Deduction Month"
                                 }}
                               />
-                            )
+                            ),
+                            displayTemplate: row => {
+                              let display = GlobalVariables.MONTHS.filter(
+                                f => f.value === row.deduction_month
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
                             fieldName: "cancel",
@@ -783,7 +826,8 @@ function mapStateToProps(state) {
   return {
     organizations: state.organizations,
     all_employees: state.all_employees,
-    payrollcomponents: state.payrollcomponents
+    payrollcomponents: state.payrollcomponents,
+    banks: state.banks
   };
 }
 
@@ -792,7 +836,8 @@ function mapDispatchToProps(dispatch) {
     {
       getOrganizations: AlgaehActions,
       getEmployees: AlgaehActions,
-      getEarningDeduction: AlgaehActions
+      getEarningDeduction: AlgaehActions,
+      getBanks: AlgaehActions
     },
     dispatch
   );

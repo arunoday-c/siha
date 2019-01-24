@@ -1,6 +1,6 @@
 import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+// import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
@@ -35,6 +35,16 @@ const getLeaveSalaryProcess = ($this, e) => {
       let data = response.data.result;
 
       data.ProcessBtn = false;
+      data.SaveBtn = false;
+
+      debugger;
+      data.salary_amount = Enumerable.from(data.leave_salary_detail).sum(s =>
+        parseFloat(s.net_amount)
+      );
+
+      data.total_amount =
+        parseFloat(data.salary_amount) + parseFloat(data.leave_amount);
+
       $this.setState(data);
     },
     onFailure: error => {
@@ -57,7 +67,7 @@ const ClearData = $this => {
     hospital_id: null,
     ProcessBtn: true,
     encash_type: null,
-    PayBtn: true
+    SaveBtn: true
   });
 };
 
@@ -128,4 +138,42 @@ const LeaveSalProcess = $this => {
   });
 };
 
-export { texthandle, ClearData, employeeSearch, dateFormater, LeaveSalProcess };
+const SaveLeaveSalary = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/leavesalaryprocess/InsertLeaveSalary",
+    module: "hrManagement",
+    data: $this.state,
+    method: "POST",
+    onSuccess: response => {
+      debugger;
+      AlgaehLoader({ show: false });
+      let data = response.data.result;
+
+      data.ProcessBtn = true;
+      data.SaveBtn = true;
+
+      $this.setState(data);
+      swalMessage({
+        title: "Saved Succefully...",
+        type: "success"
+      });
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+export {
+  texthandle,
+  ClearData,
+  employeeSearch,
+  dateFormater,
+  LeaveSalProcess,
+  SaveLeaveSalary
+};

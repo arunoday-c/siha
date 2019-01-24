@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const winston = require("winston");
 const path = require("path");
 const config = require("algaeh-keys"); //require("../keys/keys");
-const moment = require("moment");
 require("winston-daily-rotate-file");
 const fs = require("fs");
 exports.AlgaehUtilities = options => {

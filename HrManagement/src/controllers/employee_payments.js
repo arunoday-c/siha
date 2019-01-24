@@ -8,7 +8,8 @@ import {
   getEncashLeavesTopayment,
   CancelEmployeePayment,
   getGratuityTopayment,
-  getFinalSettleTopayment
+  getFinalSettleTopayment,
+  getLeaveSettleTopayment
 } from "../models/employee_payments";
 export default () => {
   const api = Router();
@@ -36,6 +37,17 @@ export default () => {
   api.get(
     "/getFinalSettleTopayment",
     getFinalSettleTopayment,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getLeaveSettleTopayment",
+    getLeaveSettleTopayment,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
