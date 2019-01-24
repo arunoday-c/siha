@@ -4,7 +4,7 @@ import utilities from "algaeh-utilities";
 import moment from "moment";
 import { processAttendance } from "./attendance";
 import { processSalary, getSalaryProcess } from "./salary";
-import Sync from "sync";
+
 module.exports = {
   getLeaveSalaryProcess: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -13,15 +13,16 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "SELECT hims_d_leave_id FROM hims_d_leave where leave_category='A';",
+          "SELECT hims_d_leave_id,leave_category FROM hims_d_leave where leave_category='A';",
         printQuery: true
       })
       .then(annul_leave => {
         let leave_id = annul_leave[0].hims_d_leave_id;
+        let leave_category = annul_leave[0].leave_category;
         _mysql
           .executeQuery({
             query:
-              "SELECT from_date, to_date, leave_type, total_approved_days FROM hims_f_leave_application \
+              "SELECT hims_f_leave_application_id, from_date, to_date, leave_type, total_approved_days FROM hims_f_leave_application \
               where  status='APR' and cancelled = 'N' and leave_id=? and employee_id=?;",
             values: [leave_id, _leaveSalary.employee_id],
             printQuery: true
@@ -81,7 +82,12 @@ module.exports = {
                   leave_start_date: leave_start_date,
                   leave_end_date: to_date,
                   leave_period: no_of_days,
-                  leave_type: annul_leave_app[0].leave_type
+                  leave_category: leave_category,
+                  leave_application_id:
+                    annul_leave_app[0].hims_f_leave_application_id,
+                  gross_amount: "10000.00",
+                  net_amount: parseFloat("12000.00"),
+                  salary_header_id: 6770
                 });
               }
 
@@ -93,7 +99,9 @@ module.exports = {
                 leave_salary_detail: leave_salary_detail,
                 leave_period: _.sumBy(leave_salary_detail, s => {
                   return s.leave_period;
-                })
+                }),
+                leave_amount: "25000.00",
+                airfare_amount: 0
               };
               _mysql.releaseConnection();
               req.records = result;
@@ -143,15 +151,25 @@ module.exports = {
         printQuery: true
       })
       .then(employee_result => {
-        let hospital_id = employee_result.hospital_id;
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("employee_result:", employee_result[0].hospital_id);
 
-        while (start_date <= end_date) {
-          Sync(() => {
+        req.query.hospital_id = employee_result[0].hospital_id;
+        req.query.employee_id = req.query.hims_d_employee_id;
+
+        const syscCall = async function() {
+          // while (start_date <= end_date) {
+          while (start_date <= end_date) {
             try {
               let fromDate_lastDate = null;
 
               let date_year = moment(start_date).year();
               let date_month = moment(start_date).format("M");
+
+              req.query.year = date_year;
+              req.query.month = date_month;
 
               utilities
                 .AlgaehUtilities()
@@ -162,7 +180,10 @@ module.exports = {
                 .logger()
                 .log("date_month:", date_month);
               req.query.leave_salary = "N";
-              req.query.yearAndMonth = date_year + "-" + date_month + "-01";
+              req.query.yearAndMonth = moment(
+                date_year + "-" + date_month + "-01",
+                "YYYY-MM-DD"
+              )._d;
               if (end_date_month == date_month) {
                 req.query.leave_end_date = end_date;
                 req.query.leave_salary = "Y";
@@ -175,69 +196,14 @@ module.exports = {
 
               req.mySQl = _mysql;
               // processAttendance(req, res, next);
-
-              let _attendance = processAttendance.sync(null, req, res, next);
-              let _attendance_result = _attendance.result;
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("_attendance_result:", _attendance_result);
-              _attendance_result
-                .then(attendance_result => {
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("attendance_result:", attendance_result);
-
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = attendance_result;
-                    next();
-                  });
-                  // delete req.query;
-
-                  // req.query.year = date_year;
-                  // req.query.month = date_month;
-                  // req.query.hospital_id = hospital_id;
-                  // req.query.employee_id = req.query.employee_id;
-
-                  // req.query.leave_salary = "N";
-                  // if (end_date_month == date_month) {
-                  //   req.query.leave_salary = "Y";
-                  // }
-
-                  // utilities
-                  //   .AlgaehUtilities()
-                  //   .logger()
-                  //   .log("req.query:", req.query);
-
-                  // processSalary
-                  //   .sync(null, req, res, next)
-                  //   .then(salary_result => {
-                  //     utilities
-                  //       .AlgaehUtilities()
-                  //       .logger()
-                  //       .log("salary_result:", salary_result);
-
-                  //     getSalaryProcess.sync(null, req, res, next).then(res => {
-                  //       _mysql.commitTransaction(() => {
-                  //         _mysql.releaseConnection();
-                  //         req.records = {};
-                  //         next();
-                  //       });
-                  //     });
-                  //   })
-                  //   .catch(e => {
-                  //     _mysql.rollBackTransaction(() => {
-                  //       next(e);
-                  //     });
-                  //   });
-                })
-                .catch(e => {
-                  _mysql.rollBackTransaction(() => {
-                    next(e);
-                  });
-                });
+              console.log("before process");
+              await processAttendance(req, res, next);
+              console.log("after process");
+              // yield;
+              console.log("before salary process");
+              await processSalary(req, res, next);
+              console.log("after salary process");
+              // yield;
 
               fromDate_lastDate = moment(start_date)
                 .endOf("month")
@@ -249,8 +215,116 @@ module.exports = {
             } catch (e) {
               console.log("error", e);
             }
+          }
+        };
+        syscCall();
+        // const resl = syscCall();
+        // resl.next();
+        // console.log("Inside while", resl);
+        // resl.next();
+        console.log("before commit", resl);
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = {};
+          next();
+        });
+        // resl.next();
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
+
+  InsertLeaveSalary: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let inputParam = { ...req.body };
+    let leave_salary_number = "";
+
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("inputParam: ", inputParam);
+
+    _mysql
+      .generateRunningNumber({
+        modules: ["LEAVE_SALARY"]
+      })
+      .then(generatedNumbers => {
+        leave_salary_number = generatedNumbers[0];
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO `hims_f_leave_salary_header` (leave_salary_number,employee_id,year,month,\
+                leave_start_date,leave_end_date,salary_amount,leave_amount,\
+                airfare_amount,total_amount,leave_period,status,created_date,created_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            values: [
+              generatedNumbers[0],
+              inputParam.employee_id,
+              inputParam.year,
+              inputParam.month,
+              inputParam.leave_start_date,
+              inputParam.leave_end_date,
+              inputParam.salary_amount,
+              inputParam.leave_amount,
+              inputParam.airfare_amount,
+              inputParam.total_amount,
+              inputParam.leave_period,
+              inputParam.status,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id
+            ],
+            printQuery: true
+          })
+          .then(leave_header => {
+            let IncludeValues = [
+              "year",
+              "month",
+              "start_date",
+              "end_date",
+              "leave_start_date",
+              "leave_end_date",
+              "leave_application_id",
+              "leave_period",
+              "leave_category",
+              "salary_header_id",
+              "gross_amount",
+              "net_amount"
+            ];
+
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO hims_f_leave_salary_detail(??) VALUES ?",
+                values: inputParam.leave_salary_detail,
+                includeValues: IncludeValues,
+                extraValues: {
+                  leave_salary_header_id: leave_header.insertId
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(leave_detail => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    leave_salary_number: leave_salary_number
+                  };
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
           });
-        }
       })
       .catch(e => {
         _mysql.rollBackTransaction(() => {

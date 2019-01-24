@@ -328,7 +328,7 @@ class EmployeeMasterIndex extends Component {
                       label: <AlgaehLabel label={{ fieldName: "email" }} />,
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "center", wordBreak: "break-all" }
                       }
                     }
                   ]}
@@ -338,7 +338,7 @@ class EmployeeMasterIndex extends Component {
                   }}
                   filter={true}
                   // isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 50 }}
                 />
               </div>
             </div>

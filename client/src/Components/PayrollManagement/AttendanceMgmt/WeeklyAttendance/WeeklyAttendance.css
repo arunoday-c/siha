@@ -1,20 +1,20 @@
-.weekdaysDiv i {
+.hrTimeSheet .weekdaysDiv i {
   cursor: pointer; }
-  .weekdaysDiv i:hover {
+  .hrTimeSheet .weekdaysDiv i:hover {
     color: #34b8bc; }
 
-.weekdaysDiv span {
+.hrTimeSheet .weekdaysDiv span {
   font-size: 0.8rem;
   margin: 0 10px; }
 
-.WeeklyTimeProgress .dailyTimeProgress {
+.hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress {
   border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
   padding-top: 10px;
   padding-bottom: 10px; }
-  .WeeklyTimeProgress .dailyTimeProgress .progress {
+  .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress {
     height: 0.5rem;
     margin-top: 0.6rem; }
-    .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span {
+    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span {
       background: rgba(0, 0, 0, 0.7);
       position: absolute;
       z-index: 9;
@@ -22,17 +22,17 @@
       padding: 2px 5px;
       border-radius: 5px;
       display: none; }
-      .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span b {
+      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span b {
         display: inline-block;
         text-align: center;
         border-left: 1px solid rgba(255, 255, 255, 0.5);
         padding-left: 5px;
         margin-left: 5px; }
-      .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span .lateTime {
+      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span .lateTime {
         color: #ff5c40; }
-      .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span .OverTime {
+      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span .OverTime {
         color: #17d217; }
-      .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span::after {
+      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span::after {
         content: " ";
         position: absolute;
         top: 100%;
@@ -42,19 +42,19 @@
         border-width: 5px;
         border-style: solid;
         border-color: rgba(0, 0, 0, 0.7) transparent transparent transparent; }
-    .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .checkIn {
-      left: -45px; }
-    .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .totalHr {
-      left: 40vw; }
-    .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .checkOut {
-      right: -45px; }
-    .WeeklyTimeProgress .dailyTimeProgress .progress:hover span {
+    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .checkIn {
+      left: 15px; }
+    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .totalHr {
+      left: 42.5%; }
+    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .checkOut {
+      right: 15px; }
+    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress:hover span {
       display: block; }
-  .WeeklyTimeProgress .dailyTimeProgress .week-off {
+  .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .week-off {
     height: 0.3rem; }
-    .WeeklyTimeProgress .dailyTimeProgress .week-off .progress-bar {
+    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .week-off .progress-bar {
       background-color: #ffeba0 !important; }
-      .WeeklyTimeProgress .dailyTimeProgress .week-off .progress-bar span {
+      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .week-off .progress-bar span {
         background: #ffffff;
         width: auto;
         display: inline-block;
@@ -62,11 +62,11 @@
         font-size: 0.7rem;
         margin: auto;
         position: absolute;
-        left: 39.5vw;
+        left: 35.5vw;
         border: 1px solid #c3c3c3;
         color: #202429;
         border-radius: 5px; }
-  .WeeklyTimeProgress .dailyTimeProgress .bg-default {
+  .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .bg-default {
     background-color: #e7ecef !important; }
-  .WeeklyTimeProgress .dailyTimeProgress:last-child {
+  .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress:last-child {
     border-bottom: none; }

@@ -118,7 +118,9 @@ class YearlyLeaveDetail extends Component {
         </div>
         <div className="popupFooter">
           <div className="col-12">
-            <button className="btn btn-default">Cancel</button>
+            <button onClick={this.props.onClose} className="btn btn-default">
+              Close
+            </button>
           </div>
         </div>
       </AlgaehModalPopUp>

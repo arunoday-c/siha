@@ -1,41 +1,201 @@
 import React, { Component } from "react";
-
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import Employee from "../../../../Search/Employee.json";
 import "./WeeklyAttendance.css";
 import {
   AlagehAutoComplete,
-  AlgaehLabel,
-  AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { getYears } from "../../../../utils/GlobalFunctions";
 
 export default class WeeklyAttendance extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
+      week: 0,
+      weeks: []
+    };
+  }
+
+  componentDidMount() {
+    this.getWeeks();
+    this.getFirstWeek();
+  }
+
+  getFirstWeek() {
+    let daysOfMonth = moment(
+      new Date(this.state.year + "-" + this.state.month + "-02")
+    ).weekday();
+
+    console.log("SFSADFASd", daysOfMonth);
+  }
+
+  getWeeks() {
+    let daysOfMonth = moment(
+      new Date(this.state.year + "-" + this.state.month + "-01")
+    ).daysInMonth();
+
+    let weeksInMonth = Math.ceil(daysOfMonth / 7);
+
+    let weeksData = [{ name: "All", value: 0 }];
+    for (let i = 1; i <= weeksInMonth; i++) {
+      weeksData.push({
+        name: "Week " + i,
+        value: i
+      });
+    }
+
+    this.setState({
+      weeks: weeksData
+    });
+  }
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: Employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id
+          },
+          () => {}
+        );
+      }
+    });
+  }
+
+  dropDownHandler(value) {
+    switch (value.name) {
+      case "month":
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            this.getWeeks();
+          }
+        );
+        break;
+
+      default:
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            this.getWeeks();
+          }
+        );
+        break;
+    }
   }
 
   render() {
+    let allYears = getYears();
     return (
-      <div className="monthly_attendance">
+      <div className="hrTimeSheet">
         <div className="row inner-top-search">
-          <AlgaehDateHandler
-            div={{ className: "col" }}
-            label={{ forceLabel: "Seletc a Month & Year", isImp: false }}
-            textBox={{
-              className: "txt-fld",
-              name: ""
-            }}
-            maxDate={new Date()}
-            events={{}}
-          />
+          <div className="col">
+            <label>View by All Employees</label>
+            <div className="customCheckbox">
+              <label className="checkbox inline">
+                <input type="checkbox" value="yes" name="" />
+                <span>Yes</span>
+              </label>
+            </div>
+          </div>
+
+          <div className="col" style={{ marginTop: 10 }}>
+            <div
+              className="row"
+              style={{
+                border: "1px solid #ced4d9",
+                borderRadius: 5,
+                marginLeft: 0
+              }}
+            >
+              <div className="col">
+                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                <h6>
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "------"}
+                </h6>
+              </div>
+              <div
+                className="col-lg-3"
+                style={{ borderLeft: "1px solid #ced4d8" }}
+              >
+                <i
+                  className="fas fa-search fa-lg"
+                  style={{
+                    paddingTop: 17,
+                    paddingLeft: 3,
+                    cursor: "pointer"
+                  }}
+                  onClick={this.employeeSearch.bind(this)}
+                />
+              </div>
+            </div>
+          </div>
+
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select a Employee", isImp: false }}
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Year.",
+              isImp: true
+            }}
             selector={{
-              name: "",
+              name: "year",
               className: "select-fld",
-              dataSource: {},
-              others: {}
+              value: this.state.year,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: allYears
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  year: null
+                });
+              }
+            }}
+          />
+
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Month.",
+              isImp: true
+            }}
+            selector={{
+              name: "month",
+              className: "select-fld",
+              value: this.state.month,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.MONTHS
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  month: null
+                });
+              }
             }}
           />
 
@@ -47,9 +207,13 @@ export default class WeeklyAttendance extends Component {
         </div>
 
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
-          <div className="portlet-title">
+          <div
+            className="portlet-title"
+            style={{ height: 60, borderBottom: " 1px solid #e2e2e2" }}
+          >
             <div className="caption">Employee Name</div>
             <div className="actions">
+              {/*             
               <div className="weekdaysDiv">
                 <i className="fas fa-arrow-circle-left" />
                 <span>
@@ -57,11 +221,36 @@ export default class WeeklyAttendance extends Component {
                 </span>
                 <i className="fas fa-arrow-circle-right" />
               </div>
+           */}
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Select Week",
+                  isImp: true
+                }}
+                selector={{
+                  name: "week",
+                  className: "select-fld",
+                  value: this.state.week,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: this.state.weeks
+                  },
+                  onChange: this.dropDownHandler.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      week: null
+                    });
+                  }
+                }}
+              />
             </div>
           </div>
           <div className="portlet-body WeeklyTimeProgress">
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Sun, 30</div>
+              <div className="col-1">Sun, 30</div>
+              <div className="col-1">00.00 Hrs</div>
               <div className="col">
                 <div className="progress week-off">
                   <div
@@ -76,10 +265,10 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Mon, 31</div>
+              <div className="col-1">Mon, 31</div>
+              <div className="col-1">08.45 Hrs</div>
               <div className="col">
                 <div className="progress">
                   <div
@@ -104,10 +293,10 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-auto">08.45 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Tue, 01</div>
+              <div className="col-1">Tue, 01</div>
+              <div className="col-1">08.45 Hrs</div>
               <div className="col">
                 <div className="progress">
                   <div
@@ -132,10 +321,10 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-auto">08.45 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Wed, 02</div>
+              <div className="col-1">Wed, 02</div>
+              <div className="col-1">05.15 Hrs</div>
               <div className="col">
                 <div className="progress">
                   <div
@@ -148,10 +337,10 @@ export default class WeeklyAttendance extends Component {
                   />
                 </div>
               </div>
-              <div className="col-auto">05.15 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Thu, 03</div>
+              <div className="col-1">Thu, 03</div>
+              <div className="col-1">00.00 Hrs</div>
               <div className="col">
                 <div className="progress ">
                   <div
@@ -164,10 +353,10 @@ export default class WeeklyAttendance extends Component {
                   />
                 </div>
               </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Fri, 04</div>
+              <div className="col-1">Fri, 04</div>
+              <div className="col-1">00.00 Hrs</div>
               <div className="col">
                 <div className="progress ">
                   <div
@@ -180,10 +369,10 @@ export default class WeeklyAttendance extends Component {
                   />
                 </div>
               </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
             <div className="row dailyTimeProgress">
-              <div className="col-auto">Sat, 05</div>
+              <div className="col-1">Sat, 05</div>
+              <div className="col-1">00.00 Hrs</div>
               <div className="col">
                 <div className="progress week-off">
                   <div
@@ -198,8 +387,36 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-auto">00.00 Hrs</div>
             </div>
+          </div>
+          <hr />
+          <div className="portlet-body WeeklyTimeProgress">
+            {/* Start Element Daily Progress*/}
+
+            {/* <div className="row dailyTimeProgress">
+              <div className="col-3 time_name">
+                Aboobacker Sidhiqe
+                <br />
+                <small>EMP00001</small>
+              </div>
+              <div className="col-1">05.15 Hrs</div>
+              <div className="col">
+                <div className="col">
+                  <div className="progress">
+                    <div
+                      className="progress-bar progress-bar-striped  progress-bar-animated"
+                      role="progressbar"
+                      aria-valuenow="75"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      style={{ width: "55%" }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div> */}
+
+            {/* End Element Daily Progress*/}
           </div>
         </div>
       </div>

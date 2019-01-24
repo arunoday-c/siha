@@ -280,6 +280,38 @@ let algaehSearchConfig = searchName => {
           emp.employee_code, emp.full_name from hims_f_employee_advance, hims_d_employee emp \
           where hims_f_employee_advance.employee_id = emp.hims_d_employee_id",
         orderBy: "hims_f_employee_advance_id desc"
+      },
+      {
+        searchName: "encash_leave",
+        searchQuery:
+          "select  hims_f_leave_encash_header_id,encashment_number,employee_id, encashment_date,total_amount, \
+          emp.employee_code, emp.full_name from hims_f_leave_encash_header, hims_d_employee emp \
+          where hims_f_leave_encash_header.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_leave_encash_header_id desc"
+      },
+      {
+        searchName: "end_of_service",
+        searchQuery:
+          "select  hims_f_end_of_service_id,end_of_service_number,employee_id, transaction_date,payable_amount, \
+          emp.employee_code, emp.full_name from hims_f_end_of_service, hims_d_employee emp \
+          where hims_f_end_of_service.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_end_of_service_id desc"
+      },
+      {
+        searchName: "final_settlement",
+        searchQuery:
+          "select  hims_f_final_settlement_header_id,final_settlement_number,employee_id, settled_date,total_amount, \
+          emp.employee_code, emp.full_name from hims_f_final_settlement_header, hims_d_employee emp \
+          where hims_f_final_settlement_header.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_final_settlement_header_id desc"
+      },
+      {
+        searchName: "leave_settlement",
+        searchQuery:
+          "select  hims_f_leave_salary_header_id,leave_salary_number,employee_id, hims_f_leave_salary_header.created_date,\
+          total_amount, emp.employee_code, emp.full_name from hims_f_leave_salary_header, hims_d_employee emp \
+          where hims_f_leave_salary_header.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_leave_salary_header_id desc"
       }
     ]
   };

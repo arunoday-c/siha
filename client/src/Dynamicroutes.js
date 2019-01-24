@@ -72,6 +72,7 @@ import DepreciationReversal from "./Components/AssetManagement/DepreciationRever
 import Disposal from "./Components/AssetManagement/Disposal/Disposal";
 import PurchaseOrderList from "./Components/Procurement/PurchaseOrderList/PurchaseSwitch";
 import DayEndProcess from "./Components/Finance/DayEndProcess/DayEndProcess";
+import FinanceMapping from "./Components/Finance/FinanceMapping/FinanceMapping";
 import OPBillCancellation from "./Components/OPBillCancellation/OPBillCancellation";
 import OPCreditSettlement from "./Components/OPCreditSettlement/OPCreditSettlement";
 import POSCreditSettlement from "./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement";
@@ -171,6 +172,7 @@ const componts = (selectedLang, breadStyle) => {
     VendorSetup: <VendorSetup SelectLanguage={selectedLang} />,
 
     DayEndProcess: <DayEndProcess SelectLanguage={selectedLang} />,
+    FinanceMapping: <FinanceMapping SelectLanguage={selectedLang} />,
 
     DeliveryNoteEntry: <DeliveryNoteEntry SelectLanguage={selectedLang} />,
     PurchaseOrderEntry: <PurchaseOrderEntry SelectLanguage={selectedLang} />,

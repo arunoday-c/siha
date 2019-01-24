@@ -153,7 +153,9 @@ class OPBilling extends Component {
 
           let visitDetails = Enumerable.from(data.visitDetails)
             .where(
-              w => w.visit_expiery_date > moment(todayDate).format("YYYY-MM-DD")
+              w =>
+                w.visit_expiery_date > moment(todayDate).format("YYYY-MM-DD") &&
+                w.visit_status === "O"
             )
             .toArray();
           debugger;

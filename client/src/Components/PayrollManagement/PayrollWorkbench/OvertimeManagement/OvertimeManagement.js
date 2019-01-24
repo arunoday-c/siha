@@ -9,10 +9,10 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import AlgaehSearch from "../../../Wrapper/globalSearch";
-import Employee from "../../../../Search/Employee.json";
+
 import moment from "moment";
 
+import { employeeSearch } from "./OvertimeManagementEvent";
 class OvertimeManagement extends Component {
   constructor(props) {
     super(props);
@@ -25,28 +25,6 @@ class OvertimeManagement extends Component {
   dropDownHandler(value) {
     this.setState({
       [value.name]: value.value
-    });
-  }
-
-  employeeSearch() {
-    AlgaehSearch({
-      searchGrid: {
-        columns: Employee
-      },
-      searchName: "employee",
-      uri: "/gloabelSearch/get",
-      onContainsChange: (text, serchBy, callBack) => {
-        callBack(text);
-      },
-      onRowSelect: row => {
-        this.setState(
-          {
-            employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
-          },
-          () => {}
-        );
-      }
     });
   }
 
@@ -83,7 +61,7 @@ class OvertimeManagement extends Component {
                     paddingLeft: 3,
                     cursor: "pointer"
                   }}
-                  onClick={this.employeeSearch.bind(this)}
+                  onClick={employeeSearch.bind(this, this)}
                 />
               </div>
             </div>
@@ -320,8 +298,21 @@ class OvertimeManagement extends Component {
                 <div className="row">
                   {/* <AlagehAutoComplete
                     div={{ className: "col-12 form-group" }}
+<<<<<<< HEAD
+                    label={{ forceLabel: "OT Type", isImp: fals...
+
+
+
+Collapse 
+ This snippet was truncated for display; see it in full
+new messages
+12:45 PM
+Untitled 
+      selector={{
+=======
                     label={{ forceLabel: "OT Type", isImp: false }}
                     selector={{
+>>>>>>> 115f53f9382e5b08b0619aa1001b5012390780ec
                       name: "",
                       className: "select-fld",
                       dataSource: {},

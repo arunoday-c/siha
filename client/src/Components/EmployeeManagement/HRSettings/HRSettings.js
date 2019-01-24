@@ -5,6 +5,7 @@ import EmployeeGroups from "./EmployeeGroups/EmployeeGroups";
 import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";
 import OvertimeGroups from "./OvertimeGroups/OvertimeGroups";
 import LeaveMasterIndex from "./LeaveMasterIndex/LeaveMasterIndex";
+import AuthorizationSetup from "./AuthorizationSetup/AuthorizationSetup";
 
 class HRSettings extends Component {
   constructor(props) {
@@ -85,6 +86,19 @@ class HRSettings extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"AuthorizationSetup"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Authorization Setup"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -97,6 +111,8 @@ class HRSettings extends Component {
             <OvertimeGroups />
           ) : this.state.pageDisplay === "LeaveMasterIndex" ? (
             <LeaveMasterIndex />
+          ) : this.state.pageDisplay === "AuthorizationSetup" ? (
+            <AuthorizationSetup />
           ) : //)
           //   : this.state.pageDisplay === "AppointmentRooms" ? (
           //     <AppointmentRooms />

@@ -89,10 +89,35 @@ process.on("unhandledRejection", (reason, promise) => {
 app.use((error, req, res, next) => {
   error.status =
     error.status || utliites.AlgaehUtilities().httpStatus().internalServer;
+  const errorMessage =
+    error.sqlMessage != null ? error.sqlMessage : error.message;
+  const reqH = req.headers;
+  utliites
+    .AlgaehUtilities()
+    .logger()
+    .log(
+      "Exception",
+      {
+        ...{
+          dateTime: new Date().toLocaleString(),
+          method: req.method,
+          ...(req.method === "GET" ? {} : { body: req.body }),
+          requestUrl: req.originalUrl,
+          requestHeader: {
+            host: reqH.host,
+            "user-agent": reqH["user-agent"],
+            "cache-control": reqH["cache-control"],
+            origin: reqH.origin
+          }
+        },
+        message: errorMessage
+      },
+      "error"
+    );
   res.status(error.status).json({
     success: false,
     isSql: error.sqlMessage != null ? true : false,
-    message: error.sqlMessage != null ? error.sqlMessage : error.message
+    message: errorMessage
   });
 });
 app.server.listen(_port);

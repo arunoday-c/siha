@@ -132,6 +132,8 @@ class LeaveMaster extends Component {
         leave_accrual: this.state.leave_accrual,
         leave_encash: this.state.leave_encash ? "Y" : "N",
         leave_type: this.state.leave_type,
+        leave_category: this.state.leave_category,
+        calculation_type: this.state.calculation_type,
         encashment_percentage: this.state.encashment_percentage,
         leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
         carry_forward_percentage: this.state.carry_forward_percentage,
@@ -192,7 +194,6 @@ class LeaveMaster extends Component {
         });
 
         this.setState({
-          calculation_type: null,
           rule_earning_id: null,
           paytype: null,
           from_value: null,

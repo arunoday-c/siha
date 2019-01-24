@@ -2,7 +2,8 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import {
   getLeaveSalaryProcess,
-  processLeaveSalary
+  processLeaveSalary,
+  InsertLeaveSalary
 } from "../models/leave_salary_process";
 export default () => {
   const api = Router();
@@ -14,6 +15,13 @@ export default () => {
   });
 
   api.get("/processLeaveSalary", processLeaveSalary, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.post("/InsertLeaveSalary", InsertLeaveSalary, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records

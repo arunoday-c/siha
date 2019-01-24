@@ -31,7 +31,7 @@ function LeaveEntitlement(props) {
           }}
         />
         <AlagehFormGroup
-          div={{ className: "col-8  form-group" }}
+          div={{ className: "col-4  form-group" }}
           label={{
             forceLabel: "Description",
             isImp: true
@@ -45,23 +45,9 @@ function LeaveEntitlement(props) {
             }
           }}
         />
-        {/* <AlagehFormGroup
-          div={{ className: "col  form-group" }}
-          label={{
-            forceLabel: "Short Description",
-            isImp: true
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "short_desc",
-            value: myParent.state.short_desc,
-            events: {
-              onChange: e => myParent.textHandler(e)
-            }
-          }}
-        /> */}
+
         <AlagehAutoComplete
-          div={{ className: "col form-group" }}
+          div={{ className: "col-4 form-group" }}
           label={{ forceLabel: "Leave Type", isImp: true }}
           selector={{
             name: "leave_type",
@@ -73,6 +59,30 @@ function LeaveEntitlement(props) {
               data: GlobalVariables.LEAVE_TYPE
             },
             onChange: value => myParent.dropDownHandler(value)
+          }}
+        />
+
+        <AlagehAutoComplete
+          div={{ className: "col form-group" }}
+          label={{
+            forceLabel: "Calculation Type",
+            isImp: true
+          }}
+          selector={{
+            name: "calculation_type",
+            value: myParent.state.calculation_type,
+            className: "select-fld",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: GlobalVariables.LEAVE_CALC_TYPE
+            },
+            onChange: value => myParent.dropDownHandler(value),
+            onClear: () => {
+              myParent.setState({
+                calculation_type: null
+              });
+            }
           }}
         />
         <AlagehAutoComplete
@@ -110,44 +120,19 @@ function LeaveEntitlement(props) {
           div={{ className: "col form-group" }}
           label={{ forceLabel: "Leave Category", isImp: true }}
           selector={{
-            name: "leave_Category",
-
+            name: "leave_category",
+            value: myParent.state.leave_category,
             className: "select-fld",
-            dataSource: {}
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: GlobalVariables.LEAVE_CTGRY
+            },
+            onChange: value => myParent.dropDownHandler(value)
           }}
         />
-
-        {/* 
-        <AlagehAutoComplete
-          div={{ className: "col form-group" }}
-          label={{ forceLabel: "Leave Details", isImp: false }}
-          selector={{
-            name: "",
-            className: "select-fld",
-            dataSource: {},
-            others: {}
-          }}
-        /> */}
       </div>
       <div className="row">
-        {/* <AlagehFormGroup
-          div={{ className: "col form-group" }}
-          label={{
-            forceLabel: "Max Leave Limit",
-            isImp: false
-          }}
-          textBox={{
-            className: "txt-fld",
-            name: "max_number_days",
-            value: myParent.state.max_number_days,
-            events: {
-              onChange: e => myParent.textHandler(e)
-            },
-            option: {
-              type: "number"
-            }
-          }}
-        /> */}
         <div className="col  form-group">
           <label>Is Encashment</label>
           <div className="customCheckbox">

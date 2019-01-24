@@ -844,5 +844,15 @@
   "SWIPE_CARD_TYPE": [
     { "name": "Numeric", "value": "N" },
     { "name": "String", "value": "S" }
+  ],
+  "LEAVE_CTGRY": [
+    { "name": "Other", "value": "O" },
+    { "name": "Annual", "value": "A" },
+    { "name": "Maternity", "value": "M" }
+  ],
+  "LEAVE_CATEGORY": [
+    { "name": "Others", "value": "O" },
+    { "name": "Annual", "value": "A" },
+    { "name": "Maternity", "value": "M" }
   ]
 }
