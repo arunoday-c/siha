@@ -3,15 +3,9 @@ import "./MonthlyAttendance.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
-  AlgaehDateHandler,
-  AlagehFormGroup
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import {
-  algaehApiCall,
-  swalMessage,
-  dateFomater
-} from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
@@ -289,23 +283,6 @@ export default class MonthlyAttendance extends Component {
     return (
       <div className="monthly_attendance">
         <div className="row inner-top-search">
-          {/* <AlgaehDateHandler
-            div={{ className: "col mandatory" }}
-            label={{ forceLabel: "Select Month & Year", isImp: true }}
-            textBox={{
-              className: "txt-fld",
-              name: "yearAndMonth"
-            }}
-            maxDate={new Date()}
-            events={{
-              onChange: this.monthSelectionHandler.bind(this)
-            }}
-            others={{
-              type: "month"
-            }}
-            value={dateFomater(this.state.yearAndMonth)}
-          /> */}
-
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{

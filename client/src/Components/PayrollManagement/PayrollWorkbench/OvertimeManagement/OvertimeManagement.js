@@ -12,6 +12,7 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import moment from "moment";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 class OvertimeManagement extends Component {
   constructor(props) {
@@ -42,9 +43,29 @@ class OvertimeManagement extends Component {
         this.setState(
           {
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            hims_d_employee_id: row.hims_d_employee_id,
+            overtime_group_id: row.overtime_group_id
           },
-          () => {}
+          () => {
+            algaehApiCall({
+              uri: "/employeesetups/getOvertimeGroups",
+              data: {
+                hims_d_overtime_group_id: this.state.overtime_group_id
+              },
+              method: "GET",
+              onSuccess: res => {
+                if (res.data.success) {
+                  //Take Data and do stff here
+                }
+              },
+              onFailure: err => {
+                swalMessage({
+                  title: err.message,
+                  type: "error"
+                });
+              }
+            });
+          }
         );
       }
     });
