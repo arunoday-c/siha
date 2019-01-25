@@ -4,6 +4,8 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
+import OTManagement from "../../../../Models/OTManagement";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -57,22 +59,27 @@ const timetexthandle = ($this, e) => {
     }
   }
 
-  let ot_value = null;
-  let weekoff_value = null;
-  let holiday_value = null;
-
+  let d_ot_hours = null;
+  let d_weekoff_ot_hours = null;
+  let d_holiday_ot_hours = null;
+  let overtime_hours = null;
   if ($this.state.type === "N") {
-    ot_value = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+    d_ot_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+    overtime_hours = d_ot_hours;
   } else if ($this.state.type === "W") {
-    weekoff_value = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+    d_weekoff_ot_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+    overtime_hours = d_weekoff_ot_hours;
   } else if ($this.state.type === "H") {
-    holiday_value = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+    d_holiday_ot_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+    overtime_hours = d_holiday_ot_hours;
   }
+
   $this.setState({
     [name]: value,
-    ot_value: ot_value,
-    weekoff_value: weekoff_value,
-    holiday_value: holiday_value
+    d_ot_hours: d_ot_hours,
+    d_weekoff_ot_hours: d_weekoff_ot_hours,
+    d_holiday_ot_hours: d_holiday_ot_hours,
+    overtime_hours: overtime_hours
   });
 };
 
@@ -90,7 +97,7 @@ const employeeSearch = $this => {
       $this.setState(
         {
           employee_name: row.full_name,
-          hims_d_employee_id: row.hims_d_employee_id,
+          employee_id: row.hims_d_employee_id,
           overtime_group_id: row.overtime_group_id,
           religion_id: row.religion_id,
           monthcalculateBtn: false
@@ -154,16 +161,19 @@ const CalculateAdd = $this => {
   debugger;
 
   if (
-    $this.state.ot_value === null &&
-    $this.state.weekoff_value === null &&
-    $this.state.holiday_value === null
+    $this.state.d_ot_hours === null &&
+    $this.state.d_weekoff_ot_hours === null &&
+    $this.state.d_holiday_ot_hours === null
   ) {
     swalMessage({
       title: "Atlest one OT is required..",
       type: "warning"
     });
   } else {
-    if ($this.state.overtime_type === "D" && $this.state.select_date === null) {
+    if (
+      $this.state.overtime_type === "D" &&
+      $this.state.overtime_date === null
+    ) {
       swalMessage({
         title: "Select the Date..",
         type: "warning"
@@ -188,52 +198,58 @@ const CalculateAdd = $this => {
       let monthlyOverTime = $this.state.monthlyOverTime;
 
       monthlyOverTime.push({
-        select_date: $this.state.select_date,
+        overtime_date:
+          $this.state.overtime_date === null
+            ? null
+            : moment($this.state.overtime_date).format("YYYY-MM-DD"),
         from_time: $this.state.from_time,
         to_time: $this.state.to_time,
+        overtime_hours: $this.state.overtime_hours,
 
-        ot_value:
-          $this.state.ot_value === null
+        ot_hours:
+          $this.state.d_ot_hours === null
             ? 0
-            : parseFloat($this.state.ot_value) * $this.state.ot_calc_value,
-        weekoff_value:
-          $this.state.weekoff_value === null
+            : parseFloat($this.state.d_ot_hours) * $this.state.ot_calc_value,
+        weekoff_ot_hours:
+          $this.state.d_weekoff_ot_hours === null
             ? 0
-            : parseFloat($this.state.weekoff_value) *
+            : parseFloat($this.state.d_weekoff_ot_hours) *
               $this.state.weekoff_calc_value,
-        holiday_value:
-          $this.state.holiday_value === null
+        holiday_ot_hours:
+          $this.state.d_holiday_ot_hours === null
             ? 0
-            : parseFloat($this.state.holiday_value) *
+            : parseFloat($this.state.d_holiday_ot_hours) *
               $this.state.holiday_calc_value
       });
 
-      let ot_value = Enumerable.from(monthlyOverTime).sum(w =>
-        parseFloat(w.ot_value)
+      let d_ot_hours = Enumerable.from(monthlyOverTime).sum(w =>
+        parseFloat(w.ot_hours)
       );
-      let weekoff_value = Enumerable.from(monthlyOverTime).sum(w =>
-        parseFloat(w.weekoff_value)
+      let d_weekoff_ot_hours = Enumerable.from(monthlyOverTime).sum(w =>
+        parseFloat(w.weekoff_ot_hours)
       );
-      let holiday_value = Enumerable.from(monthlyOverTime).sum(w =>
-        parseFloat(w.holiday_value)
+      let d_holiday_ot_hours = Enumerable.from(monthlyOverTime).sum(w =>
+        parseFloat(w.holiday_ot_hours)
       );
 
-      // let total_hours =
-      //   parseFloat(ot_value) +
-      //   parseFloat(weekoff_value) +
-      //   parseFloat(holiday_value);
+      let total_ot_hours =
+        parseFloat(d_ot_hours) +
+        parseFloat(d_weekoff_ot_hours) +
+        parseFloat(d_holiday_ot_hours);
 
       $this.setState({
         monthlyOverTime: monthlyOverTime,
-        ot_value: null,
-        weekoff_value: null,
-        holiday_value: null,
-        total_hours: ot_value,
-        total_holoday: holiday_value,
-        total_weeloff: weekoff_value,
-        select_date: null,
+        d_ot_hours: null,
+        d_weekoff_ot_hours: null,
+        d_holiday_ot_hours: null,
+        ot_hours: d_ot_hours,
+        holiday_ot_hours: d_holiday_ot_hours,
+        weekof_ot_hours: d_weekoff_ot_hours,
+        total_ot_hours: total_ot_hours,
+        overtime_date: null,
         from_time: null,
-        to_time: null
+        to_time: null,
+        saveBtn: false
       });
     }
   }
@@ -241,33 +257,19 @@ const CalculateAdd = $this => {
 
 const clearOtValues = $this => {
   $this.setState({
-    ot_value: null,
-    weekoff_value: null,
-    holiday_value: null,
-    select_date: null,
+    d_ot_hours: null,
+    d_weekoff_ot_hours: null,
+    d_holiday_ot_hours: null,
+    overtime_date: null,
     from_time: null,
     to_time: null
   });
 };
 
 const MianClear = $this => {
-  $this.setState({
-    year: moment().year(),
-    month: moment(new Date()).format("M"),
-    overtime_type: null,
-    ot_calc_value: null,
-    weekoff_calc_value: null,
-    holiday_calc_value: null,
-
-    ot_value: null,
-    weekoff_value: null,
-    holiday_value: null,
-    monthlyOverTime: [],
-    monthcalculateBtn: true,
-    select_date: null,
-    from_time: null,
-    to_time: null
-  });
+  let IOputs = OTManagement.inputParam();
+  IOputs.overtime_type = $this.state.overtime_type;
+  $this.setState(IOputs);
 };
 
 const getHolidayMaster = $this => {
@@ -292,10 +294,10 @@ const getHolidayMaster = $this => {
 
 const datehandle = ($this, ctrl, e) => {
   debugger;
-  let select_date = moment(ctrl).format("YYYY-MM-DD");
+  let overtime_date = moment(ctrl).format("YYYY-MM-DD");
   let type = null;
   let holiday_data = Enumerable.from($this.state.holidays)
-    .where(w => w.holiday_date === select_date)
+    .where(w => w.holiday_date === overtime_date)
     .toArray();
 
   if (holiday_data.length > 0) {
@@ -325,6 +327,45 @@ const DisplayDateFormat = ($this, date) => {
   }
 };
 
+const InsertOTManagement = ($this, e) => {
+  // AlgaehValidation({
+  //   alertTypeIcon: "warning",
+  //   querySelector: "data-validate='processData'",
+  //   onSuccess: () => {
+  AlgaehLoader({ show: true });
+  debugger;
+  let inputObj = $this.state;
+  delete inputObj.holidays;
+  algaehApiCall({
+    uri: "/OTManagement/InsertOTManagement",
+    module: "hrManagement",
+    data: inputObj,
+    method: "POST",
+    onSuccess: response => {
+      if (response.data.success) {
+        $this.setState({
+          saveBtn: true
+        });
+
+        swalMessage({
+          title: "Processed Succefully...",
+          type: "success"
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error"
+      });
+    }
+  });
+  //   }
+  // });
+};
+
 export {
   texthandle,
   employeeSearch,
@@ -336,5 +377,6 @@ export {
   getHolidayMaster,
   datehandle,
   timetexthandle,
-  DisplayDateFormat
+  DisplayDateFormat,
+  InsertOTManagement
 };
