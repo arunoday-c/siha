@@ -423,6 +423,35 @@ let getTimeSheet = (req, res, next) => {
         // let worked_hours = hours + "." + minutes;
         // debugLog("worked_hours:", worked_hours);
         // }
+        const syscCall = async function(attDate, religion_id) {
+          debugLog("am in synchronous");
+          return await new Promise((resolve, reject) => {
+            try {
+              connection.query(
+                " select * from hims_f_leave_application where employee_id=? and cancelled='N'\
+                and (`status`='APR' or `status`='PRO') and date(?) \
+                between date(from_date) and date(to_date);\
+                select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday\
+                from hims_d_holiday where (((date(holiday_date)= date(?) and weekoff='Y') or \
+                (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RE') or\
+                (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RS' and religion_id=?))); ",
+                [1, attDate, attDate, attDate, attDate, religion_id],
+                (error, leaveHoliday) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  resolve(leaveHoliday);
+                }
+              );
+            } catch (e) {
+              reject(e);
+            }
+          });
+        };
 
         connection.query(
           "select hims_d_hrms_options_id,salary_process_date,salary_pay_before_end_date,\
@@ -467,19 +496,16 @@ let getTimeSheet = (req, res, next) => {
                   // create Request object
                   var request = new sql.Request();
                   let from_date = moment("2017-05-01").format("YYYY-MM-DD");
-                  let to_date = moment("2017-05-31").format("YYYY-MM-DD");
+                  let to_date = moment("2017-07-31").format("YYYY-MM-DD");
 
-                  // " select  TOP (100) UserID as employee_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
-                  //             Punch2 as out_date   from Mx_DATDTrn  where UserID=101 and PDate>='"+from_date+"' and\
-                  //             PDate<='"+to_date+"'"
-                  let biometric_id = 101;
+                  let biometric_id = [101, 106, 108];
 
                   debugLog("from_date:", from_date);
                   debugLog("to_date:", to_date);
                   // query to the database and get the records
                   request.query(
                     ` select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
-            Punch2 as out_date   from Mx_DATDTrn  where UserID='${biometric_id}' and PDate>='${from_date}'  and\
+            Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
             PDate<='${to_date}'`,
                     function(err, attResult) {
                       if (err) {
@@ -500,174 +526,142 @@ let getTimeSheet = (req, res, next) => {
                       if (timeSheetArray.length > 0) {
                         new Promise((resolve, reject) => {
                           try {
-                            for (let i = 0; i < timeSheetArray.length; i++) {
-                              if (
-                                timeSheetArray[i]["in_time"] != null &&
-                                timeSheetArray[i]["out_time"] != null
-                              ) {
-                                let startTime = moment(
-                                  timeSheetArray[i]["in_time"],
-                                  "hh:mm:ss"
-                                );
-                                let endTime = moment(
-                                  timeSheetArray[i]["out_time"],
-                                  "hh:mm:ss"
-                                );
-                                let workMinutes = endTime.diff(
-                                  startTime,
-                                  "minutes"
-                                );
+                            const forloop = async function() {
+                              for (let i = 0; i < timeSheetArray.length; i++) {
+                                if (
+                                  timeSheetArray[i]["in_time"] != null &&
+                                  timeSheetArray[i]["out_time"] != null
+                                ) {
+                                  let startTime = moment(
+                                    timeSheetArray[i]["in_time"],
+                                    "hh:mm:ss"
+                                  );
+                                  let endTime = moment(
+                                    timeSheetArray[i]["out_time"],
+                                    "hh:mm:ss"
+                                  );
+                                  let workMinutes = endTime.diff(
+                                    startTime,
+                                    "minutes"
+                                  );
 
-                                debugLog("workMinutes:", workMinutes);
+                                  debugLog("workMinutes:", workMinutes);
 
-                                let hours = parseInt(
-                                  parseFloat(workMinutes) / parseFloat(60)
-                                );
-                                hours = hours > 0 ? hours : "0";
-                                debugLog("hours:", hours);
+                                  let hours = parseInt(
+                                    parseFloat(workMinutes) / parseFloat(60)
+                                  );
+                                  hours = hours > 0 ? hours : "0";
+                                  debugLog("hours:", hours);
 
-                                let minutes =
-                                  parseFloat(workMinutes) % parseFloat(60);
-                                debugLog("minutes:", minutes);
+                                  let minutes =
+                                    parseFloat(workMinutes) % parseFloat(60);
+                                  debugLog("minutes:", minutes);
 
-                                // let worked_hours = hours + "." + minutes;
+                                  // let worked_hours = hours + "." + minutes;
 
-                                let worked_hours = "";
-                                if (minutes < 10) {
-                                  worked_hours = hours + ".0" + minutes;
-                                } else {
-                                  worked_hours = hours + "." + minutes;
-                                }
-                                debugLog("worked_hours:", worked_hours);
-
-                                timeSheetArray[i] = {
-                                  ...timeSheetArray[i],
-                                  hours: hours,
-                                  minutes: minutes,
-                                  worked_hours: worked_hours,
-                                  status: "PR"
-                                };
-                              } else if (
-                                timeSheetArray[i]["in_time"] == null &&
-                                timeSheetArray[i]["out_time"] == null
-                              ) {
-                                //check leave
-                                debugLog("he did not come");
-                                // select * from hims_f_leave_application where employee_id=1 and cancelled='N'
-                                // and (`status`='APR' or `status`='PRO') and date('2019-02-05')
-                                // between date(from_date) and date(to_date);
-
-                                //week off
-
-                                //    select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday
-                                // from hims_d_holiday where (((date(holiday_date)= date('2019-01-05') and weekoff='Y') or
-                                // (date(holiday_date)=date('2019-01-05') and holiday='Y' and holiday_type='RE') or
-                                // (date(holiday_date)=date('2019-01-05') and holiday='Y' and holiday_type='RS' and religion_id=1)))
-                                //holiday
-                                //absent
-                                new Promise((resolve, reject) => {
-                                  try {
-                                    connection.query(
-                                      " select * from hims_f_leave_application where employee_id=1 and cancelled='N'\
-                                      and (`status`='APR' or `status`='PRO') and date(?) \
-                                      between date(from_date) and date(to_date);\
-                                      select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday\
-                                      from hims_d_holiday where (((date(holiday_date)= date(?) and weekoff='Y') or \
-                                      (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RE') or\
-                                      (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RS' and religion_id=?))); ",
-                                      [
-                                        timeSheetArray[i]["attendance_date"],
-                                        timeSheetArray[i]["attendance_date"],
-                                        timeSheetArray[i]["attendance_date"],
-                                        timeSheetArray[i]["attendance_date"],
-                                        1
-                                      ],
-                                      (error, leaveHoliday) => {
-                                        if (error) {
-                                          connection.rollback(() => {
-                                            releaseDBConnection(db, connection);
-                                            next(error);
-                                          });
-                                        }
-
-                                        debugLog("leave:", leaveHoliday[0]);
-                                        debugLog("leave:", leaveHoliday[1]);
-                                        resolve(leaveHoliday);
-                                      }
-                                    );
-                                  } catch (e) {
-                                    reject(e);
-                                  }
-                                }).then(leaveHoliday => {
-                                  if (leaveHoliday[0].length > 0) {
-                                    //its a leave
-                                    debugLog("leave");
-                                    timeSheetArray[i] = {
-                                      ...timeSheetArray[i],
-                                      hours: null,
-                                      minutes: null,
-                                      worked_hours: null,
-                                      status: "LV"
-                                    };
-                                  } else if (leaveHoliday[1].length > 0) {
-                                    if (leaveHoliday[1][0]["weekoff"] == "Y") {
-                                      // its a week off
-                                      debugLog("week off");
-                                      timeSheetArray[i] = {
-                                        ...timeSheetArray[i],
-                                        hours: null,
-                                        minutes: null,
-                                        worked_hours: null,
-                                        status: "WO"
-                                      };
-                                    } else if (
-                                      leaveHoliday[1][0]["holiday"] == "Y"
-                                    ) {
-                                      // its a holiday
-                                      debugLog("holiday");
-                                      timeSheetArray[i] = {
-                                        ...timeSheetArray[i],
-                                        hours: null,
-                                        minutes: null,
-                                        worked_hours: null,
-                                        status: "HO"
-                                      };
-                                    }
+                                  let worked_hours = "";
+                                  if (minutes < 10) {
+                                    worked_hours = hours + ".0" + minutes;
                                   } else {
-                                    //its Absent
-                                    debugLog("absent");
-                                    timeSheetArray[i] = {
-                                      ...timeSheetArray[i],
-                                      hours: null,
-                                      minutes: null,
-                                      worked_hours: null,
-                                      status: "AB"
-                                    };
+                                    worked_hours = hours + "." + minutes;
                                   }
-                                });
-                              } else if (
-                                (timeSheetArray[i]["in_time"] == null &&
-                                  timeSheetArray[i]["out_time"] != null) ||
-                                (timeSheetArray[i]["in_time"] != null &&
-                                  timeSheetArray[i]["out_time"] == null)
-                              ) {
-                                timeSheetArray[i] = {
-                                  ...timeSheetArray[i],
-                                  hours: null,
-                                  minutes: null,
-                                  worked_hours: null,
-                                  status: "EX"
-                                };
+                                  debugLog("worked_hours:", worked_hours);
 
-                                debugLog("exwcption:", timeSheetArray);
+                                  timeSheetArray[i] = {
+                                    ...timeSheetArray[i],
+                                    hours: hours,
+                                    minutes: minutes,
+                                    worked_hours: worked_hours,
+                                    status: "PR"
+                                  };
+                                } else if (
+                                  timeSheetArray[i]["in_time"] == null &&
+                                  timeSheetArray[i]["out_time"] == null
+                                ) {
+                                  //check leave
+                                  debugLog("he did not come");
+
+                                  //--------------START OF WEEK HOLIDAY
+                                  syscCall(
+                                    timeSheetArray[i]["attendance_date"],
+                                    1
+                                  )
+                                    .then(leaveHoliday => {
+                                      debugLog("am in result of out quey");
+                                      if (leaveHoliday[0].length > 0) {
+                                        //its a leave
+
+                                        timeSheetArray[i] = {
+                                          ...timeSheetArray[i],
+                                          hours: null,
+                                          minutes: null,
+                                          worked_hours: null,
+                                          status: "LV"
+                                        };
+                                      } else if (leaveHoliday[1].length > 0) {
+                                        if (
+                                          leaveHoliday[1][0]["weekoff"] == "Y"
+                                        ) {
+                                          // its a week off
+                                          debugLog("week off");
+                                          timeSheetArray[i] = {
+                                            ...timeSheetArray[i],
+                                            hours: null,
+                                            minutes: null,
+                                            worked_hours: null,
+                                            status: "WO"
+                                          };
+                                        } else if (
+                                          leaveHoliday[1][0]["holiday"] == "Y"
+                                        ) {
+                                          // its a holiday
+                                          debugLog("holiday");
+                                          timeSheetArray[i] = {
+                                            ...timeSheetArray[i],
+                                            hours: null,
+                                            minutes: null,
+                                            worked_hours: null,
+                                            status: "HO"
+                                          };
+                                        }
+                                      } else {
+                                        //its Absent
+                                        debugLog("absent");
+                                        timeSheetArray[i] = {
+                                          ...timeSheetArray[i],
+                                          hours: null,
+                                          minutes: null,
+                                          worked_hours: null,
+                                          status: "AB"
+                                        };
+                                      }
+                                    })
+                                    .catch(e => {});
+                                  //---------END OF HOLIDAY WEEK OFF
+                                } else if (
+                                  (timeSheetArray[i]["in_time"] == null &&
+                                    timeSheetArray[i]["out_time"] != null) ||
+                                  (timeSheetArray[i]["in_time"] != null &&
+                                    timeSheetArray[i]["out_time"] == null)
+                                ) {
+                                  timeSheetArray[i] = {
+                                    ...timeSheetArray[i],
+                                    hours: null,
+                                    minutes: null,
+                                    worked_hours: null,
+                                    status: "EX"
+                                  };
+
+                                  debugLog("exwcption:", timeSheetArray);
+                                }
+
+                                if (i == timeSheetArray.length - 1) {
+                                  debugLog("am resolving");
+                                  resolve(timeSheetArray);
+                                }
                               }
-
-                              if (i == timeSheetArray.length - 1) {
-                                debugLog("am resolving");
-                                resolve(timeSheetArray);
-                              }
-                            }
-
+                            };
+                            forloop();
                             // resolve(timeSheetArray);
 
                             debugLog("timeSheetArray:", timeSheetArray);
@@ -754,11 +748,52 @@ let getTimeSheet = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:
+let getDailyTimeSheet = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    let biometric_id = "";
+
+    if (req.query.biometric_id > 0) {
+      biometric_id = ` and TS.biometric_id=${req.query.biometric_id} `;
+    }
+    db.getConnection((error, connection) => {
+      connection.query(
+        " select hims_f_daily_time_sheet_id, employee_id,TS.biometric_id, attendance_date, \
+        in_time, out_date, out_time, year, month, status,\
+         posted, hours, minutes, actual_hours, actual_minutes, worked_hours,\
+         expected_out_date, expected_out_time ,hims_d_employee_id,employee_code,full_name as employee_name\
+         from  hims_f_daily_time_sheet TS \
+        left join hims_d_employee E on TS.biometric_id=E.biometric_id\
+        where attendance_date between (?) and (?)" +
+          biometric_id,
+        [req.query.from_date, req.query.to_date],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addWeekOffs,
   getAllHolidays,
   addHoliday,
   deleteHoliday,
   getMSDb,
-  getTimeSheet
+  getTimeSheet,
+  getDailyTimeSheet
 };
