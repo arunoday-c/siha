@@ -227,7 +227,7 @@ class OvertimeGroups extends Component {
 
   render() {
     return (
-      <div className="overtime_groups">
+      <div className="overtime_groups margin-top-15">
         <div className="row">
           <div className="col-4">
             <div className="portlet portlet-bordered margin-bottom-15">
