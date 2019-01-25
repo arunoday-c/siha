@@ -43,7 +43,7 @@ export default class AuthorizationSetup extends Component {
                   value="SelectedAuth"
                   name="selectEmployeeAuth"
                 />
-                <span>Selected Employee</span>
+                <span>Selected a Employee</span>
               </label>
             </div>
           </div>
@@ -265,18 +265,46 @@ export default class AuthorizationSetup extends Component {
                   </div>
                   {/* Select EMployee ENd here Here */}
                   <div className="col-12 margin-top-15">
-                    <button
-                      className="btn btn-primary"
-                      style={{ float: "right", marginLeft: 5 }}
-                    >
-                      Add
-                    </button>
-                    <button
-                      className="btn btn-default"
-                      style={{ float: "right", marginLeft: 5 }}
-                    >
-                      Clear
-                    </button>
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Selected Authorization Type"
+                          }}
+                        />
+                        <h6>--------</h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Selected Department"
+                          }}
+                        />
+                        <h6>--------</h6>
+                      </div>
+                      <div className="col">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Selected Employee"
+                          }}
+                        />
+                        <h6>--------</h6>
+                      </div>
+                      <div className="col margin-top-15">
+                        <button
+                          className="btn btn-primary"
+                          style={{ float: "right", marginLeft: 5 }}
+                        >
+                          Add
+                        </button>
+                        <button
+                          className="btn btn-default"
+                          style={{ float: "right", marginLeft: 5 }}
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
