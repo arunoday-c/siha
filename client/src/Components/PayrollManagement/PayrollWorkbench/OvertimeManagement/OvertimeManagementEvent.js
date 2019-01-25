@@ -3,7 +3,7 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
-import { sendDataToProcessId } from "pm2";
+import Options from "../../../../Options.json";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -22,13 +22,16 @@ const timetexthandle = ($this, e) => {
   let diff_munite = null;
 
   if (name === "from_time") {
-    if ($this.state.from_time !== null) {
+    if ($this.state.to_time !== null) {
       //   diff_time = $this.state.from_time - $this.state.to_time;
-      diff_hour = $this.state.to_time.diff($this.state.from_time, "hours");
+      diff_hour = moment($this.state.to_time, "HH").diff(
+        moment(value, "HH"),
+        "hours"
+      );
       diff_munite = moment
         .utc(
           moment($this.state.to_time, "HH:mm:ss").diff(
-            moment($this.state.from_time, "HH:mm:ss")
+            moment(value, "HH:mm:ss")
           )
         )
         .format("mm");
@@ -40,18 +43,36 @@ const timetexthandle = ($this, e) => {
         type: "warning"
       });
     } else {
-      diff_hour = $this.state.to_time.diff($this.state.from_time, "hours");
+      diff_hour = moment(value, "HH").diff(
+        moment($this.state.from_time, "HH"),
+        "hours"
+      );
       diff_munite = moment
         .utc(
-          moment($this.state.to_time, "HH:mm:ss").diff(
+          moment(value, "HH:mm:ss").diff(
             moment($this.state.from_time, "HH:mm:ss")
           )
         )
         .format("mm");
     }
   }
+
+  let ot_value = null;
+  let weekoff_value = null;
+  let holiday_value = null;
+
+  if ($this.state.type === "N") {
+    ot_value = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+  } else if ($this.state.type === "W") {
+    weekoff_value = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+  } else if ($this.state.type === "H") {
+    holiday_value = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+  }
   $this.setState({
-    [name]: value
+    [name]: value,
+    ot_value: ot_value,
+    weekoff_value: weekoff_value,
+    holiday_value: holiday_value
   });
 };
 
@@ -167,11 +188,24 @@ const CalculateAdd = $this => {
       let monthlyOverTime = $this.state.monthlyOverTime;
 
       monthlyOverTime.push({
-        ot_value: $this.state.ot_value * $this.state.ot_calc_value,
+        select_date: $this.state.select_date,
+        from_time: $this.state.from_time,
+        to_time: $this.state.to_time,
+
+        ot_value:
+          $this.state.ot_value === null
+            ? 0
+            : parseFloat($this.state.ot_value) * $this.state.ot_calc_value,
         weekoff_value:
-          $this.state.weekoff_value * $this.state.weekoff_calc_value,
+          $this.state.weekoff_value === null
+            ? 0
+            : parseFloat($this.state.weekoff_value) *
+              $this.state.weekoff_calc_value,
         holiday_value:
-          $this.state.holiday_value * $this.state.holiday_calc_value
+          $this.state.holiday_value === null
+            ? 0
+            : parseFloat($this.state.holiday_value) *
+              $this.state.holiday_calc_value
       });
 
       let ot_value = Enumerable.from(monthlyOverTime).sum(w =>
@@ -196,7 +230,10 @@ const CalculateAdd = $this => {
         holiday_value: null,
         total_hours: ot_value,
         total_holoday: holiday_value,
-        total_weeloff: weekoff_value
+        total_weeloff: weekoff_value,
+        select_date: null,
+        from_time: null,
+        to_time: null
       });
     }
   }
@@ -206,7 +243,10 @@ const clearOtValues = $this => {
   $this.setState({
     ot_value: null,
     weekoff_value: null,
-    holiday_value: null
+    holiday_value: null,
+    select_date: null,
+    from_time: null,
+    to_time: null
   });
 };
 
@@ -223,7 +263,10 @@ const MianClear = $this => {
     weekoff_value: null,
     holiday_value: null,
     monthlyOverTime: [],
-    monthcalculateBtn: true
+    monthcalculateBtn: true,
+    select_date: null,
+    from_time: null,
+    to_time: null
   });
 };
 
@@ -276,6 +319,12 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 
+const DisplayDateFormat = ($this, date) => {
+  if (date != null) {
+    return moment(date).format(Options.dateFormat);
+  }
+};
+
 export {
   texthandle,
   employeeSearch,
@@ -286,5 +335,6 @@ export {
   getOvertimeGroups,
   getHolidayMaster,
   datehandle,
-  timetexthandle
+  timetexthandle,
+  DisplayDateFormat
 };

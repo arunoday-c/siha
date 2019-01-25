@@ -46,7 +46,8 @@ module.exports = {
         query:
           "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, A.sub_department_id, \
           A.total_days,A.present_days, A.absent_days, A.total_work_days, A.total_weekoff_days,\
-          A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,E.employee_code,E.gross_salary \
+          A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,A.ot_work_hours,\
+          A.ot_weekoff_hours,A.ot_holiday_hours, E.employee_code,E.gross_salary \
           from hims_f_attendance_monthly A,hims_d_employee E where `year`=? and `month`=? and A.hospital_id=? \
           and E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id " +
           _stringData,
@@ -125,7 +126,7 @@ module.exports = {
                 .executeQuery({
                   query:
                     "select hims_d_employee_earnings_id,employee_id,earnings_id,amount,EE.formula,allocate,\
-                    EE.calculation_method,EE.calculation_type,ED.component_frequency\
+                    EE.calculation_method,EE.calculation_type,ED.component_frequency,ED.overtime_applicable\
                     from hims_d_employee_earnings EE inner join hims_d_earning_deduction ED\
                     on EE.earnings_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
                     where ED.component_frequency='M' and ED.component_category='E' and EE.employee_id in (?);\
@@ -151,6 +152,8 @@ module.exports = {
                     loan_application_date, approved_amount\
                     from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
                   select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='AD';\
+                  select hims_d_hrms_options_id,standard_working_hours,standard_break_hours from hims_d_hrms_options;\
+                  select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
                   delete from hims_f_salary_contributions where salary_header_id in (?);\
                   delete from hims_f_salary_loans where salary_header_id in (?);\
                   delete from hims_f_salary_deductions where salary_header_id in (?);\
@@ -208,7 +211,9 @@ module.exports = {
                       empResult: empResult[i],
                       leave_salary: req.query.leave_salary,
                       _mysql: _mysql,
-                      input: input
+                      input: input,
+                      hrms_option: results[8],
+                      over_time_comp: results[9]
                     })
                       .then(earningOutput => {
                         utilities
@@ -220,6 +225,10 @@ module.exports = {
                           earningOutput.current_earning_amt_array;
                         final_earning_amount =
                           earningOutput.final_earning_amount;
+
+                        const _deduction = _.filter(results[1], f => {
+                          return f.employee_id == empResult[i]["employee_id"];
+                        });
 
                         getDeductionComponents({
                           deduction: _deduction,
@@ -1247,11 +1256,25 @@ function getEarningComponents(options) {
     const _earnings = options.earnings;
     const empResult = options.empResult;
     const leave_salary = options.leave_salary;
+    const hrms_option = options.hrms_option;
+    const over_time_comp = options.over_time_comp;
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("over_time_comp:", over_time_comp[0].hims_d_earning_deduction_id);
+
     let final_earning_amount = 0;
     let current_earning_amt_array = [];
     let current_earning_amt = 0;
     let current_earning_per_day_salary = 0;
     let leave_salary_days = 0;
+    let ot_hours =
+      parseFloat(empResult["ot_work_hours"]) +
+      parseFloat(empResult["ot_weekoff_hours"]) +
+      parseFloat(empResult["ot_holiday_hours"]);
+    let Noof_Working_Hours =
+      parseFloat(hrms_option[0].standard_working_hours) -
+      parseFloat(hrms_option[0].standard_break_hours);
 
     if (_earnings.length == 0) {
       resolve({ current_earning_amt_array, final_earning_amount });
@@ -1285,6 +1308,28 @@ function getEarningComponents(options) {
           amount: current_earning_amt,
           per_day_salary: current_earning_per_day_salary
         });
+
+        // //OT Calculation
+        // if (
+        //   obj["overtime_applicable"] == "Y" &&
+        //   ot_hours != 0 &&
+        //   leave_salary != "Y"
+        // ) {
+        //   let per_hour_salary =
+        //     current_earning_per_day_salary / Noof_Working_Hours;
+
+        //   per_hour_salary = per_hour_salary * ot_hours;
+
+        //   utilities
+        //     .AlgaehUtilities()
+        //     .logger()
+        //     .log("per_hour_salary: ", per_hour_salary);
+
+        //   current_earning_amt_array.push({
+        //     earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
+        //     amount: per_hour_salary
+        //   });
+        // }
       } else if (obj["calculation_type"] == "V") {
         if (leave_salary == null || leave_salary == undefined) {
           current_earning_per_day_salary = parseFloat(
@@ -1311,47 +1356,91 @@ function getEarningComponents(options) {
 
         //Apply Leave Rule
 
-        if (leave_salary != "Y") {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("Apply Leave Rule: ", "Apply Leave Rule");
-          applyLeaveRule({
-            current_earning_amt: current_earning_amt,
-            _mysql: options._mysql,
-            empResult: empResult,
-            input: options.input,
-            earnings_id: obj.earnings_id
-          }).then(leaveRule => {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("leaveRule: ", leaveRule);
-            current_earning_amt_array.push({
-              earnings_id: obj.earnings_id,
-              amount: leaveRule.current_earning_amt,
-              per_day_salary: current_earning_per_day_salary
-            });
-          });
-        } else {
-          current_earning_amt_array.push({
-            earnings_id: obj.earnings_id,
-            amount: current_earning_amt,
-            per_day_salary: current_earning_per_day_salary
-          });
-        }
+        // if (leave_salary != "Y") {
+        //   utilities
+        //     .AlgaehUtilities()
+        //     .logger()
+        //     .log("Apply Leave Rule: ", "Apply Leave Rule");
+        //   applyLeaveRule({
+        //     current_earning_amt: current_earning_amt,
+        //     _mysql: options._mysql,
+        //     empResult: empResult,
+        //     input: options.input,
+        //     earnings_id: obj.earnings_id
+        //   }).then(leaveRule => {
+        //     utilities
+        //       .AlgaehUtilities()
+        //       .logger()
+        //       .log("leaveRule: ", leaveRule);
+        //     current_earning_amt_array.push({
+        //       earnings_id: obj.earnings_id,
+        //       amount: leaveRule.current_earning_amt,
+        //       per_day_salary: current_earning_per_day_salary
+        //     });
+        //   });
+        // } else {
+        //   current_earning_amt_array.push({
+        //     earnings_id: obj.earnings_id,
+        //     amount: current_earning_amt,
+        //     per_day_salary: current_earning_per_day_salary
+        //   });
+        // }
 
         utilities
           .AlgaehUtilities()
           .logger()
           .log("current_earning_amt_array: ", current_earning_amt_array);
 
-        // current_earning_amt_array.push({
-        //   earnings_id: obj.earnings_id,
-        //   amount: current_earning_amt,
-        //   per_day_salary: current_earning_per_day_salary
-        // });
+        current_earning_amt_array.push({
+          earnings_id: obj.earnings_id,
+          amount: current_earning_amt,
+          per_day_salary: current_earning_per_day_salary
+        });
+
+        // //OT Calculation
+        // if (
+        //   obj["overtime_applicable"] == "Y" &&
+        //   ot_hours != 0 &&
+        //   leave_salary != "Y"
+        // ) {
+        //   let per_hour_salary =
+        //     current_earning_per_day_salary / Noof_Working_Hours;
+
+        //   per_hour_salary = per_hour_salary * ot_hours;
+
+        //   utilities
+        //     .AlgaehUtilities()
+        //     .logger()
+        //     .log("per_hour_salary: ", per_hour_salary);
+
+        //   current_earning_amt_array.push({
+        //     earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
+        //     amount: per_hour_salary
+        //   });
+        // }
       }
+
+      //OT
+      // if (
+      //   obj["overtime_applicable"] == "Y" &&
+      //   ot_hours != 0 &&
+      //   leave_salary != "Y"
+      // ) {
+      //   let per_hour_salary =
+      //     current_earning_amt_array[0].current_earning_amt / Noof_Working_Hours;
+
+      //   per_hour_salary = per_hour_salary * ot_hours;
+
+      //   utilities
+      //     .AlgaehUtilities()
+      //     .logger()
+      //     .log("per_hour_salary: ", per_hour_salary);
+
+      //   current_earning_amt_array.push({
+      //     earnings_id: over_time_comp[0].earnings_id,
+      //     amount: per_hour_salary
+      //   });
+      // }
     });
     utilities
       .AlgaehUtilities()

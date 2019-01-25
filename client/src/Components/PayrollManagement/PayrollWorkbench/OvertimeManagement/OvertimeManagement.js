@@ -21,7 +21,8 @@ import {
   getOvertimeGroups,
   getHolidayMaster,
   datehandle,
-  timetexthandle
+  timetexthandle,
+  DisplayDateFormat
 } from "./OvertimeManagementEvent";
 class OvertimeManagement extends Component {
   constructor(props) {
@@ -366,7 +367,7 @@ class OvertimeManagement extends Component {
                           className: "txt-fld",
                           name: "from_time",
                           value: this.state.from_time,
-                          // events: { onChange: timetexthandle.bind(this, this) },
+                          events: { onChange: timetexthandle.bind(this, this) },
                           others: {
                             type: "time"
                           }
@@ -382,7 +383,7 @@ class OvertimeManagement extends Component {
                           className: "txt-fld",
                           name: "to_time",
                           value: this.state.to_time,
-                          // events: { onChange: timetexthandle.bind(this, this) },
+                          events: { onChange: timetexthandle.bind(this, this) },
                           others: {
                             type: "time"
                           }
@@ -520,15 +521,27 @@ class OvertimeManagement extends Component {
                           datavalidate="OverTimeMgmntDailyGrid"
                           columns={[
                             {
-                              fieldName: "SelectedDate",
+                              fieldName: "select_date",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Selected Date" }}
                                 />
-                              )
+                              ),
+
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    {DisplayDateFormat(
+                                      this,
+                                      this,
+                                      row.select_date
+                                    )}
+                                  </span>
+                                );
+                              }
                             },
                             {
-                              fieldName: "FromTime",
+                              fieldName: "from_time",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "From Time" }}
@@ -536,7 +549,7 @@ class OvertimeManagement extends Component {
                               )
                             },
                             {
-                              fieldName: "ToTime",
+                              fieldName: "to_time",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "To Time" }}
@@ -544,7 +557,7 @@ class OvertimeManagement extends Component {
                               )
                             },
                             {
-                              fieldName: "Working Day OT",
+                              fieldName: "ot_value",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "OT Hours" }}
@@ -552,7 +565,7 @@ class OvertimeManagement extends Component {
                               )
                             },
                             {
-                              fieldName: "WeekOffOT",
+                              fieldName: "weekoff_value",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Week Off OT" }}
@@ -560,7 +573,7 @@ class OvertimeManagement extends Component {
                               )
                             },
                             {
-                              fieldName: "Holiday OT",
+                              fieldName: "holiday_value",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Holiday OT" }}
@@ -569,7 +582,7 @@ class OvertimeManagement extends Component {
                             }
                           ]}
                           keyId=""
-                          dataSource={{ data: [] }}
+                          dataSource={{ data: this.state.monthlyOverTime }}
                           isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{}}
