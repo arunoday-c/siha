@@ -160,7 +160,6 @@ module.exports = {
         req.query.employee_id = req.query.hims_d_employee_id;
 
         const syscCall = async function() {
-          // while (start_date <= end_date) {
           while (start_date <= end_date) {
             try {
               let fromDate_lastDate = null;
@@ -195,40 +194,40 @@ module.exports = {
                 .log("req.query:", req.query);
 
               req.mySQl = _mysql;
-              // processAttendance(req, res, next);
-              console.log("before process");
-              await processAttendance(req, res, next);
-              console.log("after process");
-              // yield;
-              console.log("before salary process");
-              await processSalary(req, res, next);
-              console.log("after salary process");
-              // yield;
 
-              fromDate_lastDate = moment(start_date)
-                .endOf("month")
-                .format("YYYY-MM-DD");
+              let _attandance = await processAttendance(req, res, next);
 
-              start_date = moment(fromDate_lastDate)
-                .add(1, "days")
-                .format("YYYY-MM-DD");
+              req.mySQl = _mysql;
+              let _sarary = await processSalary(req, res, next);
+
+              Promise.all([_attandance, _sarary]).then(rse => {
+                fromDate_lastDate = moment(start_date)
+                  .endOf("month")
+                  .format("YYYY-MM-DD");
+
+                start_date = moment(fromDate_lastDate)
+                  .add(1, "days")
+                  .format("YYYY-MM-DD");
+              });
             } catch (e) {
-              console.log("error", e);
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
             }
           }
+
+          _mysql.commitTransaction((error, result) => {
+            if (error) {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            } else {
+              req.records = "Done successfully";
+              next();
+            }
+          });
         };
         syscCall();
-        // const resl = syscCall();
-        // resl.next();
-        // console.log("Inside while", resl);
-        // resl.next();
-        console.log("before commit", resl);
-        _mysql.commitTransaction(() => {
-          _mysql.releaseConnection();
-          req.records = {};
-          next();
-        });
-        // resl.next();
       })
       .catch(e => {
         _mysql.rollBackTransaction(() => {
