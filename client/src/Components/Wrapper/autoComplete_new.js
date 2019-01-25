@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import Label from "./label";
 import "../Wrapper/autoComplete.css";
 import Enumarable from "linq";
-import Select from "react-select";
 import { checkSecurity } from "../../utils/GlobalFunctions";
 
 class AutoComplete extends PureComponent {
@@ -28,19 +27,7 @@ class AutoComplete extends PureComponent {
   }
 
   render() {
-    return (
-      <Select
-        className="basic-single"
-        classNamePrefix="select"
-        defaultValue={this.state._sortData[0]}
-        isLoading={true}
-        isClearable={true}
-        isRtl={true}
-        isSearchable={true}
-        name="color"
-        options={this.state._sortData}
-      />
-    );
+    return <h1 />;
   }
 }
 export default AutoComplete;
