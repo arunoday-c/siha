@@ -106,13 +106,8 @@ let getTimeSheet = (req, res, next) => {
                   let from_date = moment("2017-05-01").format("YYYY-MM-DD");
                   let to_date = moment("2017-07-31").format("YYYY-MM-DD");
 
-                  // " select  TOP (100) UserID as employee_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
-                  //             Punch2 as out_date   from Mx_DATDTrn  where UserID=101 and PDate>='"+from_date+"' and\
-                  //             PDate<='"+to_date+"'"
                   let biometric_id = [101, 106, 108];
 
-                  debugLog("from_date:", from_date);
-                  debugLog("to_date:", to_date);
                   // query to the database and get the records
                   request.query(
                     ` select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
@@ -123,8 +118,6 @@ let getTimeSheet = (req, res, next) => {
                         debugLog("query error");
                         next(err);
                       }
-
-                      debugLog("attResult:", attResult);
 
                       timeSheetArray = attResult["recordset"];
                       sql.close();
