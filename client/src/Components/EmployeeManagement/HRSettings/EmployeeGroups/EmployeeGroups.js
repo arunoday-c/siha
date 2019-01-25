@@ -178,7 +178,7 @@ class EmployeeGroups extends Component {
 
   render() {
     return (
-      <div className="employee_groups">
+      <div className="employee_groups margin-top-15">
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup

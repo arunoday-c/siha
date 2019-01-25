@@ -82,7 +82,7 @@ export default class LeaveMasterIndex extends Component {
 
   render() {
     return (
-      <div className="row leave_master_index">
+      <div className="row leave_master_index margin-top-15">
         <LeaveMaster
           open={this.state.open}
           onClose={this.closeModal.bind(this)}
