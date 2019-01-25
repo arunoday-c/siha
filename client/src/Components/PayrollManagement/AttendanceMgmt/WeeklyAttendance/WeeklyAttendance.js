@@ -23,15 +23,23 @@ export default class WeeklyAttendance extends Component {
 
   componentDidMount() {
     this.getWeeks();
-    this.getFirstWeek();
   }
 
-  getFirstWeek() {
-    let daysOfMonth = moment(
-      new Date(this.state.year + "-" + this.state.month + "-02")
-    ).weekday();
-
-    console.log("SFSADFASd", daysOfMonth);
+  clearState() {
+    this.setState(
+      {
+        hims_d_employee_id: "ALL",
+        employee_name: null,
+        biometric_id: null,
+        year: moment().year(),
+        month: moment(new Date()).format("M"),
+        weeks: [],
+        week: 0
+      },
+      () => {
+        this.getWeeks();
+      }
+    );
   }
 
   getWeeks() {
@@ -68,7 +76,8 @@ export default class WeeklyAttendance extends Component {
         this.setState(
           {
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            hims_d_employee_id: row.hims_d_employee_id,
+            biometric_id: row.biometric_id
           },
           () => {}
         );
@@ -102,6 +111,18 @@ export default class WeeklyAttendance extends Component {
     }
   }
 
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  changeChecks(e) {
+    this.setState({
+      [e.target.name]: e.target.checked ? e.target.value : null
+    });
+  }
+
   render() {
     let allYears = getYears();
     return (
@@ -111,7 +132,13 @@ export default class WeeklyAttendance extends Component {
             <label>View by All Employees</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
-                <input type="checkbox" value="yes" name="" />
+                <input
+                  type="checkbox"
+                  value="ALL"
+                  name="hims_d_employee_id"
+                  checked={this.state.hims_d_employee_id === "ALL"}
+                  onChange={this.changeChecks.bind(this)}
+                />
                 <span>Yes</span>
               </label>
             </div>
@@ -202,6 +229,14 @@ export default class WeeklyAttendance extends Component {
           <div className="col form-group">
             <button style={{ marginTop: 21 }} className="btn btn-primary">
               Load
+            </button>
+
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 21, marginLeft: 5 }}
+              className="btn btn-default"
+            >
+              CLEAR
             </button>
           </div>
         </div>

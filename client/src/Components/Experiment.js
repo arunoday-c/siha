@@ -8,6 +8,7 @@ import {
 import "react-table/react-table.css";
 import { algaehApiCall } from "../utils/algaehApiCall";
 import AlgaehReport from "./Wrapper/printReports";
+import _ from "lodash";
 
 const services = [
   { service_name: "Consultation", sl_no: 1 },
@@ -22,6 +23,8 @@ class Experiment extends Component {
       openAuth: false,
       name: "i"
     };
+
+    console.log("Chunk:", _.chunk(services, 1));
   }
 
   texthandle(e) {
