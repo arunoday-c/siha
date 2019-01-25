@@ -9,6 +9,8 @@ import {
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
+import _ from "lodash";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default class WeeklyAttendance extends Component {
   constructor(props) {
@@ -17,21 +19,71 @@ export default class WeeklyAttendance extends Component {
       year: moment().year(),
       month: moment(new Date()).format("M"),
       week: 0,
-      weeks: []
+      weeks: [],
+      time_sheet: [],
+      weekly_time_sheet: [],
+      hims_d_employee_id: "ALL",
+      from_date: moment(new Date())
+        .subtract(1, "days")
+        .format("YYYY-MM-DD"),
+      to_date: moment(new Date())
+        .subtract(1, "days")
+        .format("YYYY-MM-DD")
     };
   }
 
   componentDidMount() {
     this.getWeeks();
-    this.getFirstWeek();
   }
 
-  getFirstWeek() {
-    let daysOfMonth = moment(
-      new Date(this.state.year + "-" + this.state.month + "-02")
-    ).weekday();
+  getTimeSheet() {
+    let startDate = moment()
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    let endDate = moment()
+      .endOf("month")
+      .format("YYYY-MM-DD");
 
-    console.log("SFSADFASd", daysOfMonth);
+    algaehApiCall({
+      uri: "/holiday/getDailyTimeSheet",
+      method: "GET",
+      data: {
+        from_date: "2017-05-01",
+        to_date: "2017-05-31",
+        biometric_id: this.state.biometric_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            time_sheet: res.data.records,
+            weekly_time_sheet: _.chunk(res.data.records, 7)
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  clearState() {
+    this.setState(
+      {
+        hims_d_employee_id: "ALL",
+        employee_name: null,
+        biometric_id: null,
+        year: moment().year(),
+        month: moment(new Date()).format("M"),
+        weeks: [],
+        week: 0
+      },
+      () => {
+        this.getWeeks();
+      }
+    );
   }
 
   getWeeks() {
@@ -68,7 +120,8 @@ export default class WeeklyAttendance extends Component {
         this.setState(
           {
             employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
+            hims_d_employee_id: row.hims_d_employee_id,
+            biometric_id: row.biometric_id
           },
           () => {}
         );
@@ -102,6 +155,18 @@ export default class WeeklyAttendance extends Component {
     }
   }
 
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  changeChecks(e) {
+    this.setState({
+      [e.target.name]: e.target.checked ? e.target.value : null
+    });
+  }
+
   render() {
     let allYears = getYears();
     return (
@@ -111,7 +176,13 @@ export default class WeeklyAttendance extends Component {
             <label>View by All Employees</label>
             <div className="customCheckbox">
               <label className="checkbox inline">
-                <input type="checkbox" value="yes" name="" />
+                <input
+                  type="checkbox"
+                  value="ALL"
+                  name="hims_d_employee_id"
+                  checked={this.state.hims_d_employee_id === "ALL"}
+                  onChange={this.changeChecks.bind(this)}
+                />
                 <span>Yes</span>
               </label>
             </div>
@@ -200,8 +271,20 @@ export default class WeeklyAttendance extends Component {
           />
 
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
+            <button
+              onClick={this.getTimeSheet.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
               Load
+            </button>
+
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 21, marginLeft: 5 }}
+              className="btn btn-default"
+            >
+              CLEAR
             </button>
           </div>
         </div>
@@ -211,7 +294,11 @@ export default class WeeklyAttendance extends Component {
             className="portlet-title"
             style={{ height: 60, borderBottom: " 1px solid #e2e2e2" }}
           >
-            <div className="caption">Employee Name</div>
+            <div className="caption">
+              {this.state.employee_name
+                ? this.state.employee_name
+                : "Employee Name"}
+            </div>
             <div className="actions">
               {/*             
               <div className="weekdaysDiv">
@@ -248,24 +335,215 @@ export default class WeeklyAttendance extends Component {
             </div>
           </div>
           <div className="portlet-body WeeklyTimeProgress">
-            <div className="row dailyTimeProgress">
-              <div className="col-1">Sun, 30</div>
-              <div className="col-1">00.00 Hrs</div>
-              <div className="col">
-                <div className="progress week-off">
-                  <div
-                    className="progress-bar "
-                    role="progressbar"
-                    aria-valuenow="100"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ width: "100%" }}
-                  >
-                    <span>Week Off</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {this.state.time_sheet.length === 0
+              ? "TIME SHEET"
+              : this.state.time_sheet.map((data, index) =>
+                  data.status === "WO" ? (
+                    <div
+                      key={data.hims_f_daily_time_sheet_id}
+                      className="row dailyTimeProgress"
+                    >
+                      <div className="col-1">
+                        {moment(data.attendance_date).format("ddd, Do")}
+                      </div>
+                      <div className="col-1">
+                        {this.state.worked_hours
+                          ? this.state.worked_hours
+                          : "00:00"}{" "}
+                        Hrs
+                      </div>
+                      <div className="col">
+                        <div className="progress week-off">
+                          <div
+                            className="progress-bar "
+                            role="progressbar"
+                            aria-valuenow="100"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{ width: "100%" }}
+                          >
+                            <span>Week Off</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : data.status === "PR" ? (
+                    <div
+                      key={data.hims_f_daily_time_sheet_id}
+                      className="row dailyTimeProgress"
+                    >
+                      <div className="col-1">
+                        {moment(data.attendance_date).format("ddd, Do")}
+                      </div>
+                      <div className="col-1">
+                        {this.state.worked_hours
+                          ? this.state.worked_hours
+                          : "00:00"}{" "}
+                        Hrs
+                      </div>
+                      <div className="col">
+                        <div className="progress week-off">
+                          <div
+                            className="progress-bar "
+                            role="progressbar"
+                            aria-valuenow="100"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{ width: "100%" }}
+                          >
+                            <span>Present</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : data.status === "AB" ? (
+                    <div
+                      key={data.hims_f_daily_time_sheet_id}
+                      className="row dailyTimeProgress"
+                    >
+                      <div className="col-1">
+                        {moment(data.attendance_date).format("ddd, Do")}
+                      </div>
+                      <div className="col-1">
+                        {this.state.worked_hours
+                          ? this.state.worked_hours
+                          : "00:00"}{" "}
+                        Hrs
+                      </div>
+                      <div className="col">
+                        <div className="progress week-off">
+                          <div
+                            className="progress-bar "
+                            role="progressbar"
+                            aria-valuenow="100"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{ width: "100%" }}
+                          >
+                            <span>Absent</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : data.status === "HO" ? (
+                    <div
+                      key={data.hims_f_daily_time_sheet_id}
+                      className="row dailyTimeProgress"
+                    >
+                      <div className="col-1">
+                        {moment(data.attendance_date).format("ddd, Do")}
+                      </div>
+                      <div className="col-1">
+                        {this.state.worked_hours
+                          ? this.state.worked_hours
+                          : "00:00"}{" "}
+                        Hrs
+                      </div>
+                      <div className="col">
+                        <div className="progress week-off">
+                          <div
+                            className="progress-bar "
+                            role="progressbar"
+                            aria-valuenow="100"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{ width: "100%" }}
+                          >
+                            <span>Holiday</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : data.status === "PL" ? (
+                    <div
+                      key={data.hims_f_daily_time_sheet_id}
+                      className="row dailyTimeProgress"
+                    >
+                      <div className="col-1">
+                        {moment(data.attendance_date).format("ddd, Do")}
+                      </div>
+                      <div className="col-1">
+                        {this.state.worked_hours
+                          ? this.state.worked_hours
+                          : "00:00"}{" "}
+                        Hrs
+                      </div>
+                      <div className="col">
+                        <div className="progress week-off">
+                          <div
+                            className="progress-bar "
+                            role="progressbar"
+                            aria-valuenow="100"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{ width: "100%" }}
+                          >
+                            <span>Holiday</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : data.status === "UL" ? (
+                    <div
+                      key={data.hims_f_daily_time_sheet_id}
+                      className="row dailyTimeProgress"
+                    >
+                      <div className="col-1">
+                        {moment(data.attendance_date).format("ddd, Do")}
+                      </div>
+                      <div className="col-1">
+                        {this.state.worked_hours
+                          ? this.state.worked_hours
+                          : "00:00"}{" "}
+                        Hrs
+                      </div>
+                      <div className="col">
+                        <div className="progress week-off">
+                          <div
+                            className="progress-bar "
+                            role="progressbar"
+                            aria-valuenow="100"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{ width: "100%" }}
+                          >
+                            <span>Unpaid Leave</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : data.status === "EX" ? (
+                    <div
+                      key={data.hims_f_daily_time_sheet_id}
+                      className="row dailyTimeProgress"
+                    >
+                      <div className="col-1">
+                        {moment(data.attendance_date).format("ddd, Do")}
+                      </div>
+                      <div className="col-1">
+                        {this.state.worked_hours
+                          ? this.state.worked_hours
+                          : "00:00"}{" "}
+                        Hrs
+                      </div>
+                      <div className="col">
+                        <div className="progress week-off">
+                          <div
+                            className="progress-bar "
+                            role="progressbar"
+                            aria-valuenow="100"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{ width: "100%" }}
+                          >
+                            <span>Paid Leave</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null
+                )}
+            {/*
             <div className="row dailyTimeProgress">
               <div className="col-1">Mon, 31</div>
               <div className="col-1">08.45 Hrs</div>
@@ -294,6 +572,8 @@ export default class WeeklyAttendance extends Component {
                 </div>
               </div>
             </div>
+
+            
             <div className="row dailyTimeProgress">
               <div className="col-1">Tue, 01</div>
               <div className="col-1">08.45 Hrs</div>
@@ -388,12 +668,14 @@ export default class WeeklyAttendance extends Component {
                 </div>
               </div>
             </div>
+        */}
           </div>
-          <hr />
-          <div className="portlet-body WeeklyTimeProgress">
-            {/* Start Element Daily Progress*/}
+          {/* <hr /> */}
+          {/* Start Element Daily Progress*/}
+          {/*   <div className="portlet-body WeeklyTimeProgress">
+      
 
-            {/* <div className="row dailyTimeProgress">
+             <div className="row dailyTimeProgress">
               <div className="col-3 time_name">
                 Aboobacker Sidhiqe
                 <br />
@@ -414,9 +696,34 @@ export default class WeeklyAttendance extends Component {
                   </div>
                 </div>
               </div>
-            </div> */}
+            </div> 
 
-            {/* End Element Daily Progress*/}
+      
+          </div> */}
+          {/* End Element Daily Progress*/}
+        </div>
+
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                //onClick={this.saveOptions.bind(this)}
+              >
+                <AlgaehLabel label={{ forceLabel: "Post", returnText: true }} />
+              </button>
+
+              <button
+                type="button"
+                className="btn btn-primary"
+                //onClick={ClearData.bind(this, this)}
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Process", returnText: true }}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>
