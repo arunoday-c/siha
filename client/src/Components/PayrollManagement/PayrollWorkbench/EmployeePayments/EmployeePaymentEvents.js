@@ -10,7 +10,7 @@ import swal from "sweetalert2";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   $this.setState({
     [name]: value
   });

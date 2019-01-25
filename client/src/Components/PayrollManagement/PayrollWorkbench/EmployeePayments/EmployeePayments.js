@@ -726,13 +726,16 @@ class EmployeePayment extends Component {
                               />
                             ),
                             displayTemplate: row => {
-                              let display = this.props.banks.filter(
-                                f => f.hims_d_bank_id === row.bank_id
-                              );
+                              let display =
+                                this.props.banks === undefined
+                                  ? []
+                                  : this.props.banks.filter(
+                                      f => f.hims_d_bank_id === row.bank_id
+                                    );
 
                               return (
                                 <span>
-                                  {display !== undefined && display.length !== 0
+                                  {display !== null && display.length !== 0
                                     ? display[0].bank_name
                                     : ""}
                                 </span>
