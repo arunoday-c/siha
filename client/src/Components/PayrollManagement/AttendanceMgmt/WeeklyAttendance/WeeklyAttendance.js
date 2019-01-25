@@ -37,13 +37,24 @@ export default class WeeklyAttendance extends Component {
   }
 
   getTimeSheet() {
-    let startDate = moment()
-      .startOf("month")
-      .format("YYYY-MM-DD");
-    let endDate = moment()
-      .endOf("month")
-      .format("YYYY-MM-DD");
+    algaehApiCall({
+      uri: "/holiday/getTimeSheet",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.getDailyTimeSheet();
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
+  getDailyTimeSheet() {
     algaehApiCall({
       uri: "/holiday/getDailyTimeSheet",
       method: "GET",
@@ -57,6 +68,27 @@ export default class WeeklyAttendance extends Component {
           this.setState({
             time_sheet: res.data.records,
             weekly_time_sheet: _.chunk(res.data.records, 7)
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  postTimeSheet() {
+    algaehApiCall({
+      uri: "/holiday/postTimeSheet",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Posted Successfully. . ",
+            type: "success"
           });
         }
       },
@@ -347,10 +379,7 @@ export default class WeeklyAttendance extends Component {
                         {moment(data.attendance_date).format("ddd, Do")}
                       </div>
                       <div className="col-1">
-                        {this.state.worked_hours
-                          ? this.state.worked_hours
-                          : "00:00"}{" "}
-                        Hrs
+                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                       </div>
                       <div className="col">
                         <div className="progress week-off">
@@ -368,30 +397,48 @@ export default class WeeklyAttendance extends Component {
                       </div>
                     </div>
                   ) : data.status === "PR" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
+                    <div className="row dailyTimeProgress">
                       <div className="col-1">
                         {moment(data.attendance_date).format("ddd, Do")}
                       </div>
                       <div className="col-1">
-                        {this.state.worked_hours
-                          ? this.state.worked_hours
-                          : "00:00"}{" "}
-                        Hrs
+                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                       </div>
                       <div className="col">
-                        <div className="progress week-off">
+                        <div className="progress">
                           <div
-                            className="progress-bar "
+                            className="progress-bar  bg-success"
                             role="progressbar"
-                            aria-valuenow="100"
+                            aria-valuenow="75"
                             aria-valuemin="0"
                             aria-valuemax="100"
-                            style={{ width: "100%" }}
+                            style={{
+                              width:
+                                (data.worked_hours / data.actual_hours) * 100 +
+                                "%"
+                            }}
                           >
-                            <span>Present</span>
+                            <div className="tooltipDetails">
+                              <span className="checkIn animated bounceIn faster">
+                                Check In
+                                <b>
+                                  {moment(data.in_time, "HH:mm:ss").format(
+                                    "hh:mm a"
+                                  )}
+                                </b>
+                              </span>
+                              {/* <span className="totalHr animated bounceIn faster">
+                                Late time by <b className="lateTime">55 min</b>
+                                  </span>*/}
+                              <span className="checkOut animated bounceIn faster">
+                                Check Out
+                                <b>
+                                  {moment(data.out_time, "HH:mm:ss").format(
+                                    "hh:mm a"
+                                  )}
+                                </b>
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -405,10 +452,7 @@ export default class WeeklyAttendance extends Component {
                         {moment(data.attendance_date).format("ddd, Do")}
                       </div>
                       <div className="col-1">
-                        {this.state.worked_hours
-                          ? this.state.worked_hours
-                          : "00:00"}{" "}
-                        Hrs
+                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                       </div>
                       <div className="col">
                         <div className="progress week-off">
@@ -434,10 +478,7 @@ export default class WeeklyAttendance extends Component {
                         {moment(data.attendance_date).format("ddd, Do")}
                       </div>
                       <div className="col-1">
-                        {this.state.worked_hours
-                          ? this.state.worked_hours
-                          : "00:00"}{" "}
-                        Hrs
+                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                       </div>
                       <div className="col">
                         <div className="progress week-off">
@@ -463,10 +504,7 @@ export default class WeeklyAttendance extends Component {
                         {moment(data.attendance_date).format("ddd, Do")}
                       </div>
                       <div className="col-1">
-                        {this.state.worked_hours
-                          ? this.state.worked_hours
-                          : "00:00"}{" "}
-                        Hrs
+                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                       </div>
                       <div className="col">
                         <div className="progress week-off">
@@ -478,7 +516,7 @@ export default class WeeklyAttendance extends Component {
                             aria-valuemax="100"
                             style={{ width: "100%" }}
                           >
-                            <span>Holiday</span>
+                            <span>Paid Leave</span>
                           </div>
                         </div>
                       </div>
@@ -492,10 +530,7 @@ export default class WeeklyAttendance extends Component {
                         {moment(data.attendance_date).format("ddd, Do")}
                       </div>
                       <div className="col-1">
-                        {this.state.worked_hours
-                          ? this.state.worked_hours
-                          : "00:00"}{" "}
-                        Hrs
+                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                       </div>
                       <div className="col">
                         <div className="progress week-off">
@@ -513,30 +548,50 @@ export default class WeeklyAttendance extends Component {
                       </div>
                     </div>
                   ) : data.status === "EX" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
+                    <div className="row dailyTimeProgress">
                       <div className="col-1">
                         {moment(data.attendance_date).format("ddd, Do")}
                       </div>
                       <div className="col-1">
-                        {this.state.worked_hours
-                          ? this.state.worked_hours
-                          : "00:00"}{" "}
-                        Hrs
+                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                       </div>
                       <div className="col">
-                        <div className="progress week-off">
+                        <div className="progress">
                           <div
-                            className="progress-bar "
+                            className="progress-bar  bg-danger"
                             role="progressbar"
-                            aria-valuenow="100"
+                            aria-valuenow="75"
                             aria-valuemin="0"
                             aria-valuemax="100"
-                            style={{ width: "100%" }}
+                            style={{
+                              width: "50%"
+                            }}
                           >
-                            <span>Paid Leave</span>
+                            <div className="tooltipDetails">
+                              <span className="checkIn animated bounceIn faster">
+                                Check In{" "}
+                                <b>
+                                  {data.in_time
+                                    ? moment(data.in_time, "HH:mm:ss").format(
+                                        "hh:mm a"
+                                      )
+                                    : "Not Available"}
+                                </b>
+                              </span>
+                              {/* <span className="totalHr animated bounceIn faster">
+                                Late time by <b className="lateTime">55 min</b>
+                              </span> */}
+                              <span className="checkOut animated bounceIn faster">
+                                Check Out{" "}
+                                <b>
+                                  {data.out_time
+                                    ? moment(data.out_time, "HH:mm:ss").format(
+                                        "hh:mm a"
+                                      )
+                                    : "Not Available"}
+                                </b>
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -709,7 +764,7 @@ export default class WeeklyAttendance extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                //onClick={this.saveOptions.bind(this)}
+                onClick={this.postTimeSheet.bind(this)}
               >
                 <AlgaehLabel label={{ forceLabel: "Post", returnText: true }} />
               </button>
