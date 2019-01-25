@@ -9,7 +9,7 @@ import {
   getMSDb,
   getTimeSheet,
   getDailyTimeSheet,
-  processTimeSheet
+  postTimeSheet
 } from "../model/holiday";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -149,8 +149,8 @@ export default ({ config, db }) => {
   );
   // created by irfan :
   api.get(
-    "/processTimeSheet",
-    processTimeSheet,
+    "/postTimeSheet",
+    postTimeSheet,
     (req, res, next) => {
       let result = req.records;
 

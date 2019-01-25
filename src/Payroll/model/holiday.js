@@ -412,9 +412,10 @@ let getTimeSheet = (req, res, next) => {
           return await new Promise((resolve, reject) => {
             try {
               connection.query(
-                " select * from hims_f_leave_application where employee_id=? and cancelled='N'\
+                " select hims_f_leave_application_id ,L.leave_type from hims_f_leave_application LA,hims_d_leave L \
+                where employee_id=? and cancelled='N'\
                 and (`status`='APR' or `status`='PRO') and date(?) \
-                between date(from_date) and date(to_date);\
+                between date(from_date) and date(to_date) and LA.leave_id=L.hims_d_leave_id;\
                 select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday\
                 from hims_d_holiday where (((date(holiday_date)= date(?) and weekoff='Y') or \
                 (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RE') or\
@@ -577,14 +578,27 @@ let getTimeSheet = (req, res, next) => {
                                   debugLog("am in result of out quey");
                                   if (leaveHoliday[0].length > 0) {
                                     //its a leave
-
-                                    timeSheetArray[i] = {
-                                      ...timeSheetArray[i],
-                                      hours: null,
-                                      minutes: null,
-                                      worked_hours: null,
-                                      status: "LV"
-                                    };
+                                    if (
+                                      leaveHoliday[0][0]["leave_type"] == "U"
+                                    ) {
+                                      timeSheetArray[i] = {
+                                        ...timeSheetArray[i],
+                                        hours: null,
+                                        minutes: null,
+                                        worked_hours: null,
+                                        status: "UL"
+                                      };
+                                    } else if (
+                                      leaveHoliday[0][0]["leave_type"] == "P"
+                                    ) {
+                                      timeSheetArray[i] = {
+                                        ...timeSheetArray[i],
+                                        hours: null,
+                                        minutes: null,
+                                        worked_hours: null,
+                                        status: "PL"
+                                      };
+                                    }
                                   } else if (leaveHoliday[1].length > 0) {
                                     if (leaveHoliday[1][0]["weekoff"] == "Y") {
                                       // its a week off
@@ -782,60 +796,100 @@ let getDailyTimeSheet = (req, res, next) => {
 };
 
 //created by irfan:
-let processTimeSheet = (req, res, next) => {
+let postTimeSheet = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
     db.getConnection((error, connection) => {
-      const syscCall = async function(attDate, religion_id, i) {
-        return await new Promise((resolve, reject) => {
-          try {
-            connection.query(
-              " select * from hims_f_leave_application where employee_id=1 and cancelled='N'\
-              and (`status`='APR' or `status`='PRO') and date(?) \
-              between date(from_date) and date(to_date);\
-              select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday\
-              from hims_d_holiday where (((date(holiday_date)= date(?) and weekoff='Y') or \
-              (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RE') or\
-              (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RS' and religion_id=?))); ",
-              [attDate, attDate, attDate, attDate, religion_id],
-              (error, leaveHoliday) => {
-                if (error) {
-                  reject(error);
-                }
-                setTimeout(() => {
-                  resolve(leaveHoliday);
-                }, 1000);
-              }
-            );
-          } catch (e) {
-            reject(e);
-          }
-        });
-      };
-      let _promises = [];
-      for (let i = 0; i < 10; i++) {
-        debugLog("am one:", i);
-        let _sycCall = syscCall("2017-05-05", 1, i);
+      let from_date = "2017-05-01";
+      let to_date = "2017-05-31";
 
-        _sycCall
-          .then(rest => {
-            debugLog("am two:", i);
-          })
-          .catch(e => {
-            debugLog("eeeee:", e);
-          });
-        _promises.push(_sycCall);
-      }
-      Promise.all(_promises)
-        .then(rse => {
-          debugLog("rest:", rse);
-        })
-        .catch(e => {
-          debugLog("e:", e);
-        });
+      const month_number = moment(from_date).format("M");
+      const year = moment(from_date).format("YYYY");
+
+      let dailyAttendance = [];
+      connection.query(
+        " select hims_f_daily_time_sheet_id,employee_id,TS.biometric_id,attendance_date,in_time,out_date,\
+        out_time,year,month,status,posted,hours,minutes,actual_hours,actual_minutes,worked_hours,\
+        expected_out_date,expected_out_time ,hims_d_employee_id,hospital_id,sub_department_id \
+        from hims_f_daily_time_sheet TS ,hims_d_employee E where  date(attendance_date) between\
+                date(?) and date(?) and TS.biometric_id=E.biometric_id",
+        [from_date, to_date],
+        (error, result) => {
+          if (error) {
+            releaseDBConnection(db, connection);
+            next(error);
+          }
+          debugLog("result:", result);
+          //  employee_id, hospital_id, sub_department_id, year, month
+
+          for (let i = 0; i < result.length; i++) {
+            dailyAttendance.push({
+              employee_id: result[i]["hims_d_employee_id"],
+              hospital_id: result[i]["hospital_id"],
+              sub_department_id: result[i]["sub_department_id"],
+              year: year,
+              month: month_number,
+              attendance_date: result[i]["attendance_date"],
+
+              total_days: 1,
+              present_days: result[i]["status"] == "PR" ? 1 : 0,
+              absent_days: result[i]["status"] == "AB" ? 1 : 0,
+              total_work_days: result[i]["status"] == "PR" ? 1 : 0,
+              weekoff_days: result[i]["status"] == "WO" ? 1 : 0,
+              holidays: result[i]["status"] == "HO" ? 1 : 0,
+              paid_leave: result[i]["status"] == "PL" ? 1 : 0,
+              unpaid_leave: result[i]["status"] == "UL" ? 1 : 0,
+              total_hours: result[i]["worked_hours"],
+              working_hours:
+                result[i]["actual_hours"] + result[i]["actual_minutes"]
+            });
+          }
+          debugLog("dailyAttendance:", dailyAttendance);
+
+          const insurtColumns = [
+            "employee_id",
+            "hospital_id",
+            "sub_department_id",
+            "year",
+            "month",
+            "attendance_date",
+            "total_days",
+            "present_days",
+            "absent_days",
+            "total_work_days",
+            "weekoff_days",
+            "holidays",
+            "paid_leave",
+            "unpaid_leave",
+            "total_hours",
+            "working_hours"
+          ];
+
+          connection.query(
+            "INSERT IGNORE  INTO hims_f_daily_attendance(" +
+              insurtColumns.join(",") +
+              ") VALUES ?",
+            [
+              jsonArrayToObject({
+                sampleInputObject: insurtColumns,
+                arrayObj: dailyAttendance
+              })
+            ],
+            (error, insertResult) => {
+              if (error) {
+                releaseDBConnection(db, connection);
+                next(error);
+              }
+
+              req.records = insertResult;
+              next();
+            }
+          );
+        }
+      );
     });
   } catch (e) {
     next(e);
@@ -850,5 +904,5 @@ module.exports = {
   getMSDb,
   getTimeSheet,
   getDailyTimeSheet,
-  processTimeSheet
+  postTimeSheet
 };
