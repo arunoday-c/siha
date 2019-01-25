@@ -164,7 +164,7 @@ class EmployeeDesignations extends Component {
 
   render() {
     return (
-      <div className="emp_dsgntn">
+      <div className="emp_dsgntn margin-top-15">
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup
