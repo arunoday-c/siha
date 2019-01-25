@@ -406,7 +406,7 @@ let getTimeSheet = (req, res, next) => {
           });
         }
         let timeSheetArray = [];
-
+        let actual_hours = "";
         const syscCall = async function(attDate, religion_id) {
           debugLog("am in synchronous");
           return await new Promise((resolve, reject) => {
@@ -454,7 +454,7 @@ let getTimeSheet = (req, res, next) => {
                 next(error);
               });
             }
-
+            actual_hours = result[0]["standard_working_hours"];
             if (
               result.length > 0 &&
               result[0]["biometric_database"] == "MSACCESS"
@@ -688,11 +688,12 @@ let getTimeSheet = (req, res, next) => {
                               connection.query(
                                 "INSERT IGNORE  INTO hims_f_daily_time_sheet(" +
                                   insurtColumns.join(",") +
-                                  ") VALUES ?",
+                                  ",actual_hours) VALUES ?",
                                 [
                                   jsonArrayToObject({
                                     sampleInputObject: insurtColumns,
-                                    arrayObj: timeSheetArray
+                                    arrayObj: timeSheetArray,
+                                    newFieldToInsert: [actual_hours]
                                   })
                                 ],
                                 (error, insertResult) => {
