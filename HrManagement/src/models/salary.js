@@ -67,6 +67,7 @@ module.exports = {
               printQuery: true
             })
             .then(existing => {
+              console.log("Existing Block", existing);
               let _salary_processed = _.chain(existing)
                 .filter(f => {
                   return f.salary_processed == "Y";
@@ -616,7 +617,14 @@ module.exports = {
                                                                   }
                                                                 }
                                                               }
-                                                            );
+                                                            )
+                                                            .catch(error => {
+                                                              _mysql.rollBackTransaction(
+                                                                () => {
+                                                                  next(error);
+                                                                }
+                                                              );
+                                                            });
                                                         }
                                                       )
                                                       .catch(error => {
@@ -656,49 +664,43 @@ module.exports = {
                                               }
                                             })
                                             .catch(error => {
-                                              reject(e);
-                                              next(error);
+                                              _mysql.rollBackTransaction(() => {
+                                                next(error);
+                                              });
                                             });
                                         });
                                       })
                                       .catch(e => {
-                                        reject(e);
                                         next(e);
                                       });
                                   })
                                   .catch(e => {
-                                    reject(e);
                                     next(e);
                                   });
                                 //Loan Due End
                               })
                               .catch(e => {
-                                reject(e);
                                 next(e);
                               });
                             //Contribution -- End
                           })
                           .catch(e => {
-                            reject(e);
                             next(e);
                           });
 
                         //Deduction -- End
                       })
                       .catch(e => {
-                        reject(e);
                         next(e);
                       });
                     //Earnigs --- End
                   }
                 })
                 .catch(e => {
-                  reject(e);
                   next(e);
                 });
             })
             .catch(e => {
-              reject(e);
               next(e);
             });
         } else {
@@ -713,7 +715,6 @@ module.exports = {
         }
       })
       .catch(error => {
-        reject(e);
         next(error);
       });
   },

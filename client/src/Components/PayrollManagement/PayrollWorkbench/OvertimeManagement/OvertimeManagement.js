@@ -12,23 +12,49 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 import moment from "moment";
 
-import { employeeSearch } from "./OvertimeManagementEvent";
+import {
+  texthandle,
+  employeeSearch,
+  getOptions,
+  CalculateAdd,
+  clearOtValues,
+  getOvertimeGroups,
+  getHolidayMaster,
+  datehandle,
+  timetexthandle
+} from "./OvertimeManagementEvent";
 class OvertimeManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
       year: moment().year(),
-      month: moment(new Date()).format("M")
+      month: moment(new Date()).format("M"),
+      overtime_type: null,
+      ot_calc_value: null,
+      weekoff_calc_value: null,
+      holiday_calc_value: null,
+
+      ot_value: null,
+      weekoff_value: null,
+      holiday_value: null,
+      monthlyOverTime: [],
+      monthcalculateBtn: true,
+      total_hours: null,
+      total_holoday: null,
+      total_weeloff: null,
+      select_date: null,
+      from_time: null,
+      to_time: null,
+      holidays: []
     };
   }
 
-  dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
+  componentDidMount() {
+    getHolidayMaster(this, this);
+    getOptions(this, this);
   }
-
   render() {
+    debugger;
     let allYears = getYears();
     return (
       <div className="ot_mgmt">
@@ -81,7 +107,7 @@ class OvertimeManagement extends Component {
                 valueField: "value",
                 data: allYears
               },
-              onChange: this.dropDownHandler.bind(this),
+              onChange: texthandle.bind(this, this),
               others: {
                 disabled: this.state.lockEarnings
               },
@@ -108,7 +134,7 @@ class OvertimeManagement extends Component {
                 valueField: "value",
                 data: GlobalVariables.MONTHS
               },
-              onChange: this.dropDownHandler.bind(this),
+              onChange: texthandle.bind(this, this),
               onClear: () => {
                 this.setState({
                   month: null
@@ -120,401 +146,443 @@ class OvertimeManagement extends Component {
             }}
           />
 
-          {/* <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Filter by Status", isImp: false }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
-            }}
-          /> */}
-
           <div className="col form-group" style={{ paddingLeft: 0 }}>
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
-              Load
-            </button>{" "}
             <button
-              style={{ marginTop: 21, marginLeft: 5 }}
-              className="btn btn-default"
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+              onClick={getOvertimeGroups.bind(this, this)}
             >
-              Clear
+              Load
             </button>
           </div>
         </div>
         <div className="row">
-          <div className="col-4">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col-12 form-group" }}
-                    label={{ forceLabel: "OT Type", isImp: false }}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {},
-                      others: {}
-                    }}
-                  /> */}
-                  <AlagehFormGroup
-                    div={{ className: "col-6 form-group" }}
-                    label={{
-                      forceLabel: "OT Hours",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "number"
-                      }
-                    }}
-                  />
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Calc. Value"
-                      }}
-                    />
-                    <h6>x 1.00</h6>
-                  </div>
+          {this.state.overtime_type === "M" ? (
+            <div className="row">
+              <div className="col-4">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-body">
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          forceLabel: "OT Hours",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "ot_value",
+                          value: this.state.ot_value,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            type: "number"
+                          }
+                        }}
+                      />
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Calc. Value"
+                          }}
+                        />
+                        <h6>
+                          {this.state.ot_calc_value === null
+                            ? "* 0.00"
+                            : "* " + String(this.state.ot_calc_value)}
+                        </h6>
+                      </div>
 
-                  <AlagehFormGroup
-                    div={{ className: "col-6 form-group" }}
-                    label={{
-                      forceLabel: "Week off OT",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "text"
-                      }
-                    }}
-                  />
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Calc. Value"
-                      }}
-                    />
-                    <h6>x 1.50</h6>
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          forceLabel: "Week off OT",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "weekoff_value",
+                          value: this.state.weekoff_value,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            type: "text"
+                          }
+                        }}
+                      />
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Calc. Value"
+                          }}
+                        />
+                        <h6>
+                          {this.state.weekoff_calc_value === null
+                            ? "* 0.00"
+                            : "* " + String(this.state.weekoff_calc_value)}
+                        </h6>
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          forceLabel: "Holiday OT",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "holiday_value",
+                          value: this.state.holiday_value,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            type: "text"
+                          }
+                        }}
+                      />
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Calc. Value"
+                          }}
+                        />
+                        <h6>
+                          {this.state.holiday_calc_value === null
+                            ? "* 0.00"
+                            : "* " +
+                              String(this.state.holiday_calc_value).toString()}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <button
+                          className="btn btn-default"
+                          onClick={clearOtValues.bind(this, this)}
+                        >
+                          Clear
+                        </button>
+                        <button
+                          style={{ marginLeft: 5 }}
+                          className="btn btn-primary"
+                          onClick={CalculateAdd.bind(this, this)}
+                          disabled={this.state.monthcalculateBtn}
+                        >
+                          Calculate & Add
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-6 form-group" }}
-                    label={{
-                      forceLabel: "Holiday OT",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "text"
-                      }
-                    }}
-                  />
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Calc. Value"
-                      }}
-                    />
-                    <h6>x 2.00</h6>
+                </div>
+              </div>
+              <div className="col-8">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">
+                        Overtime Management List
+                      </h3>
+                    </div>
                   </div>
-                  <div className="col">
-                    <button className="btn btn-default">Clear</button>
-                    <button
-                      style={{ marginLeft: 5 }}
-                      className="btn btn-primary"
-                    >
-                      Calculate & Add
-                    </button>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div
+                        className="col-12"
+                        id="OverTimeMgmntMonthlyGrid_Cntr"
+                      >
+                        <AlgaehDataGrid
+                          id="OverTimeMgmntMonthlyGrid"
+                          datavalidate="OverTimeMgmntMonthlyGrid"
+                          columns={[
+                            {
+                              fieldName: "ot_value",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "OT Hours" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "weekoff_value",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Week Off OT" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "holiday_value",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Holiday OT" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId=""
+                          dataSource={{ data: this.state.monthlyOverTime }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-8">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Overtime Management List</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12" id="OverTimeMgmntMonthlyGrid_Cntr">
-                    <AlgaehDataGrid
-                      id="OverTimeMgmntMonthlyGrid"
-                      datavalidate="OverTimeMgmntMonthlyGrid"
-                      columns={[
-                        {
-                          fieldName: "Working Day OT",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "OT Hours" }} />
-                          )
-                        },
-                        {
-                          fieldName: "WeekOffOT",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Week Off OT" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "Holiday OT",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />
-                          )
-                        }
-                      ]}
-                      keyId=""
-                      dataSource={{ data: [] }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{}}
-                      others={{}}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          ) : null}
           {/* For Daily OverTime Content Starts Here */}
-          <div className="col-4">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-body">
-                <div className="row">
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col-12 form-group" }}
-<<<<<<< HEAD
-                    label={{ forceLabel: "OT Type", isImp: fals...
+          {this.state.overtime_type === "D" ? (
+            <div className="row">
+              <div className="col-4">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-body">
+                    <div className="row">
+                      <AlgaehDateHandler
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Select a Date",
+                          isImp: this.state.overtime_type === "D" ? true : false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "select_date"
+                        }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this)
+                        }}
+                        value={this.state.select_date}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "From Time",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "from_time",
+                          value: this.state.from_time,
+                          // events: { onChange: timetexthandle.bind(this, this) },
+                          others: {
+                            type: "time"
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "To Time",
+                          isImp: this.state.overtime_type === "D" ? true : false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "to_time",
+                          value: this.state.to_time,
+                          // events: { onChange: timetexthandle.bind(this, this) },
+                          others: {
+                            type: "time"
+                          }
+                        }}
+                      />
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          forceLabel: "OT Hours",
+                          isImp: this.state.overtime_type === "D" ? true : false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "ot_value",
+                          value: this.state.ot_value,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            type: "number",
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Calc. Value"
+                          }}
+                        />
+                        <h6>
+                          {this.state.ot_calc_value === null
+                            ? "* 0.00"
+                            : "* " + String(this.state.ot_calc_value)}
+                        </h6>
+                      </div>
 
-
-
-Collapse 
- This snippet was truncated for display; see it in full
-new messages
-12:45 PM
-Untitled 
-      selector={{
-=======
-                    label={{ forceLabel: "OT Type", isImp: false }}
-                    selector={{
->>>>>>> 115f53f9382e5b08b0619aa1001b5012390780ec
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {},
-                      others: {}
-                    }}
-                  /> */}
-                  <AlgaehDateHandler
-                    div={{ className: "col form-group" }}
-                    label={{ forceLabel: "Select a Date", isImp: false }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: ""
-                    }}
-                    maxDate={new Date()}
-                    events={{}}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "From Time",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "time"
-                      }
-                    }}
-                  />
-                  <AlagehFormGroup
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "To Time",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "time"
-                      }
-                    }}
-                  />
-
-                  <AlagehFormGroup
-                    div={{ className: "col-6 form-group" }}
-                    label={{
-                      forceLabel: "OT Hours",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "number"
-                      }
-                    }}
-                  />
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Calc. Value"
-                      }}
-                    />
-                    <h6>x 1.00</h6>
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          forceLabel: "Week off OT",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "weekoff_value",
+                          value: this.state.weekoff_value,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            type: "text",
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Calc. Value"
+                          }}
+                        />
+                        <h6>
+                          {this.state.weekoff_calc_value === null
+                            ? "* 0.00"
+                            : "* " + String(this.state.weekoff_calc_value)}
+                        </h6>
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-6 form-group" }}
+                        label={{
+                          forceLabel: "Holiday OT",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "holiday_value",
+                          value: this.state.holiday_value,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            type: "text",
+                            disabled: true
+                          }
+                        }}
+                      />
+                      <div className="col-6">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Calc. Value"
+                          }}
+                        />
+                        <h6>
+                          {this.state.holiday_calc_value === null
+                            ? "* 0.00"
+                            : "* " +
+                              String(this.state.holiday_calc_value).toString()}
+                        </h6>
+                      </div>
+                      <div className="col">
+                        <button
+                          className="btn btn-default"
+                          onClick={clearOtValues.bind(this, this)}
+                        >
+                          Clear
+                        </button>
+                        <button
+                          style={{ marginLeft: 5 }}
+                          className="btn btn-primary"
+                          onClick={CalculateAdd.bind(this, this)}
+                          disabled={this.state.monthcalculateBtn}
+                        >
+                          Calculate & Add
+                        </button>
+                      </div>
+                    </div>
                   </div>
-
-                  <AlagehFormGroup
-                    div={{ className: "col-6 form-group" }}
-                    label={{
-                      forceLabel: "Week off OT",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "text"
-                      }
-                    }}
-                  />
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Calc. Value"
-                      }}
-                    />
-                    <h6>x 1.50</h6>
+                </div>
+              </div>
+              <div className="col-8">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">
+                        Overtime Management List
+                      </h3>
+                    </div>
                   </div>
-                  <AlagehFormGroup
-                    div={{ className: "col-6 form-group" }}
-                    label={{
-                      forceLabel: "Holiday OT",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "text"
-                      }
-                    }}
-                  />
-                  <div className="col-6">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Calc. Value"
-                      }}
-                    />
-                    <h6>x 2.00</h6>
-                  </div>
-                  <div className="col">
-                    <button className="btn btn-default">Clear</button>
-                    <button
-                      style={{ marginLeft: 5 }}
-                      className="btn btn-primary"
-                    >
-                      Calculate & Add
-                    </button>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12" id="OverTimeMgmntDailyGrid_Cntr">
+                        <AlgaehDataGrid
+                          id="OverTimeMgmntDailyGrid"
+                          datavalidate="OverTimeMgmntDailyGrid"
+                          columns={[
+                            {
+                              fieldName: "SelectedDate",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Selected Date" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "FromTime",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "From Time" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "ToTime",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "To Time" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "Working Day OT",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "OT Hours" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "WeekOffOT",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Week Off OT" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "Holiday OT",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Holiday OT" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId=""
+                          dataSource={{ data: [] }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{}}
+                          others={{}}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="col-8">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Overtime Management List</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <div className="row">
-                  <div className="col-12" id="OverTimeMgmntDailyGrid_Cntr">
-                    <AlgaehDataGrid
-                      id="OverTimeMgmntDailyGrid"
-                      datavalidate="OverTimeMgmntDailyGrid"
-                      columns={[
-                        {
-                          fieldName: "SelectedDate",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Selected Date" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "FromTime",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "From Time" }} />
-                          )
-                        },
-                        {
-                          fieldName: "ToTime",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "To Time" }} />
-                          )
-                        },
-                        {
-                          fieldName: "Working Day OT",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "OT Hours" }} />
-                          )
-                        },
-                        {
-                          fieldName: "WeekOffOT",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Week Off OT" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "Holiday OT",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />
-                          )
-                        }
-                      ]}
-                      keyId=""
-                      dataSource={{ data: [] }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{}}
-                      others={{}}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          ) : null}
+
           {/* For Daily OverTime Content End Here*/}
           <div className="col-12" style={{ marginBottom: 40 }}>
             <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
@@ -545,25 +613,39 @@ Untitled 
                         forceLabel: "Total OT Hours"
                       }}
                     />
-                    <h6>3.00</h6>
+                    <h6>
+                      {this.state.total_hours === null
+                        ? "0 Hours"
+                        : this.state.total_hours + " Hours"}
+                    </h6>
                   </div>
 
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Holiday OT"
+                        forceLabel: "Total Holiday OT"
                       }}
                     />
-                    <h6>0.00</h6>
+
+                    <h6>
+                      {this.state.total_holoday === null
+                        ? "0 Hours"
+                        : this.state.total_holoday + " Hours"}
+                    </h6>
                   </div>
 
                   <div className="col">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Week Off OT"
+                        forceLabel: "Total Week-Off OT"
                       }}
                     />
-                    <h6>0.00</h6>
+
+                    <h6>
+                      {this.state.total_weeloff === null
+                        ? "0 Hours"
+                        : this.state.total_weeloff + " Hours"}
+                    </h6>
                   </div>
                 </div>
               </div>

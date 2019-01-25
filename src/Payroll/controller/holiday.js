@@ -6,7 +6,9 @@ import {
   getAllHolidays,
   addHoliday,
   deleteHoliday,
-  getMSDb
+  getMSDb,
+  getTimeSheet,
+  getDailyTimeSheet
 } from "../model/holiday";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -96,14 +98,54 @@ export default ({ config, db }) => {
   // created by irfan
   api.get("/getMSDb", getMSDb, (req, res, next) => {
     let result = req.records;
- 
+
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: result
+    });
+
+    next();
+  });
+
+  // created by irfan :
+  api.get(
+    "/getTimeSheet",
+    getTimeSheet,
+    (req, res, next) => {
+      let result = req.records;
+
+      if (result.invalid_data == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan :
+  api.get(
+    "/getDailyTimeSheet",
+    getDailyTimeSheet,
+    (req, res, next) => {
+      let result = req.records;
+
       res.status(httpStatus.ok).json({
         success: true,
         records: result
       });
-    
-    next();
-  });
+
+      next();
+    },
+    releaseConnection
+  );
 
   return api;
 };

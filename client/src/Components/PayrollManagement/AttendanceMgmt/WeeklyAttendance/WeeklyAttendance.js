@@ -9,6 +9,8 @@ import {
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
+import moment from "moment";
+import _ from "lodash";
 
 export default class WeeklyAttendance extends Component {
   constructor(props) {
@@ -23,6 +25,40 @@ export default class WeeklyAttendance extends Component {
 
   componentDidMount() {
     this.getWeeks();
+  }
+
+  getTimeSheet() {
+    let startDate = moment()
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    let endDate = moment()
+      .endOf("month")
+      .format("YYYY-MM-DD");
+
+    algaehApiCall({
+      uri: "/holiday/getDailyTimeSheet",
+      method: "GET",
+      data: {
+        from_date: "2017-05-01",
+        to_date: "2017-07-01"
+        //  biometric_id: this.state.biometric_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+
+            data : res.data.records;
+
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   clearState() {
@@ -227,7 +263,11 @@ export default class WeeklyAttendance extends Component {
           />
 
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
+            <button
+              onClick={this.getTimeSheet.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
               Load
             </button>
 

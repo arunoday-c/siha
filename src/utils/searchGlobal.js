@@ -231,7 +231,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "employee",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, arabic_name, employee_designation_id,\
+          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code,biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
            sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
             notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
              present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
@@ -249,7 +249,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "exit_employees",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, arabic_name, employee_designation_id,\
+          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
            sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
             notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
              present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
