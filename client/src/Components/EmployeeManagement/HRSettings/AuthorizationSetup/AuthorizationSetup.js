@@ -5,79 +5,179 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import { AUTH_TYPE } from "../../../../utils/GlobalVariables.json";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import Employee from "../../../../Search/Employee.json";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+
 export default class AuthorizationSetup extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      sub_depts: [],
+      assign_type: "A"
+    };
+    this.getSubDepartments();
+  }
+
+  getSubDepartments() {
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            sub_depts: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
+  employeeSearch() {
+    AlgaehSearch({
+      searchGrid: {
+        columns: Employee
+      },
+      searchName: "employee",
+      uri: "/gloabelSearch/get",
+      inputs: " sub_department_id=" + this.state.sub_department_id,
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        this.setState(
+          {
+            employee_name: row.full_name,
+            hims_d_employee_id: row.hims_d_employee_id
+          },
+          () => {}
+        );
+      }
+    });
+  }
+
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
   render() {
     return (
       <div className="AuthorizationSetupScreen">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Authorization Type", isImp: false }}
+            label={{ forceLabel: "Select Authorization Type", isImp: true }}
             selector={{
-              name: "",
+              name: "auth_type",
+              value: this.state.auth_type,
               className: "select-fld",
-              dataSource: {},
-              others: {}
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: AUTH_TYPE
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  auth_type: null
+                });
+              }
             }}
-          />{" "}
+          />
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Department", isImp: false }}
+            label={{ forceLabel: "Select Department", isImp: true }}
             selector={{
-              name: "",
+              name: "sub_department_id",
+              value: this.state.sub_department_id,
               className: "select-fld",
-              dataSource: {},
-              others: {}
+              dataSource: {
+                textField: "sub_department_name",
+                valueField: "hims_d_sub_department_id",
+                data: this.state.sub_depts
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hims_d_sub_department_id: null
+                });
+              }
             }}
           />
           <div className="col" style={{ paddingTop: 10 }}>
             <div className="customRadio">
               <label className="radio inline" style={{ display: "block" }}>
-                <input type="radio" value="AllAuth" name="selectEmployeeAuth" />
+                <input
+                  type="radio"
+                  value="A"
+                  name="assign_type"
+                  checked={this.state.assign_type === "A"}
+                  onChange={this.textHandler.bind(this)}
+                />
                 <span>All Employee</span>
               </label>
 
               <label className="radio inline" style={{ margin: 0 }}>
                 <input
                   type="radio"
-                  value="SelectedAuth"
-                  name="selectEmployeeAuth"
+                  onChange={this.textHandler.bind(this)}
+                  value="E"
+                  name="assign_type"
+                  checked={this.state.assign_type === "E"}
                 />
                 <span>Selected a Employee</span>
               </label>
             </div>
           </div>
           {/* Radio ENd here Here */}
-          <div className="col" style={{ marginTop: 7 }}>
-            <div
-              className="row"
-              style={{
-                border: " 1px solid #ced4d9",
-                borderRadius: 5,
-                marginLeft: 0
-              }}
-            >
-              <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                <h6>------------</h6>
-              </div>
+          {this.state.assign_type === "E" ? (
+            <div className="col" style={{ marginTop: 7 }}>
               <div
-                className="col-3"
-                style={{ borderLeft: "1px solid #ced4d8", paddingLeft: "6%" }}
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0
+                }}
               >
-                <i
-                  className="fas fa-search fa-lg"
-                  style={{
-                    paddingTop: 17,
-                    paddingLeft: 3,
-                    cursor: "pointer"
-                  }}
-                  // onClick={employeeSearch.bind(this, this)}
-                />
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                  <h6>------------</h6>
+                </div>
+                <div
+                  className="col-3"
+                  style={{ borderLeft: "1px solid #ced4d8", paddingLeft: "6%" }}
+                >
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer"
+                    }}
+                    onClick={this.employeeSearch.bind(this)}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          ) : null}
           {/* Select EMployee ENd here Here */}
+
           <div className="col">
             <button
               type="button"
@@ -122,7 +222,7 @@ export default class AuthorizationSetup extends Component {
                             paddingLeft: 3,
                             cursor: "pointer"
                           }}
-                          // onClick={employeeSearch.bind(this, this)}
+                          onClick={this.employeeSearch.bind(this)}
                         />
                       </div>
                     </div>
@@ -156,7 +256,7 @@ export default class AuthorizationSetup extends Component {
                             paddingLeft: 3,
                             cursor: "pointer"
                           }}
-                          // onClick={employeeSearch.bind(this, this)}
+                          onClick={this.employeeSearch.bind(this)}
                         />
                       </div>
                     </div>
@@ -190,7 +290,7 @@ export default class AuthorizationSetup extends Component {
                             paddingLeft: 3,
                             cursor: "pointer"
                           }}
-                          // onClick={employeeSearch.bind(this, this)}
+                          onClick={this.employeeSearch.bind(this)}
                         />
                       </div>
                     </div>
@@ -224,7 +324,7 @@ export default class AuthorizationSetup extends Component {
                             paddingLeft: 3,
                             cursor: "pointer"
                           }}
-                          // onClick={employeeSearch.bind(this, this)}
+                          onClick={this.employeeSearch.bind(this)}
                         />
                       </div>
                     </div>
@@ -258,7 +358,7 @@ export default class AuthorizationSetup extends Component {
                             paddingLeft: 3,
                             cursor: "pointer"
                           }}
-                          // onClick={employeeSearch.bind(this, this)}
+                          onClick={this.employeeSearch.bind(this)}
                         />
                       </div>
                     </div>
