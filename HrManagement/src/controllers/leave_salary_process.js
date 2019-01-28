@@ -3,7 +3,8 @@ import utlities from "algaeh-utilities";
 import {
   getLeaveSalaryProcess,
   processLeaveSalary,
-  InsertLeaveSalary
+  InsertLeaveSalary,
+  getLeaveSalary
 } from "../models/leave_salary_process";
 export default () => {
   const api = Router();
@@ -16,7 +17,7 @@ export default () => {
 
   api.get("/processLeaveSalary", processLeaveSalary, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
+      success: req.flag == 1 ? false : true,
       result: req.records
     });
   });
@@ -24,6 +25,13 @@ export default () => {
   api.post("/InsertLeaveSalary", InsertLeaveSalary, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
+      result: req.records
+    });
+  });
+
+  api.get("/getLeaveSalary", getLeaveSalary, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: req.flag == 1 ? false : true,
       result: req.records
     });
   });

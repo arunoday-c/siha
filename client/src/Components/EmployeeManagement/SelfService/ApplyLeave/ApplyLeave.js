@@ -814,7 +814,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Reason for Leave",
-                      isImp: true
+                      isImp: false
                     }}
                     textBox={{
                       className: "txt-fld",

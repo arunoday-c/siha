@@ -1,9 +1,10 @@
+@import "../../styles/algaehCssVariables.scss";
 .ReactTable {
   .rt-thead {
     .rt-th {
       font-size: 0.8rem !important;
       color: #000 !important;
-      background: #f3ffff !important;
+      background: lighten($primary-color, 45%) !important;
       .style_Label {
         font-weight: bold !important;
         white-space: pre-line !important;
@@ -36,7 +37,7 @@
     }
   }
   .-btn {
-    background: #34b8bc !important;
+    background: $primary-color !important;
     color: #fff !important;
   }
   .-btn:disabled {
@@ -82,7 +83,7 @@
   .fa-thumbs-up,
   .fa-thumbs-down {
     cursor: pointer;
-    border: 1px solid #44b8bd;
+    border: 1px solid lighten($primary-color, 10%);
     height: 28px;
     border-radius: 100%;
     font-size: 0.9rem;
@@ -115,7 +116,7 @@
   .fa-plus:hover,
   .fa-thumbs-up:hover,
   .fa-thumbs-down:hover {
-    background: #44b8bd;
+    background: $primary-color;
     color: #fff;
   }
 }

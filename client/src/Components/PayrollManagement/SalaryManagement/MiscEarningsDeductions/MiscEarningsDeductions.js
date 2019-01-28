@@ -397,7 +397,7 @@ export default class MiscEarningsDeductions extends Component {
             />
 
             <div
-              className="col"
+              className="col-3"
               style={{
                 pointerEvents: this.state.lockEarnings ? "none" : null
               }}

@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import "./HolidayListSelf.css";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
@@ -35,7 +36,7 @@ export default class HolidayListSelf extends Component {
 
   render() {
     return (
-      <div className="row">
+      <div className="row HolidayListSelfScreen">
         <div className="col-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
@@ -55,6 +56,9 @@ export default class HolidayListSelf extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Date" }} />
                         ),
+                        others: {
+                          maxWidth: 150
+                        },
                         displayTemplate: row => {
                           return (
                             <span>
@@ -76,6 +80,9 @@ export default class HolidayListSelf extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Type" }} />
                         ),
+                        others: {
+                          maxWidth: 150
+                        },
                         displayTemplate: row => {
                           return (
                             <span>
@@ -95,6 +102,9 @@ export default class HolidayListSelf extends Component {
                             label={{ forceLabel: "Applicable For" }}
                           />
                         ),
+                        others: {
+                          maxWidth: 150
+                        },
                         displayTemplate: row => {
                           return (
                             <span>

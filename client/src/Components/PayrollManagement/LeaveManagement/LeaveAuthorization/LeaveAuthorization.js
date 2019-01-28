@@ -365,25 +365,78 @@ export default class LeaveAuthorization extends Component {
                         ),
                         displayTemplate: row => {
                           return (
-                            <i
-                              style={{
-                                pointerEvents:
-                                  row.cancelled === "Y" ? "none" : null,
-                                opacity: row.cancelled === "Y" ? "0.1" : null
-                              }}
-                              className="fas fa-eye"
-                              onClick={() => {
-                                this.setState({
-                                  open: true,
-                                  currLeavAppln: row
-                                });
-                              }}
-                            />
+                            (
+                              <i
+                                style={
+                                  {
+                                    //     pointerEvents:
+                                    //      row.cancelled === "Y" ? "none" : null,
+                                    //  opacity: row.cancelled === "Y" ? "0.1" : null
+                                  }
+                                }
+                                className="fas fa-thumbs-up"
+                                onClick={() => {
+                                  this.setState({
+                                    open: true,
+                                    currLeavAppln: row
+                                  });
+                                }}
+                              />
+                            ),
+                            (
+                              <i
+                                className="fas fa-thumbs-down"
+                                onClick={() => {
+                                  this.setState({
+                                    open: true,
+                                    currLeavAppln: row
+                                  });
+                                }}
+                              />
+                            ),
+                            (
+                              <i
+                                className="fas fa-times"
+                                onClick={() => {
+                                  this.setState({
+                                    open: true,
+                                    currLeavAppln: row
+                                  });
+                                }}
+                              />
+                            )
                           );
                         },
                         others: {
                           filterable: false,
-                          maxWidth: 55
+                          maxWidth: 105
+                        }
+                      },
+                      {
+                        fieldName: "status",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Leave Status" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.status === "PEN" ? (
+                                <span className="badge badge-warning">
+                                  Pending
+                                </span>
+                              ) : row.status === "APR" ? (
+                                <span className="badge badge-success">
+                                  Approved
+                                </span>
+                              ) : row.status === "REJ" ? (
+                                <span className="badge badge-danger">
+                                  Rejected
+                                </span>
+                              ) : (
+                                "------"
+                              )}
+                            </span>
+                          );
                         }
                       },
                       {
@@ -462,25 +515,6 @@ export default class LeaveAuthorization extends Component {
                         displayTemplate: row => {
                           return (
                             <span>{row.remarks ? row.remarks : "------"}</span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "status",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Status" }} />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.status === "PEN"
-                                ? "Pending"
-                                : row.status === "APR"
-                                ? "Approved"
-                                : row.status === "REJ"
-                                ? "Rejected"
-                                : "------"}
-                            </span>
                           );
                         }
                       }

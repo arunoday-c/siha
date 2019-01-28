@@ -37,7 +37,7 @@ body {
   /* Safari */
   transition: width 2s; }
   :global .btn i {
-    text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5); }
+    text-shadow: 0px 1px 1px #1a1a1a; }
 
 :global .btn:hover {
   background-position: 100% 0;
@@ -56,75 +56,74 @@ body {
 
 :global .btn-primary {
   color: #fff;
-  background-color: none;
-  background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
-  border-color: #44b8bd; }
-
-:global .btn-primary:hover {
-  background-color: none;
-  border-color: #44b8bd; }
-
-:global .btn-primary:active,
-:global .btn-primary:focus {
   background-color: #34b8bc;
-  border-color: #34b8bc; }
-
-:global .btn-primary.disabled,
-:global .btn-primary:disabled {
-  opacity: 0.3;
-  cursor: not-allowed; }
+  border-color: #299194; }
+  :global .btn-primary:hover {
+    background-color: #299194;
+    border-color: #53ccd0; }
+  :global .btn-primary:focus {
+    background-color: #34b8bc;
+    border-color: #34b8bc; }
+  :global .btn-primary.disabled, :global .btn-primary:disabled {
+    opacity: 0.3;
+    color: #fff;
+    background-color: #34b8bc;
+    border-color: #299194;
+    cursor: not-allowed; }
+  :global .btn-primary:active {
+    background-color: #fff;
+    border-color: #fff; }
 
 :global .btn-default {
-  color: #212529;
-  background-color: none;
-  background-image: linear-gradient(to right, #ffffff, #ececec, #ffffff, #ececec);
-  border-color: #b6b6b6; }
+  color: #1a1a1a;
+  background-color: #e6e6e6;
+  border-color: gray; }
+  :global .btn-default:hover, :global .btn-default:focus {
+    background-color: #cccccc;
+    border-color: #1a1a1a; }
 
-:global .btn-default:hover,
-:global .btn-default:focus {
-  background-color: none;
+:global .btn-other {
+  color: #000;
   border-color: #b6b6b6; }
-
-:global .btn-primary:active {
-  background-color: #fff;
-  border-color: #fff; }
+  :global .btn-other:hover, :global .btn-other:focus {
+    background-color: #e6e6e6; }
 
 :global .inner-top-search {
-  background: rgba(255, 255, 255, 0.5);
+  background: #fff;
   border-radius: 0;
   border: none;
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+  border-bottom: 1px dashed #cccccc;
   margin-bottom: 10px;
   padding-top: 5px; }
 
 :global .algaehLabelGroup {
   font-weight: bold;
-  color: #575b5e;
+  color: #000;
   position: absolute;
   top: -11px;
   left: 5px;
-  background: #f9f9f9;
+  background: #fff;
   padding: 2px 6px 4px; }
 
 :global .algaehLabelFormGroup {
-  border: 1px solid #c1c1c1;
+  border: 1px solid #cccccc;
   padding-top: 15px;
   margin-bottom: 20px; }
   :global .algaehLabelFormGroup h6 {
     font-size: 0.9rem; }
 
 :global .image-drop-area {
-  border: 1px solid #93a4ad;
+  border: 1px solid #e6e6e6;
   min-height: 101px;
   position: relative;
-  background-color: #eaeaea; }
+  background-color: #e6e6e6; }
   :global .image-drop-area .dropzone {
     min-width: 100%;
     min-height: 100%; }
     :global .image-drop-area .dropzone img {
       width: 100%; }
   :global .image-drop-area .drop-message {
-    color: #485a63;
+    color: #1a1a1a;
     margin: 8px 0px;
     min-width: 130px;
     padding-left: 0px; }
@@ -132,15 +131,14 @@ body {
     display: inline-block;
     width: 33.33%;
     padding: 5px;
-    background: #8c8c8c;
+    background: #53ccd0;
     cursor: pointer;
     text-align: center;
     color: #fff; }
     :global .image-drop-area .img-upload-actions i:hover {
       background: #34b8bc; }
   :global .image-drop-area .img-upload-progress {
-    background-color: none;
-    background-image: linear-gradient(to left, #34b8bc, #25d8df);
+    background-color: #34b8bc;
     height: 26px;
     width: 100%;
     position: absolute;
@@ -153,7 +151,7 @@ body {
     padding: 0 5px 0 0;
     color: #fff;
     line-height: 23px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); }
+    text-shadow: 0 1px 1px #1a1a1a; }
   :global .image-drop-area .img-upload-loader {
     position: absolute;
     top: 40%;
@@ -164,10 +162,10 @@ body {
       color: #34b8bc; }
 
 :global .image-ins-drop-area {
-  border: 1px solid #93a4ad;
+  border: 1px solid #1a1a1a;
   min-height: 80px;
   position: relative;
-  background-color: #eaeaea; }
+  background-color: #1a1a1a; }
   :global .image-ins-drop-area .dropzone {
     min-width: 100%;
     min-height: 100%; }
@@ -175,7 +173,7 @@ body {
       width: 100%;
       height: 76px; }
   :global .image-ins-drop-area .drop-message {
-    color: #485a63;
+    color: #1a1a1a;
     margin: 8px 0px;
     min-width: 130px;
     padding-left: 0px; }
@@ -189,7 +187,7 @@ body {
   position: relative;
   width: 16px;
   height: 16px;
-  border: 1px solid rgba(1, 1, 1, 0.54);
+  border: 1px solid #1a1a1a;
   border-radius: 50%;
   outline: none;
   vertical-align: middle;
@@ -197,12 +195,12 @@ body {
   :global .htpl-phase1-radio-btn:focus {
     outline: none; }
   :global .htpl-phase1-radio-btn:checked {
-    border: 1px solid #e5e5e5; }
+    border: 1px solid #1a1a1a; }
     :global .htpl-phase1-radio-btn:checked:focus {
       outline: none; }
     :global .htpl-phase1-radio-btn:checked::before {
       content: "";
-      background: #44b6ae;
+      background: #53ccd0;
       display: block;
       position: absolute;
       width: 8px;
@@ -215,16 +213,16 @@ body {
   font-size: 0.8rem;
   text-transform: uppercase;
   border-radius: 5px;
-  background-color: #44b6ae;
-  border: solid 1px #44b6ae;
+  background-color: #53ccd0;
+  border: solid 1pxlighten #34b8bc, 10%;
   color: #fff;
   padding: 2px 20px;
   margin: 0 !important;
   cursor: pointer; }
   :global .htpl1-phase1-btn-primary:hover {
-    background-color: #44b6ae; }
+    background-color: #53ccd0; }
   :global .htpl1-phase1-btn-primary:active {
-    background-color: #44b6ae;
+    background-color: #53ccd0;
     box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
     border: solid 1px #68509f; }
   :global .htpl1-phase1-btn-primary:disabled {
@@ -241,18 +239,18 @@ body {
   text-transform: uppercase;
   border-radius: 5px;
   background-color: transparent;
-  border: solid 1px #44b6ae;
-  color: #44b6ae;
+  border: solid 1pxlighten #34b8bc, 10%;
+  color: #53ccd0;
   padding: 2px 20px;
   margin: 0 !important;
   cursor: pointer; }
   :global .htpl1-phase1-btn-secondary:hover {
-    color: #44b6ae;
-    border: solid 1px #44b6ae;
+    color: #53ccd0;
+    border: solid 1pxlighten #34b8bc, 10%;
     background-color: #fff; }
   :global .htpl1-phase1-btn-secondary:active {
-    color: #44b6ae;
-    border: solid 1px #44b6ae;
+    color: #53ccd0;
+    border: solid 1pxlighten #34b8bc, 10%;
     background-color: #fff; }
   :global .htpl1-phase1-btn-secondary:disabled {
     background-color: #d0d8dc;
@@ -1262,7 +1260,7 @@ th {
 .Image-cropper {
   position: fixed;
   border: 5px solid #d5ac70;
-  -webkit-box-shadow: 0 20px 20px rgba(0, 0, 0, 0.2);
+  -webkit-box-shadow: 0 20px 20px #000;
   box-shadow: 0 20px 50px #999999;
   top: 10vh;
   z-index: 9;
@@ -1304,7 +1302,7 @@ th {
   width: 640px;
   height: 480px;
   margin: auto;
-  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5); }
+  box-shadow: 0 30px 100px #1a1a1a; }
   .image-area-cntr video {
     background: #000; }
   .image-area-cntr .videoActions {
@@ -1314,7 +1312,7 @@ th {
     top: 4px; }
     .image-area-cntr .videoActions i {
       padding: 10px;
-      background: #8c8c8c;
+      background: #1a1a1a;
       font-size: 1.1rem;
       text-align: center;
       line-height: 30px;
@@ -1323,10 +1321,86 @@ th {
       color: #fff;
       cursor: pointer; }
       .image-area-cntr .videoActions i:last-child {
-        background: #68b5b9; }
+        background: #53ccd0; }
       .image-area-cntr .videoActions i:hover {
         background: rgba(0, 0, 0, 0.1); }
 
 .disableLi {
   pointer-events: none;
   opacity: 0.5; }
+
+.my-calendar {
+  text-align: center;
+  background: #34b8bc;
+  color: #fff; }
+  .my-calendar .myDay_date {
+    position: relative; }
+    .my-calendar .myDay_date input[type="month"] {
+      font-size: 0.8rem;
+      padding: 2px 3px 3px 8px;
+      width: 250px;
+      text-transform: uppercase;
+      border: 1px dashed #ffffff;
+      border-radius: 4px;
+      margin-top: 4px;
+      background: none;
+      color: #fff; }
+    .my-calendar .myDay_date input[type="month"]::-webkit-calendar-picker-indicator {
+      color: rgba(0, 0, 0, 0);
+      opacity: 1;
+      display: block;
+      background: url(../assets//svg/calendar-white-icon.svg) no-repeat center;
+      width: 18px;
+      height: 15px;
+      border-width: thin;
+      background-size: 60%; }
+    .my-calendar .myDay_date input[type="month"]:disabled {
+      background: #fffdfa;
+      border: 1px dashed #d3d3d3;
+      color: #000;
+      font-weight: bold; }
+    .my-calendar .myDay_date button {
+      margin-left: 0px;
+      padding: 3px 6px !important; }
+      .my-calendar .myDay_date button svg {
+        height: 16px; }
+    .my-calendar .myDay_date .todayBtn {
+      margin-left: 10px;
+      padding: 3px 10px;
+      border: 1px solid white;
+      background: none;
+      color: #fff; }
+    .my-calendar .myDay_date .todayBtn:hover {
+      background: #fff;
+      color: #299194; }
+  .my-calendar .arrow-box {
+    width: 60px;
+    cursor: pointer; }
+  .my-calendar .arrow-box:hover {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
+  .my-calendar .arrow-box-left {
+    float: left; }
+  .my-calendar .arrow-box-right {
+    float: right; }
+  .my-calendar .calendar .col {
+    border: 1px solid #299194;
+    font-size: 1.3rem;
+    padding-right: 3px;
+    padding-left: 3px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }
+  .my-calendar .calendar .col:hover {
+    background: #299194;
+    cursor: pointer;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3); }
+  .my-calendar .calendar .col span {
+    padding: 0;
+    margin: 0;
+    display: block;
+    font-size: 0.6rem;
+    text-transform: uppercase; }
+  .my-calendar .activeDate {
+    border-bottom: 4px solid yellow !important;
+    background: #299194; }
+  .my-calendar .CurrentDate {
+    border-top: 2px solid yellow !important; }
