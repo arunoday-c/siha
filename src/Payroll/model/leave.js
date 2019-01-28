@@ -2532,7 +2532,7 @@ let authorizeLeave = (req, res, next) => {
                   const month_number = moment(input.from_date).format("M");
                   const month_name = moment(input.from_date).format("MMMM");
                   let updaid_leave_duration = 0;
-                  let id = "";
+                  let id = 0;
                   new Promise((resolve, reject) => {
                     try {
                       connection.query(
@@ -4215,8 +4215,10 @@ let cancelLeave = (req, res, next) => {
         reject(e);
       }
     }).then(result => {
+
+ 
     if (
-      req.userIdentity.leave_authorize_privilege == result["MaxLeave"]
+      req.userIdentity.leave_authorize_privilege == result.MaxLeave
     ) {
       db.getConnection((error, connection) => {
         if (error) {
@@ -4440,6 +4442,18 @@ let cancelLeave = (req, res, next) => {
                         });
                       });
                     }
+                    else{
+
+                      //salary is proceesd
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        req.records = {
+                          invalid_input: true,
+                          message: "salary is already processed"
+                        };
+                        next();
+                      });
+                    }
                   }
                 );
               }  else if (leaveStaus[0]["status"] == "CAN") {
@@ -4458,7 +4472,7 @@ let cancelLeave = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   req.records = {
                     invalid_input: true,
-                    message: "salary is already processed"
+                    message: "cant cancel,leave is not Approved yet"
                   };
                   next();
                 });
