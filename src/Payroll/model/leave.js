@@ -2896,12 +2896,12 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
 
     let auth_level = "";
     if (req.query.auth_level == "L1") {
-      auth_level = " and authorize1='N' ";
+      auth_level = "  authorize1='N' ";
     } else if (req.query.auth_level == "L2") {
-      auth_level = " and authorize1='Y' and authorized2='N' ";
+      auth_level = "  authorize1='Y' and authorized2='N' ";
     } else if (req.query.auth_level == "L3") {
       auth_level =
-        " and authorize1='Y' and authorized2='Y' and authorized3='N' ";
+        "  authorize1='Y' and authorized2='Y' and authorized3='N' ";
     }
 
     let leave_status = "";
@@ -2933,15 +2933,15 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
         and E.record_status='A' inner join hims_d_sub_department SD \
         on LA.sub_department_id=SD.hims_d_sub_department_id  where " +
-          employee +
+        auth_level +
           "" +
           range +
           "" +
-          auth_level +
+          employee +
           "" +
           leave_status +
           "order by hims_f_leave_application_id desc",
-
+          
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {
