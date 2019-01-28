@@ -513,6 +513,12 @@ let assignAuthLevels = (req, res, next) => {
               next();
             }
           );
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "please send valid input"
+          };
+          next();
         }
       });
     });
