@@ -65,7 +65,7 @@ body {
     background-color: $primary-color;
     border-color: darken($primary-color, 10%);
     &:hover {
-      background-color: none;
+      background-color: darken($primary-color, 10%);
       border-color: lighten($primary-color, 10%);
     }
     &:focus {
@@ -75,6 +75,10 @@ body {
     &.disabled,
     &:disabled {
       opacity: 0.3;
+
+      color: $color-white;
+      background-color: $primary-color;
+      border-color: darken($primary-color, 10%);
       cursor: not-allowed;
     }
     &:active {
@@ -1678,7 +1682,7 @@ th {
       color: $color-white;
       cursor: pointer;
       &:last-child {
-        background: #68b5b9;
+        background: lighten($primary-color, 10%);
       }
       &:hover {
         background: rgba(0, 0, 0, 0.1);
@@ -1690,4 +1694,114 @@ th {
 .disableLi {
   pointer-events: none;
   opacity: 0.5;
+}
+
+.my-calendar {
+  text-align: center;
+  background: $primary-color;
+  color: #fff;
+
+  .myDay_date {
+    position: relative;
+
+    input[type="month"] {
+      font-size: 0.8rem;
+      padding: 2px 3px 3px 8px;
+      width: 250px;
+      text-transform: uppercase;
+      border: 1px dashed #ffffff;
+      border-radius: 4px;
+      margin-top: 4px;
+      background: none;
+      color: #fff;
+    }
+    input[type="month"]::-webkit-calendar-picker-indicator {
+      color: rgba(0, 0, 0, 0);
+      opacity: 1;
+      display: block;
+      background: url(../assets//svg/calendar-white-icon.svg) no-repeat center;
+      width: 18px;
+      height: 15px;
+      border-width: thin;
+      background-size: 60%;
+    }
+
+    input[type="month"]:disabled {
+      background: #fffdfa;
+      border: 1px dashed #d3d3d3;
+      color: #000;
+      font-weight: bold;
+    }
+    button {
+      margin-left: 0px;
+      padding: 3px 6px !important;
+      svg {
+        height: 16px;
+      }
+    }
+    .todayBtn {
+      margin-left: 10px;
+      padding: 3px 10px;
+      border: 1px solid white;
+      background: none;
+      color: #fff;
+    }
+    .todayBtn:hover {
+      background: #fff;
+      color: darken($primary-color, 10%);
+    }
+  }
+
+  .arrow-box {
+    width: 60px;
+    cursor: pointer;
+  }
+  .arrow-box:hover {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  .arrow-box-left {
+    float: left;
+  }
+  .arrow-box-right {
+    float: right;
+  }
+  // .calendar {
+  //   width: 100%;
+  //   overflow: hidden;
+  //   float: left;
+  // }
+  // .calendar > ol {
+  //   margin: 0;
+  //   padding: 0;
+  //   //width: 1559px;
+  // }
+
+  .calendar .col {
+    border: 1px solid darken($primary-color, 10%);
+    font-size: 1.3rem;
+    padding-right: 3px;
+    padding-left: 3px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+  }
+  .calendar .col:hover {
+    background: darken($primary-color, 10%);
+    cursor: pointer;
+    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3);
+  }
+
+  .calendar .col span {
+    padding: 0;
+    margin: 0;
+    display: block;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+  }
+  .activeDate {
+    border-bottom: 4px solid yellow !important;
+    background: darken($primary-color, 10%);
+  }
+  .CurrentDate {
+    border-top: 2px solid yellow !important;
+  }
 }
