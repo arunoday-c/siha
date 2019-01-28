@@ -62,26 +62,49 @@ module.exports = {
         ...req.query
       };
 
-      let _stringData = selectWhere.hospital_id > 0 ? " hospital_id=? " : "";
-      if (_stringData != "" && selectWhere.sub_department_id > 0)
-        _stringData += " AND ";
-      _stringData +=
-        selectWhere.sub_department_id > 0 ? " sub_department_id=?" : "";
-      if (_stringData != "" && selectWhere.hims_d_employee_id != null)
-        _stringData += " AND ";
-      _stringData +=
-        selectWhere.hims_d_employee_id != null ? " hims_d_employee_id=?" : "";
-      const _appendString = _stringData != "" ? " AND " + _stringData : "";
-
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("_appendString: ", _appendString);
-
       utilities
         .AlgaehUtilities()
         .logger()
         .log("selectWhere: ", selectWhere);
+
+      let inputValues = [endOfMonth, startOfMonth, endOfMonth];
+      let _stringData = "";
+      // let _stringData = selectWhere.hospital_id > 0 ? " hospital_id=? " : "";
+      // if (_stringData != "" && selectWhere.sub_department_id > 0)
+      //   _stringData += " AND ";
+      // _stringData +=
+      //   selectWhere.sub_department_id > 0 ? " sub_department_id=?" : "";
+
+      // if (_stringData != "" && selectWhere.hims_d_employee_id != null)
+      //   _stringData += " AND ";
+      // _stringData +=
+      //   selectWhere.hims_d_employee_id != null ? " hims_d_employee_id=?" : "";
+
+      // const _appendString = _stringData != "" ? " AND " + _stringData : "";
+
+      if (selectWhere.hospital_id != null) {
+        _stringData += " and hospital_id=?";
+        inputValues.push(selectWhere.hospital_id);
+      }
+      if (selectWhere.sub_department_id != null) {
+        _stringData += " and sub_department_id=? ";
+        inputValues.push(selectWhere.sub_department_id);
+      }
+
+      if (selectWhere.hims_d_employee_id != null) {
+        _stringData += " and hims_d_employee_id=? ";
+        inputValues.push(selectWhere.hims_d_employee_id);
+      }
+
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("_stringData: ", _stringData);
+
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("inputValues: ", inputValues);
 
       // Sync(() => {
       // .sync(null,
@@ -92,8 +115,8 @@ module.exports = {
       employee_status,date_of_joining ,date_of_resignation ,religion_id,sub_department_id,hospital_id,exit_date from hims_d_employee where employee_status <>'I'\
       and (( date(date_of_joining) <= date(?) and date(exit_date) >= date(?)) or \
       (date(date_of_joining) <= date(?) and exit_date is null)) and  record_status='A' " +
-            _appendString,
-          values: _.valuesIn(selectWhere),
+            _stringData,
+          values: inputValues,
           printQuery: true
         })
         .then(empResult => {
@@ -200,7 +223,7 @@ module.exports = {
                           .executeQuery({
                             query:
                               "select hims_f_leave_application_id, employee_id, leave_id, leave_type FROM hims_f_leave_application where\
-                        employee_id =? and status= 'APR' and cancelled = 'N' AND\
+                        employee_id =? and status= 'APR' AND\
                         ((from_date>= ? and from_date <= ?) or\
                         (to_date >= ? and to_date <= ?) or\
                         (from_date <= ? and to_date >= ?)) group by leave_id ",
