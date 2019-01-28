@@ -1,9 +1,10 @@
+@import "../../styles/algaehCssVariables.scss";
 .ReactTable {
   .rt-thead {
     .rt-th {
       font-size: 0.8rem !important;
       color: #000 !important;
-      background: #f3ffff !important;
+      background: lighten($primary-color, 32%) !important;
       .style_Label {
         font-weight: bold !important;
         white-space: pre-line !important;
