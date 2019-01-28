@@ -1502,7 +1502,7 @@ function getOtManagement(options) {
 
         resolve({ current_ot_amt_array, final_earning_amount });
       }
-    }else{
+    } else {
       resolve({ current_ot_amt_array, final_earning_amount });
     }
   });
@@ -1627,28 +1627,6 @@ function getEarningComponents(options) {
           amount: current_earning_amt,
           per_day_salary: current_earning_per_day_salary
         });
-
-        // //OT Calculation
-        // if (
-        //   obj["overtime_applicable"] == "Y" &&
-        //   ot_hours != 0 &&
-        //   leave_salary != "Y"
-        // ) {
-        //   let per_hour_salary =
-        //     current_earning_per_day_salary / Noof_Working_Hours;
-
-        //   per_hour_salary = per_hour_salary * ot_hours;
-
-        //   utilities
-        //     .AlgaehUtilities()
-        //     .logger()
-        //     .log("per_hour_salary: ", per_hour_salary);
-
-        //   current_earning_amt_array.push({
-        //     earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
-        //     amount: per_hour_salary
-        //   });
-        // }
       }
     });
     utilities

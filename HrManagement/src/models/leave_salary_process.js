@@ -306,7 +306,19 @@ module.exports = {
                     let final_result = [];
 
                     for (let i = 0; i < Salary_result.length; i++) {
-                      Array.prototype.push.apply(result_data, Salary_result[i]);
+                      if (Array.isArray(Salary_result[i])) {
+                        Array.prototype.push.apply(
+                          result_data,
+                          Salary_result[i]
+                        );
+                      } else {
+                        result_data.push(Salary_result[i]);
+                      }
+
+                      utilities
+                        .AlgaehUtilities()
+                        .logger()
+                        .log("result_data:", result_data);
                     }
 
                     let amount_data = [];
@@ -468,13 +480,34 @@ module.exports = {
                     printQuery: true
                   })
                   .then(leave_application => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = {
-                        leave_salary_number: leave_salary_number
-                      };
-                      next();
-                    });
+                    const _salaryHeader_id = _.map(
+                      inputParam.leave_salary_detail,
+                      o => {
+                        return o.salary_header_id;
+                      }
+                    );
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
+                        values: [_salaryHeader_id],
+                        printQuery: true
+                      })
+                      .then(leave_application => {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = {
+                            leave_salary_number: leave_salary_number
+                          };
+                          next();
+                        });
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
                   })
                   .catch(e => {
                     _mysql.rollBackTransaction(() => {
