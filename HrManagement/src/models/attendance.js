@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
-//import { LINQ } from "node-linq";
+import { LINQ } from "node-linq";
 import utilities from "algaeh-utilities";
 // import Sync from "sync";
 module.exports = {
@@ -178,22 +178,36 @@ module.exports = {
                         }
 
                         //HOLIDAYS CALCULATION------------------------------------------
-                        let other_religion_holidays = _.chain(_holidayResult)
-                          .filter(obj => {
-                            return (
-                              obj.weekoff == "N" &&
-                              obj.holiday == "Y" &&
-                              obj.holiday_type == "RS" &&
-                              obj.religion_id != empResult[i]["religion_id"]
-                            );
-                          })
-                          .value();
+                        // let other_religion_holidays = _.chain(_holidayResult)
+                        //   .filter(obj => {
+                        //     return (
+                        //       obj.weekoff == "N" &&
+                        //       obj.holiday == "Y" &&
+                        //       obj.holiday_type == "RS" &&
+                        //       obj.religion_id != empResult[i]["religion_id"]
+                        //     );
+                        //   })
+                        //   .value();
 
-                        empResult[i]["defaults"].emp_total_holidays =
-                          other_religion_holidays.length === 0
-                            ? 0
-                            : _holidayResult.length -
-                              other_religion_holidays.length;
+                        // empResult[i]["defaults"].emp_total_holidays =
+                        //   other_religion_holidays.length === 0
+                        //     ? 0
+                        //     : _holidayResult.length -
+                        //       other_religion_holidays.length;
+
+                        empResult[i]["defaults"].emp_total_holidays = new LINQ(
+                          _holidayResult
+                        )
+                          .Where(
+                            w =>
+                              (w.holiday == "Y" && w.holiday_type == "RE") ||
+                              (w.holiday == "Y" &&
+                                w.holiday_type == "RS" &&
+                                w.religion_id == empResult[i]["religion_id"])
+                          )
+                          .Count();
+
+                        //-----------------------------
 
                         utilities
                           .AlgaehUtilities()
