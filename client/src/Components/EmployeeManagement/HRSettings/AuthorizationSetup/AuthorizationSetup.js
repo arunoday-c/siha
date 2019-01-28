@@ -15,9 +15,33 @@ export default class AuthorizationSetup extends Component {
     super(props);
     this.state = {
       sub_depts: [],
-      assign_type: "A"
+      no_employees: "ALL",
+      no_auths: 0,
+      options: {}
     };
     this.getSubDepartments();
+    this.getOptions();
+  }
+
+  getOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/getHrmsOptions",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({ options: res.data.result[0] }, () => {
+            console.log("Options:", this.state.options);
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getSubDepartments() {
@@ -41,37 +65,159 @@ export default class AuthorizationSetup extends Component {
   }
 
   dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
+    switch (value.name) {
+      case "auth_type":
+        this.setState({
+          [value.name]: value.value,
+          no_auths:
+            value.value === "LE"
+              ? parseInt(this.state.options.leave_level, 10)
+              : value.value === "LO"
+              ? parseInt(this.state.options.loan_level, 10)
+              : null,
+          selected_auth_type: value.selected.name
+        });
+        break;
+
+      case "sub_department_id":
+        this.setState({
+          [value.name]: value.value,
+          selected_dept: value.selected.sub_department_name
+        });
+        break;
+
+      default:
+        this.setState({
+          [value.name]: value.value
+        });
+        break;
+    }
   }
 
-  employeeSearch() {
-    AlgaehSearch({
-      searchGrid: {
-        columns: Employee
-      },
-      searchName: "employee",
-      uri: "/gloabelSearch/get",
-      inputs: " sub_department_id=" + this.state.sub_department_id,
-      onContainsChange: (text, serchBy, callBack) => {
-        callBack(text);
-      },
-      onRowSelect: row => {
-        this.setState(
-          {
-            employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
-          },
-          () => {}
-        );
-      }
-    });
+  getAuthLevleSelectors() {
+    let x = [];
+
+    for (let i = 0; i < this.state.no_auths; i++) {
+      x.push(i + 1);
+    }
+    return x.map((data, i) => (
+      <div className="col" key={data}>
+        <div
+          className="row"
+          style={{
+            border: " 1px solid #ced4d9",
+            borderRadius: 5,
+            marginLeft: 0,
+            marginRight: 0
+          }}
+        >
+          <div className="col">
+            <AlgaehLabel label={{ forceLabel: "Level " + data }} />
+            <h6>
+              {this.state["level_" + data + "_employee"]
+                ? this.state["level_" + data + "_employee"]
+                : "------"}
+            </h6>
+          </div>
+          <div
+            className="col-3"
+            style={{
+              borderLeft: "1px solid #ced4d8",
+              paddingLeft: "6%"
+            }}
+          >
+            <span
+              className="fas fa-search fa-lg"
+              style={{
+                paddingTop: 17,
+                paddingLeft: 3,
+                cursor: "pointer"
+              }}
+              name={"level_" + data}
+              onClick={this.employeeSearch.bind(this)}
+            />
+          </div>
+        </div>
+      </div>
+    ));
+  }
+
+  employeeSearch(e) {
+    if (this.state.auth_type === null || this.state.auth_type === undefined) {
+      swalMessage({
+        title: "Please Select an Auth Type",
+        type: "warning"
+      });
+    } else if (
+      this.state.sub_department_id === null ||
+      this.state.sub_department_id === undefined
+    ) {
+      swalMessage({
+        title: "Please Select a department",
+        type: "warning"
+      });
+    } else {
+      const _element_level = e.currentTarget.getAttribute("name");
+      AlgaehSearch({
+        searchGrid: {
+          columns: Employee
+        },
+        searchName: "users",
+        uri: "/gloabelSearch/get",
+        inputs: " E.sub_department_id=" + this.state.sub_department_id,
+        onContainsChange: (text, serchBy, callBack) => {
+          callBack(text);
+        },
+        onRowSelect: row => {
+          this.setState(
+            {
+              [_element_level]: row.algaeh_d_app_user_id,
+              [_element_level + "_employee"]: row.full_name
+            },
+            () => {}
+          );
+        }
+      });
+    }
   }
 
   textHandler(e) {
     this.setState({
       [e.target.name]: e.target.value
+    });
+  }
+  assignAuthLevels() {
+    let send_data = {
+      no_employees: this.state.no_employees,
+      employee_id: this.state.hims_d_employee_id,
+      sub_dept_id: this.state.sub_department_id,
+      auth_type: this.state.auth_type,
+      no_auths: this.state.no_auths,
+      level_1: this.state.level_1,
+      level_2: this.state.level_2,
+      level_3: this.state.level_3,
+      level_4: this.state.level_4,
+      level_5: this.state.level_5
+    };
+
+    algaehApiCall({
+      uri: "/payrollSettings/assignAuthLevels",
+      method: "POST",
+      data: send_data,
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record(s) added successfully . .",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
   }
 
@@ -124,9 +270,9 @@ export default class AuthorizationSetup extends Component {
               <label className="radio inline" style={{ display: "block" }}>
                 <input
                   type="radio"
-                  value="A"
-                  name="assign_type"
-                  checked={this.state.assign_type === "A"}
+                  value="ALL"
+                  name="no_employees"
+                  checked={this.state.no_employees === "ALL"}
                   onChange={this.textHandler.bind(this)}
                 />
                 <span>All Employee</span>
@@ -136,23 +282,22 @@ export default class AuthorizationSetup extends Component {
                 <input
                   type="radio"
                   onChange={this.textHandler.bind(this)}
-                  value="E"
-                  name="assign_type"
-                  checked={this.state.assign_type === "E"}
+                  value="ONE"
+                  name="no_employees"
+                  checked={this.state.no_employees === "ONE"}
                 />
-                <span>Selected a Employee</span>
+                <span>Select an Employee</span>
               </label>
             </div>
           </div>
           {/* Radio ENd here Here */}
-          {this.state.assign_type === "E" ? (
+          {this.state.no_employees === "ONE" ? (
             <div className="col" style={{ marginTop: 7 }}>
               <div
                 className="row"
                 style={{
                   border: " 1px solid #ced4d9",
-                  borderRadius: 5,
-                  marginLeft: 0
+                  borderRadius: 5
                 }}
               >
                 <div className="col">
@@ -176,8 +321,8 @@ export default class AuthorizationSetup extends Component {
               </div>
             </div>
           ) : null}
-          {/* Select EMployee ENd here Here */}
-
+          {/* Select EMployee ENd here */}
+          {/* 
           <div className="col">
             <button
               type="button"
@@ -186,7 +331,7 @@ export default class AuthorizationSetup extends Component {
             >
               Load
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="row">
           {/* row starts here*/}
@@ -194,176 +339,10 @@ export default class AuthorizationSetup extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col">
-                    <div
-                      className="row"
-                      style={{
-                        border: " 1px solid #ced4d9",
-                        borderRadius: 5,
-                        marginLeft: 0,
-                        marginRight: 0
-                      }}
-                    >
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Select Auth 1" }} />
-                        <h6>------------</h6>
-                      </div>
-                      <div
-                        className="col-3"
-                        style={{
-                          borderLeft: "1px solid #ced4d8",
-                          paddingLeft: "6%"
-                        }}
-                      >
-                        <i
-                          className="fas fa-search fa-lg"
-                          style={{
-                            paddingTop: 17,
-                            paddingLeft: 3,
-                            cursor: "pointer"
-                          }}
-                          onClick={this.employeeSearch.bind(this)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* Select EMployee ENd here Here */}
-                  <div className="col">
-                    <div
-                      className="row"
-                      style={{
-                        border: " 1px solid #ced4d9",
-                        borderRadius: 5,
-                        marginLeft: 0,
-                        marginRight: 0
-                      }}
-                    >
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Select Auth 2" }} />
-                        <h6>------------</h6>
-                      </div>
-                      <div
-                        className="col-3"
-                        style={{
-                          borderLeft: "1px solid #ced4d8",
-                          paddingLeft: "6%"
-                        }}
-                      >
-                        <i
-                          className="fas fa-search fa-lg"
-                          style={{
-                            paddingTop: 17,
-                            paddingLeft: 3,
-                            cursor: "pointer"
-                          }}
-                          onClick={this.employeeSearch.bind(this)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* Select EMployee ENd here Here */}
-                  <div className="col">
-                    <div
-                      className="row"
-                      style={{
-                        border: " 1px solid #ced4d9",
-                        borderRadius: 5,
-                        marginLeft: 0,
-                        marginRight: 0
-                      }}
-                    >
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Select Auth 3" }} />
-                        <h6>------------</h6>
-                      </div>
-                      <div
-                        className="col-3"
-                        style={{
-                          borderLeft: "1px solid #ced4d8",
-                          paddingLeft: "6%"
-                        }}
-                      >
-                        <i
-                          className="fas fa-search fa-lg"
-                          style={{
-                            paddingTop: 17,
-                            paddingLeft: 3,
-                            cursor: "pointer"
-                          }}
-                          onClick={this.employeeSearch.bind(this)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* Select EMployee ENd here Here */}
-                  <div className="col">
-                    <div
-                      className="row"
-                      style={{
-                        border: " 1px solid #ced4d9",
-                        borderRadius: 5,
-                        marginLeft: 0,
-                        marginRight: 0
-                      }}
-                    >
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Select Auth 4" }} />
-                        <h6>------------</h6>
-                      </div>
-                      <div
-                        className="col-3"
-                        style={{
-                          borderLeft: "1px solid #ced4d8",
-                          paddingLeft: "6%"
-                        }}
-                      >
-                        <i
-                          className="fas fa-search fa-lg"
-                          style={{
-                            paddingTop: 17,
-                            paddingLeft: 3,
-                            cursor: "pointer"
-                          }}
-                          onClick={this.employeeSearch.bind(this)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* Select EMployee ENd here Here */}
-                  <div className="col">
-                    <div
-                      className="row"
-                      style={{
-                        border: " 1px solid #ced4d9",
-                        borderRadius: 5,
-                        marginLeft: 0,
-                        marginRight: 0
-                      }}
-                    >
-                      <div className="col">
-                        <AlgaehLabel label={{ forceLabel: "Select Auth 5" }} />
-                        <h6>------------</h6>
-                      </div>
-                      <div
-                        className="col-3"
-                        style={{
-                          borderLeft: "1px solid #ced4d8",
-                          paddingLeft: "6%"
-                        }}
-                      >
-                        <i
-                          className="fas fa-search fa-lg"
-                          style={{
-                            paddingTop: 17,
-                            paddingLeft: 3,
-                            cursor: "pointer"
-                          }}
-                          onClick={this.employeeSearch.bind(this)}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  {/* Select EMployee ENd here Here */}
+                  {this.getAuthLevleSelectors()}
+
+                  {/* Select Employee End here Here */}
+
                   <div className="col-12 margin-top-15">
                     <div className="row">
                       <div className="col">
@@ -372,7 +351,11 @@ export default class AuthorizationSetup extends Component {
                             forceLabel: "Selected Authorization Type"
                           }}
                         />
-                        <h6>--------</h6>
+                        <h6>
+                          {this.state.selected_auth_type
+                            ? this.state.selected_auth_type
+                            : "------"}
+                        </h6>
                       </div>
                       <div className="col">
                         <AlgaehLabel
@@ -380,7 +363,11 @@ export default class AuthorizationSetup extends Component {
                             forceLabel: "Selected Department"
                           }}
                         />
-                        <h6>--------</h6>
+                        <h6>
+                          {this.state.selected_dept
+                            ? this.state.selected_dept
+                            : "------"}
+                        </h6>
                       </div>
                       <div className="col">
                         <AlgaehLabel
@@ -388,10 +375,13 @@ export default class AuthorizationSetup extends Component {
                             forceLabel: "Selected Employee"
                           }}
                         />
-                        <h6>--------</h6>
+                        <h6>
+                          {this.state.no_employees === "ALL" ? "ALL" : "NAME"}
+                        </h6>
                       </div>
                       <div className="col margin-top-15">
                         <button
+                          onClick={this.assignAuthLevels.bind(this)}
                           className="btn btn-primary"
                           style={{ float: "right", marginLeft: 5 }}
                         >
