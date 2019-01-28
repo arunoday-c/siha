@@ -6,7 +6,8 @@ import {
   deleteRecord,
   runningNumberGen,
   releaseDBConnection,
-  jsonArrayToObject
+  jsonArrayToObject,
+  getMaxAuth
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
@@ -527,7 +528,50 @@ let assignAuthLevels = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let dummy = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    // let db = req.db;
+    // db.getConnection((error, connection) => {
+    //   connection.query(
+    //     " SELECT * FROM hims_d_hrms_options ",
+    //     (error, result) => {
+    //       releaseDBConnection(db, connection);
+    //       if (error) {
+    //         next(error);
+    //       }
+    //       req.records = result;
+    //       next();
+    //     }
+    //   );
+    // });
+    new Promise((resolve, reject) => {
+      try {
+        getMaxAuth({
+          req: req,
+          onFailure: error => {
+            reject(error);
+          },
+          onSuccess: result => {
+            resolve(result);
+          }
+        });
+      } catch (e) {
+        reject(e);
+      }
+    }).then(result => {
+      debugLog("result:", result);
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   getMiscEarningDeductions,
-  assignAuthLevels
+  assignAuthLevels,
+  dummy
 };
