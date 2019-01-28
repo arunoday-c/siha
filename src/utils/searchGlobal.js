@@ -314,7 +314,7 @@ let algaehSearchConfig = searchName => {
         orderBy: "hims_f_leave_salary_header_id desc"
       },
       {
-        searchName: "leave_settlement",
+        searchName: "users",
         searchQuery:
           "select algaeh_d_app_user_id,E.full_name as employee_name from algaeh_d_app_user U inner join \
           hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
