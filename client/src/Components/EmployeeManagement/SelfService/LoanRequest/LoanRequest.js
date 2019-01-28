@@ -218,6 +218,9 @@ class LoanRequest extends Component {
             title: "Loan Amount cannot be greater than max limit",
             type: "warning"
           });
+          this.setState({
+            loan_amount: null
+          });
         }
         break;
 
@@ -351,14 +354,12 @@ class LoanRequest extends Component {
                         isImp: true
                       }}
                       textBox={{
+                        decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "loan_amount",
                         value: this.state.loan_amount,
                         events: {
                           onChange: this.textHandle.bind(this)
-                        },
-                        others: {
-                          type: "number"
                         }
                       }}
                     />

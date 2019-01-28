@@ -44,7 +44,7 @@
       border-top: 1px solid #e5e5e5;
       display: block;
       width: 100%;
-      background: #0000; }
+      background: #000; }
     :global .print-body .hospitalLogo {
       color: #ccc;
       text-align: center;
@@ -112,7 +112,7 @@
     :global .print-body .tableForData {
       width: 100%;
       border-collapse: collapse;
-      border: 1px solid #00babe;
+      border: 1px solid #53ccd0;
       font-weight: normal; }
     :global .print-body .tableForData thead {
       margin: 0;
@@ -135,7 +135,7 @@
       font-size: 0.75rem;
       text-transform: uppercase;
       text-align: center;
-      border-right: 1px solid rgba(52, 184, 188, 0.4); }
+      border-right: 1px solid #299194; }
     :global .print-body .tableForData td {
       border: 1px solid #ccc;
       padding: 3px;
@@ -198,7 +198,7 @@
     -webkit-border-radius: 3px;
     border-radius: 3px; }
   :global ::-webkit-scrollbar-thumb {
-    background: #00bcb0;
+    background: #53ccd0;
     -webkit-border-radius: 3px;
     border-radius: 3px;
     -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5); }
@@ -207,7 +207,9 @@
   :global .displayInlineBlock {
     display: inline-block; }
   :global .greenCell {
-    background-color: #acffc0 !important; }
+    background-color: #67d2d5 !important;
+    color: #34b8bc !important;
+    text-decoration: underline !important; }
   :global .cancelledClass {
     background-color: #ff400080 !important;
     color: white;
@@ -292,7 +294,7 @@
           float: right;
           line-height: 17px;
           margin-right: 6px;
-          color: #212529;
+          color: #000;
           margin-left: 10px; }
       :global .bordered-layout-radius ul li.active::after {
         content: "";
@@ -302,7 +304,7 @@
         width: 0;
         height: 0;
         border-top: 8px solid #f5232300;
-        border-left: 8px solid #44b8bd;
+        border-left: 8px solid #53ccd0;
         border-right: 8px solid transparent;
         border-bottom: 8px solid #e8e8e800;
         clear: both; }
@@ -351,7 +353,7 @@
       text-align: center; }
   :global .caption.caption-green .caption-subject,
   :global .caption.caption-green i {
-    color: #4db3a2;
+    color: #53ccd0;
     font-weight: 200; }
   :global .caption.caption-red .caption-subject,
   :global .caption.caption-red i {
@@ -405,9 +407,8 @@
     :global .actions .btn-primary:not(:disabled):not(.disabled).active,
     :global .actions .btn-primary:not(:disabled):not(.disabled):active,
     :global .actions .show > .btn-primary.dropdown-toggle {
-      background-color: none;
-      background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
-      border-color: #44b8bd; }
+      background-color: #34b8bc;
+      border-color: #53ccd0; }
   :global .pagination {
     margin: -3px 0 0;
     border-radius: 50px; }
@@ -471,7 +472,7 @@
   :global .actions .btn.btn-green:hover {
     color: #fff;
     box-shadow: none;
-    background: #00bcb0;
+    background: #53ccd0;
     border-color: #01968c; }
   :global .customRadio {
     border-bottom: 1px solid #eee;
@@ -514,13 +515,13 @@
       z-index: 1;
       opacity: 0; }
     :global .customRadio .radio input[type="radio"]:checked + span {
-      color: #00bcb0; }
+      color: #53ccd0; }
     :global .customRadio .radio input[type="radio"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
       position: absolute;
-      background: #00bcb0;
+      background: #53ccd0;
       left: 5px;
       top: 8px;
       border-radius: 100%;
@@ -568,13 +569,13 @@
       z-index: 1;
       opacity: 0; }
     :global .customCheckbox .checkbox input[type="checkbox"]:checked + span {
-      color: #00bcb0; }
+      color: #53ccd0; }
     :global .customCheckbox .checkbox input[type="checkbox"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
       position: absolute;
-      background: #00bcb0;
+      background: #53ccd0;
       left: 5px;
       top: 8px;
       border-radius: 100%;
@@ -706,31 +707,32 @@
           text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5); }
       :global .algaeh-modal .popupFooter .btn-primary {
         color: #fff;
-        background-color: none;
-        background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
-        border-color: #44b8bd; }
+        background-color: #34b8bc;
+        border-color: #299194; }
         :global .algaeh-modal .popupFooter .btn-primary:hover {
-          background-color: none;
-          border-color: #44b8bd; }
+          background-color: #299194;
+          border-color: #53ccd0; }
         :global .algaeh-modal .popupFooter .btn-primary:focus {
           background-color: #34b8bc;
           border-color: #34b8bc; }
         :global .algaeh-modal .popupFooter .btn-primary.disabled, :global .algaeh-modal .popupFooter .btn-primary:disabled {
           opacity: 0.3;
+          color: #fff;
+          background-color: #34b8bc;
+          border-color: #299194;
           cursor: not-allowed; }
         :global .algaeh-modal .popupFooter .btn-primary:active {
           background-color: #fff;
           border-color: #fff; }
       :global .algaeh-modal .popupFooter .btn-default {
-        color: #212529;
-        background-color: none;
-        background-image: linear-gradient(to right, #ffffff, #ececec, #ffffff, #ececec);
-        border-color: #b6b6b6; }
+        color: #1a1a1a;
+        background-color: #e6e6e6;
+        border-color: gray; }
         :global .algaeh-modal .popupFooter .btn-default:hover, :global .algaeh-modal .popupFooter .btn-default:focus {
-          background-color: none;
-          border-color: #b6b6b6; }
+          background-color: #cccccc;
+          border-color: #1a1a1a; }
       :global .algaeh-modal .popupFooter .btn-other {
-        color: #212529;
+        color: #000;
         border-color: #b6b6b6; }
         :global .algaeh-modal .popupFooter .btn-other:hover, :global .algaeh-modal .popupFooter .btn-other:focus {
           background-color: #e6e6e6; }
@@ -824,9 +826,9 @@
         text-transform: uppercase;
         min-width: 70px; }
       :global .algaeh-modal-Ar .popupFooter .btn-primary {
-        background: #34b8bc;
         color: #fff;
-        border: 1px solid #34b8bc; }
+        background-color: #34b8bc;
+        border-color: #299194; }
       :global .algaeh-modal-Ar .popupFooter .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -862,7 +864,7 @@
       text-align: left;
       font-weight: bold;
       text-transform: uppercase;
-      color: #44b8bd;
+      color: #53ccd0;
       border: none; }
     :global .cashReciptStyles .table-report .table tbody td:first-child {
       color: #696969;
@@ -1017,7 +1019,7 @@
         :global .tabMaster ul li:after {
           display: block;
           content: "";
-          border-bottom: solid 3px #34b8bc;
+          border-bottom: 3px solid #34b8bc;
           transform: scaleX(0);
           transition: transform 150ms ease-in-out; }
         :global .tabMaster ul li:hover:after {
@@ -1035,7 +1037,7 @@
         border: none !important;
         cursor: pointer; }
       :global .tabMaster ul li.active label {
-        border-bottom: 3px solid #238386;
+        border-bottom: 3px solid #299194;
         color: #fff;
         cursor: pointer;
         background: #34b8bc;

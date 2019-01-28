@@ -6,10 +6,14 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup
 } from "../../../../Wrapper/algaehWrapper";
+
 import { MONTHS, NO_OF_EMI } from "../../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getAmountFormart
+} from "../../../../../utils/GlobalFunctions";
 
 class LoanModal extends Component {
   constructor(props) {
@@ -264,6 +268,7 @@ class LoanModal extends Component {
                 isImp: true
               }}
               textBox={{
+                decimal: { allowNegative: false },
                 className: "txt-fld",
                 name: "installment_amount",
                 value: this.state.installment_amount,
@@ -359,7 +364,12 @@ class LoanModal extends Component {
                   },
                   {
                     fieldName: "loan_amount",
-                    label: <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
+                    ),
+                    displayTemplate: row => {
+                      return <span>{getAmountFormart(row.loan_amount)}</span>;
+                    }
                     //disabled: true
                   },
                   {
@@ -374,7 +384,12 @@ class LoanModal extends Component {
                       <AlgaehLabel
                         label={{ forceLabel: "Installment Amount" }}
                       />
-                    )
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>{getAmountFormart(row.installment_amount)}</span>
+                      );
+                    }
                   },
                   {
                     fieldName: "loan_description",

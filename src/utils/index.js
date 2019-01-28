@@ -572,6 +572,129 @@ const generateDbConnection = (req, res, next) => {
     next();
   });
 };
+//created by irfan: to get maximum AUTH levels
+let getMaxAuth = options => {
+  const db = options.req.db;
+
+  let MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth;
+
+  db.getConnection((error, connection) => {
+    db.query(
+      "SELECT * FROM hims_d_hrms_options",
+
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          options.onFailure(error);
+        }
+
+        //LEAVE
+        switch (result[0]["leave_level"]) {
+          case "1":
+            MaxLeave = "AL1";
+            break;
+
+          case "2":
+            MaxLeave = "AL2";
+            break;
+          case "3":
+            MaxLeave = "AL3";
+            break;
+          case "4":
+            MaxLeave = "AL4";
+            break;
+          case "5":
+            MaxLeave = "AL5";
+            break;
+          default:
+        }
+
+        //LOAN
+        switch (result[0]["loan_level"]) {
+          case "1":
+            MaxLoan = "AL1";
+            break;
+
+          case "2":
+            MaxLoan = "AL2";
+            break;
+          case "3":
+            MaxLoan = "AL3";
+            break;
+          case "4":
+            MaxLoan = "AL4";
+            break;
+          case "5":
+            MaxLoan = "AL5";
+            break;
+          default:
+        }
+        //LEAVE ENCASH
+        switch (result[0]["leave_encash_level"]) {
+          case "1":
+            MaxLeaveEncash = "AL1";
+            break;
+
+          case "2":
+            MaxLeaveEncash = "AL2";
+            break;
+          case "3":
+            MaxLeaveEncash = "AL3";
+            break;
+          case "4":
+            MaxLeaveEncash = "AL4";
+            break;
+          case "5":
+            MaxLeaveEncash = "AL5";
+            break;
+          default:
+        }
+        //REVIEW AUTH
+        switch (result[0]["review_auth_level"]) {
+          case "1":
+            MaxreviewAuth = "AL1";
+            break;
+
+          case "2":
+            MaxreviewAuth = "AL2";
+            break;
+          case "3":
+            MaxreviewAuth = "AL3";
+            break;
+          case "4":
+            MaxreviewAuth = "AL4";
+            break;
+          case "5":
+            MaxreviewAuth = "AL5";
+            break;
+          default:
+        }
+
+        options.onSuccess({ MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth });
+
+        //HOW TO CALL
+
+        // new Promise((resolve, reject) => {
+        //   try {
+        //     getMaxAuth({
+        //       req: req,
+        //       onFailure: error => {
+        //         reject(error);
+        //       },
+        //       onSuccess: result => {
+        //         resolve(result);
+        //       }
+        //     });
+        //   } catch (e) {
+        //     reject(e);
+        //   }
+        // }).then(result => {
+        //   debugLog("result:", result);
+        // });
+      }
+    );
+  });
+};
 
 module.exports = {
   generateDbConnection,
@@ -588,5 +711,6 @@ module.exports = {
   bulkInputArrayObject,
   bulkMasters,
   jsonArrayToObject,
-  runningNumberGen
+  runningNumberGen,
+  getMaxAuth
 };

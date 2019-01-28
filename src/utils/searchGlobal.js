@@ -231,7 +231,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "employee",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, arabic_name, employee_designation_id,\
+          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code,biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
            sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
             notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
              present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
@@ -243,13 +243,13 @@ let algaehSearchConfig = searchName => {
                    contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
                     hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
                      net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
-                     where record_status='A'",
+                     where record_status='A' ",
         orderBy: "hims_d_employee_id desc"
       },
       {
         searchName: "exit_employees",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, arabic_name, employee_designation_id,\
+          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
            sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
             notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
              present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\

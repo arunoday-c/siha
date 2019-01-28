@@ -8,7 +8,8 @@ import {
   deleteHoliday,
   getMSDb,
   getTimeSheet,
-  getDailyTimeSheet
+  getDailyTimeSheet,
+  postTimeSheet
 } from "../model/holiday";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -134,6 +135,22 @@ export default ({ config, db }) => {
   api.get(
     "/getDailyTimeSheet",
     getDailyTimeSheet,
+    (req, res, next) => {
+      let result = req.records;
+
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :
+  api.get(
+    "/postTimeSheet",
+    postTimeSheet,
     (req, res, next) => {
       let result = req.records;
 

@@ -619,43 +619,4 @@ module.exports = {
         });
     });
   }
-
-  // addAttendanceRegularization: (req, res, next) => {
-  //   console.log("First Hit");
-  //   const _mysql = new algaehMysql();
-  //   let input = { ...req.body };
-
-  //   console.log("im here");
-
-  //   runningNumberGen({
-  //     db: _mysql,
-  //     module_desc: ["ATTENDANCE_REGULARIZE"],
-  //     onFailure: error => {
-  //       reject(error);
-  //     },
-  //     onSuccess: result => {
-  //       resolve(result);
-  //     }
-  //   }).then(numGenReg => {
-  //     _mysql
-  //       .executeQuery({
-  //         query: "INSERT INTO hims_f_attendance_regularize(??) VALUES ?",
-  //         values: [
-  //           {
-  //             input
-  //           }
-  //         ],
-
-  //         printQuery: true
-  //       })
-  //       .then(result => {
-  //         _mysql.releaseConnection();
-  //         req.records = result;
-  //         next();
-  //       })
-  //       .catch(e => {
-  //         next(e);
-  //       });
-  //   });
-  // }
 };

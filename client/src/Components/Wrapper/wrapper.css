@@ -1,7 +1,7 @@
 .ReactTable .rt-thead .rt-th {
   font-size: 0.8rem !important;
   color: #000 !important;
-  background: #f3ffff !important; }
+  background: #dff6f6 !important; }
   .ReactTable .rt-thead .rt-th .style_Label {
     font-weight: bold !important;
     white-space: pre-line !important;
@@ -66,7 +66,7 @@
 .ReactTable .fa-thumbs-up,
 .ReactTable .fa-thumbs-down {
   cursor: pointer;
-  border: 1px solid #44b8bd;
+  border: 1px solid #53ccd0;
   height: 28px;
   border-radius: 100%;
   font-size: 0.9rem;
@@ -98,7 +98,7 @@
 .ReactTable .fa-plus:hover,
 .ReactTable .fa-thumbs-up:hover,
 .ReactTable .fa-thumbs-down:hover {
-  background: #44b8bd;
+  background: #34b8bc;
   color: #fff; }
 
 @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {

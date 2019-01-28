@@ -854,5 +854,11 @@
     { "name": "Others", "value": "O" },
     { "name": "Annual", "value": "A" },
     { "name": "Maternity", "value": "M" }
+  ],
+  "AUTH_TYPE": [
+    { "name": "Leave", "value": "LE" },
+    { "name": "Loan", "value": "LO" },
+    { "name": "Salary", "value": "S" },
+    { "name": "Performance", "value": "P" }
   ]
 }
