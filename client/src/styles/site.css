@@ -40,6 +40,7 @@ body {
     text-shadow: 0px 1px 1px #1a1a1a; }
 
 :global .btn:hover {
+  cursor: pointer;
   background-position: 100% 0;
   -moz-transition: all 0.2s ease-in-out;
   -o-transition: all 0.2s ease-in-out;
@@ -83,10 +84,11 @@ body {
     border-color: #1a1a1a; }
 
 :global .btn-other {
-  color: #000;
-  border-color: #b6b6b6; }
+  background: none;
+  color: #fff;
+  border: 1px solid white; }
   :global .btn-other:hover, :global .btn-other:focus {
-    background-color: #e6e6e6; }
+    background-color: #1a1a1a; }
 
 :global .inner-top-search {
   background: #fff;
@@ -536,7 +538,9 @@ body {
   :global .hptl-phase1-footer .btn-other {
     background: none;
     color: #fff;
-    border: 1px solid #efefef; }
+    border: 1px solid white; }
+    :global .hptl-phase1-footer .btn-other:hover, :global .hptl-phase1-footer .btn-other:focus {
+      background-color: #1a1a1a; }
 
 :global .hptl-phase1-master-footer .main {
   background-color: #fff !important;

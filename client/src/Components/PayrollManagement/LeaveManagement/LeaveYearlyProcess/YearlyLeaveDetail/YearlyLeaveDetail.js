@@ -6,7 +6,9 @@ import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 class YearlyLeaveDetail extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      leave_data: []
+    };
   }
 
   componentDidMount() {
@@ -60,33 +62,64 @@ class YearlyLeaveDetail extends Component {
         <div className="popupInner">
           <div className="popRightDiv">
             <div className="row margin-top-15 margin-bottom-15">
-              <div className="col-12" id="LeaveYearlyProcessGrid_Cntr">
+              <div className="col">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Employee Name & ID"
+                  }}
+                />
+                <h6>
+                  {this.state.leave_data[0] !== undefined
+                    ? this.state.leave_data[0].employee_name
+                    : "-----------"}{" "}
+                  -
+                  <small>
+                    {" "}
+                    {this.state.leave_data[0] !== undefined
+                      ? this.state.leave_data[0].employee_code
+                      : "-----------"}
+                  </small>
+                </h6>
+              </div>
+
+              <div className="col-12" id="LeaveYearlyDetailsGrid_Cntr">
                 <AlgaehDataGrid
-                  id="LeaveYearlyProcessGrid"
-                  datavalidate="LeaveYearlyProcessGrid"
+                  id="LeaveYearlyDetailsGrid"
+                  datavalidate="LeaveYearlyDetailsGrid"
                   columns={[
                     {
                       fieldName: "year",
                       label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
-                      filter: false
+                      others: {
+                        maxWidth: 70
+                      }
                     },
-                    {
-                      fieldName: "employee_code",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
-                      )
-                    },
-                    {
-                      fieldName: "employee_name",
-                      label: (
-                        <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                      )
-                    },
+                    // {
+                    //   fieldName: "employee_code",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
+                    //   ),
+                    //   others: {
+                    //     maxWidth: 250
+                    //   }
+                    // },
+                    // {
+                    //   fieldName: "employee_name",
+                    //   label: (
+                    //     <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                    //   ),
+                    //   others: {
+                    //     style: { textAlign: "left" }
+                    //   }
+                    // },
                     {
                       fieldName: "leave_code",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
-                      )
+                      ),
+                      others: {
+                        maxWidth: 250
+                      }
                     },
                     {
                       fieldName: "leave_description",
@@ -100,13 +133,15 @@ class YearlyLeaveDetail extends Component {
                       fieldName: "total_eligible",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Total Eligible" }} />
-                      )
+                      ),
+                      others: {
+                        maxWidth: 100
+                      }
                     }
                   ]}
                   keyId="hims_f_employee_monthly_leave_id"
                   dataSource={{ data: this.state.leave_data }}
                   isEditable={false}
-                  filter={true}
                   loading={this.state.loading}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{}}

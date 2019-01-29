@@ -208,7 +208,7 @@ export default class LeaveYearlyProcess extends Component {
         <div className="col-12">
           <div className="row inner-top-search">
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col-3" }}
               label={{
                 forceLabel: "Select a Year.",
                 isImp: true
@@ -231,7 +231,7 @@ export default class LeaveYearlyProcess extends Component {
               }}
             />
 
-            <div className="col-lg-3" style={{ marginTop: 10 }}>
+            <div className="col-3" style={{ marginTop: 10 }}>
               <div
                 className="row"
                 style={{
@@ -249,7 +249,7 @@ export default class LeaveYearlyProcess extends Component {
                   </h6>
                 </div>
                 <div
-                  className="col-lg-3"
+                  className="col-3"
                   style={{ borderLeft: "1px solid #ced4d8" }}
                 >
                   <i
@@ -266,7 +266,7 @@ export default class LeaveYearlyProcess extends Component {
             </div>
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-3 form-group" }}
               label={{
                 forceLabel: "Select an Leave Type",
                 isImp: false
@@ -283,7 +283,7 @@ export default class LeaveYearlyProcess extends Component {
                 onChange: this.dropDownHandler.bind(this)
               }}
             />
-
+            {/* 
             <div className="col form-group">
               <button
                 onClick={this.processYearlyLeave.bind(this)}
@@ -303,7 +303,7 @@ export default class LeaveYearlyProcess extends Component {
               >
                 CLEAR
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -348,7 +348,10 @@ export default class LeaveYearlyProcess extends Component {
                       },
                       {
                         fieldName: "year",
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                        others: {
+                          maxWidth: 70
+                        }
                       },
                       {
                         fieldName: "employee_code",
@@ -356,7 +359,10 @@ export default class LeaveYearlyProcess extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Code" }}
                           />
-                        )
+                        ),
+                        others: {
+                          maxWidth: 250
+                        }
                       },
                       {
                         fieldName: "employee_name",
@@ -364,7 +370,10 @@ export default class LeaveYearlyProcess extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Name" }}
                           />
-                        )
+                        ),
+                        others: {
+                          style: { textAlign: "left" }
+                        }
                       },
                       {
                         fieldName: "sub_department_code",
@@ -372,7 +381,10 @@ export default class LeaveYearlyProcess extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Sub Dept. Code" }}
                           />
-                        )
+                        ),
+                        others: {
+                          maxWidth: 250
+                        }
                       },
                       {
                         fieldName: "sub_department_name",
@@ -380,7 +392,10 @@ export default class LeaveYearlyProcess extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Sub Dept. Name" }}
                           />
-                        )
+                        ),
+                        others: {
+                          maxWidth: 250
+                        }
                       }
                     ]}
                     keyId="hims_f_employee_monthly_leave_id"
@@ -394,6 +409,29 @@ export default class LeaveYearlyProcess extends Component {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                onClick={this.processYearlyLeave.bind(this)}
+                className="btn btn-primary"
+              >
+                {!this.state.loading ? (
+                  "PROCESS"
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
+              <button
+                onClick={this.clearState.bind(this)}
+                className="btn btn-default"
+              >
+                CLEAR
+              </button>
             </div>
           </div>
         </div>

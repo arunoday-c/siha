@@ -803,6 +803,13 @@
     { "name": "2 Level", "value": "2" },
     { "name": "3 Level", "value": "3" }
   ],
+  "AUTH_LEVEL5": [
+    { "name": "1 Level", "value": "1" },
+    { "name": "2 Level", "value": "2" },
+    { "name": "3 Level", "value": "3" },
+    { "name": "4 Level", "value": "4" },
+    { "name": "5 Level", "value": "5" }
+  ],
 
   "AUTH_LEVEL2": [
     { "name": "1 Level", "value": "1" },

@@ -43,6 +43,11 @@ export default class WeeklyAttendance extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.getDailyTimeSheet();
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.message,
+            type: "warning"
+          });
         }
       },
       onFailure: err => {
@@ -304,7 +309,7 @@ export default class WeeklyAttendance extends Component {
 
           <div className="col form-group">
             <button
-              onClick={this.getTimeSheet.bind(this)}
+              onClick={this.getDailyTimeSheet.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"
             >

@@ -696,7 +696,8 @@
         min-width: 31px;
         -webkit-transition: width 2s;
         /* Safari */
-        transition: width 2s; }
+        transition: width 2s;
+        cursor: pointer; }
         :global .algaeh-modal .popupFooter .btn:hover {
           background-position: 100% 0;
           -moz-transition: all 0.2s ease-in-out;
@@ -732,10 +733,11 @@
           background-color: #cccccc;
           border-color: #1a1a1a; }
       :global .algaeh-modal .popupFooter .btn-other {
-        color: #000;
-        border-color: #b6b6b6; }
+        background: none;
+        color: #fff;
+        border: 1px solid white; }
         :global .algaeh-modal .popupFooter .btn-other:hover, :global .algaeh-modal .popupFooter .btn-other:focus {
-          background-color: #e6e6e6; }
+          background-color: #1a1a1a; }
   :global .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;

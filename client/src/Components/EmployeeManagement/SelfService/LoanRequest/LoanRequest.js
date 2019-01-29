@@ -464,14 +464,12 @@ class LoanRequest extends Component {
                         isImp: true
                       }}
                       textBox={{
+                        decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "advance_amount",
                         value: this.state.advance_amount,
                         events: {
                           onChange: this.textHandle.bind(this)
-                        },
-                        others: {
-                          type: "number"
                         }
                       }}
                     />
@@ -598,7 +596,9 @@ class LoanRequest extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.pending_loan / row.installment_amount}
+                              {(
+                                row.pending_loan / row.installment_amount
+                              ).toFixed(3)}
                             </span>
                           );
                         }
@@ -607,7 +607,12 @@ class LoanRequest extends Component {
                         fieldName: "pending_loan",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.pending_loan)}</span>
+                          );
+                        }
                       },
                       {
                         fieldName: "approved_amount",
@@ -615,8 +620,12 @@ class LoanRequest extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Approved Loan Amount" }}
                           />
-                        )
-                        //disabled: true
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.approved_amount)}</span>
+                          );
+                        }
                       },
                       {
                         fieldName: "loan_amount",
@@ -624,8 +633,12 @@ class LoanRequest extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Requested Loan Amount" }}
                           />
-                        )
-                        //disabled: true
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.loan_amount)}</span>
+                          );
+                        }
                       },
                       {
                         fieldName: "loan_application_number",
@@ -664,7 +677,10 @@ class LoanRequest extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Total No. of EMI" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return <span>{row.loan_tenure.toFixed(3)}</span>;
+                        }
                       },
                       {
                         fieldName: "installment_amount",
@@ -672,7 +688,14 @@ class LoanRequest extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Installment Amount" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.installment_amount)}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "loan_description",
