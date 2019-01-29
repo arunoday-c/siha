@@ -827,70 +827,78 @@ let postTimeSheet = (req, res, next) => {
           }
           debugLog("result:", result);
           //  employee_id, hospital_id, sub_department_id, year, month
+          if (result.length > 0) {
+            for (let i = 0; i < result.length; i++) {
+              dailyAttendance.push({
+                employee_id: result[i]["hims_d_employee_id"],
+                hospital_id: result[i]["hospital_id"],
+                sub_department_id: result[i]["sub_department_id"],
+                year: year,
+                month: month_number,
+                attendance_date: result[i]["attendance_date"],
 
-          for (let i = 0; i < result.length; i++) {
-            dailyAttendance.push({
-              employee_id: result[i]["hims_d_employee_id"],
-              hospital_id: result[i]["hospital_id"],
-              sub_department_id: result[i]["sub_department_id"],
-              year: year,
-              month: month_number,
-              attendance_date: result[i]["attendance_date"],
-
-              total_days: 1,
-              present_days: result[i]["status"] == "PR" ? 1 : 0,
-              absent_days: result[i]["status"] == "AB" ? 1 : 0,
-              total_work_days: result[i]["status"] == "PR" ? 1 : 0,
-              weekoff_days: result[i]["status"] == "WO" ? 1 : 0,
-              holidays: result[i]["status"] == "HO" ? 1 : 0,
-              paid_leave: result[i]["status"] == "PL" ? 1 : 0,
-              unpaid_leave: result[i]["status"] == "UL" ? 1 : 0,
-              total_hours: result[i]["worked_hours"],
-              working_hours:
-                result[i]["actual_hours"] + result[i]["actual_minutes"]
-            });
-          }
-          debugLog("dailyAttendance:", dailyAttendance);
-
-          const insurtColumns = [
-            "employee_id",
-            "hospital_id",
-            "sub_department_id",
-            "year",
-            "month",
-            "attendance_date",
-            "total_days",
-            "present_days",
-            "absent_days",
-            "total_work_days",
-            "weekoff_days",
-            "holidays",
-            "paid_leave",
-            "unpaid_leave",
-            "total_hours",
-            "working_hours"
-          ];
-
-          connection.query(
-            "INSERT IGNORE  INTO hims_f_daily_attendance(" +
-              insurtColumns.join(",") +
-              ") VALUES ?",
-            [
-              jsonArrayToObject({
-                sampleInputObject: insurtColumns,
-                arrayObj: dailyAttendance
-              })
-            ],
-            (error, insertResult) => {
-              if (error) {
-                releaseDBConnection(db, connection);
-                next(error);
-              }
-
-              req.records = insertResult;
-              next();
+                total_days: 1,
+                present_days: result[i]["status"] == "PR" ? 1 : 0,
+                absent_days: result[i]["status"] == "AB" ? 1 : 0,
+                total_work_days: result[i]["status"] == "PR" ? 1 : 0,
+                weekoff_days: result[i]["status"] == "WO" ? 1 : 0,
+                holidays: result[i]["status"] == "HO" ? 1 : 0,
+                paid_leave: result[i]["status"] == "PL" ? 1 : 0,
+                unpaid_leave: result[i]["status"] == "UL" ? 1 : 0,
+                total_hours: result[i]["worked_hours"],
+                working_hours:
+                  result[i]["actual_hours"] + result[i]["actual_minutes"]
+              });
             }
-          );
+            debugLog("dailyAttendance:", dailyAttendance);
+
+            const insurtColumns = [
+              "employee_id",
+              "hospital_id",
+              "sub_department_id",
+              "year",
+              "month",
+              "attendance_date",
+              "total_days",
+              "present_days",
+              "absent_days",
+              "total_work_days",
+              "weekoff_days",
+              "holidays",
+              "paid_leave",
+              "unpaid_leave",
+              "total_hours",
+              "working_hours"
+            ];
+
+            connection.query(
+              "INSERT IGNORE  INTO hims_f_daily_attendance(" +
+                insurtColumns.join(",") +
+                ") VALUES ?",
+              [
+                jsonArrayToObject({
+                  sampleInputObject: insurtColumns,
+                  arrayObj: dailyAttendance
+                })
+              ],
+              (error, insertResult) => {
+                if (error) {
+                  releaseDBConnection(db, connection);
+                  next(error);
+                }
+
+                req.records = insertResult;
+                next();
+              }
+            );
+          } else {
+            releaseDBConnection(db, connection);
+            req.records = {
+              no_data: true,
+              message: "no data found for this date range"
+            };
+            next();
+          }
         }
       );
     });
