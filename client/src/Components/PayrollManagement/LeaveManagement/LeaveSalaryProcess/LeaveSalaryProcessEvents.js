@@ -25,18 +25,21 @@ const getLeaveSalaryProcess = ($this, e) => {
     employee_id: $this.state.employee_id
   };
 
-  debugger;
   algaehApiCall({
     uri: "/leavesalaryprocess/getLeaveSalaryProcess",
     module: "hrManagement",
     data: inputObj,
     method: "GET",
     onSuccess: response => {
-      debugger;
       AlgaehLoader({ show: false });
       let data = response.data.result;
-
-      data.ProcessBtn = false;
+      debugger;
+      if (Object.keys(data).length > 0) {
+        data.ProcessBtn = false;
+      }
+      // else {
+      //   data.ProcessBtn = true;
+      // }
 
       $this.setState(data);
     },

@@ -107,7 +107,7 @@ module.exports = {
               next();
             } else {
               _mysql.releaseConnection();
-              req.records = [];
+              req.records = {};
               next();
             }
           })
@@ -165,6 +165,20 @@ module.exports = {
         let employee_leave_salary = all_result[1][0];
         let annual_leave_result = all_result[2];
 
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("all_result:", all_result);
+
+        if (employee_leave_salary == undefined) {
+          _mysql.commitTransaction((error, result) => {
+            _mysql.releaseConnection();
+            req.records = { message: "No Leave exists" };
+            req.flag = 1;
+            next();
+          });
+          return;
+        }
         utilities
           .AlgaehUtilities()
           .logger()

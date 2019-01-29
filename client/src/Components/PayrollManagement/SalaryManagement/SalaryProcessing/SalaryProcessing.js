@@ -52,6 +52,7 @@ class SalaryProcessing extends Component {
       present_days: null,
       pending_unpaid_leave: null,
       total_paid_days: null,
+      comp_off_days: null,
 
       total_earnings: null,
       total_deductions: null,
@@ -758,9 +759,9 @@ class SalaryProcessing extends Component {
                         }}
                       />
                       <h6>
-                        {this.state.total_days === null
+                        {this.state.comp_off_days === null
                           ? 0
-                          : this.state.total_days}
+                          : this.state.comp_off_days}
                       </h6>
                     </div>
                     <div className="col-6">
