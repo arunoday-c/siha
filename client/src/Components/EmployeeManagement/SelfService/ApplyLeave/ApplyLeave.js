@@ -494,7 +494,7 @@ class ApplyLeave extends Component {
               this.clearState();
             } else if (!res.data.success) {
               swalMessage({
-                title: res.data.records.message,
+                title: res.data.message,
                 type: "error"
               });
             }

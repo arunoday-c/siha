@@ -60,12 +60,19 @@ export default class WeeklyAttendance extends Component {
   }
 
   getDailyTimeSheet() {
+    let _fromDate = moment(this.state.year + "-" + this.state.month)
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    let _toDate = moment(this.state.year + "-" + this.state.month)
+      .endOf("month")
+      .format("YYYY-MM-DD");
+
     algaehApiCall({
       uri: "/holiday/getDailyTimeSheet",
       method: "GET",
       data: {
-        from_date: "2017-05-01",
-        to_date: "2017-05-31",
+        from_date: _fromDate,
+        to_date: _toDate,
         biometric_id: this.state.biometric_id
       },
       onSuccess: res => {
@@ -583,9 +590,9 @@ export default class WeeklyAttendance extends Component {
                                     : "Not Available"}
                                 </b>
                               </span>
-                              {/* <span className="totalHr animated bounceIn faster">
-                                Late time by <b className="lateTime">55 min</b>
-                              </span> */}
+                              <span className="totalHr animated bounceIn faster">
+                                EXCEPTION
+                              </span>
                               <span className="checkOut animated bounceIn faster">
                                 Check Out{" "}
                                 <b>
