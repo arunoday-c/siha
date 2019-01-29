@@ -37,6 +37,13 @@ module.exports = {
         inputValues.push(input.sub_department_id);
       }
 
+      let salary_input = [month_number, year];
+      let _strSalary = "";
+      if (input.employee_id != null) {
+        _strSalary += " and employee_id=?";
+        salary_input.push(input.employee_id);
+      }
+
       utilities
         .AlgaehUtilities()
         .logger()
@@ -46,12 +53,11 @@ module.exports = {
         .executeQuery({
           query:
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, A.sub_department_id, \
-          A.total_days,A.present_days, A.absent_days, A.total_work_days, A.total_weekoff_days,\
-          A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,A.ot_work_hours,\
-          A.ot_weekoff_hours,A.ot_holiday_hours, E.employee_code,E.gross_salary,OT.payment_type, OT.working_day_hour,\
-          OT. weekoff_day_hour, OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate \
-          from hims_f_attendance_monthly A,hims_d_employee E, hims_d_overtime_group OT where `year`=? and `month`=? and A.hospital_id=? \
-          and E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id and E.overtime_group_id=OT.hims_d_overtime_group_id " +
+            A.total_days,A.present_days, A.absent_days, A.total_work_days, A.total_weekoff_days,\
+            A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,A.ot_work_hours,\
+            A.ot_weekoff_hours,A.ot_holiday_hours, E.employee_code,E.gross_salary\
+            from hims_f_attendance_monthly A,hims_d_employee E\
+            where E.hims_d_employee_id = A.employee_id  and A.hospital_id = E.hospital_id and `year`=? and `month`=? and A.hospital_id=? " +
             _stringData,
           values: inputValues,
           printQuery: true
@@ -65,8 +71,9 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select employee_id,hims_f_salary_id,salary_processed from  hims_f_salary where month=? and year=? ",
-                values: [month_number, year],
+                  "select employee_id,hims_f_salary_id,salary_processed from  hims_f_salary where month=? and year=? " +
+                  _strSalary,
+                values: salary_input,
                 printQuery: true
               })
               .then(existing => {
@@ -155,6 +162,9 @@ module.exports = {
                   select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='AD';\
                   select hims_d_hrms_options_id,standard_working_hours,standard_break_hours from hims_d_hrms_options;\
                   select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
+                  select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
+                    OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate  \
+                    from hims_d_overtime_group OT, hims_d_employee E where E.overtime_group_id=OT.hims_d_overtime_group_id and E.hims_d_employee_id in (?);\
                   delete from hims_f_salary_contributions where salary_header_id in (?);\
                   delete from hims_f_salary_loans where salary_header_id in (?);\
                   delete from hims_f_salary_deductions where salary_header_id in (?);\
@@ -173,6 +183,7 @@ module.exports = {
                       _allEmployees,
                       year,
                       month_number,
+                      _allEmployees,
                       _allEmployees,
                       _allEmployees,
                       _salaryHeader_id,
@@ -315,9 +326,10 @@ module.exports = {
                                           current_deduction_amt_array = current_deduction_amt_array.concat(
                                             advanceOutput.current_deduct_compoment
                                           );
+
                                           //Miscellaneous Earning Deduction
-                                          const _miscellaneous = _.filter(
-                                            results[5],
+                                          const _over_time = _.filter(
+                                            results[10],
                                             f => {
                                               return (
                                                 f.employee_id ==
@@ -325,12 +337,19 @@ module.exports = {
                                               );
                                             }
                                           );
+
+                                          utilities
+                                            .AlgaehUtilities()
+                                            .logger()
+                                            .log("_over_time", _over_time);
+
                                           getOtManagement({
                                             earnings: _earnings,
                                             current_earning_amt_array: current_earning_amt_array,
                                             empResult: empResult[i],
                                             hrms_option: results[8],
                                             over_time_comp: results[9],
+                                            over_time: _over_time,
                                             leave_salary: req.query.leave_salary
                                           })
                                             .then(OTManagement => {
@@ -342,6 +361,16 @@ module.exports = {
                                                 OTManagement.current_ot_amt_array
                                               );
 
+                                              //Miscellaneous Earning Deduction
+                                              const _miscellaneous = _.filter(
+                                                results[5],
+                                                f => {
+                                                  return (
+                                                    f.employee_id ==
+                                                    empResult[i]["employee_id"]
+                                                  );
+                                                }
+                                              );
                                               getMiscellaneous({
                                                 miscellaneous: _miscellaneous
                                               })
@@ -426,17 +455,27 @@ module.exports = {
                                                         ],
                                                       per_day_sal
                                                     });
+
+                                                  utilities
+                                                    .AlgaehUtilities()
+                                                    .logger()
+                                                    .log(
+                                                      "employee_code",
+                                                      empResult[i][
+                                                        "employee_code"
+                                                      ]
+                                                    );
+
+                                                  utilities
+                                                    .AlgaehUtilities()
+                                                    .logger()
+                                                    .log(
+                                                      "empResult",
+                                                      empResult[i]
+                                                    );
                                                   let _salary_number = empResult[
                                                     i
                                                   ]["employee_code"].trim();
-
-                                                  _salary_number +=
-                                                    req.query.leave_salary ==
-                                                    null
-                                                      ? "-NS-"
-                                                      : "-LS-";
-                                                  _salary_number +=
-                                                    month_number + "-" + year;
 
                                                   utilities
                                                     .AlgaehUtilities()
@@ -445,6 +484,14 @@ module.exports = {
                                                       "_salary_number",
                                                       _salary_number
                                                     );
+
+                                                  _salary_number +=
+                                                    req.query.leave_salary ==
+                                                    null
+                                                      ? "-NS-"
+                                                      : "-LS-";
+                                                  _salary_number +=
+                                                    month_number + "-" + year;
 
                                                   let _net_salary =
                                                     final_earning_amount -
@@ -525,6 +572,13 @@ module.exports = {
                                                       }
                                                     )
                                                     .then(inserted_salary => {
+                                                      utilities
+                                                        .AlgaehUtilities()
+                                                        .logger()
+                                                        .log(
+                                                          "inserted_salary",
+                                                          inserted_salary.insertId
+                                                        );
                                                       _requestCollector.push(
                                                         inserted_salary
                                                       );
@@ -633,7 +687,7 @@ module.exports = {
                                                                                       );
                                                                                     } else {
                                                                                       resolve(
-                                                                                        resultLoan
+                                                                                        salary_header_id
                                                                                       );
                                                                                     }
                                                                                   }
@@ -672,7 +726,7 @@ module.exports = {
                                                                                 );
                                                                               } else {
                                                                                 resolve(
-                                                                                  resultContribute
+                                                                                  salary_header_id
                                                                                 );
                                                                               }
                                                                             }
@@ -730,7 +784,7 @@ module.exports = {
                                                           );
                                                         } else {
                                                           resolve(
-                                                            _requestCollector
+                                                            salary_header_id
                                                           );
                                                         }
                                                       }
@@ -1338,103 +1392,117 @@ function getOtManagement(options) {
 
     const hrms_option = options.hrms_option;
     const over_time_comp = options.over_time_comp;
+    const over_time = options.over_time;
     const current_earning_amt_array = options.current_earning_amt_array;
     const leave_salary = options.leave_salary;
 
     let final_earning_amount = 0;
     let current_ot_amt_array = [];
-
-    let ot_hours =
-      parseFloat(empResult["ot_work_hours"]) +
-      parseFloat(empResult["ot_weekoff_hours"]) +
-      parseFloat(empResult["ot_holiday_hours"]);
-    let Noof_Working_Hours =
-      parseFloat(hrms_option[0].standard_working_hours) -
-      parseFloat(hrms_option[0].standard_break_hours);
-
-    if (_earnings.length == 0) {
-      resolve({ current_ot_amt_array, final_earning_amount });
-    }
-
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("payment_type:", empResult["payment_type"]);
-
-    if (empResult["payment_type"] === "RT") {
-      let working_day_amt = 0;
-      let weekoff_day_amt = 0;
-      let holiday_amt = 0;
-      if (empResult["working_day_rate"] > 0) {
-        working_day_amt =
-          parseFloat(empResult["working_day_rate"]) *
-          parseFloat(empResult["ot_work_hours"]);
-      }
-      if (empResult["weekoff_day_rate"] > 0) {
-        weekoff_day_amt =
-          parseFloat(empResult["weekoff_day_rate"]) *
-          parseFloat(empResult["ot_weekoff_hours"]);
-      }
-      if (empResult["holiday_rate"] > 0) {
-        holiday_amt =
-          parseFloat(empResult["holiday_rate"]) *
-          parseFloat(empResult["ot_holiday_hours"]);
-      }
-
-      let per_hour_salary = working_day_amt + weekoff_day_amt + holiday_amt;
+    if (options.over_time.length > 0) {
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("over_time:", over_time);
 
       utilities
         .AlgaehUtilities()
         .logger()
-        .log("per_hour_salary: ", per_hour_salary);
+        .log("empResult:", empResult);
 
-      if (per_hour_salary > 0) {
-        current_ot_amt_array.push({
-          earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
-          amount: per_hour_salary
-        });
+      let ot_hours =
+        parseFloat(empResult["ot_work_hours"]) +
+        parseFloat(empResult["ot_weekoff_hours"]) +
+        parseFloat(empResult["ot_holiday_hours"]);
+      let Noof_Working_Hours =
+        parseFloat(hrms_option[0].standard_working_hours) -
+        parseFloat(hrms_option[0].standard_break_hours);
+
+      if (_earnings.length == 0) {
+        resolve({ current_ot_amt_array, final_earning_amount });
       }
 
-      final_earning_amount = _.sumBy(current_ot_amt_array, s => {
-        return s.amount;
-      });
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("payment_type:", over_time["payment_type"]);
 
-      resolve({ current_ot_amt_array, final_earning_amount });
-    } else {
-      _earnings.map(obj => {
-        // //OT Calculation
-
-        if (
-          obj["overtime_applicable"] == "Y" &&
-          ot_hours != 0 &&
-          leave_salary != "Y"
-        ) {
-          let earn_amount = _.chain(current_earning_amt_array)
-            .filter(f => {
-              if (f.earnings_id == obj.earnings_id) {
-                return f.amount;
-              }
-            })
-            .value();
-
-          let per_hour_salary =
-            parseFloat(earn_amount[0].amount) / Noof_Working_Hours;
-
-          per_hour_salary = per_hour_salary * ot_hours;
-
-          if (per_hour_salary > 0) {
-            current_ot_amt_array.push({
-              earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
-              amount: per_hour_salary
-            });
-          }
+      if (over_time["payment_type"] === "RT") {
+        let working_day_amt = 0;
+        let weekoff_day_amt = 0;
+        let holiday_amt = 0;
+        if (over_time["working_day_rate"] > 0) {
+          working_day_amt =
+            parseFloat(over_time["working_day_rate"]) *
+            parseFloat(empResult["ot_work_hours"]);
         }
-      });
+        if (over_time["weekoff_day_rate"] > 0) {
+          weekoff_day_amt =
+            parseFloat(over_time["weekoff_day_rate"]) *
+            parseFloat(empResult["ot_weekoff_hours"]);
+        }
+        if (over_time["holiday_rate"] > 0) {
+          holiday_amt =
+            parseFloat(over_time["holiday_rate"]) *
+            parseFloat(empResult["ot_holiday_hours"]);
+        }
 
-      final_earning_amount = _.sumBy(current_ot_amt_array, s => {
-        return s.amount;
-      });
+        let per_hour_salary = working_day_amt + weekoff_day_amt + holiday_amt;
 
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("per_hour_salary: ", per_hour_salary);
+
+        if (per_hour_salary > 0) {
+          current_ot_amt_array.push({
+            earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
+            amount: per_hour_salary
+          });
+        }
+
+        final_earning_amount = _.sumBy(current_ot_amt_array, s => {
+          return s.amount;
+        });
+
+        resolve({ current_ot_amt_array, final_earning_amount });
+      } else {
+        _earnings.map(obj => {
+          // //OT Calculation
+
+          if (
+            obj["overtime_applicable"] == "Y" &&
+            ot_hours != 0 &&
+            leave_salary != "Y"
+          ) {
+            let earn_amount = _.chain(current_earning_amt_array)
+              .filter(f => {
+                if (f.earnings_id == obj.earnings_id) {
+                  return f.amount;
+                }
+              })
+              .value();
+
+            let per_hour_salary =
+              parseFloat(earn_amount[0].amount) / Noof_Working_Hours;
+
+            per_hour_salary = per_hour_salary * ot_hours;
+
+            if (per_hour_salary > 0) {
+              current_ot_amt_array.push({
+                earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
+                amount: per_hour_salary
+              });
+            }
+          }
+        });
+
+        final_earning_amount = _.sumBy(current_ot_amt_array, s => {
+          return s.amount;
+        });
+
+        resolve({ current_ot_amt_array, final_earning_amount });
+      }
+    } else {
       resolve({ current_ot_amt_array, final_earning_amount });
     }
   });
@@ -1471,6 +1539,11 @@ function getEarningComponents(options) {
           leave_salary_days =
             parseFloat(empResult["total_days"]) -
             parseFloat(empResult["paid_leave"]);
+
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("leave_salary_days:", leave_salary_days);
 
           current_earning_per_day_salary = parseFloat(
             obj["amount"] / parseFloat(empResult["total_days"])
@@ -1554,28 +1627,6 @@ function getEarningComponents(options) {
           amount: current_earning_amt,
           per_day_salary: current_earning_per_day_salary
         });
-
-        // //OT Calculation
-        // if (
-        //   obj["overtime_applicable"] == "Y" &&
-        //   ot_hours != 0 &&
-        //   leave_salary != "Y"
-        // ) {
-        //   let per_hour_salary =
-        //     current_earning_per_day_salary / Noof_Working_Hours;
-
-        //   per_hour_salary = per_hour_salary * ot_hours;
-
-        //   utilities
-        //     .AlgaehUtilities()
-        //     .logger()
-        //     .log("per_hour_salary: ", per_hour_salary);
-
-        //   current_earning_amt_array.push({
-        //     earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
-        //     amount: per_hour_salary
-        //   });
-        // }
       }
     });
     utilities
@@ -1675,7 +1726,7 @@ function getContrubutionsComponents(options) {
 
     let current_contribution_amt = 0;
     let current_contribution_per_day_salary = 0;
-
+    let leave_salary_days = 0;
     let final_contribution_amount = 0;
     let current_contribution_amt_array = [];
 

@@ -2532,7 +2532,7 @@ let authorizeLeave = (req, res, next) => {
                   const month_number = moment(input.from_date).format("M");
                   const month_name = moment(input.from_date).format("MMMM");
                   let updaid_leave_duration = 0;
-                  let id = "";
+                  let id = 0;
                   new Promise((resolve, reject) => {
                     try {
                       connection.query(
@@ -2907,13 +2907,17 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     let leave_status = "";
 
     if (req.query.leave_status == "APR") {
-      leave_status = " and status='APR' ";
+      auth_level = "";
+      leave_status = "  status='APR' ";
     } else if (req.query.leave_status == "REJ") {
-      leave_status = " and status='REJ' ";
+      auth_level = "";
+      leave_status = "  status='REJ' ";
     } else if (req.query.leave_status == "CAN") {
-      leave_status = " and status='CAN' ";
+      auth_level = "";
+      leave_status = "  status='CAN' ";
     } else {
-      leave_status = " and status='PEN' ";
+    
+      leave_status = "  status='PEN' and ";
     }
 
     // let cancelled = " LA.cancelled='N' ";
@@ -2932,14 +2936,15 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
         and E.record_status='A' inner join hims_d_sub_department SD \
-        on LA.sub_department_id=SD.hims_d_sub_department_id  where " +
+        on LA.sub_department_id=SD.hims_d_sub_department_id  where "  +
+          leave_status +""
+        +
         auth_level +
           "" +
           range +
           "" +
           employee +
-          "" +
-          leave_status +
+          
           "order by hims_f_leave_application_id desc",
           
         (error, result) => {
@@ -4215,8 +4220,10 @@ let cancelLeave = (req, res, next) => {
         reject(e);
       }
     }).then(result => {
+
+ 
     if (
-      req.userIdentity.leave_authorize_privilege == result["MaxLeave"]
+      req.userIdentity.leave_authorize_privilege == result.MaxLeave
     ) {
       db.getConnection((error, connection) => {
         if (error) {
@@ -4440,6 +4447,18 @@ let cancelLeave = (req, res, next) => {
                         });
                       });
                     }
+                    else{
+
+                      //salary is proceesd
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        req.records = {
+                          invalid_input: true,
+                          message: "salary is already processed"
+                        };
+                        next();
+                      });
+                    }
                   }
                 );
               }  else if (leaveStaus[0]["status"] == "CAN") {
@@ -4458,7 +4477,7 @@ let cancelLeave = (req, res, next) => {
                   releaseDBConnection(db, connection);
                   req.records = {
                     invalid_input: true,
-                    message: "salary is already processed"
+                    message: "cant cancel,leave is not Approved yet"
                   };
                   next();
                 });

@@ -312,6 +312,14 @@ let algaehSearchConfig = searchName => {
           total_amount, emp.employee_code, emp.full_name from hims_f_leave_salary_header, hims_d_employee emp \
           where hims_f_leave_salary_header.employee_id = emp.hims_d_employee_id",
         orderBy: "hims_f_leave_salary_header_id desc"
+      },
+      {
+        searchName: "users",
+        searchQuery:
+          "select algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,primary_contact_no,sex\
+          from algaeh_d_app_user U inner join  hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
+          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id",
+        orderBy: "algaeh_d_app_user_id desc"
       }
     ]
   };

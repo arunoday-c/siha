@@ -75,6 +75,96 @@ export default class LeaveAuthorization extends Component {
     });
   }
 
+  authorizeLeave(type, data) {
+    let send_data =
+      this.state.auth_level === 1
+        ? {
+            total_approved_days: data.total_approved_days,
+            ["authorize" + this.state.auth_level]: type === "A" ? "Y" : "N",
+            ["authorize" + this.state.auth_level + "_comment"]: this.state
+              .remarks,
+            hims_f_leave_application_id: data.hims_f_leave_application_id,
+            auth_level: "L" + this.state.auth_level,
+            status: type,
+            employee_id: data.employee_id,
+            leave_id: data.leave_id,
+            year: moment(data.from_date).format("YYYY"),
+            religion_id: data.religion_id,
+            leave_type: data.leave_type,
+            from_session: data.from_leave_session,
+            to_session: data.to_leave_session,
+            from_date: data.from_date,
+            to_date: data.to_date
+          }
+        : this.state.auth_level === 2
+        ? {
+            total_approved_days: data.total_approved_days,
+            ["authorized" + this.state.auth_level]: type === "A" ? "Y" : "N",
+            ["authorize" + this.state.auth_level + "_comment"]: this.state
+              .remarks,
+            hims_f_leave_application_id: data.hims_f_leave_application_id,
+            auth_level: "L" + this.state.auth_level,
+            status: type,
+            employee_id: data.employee_id,
+            leave_id: data.leave_id,
+            year: moment(data.from_date).format("YYYY"),
+            religion_id: data.religion_id,
+            leave_type: data.leave_type,
+            from_session: data.from_leave_session,
+            to_session: data.to_leave_session,
+            from_date: data.from_date,
+            to_date: data.to_date
+          }
+        : this.state.auth_level === 3
+        ? {
+            total_approved_days: data.total_approved_days,
+            ["authorized" + this.state.auth_level]: type === "A" ? "Y" : "N",
+            ["authorize" + this.state.auth_level + "_comment"]: this.state
+              .remarks,
+            hims_f_leave_application_id: data.hims_f_leave_application_id,
+            auth_level: "L" + this.state.auth_level,
+            status: type,
+            employee_id: data.employee_id,
+            leave_id: data.leave_id,
+            leave_type: data.leave_type,
+            year: moment(data.from_date).format("YYYY"),
+            religion_id: data.religion_id,
+            from_session: data.from_leave_session,
+            to_session: data.to_leave_session,
+            from_date: data.from_date,
+            to_date: data.to_date
+          }
+        : {};
+
+    //console.log("Send Data:", JSON.stringify(send_data));
+
+    algaehApiCall({
+      uri: "/leave/authorizeLeave",
+      method: "PUT",
+      data: send_data,
+      onSuccess: res => {
+        if (res.data.success) {
+          this.loadLeaveApplications();
+          type === "A"
+            ? swalMessage({
+                title: "Leave Authorized Successfully",
+                type: "success"
+              })
+            : swalMessage({
+                title: "Leave Rejected Successfully",
+                type: "success"
+              });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   loadLeaveApplications() {
     this.setState({
       loading: true
@@ -364,47 +454,43 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel label={{ forceLabel: "Actions" }} />
                         ),
                         displayTemplate: row => {
-                          return (
-                            (
+                          return row.status !== "APR" ? (
+                            <React.Fragment>
                               <i
                                 style={
                                   {
                                     //     pointerEvents:
-                                    //      row.cancelled === "Y" ? "none" : null,
-                                    //  opacity: row.cancelled === "Y" ? "0.1" : null
+                                    //      row.status === "Y" ? "none" : null,
+                                    //  opacity: row.status === "Y" ? "0.1" : null
                                   }
                                 }
                                 className="fas fa-thumbs-up"
-                                onClick={() => {
-                                  this.setState({
-                                    open: true,
-                                    currLeavAppln: row
-                                  });
-                                }}
+                                onClick={this.authorizeLeave.bind(
+                                  this,
+                                  "A",
+                                  row
+                                )}
                               />
-                            ),
-                            (
+
                               <i
                                 className="fas fa-thumbs-down"
-                                onClick={() => {
-                                  this.setState({
-                                    open: true,
-                                    currLeavAppln: row
-                                  });
-                                }}
+                                onClick={this.authorizeLeave.bind(
+                                  this,
+                                  "R",
+                                  row
+                                )}
                               />
-                            ),
-                            (
-                              <i
-                                className="fas fa-times"
-                                onClick={() => {
-                                  this.setState({
-                                    open: true,
-                                    currLeavAppln: row
-                                  });
-                                }}
-                              />
-                            )
+                            </React.Fragment>
+                          ) : (
+                            <i
+                              className="fas fa-times"
+                              onClick={() => {
+                                this.setState({
+                                  open: true,
+                                  currLeavAppln: row
+                                });
+                              }}
+                            />
                           );
                         },
                         others: {

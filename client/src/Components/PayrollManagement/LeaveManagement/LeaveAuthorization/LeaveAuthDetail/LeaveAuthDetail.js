@@ -372,7 +372,7 @@ class LeaveAuthDetail extends Component {
               </div>
 
               <div className="col-12 btnFooter">
-                <button
+                {/* <button
                   onClick={this.authorizeLeave.bind(this, "A")}
                   className="btn btn-primary"
                 >
@@ -383,7 +383,7 @@ class LeaveAuthDetail extends Component {
                   className="btn btn-danger"
                 >
                   Reject
-                </button>
+                </button> */}
                 <button
                   onClick={this.cancelLeave.bind(this, "R")}
                   className="btn btn-danger"

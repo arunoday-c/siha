@@ -43,6 +43,11 @@ export default class WeeklyAttendance extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.getDailyTimeSheet();
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.message,
+            type: "warning"
+          });
         }
       },
       onFailure: err => {

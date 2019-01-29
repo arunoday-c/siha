@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import utilities from "algaeh-utilities";
+import moment from "moment";
 
 module.exports = {
   getLoanTopayment: (req, res, next) => {
@@ -259,6 +260,7 @@ module.exports = {
     const _mysql = new algaehMysql();
     let inputParam = { ...req.body };
     let payment_application_code = "";
+
     _mysql
       .generateRunningNumber({
         modules: ["EMPLOYEE_PAYMENT"]
@@ -464,18 +466,194 @@ module.exports = {
                 .executeQuery({
                   query:
                     "UPDATE `hims_f_leave_salary_header` SET `status`='PRO' \
-                    where hims_f_leave_salary_header_id=?",
-                  values: [inputParam.employee_leave_settlement_id]
+                    where hims_f_leave_salary_header_id=?; select * from `hims_f_leave_salary_header` where \
+                    hims_f_leave_salary_header_id=?; select * from `hims_f_employee_leave_salary_header` where \
+                    employee_id=?;",
+                  values: [
+                    inputParam.employee_leave_settlement_id,
+                    inputParam.employee_leave_settlement_id,
+                    inputParam.employee_id
+                  ]
                 })
                 .then(LeaveSettleResult => {
-                  let result = {
-                    payment_application_code: payment_application_code
-                  };
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = result;
-                    next();
-                  });
+                  // LeaveSettleResult
+                  utilities
+                    .AlgaehUtilities()
+                    .logger()
+                    .log("LeaveSettleResult:", LeaveSettleResult[1][0]);
+
+                  utilities
+                    .AlgaehUtilities()
+                    .logger()
+                    .log("LeaveSettleResult2:", LeaveSettleResult[2][0]);
+
+                  let leave_salary = LeaveSettleResult[1][0];
+                  let leave_salary_header = LeaveSettleResult[2][0];
+
+                  let start_year = moment(leave_salary.leave_start_date).format(
+                    "YYYY"
+                  );
+                  let end_year = moment(leave_salary.leave_end_date).format(
+                    "YYYY"
+                  );
+                  let balance_leave_days = 0;
+                  let balance_leave_salary_amount = 0;
+                  let balance_airticket_amount = 0;
+
+                  if (start_year == end_year) {
+                    balance_leave_days =
+                      parseFloat(leave_salary_header.balance_leave_days) -
+                      parseFloat(leave_salary.leave_period);
+
+                    balance_leave_salary_amount =
+                      parseFloat(
+                        leave_salary_header.balance_leave_salary_amount
+                      ) - parseFloat(leave_salary.leave_amount);
+
+                    balance_airticket_amount =
+                      parseFloat(leave_salary_header.balance_airticket_amount) -
+                      parseFloat(leave_salary.airfare_amount);
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
+                        `balance_airticket_amount` = ? where employee_id=? and `year`=?;\
+                        UPDATE `hims_d_employee` SET \
+                        `suspend_salary`='Y', `last_salary_process_date`=? where hims_d_employee_id=?;",
+                        values: [
+                          balance_leave_days,
+                          balance_leave_salary_amount,
+                          balance_airticket_amount,
+                          inputParam.employee_id,
+                          start_year,
+                          moment(leave_salary.leave_end_date).format(
+                            "YYYY-MM-DD"
+                          ),
+                          inputParam.employee_id
+                        ]
+                      })
+                      .then(LeaveSettleResult => {
+                        let result = {
+                          payment_application_code: payment_application_code
+                        };
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = result;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        next(error);
+                      });
+                  } else if (start_year != end_year) {
+                    let Start_Date = moment(start_year)
+                      .startOf("month")
+                      .format("YYYY-MM-DD");
+
+                    let values = [];
+
+                    Start_Date = moment(Start_Date).add(-1, "days");
+
+                    let End_date = moment(start_year)
+                      .endOf("month")
+                      .format("YYYY-MM-DD");
+
+                    let total_days = moment(End_date).diff(
+                      moment(Start_Date),
+                      "days"
+                    );
+                    let no_of_days = moment(End_date).diff(
+                      moment(leave_salary.leave_start_date),
+                      "days"
+                    );
+                    balance_leave_days =
+                      parseFloat(leave_salary_header.balance_leave_days) -
+                      parseFloat(no_of_days);
+
+                    balance_leave_salary_amount =
+                      parseFloat(
+                        leave_salary_header.balance_leave_salary_amount
+                      ) - parseFloat(leave_salary.leave_amount);
+
+                    balance_leave_salary_amount =
+                      parseFloat(leave_salary_header.balance_airticket_amount) -
+                      parseFloat(leave_salary.airfare_amount);
+
+                    let strQuery =
+                      "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
+                      `balance_airticket_amount` = ? where employee_id=? and `year`=?;";
+
+                    values.push(
+                      balance_leave_days,
+                      balance_leave_salary_amount,
+                      balance_airticket_amount,
+                      inputParam.employee_id,
+                      start_year
+                    );
+
+                    no_of_days =
+                      parseFloat(leave_salary_header.balance_leave_days) -
+                      parseFloat(no_of_days);
+
+                    balance_leave_days =
+                      parseFloat(leave_salary_header.balance_leave_days) -
+                      parseFloat(no_of_days);
+
+                    balance_leave_salary_amount =
+                      parseFloat(
+                        leave_salary_header.balance_leave_salary_amount
+                      ) - parseFloat(leave_salary.leave_amount);
+
+                    balance_leave_salary_amount =
+                      parseFloat(leave_salary_header.balance_airticket_amount) -
+                      parseFloat(leave_salary.airfare_amount);
+
+                    strQuery +=
+                      "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
+                      `balance_airticket_amount` = ? where employee_id=? and `year`=?;";
+
+                    values.push(
+                      balance_leave_days,
+                      balance_leave_salary_amount,
+                      balance_airticket_amount,
+                      inputParam.employee_id,
+                      end_year
+                    );
+
+                    utilities
+                      .AlgaehUtilities()
+                      .logger()
+                      .log("strQuery:", strQuery);
+
+                    _mysql
+                      .executeQuery({
+                        query: strQuery,
+                        values: values
+                      })
+                      .then(LeaveSettleResult => {
+                        let result = {
+                          payment_application_code: payment_application_code
+                        };
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = result;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        next(error);
+                      });
+                  }
+
+                  // let result = {
+                  //   payment_application_code: payment_application_code
+                  // };
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  //   req.records = result;
+                  //   next();
+                  // });
                 })
                 .catch(error => {
                   next(error);
@@ -650,15 +828,171 @@ module.exports = {
             .executeQuery({
               query:
                 "UPDATE `hims_f_leave_salary_header` SET `status`='PEN' \
-                    where hims_f_leave_salary_header_id=?",
-              values: [inputParam.employee_leave_settlement_id]
+                    where hims_f_leave_salary_header_id=?; select * from `hims_f_leave_salary_header` where \
+                    hims_f_leave_salary_header_id=?; select * from `hims_f_employee_leave_salary_header` where \
+                    employee_id=?;",
+              values: [
+                inputParam.employee_leave_settlement_id,
+                inputParam.employee_leave_settlement_id,
+                inputParam.employee_id
+              ],
+              printQuery: true
             })
             .then(LeaveSettleResult => {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = LeaveSettleResult;
-                next();
-              });
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("LeaveSettleResult:", LeaveSettleResult[2][0]);
+
+              let leave_salary = LeaveSettleResult[1][0];
+              let leave_salary_header = LeaveSettleResult[2][0];
+
+              let start_year = moment(leave_salary.leave_start_date).format(
+                "YYYY"
+              );
+              let end_year = moment(leave_salary.leave_end_date).format("YYYY");
+              let balance_leave_days = 0;
+              let balance_leave_salary_amount = 0;
+              let balance_airticket_amount = 0;
+
+              if (start_year == end_year) {
+                balance_leave_days =
+                  parseFloat(leave_salary_header.balance_leave_days) +
+                  parseFloat(leave_salary.leave_period);
+
+                balance_leave_salary_amount =
+                  parseFloat(leave_salary_header.balance_leave_salary_amount) +
+                  parseFloat(leave_salary.leave_amount);
+
+                balance_airticket_amount =
+                  parseFloat(leave_salary_header.balance_airticket_amount) +
+                  parseFloat(leave_salary.airfare_amount);
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
+                        `balance_airticket_amount` = ? where employee_id=? and `year`=?; UPDATE `hims_d_employee` SET \
+                        `suspend_salary`='N', `last_salary_process_date`=null where hims_d_employee_id=?;",
+                    values: [
+                      balance_leave_days,
+                      balance_leave_salary_amount,
+                      balance_airticket_amount,
+                      inputParam.employee_id,
+                      start_year,
+                      inputParam.employee_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(LeaveSettleResult => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = LeaveSettleResult;
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    next(error);
+                  });
+              } else if (start_year != end_year) {
+                let Start_Date = moment(start_year)
+                  .startOf("month")
+                  .format("YYYY-MM-DD");
+
+                let values = [];
+
+                Start_Date = moment(Start_Date).add(-1, "days");
+
+                let End_date = moment(start_year)
+                  .endOf("month")
+                  .format("YYYY-MM-DD");
+
+                let total_days = moment(End_date).diff(
+                  moment(Start_Date),
+                  "days"
+                );
+                let no_of_days = moment(End_date).diff(
+                  moment(leave_salary.leave_start_date),
+                  "days"
+                );
+                balance_leave_days =
+                  parseFloat(leave_salary_header.balance_leave_days) +
+                  parseFloat(no_of_days);
+
+                balance_leave_salary_amount =
+                  parseFloat(leave_salary_header.balance_leave_salary_amount) +
+                  parseFloat(leave_salary.leave_amount);
+
+                balance_leave_salary_amount =
+                  parseFloat(leave_salary_header.balance_airticket_amount) +
+                  parseFloat(leave_salary.airfare_amount);
+
+                let strQuery =
+                  "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
+                      `balance_airticket_amount` = ? where employee_id=? and `year`=?;";
+
+                values.push(
+                  balance_leave_days,
+                  balance_leave_salary_amount,
+                  balance_airticket_amount,
+                  inputParam.employee_id,
+                  start_year
+                );
+
+                no_of_days =
+                  parseFloat(leave_salary_header.balance_leave_days) -
+                  parseFloat(no_of_days);
+
+                balance_leave_days =
+                  parseFloat(leave_salary_header.balance_leave_days) +
+                  parseFloat(no_of_days);
+
+                balance_leave_salary_amount =
+                  parseFloat(leave_salary_header.balance_leave_salary_amount) +
+                  parseFloat(leave_salary.leave_amount);
+
+                balance_leave_salary_amount =
+                  parseFloat(leave_salary_header.balance_airticket_amount) +
+                  parseFloat(leave_salary.airfare_amount);
+
+                strQuery +=
+                  "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
+                      `balance_airticket_amount` = ? where employee_id=? and `year`=?;";
+
+                values.push(
+                  balance_leave_days,
+                  balance_leave_salary_amount,
+                  balance_airticket_amount,
+                  inputParam.employee_id,
+                  end_year
+                );
+
+                utilities
+                  .AlgaehUtilities()
+                  .logger()
+                  .log("strQuery:", strQuery);
+
+                _mysql
+                  .executeQuery({
+                    query: strQuery,
+                    values: values
+                  })
+                  .then(LeaveSettleResult => {
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = LeaveSettleResult;
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    next(error);
+                  });
+              }
+              // _mysql.commitTransaction(() => {
+              //   _mysql.releaseConnection();
+              //   req.records = LeaveSettleResult;
+              //   next();
+              // });
             })
             .catch(error => {
               next(error);
@@ -678,7 +1012,7 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_f_employee_payments_id,employee_advance_id,employee_loan_id,employee_leave_encash_id,\
+          "select hims_f_employee_payments_id,employee_id,employee_advance_id,employee_loan_id,employee_leave_encash_id,\
           employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
           payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
           emp.employee_code, emp.full_name from hims_f_employee_payments, hims_d_employee emp where \

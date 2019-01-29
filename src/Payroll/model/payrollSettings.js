@@ -563,7 +563,7 @@ let dummy = (req, res, next) => {
         reject(e);
       }
     }).then(result => {
-      debugLog("result:", result);
+      debugLog("result:", result.MaxLeave);
     });
   } catch (e) {
     next(e);

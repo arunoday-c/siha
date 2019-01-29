@@ -10,6 +10,7 @@ import {
 import {
   AUTH_LEVEL2,
   AUTH_LEVEL3,
+  AUTH_LEVEL5,
   ADV_DEDUCTION,
   EOS_CALC,
   ATTENDANCE_TYPE,
@@ -272,7 +273,7 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: AUTH_LEVEL3
+                      data: AUTH_LEVEL5
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
@@ -295,7 +296,7 @@ export default class AttendanceSettings extends Component {
                     dataSource: {
                       textField: "name",
                       valueField: "value",
-                      data: AUTH_LEVEL2
+                      data: AUTH_LEVEL3
                     },
                     onChange: this.dropDownHandler.bind(this),
                     onClear: () => {
