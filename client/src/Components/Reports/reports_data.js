@@ -136,7 +136,7 @@ export default [
       {
         subitem: "Department Wise Income",
         template_name: "departmentIncome",
-        reportQuery : "subDepartmentIncome",
+        reportQuery: "subDepartmentIncome",
         reportParameters: [
           {
             type: "date",
@@ -155,7 +155,7 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
-          } 
+          }
         ]
       },
       {
@@ -700,6 +700,96 @@ export default [
       },
       {
         subitem: " TestResult Report",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      }
+    ]
+  },
+  {
+    name: "PAYROLL REPORTS",
+    submenu: [
+      {
+        subitem: "Salary Slips",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Salary Statement",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Bank Transfer letter with statement",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Statistics reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Final Settlement report",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Leave Reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Shift Rostering reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Loan and Advance report",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Salary Component Wise reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Ledger",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Attendance Reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Document Expiry Reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Details",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+
+      {
+        subitem: "Nationality Wise and Department Wise Statistics",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
