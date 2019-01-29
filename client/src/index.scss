@@ -965,6 +965,7 @@
         min-width: 31px;
         -webkit-transition: width 2s; /* Safari */
         transition: width 2s;
+        cursor: pointer;
         &:hover {
           background-position: 100% 0;
           -moz-transition: all 0.2s ease-in-out;
@@ -1013,11 +1014,12 @@
         }
       }
       .btn-other {
-        color: $color-black;
-        border-color: rgb(182, 182, 182);
+        background: none;
+        color: $color-white;
+        border: 1px solid lighten($color-white, 10%);
         &:hover,
         &:focus {
-          background-color: rgb(230, 230, 230);
+          background-color: lighten($color-black, 10%);
         }
       }
     }

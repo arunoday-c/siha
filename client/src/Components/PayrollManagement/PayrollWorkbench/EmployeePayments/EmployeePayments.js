@@ -398,7 +398,7 @@ class EmployeePayment extends Component {
                               : "*** NEW ***"}
                           </h6>
                         </div>
-                        <div className="col-6">
+                        <div className="col-6 form-group">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Date"
@@ -473,7 +473,7 @@ class EmployeePayment extends Component {
                             }}
                           />
                           <AlagehFormGroup
-                            div={{ className: "col mandatory" }}
+                            div={{ className: "col form-group mandatory" }}
                             label={{
                               forceLabel: "Cheque No.",
                               isImp:
@@ -517,7 +517,7 @@ class EmployeePayment extends Component {
                             }}
                           />
                           <AlagehFormGroup
-                            div={{ className: "col-4 mandatory" }}
+                            div={{ className: "col-4 form-group mandatory" }}
                             label={{
                               forceLabel: "Year",
                               isImp:
@@ -561,7 +561,7 @@ class EmployeePayment extends Component {
                         </div>
                       ) : null}
                       <div className="row">
-                        <div className="col-12">
+                        <div className="col-12 form-group">
                           <button
                             type="button"
                             className="btn btn-primary float-right"

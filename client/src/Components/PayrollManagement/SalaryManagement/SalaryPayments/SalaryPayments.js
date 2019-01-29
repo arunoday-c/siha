@@ -463,12 +463,7 @@ class SalaryPayment extends Component {
                   //   onClick={PostDoctorCommission.bind(this, this)}
                   // disabled={this.state.postEnable}
                 >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Generate Payslip PDF"
-                      //   returnText: true
-                    }}
-                  />
+                  Generate Payslip PDF
                 </button>
               </div>
             </div>
