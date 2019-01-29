@@ -467,6 +467,30 @@ export default class MonthlyAttendance extends Component {
                         label={{ forceLabel: "Pending Unpaid Leaves" }}
                       />
                     )
+                  },
+                  {
+                    fieldName: "total_paid_days",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Total Paid Days" }} />
+                    )
+                  },
+                  {
+                    fieldName: "ot_work_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "OT Hours" }} />
+                  },
+                  {
+                    fieldName: "ot_weekoff_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
+                  },
+                  {
+                    fieldName: "ot_holiday_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />
+                  },
+                  {
+                    fieldName: "shortage_hours",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Shortage Hours" }} />
+                    )
                   }
                 ]}
                 dataSource={{
