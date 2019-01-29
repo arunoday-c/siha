@@ -10,7 +10,7 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 import {
   texthandle,
@@ -39,7 +39,8 @@ class SalaryProcessing extends Component {
       finalizeBtn: true,
       employee_id: null,
       employee_name: null,
-      hospital_id: null,
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id,
 
       total_days: null,
       absent_days: null,
@@ -337,6 +338,22 @@ class SalaryProcessing extends Component {
                             id="Salary_Management_Cntr_grid"
                             columns={[
                               {
+                                // fieldName: "salary_number",
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Action"
+                                    }}
+                                  />
+                                ),
+                                others: {
+                                  minWidth: 50,
+                                  filterable: false
+                                }
+
+                                //disabled: true
+                              },
+                              {
                                 fieldName: "salary_number",
                                 label: (
                                   <AlgaehLabel
@@ -345,10 +362,8 @@ class SalaryProcessing extends Component {
                                     }}
                                   />
                                 ),
-
                                 others: {
-                                  minWidth: 150,
-                                  maxWidth: 250
+                                  minWidth: 180
                                 }
 
                                 //disabled: true
@@ -376,11 +391,6 @@ class SalaryProcessing extends Component {
                                       {row.employee_code}
                                     </span>
                                   );
-                                },
-
-                                others: {
-                                  minWidth: 120,
-                                  maxWidth: 200
                                 }
                               },
                               {
@@ -393,8 +403,7 @@ class SalaryProcessing extends Component {
                                   />
                                 ),
                                 others: {
-                                  minWidth: 150,
-                                  maxWidth: 250
+                                  maxWidth: 280
                                 }
                               },
                               {
@@ -415,7 +424,15 @@ class SalaryProcessing extends Component {
                                       forceLabel: "Advance"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.advance_due)}
+                                    </span>
+                                  );
+                                }
                               },
                               {
                                 fieldName: "loan_due_amount",
@@ -426,7 +443,15 @@ class SalaryProcessing extends Component {
                                       forceLabel: "Loan Due Amount"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.loan_due_amount)}
+                                    </span>
+                                  );
+                                }
                               },
                               {
                                 fieldName: "loan_payable_amount",
@@ -437,7 +462,17 @@ class SalaryProcessing extends Component {
                                       forceLabel: "Loan Payable Amount"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(
+                                        row.loan_payable_amount
+                                      )}
+                                    </span>
+                                  );
+                                }
                               },
                               {
                                 fieldName: "net_salary",
@@ -447,7 +482,15 @@ class SalaryProcessing extends Component {
                                       forceLabel: "Total Amount"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.net_salary)}
+                                    </span>
+                                  );
+                                }
                               }
                             ]}
                             // rowClassName={row => {
@@ -459,8 +502,9 @@ class SalaryProcessing extends Component {
                             dataSource={{
                               data: this.state.salaryprocess_header
                             }}
+                            filter={true}
                             isEditable={false}
-                            paging={{ page: 0, rowsPerPage: 10 }}
+                            paging={{ page: 0, rowsPerPage: 20 }}
                             events={{
                               onEdit: () => {},
                               onDelete: () => {},
@@ -675,8 +719,14 @@ class SalaryProcessing extends Component {
               </div>
             </div>
             <div className="col-3">
-              <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet portlet-bordered">
                 <div className="portlet-body">
+                  <h6>
+                    <small>Selected Employee:</small>
+                    <br />
+                    Employee Name
+                  </h6>
+                  <hr />
                   <div className="row">
                     <div className="col-6">
                       <AlgaehLabel
@@ -805,10 +855,7 @@ class SalaryProcessing extends Component {
                       </h6>
                     </div>
                   </div>
-                </div>
-              </div>
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-body">
+                  <hr />
                   <div className="row">
                     <div className="col-6">
                       <AlgaehLabel

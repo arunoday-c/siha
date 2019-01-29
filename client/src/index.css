@@ -207,7 +207,7 @@
   :global .displayInlineBlock {
     display: inline-block; }
   :global .greenCell {
-    background-color: #67d2d5 !important;
+    background-color: #ebf9fa !important;
     color: #34b8bc !important;
     text-decoration: underline !important; }
   :global .cancelledClass {

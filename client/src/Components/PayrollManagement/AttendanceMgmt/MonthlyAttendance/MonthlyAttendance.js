@@ -425,7 +425,8 @@ export default class MonthlyAttendance extends Component {
                       <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                     ),
                     others: {
-                      capitalize: true
+                      capitalize: true,
+                      maxWidth: 200
                     }
                   },
                   {
@@ -466,19 +467,43 @@ export default class MonthlyAttendance extends Component {
                         label={{ forceLabel: "Pending Unpaid Leaves" }}
                       />
                     )
+                  },
+                  {
+                    fieldName: "total_paid_days",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Total Paid Days" }} />
+                    )
+                  },
+                  {
+                    fieldName: "ot_work_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "OT Hours" }} />
+                  },
+                  {
+                    fieldName: "ot_weekoff_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
+                  },
+                  {
+                    fieldName: "ot_holiday_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />
+                  },
+                  {
+                    fieldName: "shortage_hours",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Shortage Hours" }} />
+                    )
                   }
                 ]}
                 dataSource={{
                   data: this.state.attandance.data
                 }}
-                filterable
-                paging={{ page: 0, rowsPerPage: 10 }}
+                filter={true}
+                paging={{ page: 0, rowsPerPage: 20 }}
                 loading={this.state.attandance.loader}
               />
             </div>
           </div>
         </div>
-        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+        {/* <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">
@@ -541,7 +566,7 @@ export default class MonthlyAttendance extends Component {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

@@ -210,10 +210,10 @@ class EmployeeDesignations extends Component {
               </button>
             </div>
           </div>
-          <div data-validate="empDsgnDiv">
+          <div id="empDsgnDivGrid_Cntr">
             <AlgaehDataGrid
-              id="emp-groups-grid"
-              datavalidate="data-validate='empDsgnDiv'"
+              id="empDsgnDivGrid"
+              data-validate="empDsgnDivGrid"
               columns={[
                 {
                   fieldName: "designation_code",
@@ -281,7 +281,8 @@ class EmployeeDesignations extends Component {
                 data: this.state.employee_designations
               }}
               isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
+              filter={true}
+              paging={{ page: 0, rowsPerPage: 20 }}
               events={{
                 onEdit: () => {},
                 onDelete: this.deleteDesignation.bind(this),

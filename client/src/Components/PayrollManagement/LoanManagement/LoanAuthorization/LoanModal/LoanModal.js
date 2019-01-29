@@ -57,7 +57,7 @@ class LoanModal extends Component {
   textHandle(e) {
     switch (e.target.name) {
       case "approved_amount":
-        if (e.target.value <= this.state.loan_maximum_amount) {
+        if (e.target.value <= this.state.loan_amount) {
           this.setState({
             [e.target.name]: e.target.value,
             installment_amount: e.target.value / this.state.loan_tenure
@@ -67,6 +67,9 @@ class LoanModal extends Component {
             title: "Approved Amount cannot be greater than requested amount",
             type: "warning"
           });
+          // this.setState({
+          //   approved_amount: null
+          // });
         }
         break;
 
@@ -406,13 +409,7 @@ class LoanModal extends Component {
                       />
                     ),
                     displayTemplate: row => {
-                      return (
-                        <span>
-                          {(row.pending_loan / row.installment_amount).toFixed(
-                            3
-                          )}
-                        </span>
-                      );
+                      return <span>{row.loan_tenure}</span>;
                     }
                   },
                   {
