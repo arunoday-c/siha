@@ -22,8 +22,10 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_f_leave_application_id, from_date, to_date, leave_type, total_approved_days FROM hims_f_leave_application \
-              where  status='APR' and processed = 'N' and leave_id=? and employee_id=?;",
+              "SELECT hims_f_leave_application_id, from_date, to_date, leave_type, total_approved_days, E.hospital_id FROM \
+              hims_f_leave_application,  hims_d_employee E \
+              where E.hims_d_employee_id = hims_f_leave_application.employee_id and status='APR' and processed = 'N' and leave_id=? and \
+              employee_id=?;",
             values: [leave_id, _leaveSalary.employee_id],
             printQuery: true
           })
@@ -99,8 +101,7 @@ module.exports = {
                 }),
                 leave_application_id:
                   annul_leave_app[0].hims_f_leave_application_id,
-                // leave_amount: "25000.00",
-                airfare_amount: 0
+                hospital_id: annul_leave_app[0].hospital_id
               };
               _mysql.releaseConnection();
               req.records = result;
@@ -212,8 +213,6 @@ module.exports = {
             per_day_sal = per_day_sal * req.query.leave_period;
 
             leave_amount = leave_amount + per_day_sal;
-            // airfare_amount
-            // leave_amount
           }
 
           utilities
@@ -558,7 +557,7 @@ module.exports = {
       .executeQuery({
         query:
           "select hims_f_leave_salary_header_id,leave_salary_date,employee_id,salary_amount,leave_amount,airfare_amount,\
-          total_amount,leave_period, E.employee_code, E.full_name  as employee_name\
+          total_amount,leave_period, E.employee_code, E.full_name  as employee_name, E.hospital_id\
           from hims_f_leave_salary_header LSH, hims_d_employee E where LSH.employee_id = E.hims_d_employee_id  and \
           hims_f_leave_salary_header_id = ?; ",
 

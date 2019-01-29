@@ -10,17 +10,18 @@ import moment from "moment";
 
 import { AlgaehLabel, AlgaehDataGrid } from "../../../Wrapper/algaehWrapper";
 import {
-  // texthandle,
   LeaveSalProcess,
-  ClearData,
   employeeSearch,
   dateFormater,
   SaveLeaveSalary,
   LoadLeaveSalary,
-  MainClearData
+  MainClearData,
+  openSalaryComponents,
+  closeSalaryComponents
 } from "./LeaveSalaryProcessEvents.js";
 import Options from "../../../../Options.json";
 import LeaveSalaryProcessIOputs from "../../../../Models/LeaveSalaryProcess";
+import SalariesComponents from "../../SalaryManagement/SalaryProcessing/SalariesComponents";
 
 class LeaveSalaryProcess extends Component {
   constructor(props) {
@@ -86,19 +87,6 @@ class LeaveSalaryProcess extends Component {
       <div className="leave_en_auth row">
         <div className="col-12">
           <div className="row inner-top-search">
-            {/* <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Leave Salary No."
-                }}
-              />
-              <h6>
-                {this.state.leave_salary_number
-                  ? this.state.leave_salary_number
-                  : "*** NEW ***"}
-              </h6>
-            </div> */}
-
             <div className="col" style={{ marginTop: 10 }}>
               <div
                 className="row"
@@ -196,16 +184,6 @@ class LeaveSalaryProcess extends Component {
               >
                 Process
               </button>
-              {/* <button
-                type="button"
-                className="btn btn-default"
-                style={{ marginTop: 21, marginLeft: 5 }}
-                onClick={ClearData.bind(this, this)}
-              >
-                <AlgaehLabel
-                  label={{ forceLabel: "Clear", returnText: true }}
-                />
-              </button> */}
             </div>
           </div>
         </div>
@@ -229,6 +207,35 @@ class LeaveSalaryProcess extends Component {
                     id="leaveSalaryProcessGrid"
                     datavalidate="leaveSalaryProcessGrid"
                     columns={[
+                      {
+                        fieldName: "Action",
+                        label: (
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Action"
+                            }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              <i
+                                className="fas fa-file-signature"
+                                aria-hidden="true"
+                                onClick={openSalaryComponents.bind(
+                                  this,
+                                  this,
+                                  row
+                                )}
+                              />
+                            </span>
+                          );
+                        },
+                        others: {
+                          minWidth: 50,
+                          filterable: false
+                        }
+                      },
                       {
                         fieldName: "year",
                         label: <AlgaehLabel label={{ forceLabel: "Year" }} />
@@ -349,7 +356,6 @@ class LeaveSalaryProcess extends Component {
                     ]}
                     keyId="hims_f_leave_salary_detail_id"
                     dataSource={{ data: this.state.leave_salary_detail }}
-                    // isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />
                 </div>
@@ -398,14 +404,7 @@ class LeaveSalaryProcess extends Component {
                   : this.state.dis_airfare_amount}
               </h6>
             </div>
-            {/* <div className="col">
-              <AlgaehLabel
-                label={{
-                  forceLabel: "Extra Airfare Allowance"
-                }}
-              />
-              <h6>0.00</h6>
-            </div> */}
+
             <div className="col">
               <AlgaehLabel
                 label={{
@@ -432,7 +431,7 @@ class LeaveSalaryProcess extends Component {
             </div>
           </div>
         </div>
-        {/* <div className="col-6">skjgfhkdjgfkd</div> */}
+
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
@@ -457,6 +456,12 @@ class LeaveSalaryProcess extends Component {
             </div>
           </div>
         </div>
+
+        <SalariesComponents
+          open={this.state.isOpen}
+          onClose={closeSalaryComponents.bind(this, this)}
+          selectedEmployee={this.state}
+        />
       </div>
     );
   }

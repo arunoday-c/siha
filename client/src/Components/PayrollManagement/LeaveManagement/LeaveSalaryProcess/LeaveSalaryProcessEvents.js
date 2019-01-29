@@ -320,6 +320,89 @@ const LoadLeaveSalary = $this => {
   });
 };
 
+const openSalaryComponents = ($this, row) => {
+  debugger;
+  let inputObj = {
+    year: row.year,
+    month: row.month,
+    hospital_id: $this.state.hospital_id,
+    employee_id: $this.state.employee_id
+  };
+  algaehApiCall({
+    uri: "/salary/getSalaryProcess",
+    module: "hrManagement",
+    data: inputObj,
+    method: "GET",
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        let data = response.data.result;
+        let header = data[0]["salaryprocess_header"][0];
+        const salaryprocess_Earning = Enumerable.from(
+          data[0]["salaryprocess_detail"][0]
+        )
+          .where(w => w.salary_header_id === header.hims_f_salary_id)
+          .toArray();
+
+        const salaryprocess_Deduction = Enumerable.from(
+          data[0]["salaryprocess_detail"][1]
+        )
+          .where(w => w.salary_header_id === header.hims_f_salary_id)
+          .toArray();
+
+        const salaryprocess_Contribute = Enumerable.from(
+          data[0]["salaryprocess_detail"][2]
+        )
+          .where(w => w.salary_header_id === header.hims_f_salary_id)
+          .toArray();
+
+        $this.setState({
+          isOpen: !$this.state.isOpen,
+          salaryprocess_Earning: salaryprocess_Earning,
+          salaryprocess_Deduction: salaryprocess_Deduction,
+          salaryprocess_Contribute: salaryprocess_Contribute,
+
+          total_earnings: header.total_earnings,
+          total_deductions: header.total_deductions,
+          loan_payable_amount: header.loan_payable_amount,
+          loan_due_amount: header.loan_due_amount,
+          net_salary: header.net_salary,
+
+          total_days: header.total_days,
+          absent_days: header.absent_days,
+          total_work_days: header.total_work_days,
+          total_weekoff_days: header.total_weekoff_days,
+          total_holidays: header.total_holidays,
+          total_leave: header.total_leave,
+          paid_leave: header.paid_leave,
+          unpaid_leave: header.unpaid_leave,
+          present_days: header.present_days,
+          total_paid_days: header.total_paid_days
+        });
+      } else if (!response.data.success) {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: response.data.result.message,
+          type: "error"
+        });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.response.data.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const closeSalaryComponents = ($this, e) => {
+  $this.setState({
+    isOpen: !$this.state.isOpen
+  });
+};
+
 export {
   texthandle,
   ClearData,
@@ -328,5 +411,7 @@ export {
   LeaveSalProcess,
   SaveLeaveSalary,
   LoadLeaveSalary,
-  MainClearData
+  MainClearData,
+  openSalaryComponents,
+  closeSalaryComponents
 };

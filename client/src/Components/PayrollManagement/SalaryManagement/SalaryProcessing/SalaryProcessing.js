@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import "./SalaryProcessing.css";
 
 import {
-  AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
@@ -15,13 +15,15 @@ import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
 import {
   texthandle,
   SalaryProcess,
-  getSalaryDetails,
   FinalizeSalary,
   ClearData,
-  employeeSearch
+  employeeSearch,
+  openSalaryComponents,
+  closeSalaryComponents
 } from "./SalaryProcessingEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
+import SalariesComponents from "./SalariesComponents";
 
 class SalaryProcessing extends Component {
   constructor(props) {
@@ -60,7 +62,8 @@ class SalaryProcessing extends Component {
       loan_payable_amount: null,
       loan_due_amount: null,
       net_salary: null,
-      salary_dates: null
+      salary_dates: null,
+      isOpen: false
     };
   }
 
@@ -314,7 +317,7 @@ class SalaryProcessing extends Component {
             </div>
           </div>
           <div className="row" style={{ marginBottom: 40 }}>
-            <div className="col-9">
+            <div className="col-12">
               <div className="row">
                 <div className="col-12">
                   <div className="portlet portlet-bordered margin-bottom-15">
@@ -339,7 +342,7 @@ class SalaryProcessing extends Component {
                             id="Salary_Management_Cntr_grid"
                             columns={[
                               {
-                                // fieldName: "salary_number",
+                                fieldName: "Action",
                                 label: (
                                   <AlgaehLabel
                                     label={{
@@ -347,12 +350,25 @@ class SalaryProcessing extends Component {
                                     }}
                                   />
                                 ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      <i
+                                        className="fas fa-file-signature"
+                                        aria-hidden="true"
+                                        onClick={openSalaryComponents.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                      />
+                                    </span>
+                                  );
+                                },
                                 others: {
                                   minWidth: 50,
                                   filterable: false
                                 }
-
-                                //disabled: true
                               },
                               {
                                 fieldName: "salary_number",
@@ -366,8 +382,6 @@ class SalaryProcessing extends Component {
                                 others: {
                                   minWidth: 180
                                 }
-
-                                //disabled: true
                               },
                               {
                                 fieldName: "employee_code",
@@ -377,22 +391,22 @@ class SalaryProcessing extends Component {
                                       forceLabel: "Employee Code"
                                     }}
                                   />
-                                ),
-                                className: drow => {
-                                  return "greenCell";
-                                },
-                                displayTemplate: row => {
-                                  return (
-                                    <span
-                                      className="pat-code"
-                                      onClick={() => {
-                                        getSalaryDetails(this, row);
-                                      }}
-                                    >
-                                      {row.employee_code}
-                                    </span>
-                                  );
-                                }
+                                )
+                                // className: drow => {
+                                //   return "greenCell";
+                                // },
+                                // displayTemplate: row => {
+                                //   return (
+                                //     <span
+                                //       className="pat-code"
+                                //       onClick={() => {
+                                //         getSalaryDetails(this, row);
+                                //       }}
+                                //     >
+                                //       {row.employee_code}
+                                //     </span>
+                                //   );
+                                // }
                               },
                               {
                                 fieldName: "full_name",
@@ -429,7 +443,6 @@ class SalaryProcessing extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {" "}
                                       {getAmountFormart(row.advance_due)}
                                     </span>
                                   );
@@ -448,7 +461,6 @@ class SalaryProcessing extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {" "}
                                       {getAmountFormart(row.loan_due_amount)}
                                     </span>
                                   );
@@ -467,7 +479,6 @@ class SalaryProcessing extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {" "}
                                       {getAmountFormart(
                                         row.loan_payable_amount
                                       )}
@@ -487,18 +498,12 @@ class SalaryProcessing extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {" "}
                                       {getAmountFormart(row.net_salary)}
                                     </span>
                                   );
                                 }
                               }
                             ]}
-                            // rowClassName={row => {
-                            //   return row.salary_processed === "Y"
-                            //     ? "greenCell"
-                            //     : null;
-                            // }}
                             keyId="algaeh_d_module_id"
                             dataSource={{
                               data: this.state.salaryprocess_header
@@ -511,413 +516,9 @@ class SalaryProcessing extends Component {
                               onDelete: () => {},
                               onDone: () => {}
                             }}
-                            // onRowSelect={row => {
-                            //   getSalaryDetails(this, row);
-                            // }}
                           />
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4">
-                  <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="portlet-title">
-                      <div className="caption">
-                        <h3 className="caption-subject">Earnings</h3>
-                      </div>
-                      <div className="actions">
-                        {/* <a className="btn btn-primary btn-circle active">
-                        <i className="fas fa-calculator" /> 
-                      </a>*/}
-                      </div>
-                    </div>
-
-                    <div className="portlet-body">
-                      <div className="row">
-                        <div className="col-lg-12" id="Salary_Earning_Cntr">
-                          <AlgaehDataGrid
-                            id="Salary_Earning_Cntr_grid"
-                            columns={[
-                              {
-                                fieldName: "earning_deduction_description",
-
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Description"
-                                    }}
-                                  />
-                                )
-                                //disabled: true
-                              },
-                              {
-                                fieldName: "amount",
-
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Amount"
-                                    }}
-                                  />
-                                ),
-                                others: {
-                                  maxWidth: 100
-                                }
-                              }
-                            ]}
-                            keyId="algaeh_d_module_id"
-                            dataSource={{
-                              data: this.state.salaryprocess_Earning
-                            }}
-                            isEditable={false}
-                            paging={{ page: 0, rowsPerPage: 10 }}
-                            events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4">
-                  <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="portlet-title">
-                      <div className="caption">
-                        <h3 className="caption-subject">Employee Deduction</h3>
-                      </div>
-                      <div className="actions">
-                        {/*    <a className="btn btn-primary btn-circle active">
-                     <i className="fas fa-calculator" />
-                      </a> */}
-                      </div>
-                    </div>
-
-                    <div className="portlet-body">
-                      <div className="row">
-                        <div
-                          className="col-lg-12"
-                          id="Employee_Deductions_Cntr"
-                        >
-                          <AlgaehDataGrid
-                            id="Employee_Deductions_Cntr_grid"
-                            columns={[
-                              {
-                                fieldName: "earning_deduction_description",
-
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Description"
-                                    }}
-                                  />
-                                )
-                                //disabled: true
-                              },
-                              {
-                                fieldName: "amount",
-
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Amount"
-                                    }}
-                                  />
-                                ),
-                                others: {
-                                  maxWidth: 100
-                                }
-                              }
-                            ]}
-                            keyId="algaeh_d_module_id"
-                            dataSource={{
-                              data: this.state.salaryprocess_Deduction
-                            }}
-                            isEditable={false}
-                            paging={{ page: 0, rowsPerPage: 10 }}
-                            events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-4">
-                  <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="portlet-title">
-                      <div className="caption">
-                        <h3 className="caption-subject">
-                          Employer Contribution
-                        </h3>
-                      </div>
-                      <div className="actions">
-                        {/*    <a className="btn btn-primary btn-circle active">
-                      <i className="fas fa-calculator" /> 
-                      </a>*/}
-                      </div>
-                    </div>
-
-                    <div className="portlet-body">
-                      <div className="row">
-                        <div
-                          className="col-lg-12"
-                          id="Employer_Contribution_Cntr"
-                        >
-                          <AlgaehDataGrid
-                            id="Employer_Contribution_Cntr_grid"
-                            columns={[
-                              {
-                                fieldName: "earning_deduction_description",
-
-                                //disabled: true
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Description"
-                                    }}
-                                  />
-                                )
-                              },
-                              {
-                                fieldName: "amount",
-
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Amount"
-                                    }}
-                                  />
-                                ),
-                                others: {
-                                  maxWidth: 100
-                                }
-                              }
-                            ]}
-                            keyId="algaeh_d_module_id"
-                            dataSource={{
-                              data: this.state.salaryprocess_Contribute
-                            }}
-                            isEditable={false}
-                            paging={{ page: 0, rowsPerPage: 10 }}
-                            events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col-3">
-              <div className="portlet portlet-bordered">
-                <div className="portlet-body">
-                  <h6>
-                    <small>Selected Employee:</small>
-                    <br />
-                    Employee Name
-                  </h6>
-                  <hr />
-                  <div className="row">
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Total Days"
-                        }}
-                      />
-                      <h6>
-                        {this.state.total_days === null
-                          ? 0
-                          : this.state.total_days}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Paid Leave"
-                        }}
-                      />
-                      <h6>
-                        {this.state.paid_leave === null
-                          ? 0
-                          : this.state.paid_leave}
-                      </h6>
-                    </div>
-
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Unpaid Leave"
-                        }}
-                      />
-                      <h6>
-                        {this.state.unpaid_leave === null
-                          ? 0
-                          : this.state.unpaid_leave}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Absent"
-                        }}
-                      />
-                      <h6>
-                        {this.state.absent_days === null
-                          ? 0
-                          : this.state.absent_days}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Present Days"
-                        }}
-                      />
-                      <h6>
-                        {this.state.present_days === null
-                          ? 0
-                          : this.state.present_days}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Total Leaves"
-                        }}
-                      />
-                      <h6>
-                        {this.state.total_leave === null
-                          ? 0
-                          : this.state.total_leave}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Comp Off."
-                        }}
-                      />
-                      <h6>
-                        {this.state.comp_off_days === null
-                          ? 0
-                          : this.state.comp_off_days}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Holidays/ Week Off"
-                        }}
-                      />
-                      <h6>
-                        {this.state.total_holidays === null
-                          ? 0
-                          : this.state.total_holidays +
-                              "/" +
-                              this.state.total_weekoff_days ===
-                            null
-                          ? 0
-                          : this.state.total_weekoff_days}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Paid Days"
-                        }}
-                      />
-                      <h6>
-                        {this.state.total_paid_days === null
-                          ? 0
-                          : this.state.total_paid_days}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Previous Unpaid Leaves"
-                        }}
-                      />
-                      <h6>
-                        {this.state.pending_unpaid_leave === null
-                          ? 0
-                          : this.state.pending_unpaid_leave}
-                      </h6>
-                    </div>
-                  </div>
-                  <hr />
-                  <div className="row">
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Gross Earnings"
-                        }}
-                      />
-                      <h6>
-                        {this.state.total_earnings === null
-                          ? 0
-                          : this.state.total_earnings}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Total Deductions"
-                        }}
-                      />
-                      <h6>
-                        {this.state.total_deductions === null
-                          ? 0
-                          : this.state.total_deductions}
-                      </h6>
-                    </div>
-
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Loan Payable"
-                        }}
-                      />
-                      <h6>
-                        {this.state.loan_payable_amount === null
-                          ? 0
-                          : this.state.loan_payable_amount}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Due Loan"
-                        }}
-                      />
-                      <h6>
-                        {this.state.loan_due_amount === null
-                          ? 0
-                          : this.state.loan_due_amount}
-                      </h6>
-                    </div>
-                    <div className="col-6">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Net Salary"
-                        }}
-                      />
-                      <h6>
-                        {this.state.net_salary === null
-                          ? 0
-                          : this.state.net_salary}
-                      </h6>
                     </div>
                   </div>
                 </div>
@@ -950,6 +551,11 @@ class SalaryProcessing extends Component {
               </div>
             </div>
           </div>
+          <SalariesComponents
+            open={this.state.isOpen}
+            onClose={closeSalaryComponents.bind(this, this)}
+            selectedEmployee={this.state}
+          />
         </div>
       </React.Fragment>
     );

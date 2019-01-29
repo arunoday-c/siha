@@ -85,50 +85,6 @@ const SalaryProcess = ($this, e) => {
   });
 };
 
-const getSalaryDetails = ($this, row) => {
-  debugger;
-  const salaryprocess_Earning = Enumerable.from(
-    $this.state.salaryprocess_detail[0]
-  )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
-    .toArray();
-
-  const salaryprocess_Deduction = Enumerable.from(
-    $this.state.salaryprocess_detail[1]
-  )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
-    .toArray();
-
-  const salaryprocess_Contribute = Enumerable.from(
-    $this.state.salaryprocess_detail[2]
-  )
-    .where(w => w.salary_header_id === row.hims_f_salary_id)
-    .toArray();
-
-  $this.setState({
-    salaryprocess_Earning: salaryprocess_Earning,
-    salaryprocess_Deduction: salaryprocess_Deduction,
-    salaryprocess_Contribute: salaryprocess_Contribute,
-
-    total_earnings: row.total_earnings,
-    total_deductions: row.total_deductions,
-    loan_payable_amount: row.loan_payable_amount,
-    loan_due_amount: row.loan_due_amount,
-    net_salary: row.net_salary,
-
-    total_days: row.total_days,
-    absent_days: row.absent_days,
-    total_work_days: row.total_work_days,
-    total_weekoff_days: row.total_weekoff_days,
-    total_holidays: row.total_holidays,
-    total_leave: row.total_leave,
-    paid_leave: row.paid_leave,
-    unpaid_leave: row.unpaid_leave,
-    present_days: row.present_days,
-    total_paid_days: row.total_paid_days
-  });
-};
-
 const ClearData = $this => {
   $this.setState({
     year: moment().year(),
@@ -217,11 +173,62 @@ const employeeSearch = $this => {
   });
 };
 
+const openSalaryComponents = ($this, row) => {
+  const salaryprocess_Earning = Enumerable.from(
+    $this.state.salaryprocess_detail[0]
+  )
+    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .toArray();
+
+  const salaryprocess_Deduction = Enumerable.from(
+    $this.state.salaryprocess_detail[1]
+  )
+    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .toArray();
+
+  const salaryprocess_Contribute = Enumerable.from(
+    $this.state.salaryprocess_detail[2]
+  )
+    .where(w => w.salary_header_id === row.hims_f_salary_id)
+    .toArray();
+
+  $this.setState({
+    isOpen: !$this.state.isOpen,
+    salaryprocess_Earning: salaryprocess_Earning,
+    salaryprocess_Deduction: salaryprocess_Deduction,
+    salaryprocess_Contribute: salaryprocess_Contribute,
+
+    total_earnings: row.total_earnings,
+    total_deductions: row.total_deductions,
+    loan_payable_amount: row.loan_payable_amount,
+    loan_due_amount: row.loan_due_amount,
+    net_salary: row.net_salary,
+
+    total_days: row.total_days,
+    absent_days: row.absent_days,
+    total_work_days: row.total_work_days,
+    total_weekoff_days: row.total_weekoff_days,
+    total_holidays: row.total_holidays,
+    total_leave: row.total_leave,
+    paid_leave: row.paid_leave,
+    unpaid_leave: row.unpaid_leave,
+    present_days: row.present_days,
+    total_paid_days: row.total_paid_days
+  });
+};
+
+const closeSalaryComponents = ($this, e) => {
+  $this.setState({
+    isOpen: !$this.state.isOpen
+  });
+};
+
 export {
   texthandle,
   SalaryProcess,
-  getSalaryDetails,
   FinalizeSalary,
   ClearData,
-  employeeSearch
+  employeeSearch,
+  openSalaryComponents,
+  closeSalaryComponents
 };
