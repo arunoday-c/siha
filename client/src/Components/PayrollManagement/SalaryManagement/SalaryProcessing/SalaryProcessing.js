@@ -354,7 +354,7 @@ class SalaryProcessing extends Component {
                                   return (
                                     <span>
                                       <i
-                                        className="fas fa-file-signature"
+                                        className="fas fa-eye"
                                         aria-hidden="true"
                                         onClick={openSalaryComponents.bind(
                                           this,

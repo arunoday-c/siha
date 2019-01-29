@@ -872,21 +872,6 @@ module.exports = {
                                                             }
                                                           );
                                                         });
-                                                      // } else {
-                                                      //   if (req.mySQl == null) {
-                                                      //     _mysql.commitTransaction(
-                                                      //       () => {
-                                                      //         _mysql.releaseConnection();
-                                                      //         req.records = _requestCollector;
-                                                      //         next();
-                                                      //       }
-                                                      //     );
-                                                      //   } else {
-                                                      //     resolve(
-                                                      //       salary_header_id
-                                                      //     );
-                                                      //   }
-                                                      // }
                                                     })
                                                     .catch(error => {
                                                       reject(error);
