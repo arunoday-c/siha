@@ -407,7 +407,11 @@ class LoanModal extends Component {
                     ),
                     displayTemplate: row => {
                       return (
-                        <span>{row.pending_loan / row.installment_amount}</span>
+                        <span>
+                          {(row.pending_loan / row.installment_amount).toFixed(
+                            3
+                          )}
+                        </span>
                       );
                     }
                   },

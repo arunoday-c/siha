@@ -440,39 +440,6 @@ export default class LeaveAuthorization extends Component {
                         }
                       },
                       {
-                        fieldName: "leave_application_code",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Application Code" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "application_date",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Application Date" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(row.application_date).format(
-                                "DD-MM-YYYY"
-                              )}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "sub_department_name",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Department Name" }}
-                          />
-                        )
-                      },
-                      {
                         fieldName: "employee_code",
                         label: (
                           <AlgaehLabel
@@ -489,32 +456,45 @@ export default class LeaveAuthorization extends Component {
                         )
                       },
                       {
-                        fieldName: "replacement_employee_name",
+                        fieldName: "sub_department_name",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Replacement If Any" }}
+                            label={{ forceLabel: "Department Name" }}
                           />
+                        )
+                      },
+                      {
+                        fieldName: "leave_description",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
+                        )
+                      },
+                      {
+                        fieldName: "total_applied_days",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Applied for (days)" }}
+                          />
+                        )
+                      },
+                      {
+                        fieldName: "leave_application_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Request Code" }} />
+                        )
+                      },
+                      {
+                        fieldName: "application_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Request Date" }} />
                         ),
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.replacement_employee_name
-                                ? row.replacement_employee_name
-                                : "Not Specified"}
+                              {moment(row.application_date).format(
+                                "DD-MM-YYYY"
+                              )}
                             </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "remarks",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Leave Remarks" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>{row.remarks ? row.remarks : "------"}</span>
                           );
                         }
                       }
