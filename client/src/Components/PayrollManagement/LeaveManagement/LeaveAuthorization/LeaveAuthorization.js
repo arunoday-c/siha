@@ -454,7 +454,7 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel label={{ forceLabel: "Actions" }} />
                         ),
                         displayTemplate: row => {
-                          return row.status !== "APR" ? (
+                          return row.status === "PEN" ? (
                             <React.Fragment>
                               <i
                                 style={
@@ -481,7 +481,7 @@ export default class LeaveAuthorization extends Component {
                                 )}
                               />
                             </React.Fragment>
-                          ) : (
+                          ) : row.status === "APR" ? (
                             <i
                               className="fas fa-times"
                               onClick={() => {
@@ -491,6 +491,8 @@ export default class LeaveAuthorization extends Component {
                                 });
                               }}
                             />
+                          ) : (
+                            "------"
                           );
                         },
                         others: {
@@ -517,6 +519,10 @@ export default class LeaveAuthorization extends Component {
                               ) : row.status === "REJ" ? (
                                 <span className="badge badge-danger">
                                   Rejected
+                                </span>
+                              ) : row.status === "CAN" ? (
+                                <span className="badge badge-danger">
+                                  Cancelled
                                 </span>
                               ) : (
                                 "------"

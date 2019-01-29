@@ -24,7 +24,8 @@ class Dashboard extends Component {
       editContainer: false,
       idTypes: [],
       employee_expc: [],
-      employee_edu: []
+      employee_edu: [],
+      family_details: []
     };
 
     this.getFamilyDetails();

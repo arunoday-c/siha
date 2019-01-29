@@ -7,7 +7,10 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getAmountFormart
+} from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 
@@ -266,10 +269,10 @@ class EmployeeGroups extends Component {
             </div>
           </div>
 
-          <div data-validate="empGrpDiv">
+          <div id="empGrpGrid_Cntr">
             <AlgaehDataGrid
-              id="emp-groups-grid"
-              datavalidate="data-validate='empGrpDiv'"
+              id="empGrpGrid"
+              data-validate="empGrpGrid"
               columns={[
                 {
                   fieldName: "group_description",
@@ -356,6 +359,9 @@ class EmployeeGroups extends Component {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Airfare Amount" }} />
                   ),
+                  displayTemplate: row => {
+                    return <span> {getAmountFormart(row.airfare_amount)}</span>;
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup
@@ -382,7 +388,8 @@ class EmployeeGroups extends Component {
                 data: this.state.employee_groups
               }}
               isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
+              paging={{ page: 0, rowsPerPage: 20 }}
+              filter={true}
               events={{
                 onEdit: () => {},
                 onDelete: this.deleteEmployeeGroups.bind(this),

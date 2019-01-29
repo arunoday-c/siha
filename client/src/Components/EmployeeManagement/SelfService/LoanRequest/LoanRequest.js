@@ -594,13 +594,7 @@ class LoanRequest extends Component {
                           />
                         ),
                         displayTemplate: row => {
-                          return (
-                            <span>
-                              {(
-                                row.pending_loan / row.installment_amount
-                              ).toFixed(3)}
-                            </span>
-                          );
+                          return <span>{row.loan_tenure}</span>;
                         }
                       },
                       {
@@ -646,7 +640,10 @@ class LoanRequest extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Application No." }}
                           />
-                        )
+                        ),
+                        others: {
+                          minWidth: 150
+                        }
                       },
                       {
                         fieldName: "loan_application_date",
@@ -771,7 +768,12 @@ class LoanRequest extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Advance Amount" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.advance_amount)}</span>
+                          );
+                        }
                       },
 
                       {

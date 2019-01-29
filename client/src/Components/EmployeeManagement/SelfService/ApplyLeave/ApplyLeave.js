@@ -494,7 +494,7 @@ class ApplyLeave extends Component {
               this.clearState();
             } else if (!res.data.success) {
               swalMessage({
-                title: res.data.records.message,
+                title: res.data.message,
                 type: "error"
               });
             }
@@ -894,9 +894,9 @@ class ApplyLeave extends Component {
                                   <span className="badge badge-danger">
                                     Rejected
                                   </span>
-                                ) : row.status === "PRO" ? (
-                                  <span className="badge badge-success">
-                                    Processed
+                                ) : row.status === "CAN" ? (
+                                  <span className="badge badge-danger">
+                                    Cancelled
                                   </span>
                                 ) : (
                                   "------"
@@ -907,15 +907,25 @@ class ApplyLeave extends Component {
                           editorTemplate: row => {
                             return (
                               <span>
-                                {row.status === "PEN"
-                                  ? "Pending"
-                                  : row.status === "APR"
-                                  ? "Approved"
-                                  : row.status === "REJ"
-                                  ? "Rejected"
-                                  : row.status === "PRO"
-                                  ? "Processed"
-                                  : "------"}
+                                {row.status === "PEN" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.status === "APR" ? (
+                                  <span className="badge badge-success">
+                                    Approved
+                                  </span>
+                                ) : row.status === "REJ" ? (
+                                  <span className="badge badge-danger">
+                                    Rejected
+                                  </span>
+                                ) : row.status === "CAN" ? (
+                                  <span className="badge badge-danger">
+                                    Cancelled
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
                               </span>
                             );
                           }

@@ -425,7 +425,8 @@ export default class MonthlyAttendance extends Component {
                       <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                     ),
                     others: {
-                      capitalize: true
+                      capitalize: true,
+                      maxWidth: 200
                     }
                   },
                   {
@@ -465,20 +466,105 @@ export default class MonthlyAttendance extends Component {
                       <AlgaehLabel
                         label={{ forceLabel: "Pending Unpaid Leaves" }}
                       />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.pending_unpaid_leaves
+                            ? row.pending_unpaid_leaves
+                            : 0}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "total_paid_days",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Total Paid Days" }} />
                     )
+                  },
+                  {
+                    fieldName: "total_holidays",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Total Holidays" }} />
+                    )
+                  },
+                  {
+                    fieldName: "total_weekoff_days",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Total Week Off Days" }}
+                      />
+                    )
+                  },
+                  {
+                    fieldName: "ot_work_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "OT Hours" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_work_hours
+                            ? row.ot_work_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "ot_weekoff_hours",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_weekoff_hours
+                            ? row.ot_weekoff_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "ot_holiday_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_holiday_hours
+                            ? row.ot_holiday_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "shortage_hours",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Shortage Hours" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.shortage_hours
+                            ? row.shortage_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
                   }
                 ]}
                 dataSource={{
                   data: this.state.attandance.data
                 }}
-                filterable
-                paging={{ page: 0, rowsPerPage: 10 }}
+                filter={true}
+                paging={{ page: 0, rowsPerPage: 20 }}
                 loading={this.state.attandance.loader}
               />
             </div>
           </div>
         </div>
-        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+        {/* <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">
@@ -541,7 +627,7 @@ export default class MonthlyAttendance extends Component {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
