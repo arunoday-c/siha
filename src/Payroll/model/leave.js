@@ -3303,7 +3303,7 @@ let calculateLeaveDays = (req, res, next) => {
 
       db.query(
         "select hims_d_leave_id,leave_code,leave_description,include_weekoff,\
-        include_holiday from hims_d_leave where hims_d_leave_id=2  and record_status='A'",
+        include_holiday from hims_d_leave where hims_d_leave_id=?  and record_status='A'",
         input.leave_id,
         (error, result) => {
           if (error) {
