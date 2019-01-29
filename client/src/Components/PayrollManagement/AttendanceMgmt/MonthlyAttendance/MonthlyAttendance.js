@@ -466,7 +466,16 @@ export default class MonthlyAttendance extends Component {
                       <AlgaehLabel
                         label={{ forceLabel: "Pending Unpaid Leaves" }}
                       />
-                    )
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.pending_unpaid_leaves
+                            ? row.pending_unpaid_leaves
+                            : 0}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "total_paid_days",
@@ -475,22 +484,74 @@ export default class MonthlyAttendance extends Component {
                     )
                   },
                   {
+                    fieldName: "total_holidays",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Total Holidays" }} />
+                    )
+                  },
+                  {
+                    fieldName: "total_weekoff_days",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Total Week Off Days" }}
+                      />
+                    )
+                  },
+                  {
                     fieldName: "ot_work_hours",
-                    label: <AlgaehLabel label={{ forceLabel: "OT Hours" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "OT Hours" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_work_hours
+                            ? row.ot_work_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "ot_weekoff_hours",
-                    label: <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_weekoff_hours
+                            ? row.ot_weekoff_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "ot_holiday_hours",
-                    label: <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />
+                    label: <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_holiday_hours
+                            ? row.ot_holiday_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
                   },
                   {
                     fieldName: "shortage_hours",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Shortage Hours" }} />
-                    )
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.shortage_hours
+                            ? row.shortage_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
                   }
                 ]}
                 dataSource={{
