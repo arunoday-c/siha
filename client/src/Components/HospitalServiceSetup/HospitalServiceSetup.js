@@ -149,7 +149,6 @@ class HospitalServiceSetup extends Component {
   }
 
   EditItemMaster(row) {
-    
     if (row.cpt_code !== null) {
       algaehApiCall({
         uri: "/icdcptcodes/selectCptCodes",
@@ -177,7 +176,6 @@ class HospitalServiceSetup extends Component {
           }
         },
         onFailure: error => {
-          
           if (error.response.data.message === "No records found") {
             this.setState({
               isOpen: !this.state.isOpen,
@@ -530,7 +528,7 @@ class HospitalServiceSetup extends Component {
                         : this.props.hospitalservices
                   }}
                   filter={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>
             </div>
