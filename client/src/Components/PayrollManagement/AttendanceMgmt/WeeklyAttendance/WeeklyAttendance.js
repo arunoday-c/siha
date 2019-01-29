@@ -372,237 +372,239 @@ export default class WeeklyAttendance extends Component {
             </div>
           </div>
           <div className="portlet-body WeeklyTimeProgress">
-            {this.state.time_sheet.length === 0
-              ? "TIME SHEET"
-              : this.state.time_sheet.map((data, index) =>
-                  data.status === "WO" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("ddd, Do")}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                      </div>
-                      <div className="col">
-                        <div className="progress week-off">
-                          <div
-                            className="progress-bar "
-                            role="progressbar"
-                            aria-valuenow="100"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{ width: "100%" }}
-                          >
-                            <span>Week Off</span>
-                          </div>
+            {this.state.time_sheet.length === 0 ? (
+              <div>Time Sheet</div>
+            ) : (
+              this.state.time_sheet.map((data, index) =>
+                data.status === "WO" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress weekOffCntr"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col">
+                      <div className="progress week-off">
+                        <div
+                          className="progress-bar "
+                          role="progressbar"
+                          aria-valuenow="100"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{ width: "100%" }}
+                        >
+                          <span>Week Off</span>
                         </div>
                       </div>
                     </div>
-                  ) : data.status === "PR" ? (
-                    <div className="row dailyTimeProgress">
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("ddd, Do")}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                      </div>
-                      <div className="col">
-                        <div className="progress">
-                          <div
-                            className="progress-bar  bg-success"
-                            role="progressbar"
-                            aria-valuenow="75"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{
-                              width:
-                                (data.worked_hours / data.actual_hours) * 100 +
-                                "%"
-                            }}
-                          >
-                            <div className="tooltipDetails">
-                              <span className="checkIn animated bounceIn faster">
-                                Check In
-                                <b>
-                                  {moment(data.in_time, "HH:mm:ss").format(
-                                    "hh:mm a"
-                                  )}
-                                </b>
-                              </span>
-                              {/* <span className="totalHr animated bounceIn faster">
+                  </div>
+                ) : data.status === "PR" ? (
+                  <div className="row dailyTimeProgress">
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col">
+                      <div className="progress">
+                        <div
+                          className="progress-bar  bg-success"
+                          role="progressbar"
+                          aria-valuenow="75"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{
+                            width:
+                              (data.worked_hours / data.actual_hours) * 100 +
+                              "%"
+                          }}
+                        >
+                          <div className="tooltipDetails">
+                            <span className="checkIn animated bounceIn faster">
+                              Check In
+                              <b>
+                                {moment(data.in_time, "HH:mm:ss").format(
+                                  "hh:mm a"
+                                )}
+                              </b>
+                            </span>
+                            {/* <span className="totalHr animated bounceIn faster">
                                 Late time by <b className="lateTime">55 min</b>
                                   </span>*/}
-                              <span className="checkOut animated bounceIn faster">
-                                Check Out
-                                <b>
-                                  {moment(data.out_time, "HH:mm:ss").format(
-                                    "hh:mm a"
-                                  )}
-                                </b>
-                              </span>
-                            </div>
+                            <span className="checkOut animated bounceIn faster">
+                              Check Out
+                              <b>
+                                {moment(data.out_time, "HH:mm:ss").format(
+                                  "hh:mm a"
+                                )}
+                              </b>
+                            </span>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ) : data.status === "AB" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("ddd, Do")}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                      </div>
-                      <div className="col">
-                        <div className="progress week-off">
-                          <div
-                            className="progress-bar "
-                            role="progressbar"
-                            aria-valuenow="100"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{ width: "100%" }}
-                          >
-                            <span>Absent</span>
-                          </div>
+                  </div>
+                ) : data.status === "AB" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress absentCntr"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col">
+                      <div className="progress week-off">
+                        <div
+                          className="progress-bar "
+                          role="progressbar"
+                          aria-valuenow="100"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{ width: "100%" }}
+                        >
+                          <span>Absent</span>
                         </div>
                       </div>
                     </div>
-                  ) : data.status === "HO" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("ddd, Do")}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                      </div>
-                      <div className="col">
-                        <div className="progress week-off">
-                          <div
-                            className="progress-bar "
-                            role="progressbar"
-                            aria-valuenow="100"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{ width: "100%" }}
-                          >
-                            <span>Holiday</span>
-                          </div>
+                  </div>
+                ) : data.status === "HO" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress holidayCntr"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col">
+                      <div className="progress week-off">
+                        <div
+                          className="progress-bar "
+                          role="progressbar"
+                          aria-valuenow="100"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{ width: "100%" }}
+                        >
+                          <span>Holiday</span>
                         </div>
                       </div>
                     </div>
-                  ) : data.status === "PL" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("ddd, Do")}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                      </div>
-                      <div className="col">
-                        <div className="progress week-off">
-                          <div
-                            className="progress-bar "
-                            role="progressbar"
-                            aria-valuenow="100"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{ width: "100%" }}
-                          >
-                            <span>Paid Leave</span>
-                          </div>
+                  </div>
+                ) : data.status === "PL" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress paidLeaveCntr"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col">
+                      <div className="progress week-off">
+                        <div
+                          className="progress-bar "
+                          role="progressbar"
+                          aria-valuenow="100"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{ width: "100%" }}
+                        >
+                          <span>Paid Leave</span>
                         </div>
                       </div>
                     </div>
-                  ) : data.status === "UL" ? (
-                    <div
-                      key={data.hims_f_daily_time_sheet_id}
-                      className="row dailyTimeProgress"
-                    >
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("ddd, Do")}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                      </div>
-                      <div className="col">
-                        <div className="progress week-off">
-                          <div
-                            className="progress-bar "
-                            role="progressbar"
-                            aria-valuenow="100"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{ width: "100%" }}
-                          >
-                            <span>Unpaid Leave</span>
-                          </div>
+                  </div>
+                ) : data.status === "UL" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress unPaidLeaveCntr"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col">
+                      <div className="progress week-off">
+                        <div
+                          className="progress-bar "
+                          role="progressbar"
+                          aria-valuenow="100"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{ width: "100%" }}
+                        >
+                          <span>Unpaid Leave</span>
                         </div>
                       </div>
                     </div>
-                  ) : data.status === "EX" ? (
-                    <div className="row dailyTimeProgress">
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("ddd, Do")}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                      </div>
-                      <div className="col">
-                        <div className="progress">
-                          <div
-                            className="progress-bar  bg-danger"
-                            role="progressbar"
-                            aria-valuenow="75"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{
-                              width: "50%"
-                            }}
-                          >
-                            <div className="tooltipDetails">
-                              <span className="checkIn animated bounceIn faster">
-                                Check In{" "}
-                                <b>
-                                  {data.in_time
-                                    ? moment(data.in_time, "HH:mm:ss").format(
-                                        "hh:mm a"
-                                      )
-                                    : "Not Available"}
-                                </b>
-                              </span>
-                              {/* <span className="totalHr animated bounceIn faster">
+                  </div>
+                ) : data.status === "EX" ? (
+                  <div className="row dailyTimeProgress exCntr">
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col">
+                      <div className="progress">
+                        <div
+                          className="progress-bar  bg-danger"
+                          role="progressbar"
+                          aria-valuenow="75"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{
+                            width: "50%"
+                          }}
+                        >
+                          <div className="tooltipDetails">
+                            <span className="checkIn animated bounceIn faster">
+                              Check In{" "}
+                              <b>
+                                {data.in_time
+                                  ? moment(data.in_time, "HH:mm:ss").format(
+                                      "hh:mm a"
+                                    )
+                                  : "Not Available"}
+                              </b>
+                            </span>
+                            {/* <span className="totalHr animated bounceIn faster">
                                 Late time by <b className="lateTime">55 min</b>
                               </span> */}
-                              <span className="checkOut animated bounceIn faster">
-                                Check Out{" "}
-                                <b>
-                                  {data.out_time
-                                    ? moment(data.out_time, "HH:mm:ss").format(
-                                        "hh:mm a"
-                                      )
-                                    : "Not Available"}
-                                </b>
-                              </span>
-                            </div>
+                            <span className="checkOut animated bounceIn faster">
+                              Check Out{" "}
+                              <b>
+                                {data.out_time
+                                  ? moment(data.out_time, "HH:mm:ss").format(
+                                      "hh:mm a"
+                                    )
+                                  : "Not Available"}
+                              </b>
+                            </span>
                           </div>
                         </div>
                       </div>
                     </div>
-                  ) : null
-                )}
+                  </div>
+                ) : null
+              )
+            )}
             {/*
             <div className="row dailyTimeProgress">
               <div className="col-1">Mon, 31</div>

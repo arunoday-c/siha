@@ -5,3 +5,8 @@
   border: 1px solid #d3d3d3;
   background: #ffff;
 }
+#empGrpGrid_Cntr {
+  .ReactTable {
+    max-height: 72vh !important;
+  }
+}

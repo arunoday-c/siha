@@ -8,7 +8,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 export default class MiscEarningsDeductions extends Component {
@@ -562,27 +562,30 @@ export default class MiscEarningsDeductions extends Component {
 
                     <div className="portlet-body">
                       <div className="row">
-                        <div className="col-lg-12" id="SalaryPayment_Cntr">
+                        <div
+                          className="col-lg-12"
+                          id="MiscEarningsDeductionsGrid_Cntr"
+                        >
                           <AlgaehDataGrid
-                            id="SalaryPayment_Cntr_grid"
+                            id="MiscEarningsDeductionsGrid"
                             columns={[
-                              {
-                                fieldName: "hospital_name",
+                              // {
+                              //   fieldName: "hospital_name",
 
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Branch"
-                                    }}
-                                  />
-                                ),
+                              //   label: (
+                              //     <AlgaehLabel
+                              //       label={{
+                              //         forceLabel: "Branch"
+                              //       }}
+                              //     />
+                              //   ),
 
-                                others: {
-                                  minWidth: 150,
-                                  maxWidth: 250
-                                },
-                                disabled: true
-                              },
+                              //   others: {
+                              //     minWidth: 150,
+                              //     maxWidth: 250
+                              //   },
+                              //   disabled: true
+                              // },
                               {
                                 fieldName: "sub_department_name",
 
@@ -602,10 +605,6 @@ export default class MiscEarningsDeductions extends Component {
                                     </span>
                                   );
                                 },
-                                others: {
-                                  minWidth: 150,
-                                  maxWidth: 250
-                                },
                                 disabled: true
                               },
                               {
@@ -619,8 +618,7 @@ export default class MiscEarningsDeductions extends Component {
                                   />
                                 ),
                                 others: {
-                                  minWidth: 150,
-                                  maxWidth: 250
+                                  maxWidth: 150
                                 },
                                 disabled: true
                               },
@@ -634,10 +632,6 @@ export default class MiscEarningsDeductions extends Component {
                                     }}
                                   />
                                 ),
-                                others: {
-                                  minWidth: 150,
-                                  maxWidth: 250
-                                },
                                 disabled: true
                               },
                               {
@@ -650,6 +644,13 @@ export default class MiscEarningsDeductions extends Component {
                                     }}
                                   />
                                 ),
+                                others: { maxWidth: 150 },
+
+                                displayTemplate: row => {
+                                  return (
+                                    <span> {getAmountFormart(row.amount)}</span>
+                                  );
+                                },
                                 editorTemplate: row => {
                                   return (
                                     <AlagehFormGroup

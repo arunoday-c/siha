@@ -20,7 +20,7 @@ import {
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import moment from "moment";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
 
 class SalaryPayment extends Component {
   constructor(props) {
@@ -315,7 +315,8 @@ class SalaryPayment extends Component {
                                   );
                                 },
                                 others: {
-                                  maxWidth: 50
+                                  maxWidth: 50,
+                                  filterable: false
                                 }
                               },
                               {
@@ -380,7 +381,15 @@ class SalaryPayment extends Component {
                                       forceLabel: "Advance"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.advance_due)}
+                                    </span>
+                                  );
+                                }
                                 //disabled: true
                               },
                               {
@@ -392,7 +401,15 @@ class SalaryPayment extends Component {
                                       forceLabel: "Loan Due Amount"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.loan_due_amount)}
+                                    </span>
+                                  );
+                                }
                               },
                               {
                                 fieldName: "loan_payable_amount",
@@ -403,7 +420,17 @@ class SalaryPayment extends Component {
                                       forceLabel: "Loan Payable Amount"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(
+                                        row.loan_payable_amount
+                                      )}
+                                    </span>
+                                  );
+                                }
                               },
                               {
                                 fieldName: "net_salary",
@@ -414,7 +441,15 @@ class SalaryPayment extends Component {
                                       forceLabel: "Total Amount"
                                     }}
                                   />
-                                )
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.net_salary)}
+                                    </span>
+                                  );
+                                }
                                 //disabled: true
                               }
                             ]}
@@ -422,6 +457,7 @@ class SalaryPayment extends Component {
                             dataSource={{
                               data: this.state.salary_payment
                             }}
+                            filter={true}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
                           />

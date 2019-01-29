@@ -425,7 +425,8 @@ export default class MonthlyAttendance extends Component {
                       <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                     ),
                     others: {
-                      capitalize: true
+                      capitalize: true,
+                      maxWidth: 200
                     }
                   },
                   {
@@ -471,14 +472,14 @@ export default class MonthlyAttendance extends Component {
                 dataSource={{
                   data: this.state.attandance.data
                 }}
-                filterable
-                paging={{ page: 0, rowsPerPage: 10 }}
+                filter={true}
+                paging={{ page: 0, rowsPerPage: 20 }}
                 loading={this.state.attandance.loader}
               />
             </div>
           </div>
         </div>
-        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+        {/* <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">
@@ -541,7 +542,7 @@ export default class MonthlyAttendance extends Component {
               />
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
