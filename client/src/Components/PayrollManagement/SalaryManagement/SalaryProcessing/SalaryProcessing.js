@@ -371,6 +371,36 @@ class SalaryProcessing extends Component {
                                 }
                               },
                               {
+                                fieldName: "salary_processed",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary Processed"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return row.salary_processed === "N"
+                                    ? "No"
+                                    : "Yes";
+                                }
+                              },
+                              {
+                                fieldName: "salary_paid",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary Paid"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return row.salary_paid === "N" ? "No" : "Yes";
+                                }
+                              },
+                              {
                                 fieldName: "salary_number",
                                 label: (
                                   <AlgaehLabel
