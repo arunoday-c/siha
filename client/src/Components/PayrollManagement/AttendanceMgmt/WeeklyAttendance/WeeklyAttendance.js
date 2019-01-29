@@ -309,7 +309,7 @@ export default class WeeklyAttendance extends Component {
 
           <div className="col form-group">
             <button
-              onClick={this.getTimeSheet.bind(this)}
+              onClick={this.getDailyTimeSheet.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"
             >
