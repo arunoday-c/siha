@@ -804,8 +804,10 @@ let postTimeSheet = (req, res, next) => {
     }
     let db = req.db;
     db.getConnection((error, connection) => {
-      let from_date = "2017-05-01";
-      let to_date = "2017-05-31";
+      let from_date = moment(req.query.from_date).format("YYYY-MM-DD");
+      let to_date = moment(req.query.to_date).format("YYYY-MM-DD");
+      // let from_date = "2017-05-01";
+      // let to_date = "2017-05-31";
 
       const month_number = moment(from_date).format("M");
       const year = moment(from_date).format("YYYY");

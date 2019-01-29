@@ -11,6 +11,7 @@ import {
 } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
+import moment from "moment";
 
 import { debugLog } from "../../utils/logging";
 
@@ -530,41 +531,67 @@ let assignAuthLevels = (req, res, next) => {
 
 //created by irfan:
 let dummy = (req, res, next) => {
+  debugLog("hiii");
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
-    // let db = req.db;
-    // db.getConnection((error, connection) => {
-    //   connection.query(
-    //     " SELECT * FROM hims_d_hrms_options ",
-    //     (error, result) => {
-    //       releaseDBConnection(db, connection);
-    //       if (error) {
-    //         next(error);
-    //       }
-    //       req.records = result;
-    //       next();
-    //     }
-    //   );
-    // });
-    new Promise((resolve, reject) => {
-      try {
-        getMaxAuth({
-          req: req,
-          onFailure: error => {
-            reject(error);
-          },
-          onSuccess: result => {
-            resolve(result);
-          }
-        });
-      } catch (e) {
-        reject(e);
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      let din = moment("2019-01-01").format("YYYY-MM-DD");
+      debugLog("ssssssss");
+      let qry = "";
+      for (let i = 8257; i < 8286; i++) {
+        qry +=
+          "update hims_f_daily_time_sheet set attendance_date='" +
+          din +
+          "' where hims_f_daily_time_sheet_id=" +
+          i +
+          ";";
+
+        din = moment(din)
+          .add(1, "days")
+          .format("YYYY-MM-DD");
       }
-    }).then(result => {
-      debugLog("result:", result.MaxLeave);
+
+      debugLog("qry", qry);
+      connection.query(qry, (error, result) => {
+        if (error) {
+          debugLog("error:");
+          releaseDBConnection(db, connection);
+          next(error);
+        }
+
+        debugLog("result:", result);
+        next();
+      });
+
+      // debugLog("date:", din);
+      // debugLog(
+      //   "date plus 1:",
+      //   moment(din)
+      //     .add(1, "days")
+      //     .format("YYYY-MM-DD")
+      // );
     });
+
+    // new Promise((resolve, reject) => {
+    //   try {
+    //     getMaxAuth({
+    //       req: req,
+    //       onFailure: error => {
+    //         reject(error);
+    //       },
+    //       onSuccess: result => {
+    //         resolve(result);
+    //       }
+    //     });
+    //   } catch (e) {
+    //     reject(e);
+    //   }
+    // }).then(result => {
+    //   debugLog("result:", result.MaxLeave);
+    // });
   } catch (e) {
     next(e);
   }
