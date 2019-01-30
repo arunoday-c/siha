@@ -435,7 +435,7 @@ export function numberFormater(value, options) {
 
 export function SetBulkState(options) {
   if (options.querySelector === undefined) options.querySelector = "input";
-
+  debugger;
   const _allControls = document.querySelectorAll(options.querySelector);
   let _objectCreation = {};
   for (let i = 0; i < _allControls.length; i++) {
@@ -459,10 +459,19 @@ export function SetBulkState(options) {
         } else if (_type === "date") {
           _objectCreation[_name] = new Date(_allControls[i].value);
         } else {
-          _objectCreation[_name] =
-            _dataRole !== null
-              ? _allControls[i].getAttribute("referencevalue")
-              : _allControls[i].value;
+          let _iValue = _allControls[i].value;
+          if (_dataRole !== null) {
+            let _resp = _allControls[i].getAttribute("referencevalue");
+            if (isNaN(_resp)) {
+              _iValue = _resp;
+            } else {
+              _iValue =
+                _resp !== undefined && _resp !== null && _resp !== ""
+                  ? parseFloat(_resp)
+                  : _resp;
+            }
+          }
+          _objectCreation[_name] = _iValue;
         }
       }
     }

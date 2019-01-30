@@ -1,9 +1,10 @@
 import React, { PureComponent } from "react";
-import { checkSecurity, numberFormater } from "../../utils/GlobalFunctions";
+import { checkSecurity } from "../../utils/GlobalFunctions";
 import "./wrapper.css";
 import Label from "../Wrapper/label";
 import Cleave from "cleave.js/react";
 import NumberFormat from "react-number-format";
+import { Input, TextArea } from "semantic-ui-react";
 export default class FormGroup extends PureComponent {
   constructor(props) {
     super(props);
@@ -234,7 +235,7 @@ export default class FormGroup extends PureComponent {
         );
       } else if (this.props.textBox.number !== undefined) {
         return (
-          <input
+          <Input
             type="number"
             name={this.props.textBox.name}
             value={_value}
@@ -248,7 +249,7 @@ export default class FormGroup extends PureComponent {
         );
       } else if (this.props.textBox.mask !== undefined) {
         return (
-          <input
+          <Input
             type="number"
             step=".0"
             name={this.props.textBox.name}
@@ -291,8 +292,8 @@ export default class FormGroup extends PureComponent {
             : false;
         if (_isMultiline === false)
           return (
-            <input
-              type="text"
+            <Input
+              // type="text"
               name={this.props.textBox.name}
               autoComplete="new-password"
               value={_value}
@@ -310,7 +311,7 @@ export default class FormGroup extends PureComponent {
             delete _others.multiline;
           }
           return (
-            <textarea
+            <TextArea
               name={this.props.textBox.name}
               autoComplete="new-password"
               value={_value}
