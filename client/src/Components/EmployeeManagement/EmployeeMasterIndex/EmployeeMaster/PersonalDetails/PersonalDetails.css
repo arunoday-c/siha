@@ -5,7 +5,8 @@
   .hptl-phase1-add-employee-form h5 span {
     border-bottom: 2px solid #8c8c8c;
     text-transform: uppercase;
-    line-height: 0; }
+    line-height: 0;
+    font-size: 0.8em; }
 
 .hptl-phase1-add-employee-form .primary-details {
   border-right: 1px dashed #d3d3d3; }

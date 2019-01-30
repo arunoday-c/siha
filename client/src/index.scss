@@ -568,9 +568,9 @@
     }
 
     .btn {
+      font-size: 0.9em !important !important;
       color: #666;
       padding: 3px 9px;
-
       line-height: 1.5;
       background-size: 300% 100%;
       background-color: #fff;
@@ -877,6 +877,7 @@
       }
       label {
         color: #fff;
+        font-size: 1em;
 
         padding: 0 0 3px;
         line-height: 30px;
@@ -885,9 +886,9 @@
         font-weight: bold;
       }
       button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
-
         float: right;
         background: none;
         border: none;
@@ -934,6 +935,7 @@
         margin-left: 0px;
       }
       .btn {
+        font-size: 0.9em !important !important;
         float: right;
         min-width: 70px;
         padding: 4px 10px;
@@ -1032,6 +1034,7 @@
       label {
         color: #fff;
 
+        font-size: 1em;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
@@ -1039,7 +1042,8 @@
         font-weight: bold;
       }
       button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
 
         float: left;
@@ -1438,6 +1442,7 @@
   top: 0;
   right: 0;
   padding: 0.6em;
+  color: lighten($color-black, 40%);
 }
 .ui.selection.dropdown .menu > .item {
   padding: 0.6em !important;
@@ -1447,5 +1452,6 @@
   font-size: 0.9em;
   min-height: 30px !important;
   max-height: 30px !important;
+  padding: 0.3em 0.5em;
 }
 //Semantic UI CSS Owerwrite End Here //

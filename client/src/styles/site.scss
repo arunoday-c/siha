@@ -20,13 +20,14 @@ body {
     border-right: 1px solid #505050 !important;
     width: 80% !important;
     color: #fff !important;
+    font-size: 1em !important;
     &::placeholder {
       color: rgb(180, 180, 180) !important;
     }
   }
   .btn {
+    font-size: 0.9em !important !important;
     padding: 5px 10px;
-
     text-transform: uppercase;
     background-size: 300% 100%;
     -moz-transition: all 0.2s ease-in-out;
@@ -638,10 +639,10 @@ body {
     padding: 5px 15px;
     z-index: 1080;
     button {
+      font-size: 0.9em;
       float: right;
       margin-left: 10px;
       padding: 5px 10px;
-
       text-transform: uppercase;
       min-width: 70px;
     }
@@ -811,8 +812,9 @@ textarea {
     border: 1px solid #d3d3d3;
     border-radius: 4px;
     background: $color-white;
-    font-weight: 700;
     font-size: 0.9em;
+    height: 30px;
+    font-weight: 700;
   }
   input[type="date"]::-webkit-calendar-picker-indicator,
   input[type="month"]::-webkit-calendar-picker-indicator,

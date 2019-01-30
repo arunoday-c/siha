@@ -8,6 +8,7 @@ header {
   color: #fff;
   padding: 0 1rem;
   border-bottom: 1px solid darken($primary-color, 10%);
+  height: 53px;
 }
 .mainPageArea {
   position: fixed;
@@ -173,6 +174,7 @@ header {
           display: inline-block;
           width: 78%;
           border-left: 1px solid #f7f7f7;
+          font-size: 0.8em;
         }
         &:hover {
           background: #afafaf;
@@ -213,6 +215,7 @@ header {
     right: 19px;
     top: 14px;
     color: #fff;
+    font-size: 1.5em;
   }
   .sideBarClose:hover {
     color: #00bcb0;

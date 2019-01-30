@@ -33,7 +33,8 @@
         font-weight: normal;
         margin: 0; }
     .dashboard .card .icon-big i {
-      min-height: 3.5rem; }
+      min-height: 3.5rem;
+      font-size: 2.5em; }
     .dashboard .card .icon-big .fa-hand-holding-usd:before {
       color: #c655cc; }
     .dashboard .card .icon-big .fa-hospital:before {

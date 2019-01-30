@@ -7,7 +7,8 @@ header {
   background: #34b8bc;
   color: #fff;
   padding: 0 1rem;
-  border-bottom: 1px solid #299194; }
+  border-bottom: 1px solid #299194;
+  height: 53px; }
 
 .mainPageArea {
   position: fixed;
@@ -144,7 +145,8 @@ header {
         padding: 8px 5px 8px 13px;
         display: inline-block;
         width: 78%;
-        border-left: 1px solid #f7f7f7; }
+        border-left: 1px solid #f7f7f7;
+        font-size: 0.8em; }
       .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li:hover {
         background: #afafaf; }
         .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li:hover i {
@@ -175,7 +177,8 @@ header {
   position: absolute;
   right: 19px;
   top: 14px;
-  color: #fff; }
+  color: #fff;
+  font-size: 1.5em; }
 
 .hptl-phase1-sideMenuBar .sideBarClose:hover {
   color: #00bcb0;
