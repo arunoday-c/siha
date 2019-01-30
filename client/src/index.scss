@@ -9,14 +9,13 @@
   label {
     text-transform: uppercase;
     font-weight: 500;
-    font-size: 0.7rem;
+    font-size: $fontSize;
   }
 
   .UCAF20_Report {
     width: 100%;
     padding: 0;
     margin: 0;
-    font-size: 0.9rem;
   }
 
   .UCAF20_Report td {
@@ -62,9 +61,8 @@
       float: right;
       width: 15%;
       border-left: 1px dotted #ccc;
-      font-size: 0.7rem;
+
       b {
-        font-size: 0.9rem;
       }
     }
 
@@ -79,14 +77,13 @@
     .hospitalAddress h4 {
       margin: 0 0 5px;
       padding: 0;
-      font-size: 1.3rem;
     }
 
     .hospitalAddress p {
       margin: 0;
       padding: 0;
       line-height: 15px;
-      font-size: 0.8rem;
+
       font-weight: normal;
     }
 
@@ -102,7 +99,7 @@
         padding: 5px 15px;
         color: #000000;
         border: 1px solid #c5c5c5;
-        font-size: 0.8rem;
+
         line-height: 29px;
         border-radius: 5px 5px 0 0;
       }
@@ -167,7 +164,7 @@
       vertical-align: middle !important;
       background-color: #e8feff !important;
       padding: 5px;
-      font-size: 0.75rem;
+
       text-transform: uppercase;
       text-align: center;
       border-right: 1px solid darken($primary-color, 10%);
@@ -207,14 +204,12 @@
     .doctorName h6 {
       margin: 0 0 5px;
       padding: 0;
-      font-size: 0.9rem;
     }
 
     .doctorName p {
       margin: 0;
       padding: 0;
       line-height: 15px;
-      font-size: 0.7rem;
     }
 
     .signatureDiv {
@@ -245,7 +240,7 @@
       margin-right: 10px;
       list-style: none;
       margin-top: 5px;
-      font-size: 0.7rem;
+
       span {
         border: 1px solid #ccc;
         float: left;
@@ -365,7 +360,6 @@
         list-style: none;
         margin: 0px;
         padding: 5px;
-        font-size: 0.85rem;
 
         &.active {
           background: #eafffd;
@@ -373,13 +367,11 @@
 
         span {
           width: 80%;
-          font-size: 0.8rem;
         }
         i {
           cursor: pointer;
           padding: 2px 5px 0 0;
           color: #58595b;
-          font-size: 0.7rem;
         }
         i:hover {
           color: red;
@@ -415,7 +407,7 @@
         list-style: none;
         margin: 0px;
         padding: 7px 5px;
-        font-size: 0.8rem;
+
         border-bottom: 1px dashed #c1c1c1;
         width: 100%;
         position: relative;
@@ -458,7 +450,7 @@
       text-align: center;
       width: 100%;
       display: inline-block;
-      font-size: 1rem;
+
       margin-top: 15%;
       color: #d3d3d3;
     }
@@ -512,7 +504,7 @@
     .caption {
       float: left;
       display: inline-block;
-      font-size: 18px;
+
       line-height: 18px;
     }
     .center {
@@ -541,7 +533,7 @@
   .caption {
     // i {
     //   color: #777;
-    //   font-size: 15px;
+    //
     //   font-weight: 300;
     //   margin-top: 3px;
     // }
@@ -549,7 +541,7 @@
 
   .caption-subject {
     color: #666;
-    font-size: 1rem;
+
     font-weight: normal;
     line-height: 26px;
     margin-bottom: 0;
@@ -560,7 +552,7 @@
     margin: 0;
     line-height: 13px;
     color: #9eacb4;
-    font-size: 13px;
+
     font-weight: 400;
   }
 
@@ -578,7 +570,7 @@
     .btn {
       color: #666;
       padding: 3px 9px;
-      font-size: 13px;
+
       line-height: 1.5;
       background-size: 300% 100%;
       background-color: #fff;
@@ -590,7 +582,6 @@
       -webkit-transition: all 0.2s ease-in-out;
       transition: all 0.2s ease-in-out;
       i {
-        font-size: 12px;
       }
     }
 
@@ -617,7 +608,7 @@
   .pagination > li > a,
   .pagination > li > span {
     padding: 4px 10px;
-    font-size: 12px;
+
     color: #8775a7;
     background: #f7f7f7;
   }
@@ -684,7 +675,6 @@
     text-align: center;
   }
   .actions .btn.btn-circle i {
-    font-size: 12px;
     line-height: 22px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   }
@@ -709,7 +699,7 @@
     }
     .radio {
       color: #999;
-      font-size: 15px;
+
       position: relative;
     }
 
@@ -717,8 +707,6 @@
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
-
-      font-size: 0.9rem;
     }
     .radio span:after {
       content: "";
@@ -774,7 +762,7 @@
     }
     .checkbox {
       color: #999;
-      font-size: 15px;
+
       position: relative;
     }
 
@@ -782,8 +770,6 @@
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
-
-      font-size: 0.9rem;
     }
     .checkbox span:after {
       content: "";
@@ -882,7 +868,7 @@
       padding: 5px 15px 0;
       h4 {
         color: #fff;
-        font-size: 1.1rem;
+
         padding: 0 0 3px;
         line-height: 30px;
 
@@ -891,7 +877,7 @@
       }
       label {
         color: #fff;
-        font-size: 1.1rem;
+
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
@@ -901,7 +887,7 @@
       button {
         margin: 0;
         padding: 0;
-        font-size: 1.3rem;
+
         float: right;
         background: none;
         border: none;
@@ -917,7 +903,6 @@
       overflow-y: auto;
       overflow-x: hidden;
       .popSubHdg {
-        font-size: 0.9rem;
         font-weight: bold;
         color: #31afb2;
         margin-top: 10px;
@@ -954,7 +939,7 @@
         padding: 4px 10px;
         margin-top: 2px;
         margin-left: 10px;
-        font-size: 0.8rem;
+
         text-transform: uppercase;
         background-size: 300% 100%;
         -moz-transition: all 0.2s ease-in-out;
@@ -1038,7 +1023,7 @@
       padding: 5px 15px 0;
       h4 {
         color: #fff;
-        font-size: 1.1rem;
+
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
@@ -1046,7 +1031,7 @@
       }
       label {
         color: #fff;
-        font-size: 1.1rem;
+
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
@@ -1056,7 +1041,7 @@
       button {
         margin: 0;
         padding: 0;
-        font-size: 1.3rem;
+
         float: left;
         background: none;
         border: none;
@@ -1073,7 +1058,6 @@
       overflow-x: hidden;
       border-bottom: 1px dashed #e5e5e5;
       .popSubHdg {
-        font-size: 0.9rem;
         font-weight: bold;
         color: #31afb2;
         margin-top: 10px;
@@ -1094,7 +1078,6 @@
         padding: 15px;
       }
       label {
-        font-size: 0.8rem;
       }
 
       .toggle-section {
@@ -1127,7 +1110,7 @@
         margin-right: 10px;
         margin-left: 0;
         padding: 5px 10px;
-        font-size: 0.8rem;
+
         text-transform: uppercase;
         min-width: 70px;
       }
@@ -1148,7 +1131,7 @@
     .receipt-header {
       text-align: center;
       line-height: 62px;
-      font-size: 1.3rem;
+
       text-transform: uppercase;
       color: #717171;
     }
@@ -1162,7 +1145,6 @@
       text-align: center;
     }
     .hospitalAddress {
-      font-size: 0.7rem;
       width: 250px;
       text-align: right;
       float: right;
@@ -1241,7 +1223,6 @@
     }
   }
   .htpl1-phase1-btn-primary {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: #44b6ae;
@@ -1268,7 +1249,6 @@
     }
   }
   .htpl1-phase1-btn-secondary {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: transparent;
@@ -1295,7 +1275,6 @@
     }
   }
   .htpl1-phase1-btn-others {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: transparent;
@@ -1352,7 +1331,6 @@
     width: 100%;
     label {
       font-weight: 500;
-      font-size: 0.9rem;
     }
   }
 
@@ -1385,7 +1363,6 @@
           transform: scaleX(1);
         }
         label {
-          font-size: 0.8rem;
           text-transform: uppercase;
           padding: 7px 15px;
           color: #858585;
@@ -1428,3 +1405,47 @@
     }
   }
 }
+
+//Semantic UI CSS Owerwrite Start Here //
+
+.ui.fluid.dropdown {
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0;
+}
+
+.ui.selection.dropdown {
+}
+
+// .ui.search.dropdown.active > input.search,
+// .ui.search.dropdown.visible > input.search {
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// }
+.ui.search.dropdown > .text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: inherit;
+  max-width: 85%;
+  padding: 0.5rem;
+}
+.ui.selection.dropdown > .delete.icon,
+.ui.selection.dropdown > .dropdown.icon,
+.ui.selection.dropdown > .search.icon {
+  line-height: 1.21428571em;
+  top: 0;
+  right: 0;
+  padding: 0.6em;
+}
+.ui.selection.dropdown .menu > .item {
+  padding: 0.6em !important;
+}
+.ui.input > input {
+  font-weight: 700;
+  font-size: 0.9em;
+  min-height: 30px !important;
+  max-height: 30px !important;
+}
+//Semantic UI CSS Owerwrite End Here //

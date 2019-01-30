@@ -22,7 +22,6 @@
   opacity: 1;
   animation: slideEffect 0.25s; }
   .spotlightContainer .label {
-    font-size: 0.7rem;
     text-transform: uppercase;
     text-align: left;
     margin-top: 5px; }
@@ -39,7 +38,6 @@
   height: 56px;
   margin: auto;
   outline: none;
-  font-size: 1.6rem;
   color: #000;
   background-color: #ffffff;
   background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkViZW5lXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMjIuNyAyMi41IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAyMi43IDIyLjUiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxjaXJjbGUgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjY2NzY2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgY3g9IjguMSIgY3k9IjguNCIgcj0iNi44Ii8+PGxpbmUgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjNjY2NzY2IiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgeDE9IjEzLjIiIHkxPSIxMi45IiB4Mj0iMjEuNSIgeTI9IjIxLjQiLz48L3N2Zz4=);
@@ -52,8 +50,7 @@
   border-radius: 0;
   border-width: 0 1px; }
   #spotlightInput::placeholder {
-    color: #acacac;
-    font-size: 1.2rem; }
+    color: #acacac; }
 
 #spotlightResultArea {
   background-color: #f9f5f4;
@@ -70,7 +67,6 @@
   text-align: right;
   cursor: pointer; }
   .helpText .helpTextEsc {
-    font-size: 0.7rem;
     color: #000000;
     margin-right: 5px;
     padding: 1px 8px 3px;
@@ -81,7 +77,6 @@
     background: #f7f5f4;
     border-radius: 5px 5px 0 0;
     color: #8c8c8c;
-    font-size: 1.2rem;
     padding: 6px 15px;
     text-transform: uppercase;
     border: 1px solid #c8c6c5;
@@ -95,14 +90,12 @@
   width: 100%;
   border: 1px solid #8c8c8c;
   padding: 3px 5px;
-  font-size: 0.8rem;
   border-radius: 5px; }
 
 .speckCntr {
   padding-left: 0;
   padding-right: 0; }
   .speckCntr .fa-microphone {
-    font-size: 1.5rem;
     text-align: left;
     line-height: 56px;
     color: #8c8c8c; }

@@ -14,8 +14,7 @@
     padding: 5px; }
 
 .htpl-phase1-primary-secinsurancedis-form label {
-  font-weight: 400;
-  font-size: 11px; }
+  font-weight: 400; }
 
 .htpl-phase1-primary-secinsurancedis-form mark {
   background: none;
@@ -28,7 +27,6 @@
 .htpl-phase1-primary-secinsurancedis-form .text_field {
   width: 100% !important;
   background-color: #fbfbfb;
-  font-size: "12px";
   margin-right: "5px"; }
 
 .htpl-phase1-primary-secinsurancedis-form .radio-design {

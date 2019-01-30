@@ -14,8 +14,7 @@
     padding-left: 10px; }
     .patient-mrd .patientProfile .patientInfo-Top .backBtn button {
       height: 60px;
-      border: 1px solid #e1e1e1;
-      font-size: 0.7rem; }
+      border: 1px solid #e1e1e1; }
     .patient-mrd .patientProfile .patientInfo-Top .backBtn i {
       display: block;
       margin-bottom: 5px; }
@@ -42,16 +41,13 @@
     padding-right: 10px;
     min-height: 57px; }
     .patient-mrd .patientProfile .patientInfo-Top .patientName h6 {
-      font-size: 1rem;
       margin-bottom: 2px;
       color: #000;
       line-height: 1.2rem; }
     .patient-mrd .patientProfile .patientInfo-Top .patientName p {
-      font-size: 0.8rem;
       margin: 0;
       padding: 0; }
   .patient-mrd .patientProfile .patientInfo-Top .patientDemographic {
-    font-size: 0.8rem;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
@@ -62,7 +58,6 @@
       .patient-mrd .patientProfile .patientInfo-Top .patientDemographic span b {
         color: #34b8bc; }
   .patient-mrd .patientProfile .patientInfo-Top .patientHospitalDetail {
-    font-size: 0.8rem;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
@@ -73,7 +68,6 @@
       .patient-mrd .patientProfile .patientInfo-Top .patientHospitalDetail span b {
         color: #34b8bc; }
   .patient-mrd .patientProfile .patientInfo-Top .patientVital {
-    font-size: 0.8rem;
     width: 210px;
     line-height: 1.3rem;
     padding-left: 10px;
@@ -91,7 +85,6 @@
     .patient-mrd .patientProfile .patientInfo-Top .moreAction button {
       height: 60px;
       border: 1px solid #e1e1e1;
-      font-size: 0.7rem;
       margin-left: 0; }
     .patient-mrd .patientProfile .patientInfo-Top .moreAction i {
       display: block;
@@ -103,7 +96,6 @@
   padding: 0;
   width: 100%;
   color: #797979;
-  font-size: 1rem;
   text-transform: uppercase;
   position: fixed;
   top: 123px;
@@ -119,7 +111,6 @@
     .patient-mrd .patientProfile .patientTopNav ul li:hover:after {
       transform: scaleX(1); }
     .patient-mrd .patientProfile .patientTopNav ul li span {
-      font-size: 0.8rem;
       text-transform: uppercase;
       padding: 9px 15px 8px;
       color: #858585;
@@ -172,8 +163,7 @@
           display: block;
           border-bottom: 1px solid #3f9c90;
           margin-bottom: 10px;
-          padding-bottom: 5px;
-          font-size: 0.8rem; }
+          padding-bottom: 5px; }
         .patient-mrd .patientProfile .patientTopNav .patient-quick-info li section .listofA-D-D {
           display: inline-block;
           margin-right: 8px;
@@ -184,8 +174,7 @@
           margin-right: 5px;
           margin-bottom: 3px;
           border-radius: 20px;
-          background: #3f9c91;
-          font-size: 0.7rem; }
+          background: #3f9c91; }
         .patient-mrd .patientProfile .patientTopNav .patient-quick-info li section p {
           background: rgba(0, 0, 0, 0.05);
           border-top: 1px solid #65dace;
@@ -219,7 +208,6 @@
     .patient-mrd .patientProfile .componentRenderArea .investigation h6,
     .patient-mrd .patientProfile .componentRenderArea .medication h6,
     .patient-mrd .patientProfile .componentRenderArea .procedures h6 {
-      font-size: 0.8rem;
       font-weight: bold; }
     .patient-mrd .patientProfile .componentRenderArea .generalInfo span,
     .patient-mrd .patientProfile .componentRenderArea .chiefComplaint span,
@@ -239,11 +227,9 @@
     .patient-mrd .patientProfile .componentRenderArea .investigation .row .col-lg-12 h6 span {
       float: right;
       text-transform: uppercase;
-      font-size: 0.7rem;
       color: #0066ff; }
   .patient-mrd .patientProfile .componentRenderArea .smallh6 {
     color: #00bbbd;
-    font-size: 0.8rem;
     margin-bottom: 5px;
     font-weight: normal; }
   .patient-mrd .patientProfile .componentRenderArea .danger {

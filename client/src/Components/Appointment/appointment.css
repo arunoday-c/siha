@@ -7,7 +7,6 @@
   min-width: 94vw !important; }
   .appointment .appointment-inner-cntr span.noDoctor {
     display: inline-block;
-    font-size: 1.4rem;
     margin: auto;
     width: 100%;
     text-align: center;
@@ -36,20 +35,17 @@
       background: #dcac66; }
       .appointment .tg thead tr .tg-amwm h6 {
         font-weight: bold;
-        font-size: 0.9rem;
         margin: 0;
         border-bottom: 1px solid #c39554;
         padding: 2px 0; }
       .appointment .tg thead tr .tg-amwm p {
         margin: 0;
-        font-size: 0.7rem;
         background: #d2a25e;
         border-top: 1px solid #e4b26b; }
         .appointment .tg thead tr .tg-amwm p span {
           display: block; }
     .appointment .tg thead tr .tbl-subHdg {
       text-transform: uppercase;
-      font-size: 0.7rem !important;
       border: 1px solid #e2e2c8 !important;
       background: #fffff4;
       color: #5a5a5a;
@@ -61,7 +57,6 @@
     display: grid; }
     .appointment .tg tbody td.tg-baqh {
       width: 120px;
-      font-size: 0.8rem;
       word-break: normal;
       border: 1px solid lightgrey;
       text-align: center;
@@ -116,8 +111,7 @@
           display: block; }
           .appointment .tg tbody .dynPatient .appStatusListCntr ul.appStatusList li span {
             padding: 3px 5px;
-            display: block;
-            font-size: 0.7rem; }
+            display: block; }
     .appointment .tg tbody .dynPatient span:hover {
       text-decoration: underline; }
     .appointment .tg tbody .patientStdbyCount {
@@ -127,7 +121,6 @@
       border-radius: 10px;
       margin: 3px auto 0;
       width: 85%;
-      font-size: 0.7rem;
       border: 1px solid #e3e0c9; }
       .appointment .tg tbody .patientStdbyCount ul {
         visibility: hidden;
@@ -175,7 +168,6 @@
       position: absolute;
       top: 2px;
       left: 8px;
-      font-size: 0.7rem;
       color: #7d7d7d; }
     .appointment .tg tbody i.fa-plus {
       display: none;
@@ -198,8 +190,7 @@
       width: 20px;
       height: 20px;
       text-align: center;
-      line-height: 20px;
-      font-size: 0.7rem; }
+      line-height: 20px; }
     .appointment .tg tbody i.fa-times {
       display: none;
       display: none;
@@ -211,8 +202,7 @@
       width: 20px;
       height: 20px;
       text-align: center;
-      line-height: 20px;
-      font-size: 0.7rem; }
+      line-height: 20px; }
     .appointment .tg tbody .dynPatient:hover i.fa-times,
     .appointment .tg tbody .dynPatient:hover i.fa-clock {
       display: block; }
@@ -243,7 +233,6 @@
       padding-top: 17vh;
       border: 1px solid #e3e0c9;
       text-align: center;
-      font-size: 1.5rem;
       display: block;
       width: 239px;
       color: #ddd;

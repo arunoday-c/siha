@@ -167,6 +167,7 @@ class AutoComplete extends PureComponent {
         search
         clearable
         selection
+        inline
         selectOnBlur={false}
         searchInput={{
           autoComplete: "nope",

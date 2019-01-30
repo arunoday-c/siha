@@ -14,7 +14,6 @@
   .breadCrumb-Data .header {
     margin-top: 10px; }
     .breadCrumb-Data .header label {
-      font-size: 1.4rem;
       font-weight: 300;
       text-transform: capitalize; }
   .breadCrumb-Data ul {
@@ -24,7 +23,7 @@
     margin: 0; }
     .breadCrumb-Data ul li {
       color: #9a9a9a;
-      font-size: 0.75rem; }
+      font-size: 0.8em; }
       .breadCrumb-Data ul li a label {
         text-transform: capitalize; }
   .breadCrumb-Data .actions-area {
@@ -62,7 +61,6 @@
     border-left: 1px solid #ced4d8; }
 
 .internal-label {
-  font-size: 0.9rem;
   color: #979292;
   text-transform: uppercase; }
 

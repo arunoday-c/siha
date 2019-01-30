@@ -10,14 +10,12 @@
 .subjective .customTable th {
   background: #8c8c8c;
   text-transform: uppercase;
-  font-size: 0.7rem !important;
   min-width: auto !important;
   color: #fff;
   font-weight: normal; }
 
 .subjective .customTable td {
-  min-width: auto !important;
-  font-size: 0.8rem !important; }
+  min-width: auto !important; }
 
 .pain_slider {
   margin: 0;

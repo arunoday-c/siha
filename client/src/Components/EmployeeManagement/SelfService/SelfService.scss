@@ -22,7 +22,6 @@
         button {
           height: 60px;
           border: 1px solid #e1e1e1;
-          font-size: 0.7rem;
         }
         i {
           display: block;
@@ -57,25 +56,21 @@
         padding-right: 10px;
         min-height: 98px;
         h6 {
-          font-size: 1.2rem;
           margin-bottom: 2px;
           color: #000;
           line-height: 1.6rem;
           min-height: 50px;
         }
         p {
-          font-size: 0.8rem;
           margin: 0;
           padding: 0;
           b {
             color: $primary-color;
             font-weight: 300;
-            font-size: 1rem;
           }
         }
       }
       .EmployeeDemographic {
-        font-size: 0.8rem;
         line-height: 1.3rem;
         border-right: 1px solid #e1e1e1;
         padding-left: 10px;
@@ -94,7 +89,6 @@
         }
       }
       .EmployeeHospitalDetail {
-        font-size: 0.8rem;
         line-height: 1.3rem;
         border-right: 1px solid #e1e1e1;
         padding-left: 10px;
@@ -108,7 +102,6 @@
         }
       }
       .EmployeeVital {
-        font-size: 0.8rem;
         max-width: 33%;
         line-height: 1.3rem;
         padding-left: 10px;
@@ -130,7 +123,7 @@
         button {
           height: 60px;
           border: 1px solid #e1e1e1;
-          font-size: 0.7rem;
+
           margin-left: 0;
         }
         i {
@@ -146,7 +139,7 @@
     padding: 0;
     width: 100%;
     color: #797979;
-    font-size: 1rem;
+
     text-transform: uppercase;
     position: fixed;
     top: 163px;
@@ -167,7 +160,6 @@
             transform: scaleX(1);
           }
           span {
-            font-size: 0.8rem;
             text-transform: uppercase;
             padding: 9px 15px 8px;
             color: #858585;
@@ -228,7 +220,6 @@
               border-bottom: 1px solid #3f9c90;
               margin-bottom: 10px;
               padding-bottom: 5px;
-              font-size: 0.8rem;
             }
             .listofA-D-D {
               display: inline-block;
@@ -241,7 +232,7 @@
               margin-bottom: 3px;
               border-radius: 20px;
               background: #3f9c91;
-              font-size: 0.7rem;
+
               white-space: normal;
             }
             p {

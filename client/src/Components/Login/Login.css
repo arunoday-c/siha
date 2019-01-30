@@ -43,7 +43,6 @@
     width: 320px; }
   .login .frgtPass {
     text-align: center;
-    font-size: 12px;
     margin-top: 20px;
     margin-bottom: 0; }
   .login .sign-btn {
@@ -113,7 +112,6 @@
   width: 100%;
   text-align: center;
   color: #fff;
-  font-size: 0.7rem;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5); }
   .loginFooter a {
     text-decoration: none;

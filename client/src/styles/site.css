@@ -1,6 +1,5 @@
 body {
   line-height: 1.45;
-  font-family: "Titillium Web", sans-serif;
   font-weight: normal;
   background-color: #e9e9e9;
   -webkit-font-smoothing: antialiased !important;
@@ -24,7 +23,6 @@ body {
 
 :global .btn {
   padding: 5px 10px;
-  font-size: 0.8rem;
   text-transform: uppercase;
   background-size: 300% 100%;
   -moz-transition: all 0.2s ease-in-out;
@@ -111,8 +109,6 @@ body {
   border: 1px solid #cccccc;
   padding-top: 15px;
   margin-bottom: 20px; }
-  :global .algaehLabelFormGroup h6 {
-    font-size: 0.9rem; }
 
 :global .image-drop-area {
   border: 1px solid #e6e6e6;
@@ -149,7 +145,6 @@ body {
     z-index: 1;
     margin: 0;
     text-align: right;
-    font-size: 0.7rem;
     padding: 0 5px 0 0;
     color: #fff;
     line-height: 23px;
@@ -160,7 +155,6 @@ body {
     left: 40%;
     text-align: center; }
     :global .image-drop-area .img-upload-loader i {
-      font-size: 2rem;
       color: #34b8bc; }
 
 :global .image-ins-drop-area {
@@ -212,7 +206,6 @@ body {
       left: 3px; }
 
 :global .htpl1-phase1-btn-primary {
-  font-size: 0.8rem;
   text-transform: uppercase;
   border-radius: 5px;
   background-color: #53ccd0;
@@ -237,7 +230,6 @@ body {
   padding-bottom: 4px; }
 
 :global .htpl1-phase1-btn-secondary {
-  font-size: 0.8rem;
   text-transform: uppercase;
   border-radius: 5px;
   background-color: transparent;
@@ -261,7 +253,6 @@ body {
     cursor: not-allowed; }
 
 :global .htpl1-phase1-btn-others {
-  font-size: 0.8rem;
   text-transform: uppercase;
   border-radius: 5px;
   background-color: transparent;
@@ -532,7 +523,6 @@ body {
     float: right;
     margin-left: 10px;
     padding: 5px 10px;
-    font-size: 0.8rem;
     text-transform: uppercase;
     min-width: 70px; }
   :global .hptl-phase1-footer .btn-other {
@@ -574,8 +564,7 @@ body {
 
 label {
   margin-bottom: 0px;
-  font-size: 0.75rem;
-  font-family: "Titillium Web", sans-serif;
+  font-size: 100%;
   text-transform: uppercase;
   font-weight: 100;
   -moz-osx-font-smoothing: grayscale;
@@ -588,7 +577,7 @@ input[type="email"],
 input[type="password"],
 input[type="time"],
 input[type="type"] {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   padding: 4px 6px 4px;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
@@ -612,7 +601,7 @@ input:disabled:-ms-input-placeholder {
   color: #fff; }
 
 input[type="color"] {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   -webkit-appearance: none;
   height: 29px;
   padding: 0;
@@ -631,7 +620,6 @@ input.autoselect-input {
   width: 100%;
   border-radius: 5px;
   border: 1px solid #d3d3d3;
-  font-size: 0.8rem;
   padding: 5px 5px 4px; }
 
 .color-picker-icon {
@@ -643,7 +631,7 @@ input.autoselect-input {
   color: #616161; }
 
 textarea {
-  font-size: 0.85rem !important;
+  font-size: 0.78rem !important;
   padding: 8px 6px 7px !important;
   border: 1px solid #d3d3d3 !important;
   border-radius: 4px !important;
@@ -674,7 +662,6 @@ textarea {
   .algaeh-datePicker input[type="date"],
   .algaeh-datePicker input[type="month"],
   .algaeh-datePicker input[type="year"] {
-    font-size: 0.8rem;
     padding: 4px 0px 3px 3px;
     width: 99%;
     text-transform: uppercase;
@@ -705,9 +692,9 @@ textarea {
     .algaeh-datePicker button svg {
       height: 16px; }
 
-.ageMonth input,
-.ageDay input {
-  margin-top: 23px; }
+.ageMonth .ui.input,
+.ageDay .ui.input {
+  margin-top: 20px; }
 
 .mandatory input[type="text"],
 .mandatory input[type="number"],
@@ -751,7 +738,6 @@ input.autoselect-input:disabled {
       border-bottom: 2px solid #34b8bc !important;
       vertical-align: middle !important;
       background: #e8feff !important;
-      font-size: 0.75rem;
       text-transform: uppercase;
       text-align: center; }
       .table-responsive .table thead tr th label.style_Label {
@@ -765,7 +751,6 @@ input.autoselect-input:disabled {
       .table-responsive .table tbody td {
         vertical-align: middle;
         white-space: nowrap;
-        font-size: 0.75rem;
         text-align: center; }
     .table-responsive .table div div {
       height: auto !important;
@@ -810,10 +795,10 @@ th {
  for dropdown list
 */
 .Select-menu-outer {
-  font-size: 0.85rem; }
+  font-size: 0.78rem; }
 
 .Select-multi-value-wrapper {
-  font-size: 0.85rem; }
+  font-size: 0.78rem; }
 
 .Select-placeholder,
 .Select--single > .Select-control .Select-value {
@@ -837,11 +822,9 @@ th {
 .colorPrimary {
   background-color: #dbad64; }
   .colorPrimary h2 {
-    color: #fff;
-    font-size: 3rem; }
+    color: #fff; }
     .colorPrimary h2 label {
       font-weight: 500;
-      font-size: 2rem;
       padding-left: 10px; }
 
 .algaeh_Arabic_Version {
@@ -884,8 +867,7 @@ th {
     text-align: right; }
   .algaeh_Arabic_Version label {
     margin-bottom: 0px;
-    font-size: 0.75rem;
-    font-family: "Titillium Web", sans-serif;
+    font-size: 100%;
     text-transform: uppercase;
     font-weight: 100;
     -moz-osx-font-smoothing: grayscale;
@@ -897,14 +879,14 @@ th {
   .algaeh_Arabic_Version button:focus {
     outline: none; }
   .algaeh_Arabic_Version input[type="text"] {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     padding: 4px 6px 4px;
     border: 1px solid #d3d3d3;
     border-radius: 4px;
     background: #fff;
     text-align: right; }
   .algaeh_Arabic_Version input[type="color"] {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     -webkit-appearance: none;
     width: 32px;
     height: 29px;
@@ -915,7 +897,7 @@ th {
     overflow: hidden;
     text-align: right; }
   .algaeh_Arabic_Version input[type="file"] {
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     padding: 4px 6px 4px;
     border: 1px solid #d3d3d3;
     border-radius: 4px;
@@ -933,7 +915,7 @@ th {
     padding: 3px 6px;
     color: #616161; }
   .algaeh_Arabic_Version textarea {
-    font-size: 0.85rem !important;
+    font-size: 0.78rem !important;
     padding: 8px 6px 7px !important;
     border: 1px solid #d3d3d3 !important;
     border-radius: 4px !important; }
@@ -946,8 +928,7 @@ th {
     border-top-right-radius: 5px; }
   .algaeh_Arabic_Version .text-arabic {
     text-align: right;
-    display: block;
-    font-size: 0.9rem; }
+    display: block; }
   .algaeh_Arabic_Version .mandatory input[type="text"],
   .algaeh_Arabic_Version .mandatory input[type="number"],
   .algaeh_Arabic_Version .mandatory input[type="tel"],
@@ -995,7 +976,6 @@ th {
         border-bottom: 2px solid #34b8bc !important;
         vertical-align: middle !important;
         background: #e8feff !important;
-        font-size: 0.75rem;
         text-transform: uppercase;
         text-align: center; }
         .algaeh_Arabic_Version .table-responsive .table thead tr th label.style_Label {
@@ -1009,7 +989,6 @@ th {
         .algaeh_Arabic_Version .table-responsive .table tbody td {
           vertical-align: middle;
           white-space: nowrap;
-          font-size: 0.75rem;
           text-align: center; }
       .algaeh_Arabic_Version .table-responsive .table div div {
         height: auto !important;
@@ -1042,9 +1021,9 @@ th {
   .algaeh_Arabic_Version .primary-details {
     padding-bottom: 10px; }
   .algaeh_Arabic_Version .Select-menu-outer {
-    font-size: 0.85rem; }
+    font-size: 0.78rem; }
   .algaeh_Arabic_Version .Select-multi-value-wrapper {
-    font-size: 0.85rem; }
+    font-size: 0.78rem; }
   .algaeh_Arabic_Version .Select-placeholder,
   .algaeh_Arabic_Version .Select--single > .Select-control .Select-value {
     padding-left: 0px; }
@@ -1066,15 +1045,10 @@ th {
   .algaeh_Arabic_Version .colorPrimary {
     background-color: #dbad64; }
     .algaeh_Arabic_Version .colorPrimary h2 {
-      color: #fff;
-      font-size: 3rem; }
+      color: #fff; }
       .algaeh_Arabic_Version .colorPrimary h2 label {
         font-weight: 500;
-        font-size: 2rem;
         padding-left: 10px; }
-
-.invalid-feedback {
-  font-size: 0.7rem; }
 
 .is-invalid {
   border-color: #dc3545; }
@@ -1118,7 +1092,6 @@ th {
   color: #fff;
   content: attr(data-tooltip);
   text-align: center;
-  font-size: 0.6rem;
   line-height: 1.2; }
 
 /* Triangle hack to make tooltip look like a speech bubble */
@@ -1186,8 +1159,7 @@ th {
   .tab-container .tab-button:focus {
     outline: none; }
   .tab-container .tab-button label {
-    cursor: pointer;
-    font-size: 0.8rem; }
+    cursor: pointer; }
 
 /* Extra small devices (phones, 600px and down) */
 /* Small devices (portrait tablets and large phones, 600px and up) */
@@ -1317,7 +1289,6 @@ th {
     .image-area-cntr .videoActions i {
       padding: 10px;
       background: #1a1a1a;
-      font-size: 1.1rem;
       text-align: center;
       line-height: 30px;
       display: inline;
@@ -1340,7 +1311,6 @@ th {
   .my-calendar .myDay_date {
     position: relative; }
     .my-calendar .myDay_date input[type="month"] {
-      font-size: 0.8rem;
       padding: 2px 3px 3px 8px;
       width: 250px;
       text-transform: uppercase;
@@ -1389,7 +1359,6 @@ th {
     float: right; }
   .my-calendar .calendar .col {
     border: 1px solid #299194;
-    font-size: 1.3rem;
     padding-right: 3px;
     padding-left: 3px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }
@@ -1401,7 +1370,6 @@ th {
     padding: 0;
     margin: 0;
     display: block;
-    font-size: 0.6rem;
     text-transform: uppercase; }
   .my-calendar .activeDate {
     border-bottom: 4px solid yellow !important;

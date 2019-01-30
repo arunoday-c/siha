@@ -7,7 +7,6 @@
     border-left: 1px dashed #d3d3d3;
   }
   label {
-    font-size: 0.8rem;
   }
   .toggle-section {
     .nav {
@@ -70,7 +69,7 @@
       min-width: 94vw !important;
       span.noDoctor {
         display: inline-block;
-        font-size: 1.4rem;
+
         margin: auto;
         width: 100%;
         text-align: center;
@@ -112,14 +111,14 @@
             background: #dcac66;
             h6 {
               font-weight: bold;
-              font-size: 0.9rem;
+
               margin: 0;
               border-bottom: 1px solid #c39554;
               padding: 2px 0;
             }
             p {
               margin: 0;
-              font-size: 0.7rem;
+
               background: #d2a25e;
               border-top: 1px solid #e4b26b;
               span {
@@ -129,7 +128,7 @@
           }
           .tbl-subHdg {
             text-transform: uppercase;
-            font-size: 0.7rem !important;
+
             border: 1px solid #e2e2c8 !important;
             background: #fffff4;
             color: #5a5a5a;
@@ -146,7 +145,6 @@
         td.tg-baqh {
           width: 120px;
 
-          font-size: 0.8rem;
           word-break: normal;
           border: 1px solid lightgrey;
           text-align: center;
@@ -214,7 +212,6 @@
                 span {
                   padding: 3px 5px;
                   display: block;
-                  font-size: 0.7rem;
                 }
               }
             }
@@ -230,7 +227,7 @@
           border-radius: 10px;
           margin: 3px auto 0;
           width: 85%;
-          font-size: 0.7rem;
+
           border: 1px solid #e3e0c9;
           ul {
             visibility: hidden;
@@ -287,7 +284,7 @@
           position: absolute;
           top: 2px;
           left: 8px;
-          font-size: 0.7rem;
+
           color: #7d7d7d;
           direction: ltr;
         }
@@ -314,7 +311,6 @@
           height: 20px;
           text-align: center;
           line-height: 20px;
-          font-size: 0.7rem;
         }
         i.fa-times {
           display: none;
@@ -328,7 +324,6 @@
           height: 20px;
           text-align: center;
           line-height: 20px;
-          font-size: 0.7rem;
         }
         .dynPatient:hover i.fa-times,
         .dynPatient:hover i.fa-clock {
@@ -373,7 +368,7 @@
           padding-top: 17vh;
           border: 1px solid #e3e0c9;
           text-align: center;
-          font-size: 1.5rem;
+
           display: block;
           width: 239px;
           color: #ddd;
