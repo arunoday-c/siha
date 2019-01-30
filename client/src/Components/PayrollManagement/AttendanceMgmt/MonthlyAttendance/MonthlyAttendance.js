@@ -17,6 +17,7 @@ export default class MonthlyAttendance extends Component {
     this.state = {
       year: moment().year(),
       month: moment(new Date()).format("M"),
+      sub_departments: [],
       department: {
         loader: false,
         sub_department_id: null,
