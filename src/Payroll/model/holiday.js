@@ -493,7 +493,7 @@ let getTimeSheet = (req, res, next) => {
                   );
                   let to_date = moment(req.query.to_date).format("YYYY-MM-DD");
 
-                  let biometric_id = [101];
+                  let biometric_id = [106];
 
                   debugLog("from_date:", from_date);
                   debugLog("to_date:", to_date);
