@@ -58,7 +58,11 @@ export default class Login extends Component {
 
   handleLogin(e) {
     e.preventDefault();
-
+    debugger;
+    if (this.state.item_id === "") {
+      document.getElementsByName("item_id")[0].focus();
+      return;
+    }
     algaehApiCall({
       uri: "/apiAuth/authUser",
       data: this.state,

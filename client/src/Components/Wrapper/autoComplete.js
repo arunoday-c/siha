@@ -157,6 +157,14 @@ class AutoComplete extends PureComponent {
       this.props.selector.noResultsMessage === undefined
         ? "No results found."
         : this.props.selector.noResultsMessage;
+    const _autocomplete =
+      this.props.selector.autoComplete === undefined
+        ? "nope"
+        : this.props.selector.autoComplete;
+    const _isImportant =
+      this.props.label !== undefined && this.props.label.isImp !== undefined
+        ? { required: this.props.label.isImp }
+        : {};
     return (
       <Dropdown
         disabled={isDisable}
@@ -164,14 +172,15 @@ class AutoComplete extends PureComponent {
         loading={this.state.loader}
         fluid
         lazyLoad
+        deburr
+        item
         search
         clearable
         selection
         selectOnBlur={false}
         searchInput={{
-          autoComplete: "nope",
+          autoComplete: _autocomplete,
           name: this.props.selector.name,
-          type: "text",
           referencevalue: this.state.value,
           data_role: "dropdownlist"
         }}

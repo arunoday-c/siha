@@ -130,11 +130,11 @@ export default class FormGroup extends PureComponent {
   }
   errorInvoid(e) {
     if (typeof this.props.textBox.helperText === "function") {
-      e.currentTarget.setCustomValidity(
+      e.target.setCustomValidity(
         this.props.textBox.helperText(e.currentTarget.value)
       );
     } else {
-      e.currentTarget.setCustomValidity(this.props.textBox.helperText);
+      e.target.setCustomValidity(this.props.textBox.helperText);
     }
   }
 
