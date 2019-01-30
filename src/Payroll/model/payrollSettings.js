@@ -537,44 +537,44 @@ let dummy = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    db.getConnection((error, connection) => {
-      let din = moment("2019-01-01").format("YYYY-MM-DD");
-      debugLog("ssssssss");
-      let qry = "";
-      for (let i = 8257; i < 8286; i++) {
-        qry +=
-          "update hims_f_daily_time_sheet set attendance_date='" +
-          din +
-          "' where hims_f_daily_time_sheet_id=" +
-          i +
-          ";";
+    let date_of_joining = moment("2019-01-05").format("YYYY-MM-DD");
 
-        din = moment(din)
-          .add(1, "days")
-          .format("YYYY-MM-DD");
-      }
+    let exit_date = moment("2019-01-20").format("YYYY-MM-DD");
+    let startOfMonth = moment("2019-01-01")
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    let endOfMonth = moment("2019-01-01")
+      .endOf("month")
+      .format("YYYY-MM-DD");
 
-      debugLog("qry", qry);
-      connection.query(qry, (error, result) => {
-        if (error) {
-          debugLog("error:");
-          releaseDBConnection(db, connection);
-          next(error);
-        }
+    debugLog(
+      "join diff:",
+      moment(date_of_joining, "YYYY-MM-DD").diff(
+        moment(startOfMonth, "YYYY-MM-DD"),
+        "days"
+      )
+    );
+    //--------------------------
+    debugLog(
+      "exist  diff:",
+      moment(endOfMonth, "YYYY-MM-DD").diff(
+        moment(exit_date, "YYYY-MM-DD"),
+        "days"
+      )
+    );
+    //-----------------------
 
-        debugLog("result:", result);
-        next();
-      });
-
-      // debugLog("date:", din);
-      // debugLog(
-      //   "date plus 1:",
-      //   moment(din)
-      //     .add(1, "days")
-      //     .format("YYYY-MM-DD")
-      // );
-    });
-
+    debugLog(
+      "both:",
+      moment(date_of_joining, "YYYY-MM-DD").diff(
+        moment(startOfMonth, "YYYY-MM-DD"),
+        "days"
+      ) +
+        moment(endOfMonth, "YYYY-MM-DD").diff(
+          moment(exit_date, "YYYY-MM-DD"),
+          "days"
+        )
+    );
     // new Promise((resolve, reject) => {
     //   try {
     //     getMaxAuth({
