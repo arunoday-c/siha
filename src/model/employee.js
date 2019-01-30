@@ -3209,7 +3209,7 @@ let getEmployeesForMisED = (req, res, next) => {
         inner join hims_d_hospital H on AM.hospital_id=H.hims_d_hospital_id  and H.record_status='A'\
         left join hims_d_sub_department SD on AM.sub_department_id=SD.hims_d_sub_department_id \
         left join hims_f_miscellaneous_earning_deduction MED on AM.employee_id=MED.employee_id and\
-        MED.`year`=2019 and MED.`month`=1 and earning_deductions_id=13\
+        MED.`year`=? and MED.`month`=? and earning_deductions_id=?\
         and SD.record_status='A' where AM.record_status='A' and AM.`year`=? and AM.`hospital_id`=? and AM.`month`=? " +
             sub_department,
           [
