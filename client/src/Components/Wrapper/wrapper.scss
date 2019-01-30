@@ -27,6 +27,16 @@
       overflow: inherit !important;
       white-space: inherit !important;
     }
+
+    .rowHighliter {
+      .rt-td {
+        background: lighten($primary-color, 40%) !important;
+        &:hover {
+          background: lighten($primary-color, 40%) !important;
+        }
+      }
+    }
+
     .textCapitalize {
       text-transform: capitalize;
       input {

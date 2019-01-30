@@ -603,13 +603,15 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
       :global .algaeh-modal .popupHeader label {
         color: #fff;
+        font-size: 1em;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold; }
       :global .algaeh-modal .popupHeader button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
         float: right;
         background: none;
@@ -727,13 +729,15 @@
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
       :global .algaeh-modal-Ar .popupHeader label {
         color: #fff;
+        font-size: 1em;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold; }
       :global .algaeh-modal-Ar .popupHeader button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
         float: left;
         background: none;
@@ -1033,7 +1037,8 @@
   line-height: 1.21428571em;
   top: 0;
   right: 0;
-  padding: 0.6em; }
+  padding: 0.6em;
+  color: #666666; }
 
 .ui.selection.dropdown .menu > .item {
   padding: 0.6em !important; }
