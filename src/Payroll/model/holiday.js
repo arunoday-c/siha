@@ -846,51 +846,70 @@ let postTimeSheet = (req, res, next) => {
                 paid_leave: result[i]["status"] == "PL" ? 1 : 0,
                 unpaid_leave: result[i]["status"] == "UL" ? 1 : 0,
                 total_hours: result[i]["worked_hours"],
+                hours: result[i]["hours"],
+                minutes: result[i]["minutes"],
+
                 working_hours:
                   result[i]["actual_hours"] + result[i]["actual_minutes"]
               });
             }
             debugLog("dailyAttendance:", dailyAttendance);
-
-            const insurtColumns = [
-              "employee_id",
-              "hospital_id",
-              "sub_department_id",
-              "year",
-              "month",
-              "attendance_date",
-              "total_days",
-              "present_days",
-              "absent_days",
-              "total_work_days",
-              "weekoff_days",
-              "holidays",
-              "paid_leave",
-              "unpaid_leave",
-              "total_hours",
-              "working_hours"
-            ];
-
-            connection.query(
-              "INSERT IGNORE  INTO hims_f_daily_attendance(" +
-                insurtColumns.join(",") +
-                ") VALUES ?",
-              [
-                jsonArrayToObject({
-                  sampleInputObject: insurtColumns,
-                  arrayObj: dailyAttendance
-                })
-              ],
-              (error, insertResult) => {
-                if (error) {
+            connection.beginTransaction(error => {
+              if (error) {
+                connection.rollback(() => {
                   releaseDBConnection(db, connection);
                   next(error);
-                }
-
-                req.records = insertResult;
-                next();
+                });
               }
-            );
+              const insurtColumns = [
+                "employee_id",
+                "hospital_id",
+                "sub_department_id",
+                "year",
+                "month",
+                "attendance_date",
+                "total_days",
+                "present_days",
+                "absent_days",
+                "total_work_days",
+                "weekoff_days",
+                "holidays",
+                "paid_leave",
+                "unpaid_leave",
+                "hours",
+                "minutes",
+                "total_hours",
+                "working_hours"
+              ];
+
+              connection.query(
+                "INSERT   INTO hims_f_daily_attendance(" +
+                  insurtColumns.join(",") +
+                  ") VALUES ? ON DUPLICATE KEY UPDATE employee_id=values(employee_id),hospital_id=values(hospital_id),sub_department_id=values(sub_department_id),\
+                year=values(year),month=values(month),attendance_date=values(attendance_date),total_days=values(total_days),\
+                present_days=values(present_days),absent_days=values(absent_days),total_work_days=values(total_work_days),\
+                weekoff_days=values(weekoff_days),holidays=values(holidays),paid_leave=values(paid_leave),\
+                unpaid_leave=values(unpaid_leave),hours=values(hours),minutes=values(minutes),total_hours=values(total_hours),\
+                working_hours=values(working_hours)",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: dailyAttendance
+                  })
+                ],
+                (error, insertResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  // req.records = insertResult;
+                  // next();
+                }
+              );
+            });
           } else {
             releaseDBConnection(db, connection);
             req.records = {
@@ -917,3 +936,9 @@ module.exports = {
   getDailyTimeSheet,
   postTimeSheet
 };
+// select employee_id,hospital_id,sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,sum(absent_days)as absent_days,
+// sum(total_work_days)as total_work_days,sum(weekoff_days)as weekoff_days,sum(holidays)as holidays,
+// sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,sum(minutes)as minutes,
+// COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) as total_hours,
+// sum(working_hours)as working_hours  from hims_f_daily_attendance where
+// sub_department_id=26 and year=2019 and month=1 group by employee_id

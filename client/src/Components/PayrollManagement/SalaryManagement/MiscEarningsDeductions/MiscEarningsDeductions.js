@@ -129,7 +129,9 @@ export default class MiscEarningsDeductions extends Component {
         data: {
           hospital_id: this.state.hospital_id,
           year: this.state.year,
-          month: this.state.month
+          month: this.state.month,
+          earning_deductions_id: this.state.earning_deduction_id,
+          sub_department_id: this.state.sub_department_id
         },
         onSuccess: res => {
           if (res.data.success) {
@@ -143,6 +145,11 @@ export default class MiscEarningsDeductions extends Component {
                   title: "Sorry There are no Employees to Process",
                   type: "warning"
                 });
+          } else if (!res.data.success) {
+            swalMessage({
+              title: res.data.records.message,
+              type: "warning"
+            });
           }
         },
         onFailure: err => {

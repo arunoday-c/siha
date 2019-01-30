@@ -1338,7 +1338,7 @@ let processYearlyLeave = (req, res, next) => {
             }
 
 
-           // debugLog("employees:", employees);
+            debugLog("employees:", employees);
             // req.records = result;
             // next();
             if (employees.length > 0) {
@@ -1610,6 +1610,7 @@ let processYearlyLeave = (req, res, next) => {
                             });
                           });
                         }
+                        
                         
                       }
                     );
@@ -2908,7 +2909,7 @@ let getLeaveApllication = (req, res, next) => {
       req.query.to_date != null
     ) {
       range = ` and date(application_date)
-between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+      between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     }
 
     let auth_level = "";
@@ -3578,11 +3579,7 @@ let calculateLeaveDays = (req, res, next) => {
           // dont subtract  week off or holidays fom LeaveApplied Days
           else if (result.length > 0) {
             for (let k = 0; k < dateRange.length; k++) {
-              // leaveDeductionArray.push({
-              //   month_name: dateRange[k]["month_name"],
-              //   finalLeave: dateRange[k]["leaveDays"]
-              // });
-
+            
 
               if (input.from_session == "SH" && k == 0) {
                 if (from_month === to_month && input.to_session == "FH") {
@@ -3646,7 +3643,7 @@ let calculateLeaveDays = (req, res, next) => {
                   calculatedLeaveDays: calculatedLeaveDays,
                   monthWiseCalculatedLeaveDeduction: leaveDeductionArray
                 });
-                debugLog("updateResult", updateResult);
+                //debugLog("updateResult", updateResult);
               }
             } else {
               if (req.options == null) {
