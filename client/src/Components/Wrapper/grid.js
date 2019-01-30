@@ -793,11 +793,8 @@ class DataGrid extends Component {
     if (rowInfo !== undefined) {
       const _isRowSelected = this.isRowSelected(rowInfo.index);
       const _selectedColor =
-        _isRowSelected !== false ? "selected-grid-row " : "";
-      // const _rowSel =
-      //   this.props.rowClassName !== undefined
-      //     ? this.props.rowClassName(rowInfo.original)
-      //     : "";
+        _isRowSelected !== false ? "rowHighliter selected-grid-row " : "";
+
       return {
         className: _selectedColor
       };

@@ -283,7 +283,7 @@ class InsuranceSetup extends Component {
                   }}
                   filter={true}
                   // isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 20 }}
                   others={{
                     defaultSorted: [
                       {

@@ -82,7 +82,10 @@ class HospitalServices extends PureComponent {
       <React.Fragment>
         <div className="hptl-phase1-add-hospitalservies-form">
           <Modal open={this.props.open}>
-            <div className="algaeh-modal" data-validate="HospitalServices">
+            <div
+              className="algaeh-modal hospitalServiceModalSmall"
+              data-validate="HospitalServices"
+            >
               <div className="popupHeader">
                 <div className="row">
                   <div className="col-lg-8">
@@ -104,12 +107,12 @@ class HospitalServices extends PureComponent {
 
               <div className="popupInner">
                 <div
-                  className="col-12 popRightDiv"
+                  className="col-12 popRightDiv margin-top-15 margin-bottom-15"
                   style={{ minHeight: "60vh" }}
                 >
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         fieldName: "service_code",
                         isImp: true
@@ -125,7 +128,7 @@ class HospitalServices extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-6 form-group" }}
                       label={{
                         fieldName: "service_name",
                         isImp: true
@@ -141,7 +144,7 @@ class HospitalServices extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-10 form-group" }}
                       label={{
                         fieldName: "cpt_code",
                         isImp: true
@@ -158,65 +161,16 @@ class HospitalServices extends PureComponent {
                         }
                       }}
                     />
-                    {/* <AlagehAutoComplete
-                      div={{ className: "col-lg-2" }}
-                      label={{
-                        fieldName: "cpt_code",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "cpt_code",
-                        className: "select-fld",
-                        value: this.state.cpt_code,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "cpt_code"
-                              : "cpt_code",
-                          valueField: "hims_d_cpt_code_id",
-                          data: this.props.cptcodes
-                        },
-                        onChange: texthandle.bind(this, this)
-                      }}
-                    /> */}
 
-                    <div className="col">
+                    <div className="col-2 form-group">
                       <i
                         className="fas fa-search"
                         onClick={CptCodesSearch.bind(this, this)}
                         style={{ marginTop: 25, fontSize: "1.4rem" }}
                       />
                     </div>
-                  </div>
-                  <div
-                    className="row"
-                    style={{ marginTop: 10, marginBottom: 10 }}
-                  >
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
-                      label={{
-                        fieldName: "sub_department_id",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "sub_department_id",
-                        className: "select-fld",
-                        value: this.state.sub_department_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "sub_department_name"
-                              : "arabic_sub_department_name",
-                          valueField: "hims_d_sub_department_id",
-                          data: this.props.subdepartments
-                        },
-                        onChange: texthandle.bind(this, this)
-                      }}
-                    />
-                  </div>
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         fieldName: "hospital_id",
                         isImp: true
@@ -236,9 +190,30 @@ class HospitalServices extends PureComponent {
                         onChange: texthandle.bind(this, this)
                       }}
                     />
+                    <AlagehAutoComplete
+                      div={{ className: "col-12 form-group" }}
+                      label={{
+                        fieldName: "sub_department_id",
+                        isImp: true
+                      }}
+                      selector={{
+                        name: "sub_department_id",
+                        className: "select-fld",
+                        value: this.state.sub_department_id,
+                        dataSource: {
+                          textField:
+                            this.state.selectedLang === "en"
+                              ? "sub_department_name"
+                              : "arabic_sub_department_name",
+                          valueField: "hims_d_sub_department_id",
+                          data: this.props.subdepartments
+                        },
+                        onChange: texthandle.bind(this, this)
+                      }}
+                    />
 
                     <AlagehAutoComplete
-                      div={{ className: "col" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         fieldName: "service_type_id",
                         isImp: true
@@ -259,7 +234,7 @@ class HospitalServices extends PureComponent {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col" }}
+                      div={{ className: "col-12 form-group" }}
                       label={{
                         fieldName: "standard_fee",
                         isImp: true
@@ -275,10 +250,10 @@ class HospitalServices extends PureComponent {
                       }}
                     />
 
-                    <div className="col">
+                    <div className="col-12 form-group">
                       <div className="row">
                         <div
-                          className="col-lg-5 customCheckbox"
+                          className="col-6 customCheckbox"
                           style={{ paddingTop: "10px" }}
                         >
                           <label className="checkbox inline">
@@ -297,7 +272,7 @@ class HospitalServices extends PureComponent {
                           </label>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-lg-7" }}
+                          div={{ className: "col-6" }}
                           label={{
                             fieldName: "vat_percent"
                           }}

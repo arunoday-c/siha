@@ -27,6 +27,7 @@ const countryStatehandle = ($this, e) => {
         if (e.name === "country_id") {
           name = e.name;
           value = e.value;
+
           $this.setState({
             state_id: null,
             city_id: null,
@@ -110,7 +111,7 @@ const setAge = ($this, e) => {
     let years = $this.state.age;
     let months = $this.state.AGEMM;
     let days = $this.state.AGEDD;
-    debugger;
+
     if (e.target.name === "AGEMM" && parseInt(e.target.value) > 23) {
       swalMessage({
         title: "Invalid Input. Age in months cannot be greater than 23.",

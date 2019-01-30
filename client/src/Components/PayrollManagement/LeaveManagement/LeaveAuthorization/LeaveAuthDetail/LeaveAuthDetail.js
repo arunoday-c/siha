@@ -231,6 +231,11 @@ class LeaveAuthDetail extends Component {
           });
 
           document.getElementById("lvAuthLd").click();
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning"
+          });
         }
       },
       onFailure: err => {

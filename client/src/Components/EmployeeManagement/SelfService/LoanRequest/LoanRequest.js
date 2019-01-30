@@ -768,7 +768,12 @@ class LoanRequest extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Advance Amount" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.advance_amount)}</span>
+                          );
+                        }
                       },
 
                       {

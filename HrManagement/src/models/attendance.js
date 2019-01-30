@@ -631,6 +631,8 @@ module.exports = {
             next(error);
           });
         });
+    }).catch(e => {
+      next(e);
     });
   }
 };

@@ -5,6 +5,7 @@ import { SetBulkState } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 
 const DeptselectedHandeler = ($this, context, e) => {
+  debugger;
   let dept = Enumerable.from($this.props.deptanddoctors.departmets)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
@@ -30,7 +31,6 @@ const selectedHandeler = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      
       if (
         $this.state.full_name !== "" &&
         ($this.state.title_id !== null && $this.state.title_id !== "") &&
@@ -204,7 +204,6 @@ const doctorselectedHandeler = ($this, context, e) => {
 };
 
 const generateBillDetails = ($this, context) => {
-  
   let zeroBill = false;
   let DoctorVisits = Enumerable.from($this.state.visitDetails)
     .where(w => w.doctor_id === $this.state.doctor_id)

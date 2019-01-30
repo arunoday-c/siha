@@ -468,11 +468,13 @@ module.exports = {
                     "UPDATE `hims_f_leave_salary_header` SET `status`='PRO' \
                     where hims_f_leave_salary_header_id=?; select * from `hims_f_leave_salary_header` where \
                     hims_f_leave_salary_header_id=?; select * from `hims_f_employee_leave_salary_header` where \
-                    employee_id=?;",
+                    employee_id=?; select * from `hims_f_leave_salary_detail` where \
+                    leave_salary_header_id in (?);",
                   values: [
                     inputParam.employee_leave_settlement_id,
                     inputParam.employee_leave_settlement_id,
-                    inputParam.employee_id
+                    inputParam.employee_id,
+                    inputParam.employee_leave_settlement_id
                   ]
                 })
                 .then(LeaveSettleResult => {
@@ -487,9 +489,23 @@ module.exports = {
                     .logger()
                     .log("LeaveSettleResult2:", LeaveSettleResult[2][0]);
 
+                  utilities
+                    .AlgaehUtilities()
+                    .logger()
+                    .log("LeaveSettleResult2:", LeaveSettleResult[3]);
+
                   let leave_salary = LeaveSettleResult[1][0];
                   let leave_salary_header = LeaveSettleResult[2][0];
+                  let leave_salary_detail = LeaveSettleResult[3];
 
+                  let salary_header_id = _.map(leave_salary_detail, o => {
+                    return o.salary_header_id;
+                  });
+
+                  utilities
+                    .AlgaehUtilities()
+                    .logger()
+                    .log("salary_header_id:", salary_header_id);
                   let start_year = moment(leave_salary.leave_start_date).format(
                     "YYYY"
                   );
@@ -520,7 +536,8 @@ module.exports = {
                           "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
                         `balance_airticket_amount` = ? where employee_id=? and `year`=?;\
                         UPDATE `hims_d_employee` SET \
-                        `suspend_salary`='Y', `last_salary_process_date`=? where hims_d_employee_id=?;",
+                        `suspend_salary`='Y', `last_salary_process_date`=? where hims_d_employee_id=?; UPDATE `hims_f_salary` SET \
+                        `salary_paid`='Y' where hims_f_salary_id in (?);",
                         values: [
                           balance_leave_days,
                           balance_leave_salary_amount,
@@ -530,7 +547,8 @@ module.exports = {
                           moment(leave_salary.leave_end_date).format(
                             "YYYY-MM-DD"
                           ),
-                          inputParam.employee_id
+                          inputParam.employee_id,
+                          salary_header_id
                         ]
                       })
                       .then(LeaveSettleResult => {
@@ -830,11 +848,13 @@ module.exports = {
                 "UPDATE `hims_f_leave_salary_header` SET `status`='PEN' \
                     where hims_f_leave_salary_header_id=?; select * from `hims_f_leave_salary_header` where \
                     hims_f_leave_salary_header_id=?; select * from `hims_f_employee_leave_salary_header` where \
-                    employee_id=?;",
+                    employee_id=?; select * from `hims_f_leave_salary_detail` where \
+                    leave_salary_header_id in (?);",
               values: [
                 inputParam.employee_leave_settlement_id,
                 inputParam.employee_leave_settlement_id,
-                inputParam.employee_id
+                inputParam.employee_id,
+                inputParam.employee_leave_settlement_id
               ],
               printQuery: true
             })
@@ -846,6 +866,11 @@ module.exports = {
 
               let leave_salary = LeaveSettleResult[1][0];
               let leave_salary_header = LeaveSettleResult[2][0];
+              let leave_salary_detail = LeaveSettleResult[3][0];
+
+              let salary_header_id = _.map(leave_salary_detail, o => {
+                return o.salary_header_id;
+              });
 
               let start_year = moment(leave_salary.leave_start_date).format(
                 "YYYY"
@@ -873,14 +898,16 @@ module.exports = {
                     query:
                       "UPDATE `hims_f_employee_leave_salary_header` SET `balance_leave_days`=?, `balance_leave_salary_amount` = ?, \
                         `balance_airticket_amount` = ? where employee_id=? and `year`=?; UPDATE `hims_d_employee` SET \
-                        `suspend_salary`='N', `last_salary_process_date`=null where hims_d_employee_id=?;",
+                        `suspend_salary`='N', `last_salary_process_date`=null where hims_d_employee_id=?; UPDATE `hims_f_salary` SET \
+                        `salary_paid`='N' where hims_f_salary_id in (?);",
                     values: [
                       balance_leave_days,
                       balance_leave_salary_amount,
                       balance_airticket_amount,
                       inputParam.employee_id,
                       start_year,
-                      inputParam.employee_id
+                      inputParam.employee_id,
+                      salary_header_id
                     ],
                     printQuery: true
                   })
@@ -988,11 +1015,6 @@ module.exports = {
                     next(error);
                   });
               }
-              // _mysql.commitTransaction(() => {
-              //   _mysql.releaseConnection();
-              //   req.records = LeaveSettleResult;
-              //   next();
-              // });
             })
             .catch(error => {
               next(error);

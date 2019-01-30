@@ -60,12 +60,19 @@ export default class WeeklyAttendance extends Component {
   }
 
   getDailyTimeSheet() {
+    let _fromDate = moment(this.state.year + "-" + this.state.month)
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    let _toDate = moment(this.state.year + "-" + this.state.month)
+      .endOf("month")
+      .format("YYYY-MM-DD");
+
     algaehApiCall({
       uri: "/holiday/getDailyTimeSheet",
       method: "GET",
       data: {
-        from_date: "2017-05-01",
-        to_date: "2017-05-31",
+        from_date: _fromDate,
+        to_date: _toDate,
         biometric_id: this.state.biometric_id
       },
       onSuccess: res => {
@@ -552,51 +559,51 @@ export default class WeeklyAttendance extends Component {
                         </div>
                       </div>
                     </div>
-                  </div>
-                ) : data.status === "EX" ? (
-                  <div className="row dailyTimeProgress exCntr">
-                    <div className="col-1">
-                      {moment(data.attendance_date).format("ddd, Do")}
-                    </div>
-                    <div className="col-1">
-                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                    </div>
-                    <div className="col">
-                      <div className="progress">
-                        <div
-                          className="progress-bar  bg-danger"
-                          role="progressbar"
-                          aria-valuenow="75"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          style={{
-                            width: "50%"
-                          }}
-                        >
-                          <div className="tooltipDetails">
-                            <span className="checkIn animated bounceIn faster">
-                              Check In{" "}
-                              <b>
-                                {data.in_time
-                                  ? moment(data.in_time, "HH:mm:ss").format(
-                                      "hh:mm a"
-                                    )
-                                  : "Not Available"}
-                              </b>
-                            </span>
-                            {/* <span className="totalHr animated bounceIn faster">
-                                Late time by <b className="lateTime">55 min</b>
-                              </span> */}
-                            <span className="checkOut animated bounceIn faster">
-                              Check Out{" "}
-                              <b>
-                                {data.out_time
-                                  ? moment(data.out_time, "HH:mm:ss").format(
-                                      "hh:mm a"
-                                    )
-                                  : "Not Available"}
-                              </b>
-                            </span>
+                    ) : data.status === "EX" ? (
+                    <div className="row dailyTimeProgress">
+                      <div className="col-1">
+                        {moment(data.attendance_date).format("ddd, Do")}
+                      </div>
+                      <div className="col-1">
+                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                      </div>
+                      <div className="col">
+                        <div className="progress">
+                          <div
+                            className="progress-bar  bg-danger"
+                            role="progressbar"
+                            aria-valuenow="75"
+                            aria-valuemin="0"
+                            aria-valuemax="100"
+                            style={{
+                              width: "50%"
+                            }}
+                          >
+                            <div className="tooltipDetails">
+                              <span className="checkIn animated bounceIn faster">
+                                Check In{" "}
+                                <b>
+                                  {data.in_time
+                                    ? moment(data.in_time, "HH:mm:ss").format(
+                                        "hh:mm a"
+                                      )
+                                    : "Not Available"}
+                                </b>
+                              </span>
+                              <span className="totalHr animated bounceIn faster">
+                                EXCEPTION
+                              </span>
+                              <span className="checkOut animated bounceIn faster">
+                                Check Out{" "}
+                                <b>
+                                  {data.out_time
+                                    ? moment(data.out_time, "HH:mm:ss").format(
+                                        "hh:mm a"
+                                      )
+                                    : "Not Available"}
+                                </b>
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>

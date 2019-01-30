@@ -6,8 +6,3 @@
 
 .salary_management #Salary_Management_Cntr .ReactTable {
   max-height: 63vh !important; }
-
-.salary_management #Employer_Contribution_Cntr .ReactTable,
-.salary_management #Employee_Deductions_Cntr .ReactTable,
-.salary_management #Salary_Earning_Cntr .ReactTable {
-  max-height: 20vh !important; }

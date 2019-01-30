@@ -67,9 +67,9 @@ class LoanModal extends Component {
             title: "Approved Amount cannot be greater than requested amount",
             type: "warning"
           });
-          // this.setState({
-          //   approved_amount: null
-          // });
+          this.setState({
+            approved_amount: null
+          });
         }
         break;
 
@@ -235,14 +235,12 @@ class LoanModal extends Component {
                 isImp: true
               }}
               textBox={{
+                decimal: { allowNegative: false },
                 className: "txt-fld",
                 name: "approved_amount",
                 value: this.state.approved_amount,
                 events: {
                   onChange: this.textHandle.bind(this)
-                },
-                others: {
-                  type: "number"
                 }
               }}
             />

@@ -8,3 +8,6 @@
     padding-bottom: 0px; }
   .hptl-phase1-add-hospitalservies-form .button {
     padding: 10px; }
+
+.hospitalServiceModalSmall {
+  max-width: 40% !important; }
