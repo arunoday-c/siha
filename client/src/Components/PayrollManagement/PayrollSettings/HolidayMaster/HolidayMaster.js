@@ -523,6 +523,7 @@ export default class HolidayMaster extends Component {
               <div className="portlet-body">
                 <div data-validate="HolidayListGrid" id="HolidayListGrid_Cntr">
                   <AlgaehDataGrid
+                    id="HolidayListGrid"
                     data-validate="HolidayListGrid"
                     columns={[
                       {
