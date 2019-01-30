@@ -212,60 +212,124 @@ module.exports = {
                             absentResult[0].absent_days;
                         }
 
-                        //HOLIDAYS CALCULATION------------------------------------------
-                        // let other_religion_holidays = _.chain(_holidayResult)
-                        //   .filter(obj => {
+                        //ST ----------- CALCULATING WEEK OFF AND HOLIDAYS
+                        // empResult[i]["defaults"].emp_total_holidays = new LINQ(
+                        //   _holidayResult
+                        // )
+                        //   .Where(
+                        //     w =>
+                        //       (w.holiday == "Y" && w.holiday_type == "RE") ||
+                        //       (w.holiday == "Y" &&
+                        //         w.holiday_type == "RS" &&
+                        //         w.religion_id == empResult[i]["religion_id"])
+                        //   )
+                        //   .Count();
+
+                        // empResult[i]["defaults"].total_week_off = _.filter(
+                        //   _holidayResult,
+                        //   obj => {
                         //     return (
-                        //       obj.weekoff == "N" &&
-                        //       obj.holiday == "Y" &&
-                        //       obj.holiday_type == "RS" &&
-                        //       obj.religion_id != empResult[i]["religion_id"]
+                        //       obj.weekoff === "Y" && obj.holiday_type === "RE"
                         //     );
-                        //   })
-                        //   .value();
+                        //   }
+                        // ).length;
 
-                        // empResult[i]["defaults"].emp_total_holidays =
-                        //   other_religion_holidays.length === 0
-                        //     ? 0
-                        //     : _holidayResult.length -
-                        //       other_religion_holidays.length;
+                        if (
+                          empResult[i]["date_of_joining"] > startOfMonth &&
+                          empResult[i]["exit_date"] == null
+                        ) {
+                          empResult[i][
+                            "defaults"
+                          ].emp_total_holidays = new LINQ(_holidayResult)
+                            .Where(
+                              w =>
+                                ((w.holiday == "Y" && w.holiday_type == "RE") ||
+                                  (w.holiday == "Y" &&
+                                    w.holiday_type == "RS" &&
+                                    w.religion_id ==
+                                      empResult[i]["religion_id"])) &&
+                                w.holiday_date > empResult[i]["date_of_joining"]
+                            )
+                            .Count();
 
-                        empResult[i]["defaults"].emp_total_holidays = new LINQ(
-                          _holidayResult
-                        )
-                          .Where(
-                            w =>
-                              (w.holiday == "Y" && w.holiday_type == "RE") ||
-                              (w.holiday == "Y" &&
-                                w.holiday_type == "RS" &&
-                                w.religion_id == empResult[i]["religion_id"])
-                          )
-                          .Count();
+                          empResult[i]["defaults"].total_week_off = _.filter(
+                            _holidayResult,
+                            obj => {
+                              return (
+                                obj.weekoff === "Y" &&
+                                obj.holiday_type === "RE" &&
+                                obj.holiday_date >
+                                  empResult[i]["date_of_joining"]
+                              );
+                            }
+                          ).length;
+                        } else if (
+                          empResult[i]["exit_date"] < endOfMonth &&
+                          empResult[i]["date_of_joining"] < startOfMonth
+                        ) {
+                          //---------------
 
-                        //-----------------------------
+                          empResult[i][
+                            "defaults"
+                          ].emp_total_holidays = new LINQ(_holidayResult)
+                            .Where(
+                              w =>
+                                ((w.holiday == "Y" && w.holiday_type == "RE") ||
+                                  (w.holiday == "Y" &&
+                                    w.holiday_type == "RS" &&
+                                    w.religion_id ==
+                                      empResult[i]["religion_id"])) &&
+                                w.holiday_date < empResult[i]["exit_date"]
+                            )
+                            .Count();
 
-                        utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("_holidayResult: ", _holidayResult);
+                          empResult[i]["defaults"].total_week_off = _.filter(
+                            _holidayResult,
+                            obj => {
+                              return (
+                                obj.weekoff === "Y" &&
+                                obj.holiday_type === "RE" &&
+                                obj.holiday_date < empResult[i]["exit_date"]
+                              );
+                            }
+                          ).length;
+                        } else if (
+                          empResult[i]["date_of_joining"] > startOfMonth &&
+                          empResult[i]["exit_date"] < endOfMonth
+                        ) {
+                          //---------------
 
-                        //WEEK OFF CALCULATION---------------------------------------------
-                        empResult[i]["defaults"].total_week_off = _.filter(
-                          _holidayResult,
-                          obj => {
-                            return (
-                              obj.weekoff === "Y" && obj.holiday_type === "RE"
-                            );
-                          }
-                        ).length;
+                          empResult[i][
+                            "defaults"
+                          ].emp_total_holidays = new LINQ(_holidayResult)
+                            .Where(
+                              w =>
+                                ((w.holiday == "Y" && w.holiday_type == "RE") ||
+                                  (w.holiday == "Y" &&
+                                    w.holiday_type == "RS" &&
+                                    w.religion_id ==
+                                      empResult[i]["religion_id"])) &&
+                                (w.holiday_date >
+                                  empResult[i]["date_of_joining"] &&
+                                  w.holiday_date < empResult[i]["exit_date"])
+                            )
+                            .Count();
 
-                        utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log(
-                            "total_week_off: ",
-                            empResult[i]["defaults"].total_week_off
-                          );
+                          empResult[i]["defaults"].total_week_off = _.filter(
+                            _holidayResult,
+                            obj => {
+                              return (
+                                obj.weekoff === "Y" &&
+                                obj.holiday_type === "RE" &&
+                                obj.holiday_date >
+                                  empResult[i]["date_of_joining"] &&
+                                obj.holiday_date < empResult[i]["exit_date"]
+                              );
+                            }
+                          ).length;
+                        }
+
+                        //EN --------- CALCULATING WEEK OFF AND HOLIDAYS
 
                         absentResult = empResult[i]["defaults"].emp_absent_days;
                         _mysql
