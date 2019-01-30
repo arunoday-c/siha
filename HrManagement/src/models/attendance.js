@@ -155,29 +155,32 @@ module.exports = {
                       empResult[i]["date_of_joining"] > startOfMonth &&
                       empResult[i]["exit_date"] == null
                     ) {
-                      empResult[i]["defaults"].totalMonthDays = moment(
-                        date_of_joining,
+                      empResult[i]["defaults"].totalMonthDays -= moment(
+                        empResult[i]["date_of_joining"],
                         "YYYY-MM-DD"
                       ).diff(moment(startOfMonth, "YYYY-MM-DD"), "days");
                     } else if (
                       empResult[i]["exit_date"] < endOfMonth &&
                       empResult[i]["date_of_joining"] < startOfMonth
                     ) {
-                      empResult[i]["defaults"].totalMonthDays = moment(
+                      empResult[i]["defaults"].totalMonthDays -= moment(
                         endOfMonth,
                         "YYYY-MM-DD"
-                      ).diff(moment(exit_date, "YYYY-MM-DD"), "days");
+                      ).diff(
+                        moment(empResult[i]["exit_date"], "YYYY-MM-DD"),
+                        "days"
+                      );
                     } else if (
                       empResult[i]["date_of_joining"] > startOfMonth &&
                       empResult[i]["exit_date"] < endOfMonth
                     ) {
-                      empResult[i]["defaults"].totalMonthDays =
-                        moment(date_of_joining, "YYYY-MM-DD").diff(
-                          moment(startOfMonth, "YYYY-MM-DD"),
-                          "days"
-                        ) +
+                      empResult[i]["defaults"].totalMonthDays -=
+                        moment(
+                          empResult[i]["date_of_joining"],
+                          "YYYY-MM-DD"
+                        ).diff(moment(startOfMonth, "YYYY-MM-DD"), "days") +
                         moment(endOfMonth, "YYYY-MM-DD").diff(
-                          moment(exit_date, "YYYY-MM-DD"),
+                          moment(empResult[i]["exit_date"], "YYYY-MM-DD"),
                           "days"
                         );
                     }
@@ -630,10 +633,10 @@ module.exports = {
                         });
                       });
                   }
-                } catch (e) {
+                } catch (error) {
                   reject(error);
                   _mysql.rollBackTransaction(() => {
-                    next(e);
+                    next(error);
                   });
                 }
               })
