@@ -2,32 +2,28 @@
   font-family: "Roboto", sans-serif;
   min-width: 100%;
   min-height: 100%; }
-  .login input[type="text"] {
-    padding: 8px 10px;
-    border-radius: 5px;
-    overflow: hidden;
-    background: #fff;
-    border: 1px solid #3a95aa; }
-  .login input[type="password"] {
-    padding: 8px 10px;
-    border-radius: 5px;
-    overflow: hidden;
-    background: #fff;
-    border: 1px solid #3a95aa;
-    width: 100%; }
-  .login .showall {
-    position: absolute;
-    top: 0;
-    padding: 5px 11px;
-    right: 0;
-    background: #fff;
-    color: #929292;
-    cursor: pointer;
-    margin: 2px;
-    height: 32px; }
-  .login .clearall {
-    top: 4px;
-    right: 31px; }
+  .login .LoginCntrHdg {
+    margin-top: 0.7em;
+    text-align: center;
+    color: #34b8bc;
+    font-size: 2em; }
+  .login .form-group {
+    margin-bottom: 0.7em; }
+  .login .ui.input > input {
+    min-height: 40px !important;
+    max-height: 40px !important;
+    padding: 0.3em 0.5em;
+    font-size: 1em; }
+  .login .ui.fluid.dropdown {
+    min-height: 40px !important;
+    max-height: 40px !important; }
+    .login .ui.fluid.dropdown .text {
+      padding: 0.9em;
+      max-width: 90%; }
+    .login .ui.fluid.dropdown .delete.icon,
+    .login .ui.fluid.dropdown .dropdown.icon,
+    .login .ui.fluid.dropdown .search.icon {
+      padding: 1em; }
   .login .margintop15 {
     margin-top: 9%; }
   .login .row-eq-height {
@@ -43,33 +39,28 @@
     width: 320px; }
   .login .frgtPass {
     text-align: center;
+    font-size: 12px;
     margin-top: 20px;
     margin-bottom: 0; }
-  .login .sign-btn {
-    box-shadow: 0 5px 0 #2a7688;
-    border: 1px solid #48a0bb;
-    color: #fff;
-    background-size: 300% 100%;
-    -moz-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    -webkit-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out; }
-  .login .sign-btn:hover {
-    box-shadow: 0 3px 0 #35879a;
-    border: 1px solid #48b1ca;
-    background-position: 100% 0;
-    -moz-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    -webkit-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out; }
   .login .btn-primary {
     color: #fff;
-    background-color: none;
-    background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
-    border-color: #44b8bd; }
-  .login .btn-primary:hover {
-    background-color: none;
-    border-color: #44b8bd; }
+    background-color: #34b8bc;
+    border-color: #299194; }
+    .login .btn-primary:hover {
+      background-color: #299194;
+      border-color: #53ccd0; }
+    .login .btn-primary:focus {
+      background-color: #34b8bc;
+      border-color: #34b8bc; }
+    .login .btn-primary.disabled, .login .btn-primary:disabled {
+      opacity: 0.3;
+      color: #fff;
+      background-color: #34b8bc;
+      border-color: #299194;
+      cursor: not-allowed; }
+    .login .btn-primary:active {
+      background-color: #fff;
+      border-color: #fff; }
   .login .checkbox {
     font-weight: normal;
     margin-bottom: 10px;
@@ -112,6 +103,7 @@
   width: 100%;
   text-align: center;
   color: #fff;
+  font-size: 0.7rem;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5); }
   .loginFooter a {
     text-decoration: none;
