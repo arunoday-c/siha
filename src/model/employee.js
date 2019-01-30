@@ -3280,21 +3280,9 @@ let addMisEarnDedcToEmployees = (req, res, next) => {
           "INSERT INTO hims_f_miscellaneous_earning_deduction(" +
             insurtColumns.join(",") +
             ",`earning_deductions_id`,year,month,category,created_date,updated_date) VALUES ?  ON DUPLICATE KEY UPDATE\
-             employee_id=values(employee_id),amount=values(amount),earning_deductions_id=values(" +
-            input.earning_deduction_id +
-            "),\
-            year=values(" +
-            input.year +
-            "),month=values(" +
-            input.month +
-            "),category=values(" +
-            input.category +
-            "),updated_date=values(" +
-            new Date() +
-            "),\
-            updated_by=values(" +
-            req.userIdentity.algaeh_d_app_user_id +
-            ")",
+            employee_id=values(employee_id),amount=values(amount),earning_deductions_id=values(earning_deductions_id), \
+                      year=values(year),month=values(month),category=values(category),updated_date=values(updated_date),\
+            updated_by=values(updated_by)",
           [
             jsonArrayToObject({
               sampleInputObject: insurtColumns,
