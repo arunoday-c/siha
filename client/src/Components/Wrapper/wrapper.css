@@ -19,6 +19,10 @@
   .ReactTable .rt-tbody .rt-td {
     overflow: inherit !important;
     white-space: inherit !important; }
+  .ReactTable .rt-tbody .rowHighliter .rt-td {
+    background: #cbf0f1 !important; }
+    .ReactTable .rt-tbody .rowHighliter .rt-td:hover {
+      background: #cbf0f1 !important; }
   .ReactTable .rt-tbody .textCapitalize {
     text-transform: capitalize; }
     .ReactTable .rt-tbody .textCapitalize input {

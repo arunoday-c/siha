@@ -877,6 +877,7 @@
       }
       label {
         color: #fff;
+        font-size: 1em;
 
         padding: 0 0 3px;
         line-height: 30px;
@@ -885,9 +886,9 @@
         font-weight: bold;
       }
       button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
-
         float: right;
         background: none;
         border: none;
@@ -1033,6 +1034,7 @@
       label {
         color: #fff;
 
+        font-size: 1em;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
@@ -1040,7 +1042,8 @@
         font-weight: bold;
       }
       button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
 
         float: left;
@@ -1439,6 +1442,7 @@
   top: 0;
   right: 0;
   padding: 0.6em;
+  color: lighten($color-black, 40%);
 }
 .ui.selection.dropdown .menu > .item {
   padding: 0.6em !important;
