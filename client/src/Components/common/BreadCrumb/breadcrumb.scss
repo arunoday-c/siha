@@ -9,7 +9,7 @@
 }
 .breadCrumb-Data {
   margin: 0;
-  margin-top: 50px;
+  margin-top: 53px;
   background-color: #f8f8f8;
   height: 75px;
   .hdg_bredcrump {
@@ -17,10 +17,12 @@
       top right #fff;
   }
   .header {
-    margin-top: 10px;
+    margin-top: 15px;
+    margin-bottom: 5px;
     label {
       font-weight: 300;
       text-transform: capitalize;
+      font-size: 1.7em;
       // font-family: "Trebuchet MS", " Helvetica, sans-serif";
     }
   }
@@ -36,6 +38,7 @@
       a {
         label {
           text-transform: capitalize;
+          font-size: 1em;
         }
       }
     }

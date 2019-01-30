@@ -568,9 +568,9 @@
     }
 
     .btn {
+      font-size: 0.9em !important !important;
       color: #666;
       padding: 3px 9px;
-
       line-height: 1.5;
       background-size: 300% 100%;
       background-color: #fff;
@@ -934,6 +934,7 @@
         margin-left: 0px;
       }
       .btn {
+        font-size: 0.9em !important !important;
         float: right;
         min-width: 70px;
         padding: 4px 10px;
@@ -1447,5 +1448,6 @@
   font-size: 0.9em;
   min-height: 30px !important;
   max-height: 30px !important;
+  padding: 0.3em 0.5em;
 }
 //Semantic UI CSS Owerwrite End Here //
