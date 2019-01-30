@@ -4,7 +4,8 @@ import Enumerable from "linq";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlgaehLabel
 } from "../../../../../Wrapper/algaehWrapper";
 
 function LeaveEncashment(props) {
@@ -71,7 +72,9 @@ function LeaveEncashment(props) {
               columns={[
                 {
                   fieldName: "earnings_id",
-                  label: "Encashment Type",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Encashment Type" }} />
+                  ),
                   displayTemplate: row => {
                     let x = Enumerable.from(myParent.state.earning_deductions)
                       .where(
@@ -110,7 +113,7 @@ function LeaveEncashment(props) {
                 },
                 {
                   fieldName: "percent",
-                  label: "Value %",
+                  label: <AlgaehLabel label={{ forceLabel: "Value %" }} />,
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup

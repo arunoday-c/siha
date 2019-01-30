@@ -3,7 +3,8 @@ import "./leave_rules.css";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlgaehLabel
 } from "../../../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
@@ -348,7 +349,11 @@ function LeaveRules(props) {
                   columns={[
                     {
                       fieldName: "calculation_type",
-                      label: "Calculation Type",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Calculation Type" }}
+                        />
+                      ),
                       displayTemplate: row => {
                         return (
                           <span>
@@ -390,7 +395,7 @@ function LeaveRules(props) {
                     },
                     {
                       fieldName: "paytype",
-                      label: "Pay Type",
+                      label: <AlgaehLabel label={{ forceLabel: "Pay Type" }} />,
                       displayTemplate: row => {
                         return (
                           <span>
@@ -433,7 +438,9 @@ function LeaveRules(props) {
                     },
                     {
                       fieldName: "from_value",
-                      label: "From Value",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "From Value" }} />
+                      ),
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup
@@ -457,7 +464,7 @@ function LeaveRules(props) {
                     },
                     {
                       fieldName: "to_value",
-                      label: "To Value",
+                      label: <AlgaehLabel label={{ forceLabel: "To Value" }} />,
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup
@@ -481,7 +488,9 @@ function LeaveRules(props) {
                     },
                     {
                       fieldName: "value_type",
-                      label: "Value Type",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: " Value Type" }} />
+                      ),
                       displayTemplate: row => {
                         return (
                           <span>
@@ -516,7 +525,9 @@ function LeaveRules(props) {
                     },
                     {
                       fieldName: "total_days",
-                      label: "Total Days",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Total Days" }} />
+                      ),
                       editorTemplate: row => {
                         return (
                           <AlagehFormGroup
