@@ -43,16 +43,6 @@
         text-transform: capitalize;
       }
     }
-    .ui.selection.dropdown {
-      padding: 0.75em 2.1em 0.8em 0.35em;
-
-      max-height: 2.5em;
-    }
-    .ui.selection.dropdown > .delete.icon,
-    .ui.selection.dropdown > .dropdown.icon,
-    .ui.selection.dropdown > .search.icon {
-      line-height: 1.5em;
-    }
   }
   .-btn {
     background: $primary-color !important;
