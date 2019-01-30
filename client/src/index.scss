@@ -1435,6 +1435,9 @@
   max-width: 85%;
   padding: 0.5rem;
 }
+.ui.search.selection.dropdown > input.search {
+  padding: 0.64em 0.5em;
+}
 .ui.selection.dropdown > .delete.icon,
 .ui.selection.dropdown > .dropdown.icon,
 .ui.selection.dropdown > .search.icon {
@@ -1454,4 +1457,5 @@
   max-height: 30px !important;
   padding: 0.3em 0.5em;
 }
+
 //Semantic UI CSS Owerwrite End Here //

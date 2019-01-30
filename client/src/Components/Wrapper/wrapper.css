@@ -27,13 +27,6 @@
     text-transform: capitalize; }
     .ReactTable .rt-tbody .textCapitalize input {
       text-transform: capitalize; }
-  .ReactTable .rt-tbody .ui.selection.dropdown {
-    padding: 0.75em 2.1em 0.8em 0.35em;
-    max-height: 2.5em; }
-  .ReactTable .rt-tbody .ui.selection.dropdown > .delete.icon,
-  .ReactTable .rt-tbody .ui.selection.dropdown > .dropdown.icon,
-  .ReactTable .rt-tbody .ui.selection.dropdown > .search.icon {
-    line-height: 1.5em; }
 
 .ReactTable .-btn {
   background: #34b8bc !important;
