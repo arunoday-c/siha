@@ -3202,17 +3202,22 @@ let getEmployeesForMisED = (req, res, next) => {
     ) {
       db.getConnection((error, connection) => {
         connection.query(
-          "select hims_f_attendance_monthly_id,AM.employee_id,E.employee_code,E.full_name as employee_name,\
-        AM.`year`,AM.`month`,AM.hospital_id,H.hospital_name,AM.sub_department_id,SD.sub_department_name,MED.amount,MED.processed\
-        from hims_f_attendance_monthly AM \
-        inner join  hims_d_employee E on AM.employee_id=E.hims_d_employee_id and E.record_status='A'\
-        inner join hims_d_hospital H on AM.hospital_id=H.hims_d_hospital_id  and H.record_status='A'\
-        left join hims_d_sub_department SD on AM.sub_department_id=SD.hims_d_sub_department_id \
-        left join hims_f_miscellaneous_earning_deduction MED on AM.employee_id=MED.employee_id and\
-        MED.`year`=? and MED.`month`=? and earning_deductions_id=?\
-        and SD.record_status='A' where AM.record_status='A' and AM.`year`=? and AM.`hospital_id`=? and AM.`month`=? " +
+          "  select hims_f_attendance_monthly_id,AM.employee_id,E.employee_code,E.full_name as employee_name,\
+          AM.`year`,AM.`month`,AM.hospital_id,H.hospital_name,AM.sub_department_id,\
+          SD.sub_department_name,S.salary_processed,\
+          MED.amount,earning_deductions_id,hims_f_miscellaneous_earning_deduction_id\
+          from hims_f_attendance_monthly AM inner join  hims_d_employee E on AM.employee_id=E.hims_d_employee_id and E.record_status='A'\
+          inner join hims_d_hospital H on AM.hospital_id=H.hims_d_hospital_id  and H.record_status='A'\
+          left join hims_d_sub_department SD on AM.sub_department_id=SD.hims_d_sub_department_id  and SD.record_status='A' \
+          left join hims_f_salary S on AM.employee_id=S.employee_id and S.`year`=? and S.`month`=? \
+          left join hims_f_miscellaneous_earning_deduction MED on AM.employee_id=MED.employee_id and\
+          MED.`year`=? and MED.`month`=?  and earning_deductions_id=?  \
+         where AM.record_status='A' and AM.`year`=? \
+          and AM.`hospital_id`=? and AM.`month`=?  " +
             sub_department,
           [
+            input.year,
+            input.month,
             input.year,
             input.month,
             input.earning_deductions_id,
