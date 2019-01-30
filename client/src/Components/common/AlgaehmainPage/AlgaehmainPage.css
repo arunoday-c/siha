@@ -26,7 +26,6 @@ header {
     background: #53ccd0; }
 
 .topNavbar-title {
-  font-size: 1.2rem;
   margin: 0;
   padding: 0;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
@@ -46,7 +45,6 @@ header {
 
 .btn-userProfile {
   background: none;
-  font-size: 1rem;
   color: #fff;
   border-left: 1px solid #53ccd0;
   margin-top: -21px; }
@@ -54,8 +52,7 @@ header {
     margin: 3px; }
   .btn-userProfile span {
     display: inline-block;
-    margin: 0 10px;
-    font-size: 0.9rem; }
+    margin: 0 10px; }
 
 #simple-menu {
   top: 33px;
@@ -64,12 +61,10 @@ header {
   #simple-menu ul li {
     padding: 5px 35px 5px 15px;
     margin: 0;
-    text-transform: uppercase;
-    font-size: 0.9rem; }
+    text-transform: uppercase; }
     #simple-menu ul li i {
       margin-right: 15px;
-      color: #34b8bc;
-      font-size: 1rem; }
+      color: #34b8bc; }
   #simple-menu hr {
     margin: 5px 0;
     padding: 0; }
@@ -101,8 +96,7 @@ header {
     text-align: center;
     padding-top: 100%; }
     .hptl-phase1-sideMenuBar .sideMenu-header .menuBarLoader i {
-      color: #00babe;
-      font-size: 3rem; }
+      color: #00babe; }
 
 .hptl-phase1-sideMenuBar .side-menu-title {
   padding: 5px 0;
@@ -110,7 +104,6 @@ header {
   border-bottom: 2px solid #d2d2d2;
   border-top: 1px solid #fff;
   cursor: pointer;
-  font-size: 0.9rem;
   top: 0; }
   .hptl-phase1-sideMenuBar .side-menu-title i {
     text-shadow: 0px 2px 0px #fff; }
@@ -135,7 +128,6 @@ header {
     width: 100%; }
     .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li {
       margin: 0;
-      font-size: 0.8rem;
       border-bottom: 1px dotted #818588;
       text-transform: uppercase;
       cursor: pointer;
@@ -171,7 +163,6 @@ header {
 .hptl-phase1-sideMenuBar .menuBar-title {
   display: flex;
   padding: 0 5px;
-  font-size: 20px;
   height: 52px;
   background: #000;
   top: 0;
@@ -184,8 +175,7 @@ header {
   position: absolute;
   right: 19px;
   top: 14px;
-  color: #fff;
-  font-size: 1.3rem; }
+  color: #fff; }
 
 .hptl-phase1-sideMenuBar .sideBarClose:hover {
   color: #00bcb0;
@@ -211,7 +201,7 @@ header {
     border-bottom: 2px solid #000000;
     border-top: 1px solid #505050;
     cursor: pointer;
-    font-size: 0.9rem;
+    
     i {
       text-shadow: 0px 2px 0px #000;
     }
@@ -237,7 +227,7 @@ header {
     li {
       padding: 8px 5px;
       margin: 0;
-      font-size: 0.8rem;
+      
       border-bottom: 1px dotted #4e4e4e;
       text-transform: uppercase;
       cursor: pointer;
@@ -276,7 +266,7 @@ header {
 
   .menuBar-title {
     display: flex;
-    font-size: 20px;
+    
     height: 49px;
     background: #000;
     position: fixed;
@@ -289,7 +279,7 @@ header {
     right: 19px;
     top: 14px;
     color: #fff;
-    font-size: 1.3rem;
+    
   }
   .sideBarClose:hover {
     color: #00bcb0;
@@ -317,7 +307,6 @@ header {
     line-height: 46px;
     padding: 0;
     margin: 0;
-    font-size: 1.1rem;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
   .screenDisplay span:first-child {
     padding-top: 0px; }
@@ -329,7 +318,6 @@ header {
 
 .selectedLang {
   float: right;
-  font-size: 0.7rem;
   margin-right: 10px;
   border: 1px solid #fff;
   padding: 0px 3px;
@@ -361,7 +349,6 @@ header {
       display: block; }
 
 .loginProfileInfo {
-  font-size: 0.8rem;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); }
   .loginProfileInfo span {
     display: block;
@@ -369,6 +356,5 @@ header {
     margin-right: 10px;
     padding-left: 10px; }
     .loginProfileInfo span:first-child {
-      font-size: 0.9rem;
       font-weight: 600;
       text-transform: uppercase; }

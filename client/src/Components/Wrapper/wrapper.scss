@@ -2,7 +2,6 @@
 .ReactTable {
   .rt-thead {
     .rt-th {
-      font-size: 0.8rem !important;
       color: #000 !important;
       background: lighten($primary-color, 45%) !important;
       .style_Label {
@@ -19,13 +18,12 @@
   }
   .rt-thead.-filters input,
   .rt-thead.-filters select {
-    padding: 0 2px !important;
+    padding: 0.3em !important;
     border: 1px solid #8c8c8c !important;
   }
   .rt-tbody {
     text-align: center;
     .rt-td {
-      font-size: 0.8rem !important;
       overflow: inherit !important;
       white-space: inherit !important;
     }
@@ -34,6 +32,16 @@
       input {
         text-transform: capitalize;
       }
+    }
+    .ui.selection.dropdown {
+      padding: 0.75em 2.1em 0.8em 0.35em;
+
+      max-height: 2.5em;
+    }
+    .ui.selection.dropdown > .delete.icon,
+    .ui.selection.dropdown > .dropdown.icon,
+    .ui.selection.dropdown > .search.icon {
+      line-height: 1.5em;
     }
   }
   .-btn {
@@ -44,7 +52,6 @@
     background: rgba(0, 0, 0, 0.1) !important;
   }
   .-pagination {
-    font-size: 0.8rem !important;
     .-center {
       input,
       select {
@@ -86,7 +93,7 @@
     border: 1px solid lighten($primary-color, 10%);
     height: 28px;
     border-radius: 100%;
-    font-size: 0.9rem;
+
     width: 28px;
     display: inline-block;
     text-align: center;

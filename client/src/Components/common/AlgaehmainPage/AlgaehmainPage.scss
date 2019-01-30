@@ -31,7 +31,6 @@ header {
   }
 }
 .topNavbar-title {
-  font-size: 1.2rem;
   margin: 0;
   padding: 0;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
@@ -55,7 +54,7 @@ header {
 
 .btn-userProfile {
   background: none;
-  font-size: 1rem;
+
   color: #fff;
   border-left: 1px solid lighten($primary-color, 10%);
   margin-top: -21px;
@@ -66,7 +65,6 @@ header {
   span {
     display: inline-block;
     margin: 0 10px;
-    font-size: 0.9rem;
   }
 }
 #simple-menu {
@@ -78,11 +76,10 @@ header {
       padding: 5px 35px 5px 15px;
       margin: 0;
       text-transform: uppercase;
-      font-size: 0.9rem;
+
       i {
         margin-right: 15px;
         color: $primary-color;
-        font-size: 1rem;
       }
     }
   }
@@ -121,7 +118,6 @@ header {
       padding-top: 100%;
       i {
         color: #00babe;
-        font-size: 3rem;
       }
     }
   }
@@ -131,7 +127,7 @@ header {
     border-bottom: 2px solid #d2d2d2;
     border-top: 1px solid #fff;
     cursor: pointer;
-    font-size: 0.9rem;
+
     top: 0;
     i {
       text-shadow: 0px 2px 0px #fff;
@@ -157,7 +153,7 @@ header {
       width: 100%;
       li {
         margin: 0;
-        font-size: 0.8rem;
+
         border-bottom: 1px dotted #818588;
         text-transform: uppercase;
         cursor: pointer;
@@ -203,7 +199,7 @@ header {
   .menuBar-title {
     display: flex;
     padding: 0 5px;
-    font-size: 20px;
+
     height: 52px;
     background: #000;
     top: 0;
@@ -217,7 +213,6 @@ header {
     right: 19px;
     top: 14px;
     color: #fff;
-    font-size: 1.3rem;
   }
   .sideBarClose:hover {
     color: #00bcb0;
@@ -245,7 +240,7 @@ header {
     border-bottom: 2px solid #000000;
     border-top: 1px solid #505050;
     cursor: pointer;
-    font-size: 0.9rem;
+    
     i {
       text-shadow: 0px 2px 0px #000;
     }
@@ -271,7 +266,7 @@ header {
     li {
       padding: 8px 5px;
       margin: 0;
-      font-size: 0.8rem;
+      
       border-bottom: 1px dotted #4e4e4e;
       text-transform: uppercase;
       cursor: pointer;
@@ -310,7 +305,7 @@ header {
 
   .menuBar-title {
     display: flex;
-    font-size: 20px;
+    
     height: 49px;
     background: #000;
     position: fixed;
@@ -323,7 +318,7 @@ header {
     right: 19px;
     top: 14px;
     color: #fff;
-    font-size: 1.3rem;
+    
   }
   .sideBarClose:hover {
     color: #00bcb0;
@@ -353,7 +348,7 @@ header {
     line-height: 46px;
     padding: 0;
     margin: 0;
-    font-size: 1.1rem;
+
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
   span:first-child {
@@ -368,7 +363,7 @@ header {
 }
 .selectedLang {
   float: right;
-  font-size: 0.7rem;
+
   margin-right: 10px;
   border: 1px solid #fff;
   padding: 0px 3px;
@@ -406,7 +401,6 @@ header {
   }
 }
 .loginProfileInfo {
-  font-size: 0.8rem;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
   span {
     display: block;
@@ -415,7 +409,6 @@ header {
     // border-left: 1px solid #009989;
     padding-left: 10px;
     &:first-child {
-      font-size: 0.9rem;
       font-weight: 600;
       text-transform: uppercase;
     }

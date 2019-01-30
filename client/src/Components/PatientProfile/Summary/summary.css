@@ -1,16 +1,13 @@
 #patientSummary {
-  font-size: 0.8rem;
   line-height: 1.3rem;
   color: #3d3d3d;
   margin-top: 1rem; }
   #patientSummary .card-header {
-    font-size: 0.9rem;
     padding: 0.5rem;
     font-weight: 600; }
   #patientSummary .list-group-item {
     padding: 0.3rem 0.5rem; }
   #patientSummary p {
-    font-size: 0.9rem;
     margin-bottom: 0.3rem; }
   #patientSummary .vitals-sec {
     border: 1px solid #ccc;

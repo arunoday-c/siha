@@ -14,7 +14,6 @@
   .doctor_workbench .opPatientList .opList .noPatientDiv {
     margin-top: 15%;
     text-align: center;
-    font-size: 0.9rem;
     color: #929292; }
   .doctor_workbench .opPatientList .opList li {
     margin: 4px 0;
@@ -43,8 +42,6 @@
       .doctor_workbench .opPatientList .opList li .op-sec-1 .walking-icon {
         background: url("../../assets/icons/walking-icon.svg") no-repeat center;
         background-size: 80%; }
-      .doctor_workbench .opPatientList .opList li .op-sec-1 .opTime {
-        font-size: 0.7rem; }
     .doctor_workbench .opPatientList .opList li .op-sec-2 {
       width: 10px;
       width: 56%;
@@ -52,11 +49,9 @@
       display: inline-block; }
       .doctor_workbench .opPatientList .opList li .op-sec-2 .opPatientName {
         display: block;
-        font-size: 1rem;
         margin-top: 5px; }
       .doctor_workbench .opPatientList .opList li .op-sec-2 .opStatus {
-        display: block;
-        font-size: 0.7rem; }
+        display: block; }
       .doctor_workbench .opPatientList .opList li .op-sec-2 .nursing {
         color: #34b8bc; }
       .doctor_workbench .opPatientList .opList li .op-sec-2 .checkedIn {
@@ -68,8 +63,7 @@
       display: inline-block;
       text-align: center; }
       .doctor_workbench .opPatientList .opList li .op-sec-3 .opPatientStatus {
-        display: block;
-        font-size: 0.7rem; }
+        display: block; }
       .doctor_workbench .opPatientList .opList li .op-sec-3 .newVisit {
         color: #ff8800; }
       .doctor_workbench .opPatientList .opList li .op-sec-3 .followUp {
@@ -197,10 +191,8 @@
   color: #fff;
   padding: 2px 10px;
   border-radius: 25%;
-  font-size: 0.8rem;
   margin-left: 3px;
   display: inline-block; }
 
 .doctor_workbench .rightLabelCount .style_Label {
-  font-size: 0.8rem;
   text-transform: initial; }

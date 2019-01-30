@@ -4,8 +4,6 @@
   .arabicVersionOPbilling .primary-details {
     border-right: none;
     border-left: 1px dashed #d3d3d3; }
-  .arabicVersionOPbilling label {
-    font-size: 0.8rem; }
   .arabicVersionOPbilling .toggle-section .nav {
     padding: 0;
     right: auto; }
@@ -58,7 +56,6 @@
   .hptl-opbilling-details .text_field {
     width: 100% !important;
     background-color: #fbfbfb;
-    font-size: "11px";
     margin-right: "5px"; }
   .hptl-opbilling-details .Paper {
     background: #fff;

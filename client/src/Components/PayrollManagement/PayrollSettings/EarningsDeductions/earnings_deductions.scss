@@ -16,7 +16,7 @@
     overflow: hidden;
     input[type="button"] {
       background: #145052;
-      font-size: 20px;
+
       font-weight: 900;
       /* border-radius: 7px; */
       /* margin-left: 13px; */
@@ -35,7 +35,7 @@
       display: block;
       width: 100%;
       margin: 0;
-      font-size: 20px;
+
       background: #000;
       border-radius: 0;
       border: none;
@@ -56,7 +56,6 @@
     }
     .ComponentsFormula {
       input[type="button"] {
-        font-size: 0.9rem;
         background: #0b3638;
         &:hover {
           background: #34b8bc;
@@ -67,7 +66,7 @@
       border-top: 2px solid #fff;
       input[type="button"] {
         text-transform: uppercase;
-        font-size: 1rem;
+
         background: #238286;
         padding: 8px 0;
         &:hover {

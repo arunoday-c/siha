@@ -1,5 +1,4 @@
 .htpl1-phase1-btn-primary {
-  font-size: 14px;
   font-weight: bold;
   border-radius: 2px;
   background-color: #68509f;
@@ -20,7 +19,6 @@
     cursor: not-allowed; }
 
 .htpl1-phase1-btn-secondary {
-  font-size: 14px;
   font-weight: bold;
   border-radius: 2px;
   background-color: #fff;

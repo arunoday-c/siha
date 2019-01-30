@@ -5,7 +5,7 @@
   }
   .teeth-sec h6 {
     text-transform: uppercase;
-    font-size: 0.7rem;
+
     margin: 0;
     padding: 0;
     text-align: center;
@@ -15,7 +15,6 @@
   }
 
   .tooth-sec {
-    font-size: 12px;
     text-align: center;
     position: relative;
     border: 1px dotted #ccc;
@@ -89,7 +88,7 @@
     left: 10px;
     margin: 0;
     padding: 0;
-    font-size: 10px;
+
     transform: rotate(-45deg);
     color: #aaa;
   }
@@ -268,7 +267,7 @@
     content: attr(data-tooltip);
     position: absolute;
     top: 1.5em;
-    font-size: 0.9em;
+
     padding: 1px 5px;
     display: none;
     color: white;

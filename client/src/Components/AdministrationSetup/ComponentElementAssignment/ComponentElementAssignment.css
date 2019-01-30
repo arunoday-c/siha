@@ -12,8 +12,7 @@
   .ComponentElementAssignment .moduleList .submenu {
     list-style: none;
     padding: 0;
-    margin: 0;
-    font-size: 0.8rem; }
+    margin: 0; }
   .ComponentElementAssignment .moduleList .activeLi {
     background: #33b8bc; }
   .ComponentElementAssignment .moduleList .mainmenu {

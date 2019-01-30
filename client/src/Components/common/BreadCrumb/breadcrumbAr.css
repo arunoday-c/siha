@@ -15,7 +15,6 @@
     margin-top: 10px;
     text-align: right; }
     .breadCrumbAr-Data .header label {
-      font-size: 1.4rem;
       font-weight: 300;
       text-transform: capitalize;
       text-align: right; }
@@ -27,7 +26,7 @@
     float: right; }
     .breadCrumbAr-Data ul li {
       color: #d3d3d3;
-      font-size: 0.75rem; }
+      font-size: 0.8em; }
       .breadCrumbAr-Data ul li a label {
         text-transform: capitalize; }
   .breadCrumbAr-Data .actions-area {
@@ -54,7 +53,6 @@
   padding-left: 16px; }
 
 .internal-label {
-  font-size: 0.9rem;
   color: #979292;
   text-transform: uppercase; }
 
@@ -104,5 +102,4 @@
 .third-position {
   padding-top: 0.4%; }
   .third-position .internal-label label {
-    font-family: "Trebuchet MS", " Helvetica, sans-serif";
-    font-size: 0.9rem; }
+    font-family: "Trebuchet MS", " Helvetica, sans-serif"; }

@@ -24,12 +24,10 @@
   color: red; }
 
 .hptl-display-active-visit-form label {
-  font-weight: 400;
-  font-size: 11px; }
+  font-weight: 400; }
 
 .hptl-display-active-visit-form th,
 .hptl-display-active-visit-form td {
-  font-size: 11px;
   border-right: 1px solid #e6e6e6; }
 
 .gridWithRadio table th:first-child {

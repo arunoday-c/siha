@@ -14,8 +14,7 @@
     padding-left: 10px; }
     .patientProfile .patientInfo-Top .backBtn button {
       height: 60px;
-      border: 1px solid #e1e1e1;
-      font-size: 0.7rem; }
+      border: 1px solid #e1e1e1; }
     .patientProfile .patientInfo-Top .backBtn i {
       display: block;
       margin-bottom: 5px; }
@@ -49,16 +48,13 @@
     padding-right: 10px;
     min-height: 57px; }
     .patientProfile .patientInfo-Top .patientName h6 {
-      font-size: 1rem;
       margin-bottom: 2px;
       color: #000;
       line-height: 1.2rem; }
     .patientProfile .patientInfo-Top .patientName p {
-      font-size: 0.8rem;
       margin: 0;
       padding: 0; }
   .patientProfile .patientInfo-Top .patientDemographic {
-    font-size: 0.8rem;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
@@ -69,7 +65,6 @@
       .patientProfile .patientInfo-Top .patientDemographic span b {
         color: #34b8bc; }
   .patientProfile .patientInfo-Top .patientHospitalDetail {
-    font-size: 0.8rem;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
@@ -80,7 +75,6 @@
       .patientProfile .patientInfo-Top .patientHospitalDetail span b {
         color: #34b8bc; }
   .patientProfile .patientInfo-Top .patientVital {
-    font-size: 0.8rem;
     max-width: 33%;
     line-height: 1.3rem;
     padding-left: 10px;
@@ -98,7 +92,6 @@
     .patientProfile .patientInfo-Top .moreAction button {
       height: 60px;
       border: 1px solid #e1e1e1;
-      font-size: 0.7rem;
       margin-left: 0; }
     .patientProfile .patientInfo-Top .moreAction i {
       display: block;
@@ -110,7 +103,6 @@
   padding: 0;
   width: 100%;
   color: #797979;
-  font-size: 1rem;
   text-transform: uppercase;
   position: fixed;
   top: 123px;
@@ -126,7 +118,6 @@
     .patientProfile .patientTopNav ul li:hover:after {
       transform: scaleX(1); }
     .patientProfile .patientTopNav ul li span {
-      font-size: 0.8rem;
       text-transform: uppercase;
       padding: 9px 15px 8px;
       color: #858585;
@@ -179,8 +170,7 @@
           display: block;
           border-bottom: 1px solid #3f9c90;
           margin-bottom: 10px;
-          padding-bottom: 5px;
-          font-size: 0.8rem; }
+          padding-bottom: 5px; }
         .patientProfile .patientTopNav .patient-quick-info li section .listofA-D-D {
           display: inline-block;
           margin-right: 8px;
@@ -192,7 +182,6 @@
           margin-bottom: 3px;
           border-radius: 20px;
           background: #3f9c91;
-          font-size: 0.7rem;
           white-space: normal; }
         .patientProfile .patientTopNav .patient-quick-info li section p {
           background: rgba(0, 0, 0, 0.05);
@@ -230,7 +219,6 @@
     .moreActionUl li span {
       padding: 7px 10px;
       text-align: left;
-      font-size: 0.8rem;
       display: block;
       cursor: pointer; }
     .moreActionUl li span:hover {

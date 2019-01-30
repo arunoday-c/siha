@@ -13,8 +13,7 @@
     padding-right: 10px; }
     .RadResultEntry .patientInfo-Top .backBtn button {
       height: 60px;
-      border: 1px solid #e1e1e1;
-      font-size: 0.7rem; }
+      border: 1px solid #e1e1e1; }
     .RadResultEntry .patientInfo-Top .backBtn i {
       display: block;
       margin-bottom: 5px; }
@@ -35,16 +34,13 @@
     padding-right: 10px;
     min-height: 57px; }
     .RadResultEntry .patientInfo-Top .patientName h6 {
-      font-size: 1rem;
       margin-bottom: 2px;
       color: #000;
       line-height: 1.2rem; }
     .RadResultEntry .patientInfo-Top .patientName p {
-      font-size: 0.8rem;
       margin: 0;
       padding: 0; }
   .RadResultEntry .patientInfo-Top .patientDemographic {
-    font-size: 0.8rem;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
@@ -55,7 +51,6 @@
       .RadResultEntry .patientInfo-Top .patientDemographic span b {
         color: #34b8bc; }
   .RadResultEntry .patientInfo-Top .patientHospitalDetail {
-    font-size: 0.8rem;
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
@@ -66,7 +61,6 @@
       .RadResultEntry .patientInfo-Top .patientHospitalDetail span b {
         color: #34b8bc; }
   .RadResultEntry .patientInfo-Top .patientVital {
-    font-size: 0.8rem;
     width: 210px;
     line-height: 1.3rem;
     padding-left: 10px;
@@ -84,7 +78,6 @@
     .RadResultEntry .patientInfo-Top .moreAction button {
       height: 60px;
       border: 1px solid #e1e1e1;
-      font-size: 0.7rem;
       margin-left: 0; }
     .RadResultEntry .patientInfo-Top .moreAction i {
       display: block;
