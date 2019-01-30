@@ -365,6 +365,7 @@
     :global .actions span {
       margin-left: 3px; }
     :global .actions .btn {
+      font-size: 0.9em !important !important;
       color: #666;
       padding: 3px 9px;
       line-height: 1.5;
@@ -648,6 +649,7 @@
         margin-right: 10px;
         margin-left: 0px; }
       :global .algaeh-modal .popupFooter .btn {
+        font-size: 0.9em !important !important;
         float: right;
         min-width: 70px;
         padding: 4px 10px;
@@ -1040,4 +1042,5 @@
   font-weight: 700;
   font-size: 0.9em;
   min-height: 30px !important;
-  max-height: 30px !important; }
+  max-height: 30px !important;
+  padding: 0.3em 0.5em; }

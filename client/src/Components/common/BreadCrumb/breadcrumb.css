@@ -6,16 +6,18 @@
 
 .breadCrumb-Data {
   margin: 0;
-  margin-top: 50px;
+  margin-top: 53px;
   background-color: #f8f8f8;
   height: 75px; }
   .breadCrumb-Data .hdg_bredcrump {
     background: url("../../../assets/images/breadcrump_border.webp") no-repeat top right #fff; }
   .breadCrumb-Data .header {
-    margin-top: 10px; }
+    margin-top: 15px;
+    margin-bottom: 5px; }
     .breadCrumb-Data .header label {
       font-weight: 300;
-      text-transform: capitalize; }
+      text-transform: capitalize;
+      font-size: 1.7em; }
   .breadCrumb-Data ul {
     list-style: none;
     display: flex;
@@ -25,7 +27,8 @@
       color: #9a9a9a;
       font-size: 0.8em; }
       .breadCrumb-Data ul li a label {
-        text-transform: capitalize; }
+        text-transform: capitalize;
+        font-size: 1em; }
   .breadCrumb-Data .actions-area {
     padding-top: 1.5%;
     padding-left: 3%; }
