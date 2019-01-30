@@ -488,8 +488,10 @@ let getTimeSheet = (req, res, next) => {
                   }
                   // create Request object
                   var request = new sql.Request();
-                  let from_date = moment("2017-05-01").format("YYYY-MM-DD");
-                  let to_date = moment("2017-05-30").format("YYYY-MM-DD");
+                  let from_date = moment(req.query.from_date).format(
+                    "YYYY-MM-DD"
+                  );
+                  let to_date = moment(req.query.to_date).format("YYYY-MM-DD");
 
                   let biometric_id = [101];
 
