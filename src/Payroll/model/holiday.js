@@ -65,22 +65,30 @@ let addWeekOffs = (req, res, next) => {
       }
 
       debugLog("holidays:", holidays);
+      // let newDateList = [];
+      // if (today >= start_of_year) {
+      //   newDateList = getDaysArray(
+      //     new Date(today),
+      //     new Date(end_of_year),
+      //     holidays
+      //   );
+      //   debugLog("present :");
+      // } else if (start_of_year > today) {
+      //   newDateList = getDaysArray(
+      //     new Date(start_of_year),
+      //     new Date(end_of_year),
+      //     holidays
+      //   );
+      //   debugLog("next year:");
+      // }
       let newDateList = [];
-      if (today >= start_of_year) {
-        newDateList = getDaysArray(
-          new Date(today),
-          new Date(end_of_year),
-          holidays
-        );
-        debugLog("present :");
-      } else if (start_of_year > today) {
-        newDateList = getDaysArray(
-          new Date(start_of_year),
-          new Date(end_of_year),
-          holidays
-        );
-        debugLog("next year:");
-      }
+
+      newDateList = getDaysArray(
+        new Date(start_of_year),
+        new Date(end_of_year),
+        holidays
+      );
+      debugLog("next year:");
 
       newDateList.map(v => v.toLocaleString());
 
