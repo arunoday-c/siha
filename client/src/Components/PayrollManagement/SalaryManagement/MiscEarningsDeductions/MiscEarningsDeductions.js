@@ -223,11 +223,6 @@ export default class MiscEarningsDeductions extends Component {
         .where(w => w.salary_processed === "N" || w.salary_processed === null)
         .toArray();
 
-      console.log("ARR:", myArray);
-      // let myArray = _.takeWhile(this.state.employees, function(data) {
-      //   return data.salary_processed === "Y";
-      // });
-
       if (myArray.length === 0) {
         swalMessage({
           title: "No Employees elligible to add Earnings/ Deductions",
