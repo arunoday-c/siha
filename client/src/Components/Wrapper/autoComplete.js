@@ -4,7 +4,7 @@ import Label from "./label";
 // import Enumarable from "linq";
 import _ from "lodash";
 import { checkSecurity } from "../../utils/GlobalFunctions";
-import { Dropdown, Input } from "semantic-ui-react";
+import { Dropdown } from "semantic-ui-react";
 class AutoComplete extends PureComponent {
   constructor(props) {
     super(props);
@@ -30,14 +30,20 @@ class AutoComplete extends PureComponent {
           props.selector.dataSource.data === undefined
             ? []
             : props.selector.dataSource.data;
-        const _data = _estData.map((item, index) => {
-          return {
-            key: index,
-            value: item[props.selector.dataSource.valueField],
-            text: item[props.selector.dataSource.textField],
-            ...item
-          };
-        });
+        const _data = _estData
+          .sort((a, b) => {
+            return ("" + a[props.selector.dataSource.textField]).localeCompare(
+              b[props.selector.dataSource.textField]
+            );
+          })
+          .map((item, index) => {
+            return {
+              key: index,
+              value: item[props.selector.dataSource.valueField],
+              text: item[props.selector.dataSource.textField],
+              ...item
+            };
+          });
 
         this.setState({
           data: _data,
@@ -83,14 +89,20 @@ class AutoComplete extends PureComponent {
       this.props.selector.dataSource.data === undefined
         ? []
         : this.props.selector.dataSource.data;
-    const _data = _estData.map((item, index) => {
-      return {
-        key: index,
-        value: item[that.props.selector.dataSource.valueField],
-        text: item[that.props.selector.dataSource.textField],
-        ...item
-      };
-    });
+    const _data = _estData
+      .sort((a, b) => {
+        return ("" + a[that.props.selector.dataSource.textField]).localeCompare(
+          b[that.props.selector.dataSource.textField]
+        );
+      })
+      .map((item, index) => {
+        return {
+          key: index,
+          value: item[that.props.selector.dataSource.valueField],
+          text: item[that.props.selector.dataSource.textField],
+          ...item
+        };
+      });
     this.setState({
       value: this.props.selector.value,
       data: _data,
@@ -163,7 +175,7 @@ class AutoComplete extends PureComponent {
         : this.props.selector.autoComplete;
     const _isImportant =
       this.props.label !== undefined && this.props.label.isImp !== undefined
-        ? { required: this.props.label.isImp }
+        ? { algaeh_required: "" + this.props.label.isImp }
         : {};
     return (
       <Dropdown
@@ -183,7 +195,9 @@ class AutoComplete extends PureComponent {
           autoComplete: _autocomplete,
           name: this.props.selector.name,
           referencevalue: this.state.value,
-          data_role: "dropdownlist"
+          data_role: "dropdownlist",
+          type: "text",
+          ..._isImportant
         }}
         noResultsMessage={_noResultsMessage}
         value={this.state.value}
