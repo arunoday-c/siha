@@ -55,7 +55,7 @@ export default class SalariesComponents extends PureComponent {
                 <h6>
                   <small>Selected Employee:</small>
                   <br />
-                  Employee Name
+                  {this.state.dis_employee_name}
                 </h6>
               </div>
               <div className="col-12 margin-bottom-15">

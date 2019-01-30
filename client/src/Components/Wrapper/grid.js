@@ -53,11 +53,13 @@ class DataGrid extends Component {
   }
 
   scrollOnTop(id) {
-    const _element = document.getElementById(id);
-    if (_element.children.length > 0) {
-      const _innerElement = _element.children[0];
-      if (_innerElement.children.length > 0) {
-        _innerElement.children[0].scrollTop = 0;
+    if (id !== undefined && id !== "") {
+      const _element = document.getElementById(id);
+      if (_element.children.length > 0) {
+        const _innerElement = _element.children[0];
+        if (_innerElement.children.length > 0) {
+          _innerElement.children[0].scrollTop = 0;
+        }
       }
     }
   }
@@ -502,7 +504,8 @@ class DataGrid extends Component {
                   </React.Fragment>
                 );
               },
-              style: { textAlign: "center" }
+              style: { textAlign: "center" },
+              show: this.props.isEditable
             });
           }
         }
@@ -564,6 +567,7 @@ class DataGrid extends Component {
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
+    // debugger;
     if (nextProps.uiUpdate !== undefined) {
       return nextState.uiUpdate;
     }
@@ -574,7 +578,7 @@ class DataGrid extends Component {
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }
-    if (props.isEditable !== this.state.isEditable) {
+    if (props.isEditable !== this.props.isEditable) {
       this.setState({
         isEditable: props.isEditable
       });
@@ -616,6 +620,7 @@ class DataGrid extends Component {
             : props.actions.allowDelete !== undefined
             ? props.actions.allowDelete
             : true;
+
         if (props.isEditable !== undefined && props.isEditable === true) {
           if (_allowEditButton || _allowDeleteButton) {
             _columns.splice(0, 0, {
@@ -659,6 +664,7 @@ class DataGrid extends Component {
                   </React.Fragment>
                 );
               },
+              show: props.isEditable,
               style: { textAlign: "center", maxWidth: "70px" }
             });
           }
@@ -702,6 +708,7 @@ class DataGrid extends Component {
       );
       const _loading =
         props.loading !== undefined ? { showLoading: props.loading } : {};
+
       this.setState({
         data: props.dataSource.data,
         totalPages: _total,

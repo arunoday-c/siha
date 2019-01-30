@@ -5,7 +5,7 @@ import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-
+import _ from "lodash";
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -124,10 +124,26 @@ const ClearData = $this => {
 const FinalizeSalary = $this => {
   debugger;
   AlgaehLoader({ show: true });
+
+  const salary_header_id = _.map($this.state.salaryprocess_header, o => {
+    return o.hims_f_salary_id;
+  });
+
+  const employee_id = _.map($this.state.salaryprocess_header, o => {
+    return o.employee_id;
+  });
+
+  let inputObj = {
+    salary_header_id: salary_header_id,
+    employee_id: employee_id,
+    year: $this.state.year,
+    month: $this.state.month
+  };
+
   algaehApiCall({
     uri: "/salary/finalizedSalaryProcess",
     module: "hrManagement",
-    data: $this.state.salaryprocess_header,
+    data: inputObj,
     method: "PUT",
     onSuccess: response => {
       debugger;
@@ -192,6 +208,7 @@ const openSalaryComponents = ($this, row) => {
     .where(w => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
+  debugger;
   $this.setState({
     isOpen: !$this.state.isOpen,
     salaryprocess_Earning: salaryprocess_Earning,
@@ -213,7 +230,8 @@ const openSalaryComponents = ($this, row) => {
     paid_leave: row.paid_leave,
     unpaid_leave: row.unpaid_leave,
     present_days: row.present_days,
-    total_paid_days: row.total_paid_days
+    total_paid_days: row.total_paid_days,
+    dis_employee_name: row.full_name
   });
 };
 
