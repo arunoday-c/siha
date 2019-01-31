@@ -397,8 +397,9 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9">
-                      <div className="progress dayTypeCntr">
+                    <div className="col-9 dayTypeCntr">
+                      <span className="weekOffCntr">Week Off</span>
+                      <div className="progress">
                         <div
                           className="progress-bar"
                           role="progressbar"
@@ -406,9 +407,7 @@ export default class WeeklyAttendance extends Component {
                           aria-valuemin="0"
                           aria-valuemax="100"
                           style={{ width: "100%" }}
-                        >
-                          <span className="weekOffCntr">Week Off</span>
-                        </div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -423,22 +422,41 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9">
+                    <div className="col-9 dayTypeCntr">
                       <div className="tooltipDetails">
                         <span className="checkIn animated bounceIn faster">
-                          Check In
+                          <i> Check In</i>
+                          <br />
+                          Time:
                           <b>
                             {moment(data.in_time, "HH:mm:ss").format("hh:mm a")}
                           </b>
+                          <br />
+                          Date:
+                          <b>
+                            {moment(
+                              data.attendance_date,
+                              "MMMM Do YYYY"
+                            ).format("MMMM Do YYYY")}
+                          </b>
                         </span>
-                        {/* <span className="totalHr animated bounceIn faster">
-                                Late time by <b className="lateTime">55 min</b>
-                                  </span>*/}
+                        <span className="totalHr animated bounceIn faster">
+                          Late time by <b className="lateTime">55 min</b>
+                        </span>
                         <span className="checkOut animated bounceIn faster">
-                          Check Out
+                          <i> Check Out </i>
+                          <br />
+                          Time:
                           <b>
                             {moment(data.out_time, "HH:mm:ss").format(
                               "hh:mm a"
+                            )}
+                          </b>
+                          <br />
+                          Date:
+                          <b>
+                            {moment(data.out_date, "MMMM Do YYYY").format(
+                              "MMMM Do YYYY"
                             )}
                           </b>
                         </span>
@@ -447,9 +465,6 @@ export default class WeeklyAttendance extends Component {
                         <div
                           className="progress-bar  bg-success"
                           role="progressbar"
-                          aria-valuenow="75"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
                           style={{
                             width:
                               (data.worked_hours / data.actual_hours) * 100 +
@@ -470,18 +485,14 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9">
-                      <div className="progress dayTypeCntr">
+                    <div className="col-9 dayTypeCntr">
+                      <span className="absentCntr">Absent</span>
+                      <div className="progress">
                         <div
                           className="progress-bar"
                           role="progressbar"
-                          aria-valuenow="100"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
                           style={{ width: "100%" }}
-                        >
-                          <span className="absentCntr">Absent</span>
-                        </div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -496,18 +507,14 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9">
-                      <div className="progress dayTypeCntr">
+                    <div className="col-9 dayTypeCntr">
+                      <span className="holidayCntr">Holiday</span>
+                      <div className="progress">
                         <div
                           className="progress-bar"
                           role="progressbar"
-                          aria-valuenow="100"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
                           style={{ width: "100%" }}
-                        >
-                          <span className="holidayCntr">Holiday</span>
-                        </div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -522,18 +529,14 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9">
-                      <div className="progress dayTypeCntr">
+                    <div className="col-9 dayTypeCntr">
+                      <span className="paidLeaveCntr">Paid Leave</span>
+                      <div className="progress">
                         <div
                           className="progress-bar"
                           role="progressbar"
-                          aria-valuenow="100"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
                           style={{ width: "100%" }}
-                        >
-                          <span className="paidLeaveCntr">Paid Leave</span>
-                        </div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -548,14 +551,11 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9">
+                    <div className="col-9 dayTypeCntr">
                       <div className="progress">
                         <div
                           className="progress-bar  bg-danger"
                           role="progressbar"
-                          aria-valuenow="75"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
                           style={{
                             width: "50%"
                           }}
@@ -563,12 +563,24 @@ export default class WeeklyAttendance extends Component {
                       </div>
                       <div className="tooltipDetails">
                         <span className="checkIn animated bounceIn faster">
-                          Check In{" "}
+                          <i> Check In</i>
+                          <br />
+                          Time:
                           <b>
                             {data.in_time
                               ? moment(data.in_time, "HH:mm:ss").format(
                                   "hh:mm a"
                                 )
+                              : "Not Available"}
+                          </b>{" "}
+                          <br />
+                          Date:
+                          <b>
+                            {data.attendance_date
+                              ? moment(
+                                  data.attendance_date,
+                                  "MMMM Do YYYY"
+                                ).format("MMMM Do YYYY")
                               : "Not Available"}
                           </b>
                         </span>
@@ -576,11 +588,22 @@ export default class WeeklyAttendance extends Component {
                           EXCEPTION
                         </span>
                         <span className="checkOut animated bounceIn faster">
-                          Check Out{" "}
+                          <i> Check Out</i>
+                          <br />
+                          Time:
                           <b>
                             {data.out_time
                               ? moment(data.out_time, "HH:mm:ss").format(
                                   "hh:mm a"
+                                )
+                              : "Not Available"}
+                          </b>
+                          <br />
+                          Date:
+                          <b>
+                            {data.out_date
+                              ? moment(data.out_date, "MMMM Do YYYY").format(
+                                  "MMMM Do YYYY"
                                 )
                               : "Not Available"}
                           </b>
@@ -599,18 +622,13 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9">
-                      <div className="progress dayTypeCntr">
+                    <div className="col-9 dayTypeCntr">
+                      <span className="unPaidLeaveCntr">Unpaid Leave</span>
+                      <div className="progress">
                         <div
                           className="progress-bar"
-                          role="progressbar"
-                          aria-valuenow="100"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
                           style={{ width: "100%" }}
-                        >
-                          <span className="unPaidLeaveCntr">Unpaid Leave</span>
-                        </div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -621,140 +639,140 @@ export default class WeeklyAttendance extends Component {
           <div className="row">
             <div className="col-2" />
             <div className="col-9">
-              <div class="ruler">
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+              <div className="ruler">
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm">
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
-                  <div class="mm" />
+                <div className="cm">
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
+                  <div className="mm" />
                 </div>
-                <div class="cm" />
+                <div className="cm" />
               </div>
             </div>
           </div>
