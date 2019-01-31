@@ -206,7 +206,10 @@ class AddPatientForm extends PureComponent {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-add-patient-form">
+            <div
+              className="hptl-phase1-add-patient-form"
+              data-validate="demographicDetails"
+            >
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-8 primary-details">
