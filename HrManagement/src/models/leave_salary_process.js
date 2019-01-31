@@ -148,11 +148,12 @@ module.exports = {
     _mysql
       .executeQueryWithTransaction({
         query:
-          "select hospital_id from hims_d_employee where hims_d_employee_id=?;\
+          "select hospital_id,airfare_process from hims_d_employee where hims_d_employee_id=?;\
           SELECT balance_leave_days,balance_leave_salary_amount,balance_airticket_amount,airfare_months FROM \
           hims_f_employee_leave_salary_header where employee_id=? and `year`=?; \
-          SELECT EE.employee_id,AL.leave_id,EE.earnings_id,EE.amount FROM hims_d_annual_leave_components AL, \
-          hims_d_employee_earnings EE where EE.earnings_id=AL.earnings_id and EE.employee_id=?;",
+          SELECT EE.employee_id,EE.earnings_id,EE.amount FROM hims_d_earning_deduction ED, \
+          hims_d_employee_earnings EE where EE.earnings_id=ED.hims_d_earning_deduction_id and \
+          ED.annual_salary_comp='Y' and EE.employee_id=?;",
         values: [
           req.query.hims_d_employee_id,
           req.query.hims_d_employee_id,
@@ -198,7 +199,10 @@ module.exports = {
           parseFloat(employee_leave_salary.balance_leave_days) -
           parseFloat(req.query.leave_period);
         let leave_amount = 0;
-        let airfare_amount = employee_leave_salary.balance_airticket_amount;
+        let airfare_amount =
+          employee_result[0].airfare_process === "N"
+            ? 0
+            : employee_leave_salary.balance_airticket_amount;
 
         utilities
           .AlgaehUtilities()
@@ -345,9 +349,6 @@ module.exports = {
                       .AlgaehUtilities()
                       .logger()
                       .log("final_result:", final_result);
-
-                    // leave_amount:leave_amount
-                    // airfare_amount:airfare_amount
 
                     req.records = final_result;
                     next();
@@ -583,8 +584,8 @@ module.exports = {
           _mysql
             .executeQuery({
               query:
-                "select LSD.year,LSD.month,LSD.start_date,LSD.end_date,LSD.leave_start_date,LSD.leave_end_date,\
-                LSD.leave_period,LSD.gross_amount, LSD.net_amount,SL.salary_number,SL.salary_date from \
+                "select LSD.year,LSD.month,LSD.start_date,LSD.end_date,LSD.leave_start_date,LSD.leave_end_date,LSD.leave_category,\
+                LSD.leave_period,LSD.gross_amount, LSD.net_amount,SL.salary_number as salary_no,SL.salary_date from \
                 hims_f_leave_salary_detail LSD, hims_f_salary SL where  LSD.salary_header_id=SL.hims_f_salary_id\
                 and  leave_salary_header_id= ?;",
               values: [leave_salary_header_id],

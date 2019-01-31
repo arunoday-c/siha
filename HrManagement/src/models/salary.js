@@ -2,6 +2,8 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import _ from "lodash";
 import utilities from "algaeh-utilities";
+import mysql from "mysql";
+
 module.exports = {
   processSalary: (req, res, next) => {
     return new Promise((resolve, reject) => {
@@ -42,6 +44,11 @@ module.exports = {
       if (input.employee_id != null) {
         _strSalary += " and employee_id=?";
         salary_input.push(input.employee_id);
+      }
+
+      if (input.sub_department_id != null) {
+        _strSalary += " and sub_department_id=? ";
+        salary_input.push(input.sub_department_id);
       }
 
       utilities
@@ -461,53 +468,53 @@ module.exports = {
 
                                                   //Salary Calculation Starts
 
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "final_earning_amount",
-                                                      final_earning_amount
-                                                    );
+                                                  // utilities
+                                                  //   .AlgaehUtilities()
+                                                  //   .logger()
+                                                  //   .log(
+                                                  //     "final_earning_amount",
+                                                  //     final_earning_amount
+                                                  //   );
 
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "final_deduction_amount",
-                                                      final_deduction_amount
-                                                    );
+                                                  // utilities
+                                                  //   .AlgaehUtilities()
+                                                  //   .logger()
+                                                  //   .log(
+                                                  //     "final_deduction_amount",
+                                                  //     final_deduction_amount
+                                                  //   );
 
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "final_contribution_amount",
-                                                      final_contribution_amount
-                                                    );
+                                                  // utilities
+                                                  //   .AlgaehUtilities()
+                                                  //   .logger()
+                                                  //   .log(
+                                                  //     "final_contribution_amount",
+                                                  //     final_contribution_amount
+                                                  //   );
 
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "total_loan_payable_amount",
-                                                      total_loan_payable_amount
-                                                    );
+                                                  // utilities
+                                                  //   .AlgaehUtilities()
+                                                  //   .logger()
+                                                  //   .log(
+                                                  //     "total_loan_payable_amount",
+                                                  //     total_loan_payable_amount
+                                                  //   );
 
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "total_loan_due_amount",
-                                                      total_loan_due_amount
-                                                    );
+                                                  // utilities
+                                                  //   .AlgaehUtilities()
+                                                  //   .logger()
+                                                  //   .log(
+                                                  //     "total_loan_due_amount",
+                                                  //     total_loan_due_amount
+                                                  //   );
 
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "advance_due_amount",
-                                                      advance_due_amount
-                                                    );
+                                                  // utilities
+                                                  //   .AlgaehUtilities()
+                                                  //   .logger()
+                                                  //   .log(
+                                                  //     "advance_due_amount",
+                                                  //     advance_due_amount
+                                                  //   );
 
                                                   let per_day_sal =
                                                     empResult[i][
@@ -583,11 +590,11 @@ module.exports = {
                                                     .executeQueryWithTransaction(
                                                       {
                                                         query:
-                                                          "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,salary_date,per_day_sal,total_days,\
+                                                          "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                             present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                             unpaid_leave,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                             total_contributions,net_salary, total_paid_days) \
-                                            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
+                                            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
                                                         values: [
                                                           _salary_number,
                                                           parseInt(
@@ -596,6 +603,9 @@ module.exports = {
                                                           parseInt(year),
                                                           empResult[i][
                                                             "employee_id"
+                                                          ],
+                                                          empResult[i][
+                                                            "sub_department_id"
                                                           ],
                                                           new Date(),
                                                           per_day_sal,
@@ -976,10 +986,10 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_f_salary_id, salary_number, total_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
+          "select hims_f_salary_id, employee_id,salary_number, total_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
           total_leave,paid_leave,unpaid_leave,present_days, pending_unpaid_leave, total_paid_days, hims_f_salary.gross_salary, \
           hims_f_salary.net_salary,advance_due,hims_f_salary.total_earnings,hims_f_salary.total_deductions,loan_payable_amount, \
-          loan_due_amount,salary_processed,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
+          loan_due_amount,salary_processed,salary_paid,emp.employee_code, emp.full_name from hims_f_salary, hims_d_employee emp where \
           hims_f_salary.employee_id = emp.hims_d_employee_id and `year` = ? and `month` = ? and emp.hospital_id=? " +
           _stringData,
         values: _.valuesIn(inputParam),
@@ -1079,30 +1089,175 @@ module.exports = {
       });
   },
 
+  //FINALIZE AND INSERT LEAVE_SALARY_ACCRUAL
   finalizedSalaryProcess: (req, res, next) => {
     const _mysql = new algaehMysql();
     const inputParam = { ...req.body };
 
-    const _salaryHeader_id = _.map(inputParam, o => {
-      return o.hims_f_salary_id;
-    });
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("inputParam: ", inputParam);
 
     _mysql
-      .executeQuery({
-        query:
-          "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
-        values: [_salaryHeader_id],
-        printQuery: true
+      .generateRunningNumber({
+        modules: ["LEAVE_ACCRUAL"]
       })
-      .then(salary_process => {
-        _mysql.releaseConnection();
-        req.records = salary_process;
-        next();
+      .then(generatedNumbers => {
+        let leave_salary_number = generatedNumbers[0];
+
+        utilities
+          .AlgaehUtilities()
+          .logger()
+          .log("leave_salary_number: ", generatedNumbers[0]);
+        _mysql
+          .executeQuery({
+            query:
+              "select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
+              inputParam.year +
+              " as year," +
+              inputParam.month +
+              " as month, \
+            CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
+            sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
+            from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
+            where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
+            EE.earnings_id=ED.hims_d_earning_deduction_id and \
+            ED.annual_salary_comp='Y' and E.hims_d_employee_id in (?) group by EE.employee_id;",
+            values: [inputParam.employee_id],
+
+            printQuery: true
+          })
+          .then(leave_accrual_detail => {
+            let leave_salary_accrual_detail = leave_accrual_detail;
+
+            const total_leave_salary = _.sumBy(
+              leave_salary_accrual_detail,
+              s => {
+                return s.leave_salary;
+              }
+            );
+
+            const total_airfare_amount = _.sumBy(
+              leave_salary_accrual_detail,
+              s => {
+                return s.airfare_amount;
+              }
+            );
+
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year,month, total_leave_salary,total_airfare_amount\
+                    ,leave_salary_date ,created_date,created_by)\
+                    VALUE(?,?,?,?,?,?,?,?);",
+                values: [
+                  leave_salary_number,
+                  inputParam.year,
+                  inputParam.month,
+                  total_leave_salary,
+                  total_airfare_amount,
+                  moment(new Date()).format("YYYY-MM-DD"),
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                printQuery: true
+              })
+              .then(accrual_header => {
+                let leave_salary_header_id = accrual_header.insertId;
+                utilities
+                  .AlgaehUtilities()
+                  .logger()
+                  .log("accrual_header: ", accrual_header);
+
+                utilities
+                  .AlgaehUtilities()
+                  .logger()
+                  .log(
+                    "leave_salary_accrual_detail: ",
+                    leave_salary_accrual_detail
+                  );
+
+                let IncludeValues = [
+                  "employee_id",
+                  "year",
+                  "month",
+                  "leave_days",
+                  "leave_salary",
+                  "airfare_amount"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_leave_salary_accrual_detail(??) VALUES ?",
+                    values: leave_salary_accrual_detail,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      leave_salary_header_id: leave_salary_header_id
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(leave_detail => {
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
+                        values: [inputParam.salary_header_id],
+                        printQuery: true
+                      })
+                      .then(salary_process => {
+                        InsertEmployeeLeaveSalary({
+                          leave_salary_accrual_detail: leave_salary_accrual_detail,
+                          _mysql: _mysql
+                        })
+                          .then(Employee_Leave_Salary => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = {
+                                leave_salary_number: leave_salary_number
+                              };
+                              next();
+                            });
+                          })
+                          .catch(e => {
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
+                            });
+                          });
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
       })
       .catch(e => {
-        next(e);
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
       });
   },
+
   //Salay Payment
   SaveSalaryPayment: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -1265,6 +1420,233 @@ module.exports = {
       });
   }
 };
+
+function InsertEmployeeLeaveSalary(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("InsertEmployeeLeaveSalary:", "InsertEmployeeLeaveSalary");
+
+      let leave_salary_accrual_detail = options.leave_salary_accrual_detail;
+      let _mysql = options._mysql;
+      let strQry = "";
+      //ToDO
+      for (let i = 0; i < leave_salary_accrual_detail.length; i++) {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_f_employee_leave_salary_header_id,employee_id,leave_days,leave_salary_amount,airticket_amount,balance_leave_days,\
+                balance_leave_salary_amount,balance_airticket_amount,airfare_months from \
+                hims_f_employee_leave_salary_header where year = ? and employee_id = ?;",
+            values: [
+              leave_salary_accrual_detail[i].year,
+              leave_salary_accrual_detail[i].employee_id
+            ],
+            printQuery: true
+          })
+          .then(employee_leave_salary_header => {
+            utilities
+              .AlgaehUtilities()
+              .logger()
+              .log(
+                "employee_leave_salary_header:",
+                employee_leave_salary_header
+              );
+
+            if (employee_leave_salary_header.length > 0) {
+              let leave_days =
+                parseFloat(employee_leave_salary_header[0].leave_days) +
+                parseFloat(leave_salary_accrual_detail[i].leave_days);
+              let leave_salary_amount =
+                parseFloat(
+                  employee_leave_salary_header[0].leave_salary_amount
+                ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
+              let airticket_amount =
+                parseFloat(employee_leave_salary_header[0].airticket_amount) +
+                parseFloat(leave_salary_accrual_detail[i].airfare_amount);
+              let balance_leave_days =
+                parseFloat(employee_leave_salary_header[0].balance_leave_days) +
+                parseFloat(leave_salary_accrual_detail[i].leave_days);
+              let balance_leave_salary_amount =
+                parseFloat(
+                  employee_leave_salary_header[0].balance_leave_salary_amount
+                ) + parseFloat(leave_salary_accrual_detail[i].leave_salary);
+              let balance_airticket_amount =
+                parseFloat(
+                  employee_leave_salary_header[0].balance_airticket_amount
+                ) + parseFloat(leave_salary_accrual_detail[i].airfare_amount);
+
+              let airfare_months =
+                parseFloat(employee_leave_salary_header[0].airfare_months) + 1;
+
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("leave_days:", leave_days);
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("leave_salary_amount:", leave_salary_amount);
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("airticket_amount:", airticket_amount);
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("balance_leave_days:", balance_leave_days);
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("balance_airticket_amount:", balance_airticket_amount);
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("airfare_months:", airfare_months);
+
+              strQry += mysql.format(
+                "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
+                  `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
+                  `balance_airticket_amount`=?,`airfare_months`=? where  hims_f_employee_leave_salary_header_id=?;\
+                  INSERT INTO `hims_f_employee_leave_salary_detail`(employee_leave_salary_header_id,leave_days,\
+                    leave_salary_amount,airticket_amount) VALUE(?,?,?,?)",
+                [
+                  leave_days,
+                  leave_salary_amount,
+                  airticket_amount,
+                  balance_leave_days,
+                  balance_leave_salary_amount,
+                  balance_airticket_amount,
+                  airfare_months,
+                  employee_leave_salary_header[0]
+                    .hims_f_employee_leave_salary_header_id,
+
+                  employee_leave_salary_header[0]
+                    .hims_f_employee_leave_salary_header_id,
+                  leave_salary_accrual_detail[i].leave_days,
+                  leave_salary_accrual_detail[i].leave_salary,
+                  leave_salary_accrual_detail[i].airfare_amount
+                ]
+              );
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("strQry:", strQry);
+            } else {
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO `hims_f_employee_leave_salary_header`  (`year`,`employee_id`,`leave_days`,\
+                      `leave_salary_amount`,`airticket_amount`,`balance_leave_days`,`balance_leave_salary_amount`,\
+                      `balance_airticket_amount`,`airfare_months`)\
+                       VALUE(?,?,?,?,?,?,?,?,?)",
+                  values: [
+                    leave_salary_accrual_detail[i].year,
+                    leave_salary_accrual_detail[i].employee_id,
+                    leave_salary_accrual_detail[i].leave_days,
+                    leave_salary_accrual_detail[i].leave_salary,
+                    leave_salary_accrual_detail[i].airfare_amount,
+                    leave_salary_accrual_detail[i].leave_days,
+                    leave_salary_accrual_detail[i].leave_salary,
+                    leave_salary_accrual_detail[i].airfare_amount,
+                    "1"
+                  ],
+                  printQuery: true
+                })
+                .then(employee_leave_header => {
+                  utilities
+                    .AlgaehUtilities()
+                    .logger()
+                    .log("employee_leave_header:", employee_leave_header);
+                  let IncludeValues = [
+                    "employee_leave_salary_header_id",
+                    "leave_days",
+                    "leave_salary_amount",
+                    "airticket_amount"
+                  ];
+                  let inputValues = [
+                    {
+                      employee_leave_salary_header_id:
+                        employee_leave_header.insertId,
+                      leave_days: leave_salary_accrual_detail[i].leave_days,
+                      leave_salary_amount:
+                        leave_salary_accrual_detail[i].leave_salary,
+                      airticket_amount:
+                        leave_salary_accrual_detail[i].airfare_amount
+                    }
+                  ];
+
+                  utilities
+                    .AlgaehUtilities()
+                    .logger()
+                    .log("inputValues:", inputValues);
+
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT INTO hims_f_employee_leave_salary_detail(??) VALUES ?",
+                      values: inputValues,
+                      includeValues: IncludeValues,
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
+                    .then(leave_detail => {
+                      resolve();
+                    })
+                    .catch(error => {
+                      reject(error);
+                      next(error);
+                    });
+                })
+                .catch(e => {
+                  reject(e);
+                  next(e);
+                });
+            }
+
+            // utilities
+            //   .AlgaehUtilities()
+            //   .logger()
+            //   .log("i:", i);
+            // utilities
+            //   .AlgaehUtilities()
+            //   .logger()
+            //   .log(
+            //     "leave_salary_accrual_detail:",
+            //     leave_salary_accrual_detail - 1
+            //   );
+
+            if (i == leave_salary_accrual_detail.length - 1 && strQry != "") {
+              utilities
+                .AlgaehUtilities()
+                .logger()
+                .log("strQry:", strQry);
+
+              _mysql
+                .executeQuery({ query: strQry, printQuery: true })
+                .then(update_employee_leave => {
+                  resolve();
+                })
+                .catch(e => {
+                  reject(e);
+                  next(e);
+                });
+            }
+          })
+          .catch(e => {
+            reject(e);
+            next(e);
+          });
+      }
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    next(e);
+  });
+}
 
 function getOtManagement(options) {
   return new Promise((resolve, reject) => {
@@ -1618,17 +2000,6 @@ function getEarningComponents(options) {
               per_day_salary: current_earning_per_day_salary
             });
           }
-
-          // utilities
-          //   .AlgaehUtilities()
-          //   .logger()
-          //   .log("current_earning_amt_array: ", current_earning_amt_array);
-
-          // current_earning_amt_array.push({
-          //   earnings_id: obj.earnings_id,
-          //   amount: current_earning_amt,
-          //   per_day_salary: current_earning_per_day_salary
-          // });
         }
       });
       utilities

@@ -419,10 +419,10 @@ let getTimeSheet = (req, res, next) => {
           debugLog("am in synchronous");
           return await new Promise((resolve, reject) => {
             try {
+              //St-----if Absent, 2 queries---1 for if he is on leave ----2 for is that day is holiday or weekoff
               connection.query(
                 " select hims_f_leave_application_id ,L.leave_type from hims_f_leave_application LA,hims_d_leave L \
-                where employee_id=? and cancelled='N'\
-                and (`status`='APR' or `status`='PRO') and date(?) \
+                where employee_id=?     and `status`='APR'  and date(?) \
                 between date(from_date) and date(to_date) and LA.leave_id=L.hims_d_leave_id;\
                 select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday\
                 from hims_d_holiday where (((date(holiday_date)= date(?) and weekoff='Y') or \
@@ -446,6 +446,7 @@ let getTimeSheet = (req, res, next) => {
           });
         };
 
+        //St----- fetch biometric device info to connect
         connection.query(
           "select hims_d_hrms_options_id,salary_process_date,salary_pay_before_end_date,\
         payroll_payment_date,salary_calendar,salary_calendar_fixed_days,attendance_type,\
@@ -493,11 +494,16 @@ let getTimeSheet = (req, res, next) => {
                   );
                   let to_date = moment(req.query.to_date).format("YYYY-MM-DD");
 
-                  let biometric_id = [106];
+                  let biometric_id =
+                    req.query.biometric_id > 0 ? req.query.biometric_id : [106];
+                  let bio_ids = "";
 
+                  if (req.query.bio_ids > 0) {
+                    bio_ids = ` and TS.biometric_id=${req.query.bio_ids} `;
+                  }
                   debugLog("from_date:", from_date);
                   debugLog("to_date:", to_date);
-                  // query to the database and get the records
+                  // query to the biometric database and get the records
                   request.query(
                     ` select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
             Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
@@ -519,7 +525,7 @@ let getTimeSheet = (req, res, next) => {
                           for (let i = 0; i < timeSheetArray.length; i++) {
                             debugLog("value of i", i);
 
-                            //---------START--IF HE PRESENT
+                            //--ST------IF HE PRESENT
                             if (
                               timeSheetArray[i]["in_time"] != null &&
                               timeSheetArray[i]["out_time"] != null
@@ -567,8 +573,8 @@ let getTimeSheet = (req, res, next) => {
                                 status: "PR"
                               };
                             }
-                            //---------END--IF HE PRESENT
-                            //----------------------------START--IF HE IS ABSENT
+                            //---------EN--IF HE PRESENT
+                            //----------------------------ST--IF HE IS ABSENT
                             else if (
                               timeSheetArray[i]["in_time"] == null &&
                               timeSheetArray[i]["out_time"] == null
@@ -585,7 +591,7 @@ let getTimeSheet = (req, res, next) => {
                               _myPromises.push(_timePass);
                               _timePass
                                 .then(leaveHoliday => {
-                                  debugLog("am in result of out quey");
+                                  debugLog("am in result absent or holiday");
                                   if (leaveHoliday[0].length > 0) {
                                     //its a leave
                                     if (
@@ -713,19 +719,40 @@ let getTimeSheet = (req, res, next) => {
                                       next(error);
                                     });
                                   }
-                                  connection.commit(error => {
-                                    if (error) {
-                                      connection.rollback(() => {
+
+                                  connection.query(
+                                    " select hims_f_daily_time_sheet_id, employee_id,TS.biometric_id, attendance_date, \
+                                    in_time, out_date, out_time, year, month, status,\
+                                     posted, hours, minutes, actual_hours, actual_minutes, worked_hours,\
+                                     expected_out_date, expected_out_time ,hims_d_employee_id,employee_code,full_name as employee_name\
+                                     from  hims_f_daily_time_sheet TS \
+                                    left join hims_d_employee E on TS.biometric_id=E.biometric_id\
+                                    where attendance_date between (?) and (?)" +
+                                      bio_ids,
+                                    [req.query.from_date, req.query.to_date],
+                                    (error, retResult) => {
+                                      if (error) {
+                                        connection.rollback(() => {
+                                          releaseDBConnection(db, connection);
+                                          next(error);
+                                        });
+                                      }
+
+                                      connection.commit(error => {
+                                        if (error) {
+                                          connection.rollback(() => {
+                                            releaseDBConnection(db, connection);
+                                            next(error);
+                                          });
+                                        }
+
+                                        debugLog("commit");
                                         releaseDBConnection(db, connection);
-                                        next(error);
+                                        req.records = retResult;
+                                        next();
                                       });
                                     }
-
-                                    debugLog("commit");
-                                    releaseDBConnection(db, connection);
-                                    req.records = insertResult;
-                                    next();
-                                  });
+                                  );
                                 }
                               );
                             })
@@ -775,10 +802,10 @@ let getDailyTimeSheet = (req, res, next) => {
     }
     let db = req.db;
 
-    let biometric_id = "";
+    let bio_ids = "";
 
-    if (req.query.biometric_id > 0) {
-      biometric_id = ` and TS.biometric_id=${req.query.biometric_id} `;
+    if (req.query.bio_ids > 0) {
+      bio_ids = ` and TS.biometric_id=${req.query.bio_ids} `;
     }
     db.getConnection((error, connection) => {
       connection.query(
