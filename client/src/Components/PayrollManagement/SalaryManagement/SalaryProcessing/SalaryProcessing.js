@@ -377,7 +377,7 @@ class SalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary Processed"
+                                      forceLabel: "Salary Finalized"
                                     }}
                                   />
                                 ),

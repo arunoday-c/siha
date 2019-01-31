@@ -3,7 +3,7 @@ import "./SelfService.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 
-import Dashboard from "./Dashboard/Dashboard";
+import selfPersonalDetails from "./selfPersonalDetails/selfPersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
@@ -19,7 +19,7 @@ export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "Dashboard"
+      pageDisplay: "selfPersonalDetails"
     };
     this.getEmployeeDetails();
   }
@@ -146,7 +146,7 @@ export default class SelfService extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"Dashboard"}
+                algaehtabs={"Personal"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
@@ -242,8 +242,8 @@ export default class SelfService extends Component {
           </div>
         </div>
         <div className="selfService-setion">
-          {this.state.pageDisplay === "Dashboard" ? (
-            <Dashboard empData={this.state.employee_details} />
+          {this.state.pageDisplay === "selfPersonalDetails" ? (
+            <selfPersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
             <AttendanceRegularization empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "ApplyLeave" ? (

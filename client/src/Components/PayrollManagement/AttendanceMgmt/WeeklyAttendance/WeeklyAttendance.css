@@ -101,7 +101,7 @@
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.unPaidLeaveCntr {
           background: rgba(255, 0, 0, 0.2);
           border: 1px solid rgba(255, 0, 0, 0.5);
-          left: 34vw; }
+          left: 34.3vw; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.holidayCntr {
           background: rgba(0, 17, 255, 0.2);
           border: 1px solid rgba(0, 17, 255, 0.5);
