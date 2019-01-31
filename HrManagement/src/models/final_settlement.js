@@ -13,7 +13,7 @@ module.exports = {
             installment_amount,pending_loan,loan_tenure,start_month,start_year,loan_application_date,L.loan_description \
             from hims_f_loan_application,hims_d_loan L where loan_authorized = 'APR' and loan_closed='N' and loan_amount >0 \
             and employee_id=? and L.hims_d_loan_id=hims_f_loan_application.loan_id; \
-            select gratuity_in_final_settle from hims_d_hrms_options;\
+            select gratuity_in_final_settle from hims_d_end_of_service_options;\
             select hims_f_salary_id, sum(net_salary)total_salary from hims_f_salary where employee_id=? \
             and salary_settled='N' and salary_paid='N' group by employee_id; \
             SELECT hims_f_leave_encash_header_id, sum(total_amount)total_leave_amount FROM hims_f_leave_encash_header \
