@@ -1023,6 +1023,9 @@
   max-height: 30px !important;
   padding: 0; }
 
+.mandatory .ui.selection.dropdown {
+  border: 1px solid #e1ad46; }
+
 .ui.search.dropdown > .text {
   white-space: nowrap;
   overflow: hidden;

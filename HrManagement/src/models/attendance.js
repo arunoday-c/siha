@@ -327,6 +327,27 @@ module.exports = {
                               );
                             }
                           ).length;
+                        } else {
+                          empResult[i][
+                            "defaults"
+                          ].emp_total_holidays = new LINQ(_holidayResult)
+                            .Where(
+                              w =>
+                                (w.holiday == "Y" && w.holiday_type == "RE") ||
+                                (w.holiday == "Y" &&
+                                  w.holiday_type == "RS" &&
+                                  w.religion_id == empResult[i]["religion_id"])
+                            )
+                            .Count();
+
+                          empResult[i]["defaults"].total_week_off = _.filter(
+                            _holidayResult,
+                            obj => {
+                              return (
+                                obj.weekoff === "Y" && obj.holiday_type === "RE"
+                              );
+                            }
+                          ).length;
                         }
 
                         //EN --------- CALCULATING WEEK OFF AND HOLIDAYS

@@ -48,6 +48,7 @@
   .-btn {
     background: $primary-color !important;
     color: #fff !important;
+    font-size: 0.8em;
   }
   .-btn:disabled {
     background: rgba(0, 0, 0, 0.1) !important;
@@ -58,6 +59,7 @@
       select {
         border: 1px solid #8c8c8c !important;
         width: 7vh !important;
+        -webkit-appearance: none;
       }
       input {
         padding: 2px !important;

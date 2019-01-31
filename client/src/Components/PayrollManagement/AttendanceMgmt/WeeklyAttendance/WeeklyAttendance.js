@@ -380,7 +380,10 @@ export default class WeeklyAttendance extends Component {
           </div>
           <div className="portlet-body WeeklyTimeProgress">
             {this.state.time_sheet.length === 0 ? (
-              <div>Time Sheet</div>
+              <div className="noTimeSheetData">
+                <h1>Employee Time Sheet</h1>
+                <i className="fas fa-user-clock" />
+              </div>
             ) : (
               this.state.time_sheet.map((data, index) =>
                 data.status === "WO" ? (

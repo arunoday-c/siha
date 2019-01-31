@@ -309,11 +309,7 @@ class Speciality extends Component {
                 onClick={this.addSpeciality.bind(this)}
                 className="btn btn-primary"
               >
-                <AlgaehLabel
-                  label={{
-                    fieldName: "add_to_list"
-                  }}
-                />
+                Add to List
               </button>
             </div>
           </div>
