@@ -549,6 +549,18 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col-9">
+                      <div className="progress">
+                        <div
+                          className="progress-bar  bg-danger"
+                          role="progressbar"
+                          aria-valuenow="75"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{
+                            width: "50%"
+                          }}
+                        />
+                      </div>
                       <div className="tooltipDetails">
                         <span className="checkIn animated bounceIn faster">
                           Check In{" "}
@@ -574,18 +586,6 @@ export default class WeeklyAttendance extends Component {
                           </b>
                         </span>
                       </div>
-                      <div className="progress dayTypeCntr">
-                        <div
-                          className="progress-bar"
-                          role="progressbar"
-                          aria-valuenow="100"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          style={{ width: "100%" }}
-                        >
-                          <span className="unPaidLeaveCntr">Unpaid Leave</span>
-                        </div>
-                      </div>
                     </div>
                   </div>
                 ) : data.status === "UL" ? (
@@ -600,17 +600,17 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col-9">
-                      <div className="progress">
+                      <div className="progress dayTypeCntr">
                         <div
-                          className="progress-bar  bg-danger"
+                          className="progress-bar"
                           role="progressbar"
-                          aria-valuenow="75"
+                          aria-valuenow="100"
                           aria-valuemin="0"
                           aria-valuemax="100"
-                          style={{
-                            width: "50%"
-                          }}
-                        />
+                          style={{ width: "100%" }}
+                        >
+                          <span className="unPaidLeaveCntr">Unpaid Leave</span>
+                        </div>
                       </div>
                     </div>
                   </div>
