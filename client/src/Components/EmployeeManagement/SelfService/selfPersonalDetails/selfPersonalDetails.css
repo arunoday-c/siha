@@ -1,43 +1,43 @@
-.dashboard h5 {
+.selfPersonalDetails h5 {
   margin: 0 0 10px;
   padding-bottom: 2px;
   border-bottom: 1px dashed #d3d3d3; }
-  .dashboard h5 span {
+  .selfPersonalDetails h5 span {
     border-bottom: 2px solid #8c8c8c;
     text-transform: uppercase;
     line-height: 0; }
 
-.dashboard .selfServiceProfileMenu {
+.selfPersonalDetails .selfServiceProfileMenu {
   position: fixed;
   background: #fff;
   border: 1px solid #e1e1e1;
   margin: 0;
   padding: 0;
   width: 15vw; }
-  .dashboard .selfServiceProfileMenu li {
+  .selfPersonalDetails .selfServiceProfileMenu li {
     margin: 0;
     list-style: none;
     border-bottom: 1px solid #e1e1e1;
     cursor: pointer; }
-    .dashboard .selfServiceProfileMenu li span {
+    .selfPersonalDetails .selfServiceProfileMenu li span {
       padding-right: 0;
       width: 100%;
       display: inline-block;
       padding: 5px 10px; }
-    .dashboard .selfServiceProfileMenu li:hover {
+    .selfPersonalDetails .selfServiceProfileMenu li:hover {
       color: #34b8bc; }
 
-.dashboard .employeeEmail h6 {
+.selfPersonalDetails .employeeEmail h6 {
   word-break: break-all; }
 
-.dashboard #selfService_FamilyTable_Cntr .ReactTable,
-.dashboard #selfService_IdentificationTable_Cntr .ReactTable,
-.dashboard #selfService_WorkExpTable_Cntr .ReactTable,
-.dashboard #selfService_EducationTable_Cntr .ReactTable,
-.dashboard #selfService_AttachmentTable_Cntr .ReactTable {
+.selfPersonalDetails #selfService_FamilyTable_Cntr .ReactTable,
+.selfPersonalDetails #selfService_IdentificationTable_Cntr .ReactTable,
+.selfPersonalDetails #selfService_WorkExpTable_Cntr .ReactTable,
+.selfPersonalDetails #selfService_EducationTable_Cntr .ReactTable,
+.selfPersonalDetails #selfService_AttachmentTable_Cntr .ReactTable {
   max-height: 20vh !important; }
 
-.dashboard .editFloatCntr {
+.selfPersonalDetails .editFloatCntr {
   position: fixed;
   bottom: 0;
   background: #313131;
@@ -49,11 +49,11 @@
   width: 99vw;
   padding-bottom: 15px;
   border-bottom: 5px dashed #fff; }
-  .dashboard .editFloatCntr label {
+  .selfPersonalDetails .editFloatCntr label {
     color: #fff; }
-  .dashboard .editFloatCntr h5 {
+  .selfPersonalDetails .editFloatCntr h5 {
     color: #fff; }
-  .dashboard .editFloatCntr button {
+  .selfPersonalDetails .editFloatCntr button {
     float: right;
     margin-left: 15px;
     margin-top: 15px; }

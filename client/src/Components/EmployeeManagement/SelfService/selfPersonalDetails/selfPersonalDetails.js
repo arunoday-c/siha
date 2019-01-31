@@ -769,7 +769,7 @@ class Dashboard extends Component {
     let empDetails = this.props.empData ? this.props.empData : {};
 
     return (
-      <div className="dashboard">
+      <div className="selfPersonalDetails">
         <div className="row">
           <div className="col-7">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -2223,7 +2223,7 @@ class Dashboard extends Component {
           </div>
 
           <div className="col-5">
-            <div className="EmployeeImg">
+            <div className="EmployeeImgEdit">
               <AlgaehFile
                 name="attach_photo"
                 accept="image/*"

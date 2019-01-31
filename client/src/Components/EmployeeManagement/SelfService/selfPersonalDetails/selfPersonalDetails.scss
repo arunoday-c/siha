@@ -1,11 +1,11 @@
-.dashboard {
+.selfPersonalDetails {
   h5 {
     margin: 0 0 10px;
     padding-bottom: 2px;
     border-bottom: 1px dashed #d3d3d3;
     span {
       border-bottom: 2px solid #8c8c8c;
-      
+
       text-transform: uppercase;
       line-height: 0;
     }
@@ -23,7 +23,6 @@
       border-bottom: 1px solid #e1e1e1;
       cursor: pointer;
       span {
-        
         padding-right: 0;
         width: 100%;
         display: inline-block;
@@ -72,6 +71,12 @@
     }
   }
   h6 {
-    
+  }
+  .selfServiceModule
+    .EmployeeProfile
+    .EmployeeInfo-Top
+    .EmployeeImg
+    .image-drop-area
+    img {
   }
 }
