@@ -423,7 +423,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
               connection.query(
                 " UPDATE hims_d_employee SET airfare_process=?,contract_type=?,emergency_contact_no=?,\
               emergency_contact_person=?,employee_designation_id=?,employee_group_id=?,\
-              entitled_daily_ot=?,exclude_machine_data=?,exit_date=?,gratuity_applicable=?,\
+              entitled_daily_ot=?,exclude_machine_data=?,exit_date=?,date_of_leaving=?,gratuity_applicable=?,\
               hospital_id=?,late_coming_rule=?,leave_salary_process=?,overtime_group_id=?,reporting_to_id=?,\
               secondary_contact_no=?,sub_department_id=?,suspend_salary=?,title_id=?,weekoff_from=?,\
               updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_id=?",
@@ -439,6 +439,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                   input.entitled_daily_ot,
                   input.exclude_machine_data,
                   input.exit_date,
+                  input.date_of_leaving,
                   input.gratuity_applicable,
                   input.hospital_id,
                   input.late_coming_rule,
@@ -965,10 +966,11 @@ let updateEmployee = (req, res, next) => {
           date_of_joining=?,appointment_type=?,employee_type=?,reliving_date=?,notice_period=?,date_of_resignation=?,\
           company_bank_id=?,employee_bank_name=?,employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
           accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,total_contributions=?,\
-          net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,\
+          net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,exit_date=?,\
           exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,employee_group_id=?, \
           reporting_to_id=?,sub_department_id=?,employee_designation_id=?,employee_status=?,inactive_date=?,updated_date=?,updated_by=?\
           WHERE record_status='A' and  hims_d_employee_id=?",
+
           [
             input.employee_code,
             input.full_name,
@@ -1019,6 +1021,7 @@ let updateEmployee = (req, res, next) => {
             input.leave_salary_process,
             input.late_coming_rule,
             input.airfare_process,
+            input.exit_date,
             input.exclude_machine_data,
             input.gratuity_applicable,
             input.suspend_salary,
@@ -1896,64 +1899,6 @@ let updateEmployee = (req, res, next) => {
     next(e);
   }
 };
-
-//created by irfan: to get eployee details
-// let getEmployeeDetails = (req, res, next) => {
-//   let employeeWhereCondition = {
-//     employee_code: "ALL",
-//     sex: "ALL",
-//     blood_group: "ALL",
-//     employee_status: "ALL",
-//     date_of_joining: "ALL",
-//     date_of_resignation: "ALL",
-//     primary_contact_no: "ALL",
-//     email: "ALL"
-//   };
-//   try {
-//     if (req.db == null) {
-//       next(httpStatus.dataBaseNotInitilizedError());
-//     }
-//     let db = req.db;
-
-//     let where = whereCondition(extend(employeeWhereCondition, req.query));
-
-//     db.getConnection((error, connection) => {
-//       connection.query(
-//         "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
-//         E.license_number,E.sex,E.religion_id,E.marital_status,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
-//         E.present_pincode,E.present_state_id,E.present_country_id,\
-//         E.permanent_address , E.permanent_address2, E.permanent_pincode, E.permanent_city_id, E.permanent_state_id,\
-//         E.permanent_country_id, E.primary_contact_no, E.secondary_contact_no,E.email,\
-//         E.emergency_contact_person,E.emergency_contact_no,E.blood_group,\
-//         E.isdoctor,E.employee_status,E.exclude_machine_data ,E.company_bank_id ,E.employee_bank_name , E.effective_start_date,E.effective_end_date,\
-//         E.employee_bank_ifsc_code , E.employee_account_number, E.mode_of_payment, E.accomodation_provided,\
-//          E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot, E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
-//          E.weekoff_from,E.overtime_group_id, E.reporting_to_id, E.hospital_id,\
-//         ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
-//          ED.services_id,ED.employee_designation_id,ED.reporting_to_id,ED.from_date,ED.end_date,ED.dep_status,\
-//          CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
-//         CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date\
-//         from hims_d_employee E,hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
-//          Where E.record_status='A' and ED.record_status='A' and CS.record_status='A' and E.hims_d_employee_id=ED.employee_id\
-//           and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id AND " +
-//           where.condition +
-//           "order by E.hims_d_employee_id desc ",
-//         where.values,
-//         (error, result) => {
-//           releaseDBConnection(db, connection);
-//           if (error) {
-//             next(error);
-//           }
-
-//           req.records = result;
-//           next();
-//         }
-//       );
-//     });
-//   } catch (e) {
-//     next(e);
-//   }
-// };
 
 //created by Nowshad: to get eployee details
 let getEmployeeDetails = (req, res, next) => {
@@ -3066,7 +3011,8 @@ let getEmpEarningComponents = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from hims_d_employee_earnings where employee_id = ?;",
+        "SELECT hims_d_employee_earnings_id,employee_id,earnings_id,amount,formula,allocate,\
+        calculation_method from hims_d_employee_earnings where employee_id = ?;",
         [input.employee_id, input.employee_id, input.employee_id],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -3096,7 +3042,8 @@ let getEmpDeductionComponents = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from hims_d_employee_deductions where employee_id = ?;",
+        "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,amount,formula,allocate,\
+        calculation_method from hims_d_employee_deductions where employee_id = ?;",
         [input.employee_id],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -3126,7 +3073,8 @@ let getEmpContibuteComponents = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from hims_d_employee_contributions where employee_id = ?;",
+        "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,amount,formula,allocate,\
+        calculation_method from hims_d_employee_contributions where employee_id = ?;",
         [input.employee_id],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -3156,8 +3104,11 @@ let getFamilyIdentification = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from hims_d_employee_identification where employee_id = ?; \
-        SELECT * from hims_d_employee_dependents where employee_id = ?;",
+        "SELECT hims_d_employee_identification_id,employee_id,identity_documents_id,identity_number,\
+        valid_upto,issue_date,alert_required,alert_date from hims_d_employee_identification where \
+        employee_id = ?; \
+        SELECT hims_d_employee_dependents_id,employee_id,dependent_type,dependent_name,dependent_identity_type,\
+        dependent_identity_no, from hims_d_employee_dependents where employee_id = ?;",
         [input.employee_id, input.employee_id, input.employee_id],
         (error, result) => {
           releaseDBConnection(db, connection);

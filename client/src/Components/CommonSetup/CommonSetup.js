@@ -6,11 +6,9 @@ import { bindActionCreators } from "redux";
 import "./common_setup.css";
 import "../../index.css";
 import PatientType from "./PatientType/PatientType.js";
-// import AccidentType from "./AccidentType/AccidentType.js";
 import VisaType from "./VisaType/VisaType.js";
 import IDType from "./IDType/IDType";
 import VisitType from "./VisitType/VisitType";
-//import EquipmentType from "./EquipmentType/EquipmentType";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 

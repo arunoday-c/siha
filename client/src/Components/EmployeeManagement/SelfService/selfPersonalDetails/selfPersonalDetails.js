@@ -6,7 +6,8 @@ import {
   AlgaehDataGrid,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
-import "./dashboard.css";
+import AlgaehFile from "../../../Wrapper/algaehFileUpload";
+import "./SelfPersonalDetails.css";
 import {
   algaehApiCall,
   swalMessage,
@@ -768,7 +769,7 @@ class Dashboard extends Component {
     let empDetails = this.props.empData ? this.props.empData : {};
 
     return (
-      <div className="dashboard">
+      <div className="SelfPersonalDetails">
         <div className="row">
           <div className="col-7">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -2220,15 +2221,25 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
+
           <div className="col-5">
+            <div className="EmployeeImgEdit">
+              <AlgaehFile
+                name="attach_photo"
+                accept="image/*"
+                textAltMessage={empDetails.full_name}
+                showActions={true}
+                serviceParameters={{
+                  uniqueID: empDetails.employee_code,
+                  destinationName: empDetails.employee_code,
+                  fileType: "Employees"
+                }}
+              />
+            </div>
+
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
-                <div
-                  className="caption"
-                  // ref={c => {
-                  //   this.basicDetails = c;
-                  // }}
-                >
+                <div className="caption">
                   <h3 className="caption-subject">Attachments Details</h3>
                 </div>
                 <div className="actions">

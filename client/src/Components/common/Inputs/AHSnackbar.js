@@ -1,11 +1,5 @@
 import React, { PureComponent } from "react";
-// import Slide from "@material-ui/core/Slide";
-// import Snackbar from "@material-ui/core/Snackbar";
-// import SnackbarContent from "@material-ui/core/SnackbarContent";
 import { swalMessage } from "../../../utils/algaehApiCall";
-// function TransitionUp(props) {
-//   return <Slide {...props} direction="up" />;
-// }
 
 export default class AlgaehSnackBar extends PureComponent {
   constructor(args) {

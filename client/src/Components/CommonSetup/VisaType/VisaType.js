@@ -237,24 +237,6 @@ class VisaType extends Component {
         <div className="container-fluid">
           <form>
             <div className="row">
-              {/* <AlgaehOptions
-                div={{ className: "col-lg-3" }}
-                label={{
-                  fieldName: "status",
-                  isImp: true
-                }}
-                optionsType="radio"
-                group={{
-                  name: "Status",
-                  value: this.state.visa_status,
-                  controls: [
-                    { label: "Active", value: "A" },
-                    { label: "Inactive", value: "I" }
-                  ],
-                  events: { onChange: this.changeStatus.bind(this) }
-                }}
-              /> */}
-
               <AlagehFormGroup
                 div={{ className: "col-lg-3" }}
                 label={{

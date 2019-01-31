@@ -134,19 +134,23 @@ class OfficalDetails extends PureComponent {
               <div className="row paddin-bottom-5">
                 <AlgaehDateHandler
                   div={{ className: "col" }}
-                  label={{ forceLabel: this.state.date_of_releaving_label }}
+                  label={{
+                    forceLabel: this.state.date_of_releaving_label,
+                    isImp:
+                      this.state.employee_status === "R" ||
+                      this.state.employee_status === "T"
+                        ? true
+                        : false
+                  }}
                   textBox={{
                     className: "txt-fld",
                     name: "date_of_leaving",
                     others: {
                       disabled:
-                        this.state.enable_active_status === "I" ||
-                        this.state.enable_active_status === "T"
-                          ? true
-                          : false
+                        this.state.enable_active_status === "I" ? true : false
                     }
                   }}
-                  minDate={new Date()}
+                  maxDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}

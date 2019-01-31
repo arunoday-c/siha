@@ -6,12 +6,24 @@ import moment from "moment";
 
 const Validations = $this => {
   let isError = false;
-
+  debugger;
   if ($this.state.personalDetails.date_of_joining === null) {
     isError = true;
     swalMessage({
       type: "warning",
       title: "Date of Joining. Cannot be blank."
+    });
+
+    return isError;
+  } else if (
+    ($this.state.personalDetails.employee_status === "R" ||
+      $this.state.personalDetails.employee_status === "T") &&
+    $this.state.personalDetails.date_of_leaving === null
+  ) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Date of Leaving. Cannot be blank."
     });
 
     return isError;

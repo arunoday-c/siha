@@ -5,8 +5,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDataGrid
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 
 //import GlobalVariables from "../../../../../utils/GlobalVariables.json";
@@ -14,10 +13,9 @@ import {
 export default class EmployeeDocuments extends Component {
   render() {
     return (
-      <div className="EmployeeDocuments row">
+      <div className="EmployeeDocumentsScreen row">
         <div className="col-12">
           <div className="row inner-top-search">
-            {" "}
             <AlagehAutoComplete
               div={{ className: "col form-group mandatory" }}
               label={{
@@ -54,80 +52,7 @@ export default class EmployeeDocuments extends Component {
           </div>
         </div>
 
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Uploaded Documents</h3>
-              </div>
-              <div className="actions">
-                {/* <a className="btn btn-primary btn-circle active">
-                  <i className="fas fa-pen" />
-                </a> */}
-              </div>
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                <div className="col-12" id="employeeDocumGrid_Cntr">
-                  <AlgaehDataGrid
-                    id="employeeDocumGrid"
-                    datavalidate="employeeDocumGrid"
-                    columns={[
-                      {
-                        fieldName: "documentName",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Document Name" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "documentType",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Document Type" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "relationType",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Relation Type" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "DependentName",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Dependent Name" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "UploadedDate",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Uploaded Date" }}
-                          />
-                        )
-                      }
-                    ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
-                    isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-12">
+        <div className="col-4">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -137,36 +62,6 @@ export default class EmployeeDocuments extends Component {
             </div>
             <div className="portlet-body">
               <div className="row">
-                {/* <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
-                  label={{
-                    forceLabel: "Documents For",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
-                  label={{
-                    forceLabel: "Select Employee",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-
-                    dataSource: {},
-                    others: {}
-                  }}
-                /> */}
-
                 <AlagehFormGroup
                   div={{ className: "col form-group mandatory" }}
                   label={{
@@ -242,6 +137,86 @@ export default class EmployeeDocuments extends Component {
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div className="col-8">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Uploaded Documents</h3>
+              </div>
+              <div className="actions">
+                {/* <a className="btn btn-primary btn-circle active">
+                  <i className="fas fa-pen" />
+                </a> */}
+              </div>
+            </div>
+            <div className="portlet-body">
+              <div className="input-group image-preview">
+                <div className="row">
+                  <div className="col-12">
+                    {" "}
+                    <input
+                      placeholder=""
+                      type="text"
+                      className="form-control image-preview-filename"
+                      disabled="disabled"
+                    />
+                  </div>
+                  <div className="col-12">
+                    <span className="input-group-btn">
+                      <button
+                        type="button"
+                        className="btn btn-default image-preview-clear"
+                        style={{ display: "none" }}
+                      >
+                        <span className="glyphicon glyphicon-remove" /> Clear
+                      </button>
+                      <div className="btn btn-default image-preview-input">
+                        <span className="glyphicon glyphicon-folder-open" />
+                        <span className="image-preview-input-title">
+                          Browse
+                        </span>
+                        <input
+                          type="file"
+                          accept="image/png, image/jpeg, image/gif"
+                          name="input-file-preview"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        className="btn btn-labeled btn-primary"
+                      >
+                        <span className="btn-label">
+                          <i className="glyphicon glyphicon-upload" />
+                        </span>
+                        Upload
+                      </button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <br />
+
+              <div className="upload-drop-zone" id="drop-zone">
+                Or drag and drop files here
+              </div>
+              <br />
+              <div className="progress">
+                <div
+                  className="progress-bar"
+                  role="progressbar"
+                  aria-valuenow="60"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                  style={{ width: "60%" }}
+                >
+                  <span className="sr-only">60% Complete</span>
+                </div>
+              </div>
+              <br />
             </div>
           </div>
         </div>

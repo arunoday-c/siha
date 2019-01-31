@@ -88,7 +88,7 @@ class EOSGratuity extends Component {
       employee_id: this.state.hims_d_employee_id,
       exit_type: _sub_data.employee_status,
       join_date: _sub_data.date_of_joining,
-      exit_date: _sub_data.date_of_resignation,
+      exit_date: _sub_data.exit_date,
       service_years: _sub_data.endOfServiceYears,
       payable_days: _sub_data.eligible_day,
       computed_amount: _sub_data.computed_amount,
@@ -331,9 +331,7 @@ class EOSGratuity extends Component {
                           </label>
                           <h6>
                             {EosData.date_of_resignation
-                              ? moment(EosData.date_of_resignation).format(
-                                  "DD-MMM-YYYY"
-                                )
+                              ? moment(EosData.exit_date).format("DD-MMM-YYYY")
                               : "------"}
                           </h6>
                         </div>

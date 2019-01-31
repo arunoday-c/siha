@@ -1,11 +1,11 @@
-.dashboard {
+.SelfPersonalDetails {
   h5 {
     margin: 0 0 10px;
     padding-bottom: 2px;
     border-bottom: 1px dashed #d3d3d3;
     span {
       border-bottom: 2px solid #8c8c8c;
-      
+
       text-transform: uppercase;
       line-height: 0;
     }
@@ -23,7 +23,6 @@
       border-bottom: 1px solid #e1e1e1;
       cursor: pointer;
       span {
-        
         padding-right: 0;
         width: 100%;
         display: inline-block;
@@ -71,7 +70,15 @@
       margin-top: 15px;
     }
   }
-  h6 {
-    
+  .EmployeeImgEdit {
+    background: #fff;
+    border: 1px solid #d6d6d6;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 15px;
+    .image-drop-area {
+      width: 150px;
+      margin: auto;
+    }
   }
 }

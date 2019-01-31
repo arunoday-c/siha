@@ -2,7 +2,6 @@ import FormGroup from "./formGroup";
 import Label from "./label";
 import Selector from "./selector";
 import DateHandler from "./datePicker";
-import Options from "./optionButton";
 import AutoComplete from "./autoComplete";
 import DataGrid from "./grid";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -16,7 +15,6 @@ const AlgaehLabel = Label;
 const AlagehFormGroup = FormGroup;
 const AlgaehSelector = Selector;
 const AlgaehDateHandler = DateHandler;
-const AlgaehOptions = Options;
 const AlagehAutoComplete = AutoComplete;
 const AlgaehDataGrid = DataGrid;
 const AlgaehGlobalSearch = AlgaehSearch;
@@ -34,7 +32,6 @@ export {
   AlgaehSelector,
   AlgaehDateHandler,
   AlgaehConvertToHijri,
-  AlgaehOptions,
   AlagehAutoComplete,
   AlgaehDataGrid,
   Tooltip,

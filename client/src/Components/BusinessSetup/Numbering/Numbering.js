@@ -7,8 +7,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Button from "@material-ui/core/Button";
-
 class Numbering extends Component {
   constructor(props) {
     super(props);
@@ -311,13 +309,12 @@ class Numbering extends Component {
 
               <div className="col-lg-3 align-middle">
                 <br />
-                <Button
+                <button
                   onClick={this.add.bind(this)}
-                  color="primary"
-                  variant="raised"
+                  className="btn btn-primary"
                 >
                   {this.state.btnTxt}
-                </Button>
+                </button>
               </div>
             </div>
             <br />

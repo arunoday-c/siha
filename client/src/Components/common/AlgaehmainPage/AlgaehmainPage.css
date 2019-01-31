@@ -12,7 +12,7 @@ header {
 
 .mainPageArea {
   position: fixed;
-  top: 53px;
+  top: 52px;
   height: 94vh;
   overflow: auto;
   overflow-x: hidden; }

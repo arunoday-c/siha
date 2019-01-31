@@ -6,8 +6,8 @@
     .hrTimeSheet .noTimeSheetData h1 {
       margin-top: 30px; }
     .hrTimeSheet .noTimeSheetData i {
-      font-size: 17em;
-      margin: 9vh;
+      font-size: 16em;
+      margin: 4vh 0 6vh;
       color: rgba(0, 0, 0, 0.04); }
   .hrTimeSheet .weekdaysDiv i {
     cursor: pointer; }
@@ -15,82 +15,197 @@
       color: #34b8bc; }
   .hrTimeSheet .weekdaysDiv span {
     margin: 0 10px; }
-  .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress {
-    border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
-    padding-top: 10px;
-    padding-bottom: 10px; }
-    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress {
-      height: 0.5rem;
-      margin-top: 0.6rem; }
-      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span {
-        background: rgba(0, 0, 0, 0.7);
+  .hrTimeSheet .WeeklyTimeProgress {
+    max-height: 53vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-bottom: 20px; }
+    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress {
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+      padding-top: 10px;
+      padding-bottom: 10px; }
+      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr {
+        height: 0.3rem;
+        padding-right: 0; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress {
+          height: 0.5rem;
+          margin-top: 0.6rem; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress .progress-bar {
+            position: relative;
+            background-color: #e8e8e8; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress .bg-default {
+            background-color: #e7ecef !important; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress:last-child {
+            border-bottom: none; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span {
+          color: #fff;
+          font-size: 0.8em;
+          background: rgba(0, 0, 0, 0.7);
+          position: absolute;
+          z-index: 9;
+          top: 22px;
+          padding: 2px 5px;
+          border-radius: 5px;
+          display: none; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span i {
+            text-align: center;
+            text-transform: uppercase;
+            font-style: normal;
+            display: inline-block;
+            width: 100%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5); }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span b {
+            display: inline-block;
+            text-align: center;
+            margin-left: 2px; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span .lateTime {
+            color: #ff5c40; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span .OverTime {
+            color: #17d217; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span::after {
+            content: " ";
+            position: absolute;
+            bottom: 100%;
+            /* At the bottom of the tooltip */
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent rgba(0, 0, 0, 0.7) transparent; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails .checkIn {
+          left: 15px; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails .totalHr {
+          left: 42.5%; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails .checkOut {
+          right: 0; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr:hover span {
+          display: block; }
+      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span {
+        width: auto;
+        display: inline-block;
+        padding: 2px 10px;
+        margin: auto;
         position: absolute;
-        z-index: 9;
-        top: -22px;
-        padding: 2px 5px;
+        color: #202429;
         border-radius: 5px;
-        display: none; }
-        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span b {
-          display: inline-block;
-          text-align: center;
-          border-left: 1px solid rgba(255, 255, 255, 0.5);
-          padding-left: 5px;
-          margin-left: 5px; }
-        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span .lateTime {
-          color: #ff5c40; }
-        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span .OverTime {
-          color: #17d217; }
-        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails span::after {
-          content: " ";
-          position: absolute;
-          top: 100%;
-          /* At the bottom of the tooltip */
-          left: 50%;
-          margin-left: -5px;
-          border-width: 5px;
-          border-style: solid;
-          border-color: rgba(0, 0, 0, 0.7) transparent transparent transparent; }
-      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .checkIn {
-        left: 15px; }
-      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .totalHr {
-        left: 42.5%; }
-      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress .tooltipDetails .checkOut {
-        right: 15px; }
-      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress:hover span {
-        display: block; }
-    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr {
-      height: 0.3rem; }
-      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar {
-        background-color: #e8e8e8 !important; }
-        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span {
-          width: auto;
-          display: inline-block;
-          padding: 2px 10px;
-          margin: auto;
-          position: absolute;
-          color: #202429;
-          border-radius: 5px; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.absentCntr {
-            background: rgba(255, 0, 0, 0.2);
-            border: 1px solid rgba(255, 0, 0, 0.5);
-            left: 35.5vw; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.paidLeaveCntr {
-            background: rgba(0, 186, 190, 0.2);
-            border: 1px solid rgba(0, 186, 190, 0.5);
-            left: 34.8vw; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.unPaidLeaveCntr {
-            background: rgba(255, 0, 0, 0.2);
-            border: 1px solid rgba(255, 0, 0, 0.5);
-            left: 35.5vw; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.holidayCntr {
-            background: rgba(0, 17, 255, 0.2);
-            border: 1px solid rgba(0, 17, 255, 0.5);
-            left: 35.3vw; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.weekOffCntr {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(0, 0, 0, 0.5);
-            left: 34.9vw; }
-    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .bg-default {
-      background-color: #e7ecef !important; }
-    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress:last-child {
-      border-bottom: none; }
+        z-index: 9;
+        font-size: 0.9em; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.absentCntr {
+          background: rgba(255, 0, 0, 0.2);
+          border: 1px solid rgba(255, 0, 0, 0.5);
+          left: 35vw; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.paidLeaveCntr {
+          background: rgba(0, 186, 190, 0.2);
+          border: 1px solid rgba(0, 186, 190, 0.5);
+          left: 34.8vw; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.unPaidLeaveCntr {
+          background: rgba(255, 0, 0, 0.2);
+          border: 1px solid rgba(255, 0, 0, 0.5);
+          left: 34.3vw; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.holidayCntr {
+          background: rgba(0, 17, 255, 0.2);
+          border: 1px solid rgba(0, 17, 255, 0.5);
+          left: 35.3vw; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.weekOffCntr {
+          background: rgba(0, 0, 0, 0.2);
+          border: 1px solid rgba(0, 0, 0, 0.5);
+          left: 34.9vw; }
+  .hrTimeSheet .ruler {
+    position: relative;
+    width: 100%;
+    margin: 5px 0;
+    height: 14px; }
+  .hrTimeSheet .ruler .cm,
+  .hrTimeSheet .ruler .mm {
+    position: absolute;
+    border-left: 1px solid #555;
+    height: 14px;
+    width: 10%; }
+  .hrTimeSheet .ruler .cm:after {
+    position: absolute;
+    left: -4px;
+    bottom: -15px;
+    font: 11px/1 sans-serif; }
+  .hrTimeSheet .ruler .mm {
+    height: 5px; }
+  .hrTimeSheet .ruler .mm:nth-of-type(5) {
+    height: 10px; }
+  .hrTimeSheet .ruler .cm:nth-of-type(1) {
+    left: 0%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(1):after {
+    content: "00:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(2) {
+    left: 8.33333333333%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(2):after {
+    content: "02:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(3) {
+    left: 16.6666666667%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(3):after {
+    content: "04:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(4) {
+    left: 25%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(4):after {
+    content: "06:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(5) {
+    left: 33.3333333333%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(5):after {
+    content: "08:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(6) {
+    left: 41.6666666667%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(6):after {
+    content: "10:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(7) {
+    left: 50%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(7):after {
+    content: "12:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(8) {
+    left: 58.3333333333%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(8):after {
+    content: "14:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(9) {
+    left: 66.6666666666%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(9):after {
+    content: "16:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(10) {
+    left: 75%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(10):after {
+    content: "18:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(11) {
+    left: 83.3333333333%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(11):after {
+    content: "20:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(12) {
+    left: 91.6666666666%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(12):after {
+    content: "22:00"; }
+  .hrTimeSheet .ruler .cm:nth-of-type(13) {
+    left: 100%; }
+  .hrTimeSheet .ruler .cm:nth-of-type(13):after {
+    content: "24:00"; }
+  .hrTimeSheet .ruler .mm:nth-of-type(1) {
+    left: 8.33333333333%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(2) {
+    left: 16.6666666667%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(3) {
+    left: 25%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(4) {
+    left: 33.3333333333%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(5) {
+    left: 41.6666666667%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(6) {
+    left: 50%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(7) {
+    left: 58.3333333333%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(8) {
+    left: 66.6666666666%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(9) {
+    left: 75%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(10) {
+    left: 83.3333333333%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(11) {
+    left: 91.6666666666%; }
+  .hrTimeSheet .ruler .mm:nth-of-type(12) {
+    left: 100%; }
+  .hrTimeSheet #mentionme {
+    text-align: center;
+    margin-top: 10%; }
