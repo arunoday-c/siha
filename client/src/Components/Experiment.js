@@ -1,10 +1,5 @@
 import React, { Component } from "react";
-import {
-  AlgaehErrorBoundary,
-  AlgaehModalPopUp,
-  AlgaehDataGrid,
-  AlgaehLabel
-} from "./Wrapper/algaehWrapper";
+import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
 import { algaehApiCall } from "../utils/algaehApiCall";
 import AlgaehReport from "./Wrapper/printReports";

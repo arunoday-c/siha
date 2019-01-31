@@ -413,7 +413,10 @@ export default class WeeklyAttendance extends Component {
                     </div>
                   </div>
                 ) : data.status === "PR" ? (
-                  <div className="row dailyTimeProgress">
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress"
+                  >
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
                     </div>
@@ -534,7 +537,7 @@ export default class WeeklyAttendance extends Component {
                       </div>
                     </div>
                   </div>
-                ) : data.status === "UL" ? (
+                ) : data.status === "EX" ? (
                   <div
                     key={data.hims_f_daily_time_sheet_id}
                     className="row dailyTimeProgress"
@@ -546,6 +549,18 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col-9">
+                      <div className="progress">
+                        <div
+                          className="progress-bar  bg-danger"
+                          role="progressbar"
+                          aria-valuenow="75"
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                          style={{
+                            width: "50%"
+                          }}
+                        />
+                      </div>
                       <div className="tooltipDetails">
                         <span className="checkIn animated bounceIn faster">
                           Check In{" "}
@@ -571,6 +586,20 @@ export default class WeeklyAttendance extends Component {
                           </b>
                         </span>
                       </div>
+                    </div>
+                  </div>
+                ) : data.status === "UL" ? (
+                  <div
+                    key={data.hims_f_daily_time_sheet_id}
+                    className="row dailyTimeProgress"
+                  >
+                    <div className="col-1">
+                      {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.worked_hours ? data.worked_hours : "00:00"} Hrs
+                    </div>
+                    <div className="col-9">
                       <div className="progress dayTypeCntr">
                         <div
                           className="progress-bar"
@@ -581,29 +610,6 @@ export default class WeeklyAttendance extends Component {
                           style={{ width: "100%" }}
                         >
                           <span className="unPaidLeaveCntr">Unpaid Leave</span>
-                        </div>
-                      </div>
-                    </div>
-                    ) : data.status === "EX" ? (
-                    <div className="row dailyTimeProgress">
-                      <div className="col-1">
-                        {moment(data.attendance_date).format("ddd, Do")}
-                      </div>
-                      <div className="col-1">
-                        {data.worked_hours ? data.worked_hours : "00:00"} Hrs
-                      </div>
-                      <div className="col-9">
-                        <div className="progress">
-                          <div
-                            className="progress-bar  bg-danger"
-                            role="progressbar"
-                            aria-valuenow="75"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                            style={{
-                              width: "50%"
-                            }}
-                          />
                         </div>
                       </div>
                     </div>
