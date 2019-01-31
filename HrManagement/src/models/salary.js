@@ -1977,7 +1977,7 @@ function getEarningComponents(options) {
 
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "UN") {
-                        split_sal = split_sal * previous_leaves;
+                        split_sal = perday_salary * previous_leaves;
 
                         utilities
                           .AlgaehUtilities()
@@ -1986,7 +1986,7 @@ function getEarningComponents(options) {
 
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "QD") {
-                        split_sal = perday_salary / 2;
+                        split_sal = (perday_salary * 3) / 4;
                         split_sal = split_sal * previous_leaves;
 
                         utilities
@@ -1996,7 +1996,7 @@ function getEarningComponents(options) {
 
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "TQ") {
-                        split_sal = perday_salary / 2;
+                        split_sal = perday_salary / 4;
                         split_sal = split_sal * previous_leaves;
 
                         utilities

@@ -9,7 +9,6 @@ const getEmployeeDetails = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          
           $this.setState({ Employeedetails: data });
         }
       }
@@ -46,7 +45,8 @@ const EditEmployeeMaster = ($this, row) => {
   $this.setState({
     isOpen: !$this.state.isOpen,
     employeeDetailsPop: row,
-    editEmployee: true
+    editEmployee: true,
+    employee_status: row.employee_status
   });
 };
 

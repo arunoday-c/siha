@@ -16,6 +16,7 @@ import {
   getEmployeeDetails,
   EditEmployeeMaster
 } from "./EmployeeMasterIndexEvent";
+import variableJson from "../../../utils/GlobalVariables.json";
 
 class EmployeeMasterIndex extends Component {
   constructor(props) {
@@ -170,6 +171,7 @@ class EmployeeMasterIndex extends Component {
                 onClose={this.CloseModel.bind(this)}
                 editEmployee={this.state.editEmployee}
                 employeeDetailsPop={this.state.employeeDetailsPop}
+                employee_status={this.state.employee_status}
               />
             </div>
           </div>
@@ -238,6 +240,31 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "full_name",
                       label: <AlgaehLabel label={{ fieldName: "full_name" }} />,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "employee_status",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Employee Status" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        let display = variableJson.EMPLOYEE_STATUS.filter(
+                          f => f.value === row.employee_status
+                        );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].name
+                              : ""}
+                          </span>
+                        );
+                      },
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
