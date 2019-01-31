@@ -434,10 +434,9 @@ export default class WeeklyAttendance extends Component {
                           <br />
                           Date:
                           <b>
-                            {moment(
-                              data.attendance_date,
+                            {moment(data.attendance_date).format(
                               "MMMM Do YYYY"
-                            ).format("MMMM Do YYYY")}
+                            )}
                           </b>
                         </span>
                         <span className="totalHr animated bounceIn faster">
@@ -454,11 +453,7 @@ export default class WeeklyAttendance extends Component {
                           </b>
                           <br />
                           Date:
-                          <b>
-                            {moment(data.out_date, "MMMM Do YYYY").format(
-                              "MMMM Do YYYY"
-                            )}
-                          </b>
+                          <b>{moment(data.out_date).format("MMMM Do YYYY")}</b>
                         </span>
                       </div>
                       <div className="progress">
@@ -577,10 +572,9 @@ export default class WeeklyAttendance extends Component {
                           Date:
                           <b>
                             {data.attendance_date
-                              ? moment(
-                                  data.attendance_date,
+                              ? moment(data.attendance_date).format(
                                   "MMMM Do YYYY"
-                                ).format("MMMM Do YYYY")
+                                )
                               : "Not Available"}
                           </b>
                         </span>
@@ -602,9 +596,7 @@ export default class WeeklyAttendance extends Component {
                           Date:
                           <b>
                             {data.out_date
-                              ? moment(data.out_date, "MMMM Do YYYY").format(
-                                  "MMMM Do YYYY"
-                                )
+                              ? moment(data.out_date).format("MMMM Do YYYY")
                               : "Not Available"}
                           </b>
                         </span>
