@@ -71,7 +71,7 @@ export default class SelfService extends Component {
                 name="attach_photo"
                 accept="image/*"
                 textAltMessage={empDetails.full_name}
-                showActions={false}
+                //showActions={false}
                 serviceParameters={{
                   uniqueID: empDetails.employee_code,
                   destinationName: empDetails.employee_code,
