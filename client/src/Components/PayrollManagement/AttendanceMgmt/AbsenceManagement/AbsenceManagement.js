@@ -476,11 +476,7 @@ export default class AbsenceManagement extends Component {
                   />
                 </div>
                 <div className="row">
-                  <div
-                    className="col-12"
-                    id="AbsenceManagementGrid_Cntr"
-                    data-validate="AbsenceManagementGrid"
-                  >
+                  <div className="col-12" id="AbsenceManagementGrid_Cntr">
                     <AlgaehDataGrid
                       id="AbsenceManagementGrid"
                       datavalidate="data-validate='AbsenceManagementGrid'"

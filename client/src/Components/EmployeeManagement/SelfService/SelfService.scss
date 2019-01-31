@@ -60,13 +60,15 @@
           color: #000;
           line-height: 1.6rem;
           min-height: 50px;
+          font-size: 1.3em;
         }
         p {
           margin: 0;
           padding: 0;
           b {
             color: $primary-color;
-            font-weight: 300;
+            font-size: 0.9em;
+            font-weight: 700;
           }
         }
       }
@@ -78,7 +80,9 @@
         min-height: 98px;
         span {
           display: block;
-          line-height: 1.5rem;
+          line-height: 1.7rem;
+          font-size: 0.9em;
+          font-weight: 700;
           i {
             text-align: center;
             width: 20px;
@@ -135,7 +139,7 @@
   }
   .EmployeeTopNav {
     background: white;
-    height: 35px;
+    height: 30px;
     padding: 0;
     width: 100%;
     color: #797979;
