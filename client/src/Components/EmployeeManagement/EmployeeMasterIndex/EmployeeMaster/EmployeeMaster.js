@@ -494,6 +494,9 @@ class EmployeeMaster extends Component {
                         onClick={InsertUpdateEmployee.bind(this, this)}
                         type="button"
                         className="btn btn-primary"
+                        disabled={
+                          this.props.employee_status === "I" ? true : false
+                        }
                       >
                         {this.state.personalDetails.hims_d_employee_id ===
                         null ? (
