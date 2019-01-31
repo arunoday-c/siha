@@ -146,7 +146,7 @@ class OfficalDetails extends PureComponent {
                           : false
                     }
                   }}
-                  minDate={new Date()}
+                  maxDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
