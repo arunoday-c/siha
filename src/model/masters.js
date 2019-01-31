@@ -431,13 +431,13 @@ let killDbConnections = (req, res, next) => {
           }
           debugLog("result:", result);
           let idList = new LINQ(result)
-            .Where(w => w.User == "algaeh_root")
-            .Select(s => s.Id)
+            .Where(w => w.COMMAND == "Sleep")
+            .Select(s => s.ID)
             .ToArray();
 
           debugLog("idList:", idList);
           let qry = "";
-          for (let i = 0; i < idList.length - 1; i++) {
+          for (let i = 0; i < idList.length; i++) {
             qry += "kill " + idList[i] + ";";
           }
           if (idList.length > 0) {
