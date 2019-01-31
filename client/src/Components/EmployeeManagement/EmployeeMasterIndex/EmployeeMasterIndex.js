@@ -253,17 +253,17 @@ class EmployeeMasterIndex extends Component {
                         />
                       ),
                       displayTemplate: row => {
-                        let display = variableJson.EMPLOYEE_STATUS.filter(
-                          f => f.value === row.employee_status
-                        );
-
-                        return (
-                          <span>
-                            {display !== null && display.length !== 0
-                              ? display[0].name
-                              : ""}
+                        return row.employee_status === "A" ? (
+                          <span className="badge badge-success">Active</span>
+                        ) : row.employee_status === "I" ? (
+                          <span className="badge badge-dark">Inactive</span>
+                        ) : row.employee_status === "R" ? (
+                          <span className="badge badge-warning">Resigned</span>
+                        ) : row.employee_status === "T" ? (
+                          <span className="badge badge-secondary">
+                            Terminated
                           </span>
-                        );
+                        ) : null;
                       },
                       others: {
                         resizable: false,
