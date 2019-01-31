@@ -154,14 +154,9 @@ export default class SalariesComponents extends PureComponent {
                           }}
                         />
                         <h6>
-                          {this.state.total_holidays === null
-                            ? 0
-                            : this.state.total_holidays +
-                                "/" +
-                                this.state.total_weekoff_days ===
-                              null
-                            ? 0
-                            : this.state.total_weekoff_days}
+                          {this.state.total_holidays +
+                            " / " +
+                            this.state.total_weekoff_days}
                         </h6>
                       </div>
                       <div className="col-2">
