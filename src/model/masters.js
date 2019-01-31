@@ -437,12 +437,12 @@ let killDbConnections = (req, res, next) => {
 
           debugLog("idList:", idList);
           let qry = "";
-          for (let i = 0; i < idList.length; i++) {
+          for (let i = 0; i < idList.length - 1; i++) {
             qry += "kill " + idList[i] + ";";
           }
           if (idList.length > 0) {
             connection.query(qry, (error, finalResult) => {
-              // releaseDBConnection(db, connection);
+              releaseDBConnection(db, connection);
               if (error) {
                 next(error);
               }
