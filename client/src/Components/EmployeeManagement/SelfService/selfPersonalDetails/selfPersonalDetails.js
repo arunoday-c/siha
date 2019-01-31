@@ -7,7 +7,7 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../../Wrapper/algaehFileUpload";
-import "./dashboard.css";
+import "./SelfPersonalDetails.css";
 import {
   algaehApiCall,
   swalMessage,
@@ -769,7 +769,7 @@ class Dashboard extends Component {
     let empDetails = this.props.empData ? this.props.empData : {};
 
     return (
-      <div className="selfPersonalDetails">
+      <div className="SelfPersonalDetails">
         <div className="row">
           <div className="col-7">
             <div className="portlet portlet-bordered margin-bottom-15">

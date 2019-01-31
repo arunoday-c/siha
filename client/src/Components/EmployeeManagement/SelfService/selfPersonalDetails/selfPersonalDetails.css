@@ -1,43 +1,43 @@
-.selfPersonalDetails h5 {
+.SelfPersonalDetails h5 {
   margin: 0 0 10px;
   padding-bottom: 2px;
   border-bottom: 1px dashed #d3d3d3; }
-  .selfPersonalDetails h5 span {
+  .SelfPersonalDetails h5 span {
     border-bottom: 2px solid #8c8c8c;
     text-transform: uppercase;
     line-height: 0; }
 
-.selfPersonalDetails .selfServiceProfileMenu {
+.SelfPersonalDetails .selfServiceProfileMenu {
   position: fixed;
   background: #fff;
   border: 1px solid #e1e1e1;
   margin: 0;
   padding: 0;
   width: 15vw; }
-  .selfPersonalDetails .selfServiceProfileMenu li {
+  .SelfPersonalDetails .selfServiceProfileMenu li {
     margin: 0;
     list-style: none;
     border-bottom: 1px solid #e1e1e1;
     cursor: pointer; }
-    .selfPersonalDetails .selfServiceProfileMenu li span {
+    .SelfPersonalDetails .selfServiceProfileMenu li span {
       padding-right: 0;
       width: 100%;
       display: inline-block;
       padding: 5px 10px; }
-    .selfPersonalDetails .selfServiceProfileMenu li:hover {
+    .SelfPersonalDetails .selfServiceProfileMenu li:hover {
       color: #34b8bc; }
 
-.selfPersonalDetails .employeeEmail h6 {
+.SelfPersonalDetails .employeeEmail h6 {
   word-break: break-all; }
 
-.selfPersonalDetails #selfService_FamilyTable_Cntr .ReactTable,
-.selfPersonalDetails #selfService_IdentificationTable_Cntr .ReactTable,
-.selfPersonalDetails #selfService_WorkExpTable_Cntr .ReactTable,
-.selfPersonalDetails #selfService_EducationTable_Cntr .ReactTable,
-.selfPersonalDetails #selfService_AttachmentTable_Cntr .ReactTable {
+.SelfPersonalDetails #selfService_FamilyTable_Cntr .ReactTable,
+.SelfPersonalDetails #selfService_IdentificationTable_Cntr .ReactTable,
+.SelfPersonalDetails #selfService_WorkExpTable_Cntr .ReactTable,
+.SelfPersonalDetails #selfService_EducationTable_Cntr .ReactTable,
+.SelfPersonalDetails #selfService_AttachmentTable_Cntr .ReactTable {
   max-height: 20vh !important; }
 
-.selfPersonalDetails .editFloatCntr {
+.SelfPersonalDetails .editFloatCntr {
   position: fixed;
   bottom: 0;
   background: #313131;
@@ -49,11 +49,21 @@
   width: 99vw;
   padding-bottom: 15px;
   border-bottom: 5px dashed #fff; }
-  .selfPersonalDetails .editFloatCntr label {
+  .SelfPersonalDetails .editFloatCntr label {
     color: #fff; }
-  .selfPersonalDetails .editFloatCntr h5 {
+  .SelfPersonalDetails .editFloatCntr h5 {
     color: #fff; }
-  .selfPersonalDetails .editFloatCntr button {
+  .SelfPersonalDetails .editFloatCntr button {
     float: right;
     margin-left: 15px;
     margin-top: 15px; }
+
+.SelfPersonalDetails .EmployeeImgEdit {
+  background: #fff;
+  border: 1px solid #d6d6d6;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  padding: 15px; }
+  .SelfPersonalDetails .EmployeeImgEdit .image-drop-area {
+    width: 150px;
+    margin: auto; }

@@ -330,7 +330,15 @@ class SalaryPayment extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.salary_paid === "N" ? "No" : "Yes";
+                                  return row.salary_paid === "N" ? (
+                                    <span className="badge badge-warning">
+                                      No
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-success">
+                                      Yes
+                                    </span>
+                                  );
                                 }
                               },
                               {
@@ -339,7 +347,7 @@ class SalaryPayment extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary No"
+                                      forceLabel: "Salary Number"
                                     }}
                                   />
                                 )

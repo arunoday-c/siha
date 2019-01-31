@@ -3,7 +3,7 @@ import "./SelfService.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 
-import selfPersonalDetails from "./selfPersonalDetails/selfPersonalDetails";
+import SelfPersonalDetails from "./SelfPersonalDetails/SelfPersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
@@ -19,7 +19,7 @@ export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "selfPersonalDetails"
+      pageDisplay: "SelfPersonalDetails"
     };
     this.getEmployeeDetails();
   }
@@ -242,8 +242,8 @@ export default class SelfService extends Component {
           </div>
         </div>
         <div className="selfService-setion">
-          {this.state.pageDisplay === "selfPersonalDetails" ? (
-            <selfPersonalDetails empData={this.state.employee_details} />
+          {this.state.pageDisplay === "SelfPersonalDetails" ? (
+            <SelfPersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
             <AttendanceRegularization empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "ApplyLeave" ? (

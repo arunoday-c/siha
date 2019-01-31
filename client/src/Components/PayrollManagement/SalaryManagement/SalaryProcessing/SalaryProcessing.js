@@ -382,9 +382,15 @@ class SalaryProcessing extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.salary_processed === "N"
-                                    ? "No"
-                                    : "Yes";
+                                  return row.salary_processed === "N" ? (
+                                    <span className="badge badge-warning">
+                                      No
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-Success">
+                                      Yes
+                                    </span>
+                                  );
                                 }
                               },
                               {
@@ -398,7 +404,15 @@ class SalaryProcessing extends Component {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  return row.salary_paid === "N" ? "No" : "Yes";
+                                  return row.salary_paid === "N" ? (
+                                    <span className="badge badge-warning">
+                                      No
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-success">
+                                      Yes
+                                    </span>
+                                  );
                                 }
                               },
                               {
@@ -406,7 +420,7 @@ class SalaryProcessing extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Salary No."
+                                      forceLabel: "Salary Number"
                                     }}
                                   />
                                 ),
