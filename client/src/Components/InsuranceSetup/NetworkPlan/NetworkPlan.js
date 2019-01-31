@@ -269,6 +269,27 @@ class NetworkPlan extends PureComponent {
                         : null
                     }
                   />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "policy_number",
+                      isImp: true
+                    }}
+                    textBox={{
+                      value: this.state.policy_number,
+                      className: "txt-fld",
+                      name: "policy_number",
+
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        "data-netdata": true
+                      }
+                    }}
+                  />
+
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{

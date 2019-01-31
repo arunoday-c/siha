@@ -249,7 +249,7 @@ export default class FormGroup extends PureComponent {
         );
       } else if (this.props.textBox.mask !== undefined) {
         return (
-          <Input
+          <input
             type="number"
             step=".0"
             name={this.props.textBox.name}

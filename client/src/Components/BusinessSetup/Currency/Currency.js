@@ -84,7 +84,6 @@ class Currency extends Component {
   }
 
   updateCurrency(data) {
-    
     algaehApiCall({
       uri: "/currency/updateCurrencyMaster",
       data: {
@@ -339,11 +338,7 @@ class Currency extends Component {
                 style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
-                <AlgaehLabel
-                  label={{
-                    fieldName: "add_to_list"
-                  }}
-                />
+                Add to List
               </button>
             </div>
           </div>

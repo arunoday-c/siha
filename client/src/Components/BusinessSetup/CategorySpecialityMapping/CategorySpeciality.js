@@ -341,11 +341,7 @@ class CategorySpeciality extends Component {
                 style={{ marginTop: 21 }}
                 className="btn btn-primary"
               >
-                <AlgaehLabel
-                  label={{
-                    fieldName: "add_to_list"
-                  }}
-                />
+                Add to list
               </button>
             </div>
           </div>
