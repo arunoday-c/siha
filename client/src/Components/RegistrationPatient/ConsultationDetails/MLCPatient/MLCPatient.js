@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./MLCPatient.css";
-import Checkbox from "@material-ui/core/Checkbox";
 import MyContext from "../../../../utils/MyContext.js";
 import AlagehFormGroup from "../../../Wrapper/formGroup.js";
 import AlgaehLabel from "../../../Wrapper/label.js";
@@ -54,14 +53,23 @@ export default class MLCPatient extends Component {
             <div className="col-lg-12">
               <div className="row">
                 <div className="col">
-                  <Checkbox
-                    onChange={this.CheckboxhandleChange.bind(this, context)}
-                  />
                   <AlgaehLabel
                     label={{
                       fieldName: "is_mlc"
                     }}
                   />
+                  <div className="customCheckbox">
+                    <label className="checkbox inline">
+                      <input
+                        type="checkbox"
+                        //value="ALL"
+                        // name="hims_d_employee_id"
+                        // checked={this.state.hims_d_employee_id === "ALL"}
+                        onChange={this.CheckboxhandleChange.bind(this, context)}
+                      />
+                      <span>Yes</span>
+                    </label>
+                  </div>
                 </div>
 
                 <AlagehFormGroup

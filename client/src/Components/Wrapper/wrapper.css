@@ -31,7 +31,8 @@
 
 .ReactTable .-btn {
   background: #34b8bc !important;
-  color: #fff !important; }
+  color: #fff !important;
+  font-size: 0.8em; }
 
 .ReactTable .-btn:disabled {
   background: rgba(0, 0, 0, 0.1) !important; }
@@ -39,7 +40,8 @@
 .ReactTable .-pagination .-center input,
 .ReactTable .-pagination .-center select {
   border: 1px solid #8c8c8c !important;
-  width: 7vh !important; }
+  width: 7vh !important;
+  -webkit-appearance: none; }
 
 .ReactTable .-pagination .-center input {
   padding: 2px !important; }

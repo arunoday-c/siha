@@ -33,13 +33,7 @@ class VisitType extends Component {
       visit_type_desc: "",
 
       arabic_visit_type_desc: "",
-      buttonText: (
-        <AlgaehLabel
-          label={{
-            fieldName: "Addbutton"
-          }}
-        />
-      ),
+      buttonText: <span>Add to List</span>,
       hims_d_visit_type_id: "",
       deleteId: "",
       selectedLang: "en",
