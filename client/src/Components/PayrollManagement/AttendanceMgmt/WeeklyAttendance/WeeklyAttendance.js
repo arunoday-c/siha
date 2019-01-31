@@ -333,7 +333,7 @@ export default class WeeklyAttendance extends Component {
           </div>
         </div>
 
-        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+        <div className="portlet portlet-bordered margin-top-15">
           <div
             className="portlet-title"
             style={{ height: 60, borderBottom: " 1px solid #e2e2e2" }}
@@ -397,7 +397,7 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col">
+                    <div className="col-9">
                       <div className="progress dayTypeCntr">
                         <div
                           className="progress-bar"
@@ -420,7 +420,7 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col">
+                    <div className="col-9">
                       <div className="progress">
                         <div
                           className="progress-bar  bg-success"
@@ -470,7 +470,7 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col">
+                    <div className="col-9">
                       <div className="progress dayTypeCntr">
                         <div
                           className="progress-bar"
@@ -496,7 +496,7 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col">
+                    <div className="col-9">
                       <div className="progress dayTypeCntr">
                         <div
                           className="progress-bar"
@@ -522,7 +522,7 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col">
+                    <div className="col-9">
                       <div className="progress dayTypeCntr">
                         <div
                           className="progress-bar"
@@ -548,7 +548,7 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col">
+                    <div className="col-9">
                       <div className="progress dayTypeCntr">
                         <div
                           className="progress-bar"
@@ -570,7 +570,7 @@ export default class WeeklyAttendance extends Component {
                       <div className="col-1">
                         {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                       </div>
-                      <div className="col">
+                      <div className="col-9">
                         <div className="progress">
                           <div
                             className="progress-bar  bg-danger"
@@ -773,6 +773,146 @@ export default class WeeklyAttendance extends Component {
       
           </div> */}
           {/* End Element Daily Progress*/}
+          <div className="row">
+            <div className="col-2" />
+            <div className="col-9">
+              <div class="ruler">
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm">
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                  <div class="mm" />
+                </div>
+                <div class="cm" />
+              </div>
+            </div>
+          </div>
         </div>
 
         <div className="hptl-phase1-footer">
