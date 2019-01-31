@@ -434,13 +434,31 @@ export default class WeeklyAttendance extends Component {
                           <br />
                           Date:
                           <b>
-                            {moment(data.attendance_date).format(
-                              "MMMM Do YYYY"
-                            )}
+                            {moment(data.attendance_date).format("MMM Do YYYY")}
                           </b>
                         </span>
                         <span className="totalHr animated bounceIn faster">
-                          Late time by <b className="lateTime">55 min</b>
+                          {data.actual_hours - data.worked_hours > 0 ? (
+                            <React.Fragment>
+                              Shortage Time
+                              <b className="lateTime">
+                                {Math.abs(
+                                  data.actual_hours - data.worked_hours
+                                ).toFixed(2)}{" "}
+                                Hrs
+                              </b>
+                            </React.Fragment>
+                          ) : (
+                            <React.Fragment>
+                              Excess Time
+                              <b className="OverTime">
+                                {Math.abs(
+                                  data.actual_hours - data.worked_hours
+                                ).toFixed(2)}{" "}
+                                Hrs
+                              </b>
+                            </React.Fragment>
+                          )}
                         </span>
                         <span className="checkOut animated bounceIn faster">
                           <i> Check Out </i>
@@ -453,7 +471,7 @@ export default class WeeklyAttendance extends Component {
                           </b>
                           <br />
                           Date:
-                          <b>{moment(data.out_date).format("MMMM Do YYYY")}</b>
+                          <b>{moment(data.out_date).format("MMM Do YYYY")}</b>
                         </span>
                       </div>
                       <div className="progress">
@@ -573,7 +591,7 @@ export default class WeeklyAttendance extends Component {
                           <b>
                             {data.attendance_date
                               ? moment(data.attendance_date).format(
-                                  "MMMM Do YYYY"
+                                  "MMM Do YYYY"
                                 )
                               : "Not Available"}
                           </b>
@@ -596,7 +614,7 @@ export default class WeeklyAttendance extends Component {
                           Date:
                           <b>
                             {data.out_date
-                              ? moment(data.out_date).format("MMMM Do YYYY")
+                              ? moment(data.out_date).format("MMM Do YYYY")
                               : "Not Available"}
                           </b>
                         </span>
@@ -778,16 +796,14 @@ export default class WeeklyAttendance extends Component {
                 className="btn btn-primary"
                 onClick={this.postTimeSheet.bind(this)}
               >
-                <AlgaehLabel label={{ forceLabel: "Post", returnText: true }} />
-              </button>
-
-              <button
-                type="button"
-                className="btn btn-primary"
-                //onClick={ClearData.bind(this, this)}
-              >
                 <AlgaehLabel
                   label={{ forceLabel: "Process", returnText: true }}
+                />
+              </button>
+
+              <button type="button" className="btn btn-primary">
+                <AlgaehLabel
+                  label={{ forceLabel: "Verify", returnText: true }}
                 />
               </button>
             </div>
