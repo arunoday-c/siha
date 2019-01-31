@@ -42,7 +42,7 @@ export default class WeeklyAttendance extends Component {
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
-          this.getDailyTimeSheet();
+          // this.getDailyTimeSheet();
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.message,
@@ -68,7 +68,7 @@ export default class WeeklyAttendance extends Component {
       .format("YYYY-MM-DD");
 
     algaehApiCall({
-      uri: "/holiday/getDailyTimeSheet",
+      uri: "/holiday/getTimeSheet",
       method: "GET",
       data: {
         from_date: _fromDate,
