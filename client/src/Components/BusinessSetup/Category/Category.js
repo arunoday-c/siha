@@ -290,11 +290,7 @@ class Category extends Component {
                 onClick={this.addCategory.bind(this)}
                 className="btn btn-primary"
               >
-                <AlgaehLabel
-                  label={{
-                    fieldName: "add_to_list"
-                  }}
-                />
+                Add to List
               </button>
             </div>
           </div>

@@ -49,10 +49,16 @@
       right: -45px; }
     .WeeklyTimeProgress .dailyTimeProgress .progress:hover span {
       display: block; }
+  .WeeklyTimeProgress .dailyTimeProgress .absentCntr .week-off span {
+    background: rgba(255, 0, 0, 0.1);
+    border: 1px solid rgba(255, 0, 0, 0.1); }
+  .WeeklyTimeProgress .dailyTimeProgress .paidLeaveCntr .week-off span {
+    background: rgba(0, 17, 255, 0.1);
+    border: 1px solid rgba(0, 17, 255, 0.1); }
   .WeeklyTimeProgress .dailyTimeProgress .week-off {
     height: 0.3rem; }
     .WeeklyTimeProgress .dailyTimeProgress .week-off .progress-bar {
-      background-color: #ffeba0 !important; }
+      background-color: #e8e8e8 !important; }
       .WeeklyTimeProgress .dailyTimeProgress .week-off .progress-bar span {
         background: #ffffff;
         width: auto;

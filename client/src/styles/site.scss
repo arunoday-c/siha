@@ -41,6 +41,9 @@ body {
     i {
       text-shadow: 0px 1px 1px lighten($color-black, 10%);
     }
+    .style_Label {
+      font-size: 1em;
+    }
   }
   .btn:hover {
     cursor: pointer;

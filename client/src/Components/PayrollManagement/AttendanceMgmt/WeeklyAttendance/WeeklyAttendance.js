@@ -339,9 +339,9 @@ export default class WeeklyAttendance extends Component {
             style={{ height: 60, borderBottom: " 1px solid #e2e2e2" }}
           >
             <div className="caption">
-              {this.state.employee_name
-                ? this.state.employee_name
-                : "Employee Name"}
+              <label className="label">Selected Employee</label>
+              <br />
+              {this.state.employee_name ? this.state.employee_name : "All"}
             </div>
             <div className="actions">
               {/*             
@@ -395,16 +395,16 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col">
-                      <div className="progress week-off">
+                      <div className="progress dayTypeCntr">
                         <div
-                          className="progress-bar "
+                          className="progress-bar"
                           role="progressbar"
                           aria-valuenow="100"
                           aria-valuemin="0"
                           aria-valuemax="100"
                           style={{ width: "100%" }}
                         >
-                          <span>Week Off</span>
+                          <span className="weekOffCntr">Week Off</span>
                         </div>
                       </div>
                     </div>
@@ -459,7 +459,7 @@ export default class WeeklyAttendance extends Component {
                 ) : data.status === "AB" ? (
                   <div
                     key={data.hims_f_daily_time_sheet_id}
-                    className="row dailyTimeProgress absentCntr"
+                    className="row dailyTimeProgress"
                   >
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
@@ -468,16 +468,16 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col">
-                      <div className="progress week-off">
+                      <div className="progress dayTypeCntr">
                         <div
-                          className="progress-bar "
+                          className="progress-bar"
                           role="progressbar"
                           aria-valuenow="100"
                           aria-valuemin="0"
                           aria-valuemax="100"
                           style={{ width: "100%" }}
                         >
-                          <span>Absent</span>
+                          <span className="absentCntr">Absent</span>
                         </div>
                       </div>
                     </div>
@@ -485,7 +485,7 @@ export default class WeeklyAttendance extends Component {
                 ) : data.status === "HO" ? (
                   <div
                     key={data.hims_f_daily_time_sheet_id}
-                    className="row dailyTimeProgress holidayCntr"
+                    className="row dailyTimeProgress "
                   >
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
@@ -494,16 +494,16 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col">
-                      <div className="progress week-off">
+                      <div className="progress dayTypeCntr">
                         <div
-                          className="progress-bar "
+                          className="progress-bar"
                           role="progressbar"
                           aria-valuenow="100"
                           aria-valuemin="0"
                           aria-valuemax="100"
                           style={{ width: "100%" }}
                         >
-                          <span>Holiday</span>
+                          <span className="holidayCntr">Holiday</span>
                         </div>
                       </div>
                     </div>
@@ -511,7 +511,7 @@ export default class WeeklyAttendance extends Component {
                 ) : data.status === "PL" ? (
                   <div
                     key={data.hims_f_daily_time_sheet_id}
-                    className="row dailyTimeProgress paidLeaveCntr"
+                    className="row dailyTimeProgress"
                   >
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
@@ -520,16 +520,16 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col">
-                      <div className="progress week-off">
+                      <div className="progress dayTypeCntr">
                         <div
-                          className="progress-bar "
+                          className="progress-bar"
                           role="progressbar"
                           aria-valuenow="100"
                           aria-valuemin="0"
                           aria-valuemax="100"
                           style={{ width: "100%" }}
                         >
-                          <span>Paid Leave</span>
+                          <span className="paidLeaveCntr">Paid Leave</span>
                         </div>
                       </div>
                     </div>
@@ -537,7 +537,7 @@ export default class WeeklyAttendance extends Component {
                 ) : data.status === "UL" ? (
                   <div
                     key={data.hims_f_daily_time_sheet_id}
-                    className="row dailyTimeProgress unPaidLeaveCntr"
+                    className="row dailyTimeProgress"
                   >
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
@@ -546,16 +546,16 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col">
-                      <div className="progress week-off">
+                      <div className="progress dayTypeCntr">
                         <div
-                          className="progress-bar "
+                          className="progress-bar"
                           role="progressbar"
                           aria-valuenow="100"
                           aria-valuemin="0"
                           aria-valuemax="100"
                           style={{ width: "100%" }}
                         >
-                          <span>Unpaid Leave</span>
+                          <span className="unPaidLeaveCntr">Unpaid Leave</span>
                         </div>
                       </div>
                     </div>
@@ -723,7 +723,7 @@ export default class WeeklyAttendance extends Component {
               <div className="col-1">Sat, 05</div>
               <div className="col-1">00.00 Hrs</div>
               <div className="col">
-                <div className="progress week-off">
+                <div className="progress dayTypeCntr">
                   <div
                     className="progress-bar"
                     role="progressbar"
