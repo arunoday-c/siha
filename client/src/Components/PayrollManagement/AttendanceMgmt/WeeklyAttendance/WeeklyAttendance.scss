@@ -6,8 +6,8 @@
       margin-top: 30px;
     }
     i {
-      font-size: 17em;
-      margin: 9vh;
+      font-size: 16em;
+      margin: 4vh 0 6vh;
       color: rgba(0, 0, 0, 0.04);
     }
   }
@@ -25,9 +25,10 @@
     }
   }
   .WeeklyTimeProgress {
-    max-height: 50vh;
+    max-height: 53vh;
     overflow-x: hidden;
     overflow-y: auto;
+    padding-bottom: 20px;
 
     .dailyTimeProgress {
       border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
@@ -35,17 +36,15 @@
       padding-bottom: 10px;
       .col-9 {
         padding-right: 0;
-      }
-      .progress {
-        height: 0.5rem;
-        margin-top: 0.6rem;
 
         .tooltipDetails {
           span {
+            color: #fff;
+            font-size: 0.8em;
             background: rgba(0, 0, 0, 0.7);
             position: absolute;
             z-index: 9;
-            top: -22px;
+            top: 22px;
             padding: 2px 5px;
             border-radius: 5px;
             display: none;
@@ -65,12 +64,12 @@
             &::after {
               content: " ";
               position: absolute;
-              top: 100%; /* At the bottom of the tooltip */
+              bottom: 100%; /* At the bottom of the tooltip */
               left: 50%;
               margin-left: -5px;
               border-width: 5px;
               border-style: solid;
-              border-color: rgba(0, 0, 0, 0.7) transparent transparent
+              border-color: transparent transparent rgba(0, 0, 0, 0.7)
                 transparent;
             }
           }
@@ -81,7 +80,7 @@
             left: 42.5%;
           }
           .checkOut {
-            right: 15px;
+            right: 0;
           }
         }
         &:hover {
@@ -90,12 +89,18 @@
           }
         }
       }
+      .progress {
+        height: 0.5rem;
+        margin-top: 0.6rem;
+        .progress-bar {
+          position: relative;
+        }
+      }
       .dayTypeCntr {
         height: 0.3rem;
         .progress-bar {
           background-color: #e8e8e8 !important;
-          position: inherit;
-          left: 10px;
+          //  position: relative;
           span {
             width: auto;
             display: inline-block;

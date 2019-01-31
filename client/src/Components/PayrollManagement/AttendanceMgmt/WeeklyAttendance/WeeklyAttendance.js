@@ -421,6 +421,25 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col-9">
+                      <div className="tooltipDetails">
+                        <span className="checkIn animated bounceIn faster">
+                          Check In
+                          <b>
+                            {moment(data.in_time, "HH:mm:ss").format("hh:mm a")}
+                          </b>
+                        </span>
+                        {/* <span className="totalHr animated bounceIn faster">
+                                Late time by <b className="lateTime">55 min</b>
+                                  </span>*/}
+                        <span className="checkOut animated bounceIn faster">
+                          Check Out
+                          <b>
+                            {moment(data.out_time, "HH:mm:ss").format(
+                              "hh:mm a"
+                            )}
+                          </b>
+                        </span>
+                      </div>
                       <div className="progress">
                         <div
                           className="progress-bar  bg-success"
@@ -433,29 +452,7 @@ export default class WeeklyAttendance extends Component {
                               (data.worked_hours / data.actual_hours) * 100 +
                               "%"
                           }}
-                        >
-                          <div className="tooltipDetails">
-                            <span className="checkIn animated bounceIn faster">
-                              Check In
-                              <b>
-                                {moment(data.in_time, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )}
-                              </b>
-                            </span>
-                            {/* <span className="totalHr animated bounceIn faster">
-                                Late time by <b className="lateTime">55 min</b>
-                                  </span>*/}
-                            <span className="checkOut animated bounceIn faster">
-                              Check Out
-                              <b>
-                                {moment(data.out_time, "HH:mm:ss").format(
-                                  "hh:mm a"
-                                )}
-                              </b>
-                            </span>
-                          </div>
-                        </div>
+                        />
                       </div>
                     </div>
                   </div>
@@ -549,6 +546,31 @@ export default class WeeklyAttendance extends Component {
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col-9">
+                      <div className="tooltipDetails">
+                        <span className="checkIn animated bounceIn faster">
+                          Check In{" "}
+                          <b>
+                            {data.in_time
+                              ? moment(data.in_time, "HH:mm:ss").format(
+                                  "hh:mm a"
+                                )
+                              : "Not Available"}
+                          </b>
+                        </span>
+                        <span className="totalHr animated bounceIn faster">
+                          EXCEPTION
+                        </span>
+                        <span className="checkOut animated bounceIn faster">
+                          Check Out{" "}
+                          <b>
+                            {data.out_time
+                              ? moment(data.out_time, "HH:mm:ss").format(
+                                  "hh:mm a"
+                                )
+                              : "Not Available"}
+                          </b>
+                        </span>
+                      </div>
                       <div className="progress dayTypeCntr">
                         <div
                           className="progress-bar"
@@ -581,33 +603,7 @@ export default class WeeklyAttendance extends Component {
                             style={{
                               width: "50%"
                             }}
-                          >
-                            <div className="tooltipDetails">
-                              <span className="checkIn animated bounceIn faster">
-                                Check In{" "}
-                                <b>
-                                  {data.in_time
-                                    ? moment(data.in_time, "HH:mm:ss").format(
-                                        "hh:mm a"
-                                      )
-                                    : "Not Available"}
-                                </b>
-                              </span>
-                              <span className="totalHr animated bounceIn faster">
-                                EXCEPTION
-                              </span>
-                              <span className="checkOut animated bounceIn faster">
-                                Check Out{" "}
-                                <b>
-                                  {data.out_time
-                                    ? moment(data.out_time, "HH:mm:ss").format(
-                                        "hh:mm a"
-                                      )
-                                    : "Not Available"}
-                                </b>
-                              </span>
-                            </div>
-                          </div>
+                          />
                         </div>
                       </div>
                     </div>
@@ -615,164 +611,7 @@ export default class WeeklyAttendance extends Component {
                 ) : null
               )
             )}
-            {/*
-            <div className="row dailyTimeProgress">
-              <div className="col-1">Mon, 31</div>
-              <div className="col-1">08.45 Hrs</div>
-              <div className="col">
-                <div className="progress">
-                  <div
-                    className="progress-bar  bg-danger"
-                    role="progressbar"
-                    aria-valuenow="75"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ width: "45%" }}
-                  >
-                    <div className="tooltipDetails">
-                      <span className="checkIn animated bounceIn faster">
-                        Check In <b>07:55 AM</b>
-                      </span>
-                      <span className="totalHr animated bounceIn faster">
-                        Late time by <b className="lateTime">55 min</b>
-                      </span>
-                      <span className="checkOut animated bounceIn faster">
-                        Check Out <b>06:15 PM</b>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            
-            <div className="row dailyTimeProgress">
-              <div className="col-1">Tue, 01</div>
-              <div className="col-1">08.45 Hrs</div>
-              <div className="col">
-                <div className="progress">
-                  <div
-                    className="progress-bar bg-success"
-                    role="progressbar"
-                    aria-valuenow="75"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ width: "90%" }}
-                  >
-                    <div className="tooltipDetails">
-                      <span className="checkIn animated bounceIn faster">
-                        Check In <b>08:55 AM</b>
-                      </span>
-                      <span className="totalHr animated bounceIn faster">
-                        Over time by<b className="OverTime">20 min</b>
-                      </span>
-                      <span className="checkOut animated bounceIn faster">
-                        Check Out <b>07:45 PM</b>
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row dailyTimeProgress">
-              <div className="col-1">Wed, 02</div>
-              <div className="col-1">05.15 Hrs</div>
-              <div className="col">
-                <div className="progress">
-                  <div
-                    className="progress-bar progress-bar-striped  progress-bar-animated"
-                    role="progressbar"
-                    aria-valuenow="75"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ width: "55%" }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="row dailyTimeProgress">
-              <div className="col-1">Thu, 03</div>
-              <div className="col-1">00.00 Hrs</div>
-              <div className="col">
-                <div className="progress ">
-                  <div
-                    className="progress-bar bg-default "
-                    role="progressbar"
-                    aria-valuenow="75"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ width: "100%" }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="row dailyTimeProgress">
-              <div className="col-1">Fri, 04</div>
-              <div className="col-1">00.00 Hrs</div>
-              <div className="col">
-                <div className="progress ">
-                  <div
-                    className="progress-bar bg-default "
-                    role="progressbar "
-                    aria-valuenow="75"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ width: "100%" }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="row dailyTimeProgress">
-              <div className="col-1">Sat, 05</div>
-              <div className="col-1">00.00 Hrs</div>
-              <div className="col">
-                <div className="progress dayTypeCntr">
-                  <div
-                    className="progress-bar"
-                    role="progressbar"
-                    aria-valuenow="100"
-                    aria-valuemin="0"
-                    aria-valuemax="100"
-                    style={{ width: "100%" }}
-                  >
-                    <span>Week Off</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-        */}
           </div>
-          {/* <hr /> */}
-          {/* Start Element Daily Progress*/}
-          {/*   <div className="portlet-body WeeklyTimeProgress">
-      
-
-             <div className="row dailyTimeProgress">
-              <div className="col-3 time_name">
-                Aboobacker Sidhiqe
-                <br />
-                <small>EMP00001</small>
-              </div>
-              <div className="col-1">05.15 Hrs</div>
-              <div className="col">
-                <div className="col">
-                  <div className="progress">
-                    <div
-                      className="progress-bar progress-bar-striped  progress-bar-animated"
-                      role="progressbar"
-                      aria-valuenow="75"
-                      aria-valuemin="0"
-                      aria-valuemax="100"
-                      style={{ width: "55%" }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div> 
-
-      
-          </div> */}
-          {/* End Element Daily Progress*/}
           <div className="row">
             <div className="col-2" />
             <div className="col-9">
