@@ -217,6 +217,7 @@ export function algaehApiCall(options) {
                 " \n Detail Info : \n" +
                 JSON.stringify(err)
             );
+
             swalMessage({
               title: "Request taking long time to process....!",
               type: "info"

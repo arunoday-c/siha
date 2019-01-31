@@ -1977,8 +1977,34 @@ function getEarningComponents(options) {
 
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "UN") {
+                        split_sal = split_sal * previous_leaves;
+
+                        utilities
+                          .AlgaehUtilities()
+                          .logger()
+                          .log("split_sal: ", split_sal);
+
+                        current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "QD") {
+                        split_sal = perday_salary / 2;
+                        split_sal = split_sal * previous_leaves;
+
+                        utilities
+                          .AlgaehUtilities()
+                          .logger()
+                          .log("split_sal: ", split_sal);
+
+                        current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "TQ") {
+                        split_sal = perday_salary / 2;
+                        split_sal = split_sal * previous_leaves;
+
+                        utilities
+                          .AlgaehUtilities()
+                          .logger()
+                          .log("split_sal: ", split_sal);
+
+                        current_earning_amt = current_earning_amt - split_sal;
                       }
                     } else {
                       previous_leaves = balance_days;
