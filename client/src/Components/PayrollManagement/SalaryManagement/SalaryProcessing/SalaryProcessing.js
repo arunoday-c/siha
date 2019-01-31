@@ -63,7 +63,8 @@ class SalaryProcessing extends Component {
       loan_due_amount: null,
       net_salary: null,
       salary_dates: null,
-      isOpen: false
+      isOpen: false,
+      dis_employee_name: null
     };
   }
 
@@ -422,21 +423,6 @@ class SalaryProcessing extends Component {
                                     }}
                                   />
                                 )
-                                // className: drow => {
-                                //   return "greenCell";
-                                // },
-                                // displayTemplate: row => {
-                                //   return (
-                                //     <span
-                                //       className="pat-code"
-                                //       onClick={() => {
-                                //         getSalaryDetails(this, row);
-                                //       }}
-                                //     >
-                                //       {row.employee_code}
-                                //     </span>
-                                //   );
-                                // }
                               },
                               {
                                 fieldName: "full_name",

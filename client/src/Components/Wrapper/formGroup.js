@@ -201,7 +201,7 @@ export default class FormGroup extends PureComponent {
       const _required =
         this.props.label !== undefined
           ? this.props.label.isImp !== undefined
-            ? { required: this.props.label.isImp }
+            ? { algaeh_required: "" + this.props.label.isImp }
             : {}
           : {};
       const _invalid =

@@ -6,7 +6,6 @@
     }
   }
   span {
-    
     margin: 0 10px;
   }
 }
@@ -68,16 +67,32 @@
         }
       }
     }
+    .absentCntr {
+      .week-off {
+        span {
+          background: rgba(255, 0, 0, 0.1);
+          border: 1px solid rgba(255, 0, 0, 0.1);
+        }
+      }
+    }
+
+    .paidLeaveCntr {
+      .week-off {
+        span {
+          background: rgba(0, 17, 255, 0.1);
+          border: 1px solid rgba(0, 17, 255, 0.1);
+        }
+      }
+    }
     .week-off {
       height: 0.3rem;
       .progress-bar {
-        background-color: #ffeba0 !important;
+        background-color: #e8e8e8 !important;
         span {
           background: #ffffff;
           width: auto;
           display: inline-block;
           padding: 2px 10px;
-          
           margin: auto;
           position: absolute;
           left: 39.5vw;

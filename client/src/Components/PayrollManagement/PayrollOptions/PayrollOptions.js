@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AttendanceSettings from "./AttendanceSettings/AttendanceSettings";
 import EndServiceOption from "./EndServiceOption/EndServiceOption";
+import LeaveSalarySetup from "./LeaveSalarySetup/LeaveSalarySetup";
 
 class PayrollOptions extends Component {
   constructor(props) {
@@ -55,6 +56,19 @@ class PayrollOptions extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"LeaveSalarySetup"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Salary Setup"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -62,6 +76,8 @@ class PayrollOptions extends Component {
           <AttendanceSettings />
         ) : this.state.pageDisplay === "EndServiceOption" ? (
           <EndServiceOption />
+        ) : this.state.pageDisplay === "LeaveSalarySetup" ? (
+          <LeaveSalarySetup />
         ) : null}
       </div>
     );

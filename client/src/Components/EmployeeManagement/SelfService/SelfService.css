@@ -39,13 +39,15 @@
       margin-bottom: 2px;
       color: #000;
       line-height: 1.6rem;
-      min-height: 50px; }
+      min-height: 50px;
+      font-size: 1.3em; }
     .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName p {
       margin: 0;
       padding: 0; }
       .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeName p b {
         color: #34b8bc;
-        font-weight: 300; }
+        font-size: 0.9em;
+        font-weight: 700; }
   .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic {
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
@@ -54,7 +56,9 @@
     min-height: 98px; }
     .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span {
       display: block;
-      line-height: 1.5rem; }
+      line-height: 1.7rem;
+      font-size: 0.9em;
+      font-weight: 700; }
       .selfServiceModule .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span i {
         text-align: center;
         width: 20px; }
@@ -95,7 +99,7 @@
 
 .selfServiceModule .EmployeeTopNav {
   background: white;
-  height: 35px;
+  height: 30px;
   padding: 0;
   width: 100%;
   color: #797979;

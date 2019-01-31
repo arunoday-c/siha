@@ -49,21 +49,38 @@
         right: 15px; }
       .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .progress:hover span {
         display: block; }
-    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .week-off {
+    .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr {
       height: 0.3rem; }
-      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .week-off .progress-bar {
-        background-color: #ffeba0 !important; }
-        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .week-off .progress-bar span {
-          background: #ffffff;
+      .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar {
+        background-color: #e8e8e8 !important; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span {
           width: auto;
           display: inline-block;
           padding: 2px 10px;
           margin: auto;
           position: absolute;
-          left: 35.5vw;
-          border: 1px solid #c3c3c3;
           color: #202429;
           border-radius: 5px; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.absentCntr {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            left: 35.5vw; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.paidLeaveCntr {
+            background: rgba(0, 186, 190, 0.2);
+            border: 1px solid rgba(0, 186, 190, 0.5);
+            left: 34.8vw; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.unPaidLeaveCntr {
+            background: rgba(255, 0, 0, 0.2);
+            border: 1px solid rgba(255, 0, 0, 0.5);
+            left: 35.5vw; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.holidayCntr {
+            background: rgba(0, 17, 255, 0.2);
+            border: 1px solid rgba(0, 17, 255, 0.5);
+            left: 35.3vw; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress-bar span.weekOffCntr {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.5);
+            left: 34.9vw; }
     .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .bg-default {
       background-color: #e7ecef !important; }
     .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress:last-child {
