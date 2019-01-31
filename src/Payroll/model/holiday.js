@@ -430,7 +430,7 @@ let getTimeSheet = (req, res, next) => {
                 from hims_d_holiday where (((date(holiday_date)= date(?) and weekoff='Y') or \
                 (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RE') or\
                 (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RS' and religion_id=?))); ",
-                [1, attDate, attDate, attDate, attDate, religion_id],
+                [2, attDate, attDate, attDate, attDate, religion_id],
                 (error, leaveHoliday) => {
                   if (error) {
                     connection.rollback(() => {
@@ -453,7 +453,7 @@ let getTimeSheet = (req, res, next) => {
           "select hims_d_hrms_options_id,salary_process_date,salary_pay_before_end_date,\
         payroll_payment_date,salary_calendar,salary_calendar_fixed_days,attendance_type,\
         fetch_punch_data_reporting,gratuity_in_final_settle,leave_level,loan_level,leave_encash_level,\
-        review_auth_level,yearly_working_days,end_of_service_calculation,advance_deduction,overtime_payment,\
+        review_auth_level,yearly_working_days,advance_deduction,overtime_payment,\
         overtime_calculation,overtime_hourly_calculation,standard_intime,standard_outime,\
         standard_working_hours,standard_break_hours,biometric_database,biometric_server_name,\
         biometric_database_name,biometric_database_login,biometric_database_password,\

@@ -1298,7 +1298,7 @@ let getEmployeeAttendReg = (req, res, next) => {
 };
 
 //created by irfan:
-let processYearlyLeave = (req, res, next) => {
+let processYearlyLeaveBACKUP = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -1364,14 +1364,19 @@ let processYearlyLeave = (req, res, next) => {
                             .Select(s => s.hims_d_leave_id)
                             .ToArray();
 
+
+                            debugLog("apllicable_leavs:", apllicable_leavs);
                           let new_leave_ids = apllicable_leavs.filter(
                             (item, pos) => {
                               return apllicable_leavs.indexOf(item) == pos;
                             }
                           );
 
+
+                          debugLog("new_leave_ids:", new_leave_ids);
                           new Promise((resolve, reject) => {
                             try {
+                              // check if data already thier im year and monthly table
                               connection.query(
                                 " select hims_f_employee_yearly_leave_id,employee_id,`year` from hims_f_employee_yearly_leave\
                                 where record_status='A' and employee_id=? and `year`=? ; \
@@ -1389,6 +1394,8 @@ let processYearlyLeave = (req, res, next) => {
                                     releaseDBConnection(db, connection);
                                     next(error);
                                   }
+                            // if monthly table data exist
+
 
                                   if (yearOrLeavExist[1].length > 0) {
                                     const old_leave_ids = new LINQ(
@@ -1397,9 +1404,15 @@ let processYearlyLeave = (req, res, next) => {
                                       .Select(s => s.leave_id)
                                       .ToArray();
 
+
+                                      debugLog("old_leave_ids:", old_leave_ids);
+
+                                      
+                                      // remove existing leave ids from applicable leave ids
                                     let leaves_to_insert = new_leave_ids.filter(
                                       val => !old_leave_ids.includes(val)
                                     );
+                                    debugLog("leaves_to_insert:", leaves_to_insert);
 
                                     const _leaves = leaves_to_insert.map(
                                       item => {
@@ -1412,7 +1425,7 @@ let processYearlyLeave = (req, res, next) => {
                                           .value();
                                       }
                                     );
-
+                                      debugLog("_leaves:", _leaves);
                                     monthlyArray.push(
                                       ...new LINQ(_leaves)
                                         .Where(w => w.hims_d_leave_id > 0)
@@ -1429,6 +1442,7 @@ let processYearlyLeave = (req, res, next) => {
                                         .ToArray()
                                     );
                                   } else {
+                                    // if monthly table data not exist
                                     monthlyArray.push(
                                       ...new LINQ(leaveRes)
                                         .Where(w => w.hims_d_leave_id > 0)
@@ -1623,6 +1637,392 @@ let processYearlyLeave = (req, res, next) => {
               }
             } else {
               req.records = "No Employees found";
+              next();
+              return;
+            }
+          }
+        );
+      });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide year"
+      };
+
+      next();
+      return;
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+//created by irfan:
+let processYearlyLeave = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let year = "";
+
+    debugLog("input:", req.query);
+
+    let yearArray = [];
+    let monthlyArray = [];
+
+    let employee_id = "";
+
+
+
+    let AllEmployees=[];
+    let AllLeaves=[];
+    let AllYearlyLeaves=[];
+    let AllMonthlyLeaves=[];
+
+    if (req.query.employee_id > 0) {
+      employee_id = ` and hims_d_employee_id=${req.query.employee_id}; `;
+    }
+    if (
+      req.query.year != "" &&
+      req.query.year != null &&
+      req.query.year != "null" &&
+      req.query.year != undefined
+    ) {
+      year = req.query.year;
+
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_d_employee_id, employee_code,full_name  as employee_name,\
+            employee_status,date_of_joining ,hospital_id ,employee_type,sex\
+            from hims_d_employee where employee_status <>'I' and  record_status='A' " +
+            employee_id+";\
+            select L.hims_d_leave_id,L.leave_code,LD.employee_type,LD.gender,LD.eligible_days from hims_d_leave  L \
+            inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  and L.record_status='A' ;\
+            select hims_f_employee_yearly_leave_id,employee_id,`year` from hims_f_employee_yearly_leave\
+             where record_status='A' and `year`=? ;\
+             select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from\
+            hims_f_employee_monthly_leave where   `year`=?; ",  
+            
+            [year,year],
+
+          (error, allResult) => {
+            if (error) {
+              releaseDBConnection(db, connection);
+              next(error);
+            }
+            AllEmployees=allResult[0];
+             AllLeaves=allResult[1];
+             AllYearlyLeaves=allResult[2];
+             AllMonthlyLeaves=allResult[3];
+
+            // debugLog("AllEmployees:", AllEmployees);
+            // debugLog("AllLeaves:", AllLeaves);
+            // debugLog("AllYearlyLeaves:", AllYearlyLeaves);
+            // debugLog("AllMonthlyLeaves:", AllMonthlyLeaves);
+         
+            if (AllEmployees.length > 0) {
+              
+
+
+              new Promise((resolve, reject) => {
+                try {
+
+                  for (let i = 0; i < AllEmployees.length; i++) {
+
+
+                    // fetch all the fileds of apllicable_leavs
+                    const apllicable_leavsDetail = new LINQ(AllLeaves).
+                    Where(w=>w.employee_type==AllEmployees[i]["employee_type"] &&  (w.gender==AllEmployees[i]["sex"]||w.gender=='BOTH'))
+                    .Select(s => {
+                      return{hims_d_leave_id:s.hims_d_leave_id,
+                        eligible_days: s.eligible_days,
+                        eligible_days: s.eligible_days
+                      
+                      }
+                    })
+                    .ToArray();
+    
+                        // fetch only leave ids of apllicable_leavs
+                        const apllicable_leavs = new LINQ(AllLeaves).
+                        Where(w=>w.employee_type==AllEmployees[i]["employee_type"] &&  (w.gender==AllEmployees[i]["sex"]||w.gender=='BOTH'))
+                        .Select(s => s.hims_d_leave_id)
+                        .ToArray();
+    
+                        debugLog("apllicable_leavs:", apllicable_leavs);
+                        debugLog("apllicable_leavsLength:", apllicable_leavs.length);
+    
+                        if(apllicable_leavs.length>0){
+    
+                          debugLog("here");
+    
+                          let new_leave_ids = apllicable_leavs.filter(
+                            (item, pos) => {
+                              return apllicable_leavs.indexOf(item) == pos;
+                            }
+                          );
+                          debugLog("new_leave_ids:", new_leave_ids);
+                         //step1---checking if yearly leave is  already processed for this employee
+                          const yearlyLvExist = new LINQ(AllYearlyLeaves).Where(w=> w.employee_id==AllEmployees[i]["hims_d_employee_id"]&&w.year==year)
+                          .Select(s => s.hims_f_employee_yearly_leave_id)
+                          .ToArray().length;
+    
+                          debugLog("yearlyLvExist:", yearlyLvExist);
+                          //if yearly leave is  not processed for this employee process now
+                          if (yearlyLvExist<1) {
+                            yearArray.push({
+                              employee_id:
+                              AllEmployees[i].hims_d_employee_id,
+                              year: year
+                            });
+                          }
+    
+                            //step2----checking if monthly leave is  already processed for this employee
+                            const monthlyLvExist = new LINQ(AllMonthlyLeaves).Where(w=> w.employee_id==AllEmployees[i]["hims_d_employee_id"]&&w.year==year)
+                            .Select(s => s.leave_id)
+                            .ToArray();
+    
+    
+                            debugLog("monthlyLvExist:", monthlyLvExist);
+                              if (monthlyLvExist.length > 0) {
+                                // const old_leave_ids = new LINQ(
+                                //   monthlyLvExist
+                                // )
+                                //   .Select(s => s.leave_id)
+                                //   .ToArray();
+    
+    
+                                //   debugLog("old_leave_ids:", old_leave_ids);
+    
+                                  
+                                  // remove existing leave ids from applicable leave ids
+                                let leaves_to_insert = new_leave_ids.filter(
+                                  val => !monthlyLvExist.includes(val)
+                                );
+                                debugLog("leaves_to_insert:", leaves_to_insert);
+    
+                          
+    
+    
+                                const _leaves = leaves_to_insert.map(
+                                  item => {
+                                    return _.chain(apllicable_leavsDetail)
+                                      .find(o => {
+                                        return o.hims_d_leave_id == item;
+                                      })
+    
+                                      .omit(_.isNull)
+                                      .value();
+                                  }
+                                );
+                                  debugLog("_leaves:", _leaves);
+                                monthlyArray.push(
+                                  ...new LINQ(_leaves)
+                                    .Where(w => w.hims_d_leave_id > 0)
+                                    .Select(s => {
+                                      return {
+                                        employee_id:
+                                        AllEmployees[i].hims_d_employee_id,
+                                        year: year,
+                                        leave_id: s.hims_d_leave_id,
+                                        total_eligible: s.eligible_days,
+                                        close_balance: s.eligible_days
+                                      };
+                                    })
+                                    .ToArray()
+                                );
+                              }
+                              else {
+                                // if monthly table data not exist
+                                monthlyArray.push(
+                                  ...new LINQ(apllicable_leavsDetail)
+                                    .Where(w => w.hims_d_leave_id > 0)
+                                    .Select(s => {
+                                      return {
+                                        employee_id:
+                                        AllEmployees[i].hims_d_employee_id,
+                                        year: year,
+                                        leave_id: s.hims_d_leave_id,
+                                        total_eligible: s.eligible_days,
+                                        close_balance: s.eligible_days
+                                      };
+                                    })
+                                    .ToArray()
+                                );
+                              }
+    
+                          }
+    
+                          if (i == AllEmployees.length - 1) {
+                            //insert in two tables
+                            resolve(yearArray);
+                          }
+                    
+    
+                  }
+                 
+                } catch (e) {
+                  reject(e);
+                }
+              }).then(arrayResult => {
+
+                debugLog("yearArray:", yearArray);
+                debugLog("monthlyArray:", monthlyArray);
+                connection.beginTransaction(error => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+                  new Promise((resolve, reject) => {
+                    try {
+                      if (yearArray.length > 0) {
+                        const insurtColumns = [
+                          "employee_id",
+                          "year"
+                        ];
+
+                        connection.query(
+                          "INSERT  INTO hims_f_employee_yearly_leave(" +
+                            insurtColumns.join(",") +
+                            ",created_date,updated_date,created_by,updated_by) VALUES ?",
+                          [
+                            jsonArrayToObject({
+                              sampleInputObject: insurtColumns,
+                              arrayObj: yearArray,
+                              newFieldToInsert: [
+                                new Date(),
+                                new Date(),
+                                req.userIdentity
+                                  .algaeh_d_app_user_id,
+                                req.userIdentity
+                                  .algaeh_d_app_user_id
+                              ]
+                            })
+                          ],
+                          (error, yearResult) => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+
+                            if (yearResult.affectedRows > 0) {
+                              resolve({ yearResult });
+                            } else {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+                          }
+                        );
+                      } else {
+                        resolve({});
+                      }
+                    } catch (e) {
+                      reject(e);
+                    }
+                  }).then(resultofYearInsert => {
+                    new Promise((resolve, reject) => {
+                      try {
+                        if (monthlyArray.length > 0) {
+                          //functionality plus commit
+
+                          const insurtColumns = [
+                            "employee_id",
+                            "year",
+                            "leave_id",
+                            "total_eligible",
+                            "close_balance"
+                          ];
+
+                          connection.query(
+                            "INSERT INTO hims_f_employee_monthly_leave(" +
+                              insurtColumns.join(",") +
+                              ") VALUES ?",
+                            [
+                              jsonArrayToObject({
+                                sampleInputObject: insurtColumns,
+                                arrayObj: monthlyArray
+                              })
+                            ],
+                            (error, monthResult) => {
+                              if (error) {
+                                connection.rollback(() => {
+                                  releaseDBConnection(
+                                    db,
+                                    connection
+                                  );
+                                  next(error);
+                                });
+                              }
+
+                              connection.commit(error => {
+                                if (error) {
+                                  connection.rollback(() => {
+                                    releaseDBConnection(
+                                      db,
+                                      connection
+                                    );
+                                    next(error);
+                                  });
+                                }
+                                releaseDBConnection(db, connection);
+                                req.records = monthResult;
+                                next();
+                              });
+                            }
+                          );
+                        } else {
+                          //commit
+
+                          connection.commit(error => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+
+                            releaseDBConnection(db, connection);
+
+                            if (
+                              Object.keys(resultofYearInsert)
+                                .length === 0
+                            ) {
+                              req.records = {
+                                already_processed: true,
+                                message: "Leave already processed"
+                              };
+                              next();
+                            } else {
+                              req.records = resultofYearInsert;
+                              next();
+                            }
+                          });
+                        }
+                      } catch (e) {
+                        reject(e);
+                      }
+                    }).then(resultMonthlyInsert => {
+                      //pppppppppppp
+                    });
+                  });
+                });
+
+
+
+
+              });
+
+            } else {
+              releaseDBConnection(db, connection);
+              req.records = {
+                invalid_input: true,
+                message: "No Employees found"
+              };
               next();
               return;
             }
