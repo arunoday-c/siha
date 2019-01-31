@@ -148,14 +148,14 @@ module.exports = {
                       total_leaves: 0,
                       present_days: 0,
                       paid_days: 0,
-                      totalMonthDays: totalMonthDays
+                      total_work_days: totalMonthDays
                     };
 
                     if (
                       empResult[i]["date_of_joining"] > startOfMonth &&
                       empResult[i]["exit_date"] == null
                     ) {
-                      empResult[i]["defaults"].totalMonthDays -= moment(
+                      empResult[i]["defaults"].total_work_days -= moment(
                         empResult[i]["date_of_joining"],
                         "YYYY-MM-DD"
                       ).diff(moment(startOfMonth, "YYYY-MM-DD"), "days");
@@ -163,7 +163,7 @@ module.exports = {
                       empResult[i]["exit_date"] < endOfMonth &&
                       empResult[i]["date_of_joining"] < startOfMonth
                     ) {
-                      empResult[i]["defaults"].totalMonthDays -= moment(
+                      empResult[i]["defaults"].total_work_days -= moment(
                         endOfMonth,
                         "YYYY-MM-DD"
                       ).diff(
@@ -174,7 +174,7 @@ module.exports = {
                       empResult[i]["date_of_joining"] > startOfMonth &&
                       empResult[i]["exit_date"] < endOfMonth
                     ) {
-                      empResult[i]["defaults"].totalMonthDays -=
+                      empResult[i]["defaults"].total_work_days -=
                         moment(
                           empResult[i]["date_of_joining"],
                           "YYYY-MM-DD"
@@ -463,7 +463,7 @@ module.exports = {
                                     req.query.leave_salary == "Y"
                                       ? 0
                                       : empResult[i]["defaults"]
-                                          .totalMonthDays -
+                                          .total_work_days -
                                         empResult[i]["defaults"]
                                           .emp_absent_days -
                                         empResult[i]["defaults"].total_leaves -
@@ -506,11 +506,12 @@ module.exports = {
                                         month_number,
                                         empResult[i]["hospital_id"],
                                         empResult[i]["sub_department_id"],
-                                        empResult[i]["defaults"].totalMonthDays,
+                                        totalMonthDays,
                                         empResult[i]["defaults"].present_days,
                                         empResult[i]["defaults"]
                                           .emp_absent_days,
-                                        empResult[i]["defaults"].present_days,
+                                        empResult[i]["defaults"]
+                                          .total_work_days,
                                         empResult[i]["defaults"].total_week_off,
                                         empResult[i]["defaults"]
                                           .emp_total_holidays,
@@ -524,11 +525,12 @@ module.exports = {
                                         new Date(),
 
                                         req.userIdentity.algaeh_d_app_user_id,
-                                        empResult[i]["defaults"].totalMonthDays,
+                                        totalMonthDays,
                                         empResult[i]["defaults"].present_days,
                                         empResult[i]["defaults"]
                                           .emp_absent_days,
-                                        empResult[i]["defaults"].present_days,
+                                        empResult[i]["defaults"]
+                                          .total_work_days,
                                         empResult[i]["defaults"].total_week_off,
                                         empResult[i]["defaults"]
                                           .emp_total_holidays,
@@ -593,7 +595,7 @@ module.exports = {
                                 empResult[i]["defaults"].unpaid_leave;
 
                               empResult[i]["defaults"].present_days =
-                                empResult[i]["defaults"].totalMonthDays -
+                                empResult[i]["defaults"].total_work_days -
                                 empResult[i]["defaults"].emp_absent_days -
                                 empResult[i]["defaults"].total_leaves -
                                 empResult[i]["defaults"].total_week_off -
@@ -626,10 +628,10 @@ module.exports = {
                                     month_number,
                                     empResult[i]["hospital_id"],
                                     empResult[i]["sub_department_id"],
-                                    empResult[i]["defaults"].totalMonthDays,
+                                    totalMonthDays,
                                     empResult[i]["defaults"].present_days,
                                     empResult[i]["defaults"].emp_absent_days,
-                                    empResult[i]["defaults"].present_days,
+                                    empResult[i]["defaults"].total_work_days,
                                     empResult[i]["defaults"].total_week_off,
                                     empResult[i]["defaults"].emp_total_holidays,
                                     empResult[i]["defaults"].total_leaves,
@@ -642,10 +644,10 @@ module.exports = {
                                     new Date(),
 
                                     req.userIdentity.algaeh_d_app_user_id,
-                                    empResult[i]["defaults"].totalMonthDays,
+                                    totalMonthDays,
                                     empResult[i]["defaults"].present_days,
                                     empResult[i]["defaults"].emp_absent_days,
-                                    empResult[i]["defaults"].present_days,
+                                    empResult[i]["defaults"].total_work_days,
                                     empResult[i]["defaults"].total_week_off,
                                     empResult[i]["defaults"].emp_total_holidays,
                                     empResult[i]["defaults"].total_leaves,

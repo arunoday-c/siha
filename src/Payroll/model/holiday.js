@@ -415,6 +415,8 @@ let getTimeSheet = (req, res, next) => {
         }
         let timeSheetArray = [];
         let actual_hours = "";
+
+        let year = moment(req.query.from_date).format("YYYY");
         const syscCall = async function(attDate, religion_id) {
           debugLog("am in synchronous");
           return await new Promise((resolve, reject) => {
@@ -498,8 +500,8 @@ let getTimeSheet = (req, res, next) => {
                     req.query.biometric_id > 0 ? req.query.biometric_id : [106];
                   let bio_ids = "";
 
-                  if (req.query.bio_ids > 0) {
-                    bio_ids = ` and TS.biometric_id=${req.query.bio_ids} `;
+                  if (req.query.biometric_id > 0) {
+                    bio_ids = ` and TS.biometric_id=${req.query.biometric_id} `;
                   }
                   debugLog("from_date:", from_date);
                   debugLog("to_date:", to_date);
@@ -704,12 +706,12 @@ let getTimeSheet = (req, res, next) => {
                               connection.query(
                                 "INSERT IGNORE  INTO hims_f_daily_time_sheet(" +
                                   insurtColumns.join(",") +
-                                  ",actual_hours) VALUES ?",
+                                  ",actual_hours,year) VALUES ?",
                                 [
                                   jsonArrayToObject({
                                     sampleInputObject: insurtColumns,
                                     arrayObj: timeSheetArray,
-                                    newFieldToInsert: [actual_hours]
+                                    newFieldToInsert: [actual_hours, year]
                                   })
                                 ],
                                 (error, insertResult) => {

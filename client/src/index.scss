@@ -1422,6 +1422,13 @@
     border: 1px solid rgb(225, 173, 70);
   }
 }
+
+.ui.search.dropdown .menu {
+  border-color: lighten($color-black, 80%) !important;
+  max-height: 17vh;
+  width: max-content;
+  max-width: calc(100% + 100px);
+}
 .ui.search.dropdown > .text {
   white-space: nowrap;
   overflow: hidden;

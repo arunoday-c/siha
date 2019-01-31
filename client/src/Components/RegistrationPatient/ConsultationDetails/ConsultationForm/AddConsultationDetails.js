@@ -3,6 +3,7 @@ import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import Enumerable from "linq";
 import { SetBulkState } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 const DeptselectedHandeler = ($this, context, e) => {
   debugger;
@@ -27,61 +28,44 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  //
   SetBulkState({
     state: $this,
     callback: () => {
-      if (
-        $this.state.full_name !== "" &&
-        ($this.state.title_id !== null && $this.state.title_id !== "") &&
-        $this.state.arabic_name !== "" &&
-        ($this.state.gender !== null && $this.state.gender !== "") &&
-        ($this.state.date_of_birth !== null &&
-          $this.state.date_of_birth !== "") &&
-        $this.state.age !== 0 &&
-        ($this.state.contact_number !== null &&
-          $this.state.contact_number !== "") &&
-        ($this.state.patient_type !== null &&
-          $this.state.patient_type !== "") &&
-        ($this.state.nationality_id !== null &&
-          $this.state.nationality_id !== "") &&
-        ($this.state.country_id !== null && $this.state.country_id !== "") &&
-        ($this.state.primary_identity_id !== null &&
-          $this.state.primary_identity_id !== "") &&
-        ($this.state.primary_id_no !== "" && $this.state.primary_id_no !== null)
-      ) {
-        $this.setState(
-          {
-            [e.name]: e.value,
-            visittypeselect: false,
-            consultation: e.selected.consultation
-          },
-          () => {
-            if (context !== null) {
-              context.updateState({
-                ...$this.state
+      AlgaehValidation({
+        alertTypeIcon: "warning",
+        querySelector: "data-validate='demographicDetails'",
+        onSuccess: () => {
+          debugger;
+          $this.setState(
+            {
+              [e.name]: e.value,
+              visittypeselect: false,
+              consultation: e.selected.consultation
+            },
+            () => {
+              if (context !== null) {
+                context.updateState({
+                  ...$this.state
+                });
+              }
+
+              $this.props.getDepartmentsandDoctors({
+                uri: "/department/get/get_All_Doctors_DepartmentWise",
+                method: "GET",
+                redux: {
+                  type: "DEPT_DOCTOR_GET_DATA",
+                  mappingName: "deptanddoctors"
+                }
               });
             }
-
-            $this.props.getDepartmentsandDoctors({
-              uri: "/department/get/get_All_Doctors_DepartmentWise",
-              method: "GET",
-              redux: {
-                type: "DEPT_DOCTOR_GET_DATA",
-                mappingName: "deptanddoctors"
-              }
-            });
-          }
-        );
-      } else {
-        $this.setState({
-          [e.name]: null
-        });
-        swalMessage({
-          title: "Invalid Input. Please fill Patient demographic details",
-          type: "warning"
-        });
-      }
+          );
+        },
+        onFailure: () => {
+          $this.setState({
+            [e.name]: null
+          });
+        }
+      });
     }
   });
 };
