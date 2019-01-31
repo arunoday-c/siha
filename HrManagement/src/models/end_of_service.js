@@ -11,7 +11,7 @@ module.exports = {
       .executeQuery({
         query:
           "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
-          datediff(date(date_of_resignation),date(date_of_joining))/365 endOfServiceYears,E.employee_code,\
+          datediff(date(date_of_resignation),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
           E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
           E.sub_department_id,E.employee_designation_id,E.date_of_birth,\
           SD.sub_department_name,SD.arabic_sub_department_name \
