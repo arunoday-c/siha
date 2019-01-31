@@ -65,7 +65,7 @@ export default class AttendanceMgmt extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Absent Management "
+                      forceLabel: "Absence Management"
                     }}
                   />
                 }
