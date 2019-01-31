@@ -423,7 +423,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
               connection.query(
                 " UPDATE hims_d_employee SET airfare_process=?,contract_type=?,emergency_contact_no=?,\
               emergency_contact_person=?,employee_designation_id=?,employee_group_id=?,\
-              entitled_daily_ot=?,exclude_machine_data=?,exit_date=?,gratuity_applicable=?,\
+              entitled_daily_ot=?,exclude_machine_data=?,exit_date=?,date_of_leaving=?,gratuity_applicable=?,\
               hospital_id=?,late_coming_rule=?,leave_salary_process=?,overtime_group_id=?,reporting_to_id=?,\
               secondary_contact_no=?,sub_department_id=?,suspend_salary=?,title_id=?,weekoff_from=?,\
               updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_id=?",
@@ -439,6 +439,7 @@ let addEmployeeInfoBAckup28_december = (req, res, next) => {
                   input.entitled_daily_ot,
                   input.exclude_machine_data,
                   input.exit_date,
+                  input.date_of_leaving,
                   input.gratuity_applicable,
                   input.hospital_id,
                   input.late_coming_rule,
@@ -965,10 +966,11 @@ let updateEmployee = (req, res, next) => {
           date_of_joining=?,appointment_type=?,employee_type=?,reliving_date=?,notice_period=?,date_of_resignation=?,\
           company_bank_id=?,employee_bank_name=?,employee_bank_ifsc_code=?,employee_account_number=?,mode_of_payment=?,\
           accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,total_contributions=?,\
-          net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,\
+          net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,exit_date=?,\
           exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,employee_group_id=?, \
           reporting_to_id=?,sub_department_id=?,employee_designation_id=?,employee_status=?,inactive_date=?,updated_date=?,updated_by=?\
           WHERE record_status='A' and  hims_d_employee_id=?",
+
           [
             input.employee_code,
             input.full_name,
@@ -1019,6 +1021,7 @@ let updateEmployee = (req, res, next) => {
             input.leave_salary_process,
             input.late_coming_rule,
             input.airfare_process,
+            input.exit_date,
             input.exclude_machine_data,
             input.gratuity_applicable,
             input.suspend_salary,
