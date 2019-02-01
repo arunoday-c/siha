@@ -1747,11 +1747,11 @@ let processYearlyLeave = (req, res, next) => {
                       .Select(s => s.hims_d_leave_id)
                       .ToArray();
 
-                    debugLog("apllicable_leavs:", apllicable_leavs);
-                    debugLog(
-                      "apllicable_leavsLength:",
-                      apllicable_leavs.length
-                    );
+                    // debugLog("apllicable_leavs:", apllicable_leavs);
+                    // debugLog(
+                    //   "apllicable_leavsLength:",
+                    //   apllicable_leavs.length
+                    // );
 
                     if (apllicable_leavs.length > 0) {
                       debugLog("here");
@@ -1761,7 +1761,7 @@ let processYearlyLeave = (req, res, next) => {
                           return apllicable_leavs.indexOf(item) == pos;
                         }
                       );
-                      debugLog("new_leave_ids:", new_leave_ids);
+                    //  debugLog("new_leave_ids:", new_leave_ids);
                       //step1---checking if yearly leave is  already processed for this employee
                       const yearlyLvExist = new LINQ(AllYearlyLeaves)
                         .Where(
@@ -1773,7 +1773,7 @@ let processYearlyLeave = (req, res, next) => {
                         .Select(s => s.hims_f_employee_yearly_leave_id)
                         .ToArray().length;
 
-                      debugLog("yearlyLvExist:", yearlyLvExist);
+                     // debugLog("yearlyLvExist:", yearlyLvExist);
                       //if yearly leave is  not processed for this employee process now
                       if (yearlyLvExist < 1) {
                         yearArray.push({
@@ -1793,7 +1793,7 @@ let processYearlyLeave = (req, res, next) => {
                         .Select(s => s.leave_id)
                         .ToArray();
 
-                      debugLog("monthlyLvExist:", monthlyLvExist);
+                     // debugLog("monthlyLvExist:", monthlyLvExist);
                       if (monthlyLvExist.length > 0) {
                         // const old_leave_ids = new LINQ(
                         //   monthlyLvExist
@@ -1818,7 +1818,7 @@ let processYearlyLeave = (req, res, next) => {
                             .omit(_.isNull)
                             .value();
                         });
-                        debugLog("_leaves:", _leaves);
+                      //  debugLog("_leaves:", _leaves);
                         monthlyArray.push(
                           ...new LINQ(_leaves)
                             .Where(w => w.hims_d_leave_id > 0)

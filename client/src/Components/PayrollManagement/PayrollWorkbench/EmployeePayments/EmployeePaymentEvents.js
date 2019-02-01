@@ -21,10 +21,20 @@ const Paymenttexthandle = ($this, e) => {
   let value = e.value || e.target.value;
   let IOputs = EmployeePaymentIOputs.inputParam();
 
-  IOputs.PreviousPayments = $this.state.PreviousPayments;
   $this.setState({
     ...IOputs,
     [name]: value
+  });
+};
+
+const PaymentOnClear = ($this, e) => {
+  debugger;
+
+  let IOputs = EmployeePaymentIOputs.inputParam();
+
+  $this.setState({
+    ...IOputs,
+    [e]: null
   });
 };
 
@@ -413,10 +423,15 @@ const employeeSearch = $this => {
       callBack(text);
     },
     onRowSelect: row => {
-      $this.setState({
-        employee_name: row.full_name,
-        select_employee_id: row.hims_d_employee_id
-      });
+      $this.setState(
+        {
+          employee_name: row.full_name,
+          select_employee_id: row.hims_d_employee_id
+        },
+        () => {
+          getEmployeePayments($this);
+        }
+      );
     }
   });
 };
@@ -426,6 +441,10 @@ const getEmployeePayments = $this => {
     uri: "/employeepayments/getEmployeePayments",
     module: "hrManagement",
     method: "GET",
+    data: {
+      employee_id: $this.state.select_employee_id,
+      payment_type: $this.state.sel_payment_type
+    },
     onSuccess: response => {
       $this.setState({
         PreviousPayments: response.data.result
@@ -440,45 +459,9 @@ const getEmployeePayments = $this => {
   });
 };
 
-const CancelPayment = ($this, row) => {
-  swal({
-    title: "Are you sure you want to cancel this Payment?",
-    type: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes!",
-    confirmButtonColor: "#44b8bd",
-    cancelButtonColor: "#d33",
-    cancelButtonText: "No"
-  }).then(willDelete => {
-    if (willDelete.value) {
-      debugger;
-      algaehApiCall({
-        uri: "/employeepayments/CancelEmployeePayment",
-        data: row,
-        module: "hrManagement",
-        method: "PUT",
-        onSuccess: response => {
-          getEmployeePayments($this);
-          LoadData($this);
-          swalMessage({
-            title: "Cancelled Successfully...",
-            type: "success"
-          });
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message || error.response.data.message,
-            type: "error"
-          });
-        }
-      });
-    } else {
-      swalMessage({
-        title: "Cancel request cancelled",
-        type: "error"
-      });
-    }
-  });
+const ClearData = $this => {
+  let IOputs = EmployeePaymentIOputs.inputParam();
+  $this.setState(IOputs);
 };
 
 export {
@@ -490,5 +473,6 @@ export {
   ProessEmpPayment,
   employeeSearch,
   getEmployeePayments,
-  CancelPayment
+  ClearData,
+  PaymentOnClear
 };
