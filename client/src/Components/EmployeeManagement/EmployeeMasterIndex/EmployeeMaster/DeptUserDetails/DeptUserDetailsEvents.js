@@ -147,7 +147,7 @@ const AddDeptUser = ($this, e) => {
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         deptDetails: deptDetails,
-        insertdeptDetails: deptDetails,
+        insertdeptDetails: insertdeptDetails,
         reporting_to_id: $this.state.reporting_to,
         sub_department_id: $this.state.sub_department,
         employee_designation_id: $this.state.designation_id
