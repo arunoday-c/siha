@@ -5041,24 +5041,24 @@ let updateLeaveDetailMaster = (req, res, next) => {
     }
     let db = req.db;
     req.body = req.query;
-    db.getConnection((error, connection) => {
-      return new Promise((resolve, reject) => {
-        req.options = {
-          db: connection,
-          onFailure: error => {
-            reject(error);
-          },
-          onSuccess: result => {
-            resolve(result);
-          }
-        };
-        calculateLeaveDays(req, res, next);
-      }).then(result => {
-        debugLog("woww:", result);
-        req.records = result;
-        next();
-      });
-    });
+    // db.getConnection((error, connection) => {
+    //   return new Promise((resolve, reject) => {
+    //     req.options = {
+    //       db: connection,
+    //       onFailure: error => {
+    //         reject(error);
+    //       },
+    //       onSuccess: result => {
+    //         resolve(result);
+    //       }
+    //     };
+    //     calculateLeaveDays(req, res, next);
+    //   }).then(result => {
+    //     debugLog("woww:", result);
+    //     req.records = result;
+    //     next();
+    //   });
+    // });
 
     let input = extend({}, req.body);
     if (
@@ -5111,6 +5111,10 @@ let updateLeaveDetailMaster = (req, res, next) => {
     next(e);
   }
 };
+
+
+
+
 let updateLeaveEncashMaster = (req, res, next) => {
   try {
     if (req.db == null) {
