@@ -1028,8 +1028,20 @@ module.exports = {
 
   getEmployeePayments: (req, res, next) => {
     const _mysql = new algaehMysql();
+    const input = req.query;
 
-    /* Select statemwnt  */
+    let inputValues = [];
+    let _stringData = "";
+    if (input.employee_id != null) {
+      _stringData += " and employee_id=? and payment_type=?";
+      inputValues.push(input.employee_id);
+      inputValues.push(input.payment_type);
+    }
+
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("inputValues:", inputValues);
 
     _mysql
       .executeQuery({
@@ -1038,7 +1050,9 @@ module.exports = {
           employee_end_of_service_id,employee_final_settlement_id,employee_leave_settlement_id,payment_application_code, \
           payment_type, payment_amount, payment_date, payment_mode, cheque_number, deduction_month, cancel, bank_id,\
           emp.employee_code, emp.full_name from hims_f_employee_payments, hims_d_employee emp where \
-        hims_f_employee_payments.employee_id = emp.hims_d_employee_id;",
+        hims_f_employee_payments.employee_id = emp.hims_d_employee_id " +
+          _stringData,
+        values: inputValues,
         printQuery: true
       })
       .then(result => {
