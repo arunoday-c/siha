@@ -3108,7 +3108,7 @@ let getFamilyIdentification = (req, res, next) => {
         valid_upto,issue_date,alert_required,alert_date from hims_d_employee_identification where \
         employee_id = ?; \
         SELECT hims_d_employee_dependents_id,employee_id,dependent_type,dependent_name,dependent_identity_type,\
-        dependent_identity_no, from hims_d_employee_dependents where employee_id = ?;",
+        dependent_identity_no from hims_d_employee_dependents where employee_id = ?;",
         [input.employee_id, input.employee_id, input.employee_id],
         (error, result) => {
           releaseDBConnection(db, connection);
