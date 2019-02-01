@@ -377,6 +377,137 @@ module.exports = {
       req.flag = 1;
       next();
     }
+  },
+
+  getEarningDeduction: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_earning_deduction_id,earning_deduction_code,earning_deduction_description,\
+          short_desc,component_category,calculation_method,component_frequency,calculation_type,\
+          component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,limit_applicable,limit_amount,\
+          process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
+          round_off_amount from hims_d_earning_deduction\
+          where record_status='A'  order by hims_d_earning_deduction_id desc",
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  addEarningDeduction: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = { ...req.body };
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("input: ", input);
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT  INTO hims_d_earning_deduction (earning_deduction_code,earning_deduction_description,short_desc,\
+            component_category,calculation_method, miscellaneous_component, formula,component_frequency,calculation_type,component_type,\
+            shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
+            process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
+            round_off_amount, created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.earning_deduction_code,
+          input.earning_deduction_description,
+          input.short_desc,
+          input.component_category,
+          input.calculation_method,
+          input.miscellaneous_component,
+          input.formula,
+          input.component_frequency,
+          input.calculation_type,
+          input.component_type,
+          input.shortage_deduction_applicable,
+          input.overtime_applicable,
+          input.limit_applicable,
+          input.limit_amount,
+          input.process_limit_required,
+          input.process_limit_days,
+          input.general_ledger,
+          input.allow_round_off,
+          input.round_off_type,
+          input.round_off_amount,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  updateEarningDeduction: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = { ...req.body };
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("input: ", input);
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_earning_deduction set  earning_deduction_code=?,earning_deduction_description=?,short_desc=?,\
+          component_category=?,calculation_method=?,component_frequency=?,calculation_type=?,\
+          component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,limit_applicable=?,\
+          limit_amount=?,process_limit_required=?,process_limit_days=?,general_ledger=?,\
+          allow_round_off=?,round_off_type=?,round_off_amount=?,record_status=?,\
+            updated_date=?, updated_by=?  WHERE  hims_d_earning_deduction_id = ?",
+        values: [
+          input.earning_deduction_code,
+          input.earning_deduction_description,
+          input.short_desc,
+          input.component_category,
+          input.calculation_method,
+          input.component_frequency,
+          input.calculation_type,
+          input.component_type,
+          input.shortage_deduction_applicable,
+          input.overtime_applicable,
+          input.limit_applicable,
+          input.limit_amount,
+          input.process_limit_required,
+          input.process_limit_days,
+          input.general_ledger,
+          input.allow_round_off,
+          input.round_off_type,
+          input.round_off_amount,
+          input.record_status,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_d_earning_deduction_id
+        ],
+        printQuery: true
+      })
+      .then(update_loan => {
+        _mysql.releaseConnection();
+        req.records = update_loan;
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
   }
 };
 

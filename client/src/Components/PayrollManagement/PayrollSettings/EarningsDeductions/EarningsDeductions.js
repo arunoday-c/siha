@@ -53,7 +53,9 @@ class EarningsDeductions extends Component {
 
   updateEarningsDeductions(data) {
     algaehApiCall({
-      uri: "/employee/updateEarningDeduction",
+      // uri: "/employee/updateEarningDeduction",
+      uri: "/payrollsettings/updateEarningDeduction",
+      module: "hrManagement",
       method: "PUT",
       data: {
         hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
@@ -74,7 +76,8 @@ class EarningsDeductions extends Component {
         general_ledger: data.general_ledger,
         allow_round_off: data.allow_round_off,
         round_off_type: data.round_off_type,
-        round_off_amount: data.round_off_amount
+        round_off_amount: data.round_off_amount,
+        record_status: "A"
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -106,22 +109,43 @@ class EarningsDeductions extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/employee/deleteEarningDeduction",
+          // uri: "/employee/deleteEarningDeduction",
+          uri: "/payrollsettings/updateEarningDeduction",
+          module: "hrManagement",
           data: {
-            hims_d_earning_deduction_id: data.hims_d_earning_deduction_id
+            hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
+            earning_deduction_code: data.earning_deduction_code,
+            earning_deduction_description: data.earning_deduction_description,
+            short_desc: data.short_desc,
+            component_category: data.component_category,
+            calculation_method: data.calculation_method,
+            component_frequency: data.component_frequency,
+            calculation_type: data.calculation_type,
+            component_type: data.component_type,
+            shortage_deduction_applicable: data.shortage_deduction_applicable,
+            overtime_applicable: data.overtime_applicable,
+            limit_applicable: data.limit_applicable,
+            limit_amount: data.limit_amount,
+            process_limit_required: data.process_limit_required,
+            process_limit_days: data.process_limit_days,
+            general_ledger: data.general_ledger,
+            allow_round_off: data.allow_round_off,
+            round_off_type: data.round_off_type,
+            round_off_amount: data.round_off_amount,
+            record_status: "I"
           },
-          method: "DELETE",
+          method: "PUT",
           onSuccess: response => {
-            if (response.data.records.success) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getEarningDeductions();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
-                title: response.data.records.message,
+                title: response.data.message,
                 type: "error"
               });
             }
@@ -147,7 +171,9 @@ class EarningsDeductions extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/employee/addEarningDeduction",
+          // uri: "/employee/addEarningDeduction",
+          uri: "/payrollsettings/addEarningDeduction",
+          module: "hrManagement",
           method: "POST",
           data: {
             miscellaneous_component: this.state.miscellaneous_component
@@ -194,12 +220,14 @@ class EarningsDeductions extends Component {
 
   getEarningDeductions() {
     algaehApiCall({
-      uri: "/employee/getEarningDeduction",
+      // uri: "/employee/getEarningDeduction",
+      uri: "/payrollsettings/getEarningDeduction",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            earning_deductions: res.data.records
+            earning_deductions: res.data.result
           });
         }
       },

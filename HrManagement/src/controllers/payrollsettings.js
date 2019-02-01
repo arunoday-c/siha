@@ -7,7 +7,10 @@ import {
   getAllHolidays,
   addHoliday,
   addWeekOffs,
-  deleteHoliday
+  deleteHoliday,
+  getEarningDeduction,
+  addEarningDeduction,
+  updateEarningDeduction
 } from "../models/payrollsettings";
 export default () => {
   const api = Router();
@@ -59,6 +62,31 @@ export default () => {
       result: req.records
     });
   });
+
+  api.get("/getEarningDeduction", getEarningDeduction, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.post("/addEarningDeduction", addEarningDeduction, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: req.flag == 1 ? false : true,
+      result: req.records
+    });
+  });
+
+  api.put(
+    "/updateEarningDeduction",
+    updateEarningDeduction,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  );
 
   return api;
 };
