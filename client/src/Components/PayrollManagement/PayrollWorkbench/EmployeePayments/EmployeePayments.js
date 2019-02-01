@@ -19,8 +19,8 @@ import {
   Paymenttexthandle,
   ProessEmpPayment,
   employeeSearch,
-  getEmployeePayments,
-  CancelPayment
+  ClearData,
+  PaymentOnClear
 } from "./EmployeePaymentEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
@@ -93,8 +93,6 @@ class EmployeePayment extends Component {
         }
       });
     }
-
-    getEmployeePayments(this, this);
   }
 
   render() {
@@ -124,11 +122,13 @@ class EmployeePayment extends Component {
                 others: {
                   tabIndex: "2"
                 },
-                onClear: () => {
-                  this.setState({
-                    sel_payment_type: null
-                  });
-                }
+                onClear: PaymentOnClear.bind(this, this)
+
+                // () => {
+                //   this.setState({
+                //     sel_payment_type: null
+                //   });
+                // }
               }}
             />
 
@@ -226,32 +226,7 @@ class EmployeePayment extends Component {
                 </div>
               </div>
             </div>
-            {/* <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Employee.",
-                isImp: false
-              }}
-              selector={{
-                name: "select_employee_id",
-                className: "select-fld",
-                value: this.state.select_employee_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "hims_d_employee_id",
-                  data:
-                    this.state.department_id === null
-                      ? this.props.all_employees
-                      : depEmployee
-                },
-                onChange: texthandle.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    select_employee_id: null
-                  });
-                }
-              }}
-            /> */}
+
             <div className="col margin-bottom-15">
               <button
                 type="button"
@@ -260,6 +235,17 @@ class EmployeePayment extends Component {
                 onClick={LoadData.bind(this, this)}
               >
                 Load
+              </button>
+            </div>
+
+            <div className="col margin-bottom-15">
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ marginTop: 21 }}
+                onClick={ClearData.bind(this, this)}
+              >
+                Clear
               </button>
             </div>
           </div>
@@ -599,36 +585,6 @@ class EmployeePayment extends Component {
                       <AlgaehDataGrid
                         id="All_trans_Employee_Payment_Cntr"
                         columns={[
-                          {
-                            fieldName: "action",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Action" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  <i
-                                    style={{
-                                      pointerEvents:
-                                        row.cancel === "Y" ? "none" : "",
-                                      opacity: row.cancel === "Y" ? "0.1" : ""
-                                    }}
-                                    className="fa fa-times"
-                                    onClick={CancelPayment.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )}
-                                  />
-                                </span>
-                              );
-                            },
-                            others: {
-                              maxWidth: 70,
-                              resizable: false,
-                              style: { textAlign: "center" }
-                            }
-                          },
                           {
                             fieldName: "payment_type",
 
