@@ -32,7 +32,7 @@ export default class EndServiceOption extends Component {
                       others: {}
                     }}
                   />
-                  <AlagehAutoComplete
+                  {/* <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Gratuity Processing Type",
@@ -44,8 +44,8 @@ export default class EndServiceOption extends Component {
                       dataSource: {},
                       others: {}
                     }}
-                  />
-                  <AlagehAutoComplete
+                  /> */}
+                  {/* <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{
                       forceLabel: "Gratuity payment rule",
@@ -57,7 +57,7 @@ export default class EndServiceOption extends Component {
                       dataSource: {},
                       others: {}
                     }}
-                  />
+                  /> */}
 
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}

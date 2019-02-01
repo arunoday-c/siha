@@ -19,6 +19,12 @@ class YearlyLeaveDetail extends Component {
     this.getLeaveData(nextProps.year, nextProps.employee_id);
   }
 
+  componentWillUnmount() {
+    this.setState({
+      leave_data: []
+    });
+  }
+
   getLeaveData(year, id) {
     this.setState({
       loading: true
