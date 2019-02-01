@@ -33,12 +33,13 @@ class LoanMaster extends Component {
 
   getLoanMaster() {
     algaehApiCall({
-      uri: "/employee/getLoanMaster",
+      uri: "/payrollsettings/getLoanMaster",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            loan_master: res.data.records
+            loan_master: res.data.result
           });
         }
       },
@@ -56,7 +57,8 @@ class LoanMaster extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/employee/addLoanMaster",
+          uri: "/payrollsettings/addLoanMaster",
+          module: "hrManagement",
           method: "POST",
           data: {
             loan_code: this.state.loan_code,
@@ -88,7 +90,8 @@ class LoanMaster extends Component {
 
   updateLoanMater(data) {
     algaehApiCall({
-      uri: "/employee/updateLoanMaster",
+      uri: "/payrollsettings/updateLoanMaster",
+      module: "hrManagement",
       method: "PUT",
       data: {
         hims_d_loan_id: data.hims_d_loan_id,
@@ -96,7 +99,8 @@ class LoanMaster extends Component {
         loan_description: data.loan_description,
         loan_account: data.loan_account,
         loan_limit_type: data.loan_limit_type,
-        loan_maximum_amount: data.loan_maximum_amount
+        loan_maximum_amount: data.loan_maximum_amount,
+        record_status: "A"
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -129,13 +133,21 @@ class LoanMaster extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/employee/deleteLoanMaster",
+          uri: "/payrollsettings/updateLoanMaster",
+          module: "hrManagement",
           data: {
-            hims_d_loan_id: data.hims_d_loan_id
+            hims_d_loan_id: data.hims_d_loan_id,
+            loan_code: data.loan_code,
+            loan_description: data.loan_description,
+            loan_account: data.loan_account,
+            loan_limit_type: data.loan_limit_type,
+            loan_maximum_amount: data.loan_maximum_amount,
+            record_status: "I"
           },
-          method: "DELETE",
+          method: "PUT",
           onSuccess: response => {
-            if (response.data.records.success) {
+            debugger;
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
@@ -326,7 +338,26 @@ class LoanMaster extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Loan Description" }}
                         />
-                      )
+                      ),
+                      editorTemplate: row => {
+                        return (
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "loan_description",
+                              value: row.loan_description,
+                              events: {
+                                onChange: this.changeGridEditors.bind(this, row)
+                              },
+                              others: {
+                                errormessage: "Code - cannot be blank",
+                                required: true
+                              }
+                            }}
+                          />
+                        );
+                      }
                     },
                     {
                       fieldName: "loan_limit_type",
