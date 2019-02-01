@@ -3,7 +3,7 @@ import "./SelfService.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 
-import SelfPersonalDetails from "./selfPersonalDetails/SelfPersonalDetails";
+import SelfPersonalDetails from "./SelfPersonalDetails/SelfPersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
@@ -225,19 +225,6 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
-              {/* <li
-                algaehtabs={"LeaveEncashment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Leave Encashment"
-                    }}
-                  />
-                }
-              </li> */}
             </ul>
           </div>
         </div>

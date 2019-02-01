@@ -7,7 +7,7 @@ import {
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../../Wrapper/algaehFileUpload";
-import "./selfPersonalDetails.css";
+import "./SelfPersonalDetails.css";
 //He
 import {
   algaehApiCall,
