@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import "./doctor_workbench.css";
-import { AlgaehDataGrid, AlgaehLabel } from "../Wrapper/algaehWrapper";
+import {
+  AlgaehDataGrid,
+  AlgaehLabel,
+  AlagehAutoComplete
+} from "../Wrapper/algaehWrapper";
 import AlgaehFile from "../Wrapper/algaehFileUpload";
 import {
   algaehApiCall,
@@ -22,8 +26,96 @@ class DoctorsWorkbench extends Component {
       <div className="row clinicalDeskScreen">
         <div className="cldrPatientList">
           <div className="cldrSection" />
-          <div className="newPatientSec" />
-          <div className="completedPatientSec" />
+          <div className="newPatientSec">
+            <AlagehAutoComplete
+              div={{ className: "col form-group" }}
+              label={{ forceLabel: "View by", isImp: false }}
+              selector={{
+                name: "",
+                className: "select-fld",
+                dataSource: {},
+                others: {}
+              }}
+            />
+            <div className="appPatientList">
+              <div className="appPatientListCntr">
+                <div className="appSection active">
+                  <span className="appIconSec">
+                    <i className="fas fa-calendar-alt" />
+                    11:25:31
+                  </span>
+                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
+                  <span className="patVisit">New Visit</span>
+                  <span className="patStatus inProgress ">
+                    <span className="animated infinite flash">In-Progress</span>
+                  </span>
+                </div>
+                <div className="appSection">
+                  <span className="appIconSec">
+                    <i className="fas fa-calendar-alt" />
+                    11:25:31
+                  </span>
+                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
+                  <span className="patVisit">New Visit</span>
+                  <span className="patStatus nursingDone">Nursing Done</span>
+                </div>
+                <div className="appSection">
+                  <span className="appIconSec">
+                    <i className="fas fa-calendar-alt" />
+                    11:25:31
+                  </span>
+                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
+                  <span className="patVisit">New Visit</span>
+                  <span className="patStatus nursingDone">Nursing Done</span>
+                </div>
+                <div className="appSection ">
+                  <span className="appIconSec">
+                    <i className="fas fa-calendar-alt" />
+                    11:25:31
+                  </span>
+                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
+                  <span className="patVisit">New Visit</span>
+                  <span className="patStatus nursingGoing">Nursing Going</span>
+                </div>
+                <div className="appSection">
+                  <span className="appIconSec">
+                    <i className="fas fa-walking" />
+                    11:25:31
+                  </span>
+                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
+                  <span className="patVisit">New Visit</span>
+                  <span className="patStatus checkedIn">Checked In</span>
+                </div>
+                <div className="appSection ">
+                  <span className="appIconSec">
+                    <i className="fas fa-walking" />
+                    11:25:31
+                  </span>
+                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
+                  <span className="patVisit">New Visit</span>
+                  <span className="patStatus checkedIn">Checked In</span>
+                </div>
+                <div className="appSection">
+                  <span className="appIconSec">
+                    <i className="fas fa-calendar-alt" />
+                    11:25:31
+                  </span>
+                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
+                  <span className="patVisit">New Visit</span>
+                  <span className="patStatus notShown">Not Shown</span>
+                </div>
+                <div className="appSection">
+                  <span className="appIconSec">
+                    <i className="fas fa-walking" />
+                    11:25:31
+                  </span>
+                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
+                  <span className="patVisit">New Visit</span>
+                  <span className="patStatus notShown">Not Shown</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <div className="patientDetailSection">
           <div className="row">
@@ -46,7 +138,6 @@ class DoctorsWorkbench extends Component {
                     {/* <h6>SYED ADIL FAWAD NIZAMI</h6> */}
                     <h6>SYED ADIL FAWAD NIZAMI</h6>
                     <p>
-                      {" "}
                       <b>Male, 43Y 7M 10D</b>
                     </p>
                   </div>
@@ -84,42 +175,42 @@ class DoctorsWorkbench extends Component {
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>{" "}
+                </div>
                 <div className="col">
                   <h6>
                     <label>Weight</label>65cm
@@ -176,7 +267,40 @@ class DoctorsWorkbench extends Component {
                 <div className="col">Patient Diagnosis</div>
               </div>
             </div>
-            <div className="clinicalAction">123</div>
+            <div className="clinicalAction">
+              <ul className="rightActionSec">
+                <li>
+                  <i className="fas fa-heartbeat" />
+                  <span className="animated slideInRight faster">
+                    Add Vitals
+                  </span>
+                </li>
+                <li>
+                  <i className="fas fa-utensils" />
+                  <span className="animated slideInRight faster">
+                    Add Vitals
+                  </span>
+                </li>
+                <li>
+                  <i className="fas fa-diagnoses" />
+                  <span className="animated slideInRight faster">
+                    Add Vitals
+                  </span>
+                </li>
+                <li>
+                  <i className="fas fa-allergies" />
+                  <span className="animated slideInRight faster">
+                    Add Vitals
+                  </span>
+                </li>
+                <li>
+                  <i className="fas fa-pills" />
+                  <span className="animated slideInRight faster">
+                    Add Vitals
+                  </span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
