@@ -272,6 +272,7 @@ export default class LeaveAuthorization extends Component {
             ...this.state.currLeavAppln,
             auth_level: this.state.auth_level
           }}
+          type={this.state.type}
         />
         <div className="col-12">
           <div className="row inner-top-search">
@@ -487,7 +488,8 @@ export default class LeaveAuthorization extends Component {
                               onClick={() => {
                                 this.setState({
                                   open: true,
-                                  currLeavAppln: row
+                                  currLeavAppln: row,
+                                  type: "C"
                                 });
                               }}
                             />
@@ -537,7 +539,28 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Code" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return row.status !== "REJ" ? (
+                            <span
+                              onClick={() => {
+                                this.setState({
+                                  open: true,
+                                  currLeavAppln: row,
+                                  type: row.status === "APR" ? "C" : undefined
+                                });
+                              }}
+                              className="pat-code"
+                            >
+                              {row.employee_code}
+                            </span>
+                          ) : (
+                            <span>{row.employee_code}</span>
+                          );
+                        },
+                        className: row => {
+                          return row.status !== "REJ" ? "greenCell" : null;
+                        }
                       },
                       {
                         fieldName: "employee_name",
@@ -561,6 +584,13 @@ export default class LeaveAuthorization extends Component {
                           <AlgaehLabel label={{ forceLabel: "Leave Type" }} />
                         )
                       },
+
+                      {
+                        fieldName: "leave_application_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Request Code" }} />
+                        )
+                      },
                       {
                         fieldName: "total_applied_days",
                         label: (
@@ -570,22 +600,27 @@ export default class LeaveAuthorization extends Component {
                         )
                       },
                       {
-                        fieldName: "leave_application_code",
+                        fieldName: "from_date",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Request Code" }} />
-                        )
-                      },
-                      {
-                        fieldName: "application_date",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Request Date" }} />
+                          <AlgaehLabel label={{ forceLabel: "From Date" }} />
                         ),
                         displayTemplate: row => {
                           return (
                             <span>
-                              {moment(row.application_date).format(
-                                "DD-MM-YYYY"
-                              )}
+                              {moment(row.from_date).format("DD-MM-YYYY")}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "to_date",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "To Date" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.to_date).format("DD-MM-YYYY")}
                             </span>
                           );
                         }

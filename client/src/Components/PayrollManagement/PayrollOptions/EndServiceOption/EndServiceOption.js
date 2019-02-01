@@ -1,27 +1,62 @@
 import React, { Component } from "react";
 import "./EndServiceOption.css";
-
 import {
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import { EOS_CALC } from "../../../../utils/GlobalVariables.json";
 
 export default class EndServiceOption extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  textHandler(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  dropDownHandler(value) {
+    this.setState({
+      [value.name]: value.value
+    });
+  }
+
   render() {
     return (
       <div className="endServiceOption">
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
-              {/* <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Enter Grid Name Here</h3>
-                </div>
-              </div> */}
               <div className="portlet-body">
                 <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col form-group" }}
+                    label={{
+                      forceLabel: "EOS Calculation Method",
+                      isImp: false
+                    }}
+                    selector={{
+                      name: "end_of_service_calculation",
+                      value: this.state.end_of_service_calculation,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: EOS_CALC
+                      },
+                      onChange: this.dropDownHandler.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          end_of_service_calculation: null
+                        });
+                      }
+                    }}
+                  />
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{ forceLabel: "Termination Setup", isImp: false }}
@@ -32,32 +67,6 @@ export default class EndServiceOption extends Component {
                       others: {}
                     }}
                   />
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Gratuity Processing Type",
-                      isImp: false
-                    }}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {},
-                      others: {}
-                    }}
-                  /> */}
-                  {/* <AlagehAutoComplete
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "Gratuity payment rule",
-                      isImp: false
-                    }}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {},
-                      others: {}
-                    }}
-                  /> */}
 
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
@@ -88,20 +97,6 @@ export default class EndServiceOption extends Component {
                   <AlagehAutoComplete
                     div={{ className: "col form-group" }}
                     label={{ forceLabel: "Gratuity Provision", isImp: false }}
-                    selector={{
-                      name: "",
-                      className: "select-fld",
-                      dataSource: {},
-                      others: {}
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col form-group" }}
-                    label={{
-                      forceLabel: "EOS Calculation Method",
-                      isImp: false
-                    }}
                     selector={{
                       name: "",
                       className: "select-fld",
@@ -162,19 +157,34 @@ export default class EndServiceOption extends Component {
                   />
                 </div>
                 <div className="row">
-                  <div className="col">
-                    <label>Gratuity in final settlement</label>
-                    <div className="customCheckbox">
-                      <label className="checkbox inline">
+                  <div className="col-2">
+                    <label>Gratuity in Final Settlement</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
                         <input
-                          type="checkbox"
-                          value="yes"
-                          name="fetchMachineData"
+                          type="radio"
+                          value="Y"
+                          name="gratuity_in_final_settle"
+                          checked={this.state.gratuity_in_final_settle === "Y"}
+                          onChange={this.textHandler.bind(this)}
+                          type="radio"
                         />
                         <span>Yes</span>
                       </label>
+
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="N"
+                          name="gratuity_in_final_settle"
+                          checked={this.state.gratuity_in_final_settle === "N"}
+                          onChange={this.textHandler.bind(this)}
+                          type="radio"
+                        />
+                        <span>No</span>
+                      </label>
                     </div>
-                  </div>{" "}
+                  </div>
                   <div className="col">
                     <label>Validate Yearly working days</label>
                     <div className="customCheckbox">

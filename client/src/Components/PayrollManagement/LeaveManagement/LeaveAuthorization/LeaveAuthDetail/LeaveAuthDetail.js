@@ -377,24 +377,30 @@ class LeaveAuthDetail extends Component {
               </div>
 
               <div className="col-12 btnFooter">
-                {/* <button
-                  onClick={this.authorizeLeave.bind(this, "A")}
-                  className="btn btn-primary"
-                >
-                  Accept
-                </button>
-                <button
-                  onClick={this.authorizeLeave.bind(this, "R")}
-                  className="btn btn-danger"
-                >
-                  Reject
-                </button> */}
-                <button
-                  onClick={this.cancelLeave.bind(this, "R")}
-                  className="btn btn-danger"
-                >
-                  Cancel Leave
-                </button>
+                {this.props.type === undefined ? (
+                  <React.Fragment>
+                    <button
+                      onClick={this.authorizeLeave.bind(this, "A")}
+                      className="btn btn-primary"
+                    >
+                      Accept
+                    </button>
+                    <button
+                      onClick={this.authorizeLeave.bind(this, "R")}
+                      className="btn btn-danger"
+                    >
+                      Reject
+                    </button>
+                  </React.Fragment>
+                ) : null}
+                {this.props.type === "C" ? (
+                  <button
+                    onClick={this.cancelLeave.bind(this, "R")}
+                    className="btn btn-danger"
+                  >
+                    Cancel Leave
+                  </button>
+                ) : null}
               </div>
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
