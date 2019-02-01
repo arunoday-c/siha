@@ -58,12 +58,12 @@ export default class EmployeeDocuments extends Component {
               <div className="caption">
                 <h3 className="caption-subject">Add Document</h3>
               </div>
-              <div className="actions">Ask Sidhiqe about Functionality</div>
+              <div className="actions" />
             </div>
             <div className="portlet-body">
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col form-group mandatory" }}
+                  div={{ className: "col-12 form-group mandatory" }}
                   label={{
                     forceLabel: "Applicant Name",
                     isImp: true
@@ -80,7 +80,7 @@ export default class EmployeeDocuments extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
+                  div={{ className: "col-12 form-group mandatory" }}
                   label={{
                     forceLabel: "Document Type",
                     isImp: true
@@ -95,7 +95,7 @@ export default class EmployeeDocuments extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col form-group" }}
+                  div={{ className: "col-12 form-group" }}
                   label={{
                     forceLabel: "Relation Type",
                     isImp: false
@@ -110,7 +110,7 @@ export default class EmployeeDocuments extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col form-group" }}
+                  div={{ className: "col-12 form-group" }}
                   label={{
                     forceLabel: "Dependent Name",
                     isImp: false
@@ -153,58 +153,16 @@ export default class EmployeeDocuments extends Component {
               </div>
             </div>
             <div className="portlet-body">
-              <div className="input-group image-preview">
-                <div className="row">
-                  <div className="col-12">
-                    {" "}
-                    <input
-                      placeholder=""
-                      type="text"
-                      className="form-control image-preview-filename"
-                      disabled="disabled"
-                    />
-                  </div>
-                  <div className="col-12">
-                    <span className="input-group-btn">
-                      <button
-                        type="button"
-                        className="btn btn-default image-preview-clear"
-                        style={{ display: "none" }}
-                      >
-                        <span className="glyphicon glyphicon-remove" /> Clear
-                      </button>
-                      <div className="btn btn-default image-preview-input">
-                        <span className="glyphicon glyphicon-folder-open" />
-                        <span className="image-preview-input-title">
-                          Browse
-                        </span>
-                        <input
-                          type="file"
-                          accept="image/png, image/jpeg, image/gif"
-                          name="input-file-preview"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        className="btn btn-labeled btn-primary"
-                      >
-                        <span className="btn-label">
-                          <i className="glyphicon glyphicon-upload" />
-                        </span>
-                        Upload
-                      </button>
-                    </span>
-                  </div>
-                </div>
+              <div className="col-12">
+                <label className="label">Attach File</label>
+                <input type="file" />
               </div>
 
-              <br />
-
-              <div className="upload-drop-zone" id="drop-zone">
+              <div className="col-12 upload-drop-zone" id="drop-zone">
                 Or drag and drop files here
               </div>
               <br />
-              <div className="progress">
+              <div className="col-12 progress">
                 <div
                   className="progress-bar"
                   role="progressbar"

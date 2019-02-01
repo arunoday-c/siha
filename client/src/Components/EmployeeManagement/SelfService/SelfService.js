@@ -146,7 +146,7 @@ export default class SelfService extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"Personal"}
+                algaehtabs={"SelfPersonalDetails"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
