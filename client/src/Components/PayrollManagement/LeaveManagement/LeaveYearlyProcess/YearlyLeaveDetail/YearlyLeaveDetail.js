@@ -11,18 +11,10 @@ class YearlyLeaveDetail extends Component {
     };
   }
 
-  componentDidMount() {
-    this.getLeaveData(this.props.year, this.props.employee_id);
-  }
-
   componentWillReceiveProps(nextProps) {
-    this.getLeaveData(nextProps.year, nextProps.employee_id);
-  }
-
-  componentWillUnmount() {
-    this.setState({
-      leave_data: []
-    });
+    nextProps.year !== undefined && nextProps.employee_id !== undefined
+      ? this.getLeaveData(nextProps.year, nextProps.employee_id)
+      : null;
   }
 
   getLeaveData(year, id) {

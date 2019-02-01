@@ -267,7 +267,7 @@ export default class LeaveYearlyProcess extends Component {
             <AlagehAutoComplete
               div={{ className: "col-3 form-group" }}
               label={{
-                forceLabel: "Select an Leave Type",
+                forceLabel: "Select a Leave Type",
                 isImp: false
               }}
               selector={{
