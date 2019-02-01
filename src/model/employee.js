@@ -2147,7 +2147,7 @@ let updateEarningDeduction = (req, res, next) => {
           component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,limit_applicable=?,\
           limit_amount=?,process_limit_required=?,process_limit_days=?,general_ledger=?,\
           allow_round_off=?,round_off_type=?,round_off_amount=?,\
-            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_earning_deduction_id = ?",
+          updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_earning_deduction_id = ?",
 
           [
             input.earning_deduction_code,

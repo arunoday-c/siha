@@ -602,6 +602,10 @@
     { "name": "% of Component", "value": "PC" },
     { "name": "Rate per Hour", "value": "RT" }
   ],
+  "OT_TYPE": [
+    { "name": "Monthly", "value": "M" },
+    { "name": "Daily", "value": "D" }
+  ],
   "LOAN_LMT_TYP": [
     { "name": "Loan Limit", "value": "L" },
     { "name": "Basic", "value": "B" },
@@ -810,7 +814,6 @@
     { "name": "4 Level", "value": "4" },
     { "name": "5 Level", "value": "5" }
   ],
-
   "AUTH_LEVEL2": [
     { "name": "1 Level", "value": "1" },
     { "name": "2 Level", "value": "2" }

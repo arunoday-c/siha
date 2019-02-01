@@ -81,7 +81,8 @@ class PayRollDetails extends PureComponent {
       this.props.payrollcomponents.length === 0
     ) {
       this.props.getEarningDeduction({
-        uri: "/employee/getEarningDeduction",
+        uri: "/payrollsettings/getEarningDeduction",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "PAYROLL_COMPONENT_DATA",
@@ -92,7 +93,6 @@ class PayRollDetails extends PureComponent {
   }
 
   render() {
-    
     const earnings = Enumerable.from(this.props.payrollcomponents)
       .where(w => w.component_category === "E")
       .toArray();

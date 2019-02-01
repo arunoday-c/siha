@@ -12,7 +12,7 @@ import {
   AUTH_LEVEL3,
   AUTH_LEVEL5,
   ADV_DEDUCTION,
-  EOS_CALC,
+  OT_TYPE,
   ATTENDANCE_TYPE,
   OT_PAYMENTS,
   OT_HOUR_CALC,
@@ -25,8 +25,34 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 export default class AttendanceSettings extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      earnings: []
+    };
     this.getOptions();
+    this.getEarnings();
+  }
+
+  getEarnings() {
+    algaehApiCall({
+      uri: "/payrollSettings/getMiscEarningDeductions",
+      method: "GET",
+      data: {
+        component_category: "E"
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            earnings: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getOptions() {
@@ -89,6 +115,18 @@ export default class AttendanceSettings extends Component {
           : this.setState({
               [e.target.name]: e.target.value
             });
+        break;
+
+      case "airfare_factor":
+        e.target.value === "FI"
+          ? this.setState({
+              [e.target.name]: e.target.value,
+              airfare_percentage: null
+            })
+          : this.setState({
+              [e.target.name]: e.target.value
+            });
+
         break;
 
       default:
@@ -229,34 +267,26 @@ export default class AttendanceSettings extends Component {
                   />
                 ) : null}
 
-                <div className="col-2">
-                  <label>Gratuity in Final Settlement</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="Y"
-                        name="gratuity_in_final_settle"
-                        checked={this.state.gratuity_in_final_settle === "Y"}
-                        onChange={this.textHandler.bind(this)}
-                        type="radio"
-                      />
-                      <span>Yes</span>
-                    </label>
-
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="N"
-                        name="gratuity_in_final_settle"
-                        checked={this.state.gratuity_in_final_settle === "N"}
-                        onChange={this.textHandler.bind(this)}
-                        type="radio"
-                      />
-                      <span>No</span>
-                    </label>
-                  </div>
-                </div>
+                <AlagehAutoComplete
+                  div={{ className: "col-2 form-group" }}
+                  label={{ forceLabel: "Basic Earning Component", isImp: true }}
+                  selector={{
+                    name: "basic_earning_component",
+                    value: this.state.basic_earning_component,
+                    className: "select-fld",
+                    dataSource: {
+                      textField: "earning_deduction_description",
+                      valueField: "hims_d_earning_deduction_id",
+                      data: this.state.earnings
+                    },
+                    onChange: this.dropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        basic_earning_component: null
+                      });
+                    }
+                  }}
+                />
               </div>
 
               <div className="row">
@@ -350,6 +380,87 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
 
+                <div className="col-2">
+                  <label>Process Annual Leave Separately</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="Y"
+                        name="annual_leave_process_separately"
+                        checked={
+                          this.state.annual_leave_process_separately === "Y"
+                        }
+                        onChange={this.textHandler.bind(this)}
+                        type="radio"
+                      />
+                      <span>Yes</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="N"
+                        name="annual_leave_process_separately"
+                        checked={
+                          this.state.annual_leave_process_separately === "N"
+                        }
+                        onChange={this.textHandler.bind(this)}
+                        type="radio"
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="col-2">
+                  <label>Airfare Factor</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="PB"
+                        name="airfare_factor"
+                        checked={this.state.airfare_factor === "PB"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Percentage Basic</span>
+                    </label>
+
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="FI"
+                        name="airfare_factor"
+                        checked={this.state.airfare_factor === "FI"}
+                        onChange={this.textHandler.bind(this)}
+                      />
+                      <span>Fixed</span>
+                    </label>
+                  </div>
+                </div>
+
+                {this.state.airfare_factor === "PB" ? (
+                  <AlagehFormGroup
+                    div={{ className: "col-2 form-group" }}
+                    label={{
+                      forceLabel: "Airfare Percentage",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "airfare_percentage",
+                      value: this.state.airfare_percentage,
+                      events: {
+                        onChange: this.textHandler.bind(this)
+                      },
+                      others: {
+                        type: "number"
+                      }
+                    }}
+                  />
+                ) : null}
+
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Advance deduction", isImp: false }}
@@ -371,29 +482,6 @@ export default class AttendanceSettings extends Component {
                   }}
                 />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-3 form-group" }}
-                  label={{
-                    forceLabel: "End of Service Calculation",
-                    isImp: false
-                  }}
-                  selector={{
-                    name: "end_of_service_calculation",
-                    value: this.state.end_of_service_calculation,
-                    className: "select-fld",
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: EOS_CALC
-                    },
-                    onChange: this.dropDownHandler.bind(this),
-                    onClear: () => {
-                      this.setState({
-                        end_of_service_calculation: null
-                      });
-                    }
-                  }}
-                />
                 <AlagehFormGroup
                   div={{ className: "col-2 form-group" }}
                   label={{
@@ -510,26 +598,29 @@ export default class AttendanceSettings extends Component {
                       </div>
                     </div>
 
-                    {/* <AlagehAutoComplete
-                      div={{ className: "col form-group" }}
-                      label={{ forceLabel: "Type of Overtime", isImp: false }}
+                    <AlagehAutoComplete
+                      div={{ className: "col-3 form-group" }}
+                      label={{
+                        forceLabel: "Overtime Type",
+                        isImp: false
+                      }}
                       selector={{
-                        name: "overtime_payment",
-                        value: this.state.overtime_payment,
+                        name: "overtime_type",
+                        value: this.state.overtime_type,
                         className: "select-fld",
                         dataSource: {
                           textField: "name",
                           valueField: "value",
-                          data: OT_PAYMENTS
+                          data: OT_TYPE
                         },
                         onChange: this.dropDownHandler.bind(this),
                         onClear: () => {
                           this.setState({
-                            overtime_payment: null
+                            overtime_type: null
                           });
                         }
                       }}
-                    /> */}
+                    />
 
                     <AlagehAutoComplete
                       div={{ className: "col form-group" }}
@@ -774,6 +865,25 @@ export default class AttendanceSettings extends Component {
                           },
                           others: {
                             type: "text"
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-12 form-group" }}
+                        label={{
+                          forceLabel: "Port Number",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "biometric_port_no",
+                          value: this.state.biometric_port_no,
+                          events: {
+                            onChange: this.textHandler.bind(this)
+                          },
+                          others: {
+                            type: "number"
                           }
                         }}
                       />
