@@ -8,7 +8,6 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../../Wrapper/algaehFileUpload";
 import "./SelfPersonalDetails.css";
-//He
 import {
   algaehApiCall,
   swalMessage,
