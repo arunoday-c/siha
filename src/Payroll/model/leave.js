@@ -5040,31 +5040,13 @@ let updateLeaveDetailMaster = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    req.body = req.query;
-    // db.getConnection((error, connection) => {
-    //   return new Promise((resolve, reject) => {
-    //     req.options = {
-    //       db: connection,
-    //       onFailure: error => {
-    //         reject(error);
-    //       },
-    //       onSuccess: result => {
-    //         resolve(result);
-    //       }
-    //     };
-    //     calculateLeaveDays(req, res, next);
-    //   }).then(result => {
-    //     debugLog("woww:", result);
-    //     req.records = result;
-    //     next();
-    //   });
-    // });
+ 
+  
 
     let input = extend({}, req.body);
     if (
-      input.hims_d_leave_detail_id != "null" &&
-      input.hims_d_leave_detail_id != undefined
-    ) {
+      input.hims_d_leave_detail_id >0){
+     
       db.getConnection((error, connection) => {
         connection.query(
           "UPDATE hims_d_leave_detail SET leave_header_id = ?,\
