@@ -8,6 +8,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../../Wrapper/algaehFileUpload";
 import "./SelfPersonalDetails.css";
+//He
 import {
   algaehApiCall,
   swalMessage,
@@ -18,7 +19,7 @@ import swal from "sweetalert2";
 import moment from "moment";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
-class Dashboard extends Component {
+class SelfPersonalDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -2390,4 +2391,4 @@ class Dashboard extends Component {
   }
 }
 
-export default Dashboard;
+export default SelfPersonalDetails;

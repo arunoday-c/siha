@@ -146,7 +146,7 @@ export default class SelfService extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"Personal"}
+                algaehtabs={"SelfPersonalDetails"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
@@ -225,19 +225,6 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
-              {/* <li
-                algaehtabs={"LeaveEncashment"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Leave Encashment"
-                    }}
-                  />
-                }
-              </li> */}
             </ul>
           </div>
         </div>
