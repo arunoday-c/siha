@@ -15,15 +15,7 @@ module.exports = {
 
     _mysql
       .executeQuery({
-        query:
-          "select hims_d_hrms_options_id, salary_process_date, salary_pay_before_end_date,\
-           payroll_payment_date, salary_calendar, salary_calendar_fixed_days, attendance_type,\
-            fetch_punch_data_reporting, gratuity_in_final_settle, leave_level, loan_level, leave_encash_level,\
-             review_auth_level, yearly_working_days, end_of_service_calculation, advance_deduction, overtime_type, overtime_payment,\
-              overtime_calculation, overtime_hourly_calculation, standard_intime, standard_outime, standard_working_hours,\
-               standard_break_hours, biometric_database, biometric_server_name, biometric_database_name,\
-           biometric_database_login, biometric_database_password, biometric_swipe_id, created_date,\
-            created_by, updated_date, updated_by from hims_d_hrms_options",
+        query: "select * from hims_d_hrms_options",
 
         printQuery: true
       })
@@ -99,12 +91,7 @@ module.exports = {
 
     _mysql
       .executeQuery({
-        query:
-          "select hims_d_end_of_service_options_id,end_of_service_component1,end_of_service_component2,\
-          end_of_service_component3,end_of_service_component4,from_service_range1,from_service_range2,\
-          from_service_range3,from_service_range4,from_service_range5,eligible_days1,eligible_days2,eligible_days3,\
-          eligible_days4,eligible_days5,end_of_service_calculation,end_of_service_days,end_of_service_type \
-          from hims_d_end_of_service_options",
+        query: "select * from hims_d_end_of_service_options",
 
         printQuery: true
       })
