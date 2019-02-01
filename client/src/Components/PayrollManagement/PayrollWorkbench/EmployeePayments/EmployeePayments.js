@@ -74,7 +74,8 @@ class EmployeePayment extends Component {
       this.props.payrollcomponents.length === 0
     ) {
       this.props.getEarningDeduction({
-        uri: "/employee/getEarningDeduction",
+        uri: "/payrollsettings/getEarningDeduction",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "PAYROLL_COMPONENT_DATA",
