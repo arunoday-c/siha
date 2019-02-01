@@ -423,7 +423,7 @@ let killDbConnections = (req, res, next) => {
     db.getConnection((error, connection) => {
       debugLog("killDbConnections:");
       connection.query(
-        "SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST  where User<>'event_scheduler'",
+        "SELECT * FROM INFORMATION_SCHEMA.PROCESSLIST  ",
         (error, result) => {
           if (error) {
             releaseDBConnection(db, connection);
