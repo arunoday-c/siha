@@ -236,6 +236,7 @@ const PageToPlot = {
 
 const DirectRoutes = props => {
   const PlotPage = PageToPlot[props.componet];
+
   return (
     <React.Suspense
       fallback={
@@ -246,7 +247,7 @@ const DirectRoutes = props => {
         </div>
       }
     >
-      <PlotPage />
+      <PlotPage {...props} />
     </React.Suspense>
   );
 
