@@ -14,8 +14,7 @@ import {
 import { setGlobal } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
-import algaehLoader from "../Wrapper/fullPageLoader";
-
+const MyDaypanel = React.memo(React.lazy(() => import("./Myday")));
 class DoctorsWorkbench extends Component {
   constructor(props) {
     super(props);
@@ -24,99 +23,10 @@ class DoctorsWorkbench extends Component {
   render() {
     return (
       <div className="row clinicalDeskScreen">
-        <div className="cldrPatientList">
-          <div className="cldrSection" />
-          <div className="newPatientSec">
-            <AlagehAutoComplete
-              div={{ className: "col form-group" }}
-              label={{ forceLabel: "View by", isImp: false }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                dataSource: {},
-                others: {}
-              }}
-            />
-            <div className="appPatientList">
-              <div className="appPatientListCntr">
-                <div className="appSection active">
-                  <span className="appIconSec">
-                    <i className="fas fa-calendar-alt" />
-                    11:25:31
-                  </span>
-                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                  <span className="patVisit">New Visit</span>
-                  <span className="patStatus inProgress ">
-                    <span className="animated infinite flash">In-Progress</span>
-                  </span>
-                </div>
-                <div className="appSection">
-                  <span className="appIconSec">
-                    <i className="fas fa-calendar-alt" />
-                    11:25:31
-                  </span>
-                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                  <span className="patVisit">New Visit</span>
-                  <span className="patStatus nursingDone">Nursing Done</span>
-                </div>
-                <div className="appSection">
-                  <span className="appIconSec">
-                    <i className="fas fa-calendar-alt" />
-                    11:25:31
-                  </span>
-                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                  <span className="patVisit">New Visit</span>
-                  <span className="patStatus nursingDone">Nursing Done</span>
-                </div>
-                <div className="appSection ">
-                  <span className="appIconSec">
-                    <i className="fas fa-calendar-alt" />
-                    11:25:31
-                  </span>
-                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                  <span className="patVisit">New Visit</span>
-                  <span className="patStatus nursingGoing">Nursing Going</span>
-                </div>
-                <div className="appSection">
-                  <span className="appIconSec">
-                    <i className="fas fa-walking" />
-                    11:25:31
-                  </span>
-                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                  <span className="patVisit">New Visit</span>
-                  <span className="patStatus checkedIn">Checked In</span>
-                </div>
-                <div className="appSection ">
-                  <span className="appIconSec">
-                    <i className="fas fa-walking" />
-                    11:25:31
-                  </span>
-                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                  <span className="patVisit">New Visit</span>
-                  <span className="patStatus checkedIn">Checked In</span>
-                </div>
-                <div className="appSection">
-                  <span className="appIconSec">
-                    <i className="fas fa-calendar-alt" />
-                    11:25:31
-                  </span>
-                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                  <span className="patVisit">New Visit</span>
-                  <span className="patStatus notShown">Not Shown</span>
-                </div>
-                <div className="appSection">
-                  <span className="appIconSec">
-                    <i className="fas fa-walking" />
-                    11:25:31
-                  </span>
-                  <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                  <span className="patVisit">New Visit</span>
-                  <span className="patStatus notShown">Not Shown</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <React.Suspense fallback={<div>Loading....</div>}>
+          <MyDaypanel />
+        </React.Suspense>
+
         <div className="patientDetailSection">
           <div className="row">
             <div className="col-12  patientMainInfo">

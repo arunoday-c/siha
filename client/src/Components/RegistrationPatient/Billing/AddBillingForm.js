@@ -209,7 +209,6 @@ class AddBillingForm extends Component {
                             onChange: adjustadvance.bind(this, this, context)
                           },
                           others: {
-                            type: "number",
                             placeholder: "0.00",
                             onBlur: advanceAdjustCal.bind(this, this, context),
                             onFocus: e => {
