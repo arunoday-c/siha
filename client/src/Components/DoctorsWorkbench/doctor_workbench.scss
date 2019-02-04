@@ -37,6 +37,11 @@
           .react-datepicker__day--in-range {
             background-color: $primary-color;
           }
+          .react-datepicker__day--today {
+            border: 1px solid $primary-color;
+            //color: $primary-color;
+            border-radius: 5px;
+          }
           .react-datepicker__month-select,
           .react-datepicker__year-select {
             -webkit-appearance: none;
@@ -327,6 +332,25 @@
           }
         }
       }
+    }
+  }
+  .clinicalDeskWrapper {
+    background: lighten($color-black, 60%);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 9999;
+    display: none;
+    .clinicalDeskPopup {
+      width: 95vw;
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: $color-white;
+      height: calc(100vh - 50px);
+      z-index: 9999;
+      box-shadow: 0 0px 200px lighten($color-black, 10%);
+      display: none;
     }
   }
 }
