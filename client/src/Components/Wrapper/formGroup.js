@@ -217,21 +217,23 @@ export default class FormGroup extends PureComponent {
           : { onChange: this.internalStateSetting.bind(this) };
       if (this.props.textBox.decimal !== undefined) {
         return (
-          <NumberFormat
-            name={this.props.textBox.name}
-            {..._disabled}
-            {..._required}
-            {...this.props.textBox.others}
-            {..._class}
-            value={_value}
-            thousandSeparator={this.state.options.thousandSeparator}
-            decimalSeparator={this.state.options.decimalSeparator}
-            decimalScale={this.state.options.decimalScale}
-            allowNegative={this.state.options.allowNegative}
-            fixedDecimalScale={true}
-            // {..._onChange}
-            onValueChange={this.decimalOnChangeHandler}
-          />
+          <div className="ui input txt-fld">
+            <NumberFormat
+              name={this.props.textBox.name}
+              {..._disabled}
+              {..._required}
+              {...this.props.textBox.others}
+              {..._class}
+              value={_value}
+              thousandSeparator={this.state.options.thousandSeparator}
+              decimalSeparator={this.state.options.decimalSeparator}
+              decimalScale={this.state.options.decimalScale}
+              allowNegative={this.state.options.allowNegative}
+              fixedDecimalScale={true}
+              // {..._onChange}
+              onValueChange={this.decimalOnChangeHandler}
+            />
+          </div>
         );
       } else if (this.props.textBox.number !== undefined) {
         return (
@@ -270,17 +272,19 @@ export default class FormGroup extends PureComponent {
         };
         return (
           <React.Fragment>
-            <Cleave
-              options={_options}
-              name={this.props.textBox.name}
-              value={_value}
-              {..._onChange}
-              {..._required}
-              {..._disabled}
-              {...this.props.textBox.others}
-              {..._class}
-            />
-            <span className={"creditCardIcon  " + this.state.cardIcon} />
+            <div className="ui input txt-fld">
+              <Cleave
+                options={_options}
+                name={this.props.textBox.name}
+                value={_value}
+                {..._onChange}
+                {..._required}
+                {..._disabled}
+                {...this.props.textBox.others}
+                {..._class}
+              />
+              <span className={"creditCardIcon  " + this.state.cardIcon} />
+            </div>
           </React.Fragment>
         );
       } else {

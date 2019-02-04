@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Checkbox } from "semantic-ui-react";
 import ReactCalender from "react-datepicker";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import "react-datepicker/dist/react-datepicker.css";
 import { cancelRequest, swalMessage } from "../../../utils/algaehApiCall";
 import MyDayEvents from "./events";
@@ -85,11 +86,24 @@ export default class MyDayView extends Component {
             peekNextMonth
             showMonthDropdown
             showYearDropdown
+            fixedHeight
             dropdownMode="select"
           />
         </div>
         <div className="newPatientSec">
-          <Checkbox slider label="Show Encounter" className="mx-auto" />
+          {/* <Checkbox slider label="Show Encounter" className="mx-auto" /> */}
+
+          <AlagehAutoComplete
+            div={{ className: "col viewAllApp" }}
+            label={{ forceLabel: "View by", isImp: false }}
+            selector={{
+              name: "",
+              className: "select-fld",
+              dataSource: {},
+              others: {}
+            }}
+          />
+
           <div className="appPatientList">
             <div className="appPatientListCntr">
               {_patientList.map((patient, index) => {
@@ -112,11 +126,7 @@ export default class MyDayView extends Component {
                       {new Date(patient.encountered_date).toLocaleTimeString()}
                     </span>
                     <span className="patName">{patient.full_name}</span>
-                    <span className="patVisit">
-                      {patient.nurse_examine === "Y"
-                        ? "Nursing Done"
-                        : "Nursing Pending"}
-                    </span>
+                    <span className="patVisit">Follow Up</span>
                     <span className="patStatus inProgress ">
                       <span
                         className={
@@ -125,7 +135,9 @@ export default class MyDayView extends Component {
                             : ""
                         }
                       >
-                        In-Progress
+                        {patient.nurse_examine === "Y"
+                          ? "Nursing Done"
+                          : "Nursing Pending"}
                       </span>
                     </span>
                   </div>

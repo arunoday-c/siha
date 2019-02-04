@@ -213,6 +213,18 @@ class DoctorsWorkbench extends Component {
             </div>
           </div>
         </div>
+        <div className="clinicalDeskWrapper">
+          <div className="clinicalDeskPopup animated slideInRight faster">
+            <div className="HeaderSection">
+              <div className="popupName">PopUp Name</div>
+              <div className="popupCloseAction">
+                <i className="fas fa-times" />
+              </div>
+            </div>
+            <div className="ContentSection">PopUp Content Comes Here</div>
+            <div className="FooterSection">Content Section Action</div>
+          </div>
+        </div>
       </div>
     );
   }
