@@ -27,6 +27,7 @@ export default class SelfService extends Component {
     algaehApiCall({
       uri: "/selfService/getEmployeeBasicDetails",
       method: "GET",
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({

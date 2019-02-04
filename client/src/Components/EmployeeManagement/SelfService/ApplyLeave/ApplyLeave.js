@@ -554,6 +554,7 @@ class ApplyLeave extends Component {
     algaehApiCall({
       uri: "/selfService/getLeaveMaster",
       method: "GET",
+      module: "hrManagement",
       onSuccess: res => {
         this.setState({
           leave_types: res.data.records

@@ -372,6 +372,7 @@ class SelfPersonalDetails extends Component {
             experience_months: this.state.experience_months
           },
           method: "POST",
+
           onSuccess: res => {
             if (res.data.success) {
               swalMessage({
@@ -419,6 +420,7 @@ class SelfPersonalDetails extends Component {
         algaehApiCall({
           uri: "/employee/addEmployeeIdentification",
           method: "POST",
+          module: "hrManagement",
           data: {
             employee_id: this.state.hims_d_employee_id,
             identity_documents_id: this.state.identity_documents_id,
@@ -472,6 +474,7 @@ class SelfPersonalDetails extends Component {
         algaehApiCall({
           uri: "/selfService/addEmployeeDependentDetails",
           method: "POST",
+          module: "hrManagement",
           data: {
             employee_id: this.state.hims_d_employee_id,
             dependent_type: this.state.dependent_type,
@@ -621,6 +624,7 @@ class SelfPersonalDetails extends Component {
         algaehApiCall({
           uri: "/selfService/updateEmployeeBasicDetails",
           method: "PUT",
+          module: "hrManagement",
           data: {
             full_name: this.state.full_name,
             arabic_name: this.state.arabic_name,
@@ -654,6 +658,7 @@ class SelfPersonalDetails extends Component {
     algaehApiCall({
       uri: "/selfService/getEmployeeDependentDetails",
       method: "GET",
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
@@ -673,6 +678,7 @@ class SelfPersonalDetails extends Component {
     algaehApiCall({
       uri: "/selfService/getEmployeeIdentificationDetails",
       method: "GET",
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
@@ -715,6 +721,7 @@ class SelfPersonalDetails extends Component {
         hims_d_employee_dependents_id: data.hims_d_employee_dependents_id
       },
       method: "PUT",
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           swalMessage({
@@ -747,6 +754,7 @@ class SelfPersonalDetails extends Component {
           data.hims_d_employee_identification_id
       },
       method: "PUT",
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           swalMessage({

@@ -7,7 +7,7 @@ import employee from "../controllers/employee";
 import employee_payments from "../controllers/employee_payments";
 import encashment_process from "../controllers/encashment_process";
 import leave_salary_process from "../controllers/leave_salary_process";
-
+import SelfService from "../controllers/selfService";
 import test from "../controllers/test";
 import end_of_service from "../controllers/end_of_service";
 import final_settlement from "../controllers/final_settlement";
@@ -34,5 +34,6 @@ router.use("/OTManagement", OTManagement());
 router.use("/leavesalaryaccural", leavesalaryaccural());
 router.use("/payrollsettings", payrollsettings());
 router.use("/hrsettings", hrsettings());
+router.use("/selfService", SelfService());
 
 export default router;

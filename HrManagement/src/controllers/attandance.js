@@ -1,9 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import {
-  processAttendance
-  //addAttendanceRegularization
-} from "../models/attendance";
+import { processAttendance } from "../models/attendance";
 export default () => {
   const api = Router();
   api.get("/processAttendance", processAttendance, (req, res, next) => {
