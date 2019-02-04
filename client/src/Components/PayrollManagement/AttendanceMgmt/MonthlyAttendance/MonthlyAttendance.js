@@ -389,17 +389,8 @@ export default class MonthlyAttendance extends Component {
           />
 
           <div className="col form-group">
-            <button
-              onClick={this.processAttandance.bind(this)}
-              style={{ marginTop: 21 }}
-              disabled={this.state.attandance.loader}
-              className="btn btn-primary"
-            >
-              {!this.state.attandance.loader ? (
-                <span>Process Attendance</span>
-              ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
+            <button style={{ marginTop: 21 }} className="btn btn-default">
+              Load
             </button>
           </div>
         </div>
@@ -629,6 +620,23 @@ export default class MonthlyAttendance extends Component {
             </div>
           </div>
         </div> */}
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                onClick={this.processAttandance.bind(this)}
+                disabled={this.state.attandance.loader}
+                className="btn btn-primary"
+              >
+                {!this.state.attandance.loader ? (
+                  <span>Process Attendance</span>
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
