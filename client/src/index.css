@@ -1017,6 +1017,29 @@
       max-height: 70vh;
       overflow: auto;
       padding: 15px; }
+  :global .lab_section {
+    font-weight: normal; }
+  :global .imp {
+    color: #ff063e; }
+  :global .txt-fld {
+    background-color: #fbfbfb;
+    width: 100%; }
+  :global .select-fld {
+    padding-left: 8px;
+    background-color: #fbfbfb;
+    width: 100%; }
+  :global .table-details {
+    text-align: center; }
+  :global .table-hover tbody tr:hover td,
+  :global .table-hover tbody tr:hover th {
+    background-color: #fcffde; }
+  :global .form-details {
+    margin-top: 20px;
+    margin-left: "auto";
+    margin-right: "auto"; }
+  :global th,
+  :global td {
+    border-right: 1px solid #ffffff; }
 
 .ui.fluid.dropdown {
   min-height: 30px !important;

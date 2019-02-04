@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./SelfService.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
-import SelfPersonalDetails from "./SelfPersonalDetails/SelfPersonalDetails";
+import PersonalDetails from "./PersonalDetails/PersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
@@ -228,8 +228,8 @@ export default class SelfService extends Component {
           </div>
         </div>
         <div className="selfService-setion">
-          {this.state.pageDisplay === "SelfPersonalDetails" ? (
-            <SelfPersonalDetails empData={this.state.employee_details} />
+          {this.state.pageDisplay === "PersonalDetails" ? (
+            <PersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
             <AttendanceRegularization empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "ApplyLeave" ? (
