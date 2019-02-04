@@ -257,6 +257,7 @@ module.exports = {
       next(e);
     });
   },
+
   updateEmployeeBasicDetails: (req, res, next) => {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
@@ -303,6 +304,7 @@ module.exports = {
       next(e);
     });
   },
+
   addEmployeeDependentDetails: (req, res, next) => {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();

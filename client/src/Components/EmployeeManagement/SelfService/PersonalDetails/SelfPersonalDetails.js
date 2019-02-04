@@ -1599,7 +1599,7 @@ class SelfPersonalDetails extends Component {
                           }
                         },
                         {
-                          fieldName: "identity_number",
+                          fieldName: "dependent_identity_no",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID No." }} />
                           ),
