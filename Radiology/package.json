@@ -1,16 +1,16 @@
 {
-  "name": "hr_management",
+  "name": "radiology",
   "version": "1.0.0",
-  "description": "Algaeh HR Management services",
+  "description": "Algaeh Laboratory Information Management System",
   "main": "dist",
   "scripts": {
-    "hr_server": "cross-env PORT=3004 NODE_ENV=development nodemon -w src --exec \"babel-node src/hr_server.js \"",
+    "radiology_server": "cross-env PORT=3012 NODE_ENV=development nodemon -w src --exec \"babel-node src/radiology_server.js \"",
     "build": "babel src -s -D -d dist ",
-    "dev": "npm run hr_server",
-    "api": "npm run hr_server",
+    "dev": "npm run radiology_server",
+    "api": "npm run radiology_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env PORT=3004 NODE_ENV=production pm2 start  -i 1 hr_server.js"
+    "start": "cross-env PORT=3012 NODE_ENV=production pm2 start  -i 1 radiology_server.js"
   },
   "eslintConfig": {
     "parserOptions": {
@@ -21,7 +21,7 @@
       "node": true
     },
     "rules": {
-      "no-eval": 0,
+      "no-eval": true,
       "no-console": 0,
       "no-unused-vars": 1,
       "no-script-url": 0
@@ -35,8 +35,6 @@
     "cors": "^2.8.4",
     "cross-env": "^5.1.4",
     "express": "^4.16.3",
-    "moment": "^2.22.1",
-    "node-linq": "0.0.5",
     "winston": "^2.4.2",
     "winston-daily-rotate-file": "^3.1.4"
   },
