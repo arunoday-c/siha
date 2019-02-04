@@ -121,6 +121,6 @@ app.use((error, req, res, next) => {
   });
 });
 app.server.listen(_port);
-console.log(`Radiology Server is running  on PORT  - ${_port} *`);
+console.log(`Insurance Server is running  on PORT  - ${_port} *`);
 export default app;
 module.exports = app;
