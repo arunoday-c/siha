@@ -220,14 +220,13 @@ class EarningsDeductions extends Component {
 
   getEarningDeductions() {
     algaehApiCall({
-      
       uri: "/payrollsettings/getEarningDeduction",
       module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            earning_deductions: res.data.result
+            earning_deductions: res.data.records
           });
         }
       },

@@ -21,7 +21,8 @@ class EmployeeDesignations extends Component {
 
   getDesignations() {
     algaehApiCall({
-      uri: "/employeesetups/getDesignations",
+      uri: "/hrsettings/getDesignations",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -47,22 +48,26 @@ class EmployeeDesignations extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/employeesetups/deleteDesignation",
+          uri: "/hrsettings/updateDesignation",
+          module: "hrManagement",
           data: {
-            hims_d_designation_id: data.hims_d_designation_id
+            hims_d_designation_id: data.hims_d_designation_id,
+            designation_code: data.designation_code,
+            designation: data.designation,
+            record_status: "I"
           },
-          method: "DELETE",
+          method: "PUT",
           onSuccess: response => {
-            if (response.data.records.success) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getDesignations();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
-                title: response.data.records.message,
+                title: response.data.message,
                 type: "error"
               });
             }
@@ -85,12 +90,14 @@ class EmployeeDesignations extends Component {
 
   updateDesignation(data) {
     algaehApiCall({
-      uri: "/employee/updateDesignation",
+      uri: "/hrsettings/updateDesignation",
+      module: "hrManagement",
       method: "PUT",
       data: {
         hims_d_designation_id: data.hims_d_designation_id,
         designation_code: data.designation_code,
-        designation: data.designation
+        designation: data.designation,
+        record_status: "A"
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -99,7 +106,7 @@ class EmployeeDesignations extends Component {
             type: "success"
           });
 
-          this.getEmployeeGroups();
+          this.getDesignations();
         }
       },
       onFailure: error => {
@@ -116,7 +123,8 @@ class EmployeeDesignations extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/employeesetups/addDesignation",
+          uri: "/hrsettings/addDesignation",
+          module: "hrManagement",
           method: "POST",
           data: {
             designation_code: this.state.designation_code,
@@ -125,6 +133,7 @@ class EmployeeDesignations extends Component {
           onSuccess: res => {
             if (res.data.success) {
               this.clearState();
+              this.getDesignations();
               swalMessage({
                 title: "Record Added Successfully",
                 type: "success"

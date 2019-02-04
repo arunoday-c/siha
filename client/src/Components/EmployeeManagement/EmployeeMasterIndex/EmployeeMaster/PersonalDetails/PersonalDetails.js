@@ -683,8 +683,7 @@ function mapStateToProps(state) {
     present_cities: state.present_cities,
     relegions: state.relegions,
     patients: state.patients,
-    services: state.services,
-    designations: state.designations
+    services: state.services
   };
 }
 
@@ -697,7 +696,6 @@ function mapDispatchToProps(dispatch) {
       getNationalities: AlgaehActions,
       getStates: AlgaehActions,
       getServices: AlgaehActions,
-      getDesignations: AlgaehActions,
       getRelegion: AlgaehActions
     },
     dispatch

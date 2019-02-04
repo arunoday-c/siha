@@ -88,7 +88,8 @@ class DeptUserDetails extends Component {
       this.props.emp_groups.length === 0
     ) {
       this.props.getEmpGroups({
-        uri: "/employee/getEmployeeGroups",
+        uri: "/hrsettings/getEmployeeGroups",
+        module: "hrManagement",
         method: "GET",
         data: { record_status: "A" },
         redux: {
@@ -132,7 +133,8 @@ class DeptUserDetails extends Component {
       this.props.designations.length === 0
     ) {
       this.props.getDesignations({
-        uri: "/employeesetups/getDesignations",
+        uri: "/hrsettings/getDesignations",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "DSGTN_GET_DATA",

@@ -17,7 +17,7 @@ export default () => {
   api.get("/getLoanMaster", getLoanMaster, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      records: req.records
     });
   });
 
@@ -38,7 +38,7 @@ export default () => {
   api.get("/getAllHolidays", getAllHolidays, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      records: req.records
     });
   });
 
@@ -66,7 +66,7 @@ export default () => {
   api.get("/getEarningDeduction", getEarningDeduction, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      records: req.records
     });
   });
 

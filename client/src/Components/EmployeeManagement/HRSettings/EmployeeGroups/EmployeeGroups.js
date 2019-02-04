@@ -26,7 +26,8 @@ class EmployeeGroups extends Component {
 
   getEmployeeGroups() {
     algaehApiCall({
-      uri: "/employee/getEmployeeGroups",
+      uri: "/hrsettings/getEmployeeGroups",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -80,22 +81,28 @@ class EmployeeGroups extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/employee/deleteEmployeeGroup",
+          uri: "/hrsettings/updateEmployeeGroup",
+          module: "hrManagement",
           data: {
-            hims_d_employee_group_id: data.hims_d_employee_group_id
+            hims_d_employee_group_id: data.hims_d_employee_group_id,
+            group_description: data.group_description,
+            monthly_accrual_days: data.monthly_accrual_days,
+            airfare_eligibility: data.airfare_eligibility,
+            airfare_amount: data.airfare_amount,
+            record_status: "I"
           },
-          method: "DELETE",
+          method: "PUT",
           onSuccess: response => {
-            if (response.data.records.success) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getEmployeeGroups();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
-                title: response.data.records.message,
+                title: response.data.message,
                 type: "error"
               });
             }
@@ -118,14 +125,16 @@ class EmployeeGroups extends Component {
 
   updateEmployeeGroups(data) {
     algaehApiCall({
-      uri: "/employee/updateEmployeeGroup",
+      uri: "/hrsettings/updateEmployeeGroup",
+      module: "hrManagement",
       method: "PUT",
       data: {
         hims_d_employee_group_id: data.hims_d_employee_group_id,
         group_description: data.group_description,
         monthly_accrual_days: data.monthly_accrual_days,
         airfare_eligibility: data.airfare_eligibility,
-        airfare_amount: data.airfare_amount
+        airfare_amount: data.airfare_amount,
+        record_status: "A"
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -151,7 +160,8 @@ class EmployeeGroups extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/employee/addEmployeeGroups",
+          uri: "/hrsettings/addEmployeeGroups",
+          module: "hrManagement",
           method: "POST",
           data: {
             group_description: this.state.group_description,
@@ -162,6 +172,7 @@ class EmployeeGroups extends Component {
           onSuccess: res => {
             if (res.data.success) {
               this.clearState();
+              this.getEmployeeGroups();
               swalMessage({
                 title: "Record Added Successfully",
                 type: "success"

@@ -112,7 +112,9 @@ const employeeSearch = $this => {
 
 const getOvertimeGroups = $this => {
   algaehApiCall({
-    uri: "/employeesetups/getOvertimeGroups",
+    // uri: "/employeesetups/getOvertimeGroups",
+    uri: "/hrsettings/getOvertimeGroups",
+    module: "hrManagement",
     data: {
       hims_d_overtime_group_id: $this.state.overtime_group_id
     },
@@ -274,7 +276,8 @@ const MianClear = $this => {
 
 const getHolidayMaster = $this => {
   algaehApiCall({
-    uri: "/holiday/getAllHolidays",
+    uri: "/payrollsettings/getAllHolidays",
+    module: "hrManagement",
     method: "GET",
 
     data: {

@@ -15,7 +15,8 @@ export default class HolidayListSelf extends Component {
 
   getHolidayMaster() {
     algaehApiCall({
-      uri: "/holiday/getAllHolidays",
+      uri: "/payrollsettings/getAllHolidays",
+      module: "hrManagement",
       method: "GET",
 
       data: {

@@ -42,7 +42,8 @@ class EmployeeMasterIndex extends Component {
       this.props.designations.length === 0
     ) {
       this.props.getDesignations({
-        uri: "/employeesetups/getDesignations",
+        uri: "/hrsettings/getDesignations",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",

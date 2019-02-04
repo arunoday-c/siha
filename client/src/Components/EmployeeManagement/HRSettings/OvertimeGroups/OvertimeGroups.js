@@ -45,7 +45,8 @@ class OvertimeGroups extends Component {
 
   getOvertimeGroups() {
     algaehApiCall({
-      uri: "/employeesetups/getOvertimeGroups",
+      uri: "/hrsettings/getOvertimeGroups",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {

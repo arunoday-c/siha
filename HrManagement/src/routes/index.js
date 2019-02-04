@@ -15,6 +15,7 @@ import payrollOptions from "../controllers/payrollOptions";
 import OTManagement from "../controllers/OTManagement";
 import leavesalaryaccural from "../controllers/leave_salary_accural";
 import payrollsettings from "../controllers/payrollsettings";
+import hrsettings from "../controllers/hrsettings";
 
 const router = express();
 router.use("/attendance", attendance());
@@ -32,5 +33,6 @@ router.use("/payrollOptions", payrollOptions());
 router.use("/OTManagement", OTManagement());
 router.use("/leavesalaryaccural", leavesalaryaccural());
 router.use("/payrollsettings", payrollsettings());
+router.use("/hrsettings", hrsettings());
 
 export default router;

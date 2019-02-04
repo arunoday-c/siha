@@ -261,7 +261,8 @@ class LoanRequest extends Component {
 
   getLoanMaster() {
     algaehApiCall({
-      uri: "/employee/getLoanMaster",
+      uri: "/payrollsettings/getLoanMaster",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {

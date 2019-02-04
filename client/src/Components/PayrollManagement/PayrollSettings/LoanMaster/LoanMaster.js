@@ -39,7 +39,7 @@ class LoanMaster extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            loan_master: res.data.result
+            loan_master: res.data.records
           });
         }
       },
