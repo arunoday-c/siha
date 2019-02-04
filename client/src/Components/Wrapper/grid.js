@@ -910,81 +910,82 @@ class DataGrid extends Component {
         : false;
     const _manual =
       this.props.dataSource.uri !== undefined ? { manual: true } : {};
-    return (
-      <React.Fragment>
-        <div id={this.props.id}>
-          <ReactTableFixedColumns
-            id={this.props.id}
-            data={_data}
-            columns={this.state.columns}
-            className="-striped -highlight"
-            {..._filter}
-            {..._defaultSize}
-            pages={this.state.totalPages}
-            noDataText={_noDataText}
-            loading={this.state.showLoading}
-            showPagination={_decissionShowPaging}
-            showPaginationTop={
-              this.props.paging !== undefined
-                ? this.props.paging.showPaginationTop !== undefined
-                  ? this.props.paging.showPaginationTop
+
+    if (this.state.columns !== undefined && this.state.columns.length > 0) {
+      return (
+        <React.Fragment>
+          <div id={this.props.id}>
+            <ReactTableFixedColumns
+              id={this.props.id}
+              data={_data}
+              columns={this.state.columns}
+              className="-striped -highlight"
+              {..._filter}
+              {..._defaultSize}
+              pages={this.state.totalPages}
+              noDataText={_noDataText}
+              loading={this.state.showLoading}
+              showPagination={_decissionShowPaging}
+              showPaginationTop={
+                this.props.paging !== undefined
+                  ? this.props.paging.showPaginationTop !== undefined
+                    ? this.props.paging.showPaginationTop
+                    : false
                   : false
-                : false
-            }
-            showPaginationBottom={
-              this.props.paging !== undefined
-                ? this.props.paging.showPaginationBottom !== undefined
-                  ? this.props.paging.showPaginationBottom
+              }
+              showPaginationBottom={
+                this.props.paging !== undefined
+                  ? this.props.paging.showPaginationBottom !== undefined
+                    ? this.props.paging.showPaginationBottom
+                    : true
                   : true
-                : true
-            }
-            showPageJump={
-              this.props.paging !== undefined
-                ? this.props.paging.showPageJump !== undefined
-                  ? this.props.paging.showPageJump
+              }
+              showPageJump={
+                this.props.paging !== undefined
+                  ? this.props.paging.showPageJump !== undefined
+                    ? this.props.paging.showPageJump
+                    : true
                   : true
-                : true
-            }
-            showPageSizeOptions={
-              this.props.paging !== undefined
-                ? this.props.paging.showPageSizeOptions !== undefined
-                  ? this.props.paging.showPageSizeOptions
+              }
+              showPageSizeOptions={
+                this.props.paging !== undefined
+                  ? this.props.paging.showPageSizeOptions !== undefined
+                    ? this.props.paging.showPageSizeOptions
+                    : true
                   : true
-                : true
-            }
-            resizable={false}
-            freezeWhenExpanded={true}
-            //collapseOnDataChange={false}
-            pageSizeOptions={[10, 20, 25, 50, 100]}
-            previousText="Previous"
-            nextText="Next"
-            pageText={
-              <span>
-                Total Records:
-                {this.state.recordsTotal}, Page
-              </span>
-            }
-            ofText="of"
-            rowsText=""
-            onPageSizeChange={this.pageSizeChange.bind(this)}
-            onPageChange={this.pageChangeHandler.bind(this)}
-            {..._subComponent}
-            {..._onExpandRow}
-            style={{
-              maxHeight: "400px",
-              minHeight: "120px"
-            }}
-            // width={{ undefined }}
-            // minWidth={"100"}
-            // maxWidth={{ undefined }}
-            getTdProps={this.getTdHandler.bind(this)}
-            getTrProps={this.getTrHandler.bind(this)}
-            {..._manual}
-            {...this.props.others}
-          />
-        </div>
-      </React.Fragment>
-    );
+              }
+              resizable={false}
+              freezeWhenExpanded={true}
+              pageSizeOptions={[10, 20, 25, 50, 100]}
+              previousText="Previous"
+              nextText="Next"
+              pageText={
+                <span>
+                  Total Records:
+                  {this.state.recordsTotal}, Page
+                </span>
+              }
+              ofText="of"
+              rowsText=""
+              onPageSizeChange={this.pageSizeChange.bind(this)}
+              onPageChange={this.pageChangeHandler.bind(this)}
+              {..._subComponent}
+              {..._onExpandRow}
+              style={{
+                maxHeight: "400px",
+                minHeight: "120px"
+              }}
+              getTdProps={this.getTdHandler.bind(this)}
+              getTrProps={this.getTrHandler.bind(this)}
+              {..._manual}
+              {...this.props.others}
+            />
+          </div>
+        </React.Fragment>
+      );
+    } else {
+      return <div>No Columns</div>;
+    }
   }
 }
 export default DataGrid;
