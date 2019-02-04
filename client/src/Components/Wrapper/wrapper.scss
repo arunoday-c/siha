@@ -1,9 +1,9 @@
+@import "../../styles/algaehCssVariables.scss";
 .ReactTable {
   .rt-thead {
     .rt-th {
-      font-size: 0.8rem !important;
       color: #000 !important;
-      background: #f3ffff !important;
+      background: lighten($primary-color, 45%) !important;
       .style_Label {
         font-weight: bold !important;
         white-space: pre-line !important;
@@ -18,16 +18,26 @@
   }
   .rt-thead.-filters input,
   .rt-thead.-filters select {
-    padding: 0 2px !important;
+    padding: 0.3em !important;
     border: 1px solid #8c8c8c !important;
   }
   .rt-tbody {
     text-align: center;
     .rt-td {
-      font-size: 0.8rem !important;
+      font-size: 0.9em;
       overflow: inherit !important;
       white-space: inherit !important;
     }
+
+    .rowHighliter {
+      .rt-td {
+        background: lighten($primary-color, 40%) !important;
+        &:hover {
+          background: lighten($primary-color, 40%) !important;
+        }
+      }
+    }
+
     .textCapitalize {
       text-transform: capitalize;
       input {
@@ -36,19 +46,20 @@
     }
   }
   .-btn {
-    background: #34b8bc !important;
+    background: $primary-color !important;
     color: #fff !important;
+    font-size: 0.8em;
   }
   .-btn:disabled {
     background: rgba(0, 0, 0, 0.1) !important;
   }
   .-pagination {
-    font-size: 0.8rem !important;
     .-center {
       input,
       select {
         border: 1px solid #8c8c8c !important;
         width: 7vh !important;
+        -webkit-appearance: none;
       }
       input {
         padding: 2px !important;
@@ -78,12 +89,14 @@
   .fa-prescription,
   .fa-arrow-right,
   .fa-eye,
-  .fa-plus {
+  .fa-plus,
+  .fa-thumbs-up,
+  .fa-thumbs-down {
     cursor: pointer;
-    border: 1px solid #44b8bd;
+    border: 1px solid lighten($primary-color, 10%);
     height: 28px;
     border-radius: 100%;
-    font-size: 0.9rem;
+
     width: 28px;
     display: inline-block;
     text-align: center;
@@ -110,8 +123,10 @@
   .fa-file-prescription:hover,
   .fa-prescription:hover,
   .fa-arrow-right:hover,
-  .fa-plus:hover {
-    background: #44b8bd;
+  .fa-plus:hover,
+  .fa-thumbs-up:hover,
+  .fa-thumbs-down:hover {
+    background: $primary-color;
     color: #fff;
   }
 }

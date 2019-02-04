@@ -4,8 +4,6 @@
   .doctorApp-Ar .primary-details {
     border-right: none;
     border-left: 1px dashed #d3d3d3; }
-  .doctorApp-Ar label {
-    font-size: 0.8rem; }
   .doctorApp-Ar .toggle-section .nav {
     padding: 0;
     right: auto; }
@@ -43,89 +41,11 @@
     min-width: 94vw !important; }
     .doctorApp-Ar .appointment .appointment-inner-cntr span.noDoctor {
       display: inline-block;
-      font-size: 1.4rem;
       margin: auto;
       width: 100%;
       text-align: center;
       color: #a7a7a7;
       padding: 25vh 0; }
-  .doctorApp-Ar .appointment .my-calendar {
-    text-align: center;
-    background: #34b8bc;
-    color: #fff; }
-    .doctorApp-Ar .appointment .my-calendar .myDay_date {
-      position: relative; }
-      .doctorApp-Ar .appointment .my-calendar .myDay_date input[type="month"] {
-        font-size: 0.8rem;
-        padding: 2px 3px 3px 8px;
-        width: 250px;
-        text-transform: uppercase;
-        border: 1px dashed #ffffff;
-        border-radius: 4px;
-        margin-top: 4px;
-        background: none;
-        color: #fff; }
-      .doctorApp-Ar .appointment .my-calendar .myDay_date input[type="month"]::-webkit-calendar-picker-indicator {
-        color: rgba(0, 0, 0, 0);
-        opacity: 1;
-        display: block;
-        background: url(../../assets/svg/calendar-white-icon.svg) no-repeat center;
-        width: 18px;
-        height: 15px;
-        border-width: thin;
-        background-size: 60%; }
-      .doctorApp-Ar .appointment .my-calendar .myDay_date input[type="month"]:disabled {
-        background: #fffdfa;
-        border: 1px dashed #d3d3d3;
-        color: #000;
-        font-weight: bold; }
-      .doctorApp-Ar .appointment .my-calendar .myDay_date button {
-        margin-left: 0px;
-        padding: 3px 6px !important; }
-        .doctorApp-Ar .appointment .my-calendar .myDay_date button svg {
-          height: 16px; }
-      .doctorApp-Ar .appointment .my-calendar .myDay_date .todayBtn {
-        margin-right: 10px !important;
-        margin-left: 0;
-        padding: 3px 10px;
-        border: 1px solid white;
-        background: none;
-        color: #fff;
-        margin-bottom: 2px; }
-      .doctorApp-Ar .appointment .my-calendar .myDay_date .todayBtn:hover {
-        background: #fff;
-        color: #34b8bc; }
-    .doctorApp-Ar .appointment .my-calendar .arrow-box {
-      width: 60px;
-      cursor: pointer; }
-    .doctorApp-Ar .appointment .my-calendar .arrow-box:hover {
-      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-      transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-    .doctorApp-Ar .appointment .my-calendar .arrow-box-left {
-      float: left; }
-    .doctorApp-Ar .appointment .my-calendar .arrow-box-right {
-      float: right; }
-    .doctorApp-Ar .appointment .my-calendar .calendar .col {
-      border: 1px solid #3aa4a9;
-      font-size: 1.3rem;
-      padding-right: 3px;
-      padding-left: 3px;
-      text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }
-    .doctorApp-Ar .appointment .my-calendar .calendar .col:hover {
-      background: #3aa4a9;
-      cursor: pointer;
-      text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3); }
-    .doctorApp-Ar .appointment .my-calendar .calendar .col span {
-      padding: 0;
-      margin: 0;
-      display: block;
-      font-size: 0.6rem;
-      text-transform: uppercase; }
-    .doctorApp-Ar .appointment .my-calendar .activeDate {
-      border-bottom: 4px solid yellow !important;
-      background: #3aa4a9; }
-    .doctorApp-Ar .appointment .my-calendar .CurrentDate {
-      border-top: 2px solid yellow !important; }
   .doctorApp-Ar .appointment .portlet-title .caption {
     float: none;
     width: 25%; }
@@ -154,20 +74,17 @@
         background: #dcac66; }
         .doctorApp-Ar .appointment .tg thead tr .tg-amwm h6 {
           font-weight: bold;
-          font-size: 0.9rem;
           margin: 0;
           border-bottom: 1px solid #c39554;
           padding: 2px 0; }
         .doctorApp-Ar .appointment .tg thead tr .tg-amwm p {
           margin: 0;
-          font-size: 0.7rem;
           background: #d2a25e;
           border-top: 1px solid #e4b26b; }
           .doctorApp-Ar .appointment .tg thead tr .tg-amwm p span {
             display: block; }
       .doctorApp-Ar .appointment .tg thead tr .tbl-subHdg {
         text-transform: uppercase;
-        font-size: 0.7rem !important;
         border: 1px solid #e2e2c8 !important;
         background: #fffff4;
         color: #5a5a5a;
@@ -180,7 +97,6 @@
       overflow-y: auto; }
       .doctorApp-Ar .appointment .tg tbody td.tg-baqh {
         width: 120px;
-        font-size: 0.8rem;
         word-break: normal;
         border: 1px solid lightgrey;
         text-align: center;
@@ -235,8 +151,7 @@
             display: block; }
             .doctorApp-Ar .appointment .tg tbody .dynPatient .appStatusListCntr ul.appStatusList li span {
               padding: 3px 5px;
-              display: block;
-              font-size: 0.7rem; }
+              display: block; }
       .doctorApp-Ar .appointment .tg tbody .dynPatient span:hover {
         text-decoration: underline; }
       .doctorApp-Ar .appointment .tg tbody .patientStdbyCount {
@@ -246,7 +161,6 @@
         border-radius: 10px;
         margin: 3px auto 0;
         width: 85%;
-        font-size: 0.7rem;
         border: 1px solid #e3e0c9; }
         .doctorApp-Ar .appointment .tg tbody .patientStdbyCount ul {
           visibility: hidden;
@@ -294,7 +208,6 @@
         position: absolute;
         top: 2px;
         left: 8px;
-        font-size: 0.7rem;
         color: #7d7d7d;
         direction: ltr; }
       .doctorApp-Ar .appointment .tg tbody i.fa-plus {
@@ -318,8 +231,7 @@
         width: 20px;
         height: 20px;
         text-align: center;
-        line-height: 20px;
-        font-size: 0.7rem; }
+        line-height: 20px; }
       .doctorApp-Ar .appointment .tg tbody i.fa-times {
         display: none;
         display: none;
@@ -331,8 +243,7 @@
         width: 20px;
         height: 20px;
         text-align: center;
-        line-height: 20px;
-        font-size: 0.7rem; }
+        line-height: 20px; }
       .doctorApp-Ar .appointment .tg tbody .dynPatient:hover i.fa-times,
       .doctorApp-Ar .appointment .tg tbody .dynPatient:hover i.fa-clock {
         display: block; }
@@ -363,7 +274,6 @@
         padding-top: 17vh;
         border: 1px solid #e3e0c9;
         text-align: center;
-        font-size: 1.5rem;
         display: block;
         width: 239px;
         color: #ddd;

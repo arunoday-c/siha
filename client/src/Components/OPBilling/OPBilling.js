@@ -131,6 +131,7 @@ class OPBilling extends Component {
       method: "GET",
       data: { patient_code: this.state.patient_code },
       onSuccess: response => {
+        let todayDate = new Date();
         if (response.data.success) {
           let data = response.data.records;
 
@@ -142,13 +143,23 @@ class OPBilling extends Component {
             )
             .toArray();
 
+          debugger;
+          todayDate.setDate(todayDate.getDate() - 7);
           if (x !== undefined && x.length > 0) {
             data.patientRegistration.patient_type = x[0].patitent_type_desc;
           } else {
             data.patientRegistration.patient_type = "Not Selected";
           }
 
-          data.patientRegistration.visitDetails = data.visitDetails;
+          let visitDetails = Enumerable.from(data.visitDetails)
+            .where(
+              w =>
+                w.visit_expiery_date > moment(todayDate).format("YYYY-MM-DD") &&
+                w.visit_status === "O"
+            )
+            .toArray();
+          debugger;
+          data.patientRegistration.visitDetails = visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
           data.patientRegistration.mode_of_pay = "None";
@@ -210,6 +221,7 @@ class OPBilling extends Component {
           data.visitDetails = [visitDetails];
           data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
           data.Billexists = true;
+          data.saveEnable = true;
 
           if (data.receiptdetails.length !== 0) {
             for (let i = 0; i < data.receiptdetails.length; i++) {

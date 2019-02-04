@@ -16,6 +16,7 @@ import {
   getEmployeeDetails,
   EditEmployeeMaster
 } from "./EmployeeMasterIndexEvent";
+import variableJson from "../../../utils/GlobalVariables.json";
 
 class EmployeeMasterIndex extends Component {
   constructor(props) {
@@ -41,7 +42,8 @@ class EmployeeMasterIndex extends Component {
       this.props.designations.length === 0
     ) {
       this.props.getDesignations({
-        uri: "/employeesetups/getDesignations",
+        uri: "/hrsettings/getDesignations",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
@@ -170,6 +172,7 @@ class EmployeeMasterIndex extends Component {
                 onClose={this.CloseModel.bind(this)}
                 editEmployee={this.state.editEmployee}
                 employeeDetailsPop={this.state.employeeDetailsPop}
+                employee_status={this.state.employee_status}
               />
             </div>
           </div>
@@ -238,6 +241,31 @@ class EmployeeMasterIndex extends Component {
                     {
                       fieldName: "full_name",
                       label: <AlgaehLabel label={{ fieldName: "full_name" }} />,
+                      others: {
+                        resizable: false,
+                        style: { textAlign: "center" }
+                      }
+                    },
+                    {
+                      fieldName: "employee_status",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Employee Status" }}
+                        />
+                      ),
+                      displayTemplate: row => {
+                        return row.employee_status === "A" ? (
+                          <span className="badge badge-success">Active</span>
+                        ) : row.employee_status === "I" ? (
+                          <span className="badge badge-dark">Inactive</span>
+                        ) : row.employee_status === "R" ? (
+                          <span className="badge badge-warning">Resigned</span>
+                        ) : row.employee_status === "T" ? (
+                          <span className="badge badge-secondary">
+                            Terminated
+                          </span>
+                        ) : null;
+                      },
                       others: {
                         resizable: false,
                         style: { textAlign: "center" }
@@ -328,7 +356,7 @@ class EmployeeMasterIndex extends Component {
                       label: <AlgaehLabel label={{ fieldName: "email" }} />,
                       others: {
                         resizable: false,
-                        style: { textAlign: "center" }
+                        style: { textAlign: "center", wordBreak: "break-all" }
                       }
                     }
                   ]}
@@ -338,7 +366,7 @@ class EmployeeMasterIndex extends Component {
                   }}
                   filter={true}
                   // isEditable={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 50 }}
                 />
               </div>
             </div>

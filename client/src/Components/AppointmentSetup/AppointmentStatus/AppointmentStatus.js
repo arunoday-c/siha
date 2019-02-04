@@ -512,7 +512,9 @@ class AppointmentStatus extends Component {
                   },
                   {
                     fieldName: "steps",
-                    label: "Steps",
+
+                    label: <AlgaehLabel label={{ forceLabel: "Steps" }} />,
+
                     editorTemplate: row => {
                       return (
                         <AlagehFormGroup
@@ -538,7 +540,9 @@ class AppointmentStatus extends Component {
                   },
                   {
                     fieldName: "authorized",
-                    label: "Authorized",
+
+                    label: <AlgaehLabel label={{ forceLabel: "Authorized" }} />,
+
                     disabled: false,
                     displayTemplate: row => {
                       return (

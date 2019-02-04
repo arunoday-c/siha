@@ -134,10 +134,29 @@ export default [
     name: "INCOME",
     submenu: [
       {
-        subitem: "Outstanding Advances",
-        template_name: "opBillSummary",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+        subitem: "Department Wise Income",
+        template_name: "departmentIncome",
+        reportQuery: "subDepartmentIncome",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
       },
       {
         subitem: "OP Billing Summary",
@@ -163,19 +182,70 @@ export default [
             }
           }
         ]
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
       },
       {
         subitem: "OP Billing Detail",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+        template_name: "opBillDetails",
+        reportQuery: "OPBillDetails",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "dropdown",
+            name: "service_type_id",
+            initialLoad: true,
+            isImp: true,
+            link: {
+              uri: "/serviceType"
+            },
+            dataSource: {
+              textField: "service_type",
+              valueField: "hims_d_service_type_id",
+              data: undefined
+            }
+          }
+        ]
       },
       {
         subitem: "Daily Cash Collection",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+        template_name: "dailyCashCollection",
+        reportQuery: "staffCashCollection",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
       },
       {
         subitem: "Service wise Income",
@@ -630,6 +700,96 @@ export default [
       },
       {
         subitem: " TestResult Report",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      }
+    ]
+  },
+  {
+    name: "PAYROLL REPORTS",
+    submenu: [
+      {
+        subitem: "Salary Slips",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Salary Statement",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Bank Transfer letter with statement",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Statistics reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Final Settlement report",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Leave Reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Shift Rostering reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Loan and Advance report",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Salary Component Wise reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Ledger",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Attendance Reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Document Expiry Reports",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Details",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+
+      {
+        subitem: "Nationality Wise and Department Wise Statistics",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />

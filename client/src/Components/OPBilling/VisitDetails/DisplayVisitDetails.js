@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import Radio from "@material-ui/core/Radio";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import "./DisplayVisitDetails.css";
@@ -74,19 +73,25 @@ class DisplayVisitDetails extends Component {
                           fieldName: "radioselect",
                           displayTemplate: row => {
                             return (
-                              <Radio
-                                style={{ maxHeight: "10px", maxWidth: "30px" }}
-                                name="select"
-                                color="primary"
-                                onChange={handleChange.bind(
-                                  this,
-                                  this,
-                                  row,
-                                  context
-                                )}
-                                checked={row.radioselect === 1 ? true : false}
-                                disabled={this.state.Billexists}
-                              />
+                              <div className="customRadio">
+                                <label className="radio inline">
+                                  <input
+                                    type="radio"
+                                    checked={
+                                      row.radioselect === 1 ? true : false
+                                    }
+                                    disabled={this.state.Billexists}
+                                    onChange={handleChange.bind(
+                                      this,
+                                      this,
+                                      row,
+                                      context
+                                    )}
+                                    type="radio"
+                                  />
+                                  <span />
+                                </label>
+                              </div>
                             );
                           },
                           others: {

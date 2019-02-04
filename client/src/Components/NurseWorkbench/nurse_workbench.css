@@ -1,82 +1,6 @@
 .nurse_workbench .panel-layout {
   margin-top: 10px; }
 
-.nurse_workbench .my-calendar {
-  text-align: center;
-  background: #34b8bc;
-  color: #fff; }
-  .nurse_workbench .my-calendar .myDay_date {
-    position: relative; }
-    .nurse_workbench .my-calendar .myDay_date input[type="month"] {
-      font-size: 0.8rem;
-      padding: 2px 3px 3px 8px;
-      width: 250px;
-      text-transform: uppercase;
-      border: 1px dashed #ffffff;
-      border-radius: 4px;
-      margin-top: 4px;
-      background: none;
-      color: #fff; }
-    .nurse_workbench .my-calendar .myDay_date input[type="month"]::-webkit-calendar-picker-indicator {
-      color: rgba(0, 0, 0, 0);
-      opacity: 1;
-      display: block;
-      background: url(../../assets/svg/calendar-white-icon.svg) no-repeat center;
-      width: 18px;
-      height: 15px;
-      border-width: thin;
-      background-size: 60%; }
-    .nurse_workbench .my-calendar .myDay_date input[type="month"]:disabled {
-      background: #fffdfa;
-      border: 1px dashed #d3d3d3;
-      color: #000;
-      font-weight: bold; }
-    .nurse_workbench .my-calendar .myDay_date button {
-      margin-left: 0px;
-      padding: 3px 6px !important; }
-      .nurse_workbench .my-calendar .myDay_date button svg {
-        height: 16px; }
-    .nurse_workbench .my-calendar .myDay_date .todayBtn {
-      margin-left: 10px;
-      padding: 3px 10px;
-      border: 1px solid white;
-      background: none;
-      color: #fff; }
-    .nurse_workbench .my-calendar .myDay_date .todayBtn:hover {
-      background: #fff;
-      color: #34b8bc; }
-  .nurse_workbench .my-calendar .arrow-box {
-    width: 60px;
-    cursor: pointer; }
-  .nurse_workbench .my-calendar .arrow-box:hover {
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-  .nurse_workbench .my-calendar .arrow-box-left {
-    float: left; }
-  .nurse_workbench .my-calendar .arrow-box-right {
-    float: right; }
-  .nurse_workbench .my-calendar .calendar .col {
-    border: 1px solid #3aa4a9;
-    font-size: 1.3rem;
-    padding-right: 3px;
-    padding-left: 3px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }
-  .nurse_workbench .my-calendar .calendar .col:hover {
-    background: #3aa4a9;
-    cursor: pointer;
-    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3); }
-  .nurse_workbench .my-calendar .calendar .col span {
-    padding: 0;
-    margin: 0;
-    display: block;
-    font-size: 0.6rem;
-    text-transform: uppercase; }
-  .nurse_workbench .my-calendar .activeDate {
-    border-bottom: 4px solid yellow !important;
-    background: #3aa4a9; }
-  .nurse_workbench .my-calendar .CurrentDate {
-    border-top: 2px solid yellow !important; }
-
 .nurse_workbench .opPatientList .opList {
   margin: 0;
   padding: 0;
@@ -86,7 +10,6 @@
   .nurse_workbench .opPatientList .opList .noPatientDiv {
     margin-top: 15%;
     text-align: center;
-    font-size: 0.9rem;
     color: #929292; }
   .nurse_workbench .opPatientList .opList li {
     margin: 4px 0;
@@ -115,8 +38,6 @@
       .nurse_workbench .opPatientList .opList li .op-sec-1 .walking-icon {
         background: url("../../assets/icons/walking-icon.svg") no-repeat center;
         background-size: 80%; }
-      .nurse_workbench .opPatientList .opList li .op-sec-1 .opTime {
-        font-size: 0.7rem; }
     .nurse_workbench .opPatientList .opList li .op-sec-2 {
       width: 10px;
       width: 56%;
@@ -124,11 +45,9 @@
       display: inline-block; }
       .nurse_workbench .opPatientList .opList li .op-sec-2 .opPatientName {
         display: block;
-        font-size: 1rem;
         margin-top: 5px; }
       .nurse_workbench .opPatientList .opList li .op-sec-2 .opStatus {
-        display: block;
-        font-size: 0.7rem; }
+        display: block; }
       .nurse_workbench .opPatientList .opList li .op-sec-2 .nursing {
         color: #34b8bc; }
       .nurse_workbench .opPatientList .opList li .op-sec-2 .checkedIn {
@@ -140,8 +59,7 @@
       display: inline-block;
       text-align: center; }
       .nurse_workbench .opPatientList .opList li .op-sec-3 .opPatientStatus {
-        display: block;
-        font-size: 0.7rem; }
+        display: block; }
       .nurse_workbench .opPatientList .opList li .op-sec-3 .newVisit {
         color: #ff8800; }
       .nurse_workbench .opPatientList .opList li .op-sec-3 .followUp {

@@ -3,6 +3,7 @@ import "./payroll_settings.css";
 import EarningsDeductions from "./EarningsDeductions/EarningsDeductions";
 import LoanMaster from "./LoanMaster/LoanMaster";
 import HolidayMaster from "./HolidayMaster/HolidayMaster";
+
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 class PayrollSettings extends Component {

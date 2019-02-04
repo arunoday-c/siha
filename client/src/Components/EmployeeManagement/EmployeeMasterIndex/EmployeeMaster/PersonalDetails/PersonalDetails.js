@@ -89,12 +89,10 @@ class PersonalDetails extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    
     this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
   }
 
   render() {
-    
     return (
       <React.Fragment>
         {/* <MyContext.Consumer>
@@ -106,7 +104,10 @@ class PersonalDetails extends PureComponent {
           <div className="row">
             <div className="col-lg-12">
               <div className="row">
-                <div className="col-lg-10 primary-details">
+                <div
+                  className="col-lg-10 primary-details"
+                  style={{ height: "70vh" }}
+                >
                   <h5>
                     <span>Basic Info.</span>
                   </h5>
@@ -682,8 +683,7 @@ function mapStateToProps(state) {
     present_cities: state.present_cities,
     relegions: state.relegions,
     patients: state.patients,
-    services: state.services,
-    designations: state.designations
+    services: state.services
   };
 }
 
@@ -696,7 +696,6 @@ function mapDispatchToProps(dispatch) {
       getNationalities: AlgaehActions,
       getStates: AlgaehActions,
       getServices: AlgaehActions,
-      getDesignations: AlgaehActions,
       getRelegion: AlgaehActions
     },
     dispatch

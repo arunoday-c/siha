@@ -42,7 +42,6 @@ class ResultEntryList extends Component {
 
     this.state = {
       to_date: new Date(),
-      // from_date: moment("01" + month + year, "DDMMYYYY")._d,
       from_date: new Date(),
       patient_code: null,
       patient_name: null,
@@ -172,7 +171,17 @@ class ResultEntryList extends Component {
                       valueField: "value",
                       data: FORMAT_PRIORITY
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          proiorty: null
+                        },
+                        () => {
+                          getSampleCollectionDetails(this, this);
+                        }
+                      );
+                    }
                   }}
                 />
                 <AlagehAutoComplete
@@ -190,7 +199,17 @@ class ResultEntryList extends Component {
                       valueField: "value",
                       data: FORMAT_TEST_STATUS
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          status: null
+                        },
+                        () => {
+                          getSampleCollectionDetails(this, this);
+                        }
+                      );
+                    }
                   }}
                 />
 
@@ -316,7 +335,7 @@ class ResultEntryList extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                              {row.test_type === "S" ? "Stat" : "Routine"}
                             </span>
                           );
                         },

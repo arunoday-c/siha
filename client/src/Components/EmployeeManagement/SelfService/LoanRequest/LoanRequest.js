@@ -218,6 +218,9 @@ class LoanRequest extends Component {
             title: "Loan Amount cannot be greater than max limit",
             type: "warning"
           });
+          this.setState({
+            loan_amount: null
+          });
         }
         break;
 
@@ -258,7 +261,8 @@ class LoanRequest extends Component {
 
   getLoanMaster() {
     algaehApiCall({
-      uri: "/employee/getLoanMaster",
+      uri: "/payrollsettings/getLoanMaster",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -351,14 +355,12 @@ class LoanRequest extends Component {
                         isImp: true
                       }}
                       textBox={{
+                        decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "loan_amount",
                         value: this.state.loan_amount,
                         events: {
                           onChange: this.textHandle.bind(this)
-                        },
-                        others: {
-                          type: "number"
                         }
                       }}
                     />
@@ -463,14 +465,12 @@ class LoanRequest extends Component {
                         isImp: true
                       }}
                       textBox={{
+                        decimal: { allowNegative: false },
                         className: "txt-fld",
                         name: "advance_amount",
                         value: this.state.advance_amount,
                         events: {
                           onChange: this.textHandle.bind(this)
-                        },
-                        others: {
-                          type: "number"
                         }
                       }}
                     />
@@ -559,100 +559,6 @@ class LoanRequest extends Component {
                     id="LoanRequestList_grid"
                     columns={[
                       {
-                        fieldName: "loan_application_number",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Application No." }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "loan_application_date",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Loan Requested On" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {moment(row.loan_application_date).format(
-                                "MM-DD-YYYY"
-                              )}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "loan_description",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
-                        )
-                      },
-                      {
-                        fieldName: "loan_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Requested Loan Amount" }}
-                          />
-                        )
-                        //disabled: true
-                      },
-                      {
-                        fieldName: "approved_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Approved Loan Amount" }}
-                          />
-                        )
-                        //disabled: true
-                      },
-                      {
-                        fieldName: "loan_tenure",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Total No. of EMI" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "installment_amount",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Installment Amount" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "loan_description",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Reason For Loan" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "loan_tenure",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "No. of EMI Pending" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          return (
-                            <span>
-                              {row.pending_loan / row.installment_amount}
-                            </span>
-                          );
-                        }
-                      },
-                      {
-                        fieldName: "pending_loan",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
-                        )
-                      },
-                      {
                         fieldName: "loan_authorized",
                         label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
                         displayTemplate: row => {
@@ -680,6 +586,122 @@ class LoanRequest extends Component {
                             </span>
                           );
                         }
+                      },
+                      {
+                        fieldName: "loan_tenure",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "No. of EMI Pending" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return <span>{row.loan_tenure}</span>;
+                        }
+                      },
+                      {
+                        fieldName: "pending_loan",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.pending_loan)}</span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "approved_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Approved Loan Amount" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.approved_amount)}</span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "loan_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Requested Loan Amount" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.loan_amount)}</span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "loan_application_number",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Application No." }}
+                          />
+                        ),
+                        others: {
+                          minWidth: 150
+                        }
+                      },
+                      {
+                        fieldName: "loan_application_date",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Loan Requested On" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.loan_application_date).format(
+                                "MM-DD-YYYY"
+                              )}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "loan_description",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
+                        )
+                      },
+                      {
+                        fieldName: "loan_tenure",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Total No. of EMI" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return <span>{row.loan_tenure.toFixed(3)}</span>;
+                        }
+                      },
+                      {
+                        fieldName: "installment_amount",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Installment Amount" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {getAmountFormart(row.installment_amount)}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "loan_description",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Reason For Loan" }}
+                          />
+                        )
                       }
                     ]}
                     keyId="hims_f_loan_application_id"
@@ -747,7 +769,12 @@ class LoanRequest extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Advance Amount" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>{getAmountFormart(row.advance_amount)}</span>
+                          );
+                        }
                       },
 
                       {

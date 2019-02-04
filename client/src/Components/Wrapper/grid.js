@@ -51,8 +51,21 @@ class DataGrid extends Component {
 
     this.setState({ data });
   }
+
+  scrollOnTop(id) {
+    if (id !== undefined && id !== "") {
+      const _element = document.getElementById(id);
+      if (_element.children.length > 0) {
+        const _innerElement = _element.children[0];
+        if (_innerElement.children.length > 0) {
+          _innerElement.children[0].scrollTop = 0;
+        }
+      }
+    }
+  }
+
   filterCaseInsensitive = (filter, row) => {
-    //
+    this.scrollOnTop(this.props.id);
     const id = filter.pivotId || filter.id;
     if (id === undefined || id === null) return false;
     if (row[id] === undefined || row[id] === null) return false;
@@ -491,7 +504,8 @@ class DataGrid extends Component {
                   </React.Fragment>
                 );
               },
-              style: { textAlign: "center" }
+              style: { textAlign: "center" },
+              show: this.props.isEditable
             });
           }
         }
@@ -553,6 +567,7 @@ class DataGrid extends Component {
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
+    // debugger;
     if (nextProps.uiUpdate !== undefined) {
       return nextState.uiUpdate;
     }
@@ -563,7 +578,7 @@ class DataGrid extends Component {
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }
-    if (props.isEditable !== this.state.isEditable) {
+    if (props.isEditable !== this.props.isEditable) {
       this.setState({
         isEditable: props.isEditable
       });
@@ -605,6 +620,7 @@ class DataGrid extends Component {
             : props.actions.allowDelete !== undefined
             ? props.actions.allowDelete
             : true;
+
         if (props.isEditable !== undefined && props.isEditable === true) {
           if (_allowEditButton || _allowDeleteButton) {
             _columns.splice(0, 0, {
@@ -648,6 +664,7 @@ class DataGrid extends Component {
                   </React.Fragment>
                 );
               },
+              show: props.isEditable,
               style: { textAlign: "center", maxWidth: "70px" }
             });
           }
@@ -691,6 +708,7 @@ class DataGrid extends Component {
       );
       const _loading =
         props.loading !== undefined ? { showLoading: props.loading } : {};
+
       this.setState({
         data: props.dataSource.data,
         totalPages: _total,
@@ -705,6 +723,7 @@ class DataGrid extends Component {
     }
   }
   pageChangeHandler(pageIndex) {
+    this.scrollOnTop(this.props.id);
     if (
       this.props.dataSource.uri !== undefined &&
       this.props.dataSource.responseSchema.totalPages !== undefined
@@ -727,6 +746,7 @@ class DataGrid extends Component {
     }
   }
   pageSizeChange(pageSize) {
+    this.scrollOnTop(this.props.id);
     if (
       this.props.dataSource.uri !== undefined &&
       this.props.dataSource.responseSchema.totalPages !== undefined
@@ -793,11 +813,8 @@ class DataGrid extends Component {
     if (rowInfo !== undefined) {
       const _isRowSelected = this.isRowSelected(rowInfo.index);
       const _selectedColor =
-        _isRowSelected !== false ? "selected-grid-row " : "";
-      // const _rowSel =
-      //   this.props.rowClassName !== undefined
-      //     ? this.props.rowClassName(rowInfo.original)
-      //     : "";
+        _isRowSelected !== false ? "rowHighliter selected-grid-row " : "";
+
       return {
         className: _selectedColor
       };
@@ -846,7 +863,7 @@ class DataGrid extends Component {
       this.props.filter !== undefined
         ? {
             filterable: this.props.filter,
-            defaultFilterMethod: this.filterCaseInsensitive
+            defaultFilterMethod: this.filterCaseInsensitive.bind(this)
           }
         : {};
     const _noDataText =
@@ -895,75 +912,77 @@ class DataGrid extends Component {
       this.props.dataSource.uri !== undefined ? { manual: true } : {};
     return (
       <React.Fragment>
-        <ReactTableFixedColumns
-          id={this.props.id}
-          data={_data}
-          columns={this.state.columns}
-          className="-striped -highlight"
-          {..._filter}
-          {..._defaultSize}
-          pages={this.state.totalPages}
-          noDataText={_noDataText}
-          loading={this.state.showLoading}
-          showPagination={_decissionShowPaging}
-          showPaginationTop={
-            this.props.paging !== undefined
-              ? this.props.paging.showPaginationTop !== undefined
-                ? this.props.paging.showPaginationTop
+        <div id={this.props.id}>
+          <ReactTableFixedColumns
+            id={this.props.id}
+            data={_data}
+            columns={this.state.columns}
+            className="-striped -highlight"
+            {..._filter}
+            {..._defaultSize}
+            pages={this.state.totalPages}
+            noDataText={_noDataText}
+            loading={this.state.showLoading}
+            showPagination={_decissionShowPaging}
+            showPaginationTop={
+              this.props.paging !== undefined
+                ? this.props.paging.showPaginationTop !== undefined
+                  ? this.props.paging.showPaginationTop
+                  : false
                 : false
-              : false
-          }
-          showPaginationBottom={
-            this.props.paging !== undefined
-              ? this.props.paging.showPaginationBottom !== undefined
-                ? this.props.paging.showPaginationBottom
+            }
+            showPaginationBottom={
+              this.props.paging !== undefined
+                ? this.props.paging.showPaginationBottom !== undefined
+                  ? this.props.paging.showPaginationBottom
+                  : true
                 : true
-              : true
-          }
-          showPageJump={
-            this.props.paging !== undefined
-              ? this.props.paging.showPageJump !== undefined
-                ? this.props.paging.showPageJump
+            }
+            showPageJump={
+              this.props.paging !== undefined
+                ? this.props.paging.showPageJump !== undefined
+                  ? this.props.paging.showPageJump
+                  : true
                 : true
-              : true
-          }
-          showPageSizeOptions={
-            this.props.paging !== undefined
-              ? this.props.paging.showPageSizeOptions !== undefined
-                ? this.props.paging.showPageSizeOptions
+            }
+            showPageSizeOptions={
+              this.props.paging !== undefined
+                ? this.props.paging.showPageSizeOptions !== undefined
+                  ? this.props.paging.showPageSizeOptions
+                  : true
                 : true
-              : true
-          }
-          resizable={false}
-          freezeWhenExpanded={true}
-          //collapseOnDataChange={false}
-          pageSizeOptions={[10, 20, 25, 50, 100]}
-          previousText="Previous"
-          nextText="Next"
-          pageText={
-            <span>
-              Total Records:
-              {this.state.recordsTotal}, Page
-            </span>
-          }
-          ofText="of"
-          rowsText=""
-          onPageSizeChange={this.pageSizeChange.bind(this)}
-          onPageChange={this.pageChangeHandler.bind(this)}
-          {..._subComponent}
-          {..._onExpandRow}
-          style={{
-            maxHeight: "400px",
-            minHeight: "120px"
-          }}
-          // width={{ undefined }}
-          // minWidth={"100"}
-          // maxWidth={{ undefined }}
-          getTdProps={this.getTdHandler.bind(this)}
-          getTrProps={this.getTrHandler.bind(this)}
-          {..._manual}
-          {...this.props.others}
-        />
+            }
+            resizable={false}
+            freezeWhenExpanded={true}
+            //collapseOnDataChange={false}
+            pageSizeOptions={[10, 20, 25, 50, 100]}
+            previousText="Previous"
+            nextText="Next"
+            pageText={
+              <span>
+                Total Records:
+                {this.state.recordsTotal}, Page
+              </span>
+            }
+            ofText="of"
+            rowsText=""
+            onPageSizeChange={this.pageSizeChange.bind(this)}
+            onPageChange={this.pageChangeHandler.bind(this)}
+            {..._subComponent}
+            {..._onExpandRow}
+            style={{
+              maxHeight: "400px",
+              minHeight: "120px"
+            }}
+            // width={{ undefined }}
+            // minWidth={"100"}
+            // maxWidth={{ undefined }}
+            getTdProps={this.getTdHandler.bind(this)}
+            getTrProps={this.getTrHandler.bind(this)}
+            {..._manual}
+            {...this.props.others}
+          />
+        </div>
       </React.Fragment>
     );
   }

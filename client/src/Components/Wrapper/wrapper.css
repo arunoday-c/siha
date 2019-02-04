@@ -1,7 +1,6 @@
 .ReactTable .rt-thead .rt-th {
-  font-size: 0.8rem !important;
   color: #000 !important;
-  background: #f3ffff !important; }
+  background: #dff6f6 !important; }
   .ReactTable .rt-thead .rt-th .style_Label {
     font-weight: bold !important;
     white-space: pre-line !important;
@@ -12,15 +11,19 @@
 
 .ReactTable .rt-thead.-filters input,
 .ReactTable .rt-thead.-filters select {
-  padding: 0 2px !important;
+  padding: 0.3em !important;
   border: 1px solid #8c8c8c !important; }
 
 .ReactTable .rt-tbody {
   text-align: center; }
   .ReactTable .rt-tbody .rt-td {
-    font-size: 0.8rem !important;
+    font-size: 0.9em;
     overflow: inherit !important;
     white-space: inherit !important; }
+  .ReactTable .rt-tbody .rowHighliter .rt-td {
+    background: #cbf0f1 !important; }
+    .ReactTable .rt-tbody .rowHighliter .rt-td:hover {
+      background: #cbf0f1 !important; }
   .ReactTable .rt-tbody .textCapitalize {
     text-transform: capitalize; }
     .ReactTable .rt-tbody .textCapitalize input {
@@ -28,22 +31,24 @@
 
 .ReactTable .-btn {
   background: #34b8bc !important;
-  color: #fff !important; }
+  color: #fff !important;
+  font-size: 0.8em; }
 
 .ReactTable .-btn:disabled {
   background: rgba(0, 0, 0, 0.1) !important; }
 
-.ReactTable .-pagination {
-  font-size: 0.8rem !important; }
-  .ReactTable .-pagination .-center input,
-  .ReactTable .-pagination .-center select {
-    border: 1px solid #8c8c8c !important;
-    width: 7vh !important; }
-  .ReactTable .-pagination .-center input {
-    padding: 2px !important; }
-  @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
-    .ReactTable .-pagination .-center {
-      flex: 3 1 !important; } }
+.ReactTable .-pagination .-center input,
+.ReactTable .-pagination .-center select {
+  border: 1px solid #8c8c8c !important;
+  width: 7vh !important;
+  -webkit-appearance: none; }
+
+.ReactTable .-pagination .-center input {
+  padding: 2px !important; }
+
+@media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
+  .ReactTable .-pagination .-center {
+    flex: 3 1 !important; } }
 
 .ReactTable i.fa-pen,
 .ReactTable i.fa-trash-alt,
@@ -62,12 +67,13 @@
 .ReactTable .fa-prescription,
 .ReactTable .fa-arrow-right,
 .ReactTable .fa-eye,
-.ReactTable .fa-plus {
+.ReactTable .fa-plus,
+.ReactTable .fa-thumbs-up,
+.ReactTable .fa-thumbs-down {
   cursor: pointer;
-  border: 1px solid #44b8bd;
+  border: 1px solid #53ccd0;
   height: 28px;
   border-radius: 100%;
-  font-size: 0.9rem;
   width: 28px;
   display: inline-block;
   text-align: center;
@@ -93,8 +99,10 @@
 .ReactTable .fa-file-prescription:hover,
 .ReactTable .fa-prescription:hover,
 .ReactTable .fa-arrow-right:hover,
-.ReactTable .fa-plus:hover {
-  background: #44b8bd;
+.ReactTable .fa-plus:hover,
+.ReactTable .fa-thumbs-up:hover,
+.ReactTable .fa-thumbs-down:hover {
+  background: #34b8bc;
   color: #fff; }
 
 @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {

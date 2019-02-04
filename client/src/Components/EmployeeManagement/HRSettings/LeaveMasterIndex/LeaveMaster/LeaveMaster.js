@@ -105,9 +105,9 @@ class LeaveMaster extends Component {
   }
 
   saveLeaveMaster() {
-    if (this.state.leaveEncash.length === 0) {
+    if (this.state.leaveDetails.length === 0) {
       swalMessage({
-        title: "Please Add at least one Leave Encashment",
+        title: "Please Add at least one Leave Detail",
         type: "warning"
       });
     } else if (this.state.leaveRules.length === 0) {
@@ -115,9 +115,9 @@ class LeaveMaster extends Component {
         title: "Please Add at least one Leave Rule",
         type: "warning"
       });
-    } else if (this.state.leaveDetails.length === 0) {
+    } else if (this.state.leaveEncash.length === 0) {
       swalMessage({
-        title: "Please Add at least one Leave Detail",
+        title: "Please Add at least one Leave Encashment",
         type: "warning"
       });
     } else {
@@ -132,6 +132,8 @@ class LeaveMaster extends Component {
         leave_accrual: this.state.leave_accrual,
         leave_encash: this.state.leave_encash ? "Y" : "N",
         leave_type: this.state.leave_type,
+        leave_category: this.state.leave_category,
+        calculation_type: this.state.calculation_type,
         encashment_percentage: this.state.encashment_percentage,
         leave_carry_forward: this.state.leave_carry_forward ? "Y" : "N",
         carry_forward_percentage: this.state.carry_forward_percentage,
@@ -156,6 +158,8 @@ class LeaveMaster extends Component {
               title: "Leave Added Successfully",
               type: "success"
             });
+
+            document.getElementById("lmi-btn").click();
           }
         },
         onFailure: err => {
@@ -190,7 +194,6 @@ class LeaveMaster extends Component {
         });
 
         this.setState({
-          calculation_type: null,
           rule_earning_id: null,
           paytype: null,
           from_value: null,
@@ -284,6 +287,11 @@ class LeaveMaster extends Component {
             ? this.getEarningsDeds()
             : null;
 
+          specified === "LeaveRules" &&
+          this.state.earning_deductions.length === 0
+            ? this.getEarningsDeds()
+            : null;
+
           this.setState({
             pageDisplay: specified
           });
@@ -302,7 +310,8 @@ class LeaveMaster extends Component {
 
   getEarningsDeds() {
     algaehApiCall({
-      uri: "/employee/getEarningDeduction",
+      uri: "/payrollsettings/getEarningDeduction",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -360,11 +369,41 @@ class LeaveMaster extends Component {
           }
         );
         break;
+
+      case "leave_encash":
+        this.setState(
+          {
+            [e.target.name]: e.target.checked
+          },
+          () => {
+            !this.state.leave_encash
+              ? this.setState({
+                  encashment_percentage: null
+                })
+              : null;
+          }
+        );
+        break;
+
+      case "leave_carry_forward":
+        this.setState(
+          {
+            [e.target.name]: e.target.checked
+          },
+          () => {
+            !this.state.leave_carry_forward
+              ? this.setState({
+                  carry_forward_percentage: null
+                })
+              : null;
+          }
+        );
+        break;
+
       default:
         this.setState({
           [e.target.name]: e.target.checked
         });
-        console.log(e.target.name + " : " + e.target.checked);
         break;
     }
   }
@@ -374,6 +413,19 @@ class LeaveMaster extends Component {
       [value.name]: value.value
     });
   }
+
+  clearState() {
+    this.setState({
+      pageDisplay: "Leave",
+      leaveDetails: [],
+      leaveEncash: [],
+      leaveRules: []
+    });
+  }
+
+  updateLeaveDetail(data) {}
+  updateLeaveEncash(data) {}
+  updateLeaveRule(data) {}
 
   render() {
     return (
@@ -475,13 +527,6 @@ class LeaveMaster extends Component {
                     >
                       CANCEL
                     </button>
-                    {/* <button
-                      onClick={this.clearState.bind(this)}
-                      type="button"
-                      className="btn btn-other"
-                    >
-                      CLEAR
-                    </button> */}
                   </div>
                 </div>
               </div>

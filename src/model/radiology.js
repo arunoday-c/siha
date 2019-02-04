@@ -10,6 +10,8 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import appsettings from "../utils/appsettings.json";
 import { debugFunction, debugLog } from "../utils/logging";
+import mysql from "mysql";
+import moment from "moment";
 
 //created by nowshad: to get lad orders for sample collection
 let getRadOrderedServices = (req, res, next) => {
@@ -300,16 +302,16 @@ let updateRadOrderedBilled = (req, res, next) => {
     let qry = "";
 
     for (let i = 0; i < OrderServices.length; i++) {
-      qry +=
-        " UPDATE `hims_f_rad_order` SET billed='" +
-        OrderServices[i].billed +
-        "',updated_date='" +
-        new Date().toLocaleString() +
-        "',updated_by='" +
-        OrderServices[i].updated_by +
-        "' WHERE ordered_services_id='" +
-        OrderServices[i].ordered_services_id +
-        "';";
+      qry += mysql.format(
+        "UPDATE `hims_f_rad_order` SET billed=?,\
+      updated_date=?,updated_by=? where ordered_services_id=?;",
+        [
+          OrderServices[i].billed,
+          moment().format("YYYY-MM-DD HH:mm"),
+          OrderServices[i].updated_by,
+          OrderServices[i].ordered_services_id
+        ]
+      );
     }
     debugLog("Query", qry);
     if (qry != "") {

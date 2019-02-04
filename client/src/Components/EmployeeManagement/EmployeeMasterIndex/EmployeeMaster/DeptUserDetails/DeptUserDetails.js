@@ -47,11 +47,10 @@ class DeptUserDetails extends Component {
   }
 
   componentDidMount() {
-    
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
       if (this.state.hims_d_employee_id !== null) {
-        if (this.state.deptDetails === 0) {
+        if (this.state.deptDetails.length === 0) {
           getEmployeeDepartments(this);
         }
       }
@@ -89,7 +88,8 @@ class DeptUserDetails extends Component {
       this.props.emp_groups.length === 0
     ) {
       this.props.getEmpGroups({
-        uri: "/employee/getEmployeeGroups",
+        uri: "/hrsettings/getEmployeeGroups",
+        module: "hrManagement",
         method: "GET",
         data: { record_status: "A" },
         redux: {
@@ -133,7 +133,8 @@ class DeptUserDetails extends Component {
       this.props.designations.length === 0
     ) {
       this.props.getDesignations({
-        uri: "/employeesetups/getDesignations",
+        uri: "/hrsettings/getDesignations",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "DSGTN_GET_DATA",
@@ -166,7 +167,7 @@ class DeptUserDetails extends Component {
       .where(w => w.service_type_id === 1)
       .toArray();
     const _isDoctor = this.props.EmpMasterIOputs.state.personalDetails.isdoctor;
-    
+
     const sub_dept_name =
       this.state.sub_department_id === undefined
         ? ""

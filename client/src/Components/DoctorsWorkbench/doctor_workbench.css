@@ -1,282 +1,255 @@
-.doctor_workbench .panel-layout {
-  margin-top: 10px; }
-
-.doctor_workbench .go-button {
-  cursor: pointer;
-  margin-top: 15px; }
-
-.doctor_workbench .my-calendar {
-  text-align: center;
-  background: #34b8bc;
-  color: #fff; }
-  .doctor_workbench .my-calendar .myDay_date {
-    position: relative; }
-    .doctor_workbench .my-calendar .myDay_date input[type="month"] {
-      font-size: 0.8rem;
-      padding: 2px 3px 3px 8px;
-      width: 250px;
-      text-transform: uppercase;
-      border: 1px dashed #ffffff;
-      border-radius: 4px;
-      margin-top: 4px;
-      background: none;
-      color: #fff; }
-    .doctor_workbench .my-calendar .myDay_date input[type="month"]::-webkit-calendar-picker-indicator {
-      color: rgba(0, 0, 0, 0);
-      opacity: 1;
-      display: block;
-      background: url(../../assets/svg/calendar-white-icon.svg) no-repeat center;
-      width: 18px;
-      height: 15px;
-      border-width: thin;
-      background-size: 60%; }
-    .doctor_workbench .my-calendar .myDay_date input[type="month"]:disabled {
-      background: #fffdfa;
-      border: 1px dashed #d3d3d3;
-      color: #000;
-      font-weight: bold; }
-    .doctor_workbench .my-calendar .myDay_date button {
-      margin-left: 0px;
-      padding: 3px 6px !important; }
-      .doctor_workbench .my-calendar .myDay_date button svg {
-        height: 16px; }
-    .doctor_workbench .my-calendar .myDay_date .todayBtn {
-      margin-left: 10px;
-      padding: 3px 10px;
-      border: 1px solid white;
-      background: none;
-      color: #fff; }
-    .doctor_workbench .my-calendar .myDay_date .todayBtn:hover {
-      background: #fff;
-      color: #34b8bc; }
-  .doctor_workbench .my-calendar .arrow-box {
-    width: 60px;
-    cursor: pointer; }
-  .doctor_workbench .my-calendar .arrow-box:hover {
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); }
-  .doctor_workbench .my-calendar .arrow-box-left {
-    float: left; }
-  .doctor_workbench .my-calendar .arrow-box-right {
-    float: right; }
-  .doctor_workbench .my-calendar .calendar .col {
-    border: 1px solid #3aa4a9;
-    font-size: 1.3rem;
-    padding-right: 3px;
-    padding-left: 3px;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }
-  .doctor_workbench .my-calendar .calendar .col:hover {
-    background: #3aa4a9;
-    cursor: pointer;
-    text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3); }
-  .doctor_workbench .my-calendar .calendar .col span {
-    padding: 0;
+.clinicalDeskScreen .cldrPatientList {
+  background: #fff;
+  min-height: calc(100vh - 52px);
+  box-shadow: 0 0 5px #cccccc;
+  position: relative;
+  z-index: 1;
+  width: 250px;
+  margin-right: 15px; }
+  .clinicalDeskScreen .cldrPatientList .cldrSection {
+    background: #cccccc;
+    height: 289px; }
+    .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker {
+      width: 100%;
+      border: none;
+      border-radius: 0; }
+      .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container {
+        width: 100%; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__current-month,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker-time__header {
+          display: none; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__header {
+          border-radius: 0; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day-name,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__time-name {
+          margin: 0.1666rem 0.35rem; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--selected,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--in-selecting-range,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--in-range {
+          background-color: #34b8bc; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__month-select,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__year-select {
+          -webkit-appearance: none;
+          padding: 3px 6px;
+          border: none; }
+  .clinicalDeskScreen .cldrPatientList .viewAllApp {
+    box-shadow: -6px 6px 10px rgba(0, 0, 0, 0.07);
+    padding-bottom: 15px; }
+  .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr {
     margin: 0;
-    display: block;
-    font-size: 0.6rem;
-    text-transform: uppercase; }
-  .doctor_workbench .my-calendar .activeDate {
-    border-bottom: 4px solid yellow !important;
-    background: #3aa4a9; }
-  .doctor_workbench .my-calendar .CurrentDate {
-    border-top: 2px solid yellow !important; }
-
-.doctor_workbench .opPatientList .opList {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  height: 65.5vh;
-  overflow: auto; }
-  .doctor_workbench .opPatientList .opList .noPatientDiv {
-    margin-top: 15%;
-    text-align: center;
-    font-size: 0.9rem;
-    color: #929292; }
-  .doctor_workbench .opPatientList .opList li {
-    margin: 4px 0;
-    padding: 3px 0;
+    padding: 0;
     list-style: none;
-    border: 1px solid #f2f2f2;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 407px); }
+    .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection {
+      border-top: 1px solid #cccccc;
+      border-bottom: 1px solid #cccccc;
+      /* display: block; */
+      float: left;
+      margin-bottom: 2px; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .appIconSec {
+        float: left;
+        height: 75px;
+        width: 75px;
+        text-align: center;
+        border-right: 1px solid #cccccc; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .appIconSec i {
+          display: block;
+          font-size: 1.5em;
+          margin-top: 14px;
+          margin-bottom: 5px; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patName {
+        float: left;
+        height: 75px;
+        width: 159px;
+        padding-left: 5px;
+        padding-top: 5px; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patVisit {
+        float: left;
+        height: 20px;
+        width: 75px;
+        border-right: 1px solid #cccccc;
+        border-top: 1px dotted #cccccc;
+        text-align: center;
+        font-size: 0.85em; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus {
+        border-top: 1px dotted #cccccc;
+        float: left;
+        height: 20px;
+        width: 159px;
+        padding-left: 5px;
+        font-size: 0.85em; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.inProgress {
+          font-weight: bold; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.nursingDone {
+          background: #34b8bc;
+          color: #fff; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.nursingGoing {
+          background: #ffffb5; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.checkedIn {
+          background: #a0c6ff; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.notShown {
+          background: #b3b3b3; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection:nth-child(odd) {
+        background: #f2f2f2; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection.active {
+        background: #34b8bc;
+        color: #fff; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection.active:hover {
+          background: #299194;
+          color: #fff;
+          cursor: pointer; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection:hover {
+        background: #cbf0f1;
+        cursor: pointer; }
+  .clinicalDeskScreen .cldrPatientList .completedPatientSec {
+    background: #999999;
+    height: 30vh; }
+
+.clinicalDeskScreen .patientDetailSection {
+  max-width: calc(100vw - 280px); }
+
+.clinicalDeskScreen .patientMainInfo {
+  box-shadow: 0 0 5px #cccccc;
+  min-height: 88px;
+  padding-right: 0;
+  margin-left: 15px;
+  border-radius: 0 0 0 5px;
+  overflow: hidden; }
+  .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top {
     background: #fff;
-    border-radius: 5px; }
-    .doctor_workbench .opPatientList .opList li .op-sec-1 {
-      width: 10px;
-      width: 20%;
-      vertical-align: text-top;
-      display: inline-block;
-      text-align: center;
-      border-right: 1px dashed #e6e6e6;
-      margin-right: 10px; }
-      .doctor_workbench .opPatientList .opList li .op-sec-1 i {
-        width: 30px;
-        background: yellow;
-        height: 30px;
+    width: calc(100vw - 260px);
+    height: 88px;
+    padding: 5px 0 0;
+    position: fixed;
+    z-index: 999;
+    border-radius: 0 0 0 5px;
+    overflow: hidden; }
+    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top div {
+      float: left;
+      color: #858585;
+      overflow: hidden; }
+    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .backBtn {
+      border-right: 1px solid #e1e1e1;
+      padding-right: 10px;
+      padding-left: 10px; }
+      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .backBtn button {
+        height: 60px;
+        border: 1px solid #e1e1e1; }
+      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .backBtn i {
         display: block;
-        margin: auto; }
-      .doctor_workbench .opPatientList .opList li .op-sec-1 .appointment-icon {
-        background: url("../../assets/icons/appointment-icon.svg") no-repeat center;
-        background-size: 80%; }
-      .doctor_workbench .opPatientList .opList li .op-sec-1 .walking-icon {
-        background: url("../../assets/icons/walking-icon.svg") no-repeat center;
-        background-size: 80%; }
-      .doctor_workbench .opPatientList .opList li .op-sec-1 .opTime {
-        font-size: 0.7rem; }
-    .doctor_workbench .opPatientList .opList li .op-sec-2 {
-      width: 10px;
-      width: 56%;
-      vertical-align: text-top;
-      display: inline-block; }
-      .doctor_workbench .opPatientList .opList li .op-sec-2 .opPatientName {
+        margin-bottom: 5px; }
+    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeImg {
+      margin: 1px 10px; }
+      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeImg .image-drop-area {
+        min-height: 72px;
+        max-height: 72px; }
+        .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeImg .image-drop-area img {
+          height: 70px;
+          width: auto; }
+    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeName {
+      max-width: 30%;
+      margin-top: 2px;
+      border-left: 1px solid #e1e1e1;
+      border-right: 1px solid #e1e1e1;
+      padding-left: 10px;
+      padding-right: 10px; }
+      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeName h6 {
+        margin-bottom: 2px;
+        color: #000;
+        line-height: 1.6rem;
+        min-height: 50px;
+        font-size: 1.3em; }
+      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeName p {
+        margin: 0;
+        padding: 0; }
+        .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeName p b {
+          color: #34b8bc;
+          font-size: 0.9em;
+          font-weight: 700; }
+    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic {
+      line-height: 1.3rem;
+      border-right: 1px solid #e1e1e1;
+      padding-left: 10px;
+      padding-right: 10px; }
+      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span {
         display: block;
-        font-size: 1rem;
-        margin-top: 5px; }
-      .doctor_workbench .opPatientList .opList li .op-sec-2 .opStatus {
-        display: block;
-        font-size: 0.7rem; }
-      .doctor_workbench .opPatientList .opList li .op-sec-2 .nursing {
-        color: #34b8bc; }
-      .doctor_workbench .opPatientList .opList li .op-sec-2 .checkedIn {
-        color: #00bb4b; }
-    .doctor_workbench .opPatientList .opList li .op-sec-3 {
-      width: 20%;
-      line-height: 53px;
-      vertical-align: text-top;
-      display: inline-block;
-      text-align: center; }
-      .doctor_workbench .opPatientList .opList li .op-sec-3 .opPatientStatus {
-        display: block;
-        font-size: 0.7rem; }
-      .doctor_workbench .opPatientList .opList li .op-sec-3 .newVisit {
-        color: #ff8800; }
-      .doctor_workbench .opPatientList .opList li .op-sec-3 .followUp {
-        color: #ff005f; }
-  .doctor_workbench .opPatientList .opList li:hover {
-    background: #ebfeff;
-    cursor: pointer; }
+        line-height: 1.7rem;
+        font-size: 0.9em;
+        font-weight: 700; }
+        .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span i {
+          text-align: center;
+          width: 20px; }
+        .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span b {
+          color: #34b8bc; }
 
-.doctor_workbench #encounter_table .ReactTable {
-  max-height: 65.5vh !important; }
+.clinicalDeskScreen .patientReportSection {
+  box-shadow: 0 0 5px #cccccc;
+  background: #fff;
+  margin: 15px;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-radius: 5px;
+  width: calc(100vw - 50px);
+  min-height: calc(100vh - 170px);
+  max-height: calc(100vh - 170px);
+  overflow-y: auto;
+  overflow-x: hidden; }
+  .clinicalDeskScreen .patientReportSection .patientSecHdg {
+    font-size: 1em;
+    font-weight: 700;
+    margin-bottom: 10px; }
+  .clinicalDeskScreen .patientReportSection .patientVitalsSec h6 {
+    font-size: 1.1em; }
+    .clinicalDeskScreen .patientReportSection .patientVitalsSec h6 label {
+      font-size: 0.7em;
+      text-transform: uppercase;
+      display: block; }
+  .clinicalDeskScreen .patientReportSection .patientChiefSec .chiefComplaintsTextArea {
+    height: 150px;
+    margin-top: 5px;
+    width: 100%; }
 
-.doctor_workbench .bottom-layout {
-  padding: 5px; }
-  .doctor_workbench .bottom-layout .right-bottom-panel {
-    margin-top: 5px; }
-  .doctor_workbench .bottom-layout .appointment-panel {
-    /* The actual timeline (the vertical ruler) */
-    /* Container around content */
-    /* The circles on the timeline */
-    /* Place the container to the left */
-    /* Place the container to the right */
-    /* Add arrows to the left container (pointing right) */
-    /* Add arrows to the right container (pointing left) */
-    /* Fix the circle for containers on the right side */
-    /* The actual content */
-    /* Media queries - Responsive timeline on screens less than 600px wide */ }
-    .doctor_workbench .bottom-layout .appointment-panel .timeline {
+.clinicalDeskScreen .clinicalAction {
+  margin-top: 15px;
+  width: 50px;
+  height: calc(100vh - 170px); }
+  .clinicalDeskScreen .clinicalAction .rightActionSec {
+    margin: 0;
+    padding: 0;
+    list-style: none; }
+    .clinicalDeskScreen .clinicalAction .rightActionSec li {
+      margin: 0 0 5px;
+      padding: 0;
+      list-style: none;
+      background: #fff;
+      width: 50px;
+      height: 50px;
+      border-radius: 5px 0 0 5px;
       position: relative;
-      max-width: 1200px;
-      margin: 0 auto; }
-    .doctor_workbench .bottom-layout .appointment-panel .timeline::after {
-      content: "";
-      position: absolute;
-      width: 2px;
-      background-color: #000;
-      top: 0;
-      bottom: 0;
-      left: 50%;
-      margin-left: -3px; }
-    .doctor_workbench .bottom-layout .appointment-panel .container {
-      padding: 10px 40px;
-      position: relative;
-      background-color: inherit;
-      width: 50%; }
-    .doctor_workbench .bottom-layout .appointment-panel .container::after {
-      content: "";
-      position: absolute;
-      width: 25px;
-      height: 25px;
-      right: -17px;
-      background-color: white;
-      border: 4px solid #ff9f55;
-      top: 15px;
-      border-radius: 50%;
-      z-index: 1; }
-    .doctor_workbench .bottom-layout .appointment-panel .left {
-      left: 0; }
-    .doctor_workbench .bottom-layout .appointment-panel .right {
-      left: 50%; }
-    .doctor_workbench .bottom-layout .appointment-panel .left::before {
-      content: " ";
-      height: 0;
-      position: absolute;
-      top: 22px;
-      width: 0;
-      z-index: 1;
-      right: 30px;
-      border: medium solid white;
-      border-width: 10px 0 10px 10px;
-      border-color: transparent transparent transparent white; }
-    .doctor_workbench .bottom-layout .appointment-panel .right::before {
-      content: " ";
-      height: 0;
-      position: absolute;
-      top: 22px;
-      width: 0;
-      z-index: 1;
-      left: 30px;
-      border: medium solid white;
-      border-width: 10px 10px 10px 0;
-      border-color: transparent white transparent transparent; }
-    .doctor_workbench .bottom-layout .appointment-panel .right::after {
-      left: -16px; }
-    .doctor_workbench .bottom-layout .appointment-panel .content {
-      padding: 20px 30px;
-      background-color: white;
-      position: relative;
-      border-radius: 6px; }
-    @media screen and (max-width: 600px) {
-      .doctor_workbench .bottom-layout .appointment-panel {
-        /* Place the timelime to the left */
-        /* Full-width containers */
-        /* Make sure that all arrows are pointing leftwards */
-        /* Make sure all circles are at the same spot */
-        /* Make all right containers behave like the left ones */ }
-        .doctor_workbench .bottom-layout .appointment-panel .timeline::after {
-          left: 31px; }
-        .doctor_workbench .bottom-layout .appointment-panel .container {
-          width: 100%;
-          padding-left: 70px;
-          padding-right: 25px; }
-        .doctor_workbench .bottom-layout .appointment-panel .container::before {
-          left: 60px;
-          border: medium solid white;
-          border-width: 10px 10px 10px 0;
-          border-color: transparent white transparent transparent; }
-        .doctor_workbench .bottom-layout .appointment-panel .left::after,
-        .doctor_workbench .bottom-layout .appointment-panel .right::after {
-          left: 15px; }
-        .doctor_workbench .bottom-layout .appointment-panel .right {
-          left: 0%; } }
-  .doctor_workbench .bottom-layout .grey-label {
-    color: #292929;
-    padding-left: 10px;
-    padding-top: 5px;
-    font-style: bolder; }
-  .doctor_workbench .bottom-layout .grey-label-right {
-    color: #292929;
-    padding-right: 10px;
-    padding-top: 5px;
-    font-style: bolder; }
-
-.doctor_workbench .rightLabelCount .countNo {
-  background: #2aafa4;
-  color: #fff;
-  padding: 2px 10px;
-  border-radius: 25%;
-  font-size: 0.8rem;
-  margin-left: 3px;
-  display: inline-block; }
-
-.doctor_workbench .rightLabelCount .style_Label {
-  font-size: 0.8rem;
-  text-transform: initial; }
+      z-index: 6;
+      cursor: pointer; }
+      .clinicalDeskScreen .clinicalAction .rightActionSec li i {
+        text-align: center;
+        display: block;
+        /* padding: 18px; */
+        font-size: 1.3em;
+        line-height: 50px; }
+      .clinicalDeskScreen .clinicalAction .rightActionSec li span {
+        position: absolute;
+        background: #6d6d6d;
+        top: 17px;
+        left: -100px;
+        font-size: 0.8em;
+        text-align: center;
+        z-index: 5;
+        /* word-break: break-all; */
+        padding: 3px 9px;
+        border-radius: 5px 0 0 5px;
+        width: 100px;
+        color: #fff;
+        display: none; }
+      .clinicalDeskScreen .clinicalAction .rightActionSec li:hover span {
+        display: block; }

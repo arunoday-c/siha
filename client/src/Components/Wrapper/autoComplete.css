@@ -21,8 +21,8 @@
   top: 23px;
   padding: 2px 6px;
   right: 35px;
-  font-size: 0.7rem;
   line-height: 21px;
+  display: none;
   background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, 0)), color-stop(48%, white));
   background: -webkit-linear-gradient(left, rgba(255, 255, 255, 0) 0%, white 48%);
   background: -o-linear-gradient(left, rgba(255, 255, 255, 0) 0%, white 48%);
@@ -38,7 +38,6 @@
   top: -1px;
   padding: 2px 3px;
   right: 20px;
-  font-size: 0.7rem;
   line-height: 21px;
   background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, white 48%);
   color: #929292;
@@ -66,7 +65,7 @@
   max-width: 22vw;
   min-width: -webkit-fill-available;
   left: 0;
-  max-height: 30vh;
+  max-height: 700%;
   overflow: auto;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
@@ -89,7 +88,6 @@
   padding: 5px 8px;
   text-decoration: none;
   display: block;
-  font-size: 0.8rem;
   color: #212529;
   cursor: pointer; }
   .myUL li a:before {

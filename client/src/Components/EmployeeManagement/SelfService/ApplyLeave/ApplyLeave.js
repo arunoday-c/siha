@@ -12,6 +12,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import swal from "sweetalert2";
 
 class ApplyLeave extends Component {
   constructor(props) {
@@ -23,29 +24,8 @@ class ApplyLeave extends Component {
       available_balance: 0.0,
       total_applied_days: 0.0
     };
-    this.getHolidayMaster();
     this.getLeaveTypes();
     this.getEmployees();
-  }
-
-  getHolidayMaster() {
-    algaehApiCall({
-      uri: "/holiday/getAllHolidays",
-      method: "GET",
-      data: {
-        hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-          .hims_d_hospital_id
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            holidays: res.data.records
-          });
-          //console.table(res.data.records);
-        }
-      },
-      onFailure: err => {}
-    });
   }
 
   getDateRange(startDate, endDate) {
@@ -57,7 +37,6 @@ class ApplyLeave extends Component {
     var now = currDate.clone();
 
     while (now.isSameOrBefore(lastDate)) {
-      //console.log(now.format("YYYYMMDD"));
       dates.push(now.format("YYYYMMDD"));
       now.add(1, "days");
     }
@@ -68,13 +47,64 @@ class ApplyLeave extends Component {
     this.setState(
       {
         employee_id: this.props.empData.hims_d_employee_id,
-        sub_department_id: this.props.empData.sub_department_id
+        sub_department_id: this.props.empData.sub_department_id,
+        employee_type: this.props.empData.employee_type,
+        gender: this.props.empData.sex,
+        religion_id: this.props.empData.religion_id
       },
       () => {
         this.getEmployeeLeaveData();
         this.getEmployeeLeaveHistory();
       }
     );
+  }
+
+  deleteLeaveApplication(data) {
+    swal({
+      title: "Delete Leave Application for " + data.leave_description + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/leave/deleteLeaveApplication",
+          method: "DELETE",
+          data: {
+            employee_id: data.employee_id,
+            hims_f_leave_application_id: data.hims_f_leave_application_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Leave Application Deleted Successfully",
+                type: "success"
+              });
+              this.getEmployeeLeaveHistory();
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.records.message,
+                type: "warning"
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
   }
 
   validate() {
@@ -113,7 +143,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              // this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "SH" && to_leave_session === "FD") {
@@ -127,7 +157,7 @@ class ApplyLeave extends Component {
               to_leave_session: null
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "FD" || to_leave_session === "FD") {
@@ -137,10 +167,12 @@ class ApplyLeave extends Component {
               from_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         }
+
+        this.getAppliedDays();
       } else if (
         moment(from_date).format("YYYYMMDD") <
         moment(to_date).format("YYYYMMDD")
@@ -151,7 +183,7 @@ class ApplyLeave extends Component {
               from_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (to_leave_session === "SH") {
@@ -160,7 +192,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
@@ -170,7 +202,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "FH" && to_leave_session === "FD") {
@@ -180,7 +212,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              //  this.getAppliedDays();
             }
           );
         } else if (from_leave_session === "SH" && to_leave_session === "SH") {
@@ -189,12 +221,15 @@ class ApplyLeave extends Component {
               to_leave_session: "FD"
             },
             () => {
-              this.getAppliedDays();
+              // this.getAppliedDays();
             }
           );
-        } else if (from_leave_session === "SH" && to_leave_session === "FH") {
-          this.getAppliedDays();
         }
+        //  else if (from_leave_session === "SH" && to_leave_session === "FH") {
+        //   this.getAppliedDays();
+        // }
+
+        this.getAppliedDays();
       }
     }
   }
@@ -206,78 +241,122 @@ class ApplyLeave extends Component {
   }
 
   getAppliedDays() {
-    var startdateMoment = moment(this.state.from_date);
-    var enddateMoment = moment(this.state.to_date);
-
-    if (
-      startdateMoment.isValid() === true &&
-      enddateMoment.isValid() === true
-    ) {
-      var days = enddateMoment.diff(startdateMoment, "days");
-
-      if (
-        moment(this.state.from_date).format("YYYYMMDD") ===
-        moment(this.state.to_date).format("YYYYMMDD")
-      ) {
-        if (
-          this.state.from_leave_session === "FH" ||
-          this.state.from_leave_session === "SH" ||
-          this.state.to_leave_session === "FH" ||
-          this.state.to_leave_session === "SH"
-        ) {
+    algaehApiCall({
+      uri: "/leave/calculateLeaveDays",
+      method: "GET",
+      data: {
+        from_session: this.state.from_leave_session,
+        to_session: this.state.to_leave_session,
+        from_date: this.state.from_date,
+        to_date: this.state.to_date,
+        hims_d_leave_detail_id: this.state.hims_d_leave_detail_id,
+        religion_id: this.state.religion_id,
+        leave_id: this.state.leave_id,
+        employee_id: this.state.employee_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
           this.setState({
-            total_applied_days: 0.5
+            total_applied_days: res.data.records.calculatedLeaveDays
           });
-        } else if (
-          this.state.from_leave_session === "FD" ||
-          this.state.to_leave_session === "FD"
-        ) {
-          this.setState({
-            total_applied_days: 1
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning"
           });
-        }
-        //return;
-      }
-
-      if (
-        moment(this.state.from_date).format("YYYYMMDD") <
-        moment(this.state.to_date).format("YYYYMMDD")
-      ) {
-        if (
-          this.state.from_leave_session === "SH" &&
-          this.state.to_leave_session === "FH"
-        ) {
           this.setState({
-            total_applied_days: Math.abs(days)
-          });
-        } else if (
-          this.state.from_leave_session === "FH" ||
-          this.state.from_leave_session === "SH" ||
-          this.state.to_leave_session === "FH" ||
-          this.state.to_leave_session === "SH"
-        ) {
-          this.setState({
-            total_applied_days: Math.abs(days + 0.5)
-          });
-        } else if (
-          this.state.from_leave_session === "FD" &&
-          this.state.to_leave_session === "FD"
-        ) {
-          this.setState({
-            total_applied_days: Math.abs(days + 1)
-          });
-        } else {
-          this.setState({
-            total_applied_days: Math.abs(days + 1)
+            leave_id: null,
+            from_leave_session: null,
+            to_leave_session: null,
+            from_date: null,
+            to_date: null,
+            available_balance: 0,
+            total_applied_days: 0
           });
         }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
       }
-    } else {
-      this.setState({
-        total_applied_days: 0
-      });
-    }
+    });
   }
+
+  // getAppliedDays() {
+  //   var startdateMoment = moment(this.state.from_date);
+  //   var enddateMoment = moment(this.state.to_date);
+
+  //   if (
+  //     startdateMoment.isValid() === true &&
+  //     enddateMoment.isValid() === true
+  //   ) {
+  //     var days = enddateMoment.diff(startdateMoment, "days");
+
+  //     if (
+  //       moment(this.state.from_date).format("YYYYMMDD") ===
+  //       moment(this.state.to_date).format("YYYYMMDD")
+  //     ) {
+  //       if (
+  //         this.state.from_leave_session === "FH" ||
+  //         this.state.from_leave_session === "SH" ||
+  //         this.state.to_leave_session === "FH" ||
+  //         this.state.to_leave_session === "SH"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: 0.5
+  //         });
+  //       } else if (
+  //         this.state.from_leave_session === "FD" ||
+  //         this.state.to_leave_session === "FD"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: 1
+  //         });
+  //       }
+  //       //return;
+  //     }
+
+  //     if (
+  //       moment(this.state.from_date).format("YYYYMMDD") <
+  //       moment(this.state.to_date).format("YYYYMMDD")
+  //     ) {
+  //       if (
+  //         this.state.from_leave_session === "SH" &&
+  //         this.state.to_leave_session === "FH"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: Math.abs(days)
+  //         });
+  //       } else if (
+  //         this.state.from_leave_session === "FH" ||
+  //         this.state.from_leave_session === "SH" ||
+  //         this.state.to_leave_session === "FH" ||
+  //         this.state.to_leave_session === "SH"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: Math.abs(days + 0.5)
+  //         });
+  //       } else if (
+  //         this.state.from_leave_session === "FD" &&
+  //         this.state.to_leave_session === "FD"
+  //       ) {
+  //         this.setState({
+  //           total_applied_days: Math.abs(days + 1)
+  //         });
+  //       } else {
+  //         this.setState({
+  //           total_applied_days: Math.abs(days + 1)
+  //         });
+  //       }
+  //     }
+  //   } else {
+  //     this.setState({
+  //       total_applied_days: 0
+  //     });
+  //   }
+  // }
 
   dropDownHandler(value) {
     switch (value.name) {
@@ -340,7 +419,8 @@ class ApplyLeave extends Component {
       case "leave_id":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
+            hims_d_leave_detail_id: value.selected.hims_d_leave_detail_id
           },
           () => {
             let myObj = Enumerable.from(this.state.leave_types)
@@ -351,15 +431,22 @@ class ApplyLeave extends Component {
               available_balance: value.selected.close_balance,
               leave_type: myObj !== undefined ? myObj.leave_type : null
             });
+
+            this.validate();
           }
         );
 
         break;
 
       default:
-        this.setState({
-          [value.name]: value.value
-        });
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            this.validate();
+          }
+        );
         break;
     }
   }
@@ -394,7 +481,6 @@ class ApplyLeave extends Component {
             to_date: this.state.to_date,
             from_leave_session: this.state.from_leave_session,
             to_leave_session: this.state.to_leave_session,
-            leave_applied_from: "D",
             total_applied_days: this.state.total_applied_days
           },
           onSuccess: res => {
@@ -408,7 +494,7 @@ class ApplyLeave extends Component {
               this.clearState();
             } else if (!res.data.success) {
               swalMessage({
-                title: res.data.records.message,
+                title: res.data.message,
                 type: "error"
               });
             }
@@ -448,7 +534,10 @@ class ApplyLeave extends Component {
       method: "GET",
       data: {
         employee_id: this.state.employee_id,
-        year: moment().year()
+        year: moment().year(),
+        gender: this.state.gender,
+        employee_type: this.state.employee_type,
+        selfservice: "Y"
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -725,7 +814,7 @@ class ApplyLeave extends Component {
                     div={{ className: "col-12 margin-bottom-15" }}
                     label={{
                       forceLabel: "Reason for Leave",
-                      isImp: true
+                      isImp: false
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -764,6 +853,93 @@ class ApplyLeave extends Component {
                       id="leaveRequestList_grid"
                       columns={[
                         {
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Actions" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <i
+                                className="fas fa-trash-alt"
+                                onClick={this.deleteLeaveApplication.bind(
+                                  this,
+                                  row
+                                )}
+                              />
+                            );
+                          },
+                          others: {
+                            filterable: false,
+                            maxWidth: 55
+                          }
+                        },
+                        {
+                          fieldName: "status",
+
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.status === "PEN" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.status === "APR" ? (
+                                  <span className="badge badge-success">
+                                    Approved
+                                  </span>
+                                ) : row.status === "REJ" ? (
+                                  <span className="badge badge-danger">
+                                    Rejected
+                                  </span>
+                                ) : row.status === "CAN" ? (
+                                  <span className="badge badge-danger">
+                                    Cancelled
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {row.status === "PEN" ? (
+                                  <span className="badge badge-warning">
+                                    Pending
+                                  </span>
+                                ) : row.status === "APR" ? (
+                                  <span className="badge badge-success">
+                                    Approved
+                                  </span>
+                                ) : row.status === "REJ" ? (
+                                  <span className="badge badge-danger">
+                                    Rejected
+                                  </span>
+                                ) : row.status === "CAN" ? (
+                                  <span className="badge badge-danger">
+                                    Cancelled
+                                  </span>
+                                ) : (
+                                  "------"
+                                )}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "total_applied_days",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Applied Days" }}
+                            />
+                          )
+                        },
+                        {
                           fieldName: "leave_application_code",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
@@ -780,7 +956,7 @@ class ApplyLeave extends Component {
                             return (
                               <span>
                                 {moment(row.application_date).format(
-                                  "MM-DD-YYYY"
+                                  "DD-MM-YYYY"
                                 )}
                               </span>
                             );
@@ -802,7 +978,7 @@ class ApplyLeave extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {moment(row.from_date).format("MM-DD-YYYY")}
+                                {moment(row.from_date).format("DD-MM-YYYY")}
                               </span>
                             );
                           }
@@ -816,38 +992,29 @@ class ApplyLeave extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {moment(row.to_date).format("MM-DD-YYYY")}
+                                {moment(row.to_date).format("DD-MM-YYYY")}
                               </span>
                             );
                           }
                         },
-                        {
-                          fieldName: "total_applied_days",
+                        // {
+                        //   fieldName: "total_approved_days",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Approved Days" }}
+                        //     />
+                        //   ),
 
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Applied Days" }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "total_approved_days",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Approved Days" }}
-                            />
-                          ),
-
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.total_approved_days !== null
-                                  ? row.total_approved_days
-                                  : 0}
-                              </span>
-                            );
-                          }
-                        },
+                        //   displayTemplate: row => {
+                        //     return (
+                        //       <span>
+                        //         {row.total_approved_days !== null
+                        //           ? row.total_approved_days
+                        //           : 0}
+                        //       </span>
+                        //     );
+                        //   }
+                        // },
                         {
                           fieldName: "remarks",
 
@@ -867,65 +1034,76 @@ class ApplyLeave extends Component {
                           }
                         },
                         {
-                          fieldName: "authorized",
+                          fieldName: "authorize1",
 
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Authorized" }} />
+                            <AlgaehLabel
+                              label={{ forceLabel: "Authorized Level 1" }}
+                            />
                           ),
                           displayTemplate: row => {
                             return (
                               <span>
-                                {row.authorized === "Y" ? "Yes" : "No"}
+                                {row.authorize1 === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           },
                           editorTemplate: row => {
                             return (
                               <span>
-                                {row.authorized === "Y" ? "Yes" : "No"}
+                                {row.authorize1 === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           }
                         },
                         {
-                          fieldName: "status",
+                          fieldName: "authorized2",
 
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "Status" }} />
+                            <AlgaehLabel
+                              label={{ forceLabel: "Authorized Level 2" }}
+                            />
                           ),
                           displayTemplate: row => {
                             return (
                               <span>
-                                {row.status === "PEN"
-                                  ? "Pending"
-                                  : row.status === "APR"
-                                  ? "Approved"
-                                  : row.status === "REJ"
-                                  ? "Rejected"
-                                  : row.status === "PRO"
-                                  ? "Processed"
-                                  : "------"}
+                                {row.authorized2 === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           },
                           editorTemplate: row => {
                             return (
                               <span>
-                                {row.status === "PEN"
-                                  ? "Pending"
-                                  : row.status === "APR"
-                                  ? "Approved"
-                                  : row.status === "REJ"
-                                  ? "Rejected"
-                                  : row.status === "PRO"
-                                  ? "Processed"
-                                  : "------"}
+                                {row.authorized2 === "Y" ? "Yes" : "No"}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "authorized3",
+
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Authorized Level 3" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.authorized3 === "Y" ? "Yes" : "No"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            return (
+                              <span>
+                                {row.authorized3 === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           }
                         }
                       ]}
-                      keyId="algaeh_d_module_id"
+                      keyId="hims_f_leave_application_id"
                       dataSource={{
                         data: this.state.leave_his
                       }}
@@ -945,24 +1123,25 @@ class ApplyLeave extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row leaveBalanceCntr">
-                  {leaveData.length > 0
-                    ? leaveData.map((data, index) => (
-                        <div
-                          key={data.hims_f_employee_monthly_leave_id}
-                          className="col"
-                        >
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: data.leave_description
-                            }}
-                          />
-                          <h6>
-                            {data.availed_till_date}/{data.total_eligible} Day
-                            (s)
-                          </h6>
-                        </div>
-                      ))
-                    : "Not Eligible for any Leaves . . "}
+                  {leaveData.length > 0 ? (
+                    leaveData.map((data, index) => (
+                      <div
+                        key={data.hims_f_employee_monthly_leave_id}
+                        className="col"
+                      >
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: data.leave_description
+                          }}
+                        />
+                        <h6>
+                          {data.availed_till_date}/{data.total_eligible} Day (s)
+                        </h6>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="col">Not Eligible for any Leaves . . </div>
+                  )}
                 </div>
               </div>
             </div>

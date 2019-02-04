@@ -3,7 +3,8 @@ import "./leave_details.css";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDataGrid
+  AlgaehDataGrid,
+  AlgaehLabel
 } from "../../../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../../../utils/GlobalVariables.json";
 
@@ -200,7 +201,7 @@ function LeaveDetails(props) {
             columns={[
               {
                 fieldName: "employee_type",
-                label: "Employee Type",
+                label: <AlgaehLabel label={{ forceLabel: "Employee Type" }} />,
                 displayTemplate: row => {
                   return (
                     <span>
@@ -238,7 +239,8 @@ function LeaveDetails(props) {
               },
               {
                 fieldName: "gender",
-                label: "Gender",
+
+                label: <AlgaehLabel label={{ forceLabel: "Gender" }} />,
                 editorTemplate: row => {
                   return (
                     <AlagehAutoComplete
@@ -259,7 +261,10 @@ function LeaveDetails(props) {
               },
               {
                 fieldName: "eligible_days",
-                label: "Days of Eligibility",
+
+                label: (
+                  <AlgaehLabel label={{ forceLabel: "Days of Eligibility" }} />
+                ),
                 editorTemplate: row => {
                   return (
                     <AlagehFormGroup
@@ -283,7 +288,8 @@ function LeaveDetails(props) {
               },
               {
                 fieldName: "max_number_days",
-                label: "Maximum Limit",
+
+                label: <AlgaehLabel label={{ forceLabel: "Maximum Limit" }} />,
                 editorTemplate: row => {
                   return (
                     <AlagehFormGroup
@@ -307,7 +313,11 @@ function LeaveDetails(props) {
               },
               {
                 fieldName: "min_service_required",
-                label: "Min. Service Required",
+                label: (
+                  <AlgaehLabel
+                    label={{ forceLabel: "Min. Service Required" }}
+                  />
+                ),
                 displayTemplate: row => {
                   return (
                     <span>
@@ -339,7 +349,9 @@ function LeaveDetails(props) {
               },
               {
                 fieldName: "service_years",
-                label: "Service in Years",
+                label: (
+                  <AlgaehLabel label={{ forceLabel: "Service in Years" }} />
+                ),
                 displayTemplate: row => {
                   return (
                     <span>
@@ -370,7 +382,9 @@ function LeaveDetails(props) {
               },
               {
                 fieldName: "once_life_term",
-                label: "Once in Life Time",
+                label: (
+                  <AlgaehLabel label={{ forceLabel: "Once in Life Time" }} />
+                ),
                 displayTemplate: row => {
                   return (
                     <span>
@@ -402,7 +416,11 @@ function LeaveDetails(props) {
               },
               {
                 fieldName: "allow_probation",
-                label: "Allow during Probation",
+                label: (
+                  <AlgaehLabel
+                    label={{ forceLabel: "Allow during Probation" }}
+                  />
+                ),
                 displayTemplate: row => {
                   return (
                     <span>
@@ -434,7 +452,11 @@ function LeaveDetails(props) {
               },
               {
                 fieldName: "mandatory_utilize_days",
-                label: "Mandatory Utlilize Days",
+                label: (
+                  <AlgaehLabel
+                    label={{ forceLabel: "Mandatory Utlilize Days" }}
+                  />
+                ),
                 editorTemplate: row => {
                   return (
                     <AlagehFormGroup
@@ -466,7 +488,7 @@ function LeaveDetails(props) {
             events={{
               onEdit: () => {},
               onDelete: myParent.deleteLeaveDetail.bind(myParent),
-              onDone: () => {}
+              onDone: myParent.updateLeaveDetail.bind(myParent)
             }}
           />
         </div>

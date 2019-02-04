@@ -808,7 +808,9 @@ class DeptMaster extends Component {
             columns={[
               {
                 fieldName: "add_dep",
-                label: "Sub Dept.",
+
+                label: <AlgaehLabel label={{ forceLabel: "Sub Dept." }} />,
+
                 displayTemplate: row => {
                   return (
                     <i
@@ -893,7 +895,11 @@ class DeptMaster extends Component {
               },
               {
                 fieldName: "effective_start_date",
-                label: "Effective Start Date",
+
+                label: (
+                  <AlgaehLabel label={{ forceLabel: "Effective Start Date" }} />
+                ),
+
                 displayTemplate: row => {
                   return (
                     <span>

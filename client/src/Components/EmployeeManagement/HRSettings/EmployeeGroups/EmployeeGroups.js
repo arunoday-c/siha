@@ -7,7 +7,10 @@ import {
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getAmountFormart
+} from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 
@@ -23,7 +26,8 @@ class EmployeeGroups extends Component {
 
   getEmployeeGroups() {
     algaehApiCall({
-      uri: "/employee/getEmployeeGroups",
+      uri: "/hrsettings/getEmployeeGroups",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -77,22 +81,28 @@ class EmployeeGroups extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/employee/deleteEmployeeGroup",
+          uri: "/hrsettings/updateEmployeeGroup",
+          module: "hrManagement",
           data: {
-            hims_d_employee_group_id: data.hims_d_employee_group_id
+            hims_d_employee_group_id: data.hims_d_employee_group_id,
+            group_description: data.group_description,
+            monthly_accrual_days: data.monthly_accrual_days,
+            airfare_eligibility: data.airfare_eligibility,
+            airfare_amount: data.airfare_amount,
+            record_status: "I"
           },
-          method: "DELETE",
+          method: "PUT",
           onSuccess: response => {
-            if (response.data.records.success) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getEmployeeGroups();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
-                title: response.data.records.message,
+                title: response.data.message,
                 type: "error"
               });
             }
@@ -115,14 +125,16 @@ class EmployeeGroups extends Component {
 
   updateEmployeeGroups(data) {
     algaehApiCall({
-      uri: "/employee/updateEmployeeGroup",
+      uri: "/hrsettings/updateEmployeeGroup",
+      module: "hrManagement",
       method: "PUT",
       data: {
         hims_d_employee_group_id: data.hims_d_employee_group_id,
         group_description: data.group_description,
         monthly_accrual_days: data.monthly_accrual_days,
         airfare_eligibility: data.airfare_eligibility,
-        airfare_amount: data.airfare_amount
+        airfare_amount: data.airfare_amount,
+        record_status: "A"
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -148,7 +160,8 @@ class EmployeeGroups extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/employee/addEmployeeGroups",
+          uri: "/hrsettings/addEmployeeGroups",
+          module: "hrManagement",
           method: "POST",
           data: {
             group_description: this.state.group_description,
@@ -159,6 +172,7 @@ class EmployeeGroups extends Component {
           onSuccess: res => {
             if (res.data.success) {
               this.clearState();
+              this.getEmployeeGroups();
               swalMessage({
                 title: "Record Added Successfully",
                 type: "success"
@@ -178,7 +192,7 @@ class EmployeeGroups extends Component {
 
   render() {
     return (
-      <div className="employee_groups">
+      <div className="employee_groups margin-top-15">
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup
@@ -266,10 +280,10 @@ class EmployeeGroups extends Component {
             </div>
           </div>
 
-          <div data-validate="empGrpDiv">
+          <div id="empGrpGrid_Cntr">
             <AlgaehDataGrid
-              id="emp-groups-grid"
-              datavalidate="data-validate='empGrpDiv'"
+              id="empGrpGrid"
+              data-validate="empGrpGrid"
               columns={[
                 {
                   fieldName: "group_description",
@@ -356,6 +370,9 @@ class EmployeeGroups extends Component {
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Airfare Amount" }} />
                   ),
+                  displayTemplate: row => {
+                    return <span> {getAmountFormart(row.airfare_amount)}</span>;
+                  },
                   editorTemplate: row => {
                     return (
                       <AlagehFormGroup
@@ -382,7 +399,8 @@ class EmployeeGroups extends Component {
                 data: this.state.employee_groups
               }}
               isEditable={true}
-              paging={{ page: 0, rowsPerPage: 10 }}
+              paging={{ page: 0, rowsPerPage: 20 }}
+              filter={true}
               events={{
                 onEdit: () => {},
                 onDelete: this.deleteEmployeeGroups.bind(this),

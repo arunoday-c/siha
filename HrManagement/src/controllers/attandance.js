@@ -7,27 +7,18 @@ import {
 export default () => {
   const api = Router();
   api.get("/processAttendance", processAttendance, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      result: req.records
-    });
-  });
-
-  api.get(
-    "/addAttendanceRegularization",
-    (req, res, next) => {
-      console.log("Here in function");
-      res.status(200).json({
-        success: true
+    if (req.records.no_data == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
       });
-    },
-    //  addAttendanceRegularization,
-    (req, res, next) => {
+    } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
         result: req.records
       });
     }
-  );
+  });
+
   return api;
 };

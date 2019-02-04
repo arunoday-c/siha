@@ -1,11 +1,16 @@
-$fontSize: 0.75rem;
-$fontFamily: "Titillium Web", sans-serif;
+$fontSize: 0.8em;
+//$fontFamily: "Titillium Web", sans-serif !important;
 //$fontFamily: "Nunito", sans-serif;
 $fontWeight: normal;
-$color: #7c909b;
 $moz-osx-font-smoothing: grayscale;
 $webkit-font-smoothing: antialiased !important;
 $outline-width: 0;
-$textFontSize: 0.85rem;
+$textFontSize: 0.8em;
 $mainMenu: 0.85rem;
 $subMenu: 0.85rem;
+
+//App Colors
+
+$primary-color: #34b8bc;
+$color-white: #fff;
+$color-black: #000;

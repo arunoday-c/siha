@@ -4,12 +4,13 @@ import moment from "moment";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehFormGroup
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Employee from "../../../../Search/Employee.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { getYears } from "../../../../utils/GlobalFunctions";
+import YearlyLeaveDetail from "./YearlyLeaveDetail/YearlyLeaveDetail";
 
 export default class LeaveYearlyProcess extends Component {
   constructor(props) {
@@ -18,7 +19,8 @@ export default class LeaveYearlyProcess extends Component {
       year: moment().year(),
       leaves: [],
       leave_data: [],
-      loading: false
+      loading: false,
+      open: false
     };
     this.getLeaveMaster();
   }
@@ -32,11 +34,10 @@ export default class LeaveYearlyProcess extends Component {
       loading: true
     });
     algaehApiCall({
-      uri: "/leave/getEmployeeLeaveData",
+      uri: "/leave/getYearlyLeaveData",
       method: "GET",
       data: {
-        year: this.state.year,
-        employee_id: this.state.hims_d_employee_id
+        year: this.state.year
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -82,7 +83,7 @@ export default class LeaveYearlyProcess extends Component {
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
-            type: "error"
+            type: "warning"
           });
           this.setState({
             loading: false
@@ -187,33 +188,49 @@ export default class LeaveYearlyProcess extends Component {
     }
   }
 
+  closePopup() {
+    this.setState({
+      open: false
+    });
+  }
+
   render() {
+    let allYears = getYears();
     return (
       <div className="leave_en_auth row">
+        <YearlyLeaveDetail
+          open={this.state.open}
+          onClose={this.closePopup.bind(this)}
+          year={this.state.send_year}
+          employee_id={this.state.send_Emp_id}
+        />
         <div className="col-12">
           <div className="row inner-top-search">
-            <AlagehFormGroup
-              div={{ className: "col-lg-2 form-group mandatory" }}
+            <AlagehAutoComplete
+              div={{ className: "col-3" }}
               label={{
-                forceLabel: "Year",
+                forceLabel: "Select a Year.",
                 isImp: true
               }}
-              textBox={{
-                className: "txt-fld",
+              selector={{
                 name: "year",
+                className: "select-fld",
                 value: this.state.year,
-                events: {
-                  onChange: this.textHandler.bind(this)
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
                 },
-                others: {
-                  type: "number",
-                  min: moment().year(),
-                  disabled: this.state.lockEarnings
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
                 }
               }}
             />
 
-            <div className="col-lg-3" style={{ marginTop: 10 }}>
+            <div className="col-3" style={{ marginTop: 10 }}>
               <div
                 className="row"
                 style={{
@@ -231,7 +248,7 @@ export default class LeaveYearlyProcess extends Component {
                   </h6>
                 </div>
                 <div
-                  className="col-lg-3"
+                  className="col-3"
                   style={{ borderLeft: "1px solid #ced4d8" }}
                 >
                   <i
@@ -248,9 +265,9 @@ export default class LeaveYearlyProcess extends Component {
             </div>
 
             <AlagehAutoComplete
-              div={{ className: "col form-group" }}
+              div={{ className: "col-3 form-group" }}
               label={{
-                forceLabel: "Select an Leave Type",
+                forceLabel: "Select a Leave Type",
                 isImp: false
               }}
               selector={{
@@ -265,7 +282,7 @@ export default class LeaveYearlyProcess extends Component {
                 onChange: this.dropDownHandler.bind(this)
               }}
             />
-
+            {/* 
             <div className="col form-group">
               <button
                 onClick={this.processYearlyLeave.bind(this)}
@@ -278,16 +295,14 @@ export default class LeaveYearlyProcess extends Component {
                   <i className="fas fa-spinner fa-spin" />
                 )}
               </button>
-            </div>
-            <div className="col form-group">
               <button
                 onClick={this.clearState.bind(this)}
-                style={{ marginTop: 21 }}
+                style={{ marginTop: 21, marginLeft: 5 }}
                 className="btn btn-default"
               >
                 CLEAR
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -296,11 +311,6 @@ export default class LeaveYearlyProcess extends Component {
             <div className="portlet-title">
               <div className="caption">
                 <h3 className="caption-subject">Leave Process Details</h3>
-              </div>
-              <div className="actions">
-                {/* <a className="btn btn-primary btn-circle active">
-                  <i className="fas fa-pen" />
-                </a> */}
               </div>
             </div>
             <div className="portlet-body">
@@ -311,8 +321,36 @@ export default class LeaveYearlyProcess extends Component {
                     datavalidate="LeaveYearlyProcessGrid"
                     columns={[
                       {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Details" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <i
+                              className="fas fa-eye"
+                              onClick={() => {
+                                this.setState({
+                                  open: true,
+                                  send_Emp_id: row.employee_id,
+                                  send_year: row.year
+                                });
+                              }}
+                            />
+                          );
+                        },
+                        others: {
+                          maxWidth: 55,
+                          filterable: false,
+                          fixed: "left"
+                        }
+                      },
+                      {
                         fieldName: "year",
-                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />
+                        label: <AlgaehLabel label={{ forceLabel: "Year" }} />,
+                        others: {
+                          maxWidth: 70
+                        }
                       },
                       {
                         fieldName: "employee_code",
@@ -320,7 +358,10 @@ export default class LeaveYearlyProcess extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Code" }}
                           />
-                        )
+                        ),
+                        others: {
+                          maxWidth: 250
+                        }
                       },
                       {
                         fieldName: "employee_name",
@@ -328,29 +369,32 @@ export default class LeaveYearlyProcess extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Employee Name" }}
                           />
-                        )
+                        ),
+                        others: {
+                          style: { textAlign: "left" }
+                        }
                       },
                       {
-                        fieldName: "leave_code",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
-                        )
-                      },
-                      {
-                        fieldName: "leave_description",
+                        fieldName: "sub_department_code",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Leave Description" }}
+                            label={{ forceLabel: "Sub Dept. Code" }}
                           />
-                        )
+                        ),
+                        others: {
+                          maxWidth: 250
+                        }
                       },
                       {
-                        fieldName: "total_eligible",
+                        fieldName: "sub_department_name",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Total Eligible" }}
+                            label={{ forceLabel: "Sub Dept. Name" }}
                           />
-                        )
+                        ),
+                        others: {
+                          maxWidth: 250
+                        }
                       }
                     ]}
                     keyId="hims_f_employee_monthly_leave_id"
@@ -364,6 +408,29 @@ export default class LeaveYearlyProcess extends Component {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                onClick={this.processYearlyLeave.bind(this)}
+                className="btn btn-primary"
+              >
+                {!this.state.loading ? (
+                  "PROCESS"
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
+              <button
+                onClick={this.clearState.bind(this)}
+                className="btn btn-default"
+              >
+                CLEAR
+              </button>
             </div>
           </div>
         </div>

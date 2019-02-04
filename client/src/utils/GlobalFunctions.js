@@ -25,6 +25,30 @@ export function removeGlobal(name) {
   }
 }
 
+export function getYears() {
+  var min = new Date().getFullYear(),
+    max = min + 10;
+
+  min = min - 10;
+  let allYears = [];
+  for (let x = min; x <= max; x++) {
+    allYears.push({ name: x, value: x });
+  }
+  return allYears;
+}
+
+export function getDays() {
+  let monthDays = [];
+  for (let i = 1; i <= 31; i++) {
+    monthDays.push({
+      name: i,
+      value: i
+    });
+  }
+
+  return monthDays;
+}
+
 export function resizeImage(options) {
   let settings = { maxWidth: 400, maxHeight: 400, ...options };
   let canvas = document.createElement("canvas");
@@ -169,7 +193,6 @@ export function displayFileFromServer(options) {
     },
     others: { responseType: "blob" },
     onSuccess: response => {
-      
       if (response.data) {
         let reader = new FileReader();
 
@@ -255,7 +278,9 @@ export function AlgaehValidation(options) {
   }
   let isError = false;
 
-  const _Validateerror = _rootValidationElement.querySelectorAll("[required]");
+  const _Validateerror = _rootValidationElement.querySelectorAll(
+    "[algaeh_required='true']"
+  );
   for (let i = 0; i < _Validateerror.length; i++) {
     let _checkVal = _Validateerror[i].getAttribute("checkvalidation");
     if (_checkVal !== null) {
@@ -263,11 +288,19 @@ export function AlgaehValidation(options) {
         _Validateerror[i].value === "" ? "''" : _Validateerror[i].value;
       _checkVal = _checkVal.replace(/\$value/g, _val);
     }
-
+    const _role = _Validateerror[i].getAttribute("data_role");
     let _evalConditions = null;
     if (_checkVal === null) {
-      if (_Validateerror[i].value === "") _evalConditions = true;
-      else _evalConditions = false;
+      if (_role === null) {
+        if (_Validateerror[i].value === "") {
+          _evalConditions = true;
+        } else _evalConditions = false;
+      } else {
+        const _reVal = _Validateerror[i].getAttribute("referencevalue");
+        if (_reVal === null || _reVal === "") {
+          _evalConditions = true;
+        } else _evalConditions = false;
+      }
     } else {
       _evalConditions = _checkVal;
     }
@@ -279,30 +312,14 @@ export function AlgaehValidation(options) {
 
       if (_title === null) {
         let _lable = null;
-        const _role = _Validateerror[i].getAttribute("data_role");
-        if (_role === "dropdownlist" || _role === "datepicker") {
+
+        if (_role === "datepicker") {
           _lable = _Validateerror[i].offsetParent.offsetParent.innerText;
+        } else if (_role === "dropdownlist") {
+          _lable = _Validateerror[i].offsetParent.previousSibling.innerText;
         } else {
           _lable = _Validateerror[i].offsetParent.innerText;
         }
-
-        // if (_Validateerror[i].previousSibling !== null) {
-        //   if (_Validateerror[i].previousSibling.tagName === "LABEL") {
-        //     _lable = _Validateerror[i].previousSibling;
-        //   }
-        // } else {
-        //   
-        //   if (
-        //     _Validateerror[i].parentElement.previousElementSibling.tagName ===
-        //     "LABEL"
-        //   ) {
-        //     _lable = _Validateerror[i].parentElement.previousElementSibling;
-        //   } else {
-        //     _lable =
-        //       _Validateerror[i].parentElement.parentElement
-        //         .previousElementSibling;
-        //   }
-        // }
 
         _title =
           _langua === "en"
@@ -333,6 +350,12 @@ export function AlgaehValidation(options) {
       typeof settings.onSuccess === "function"
     )
       settings.onSuccess();
+  } else {
+    if (
+      settings.onSuccess !== undefined &&
+      typeof settings.onSuccess === "function"
+    )
+      settings.onFailure();
   }
 }
 
@@ -412,7 +435,7 @@ export function numberFormater(value, options) {
 
 export function SetBulkState(options) {
   if (options.querySelector === undefined) options.querySelector = "input";
-
+  debugger;
   const _allControls = document.querySelectorAll(options.querySelector);
   let _objectCreation = {};
   for (let i = 0; i < _allControls.length; i++) {
@@ -436,17 +459,25 @@ export function SetBulkState(options) {
         } else if (_type === "date") {
           _objectCreation[_name] = new Date(_allControls[i].value);
         } else {
-          _objectCreation[_name] =
-            _dataRole !== null
-              ? _allControls[i].getAttribute("referencevalue")
-              : _allControls[i].value;
+          let _iValue = _allControls[i].value;
+          if (_dataRole !== null) {
+            let _resp = _allControls[i].getAttribute("referencevalue");
+            if (isNaN(_resp)) {
+              _iValue = _resp;
+            } else {
+              _iValue =
+                _resp !== undefined && _resp !== null && _resp !== ""
+                  ? parseFloat(_resp)
+                  : _resp;
+            }
+          }
+          _objectCreation[_name] = _iValue;
         }
       }
     }
   }
 
   if (options.state !== undefined) {
-    
     const _object = { ...options.state.state, ..._objectCreation };
     options.state.setState(_object, () => {
       if (

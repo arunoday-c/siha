@@ -4,6 +4,8 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import swal from "sweetalert2";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -25,14 +27,24 @@ const Paymenttexthandle = ($this, e) => {
   });
 };
 
+const PaymentOnClear = ($this, e) => {
+  debugger;
+
+  let IOputs = EmployeePaymentIOputs.inputParam();
+
+  $this.setState({
+    ...IOputs,
+    [e]: null
+  });
+};
+
 const LoadData = ($this, e) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadData'",
     onSuccess: () => {
-      let inputObj = {
-        loan_authorized: "APR"
-      };
+      AlgaehLoader({ show: true });
+      let inputObj = {};
       if ($this.state.select_employee_id !== null) {
         inputObj.employee_id = $this.state.select_employee_id;
       }
@@ -42,7 +54,6 @@ const LoadData = ($this, e) => {
       }
 
       if ($this.state.sel_payment_type === "AD") {
-        
         if ($this.state.document_num !== null) {
           inputObj.advance_number = $this.state.document_num;
         }
@@ -56,8 +67,10 @@ const LoadData = ($this, e) => {
             $this.setState({
               requestPayment: response.data.result
             });
+            AlgaehLoader({ show: false });
           },
           onFailure: error => {
+            AlgaehLoader({ show: false });
             swalMessage({
               title: error.response.data.message,
               type: "error"
@@ -75,11 +88,13 @@ const LoadData = ($this, e) => {
           data: inputObj,
           method: "GET",
           onSuccess: response => {
+            AlgaehLoader({ show: false });
             $this.setState({
               requestPayment: response.data.result
             });
           },
           onFailure: error => {
+            AlgaehLoader({ show: false });
             swalMessage({
               title: error.response.data.message,
               type: "error"
@@ -87,20 +102,106 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "EN") {
-        $this.setState({
-          requestPayment: []
+        if ($this.state.document_num !== null) {
+          inputObj.encashment_number = $this.state.document_num;
+        }
+
+        algaehApiCall({
+          uri: "/employeepayments/getEncashLeavesTopayment",
+          module: "hrManagement",
+          data: inputObj,
+          method: "GET",
+          onSuccess: response => {
+            $this.setState({
+              requestPayment: response.data.result
+            });
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       } else if ($this.state.sel_payment_type === "GR") {
-        $this.setState({
-          requestPayment: []
+        debugger;
+        if ($this.state.document_num !== null) {
+          inputObj.end_of_service_number = $this.state.document_num;
+        }
+
+        algaehApiCall({
+          uri: "/employeepayments/getGratuityTopayment",
+          module: "hrManagement",
+          data: inputObj,
+          method: "GET",
+          onSuccess: response => {
+            debugger;
+            $this.setState({
+              requestPayment: response.data.result
+            });
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       } else if ($this.state.sel_payment_type === "FS") {
-        $this.setState({
-          requestPayment: []
+        debugger;
+        if ($this.state.document_num !== null) {
+          inputObj.final_settlement_number = $this.state.document_num;
+        }
+
+        algaehApiCall({
+          uri: "/employeepayments/getFinalSettleTopayment",
+          module: "hrManagement",
+          data: inputObj,
+          method: "GET",
+          onSuccess: response => {
+            debugger;
+            $this.setState({
+              requestPayment: response.data.result
+            });
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       } else if ($this.state.sel_payment_type === "LS") {
-        $this.setState({
-          requestPayment: []
+        debugger;
+        if ($this.state.document_num !== null) {
+          inputObj.leave_salary_number = $this.state.document_num;
+        }
+
+        algaehApiCall({
+          uri: "/employeepayments/getLeaveSettleTopayment",
+          module: "hrManagement",
+          data: inputObj,
+          method: "GET",
+          onSuccess: response => {
+            debugger;
+            $this.setState({
+              requestPayment: response.data.result
+            });
+            AlgaehLoader({ show: false });
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.response.data.message,
+              type: "error"
+            });
+          }
         });
       }
     }
@@ -119,7 +220,6 @@ const RequestPaySearch = $this => {
         callBack(text);
       },
       onRowSelect: row => {
-        
         $this.setState({ document_num: row.advance_number });
       }
     });
@@ -134,14 +234,65 @@ const RequestPaySearch = $this => {
         callBack(text);
       },
       onRowSelect: row => {
-        
         $this.setState({ document_num: row.loan_application_number });
       }
     });
   } else if ($this.state.sel_payment_type === "EN") {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.emp_payment_apply.encash_leave
+      },
+      searchName: "encash_leave",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        $this.setState({ document_num: row.loan_application_number });
+      }
+    });
   } else if ($this.state.sel_payment_type === "GR") {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.emp_payment_apply.end_of_service
+      },
+      searchName: "end_of_service",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        $this.setState({ document_num: row.loan_application_number });
+      }
+    });
   } else if ($this.state.sel_payment_type === "FS") {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.emp_payment_apply.final_settlement
+      },
+      searchName: "final_settlement",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        $this.setState({ document_num: row.loan_application_number });
+      }
+    });
   } else if ($this.state.sel_payment_type === "LS") {
+    AlgaehSearch({
+      searchGrid: {
+        columns: spotlightSearch.emp_payment_apply.leave_settlement
+      },
+      searchName: "leave_settlement",
+      uri: "/gloabelSearch/get",
+      onContainsChange: (text, serchBy, callBack) => {
+        callBack(text);
+      },
+      onRowSelect: row => {
+        $this.setState({ document_num: row.loan_application_number });
+      }
+    });
   }
 };
 
@@ -155,7 +306,9 @@ const getPaymentDetails = ($this, row) => {
       full_name: row.full_name,
       employee_advance_id: row.hims_f_employee_advance_id,
       deduction_month: row.deducting_month,
-      year: row.deducting_year
+      year: row.deducting_year,
+      payment_mode: null,
+      processBtn: false
     });
   } else if ($this.state.sel_payment_type === "LN") {
     $this.setState({
@@ -164,7 +317,9 @@ const getPaymentDetails = ($this, row) => {
       payment_amount: row.payment_amount,
       request_number: row.request_number,
       full_name: row.full_name,
-      employee_loan_id: row.hims_f_loan_application_id
+      employee_loan_id: row.hims_f_loan_application_id,
+      payment_mode: null,
+      processBtn: false
     });
   } else if (row.payment_type === "EN") {
     $this.setState({
@@ -173,7 +328,9 @@ const getPaymentDetails = ($this, row) => {
       payment_amount: row.payment_amount,
       request_number: row.request_number,
       full_name: row.full_name,
-      employee_leave_encash_id: row.hims_f_loan_application_id
+      employee_leave_encash_id: row.hims_f_leave_encash_header_id,
+      payment_mode: null,
+      processBtn: false
     });
   } else if (row.payment_type === "GR") {
     $this.setState({
@@ -182,7 +339,9 @@ const getPaymentDetails = ($this, row) => {
       payment_amount: row.payment_amount,
       request_number: row.request_number,
       full_name: row.full_name,
-      employee_end_of_service_id: row.hims_f_loan_application_id
+      employee_end_of_service_id: row.hims_f_end_of_service_id,
+      payment_mode: null,
+      processBtn: false
     });
   } else if (row.payment_type === "FS") {
     $this.setState({
@@ -191,7 +350,9 @@ const getPaymentDetails = ($this, row) => {
       payment_amount: row.payment_amount,
       request_number: row.request_number,
       full_name: row.full_name,
-      employee_final_settlement_id: row.hims_f_loan_application_id
+      employee_final_settlement_id: row.hims_f_final_settlement_header_id,
+      payment_mode: null,
+      processBtn: false
     });
   } else if (row.payment_type === "LS") {
     $this.setState({
@@ -200,7 +361,9 @@ const getPaymentDetails = ($this, row) => {
       payment_amount: row.payment_amount,
       request_number: row.request_number,
       full_name: row.full_name,
-      employee_leave_settlement_id: row.hims_f_loan_application_id
+      employee_leave_settlement_id: row.hims_f_leave_salary_header_id,
+      payment_mode: null,
+      processBtn: false
     });
   }
 };
@@ -210,9 +373,95 @@ const ProessEmpPayment = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='processData'",
     onSuccess: () => {
-      
+      AlgaehLoader({ show: true });
+      debugger;
+      algaehApiCall({
+        uri: "/employeepayments/InsertEmployeePayment",
+        module: "hrManagement",
+        data: $this.state,
+        method: "POST",
+        onSuccess: response => {
+          // if (response.data.success === "true") {
+          $this.setState({
+            processBtn: true,
+            payment_application_code:
+              response.data.result.payment_application_code
+          });
+          LoadData($this);
+          getEmployeePayments($this);
+          swalMessage({
+            title: "Processed Succefully...",
+            type: "success"
+          });
+          AlgaehLoader({ show: false });
+          // }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message || error.response.data.message,
+            type: "error"
+          });
+        }
+      });
     }
   });
+};
+
+const employeeSearch = $this => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.Employee_details.employee
+    },
+    searchName: "employee",
+    uri: "/gloabelSearch/get",
+    inputs:
+      $this.state.hospital_id !== null
+        ? "hospital_id = " + $this.state.hospital_id
+        : "1=1",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      $this.setState(
+        {
+          employee_name: row.full_name,
+          select_employee_id: row.hims_d_employee_id
+        },
+        () => {
+          getEmployeePayments($this);
+        }
+      );
+    }
+  });
+};
+
+const getEmployeePayments = $this => {
+  algaehApiCall({
+    uri: "/employeepayments/getEmployeePayments",
+    module: "hrManagement",
+    method: "GET",
+    data: {
+      employee_id: $this.state.select_employee_id,
+      payment_type: $this.state.sel_payment_type
+    },
+    onSuccess: response => {
+      $this.setState({
+        PreviousPayments: response.data.result
+      });
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message || error.response.data.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const ClearData = $this => {
+  let IOputs = EmployeePaymentIOputs.inputParam();
+  $this.setState(IOputs);
 };
 
 export {
@@ -221,5 +470,9 @@ export {
   RequestPaySearch,
   getPaymentDetails,
   Paymenttexthandle,
-  ProessEmpPayment
+  ProessEmpPayment,
+  employeeSearch,
+  getEmployeePayments,
+  ClearData,
+  PaymentOnClear
 };

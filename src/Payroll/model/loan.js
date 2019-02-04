@@ -12,6 +12,7 @@ import httpStatus from "../../utils/httpStatus";
 //import { LINQ } from "node-linq";
 
 import { debugLog } from "../../utils/logging";
+import moment from "moment";
 //import moment from "moment";
 
 //created by irfan:
@@ -177,7 +178,12 @@ let getLoanApplication = (req, res, next) => {
     }
     let db = req.db;
 
-    // let where = whereCondition(extend(selectWhere, req.query));
+    // if (req.query.auth_level != "L1" && req.query.auth_level != "L2") {
+    //   debugLog("L1 and L2 not defind");
+    //   req.records = { invalid_input: true, message: "invalid auth level " };
+    //   next();
+    //   return;
+    // }
 
     let employee = "";
     let range = "";
@@ -215,6 +221,11 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
       loan_issued = " and loan_authorized='IS' ";
     }
 
+    let loan_closed = "";
+    if (req.query.loan_closed == "Y" || req.query.loan_closed == "N") {
+      loan_closed = ` and LA.loan_closed='${req.query.loan_closed}' `;
+    }
+
     db.getConnection((error, connection) => {
       connection.query(
         "select hims_f_loan_application_id,loan_application_number, loan_skip_months , employee_id,loan_id,L.loan_code,L.loan_description,\
@@ -230,7 +241,9 @@ between date('${req.query.from_date}') and date('${req.query.to_date}') `;
           "" +
           auth_level +
           "" +
-          loan_issued,
+          loan_issued +
+          "" +
+          loan_closed,
 
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -267,8 +280,6 @@ let getLoanLevels = (req, res, next) => {
         break;
     }
 
-    debugLog("auth_levels:", auth_levels);
-    debugLog("user iden:", req.userIdentity);
     req.records = { auth_levels };
     next();
   } catch (e) {
@@ -368,7 +379,7 @@ let authorizeLoan = (req, res, next) => {
                 req.records = { invalid_input: true };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  next();
                 });
               }
             }
@@ -422,7 +433,10 @@ let authorizeLoan = (req, res, next) => {
                     input.hims_f_loan_application_id
                   }`;
                 } else if (input.authorized == "A") {
-                  qry = `update hims_f_loan_application set loan_authorized='APR'\
+                  qry = `update hims_f_loan_application set loan_authorized='APR',authorized_date='${moment().format(
+                    "YYYY-MM-DD"
+                  )}',\
+                  authorized_by=${req.userIdentity.algaeh_d_app_user_id}\
                   where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
                     input.hims_f_loan_application_id
                   }`;
@@ -463,7 +477,7 @@ let authorizeLoan = (req, res, next) => {
                 req.records = { invalid_input: true };
                 connection.rollback(() => {
                   releaseDBConnection(db, connection);
-                  next(error);
+                  next();
                 });
               }
             }
@@ -480,10 +494,176 @@ let authorizeLoan = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let addLoanReciept = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        connection.query(
+          "INSERT INTO `hims_f_employee_reciepts` (employee_id,reciepts_type,recievable_amount,\
+          write_off_amount,loan_application_id,remarks,balance_amount,reciepts_mode,cheque_number, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?,  ?,?,?,?)",
+          [
+            input.employee_id,
+            input.reciepts_type,
+            input.recievable_amount,
+            input.write_off_amount,
+            input.loan_application_id,
+            input.remarks,
+            input.balance_amount,
+            input.reciepts_mode,
+            input.cheque_number,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            if (result.insertId > 0) {
+              connection.query(
+                "select hims_f_loan_application_id,pending_loan from\
+                hims_f_loan_application where hims_f_loan_application_id=?",
+                [input.loan_application_id],
+                (error, pendingResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  const cur_pending_loan =
+                    parseFloat(pendingResult[0]["pending_loan"]) -
+                    parseFloat(input.recievable_amount) -
+                    parseFloat(input.write_off_amount);
+
+                  let close_loan = "";
+                  if (cur_pending_loan == parseFloat(0)) {
+                    close_loan = ",loan_closed='Y'";
+                  }
+
+                  if (cur_pending_loan === parseFloat(input.balance_amount)) {
+                    connection.query(
+                      "update hims_f_loan_application set pending_loan=?" +
+                        close_loan +
+                        " where hims_f_loan_application_id=?",
+                      [cur_pending_loan, input.loan_application_id],
+                      (error, updateResult) => {
+                        if (error) {
+                          connection.rollback(() => {
+                            releaseDBConnection(db, connection);
+                            next(error);
+                          });
+                        }
+                        connection.commit(error => {
+                          if (error) {
+                            connection.rollback(() => {
+                              releaseDBConnection(db, connection);
+                              next(error);
+                            });
+                          }
+                          releaseDBConnection(db, connection);
+                          req.records = updateResult;
+                          next();
+                        });
+                      }
+                    );
+                  } else {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      req.records = {
+                        invalid_input: true,
+                        message: "calculation incorrect"
+                      };
+                      next();
+                    });
+                  }
+                }
+              );
+            } else {
+              //roll back
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan:
+let getEmployeeLoanReciept = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    if (req.query.employee_id > 0) {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_f_employee_reciepts_id,ER.employee_id,reciepts_type,\
+        recievable_amount,write_off_amount,loan_application_id,LA.loan_application_number,LA.application_reason,\
+        final_settlement_id,remarks,balance_amount,reciepts_mode,cheque_number,posted,posted_by,posted_date,\
+        L.loan_code,L.loan_description,E.employee_code,E.full_name as employee_name from hims_f_employee_reciepts ER inner join hims_f_loan_application LA on\
+        ER.loan_application_id=LA.hims_f_loan_application_id inner join hims_d_loan L on\
+        LA.loan_id=L.hims_d_loan_id inner join hims_d_employee E on ER.employee_id=E.hims_d_employee_id\
+          where ER.employee_id=? order by hims_f_employee_reciepts_id desc",
+          req.query.employee_id,
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            next();
+          }
+        );
+      });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide employee id"
+      };
+      next();
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   addLoanApplication,
   getLoanApplication,
   getLoanLevels,
   authorizeLoan,
-  adjustLoanApplication
+  adjustLoanApplication,
+  addLoanReciept,
+  getEmployeeLoanReciept
 };

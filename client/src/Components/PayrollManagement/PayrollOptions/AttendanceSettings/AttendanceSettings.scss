@@ -1,0 +1,13 @@
+.TransactionAttendanceScreen {
+  .transactionSettings {
+    margin-bottom: 15px;
+  }
+  .attendanceSettings {
+    margin-bottom: 60px;
+    #LateTimeRules_Cntr {
+      .ReactTable {
+        max-height: 28vh !important;
+      }
+    }
+  }
+}

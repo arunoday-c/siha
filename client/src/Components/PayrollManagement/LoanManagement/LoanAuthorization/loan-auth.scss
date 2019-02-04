@@ -1,13 +1,13 @@
 #LoanAuthGrid_Cntr {
   .ReactTable {
-    max-height: 36vh !important;
+    max-height: 60vh !important;
   }
 }
 #requestedLoanAppGrid_Cntr {
   .ReactTable {
-    max-height: 20vh !important;
+    max-height: 40vh !important;
     .rt-table {
-      overflow: hidden;
+      // overflow: hidden;
     }
   }
 }

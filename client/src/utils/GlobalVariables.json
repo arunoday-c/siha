@@ -6,9 +6,9 @@
   ],
 
   "LEAVE_GENDER": [
-    { "name": "Male", "arabic_name": "الذكر", "value": "Male" },
-    { "name": "Female", "arabic_name": "إناثا", "value": "Female" },
-    { "name": "Both", "arabic_name": "الآخرين", "value": "Both" }
+    { "name": "Male", "arabic_name": "الذكر", "value": "MALE" },
+    { "name": "Female", "arabic_name": "إناثا", "value": "FEMALE" },
+    { "name": "Both", "arabic_name": "الآخرين", "value": "BOTH" }
   ],
 
   "EMP_FORMAT_GENDER": [
@@ -602,6 +602,10 @@
     { "name": "% of Component", "value": "PC" },
     { "name": "Rate per Hour", "value": "RT" }
   ],
+  "OT_TYPE": [
+    { "name": "Monthly", "value": "M" },
+    { "name": "Daily", "value": "D" }
+  ],
   "LOAN_LMT_TYP": [
     { "name": "Loan Limit", "value": "L" },
     { "name": "Basic", "value": "B" },
@@ -779,5 +783,92 @@
     { "name": "Leave", "value": "L" },
     { "name": "Airfare", "value": "A" },
     { "name": "Both", "value": "B" }
+  ],
+  "SALARY_TYPE": [{ "name": "Normal", "value": "N" }],
+  "LEAVE_STATUS": [
+    { "name": "Approved", "value": "APR" },
+    { "name": "Pending", "value": "PEN" },
+    { "name": "Rejected", "value": "REJ" },
+    { "name": "Cancelled", "value": "CAN" }
+  ],
+  "LEAVE_EDIT": [
+    { "name": "Edit", "value": "E" },
+    { "name": "Edit Details", "value": "ED" },
+    { "name": "Edit Encashment", "value": "EE" },
+    { "name": "Edit Rules", "value": "ER" }
+  ],
+  "EXIT_TYPE": [
+    { "name": "Resigned", "value": "RES" },
+    { "name": "Retirement", "value": "RET" },
+    { "name": "Terminate", "value": "TER" }
+  ],
+  "AUTH_LEVEL3": [
+    { "name": "1 Level", "value": "1" },
+    { "name": "2 Level", "value": "2" },
+    { "name": "3 Level", "value": "3" }
+  ],
+  "AUTH_LEVEL5": [
+    { "name": "1 Level", "value": "1" },
+    { "name": "2 Level", "value": "2" },
+    { "name": "3 Level", "value": "3" },
+    { "name": "4 Level", "value": "4" },
+    { "name": "5 Level", "value": "5" }
+  ],
+  "AUTH_LEVEL2": [
+    { "name": "1 Level", "value": "1" },
+    { "name": "2 Level", "value": "2" }
+  ],
+  "ADV_DEDUCTION": [
+    { "name": "Current Month", "value": "CM" },
+    { "name": "Next Month", "value": "NM" }
+  ],
+  "EOS_CALC": [
+    { "name": "Annualized", "value": "AN" },
+    { "name": "Fixed", "value": "FI" }
+  ],
+  "ATTENDANCE_TYPE": [
+    { "name": "Monthly", "value": "M" },
+    { "name": "Daily", "value": "D" }
+  ],
+  "OT_PAYMENTS": [
+    { "name": "None", "value": "N" },
+    { "name": "Comp Off", "value": "C" },
+    { "name": "Encash", "value": "E" },
+    { "name": "Both", "value": "B" }
+  ],
+  "OT_CALC": [
+    { "name": "None", "value": "N" },
+    { "name": "Daily", "value": "D" },
+    { "name": "Hourly", "value": "H" }
+  ],
+  "OT_HOUR_CALC": [
+    { "name": "Total Hours (INTIME- OUTTIME)", "value": "T" },
+    { "name": "Out Time Hours", "value": "O" }
+  ],
+  "BIOMETRIC_DBS": [
+    { "name": "MSACCESS", "value": "MSACCESS" },
+    { "name": "ORACLE", "value": "ORACLE" },
+    { "name": "MYSQL", "value": "MYSQL" },
+    { "name": "SQL", "value": "SQL" }
+  ],
+  "SWIPE_CARD_TYPE": [
+    { "name": "Numeric", "value": "N" },
+    { "name": "String", "value": "S" }
+  ],
+  "LEAVE_CTGRY": [
+    { "name": "Other", "value": "O" },
+    { "name": "Annual", "value": "A" },
+    { "name": "Maternity", "value": "M" }
+  ],
+  "LEAVE_CATEGORY": [
+    { "name": "Others", "value": "O" },
+    { "name": "Annual", "value": "A" },
+    { "name": "Maternity", "value": "M" }
+  ],
+  "AUTH_TYPE": [
+    { "name": "Leave", "value": "LE" },
+    { "name": "Loan", "value": "LO" },
+    { "name": "Salary", "value": "S" },
+    { "name": "Performance", "value": "P" }
   ]
 }

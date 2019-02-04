@@ -12,7 +12,7 @@
       padding: 15px 15px 10px 15px;
       .footer {
         padding: 0;
-        font-size: 0.8rem;
+
         line-height: 30px;
         .stats {
           display: inline-block;
@@ -33,19 +33,17 @@
       }
     }
     .numbers {
-      font-size: 1.5rem;
       text-align: right;
       font-weight: 600;
       p {
-        font-size: 1rem;
         font-weight: normal;
         margin: 0;
       }
     }
     .icon-big {
       i {
-        font-size: 3rem;
         min-height: 3.5rem;
+        font-size: 2.5em;
       }
       .fa-hand-holding-usd {
         &:before {
@@ -73,7 +71,7 @@
       min-height: 35px;
       border-bottom: 1px dashed #eee;
       color: #666;
-      font-size: 1rem;
+
       font-weight: normal;
       line-height: 26px;
       margin: 10px 0;

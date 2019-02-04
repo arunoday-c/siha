@@ -9,9 +9,9 @@ import { setCookie } from "../../utils/algaehApiCall";
 class Desk extends Component {
   constructor(props) {
     super(props);
-    setCookie("ScreenName", props.type);
+    setCookie("ScreenName", props.componet);
     this.state = {
-      EHR_Screen: props.type
+      EHR_Screen: props.componet
     };
 
     this.routeComponents = this.routeComponents.bind(this);

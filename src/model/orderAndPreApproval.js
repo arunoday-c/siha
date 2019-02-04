@@ -12,6 +12,8 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 
 import { debugFunction, debugLog } from "../utils/logging";
+import mysql from "mysql";
+import moment from "moment";
 
 //created by irfan: check pre-aproval status and get PreAproval List
 let getPreAprovalList = (req, res, next) => {
@@ -567,15 +569,16 @@ let updateOrderedServicesBilled = (req, res, next) => {
     let qry = "";
 
     for (let i = 0; i < OrderServices.length; i++) {
-      qry +=
-        " UPDATE `hims_f_ordered_services` SET billed='" +
-        OrderServices[i].billed +
-        "'" +
-        ",updated_by='" +
-        OrderServices[i].updated_by +
-        "' WHERE hims_f_ordered_services_id='" +
-        OrderServices[i].hims_f_ordered_services_id +
-        "';";
+      qry += mysql.format(
+        "UPDATE `hims_f_ordered_services` SET billed=?,\
+      updated_date=?,updated_by=? where hims_f_ordered_services_id=?;",
+        [
+          OrderServices[i].billed,
+          moment().format("YYYY-MM-DD HH:mm"),
+          OrderServices[i].updated_by,
+          OrderServices[i].hims_f_ordered_services_id
+        ]
+      );
     }
     debugLog("Query", qry);
     if (qry != "") {

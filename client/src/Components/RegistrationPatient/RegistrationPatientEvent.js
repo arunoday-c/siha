@@ -8,6 +8,7 @@ import {
 } from "../../utils/algaehApiCall.js";
 import extend from "extend";
 import moment from "moment";
+import { setGlobal } from "../../utils/GlobalFunctions";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -98,6 +99,10 @@ const ClearData = ($this, e) => {
   IOputs.age = 0;
   IOputs.AGEMM = 0;
   IOputs.AGEDD = 0;
+
+  // let prevLang = getCookie("Language");
+
+  IOputs.selectedLang = getCookie("Language");
 
   let _screenName = getCookie("ScreenName").replace("/", "");
   algaehApiCall({

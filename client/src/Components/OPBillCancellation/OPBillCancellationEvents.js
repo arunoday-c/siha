@@ -201,6 +201,7 @@ const getCtrlCode = ($this, billcode) => {
         }
 
         data.Billexists = true;
+        data.saveEnable = true;
 
         if (data.receiptdetails.length !== 0) {
           for (let i = 0; i < data.receiptdetails.length; i++) {

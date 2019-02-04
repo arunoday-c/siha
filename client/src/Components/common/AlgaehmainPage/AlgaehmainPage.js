@@ -6,7 +6,7 @@ import {
   setCookie,
   getCookie
 } from "../../../utils/algaehApiCall";
-import directRoutes from "../../../Dynamicroutes";
+import DirectRoutes from "../../../Dynamicroutes";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 class PersistentDrawer extends React.Component {
@@ -235,7 +235,7 @@ class PersistentDrawer extends React.Component {
     const _menuselected = e.currentTarget.getAttribute("menuselected");
     const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
     setCookie("ScreenName", name, 30);
-    AlgaehLoader({ show: true });
+    // AlgaehLoader({ show: true });
 
     this.setState({
       sideopen: false,
@@ -355,6 +355,7 @@ class PersistentDrawer extends React.Component {
 
   render() {
     const authToken = getCookie("authToken");
+
     // const keyResources = getCookie("keyResources");
     if (authToken === "" || authToken === undefined) {
       return (
@@ -470,7 +471,10 @@ class PersistentDrawer extends React.Component {
           </div>
         ) : null}
         <main className="mainPageArea container-fluid" id="hisapp">
-          {directRoutes(this.state.renderComponent, this.state.selectedLang)}
+          <DirectRoutes
+            componet={this.state.renderComponent}
+            selectedLang={this.state.selectedLang}
+          />
         </main>
       </div>
     );

@@ -212,6 +212,7 @@ class TestCategory extends Component {
                       : this.props.testcategory
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteTestCategory.bind(this, this),

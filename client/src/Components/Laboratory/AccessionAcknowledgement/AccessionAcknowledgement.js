@@ -51,7 +51,8 @@ class AccessionAcknowledgement extends Component {
       isOpen: false,
       reject_popup: false,
       selectedRow: {},
-      remarks: ""
+      remarks: "",
+      proiorty: null
     };
   }
 
@@ -274,7 +275,17 @@ class AccessionAcknowledgement extends Component {
                       valueField: "value",
                       data: FORMAT_PRIORITY
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          proiorty: null
+                        },
+                        () => {
+                          getSampleCollectionDetails(this, this);
+                        }
+                      );
+                    }
                   }}
                 />
                 <AlagehAutoComplete
@@ -292,7 +303,17 @@ class AccessionAcknowledgement extends Component {
                       valueField: "value",
                       data: FORMAT_TEST_STATUS
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          status: null
+                        },
+                        () => {
+                          getSampleCollectionDetails(this, this);
+                        }
+                      );
+                    }
                   }}
                 />
 
@@ -339,7 +360,6 @@ class AccessionAcknowledgement extends Component {
                         fieldName: "action",
                         label: <AlgaehLabel label={{ fieldName: "action" }} />,
                         displayTemplate: row => {
-                          
                           return (
                             <span>
                               <i
@@ -468,7 +488,7 @@ class AccessionAcknowledgement extends Component {
                         displayTemplate: row => {
                           return (
                             <span>
-                              {row.test_type === "S" ? "Stat" : "Rotinue"}
+                              {row.test_type === "S" ? "Stat" : "Routine"}
                             </span>
                           );
                         },

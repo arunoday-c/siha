@@ -1,97 +1,295 @@
-.weekdaysDiv {
-  i {
-    cursor: pointer;
-    &:hover {
-      color: #34b8bc;
+.hrTimeSheet {
+  .noTimeSheetData {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.1);
+    h1 {
+      margin-top: 30px;
+    }
+    i {
+      font-size: 16em;
+      margin: 4vh 0 6vh;
+      color: rgba(0, 0, 0, 0.04);
     }
   }
-  span {
-    font-size: 0.8rem;
-    margin: 0 10px;
-  }
-}
-.WeeklyTimeProgress {
-  .dailyTimeProgress {
-    border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
-    padding-top: 10px;
-    padding-bottom: 10px;
-    .progress {
-      height: 0.5rem;
-      margin-top: 0.6rem;
 
-      .tooltipDetails {
-        span {
-          background: rgba(0, 0, 0, 0.7);
-          position: absolute;
-          z-index: 9;
-          top: -22px;
-          padding: 2px 5px;
-          border-radius: 5px;
-          display: none;
-          b {
-            display: inline-block;
-            text-align: center;
-            border-left: 1px solid rgba(255, 255, 255, 0.5);
-            padding-left: 5px;
-            margin-left: 5px;
-          }
-          .lateTime {
-            color: #ff5c40;
-          }
-          .OverTime {
-            color: #17d217;
-          }
-          &::after {
-            content: " ";
-            position: absolute;
-            top: 100%; /* At the bottom of the tooltip */
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: rgba(0, 0, 0, 0.7) transparent transparent transparent;
-          }
-        }
-        .checkIn {
-          left: -45px;
-        }
-        .totalHr {
-          left: 40vw;
-        }
-        .checkOut {
-          right: -45px;
-        }
-      }
+  margin-bottom: 80px;
+  .weekdaysDiv {
+    i {
+      cursor: pointer;
       &:hover {
-        span {
-          display: block;
+        color: #34b8bc;
+      }
+    }
+    span {
+      margin: 0 10px;
+    }
+  }
+  .WeeklyTimeProgress {
+    max-height: 53vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-bottom: 20px;
+
+    .dailyTimeProgress {
+      border-bottom: 1px dashed rgba(0, 0, 0, 0.2);
+      padding-top: 10px;
+      padding-bottom: 10px;
+      .dayTypeCntr {
+        height: 0.3rem;
+        padding-right: 0;
+        .progress {
+          height: 0.5rem;
+          margin-top: 0.6rem;
+          .progress-bar {
+            position: relative;
+            background-color: #e8e8e8;
+          }
+          .bg-default {
+            background-color: #e7ecef !important;
+          }
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+        .tooltipDetails {
+          span {
+            color: #fff;
+            font-size: 0.8em;
+            background: rgba(0, 0, 0, 0.7);
+            position: absolute;
+            z-index: 9;
+            top: 22px;
+            padding: 2px 5px;
+            border-radius: 5px;
+            display: none;
+            i {
+              text-align: center;
+              text-transform: uppercase;
+              font-style: normal;
+              display: inline-block;
+              width: 100%;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            }
+            b {
+              display: inline-block;
+              text-align: center;
+              margin-left: 2px;
+            }
+            .lateTime {
+              color: #ff5c40;
+            }
+            .OverTime {
+              color: #17d217;
+            }
+            &::after {
+              content: " ";
+              position: absolute;
+              bottom: 100%; /* At the bottom of the tooltip */
+              left: 50%;
+              margin-left: -5px;
+              border-width: 5px;
+              border-style: solid;
+              border-color: transparent transparent rgba(0, 0, 0, 0.7)
+                transparent;
+            }
+          }
+          .checkIn {
+            left: 15px;
+          }
+          .totalHr {
+            left: 42.5%;
+          }
+          .checkOut {
+            right: 0;
+          }
+        }
+        &:hover {
+          span {
+            display: block;
+          }
+        }
+      }
+
+      span {
+        width: auto;
+        display: inline-block;
+        padding: 2px 10px;
+        margin: auto;
+        position: absolute;
+        color: #202429;
+        border-radius: 5px;
+        z-index: 9;
+        font-size: 0.9em;
+        &.absentCntr {
+          background: rgba(255, 0, 0, 0.2);
+          border: 1px solid rgba(255, 0, 0, 0.5);
+          left: 35vw;
+        }
+        &.paidLeaveCntr {
+          background: rgba(0, 186, 190, 0.2);
+          border: 1px solid rgba(0, 186, 190, 0.5);
+          left: 34.8vw;
+        }
+        &.unPaidLeaveCntr {
+          background: rgba(255, 0, 0, 0.2);
+          border: 1px solid rgba(255, 0, 0, 0.5);
+          left: 34.3vw;
+        }
+        &.holidayCntr {
+          background: rgba(0, 17, 255, 0.2);
+          border: 1px solid rgba(0, 17, 255, 0.5);
+          left: 35.3vw;
+        }
+        &.weekOffCntr {
+          background: rgba(0, 0, 0, 0.2);
+          border: 1px solid rgba(0, 0, 0, 0.5);
+          left: 34.9vw;
         }
       }
     }
-    .week-off {
-      height: 0.3rem;
-      .progress-bar {
-        background-color: #ffeba0 !important;
-        span {
-          background: #ffffff;
-          width: auto;
-          display: inline-block;
-          padding: 2px 10px;
-          font-size: 0.7rem;
-          margin: auto;
-          position: absolute;
-          left: 39.5vw;
-          border: 1px solid #c3c3c3;
-          color: #202429;
-          border-radius: 5px;
-        }
-      }
-    }
-    .bg-default {
-      background-color: #e7ecef !important;
-    }
-    &:last-child {
-      border-bottom: none;
-    }
+  }
+
+  .ruler {
+    position: relative;
+    width: 100%;
+    margin: 5px 0;
+    height: 14px;
+  }
+  .ruler .cm,
+  .ruler .mm {
+    position: absolute;
+    border-left: 1px solid #555;
+    height: 14px;
+    width: 10%;
+  }
+  .ruler .cm:after {
+    position: absolute;
+    left: -4px;
+    bottom: -15px;
+    font: 11px/1 sans-serif;
+  }
+  .ruler .mm {
+    height: 5px;
+  }
+  .ruler .mm:nth-of-type(5) {
+    height: 10px;
+  }
+  .ruler .cm:nth-of-type(1) {
+    left: 0%;
+  }
+  .ruler .cm:nth-of-type(1):after {
+    content: "00:00";
+  }
+  .ruler .cm:nth-of-type(2) {
+    left: 8.33333333333%;
+  }
+  .ruler .cm:nth-of-type(2):after {
+    content: "02:00";
+  }
+  .ruler .cm:nth-of-type(3) {
+    left: 16.6666666667%;
+  }
+  .ruler .cm:nth-of-type(3):after {
+    content: "04:00";
+  }
+  .ruler .cm:nth-of-type(4) {
+    left: 25%;
+  }
+  .ruler .cm:nth-of-type(4):after {
+    content: "06:00";
+  }
+  .ruler .cm:nth-of-type(5) {
+    left: 33.3333333333%;
+  }
+  .ruler .cm:nth-of-type(5):after {
+    content: "08:00";
+  }
+  .ruler .cm:nth-of-type(6) {
+    left: 41.6666666667%;
+  }
+  .ruler .cm:nth-of-type(6):after {
+    content: "10:00";
+  }
+  .ruler .cm:nth-of-type(7) {
+    left: 50%;
+  }
+  .ruler .cm:nth-of-type(7):after {
+    content: "12:00";
+  }
+  .ruler .cm:nth-of-type(8) {
+    left: 58.3333333333%;
+  }
+  .ruler .cm:nth-of-type(8):after {
+    content: "14:00";
+  }
+  .ruler .cm:nth-of-type(9) {
+    left: 66.6666666666%;
+  }
+  .ruler .cm:nth-of-type(9):after {
+    content: "16:00";
+  }
+  .ruler .cm:nth-of-type(10) {
+    left: 75%;
+  }
+  .ruler .cm:nth-of-type(10):after {
+    content: "18:00";
+  }
+  .ruler .cm:nth-of-type(11) {
+    left: 83.3333333333%;
+  }
+  .ruler .cm:nth-of-type(11):after {
+    content: "20:00";
+  }
+  .ruler .cm:nth-of-type(12) {
+    left: 91.6666666666%;
+  }
+  .ruler .cm:nth-of-type(12):after {
+    content: "22:00";
+  }
+  .ruler .cm:nth-of-type(13) {
+    left: 100%;
+  }
+  .ruler .cm:nth-of-type(13):after {
+    content: "24:00";
+  }
+  .ruler .mm:nth-of-type(1) {
+    left: 8.33333333333%;
+  }
+  .ruler .mm:nth-of-type(2) {
+    left: 16.6666666667%;
+  }
+  .ruler .mm:nth-of-type(3) {
+    left: 25%;
+  }
+  .ruler .mm:nth-of-type(4) {
+    left: 33.3333333333%;
+  }
+  .ruler .mm:nth-of-type(5) {
+    left: 41.6666666667%;
+  }
+  .ruler .mm:nth-of-type(6) {
+    left: 50%;
+  }
+  .ruler .mm:nth-of-type(7) {
+    left: 58.3333333333%;
+  }
+  .ruler .mm:nth-of-type(8) {
+    left: 66.6666666666%;
+  }
+  .ruler .mm:nth-of-type(9) {
+    left: 75%;
+  }
+  .ruler .mm:nth-of-type(10) {
+    left: 83.3333333333%;
+  }
+  .ruler .mm:nth-of-type(11) {
+    left: 91.6666666666%;
+  }
+  .ruler .mm:nth-of-type(12) {
+    left: 100%;
+  }
+  #mentionme {
+    text-align: center;
+    margin-top: 10%;
   }
 }

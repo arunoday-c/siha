@@ -1,3 +1,4 @@
+@import "../../../styles/algaehCssVariables.scss";
 .selfServiceModule {
   .EmployeeProfile {
     .EmployeeInfo-Top {
@@ -21,7 +22,6 @@
         button {
           height: 60px;
           border: 1px solid #e1e1e1;
-          font-size: 0.7rem;
         }
         i {
           display: block;
@@ -56,25 +56,23 @@
         padding-right: 10px;
         min-height: 98px;
         h6 {
-          font-size: 1.2rem;
           margin-bottom: 2px;
           color: #000;
           line-height: 1.6rem;
           min-height: 50px;
+          font-size: 1.3em;
         }
         p {
-          font-size: 0.8rem;
           margin: 0;
           padding: 0;
           b {
-            color: #34b8bc;
-            font-weight: 300;
-            font-size: 1rem;
+            color: $primary-color;
+            font-size: 0.9em;
+            font-weight: 700;
           }
         }
       }
       .EmployeeDemographic {
-        font-size: 0.8rem;
         line-height: 1.3rem;
         border-right: 1px solid #e1e1e1;
         padding-left: 10px;
@@ -82,18 +80,19 @@
         min-height: 98px;
         span {
           display: block;
-          line-height: 1.5rem;
+          line-height: 1.7rem;
+          font-size: 0.9em;
+          font-weight: 700;
           i {
             text-align: center;
             width: 20px;
           }
           b {
-            color: #34b8bc;
+            color: $primary-color;
           }
         }
       }
       .EmployeeHospitalDetail {
-        font-size: 0.8rem;
         line-height: 1.3rem;
         border-right: 1px solid #e1e1e1;
         padding-left: 10px;
@@ -102,12 +101,11 @@
         span {
           display: block;
           b {
-            color: #34b8bc;
+            color: $primary-color;
           }
         }
       }
       .EmployeeVital {
-        font-size: 0.8rem;
         max-width: 33%;
         line-height: 1.3rem;
         padding-left: 10px;
@@ -118,7 +116,7 @@
           margin-right: 8px;
 
           b {
-            color: #34b8bc;
+            color: $primary-color;
           }
         }
       }
@@ -129,7 +127,7 @@
         button {
           height: 60px;
           border: 1px solid #e1e1e1;
-          font-size: 0.7rem;
+
           margin-left: 0;
         }
         i {
@@ -141,11 +139,11 @@
   }
   .EmployeeTopNav {
     background: white;
-    height: 35px;
+    height: 30px;
     padding: 0;
     width: 100%;
     color: #797979;
-    font-size: 1rem;
+
     text-transform: uppercase;
     position: fixed;
     top: 163px;
@@ -158,7 +156,7 @@
           &:after {
             display: block;
             content: "";
-            border-bottom: solid 3px #00a9ad;
+            border-bottom: 3px solid $primary-color;
             transform: scaleX(0);
             transition: transform 150ms ease-in-out;
           }
@@ -166,16 +164,15 @@
             transform: scaleX(1);
           }
           span {
-            font-size: 0.8rem;
             text-transform: uppercase;
             padding: 9px 15px 8px;
             color: #858585;
             cursor: pointer;
           }
           span.active {
-            border-bottom: solid 3px #00a9ad;
+            border-bottom: 3px solid $primary-color;
             color: #fff;
-            background: #34b8bc;
+            background: $primary-color;
             &:hover {
               cursor: default;
               color: #fff;
@@ -189,7 +186,7 @@
         }
       }
       .Employee-quick-info {
-        color: #34b8bc;
+        color: $primary-color;
         margin: 0;
         padding: 0;
         list-style: none;
@@ -227,7 +224,6 @@
               border-bottom: 1px solid #3f9c90;
               margin-bottom: 10px;
               padding-bottom: 5px;
-              font-size: 0.8rem;
             }
             .listofA-D-D {
               display: inline-block;
@@ -240,7 +236,7 @@
               margin-bottom: 3px;
               border-radius: 20px;
               background: #3f9c91;
-              font-size: 0.7rem;
+
               white-space: normal;
             }
             p {

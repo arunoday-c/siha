@@ -1,139 +1,255 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import {
-  AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import {
+  texthandle,
+  LoadSalaryPayment,
+  employeeSearch,
+  ClearData,
+  PaySalary,
+  selectToPay
+} from "./SalaryPaymentsEvents.js";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import moment from "moment";
+import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
 
-export default class SalaryPayment extends Component {
+class SalaryPayment extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedLang: this.props.SelectLanguage,
-      fromMonth: new Date()
+
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
+      sub_department_id: null,
+      salary_type: null,
+      employee_name: null,
+      employee_id: null,
+      salary_payment: [],
+      paysalaryBtn: true
     };
   }
-  fromMonthHandler(date, name) {
-    this.setState({ fromMonth: date });
+
+  componentDidMount() {
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
+
+    if (
+      this.props.subdepartment === undefined ||
+      this.props.subdepartment.length === 0
+    ) {
+      this.props.getSubDepartment({
+        uri: "/department/get/subdepartment",
+        data: {
+          sub_department_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "SUB_DEPT_GET_DATA",
+          mappingName: "subdepartment"
+        }
+      });
+    }
+
+    if (
+      this.props.all_employees === undefined ||
+      this.props.all_employees.length === 0
+    ) {
+      this.props.getEmployees({
+        uri: "/employee/get",
+        method: "GET",
+
+        redux: {
+          type: "EMPLY_GET_DATA",
+          mappingName: "all_employees"
+        }
+      });
+    }
   }
 
   render() {
+    let allYears = getYears();
     return (
       <React.Fragment>
         <div className="hptl-SalaryPayment-form">
-          <div className="row  inner-top-search">
-            <AlgaehDateHandler
-              div={{ className: "col margin-bottom-15" }}
+          <div className="row  inner-top-search" data-validate="loadSalary">
+            <AlagehAutoComplete
+              div={{ className: "col" }}
               label={{
-                forceLabel: "Select Month & Year",
+                forceLabel: "Select a Month.",
+                isImp: true
+              }}
+              selector={{
+                name: "month",
+                className: "select-fld",
+                value: this.state.month,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.MONTHS
+                },
+                onChange: texthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    month: null
+                  });
+                },
+                others: {
+                  disabled: this.state.lockEarnings
+                }
+              }}
+            />
+
+            <AlagehAutoComplete
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Select a Year.",
+                isImp: true
+              }}
+              selector={{
+                name: "year",
+                className: "select-fld",
+                value: this.state.year,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: allYears
+                },
+                onChange: texthandle.bind(this, this),
+
+                onClear: () => {
+                  this.setState({
+                    year: null
+                  });
+                }
+              }}
+            />
+
+            {/* <AlagehFormGroup
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Year",
                 isImp: true
               }}
               textBox={{
                 className: "txt-fld",
-                name: "date_of_joining",
+                name: "year",
+                value: this.state.year,
+                events: {
+                  onChange: texthandle.bind(this, this)
+                },
                 others: {
-                  tabIndex: "6",
-                  type: "month"
+                  type: "number",
+                  min: moment().year()
                 }
               }}
-              events={{
-                onchange: this.fromMonthHandler.bind(this)
-              }}
-              maxDate={new Date()}
-              value={this.state.fromMonth}
-            />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Branch.",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
-                }
-              }}
-            />
+            /> */}
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Select a Dept..",
-                isImp: true
+                isImp: false
               }}
               selector={{
-                name: "",
+                name: "sub_department_id",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
+                value: this.state.sub_department_id,
+                dataSource: {
+                  textField: "sub_department_name",
+                  valueField: "hims_d_sub_department_id",
+                  data: this.props.subdepartment
+                },
+                onChange: texthandle.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    sub_department_id: null
+                  });
                 }
               }}
             />
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Employee.",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
-                }
-              }}
-            />
+
+            <div className="col" style={{ marginTop: 10 }}>
+              <div
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0
+                }}
+              >
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                  <h6>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div
+                  className="col-lg-3"
+                  style={{ borderLeft: "1px solid #ced4d8" }}
+                >
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer"
+                    }}
+                    onClick={employeeSearch.bind(this, this)}
+                  />
+                </div>
+              </div>
+            </div>
+
             <AlagehAutoComplete
               div={{ className: "col" }}
               label={{
                 forceLabel: "Salary Type.",
-                isImp: true
+                isImp: false
               }}
               selector={{
-                name: "",
+                name: "salary_type",
                 className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
+                value: this.state.salary_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.SALARY_TYPE
+                },
+                onChange: texthandle.bind(this, this),
                 others: {
                   tabIndex: "2"
                 }
               }}
             />
-            {/* <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Payment Type",
-                isImp: true
-              }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                value: "",
-                dataSource: {},
-                onChange: null,
-                others: {
-                  tabIndex: "2"
-                }
-              }}
-            /> */}
+
             <div className="col margin-bottom-15">
               <button
                 type="button"
                 className="btn btn-primary"
                 style={{ marginTop: 21 }}
+                onClick={LoadSalaryPayment.bind(this, this)}
               >
                 Load
               </button>
@@ -166,69 +282,192 @@ export default class SalaryPayment extends Component {
                             columns={[
                               {
                                 fieldName: "SalaryPayment_checkBox",
-                                label: "",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Select"
+                                    }}
+                                  />
+                                ),
                                 //disabled: true
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      <input type="checkbox" />
+                                      <input
+                                        type="checkbox"
+                                        value="Front Desk"
+                                        onChange={selectToPay.bind(
+                                          this,
+                                          this,
+                                          row
+                                        )}
+                                        checked={
+                                          row.select_to_pay === "Y"
+                                            ? true
+                                            : false
+                                        }
+                                        disabled={
+                                          row.salary_paid === "Y" ? true : false
+                                        }
+                                      />
                                     </span>
                                   );
                                 },
-                                options: {
-                                  maxWidth: 30
+                                others: {
+                                  maxWidth: 50,
+                                  filterable: false
                                 }
                               },
                               {
-                                fieldName: "",
-                                label: "Salary No."
-                                //disabled: true
+                                fieldName: "salary_paid",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary Paid"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return row.salary_paid === "N" ? (
+                                    <span className="badge badge-warning">
+                                      No
+                                    </span>
+                                  ) : (
+                                    <span className="badge badge-success">
+                                      Yes
+                                    </span>
+                                  );
+                                }
                               },
                               {
-                                fieldName: "",
-                                label: "Employee Name",
+                                fieldName: "salary_number",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Salary Number"
+                                    }}
+                                  />
+                                )
+                              },
+                              {
+                                fieldName: "full_name",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Employee Name"
+                                    }}
+                                  />
+                                ),
                                 others: {
                                   minWidth: 150,
                                   maxWidth: 250
                                 }
                               },
                               {
-                                fieldName: "",
-                                label: "Present Days"
+                                fieldName: "present_days",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Present Days"
+                                    }}
+                                  />
+                                )
+                                //disabled: true
+                              },
+
+                              {
+                                fieldName: "advance_due",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Advance"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.advance_due)}
+                                    </span>
+                                  );
+                                }
                                 //disabled: true
                               },
                               {
-                                fieldName: "",
-                                label: "Basic"
-                                //disabled: true
+                                fieldName: "loan_due_amount",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Loan Due Amount"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.loan_due_amount)}
+                                    </span>
+                                  );
+                                }
                               },
                               {
-                                fieldName: "",
-                                label: "Advance"
-                                //disabled: true
+                                fieldName: "loan_payable_amount",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Loan Payable Amount"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(
+                                        row.loan_payable_amount
+                                      )}
+                                    </span>
+                                  );
+                                }
                               },
                               {
-                                fieldName: "",
-                                label: "Loan Amount"
-                                //disabled: true
-                              },
-                              {
-                                fieldName: "",
-                                label: "Total Amount"
+                                fieldName: "net_salary",
+
+                                label: (
+                                  <AlgaehLabel
+                                    label={{
+                                      forceLabel: "Total Amount"
+                                    }}
+                                  />
+                                ),
+                                displayTemplate: row => {
+                                  return (
+                                    <span>
+                                      {" "}
+                                      {getAmountFormart(row.net_salary)}
+                                    </span>
+                                  );
+                                }
                                 //disabled: true
                               }
                             ]}
                             keyId="algaeh_d_module_id"
                             dataSource={{
-                              data: []
+                              data: this.state.salary_payment
                             }}
+                            filter={true}
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 10 }}
-                            events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
-                            }}
                           />
                         </div>
                       </div>
@@ -244,21 +483,21 @@ export default class SalaryPayment extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  //   onClick={SaveDoctorCommission.bind(this, this)}
-                  //disabled={this.state.saveEnable}
+                  onClick={PaySalary.bind(this, this)}
+                  disabled={this.state.paysalaryBtn}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Process", returnText: true }}
+                    label={{ forceLabel: "Pay Salary", returnText: true }}
                   />
                 </button>
 
                 <button
                   type="button"
                   className="btn btn-default"
-                  //onClick={ClearData.bind(this, this)}
+                  onClick={ClearData.bind(this, this)}
                 >
                   <AlgaehLabel
-                    label={{ forceLabel: "Print", returnText: true }}
+                    label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
 
@@ -268,12 +507,7 @@ export default class SalaryPayment extends Component {
                   //   onClick={PostDoctorCommission.bind(this, this)}
                   // disabled={this.state.postEnable}
                 >
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Generate Payslip PDF"
-                      //   returnText: true
-                    }}
-                  />
+                  Generate Payslip PDF
                 </button>
               </div>
             </div>
@@ -283,3 +517,29 @@ export default class SalaryPayment extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    subdepartment: state.subdepartment,
+    organizations: state.organizations,
+    all_employees: state.all_employees
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getSubDepartment: AlgaehActions,
+      getOrganizations: AlgaehActions,
+      getEmployees: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SalaryPayment)
+);

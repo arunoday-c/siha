@@ -114,7 +114,9 @@ export default class HolidayMaster extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/holiday/deleteHoliday",
+          // uri: "/holiday/deleteHoliday",
+          uri: "/payrollsettings/deleteHoliday",
+          module: "hrManagement",
           method: "DELETE",
           data: {
             hims_d_holiday_id: data.hims_d_holiday_id
@@ -146,7 +148,8 @@ export default class HolidayMaster extends Component {
 
   getHolidayMaster(id) {
     algaehApiCall({
-      uri: "/holiday/getAllHolidays",
+      uri: "/payrollsettings/getAllHolidays",
+      module: "hrManagement",
       method: "GET",
       data: {
         hospital_id: id
@@ -193,7 +196,8 @@ export default class HolidayMaster extends Component {
       querySelector: "data-validate='holDiv'",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/holiday/addHoliday",
+          uri: "/payrollsettings/addHoliday",
+          module: "hrManagement",
           method: "POST",
           data: {
             hospital_id: this.state.hospital_id,
@@ -203,6 +207,7 @@ export default class HolidayMaster extends Component {
             holiday_description: this.state.holiday_description
           },
           onSuccess: res => {
+            debugger;
             if (res.data.success) {
               this.clearHolidayState();
               swalMessage({
@@ -210,6 +215,11 @@ export default class HolidayMaster extends Component {
                 type: "success"
               });
               this.getHolidayMaster(this.state.hospital_id);
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.result.message,
+                type: "warning"
+              });
             }
           },
           onFailure: err => {}
@@ -224,7 +234,9 @@ export default class HolidayMaster extends Component {
       querySelector: "data-validate='weekoff-div'",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/holiday/addWeekOffs",
+          // uri: "/holiday/addWeekOffs",
+          uri: "/payrollsettings/addWeekOffs",
+          module: "hrManagement",
           method: "POST",
           data: {
             year: this.state.year,
@@ -247,8 +259,8 @@ export default class HolidayMaster extends Component {
               this.getHolidayMaster(this.state.hospital_id);
             } else if (!res.data.success) {
               swalMessage({
-                title: res.data.records.message,
-                type: "error"
+                title: res.data.result.message,
+                type: "warning"
               });
             }
           },
@@ -518,6 +530,7 @@ export default class HolidayMaster extends Component {
               <div className="portlet-body">
                 <div data-validate="HolidayListGrid" id="HolidayListGrid_Cntr">
                   <AlgaehDataGrid
+                    id="HolidayListGrid"
                     data-validate="HolidayListGrid"
                     columns={[
                       {
@@ -544,7 +557,14 @@ export default class HolidayMaster extends Component {
                         fieldName: "holiday_date",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Holiday Date" }} />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.holiday_date).format("DD-MM-YYYY")}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "holiday_description",
@@ -613,6 +633,7 @@ export default class HolidayMaster extends Component {
                       data: this.state.holidays
                     }}
                     isEditable={false}
+                    filter={true}
                     filterable
                     paging={{ page: 0, rowsPerPage: 10 }}
                   />

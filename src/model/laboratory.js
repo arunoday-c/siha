@@ -65,7 +65,7 @@ let getLabOrderedServices = (req, res, next) => {
         next(error);
       }
       db.query(
-        "select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
+        " select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
         cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
         LS.sample_id,LS.collected,LS.collected_by, LS.remarks,LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
         from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
@@ -907,16 +907,26 @@ let updateLabOrderedBilled = (req, res, next) => {
     let qry = "";
 
     for (let i = 0; i < OrderServices.length; i++) {
-      qry +=
-        " UPDATE `hims_f_lab_order` SET billed='" +
-        OrderServices[i].billed +
-        "',updated_date='" +
-        new Date().toLocaleString() +
-        "',updated_by='" +
-        OrderServices[i].updated_by +
-        "' WHERE ordered_services_id='" +
-        OrderServices[i].ordered_services_id +
-        "';";
+      qry += mysql.format(
+        "UPDATE `hims_f_lab_order` SET billed=?,\
+      updated_date=?,updated_by=? where ordered_services_id=?;",
+        [
+          OrderServices[i].billed,
+          moment().format("YYYY-MM-DD HH:mm"),
+          OrderServices[i].updated_by,
+          OrderServices[i].ordered_services_id
+        ]
+      );
+      // qry +=
+      //   " UPDATE `hims_f_lab_order` SET billed='" +
+      //   OrderServices[i].billed +
+      //   "',updated_date='" +
+      //   new Date().toLocaleString() +
+      //   "',updated_by='" +
+      //   OrderServices[i].updated_by +
+      //   "' WHERE ordered_services_id='" +
+      //   OrderServices[i].ordered_services_id +
+      //   "';";
     }
     debugLog("Query", qry);
     if (qry != "") {

@@ -12,7 +12,6 @@
       padding: 15px 15px 10px 15px; }
       .dashboard .card .content .footer {
         padding: 0;
-        font-size: 0.8rem;
         line-height: 30px; }
         .dashboard .card .content .footer .stats {
           display: inline-block;
@@ -28,16 +27,14 @@
             cursor: pointer;
             float: right; }
     .dashboard .card .numbers {
-      font-size: 1.5rem;
       text-align: right;
       font-weight: 600; }
       .dashboard .card .numbers p {
-        font-size: 1rem;
         font-weight: normal;
         margin: 0; }
     .dashboard .card .icon-big i {
-      font-size: 3rem;
-      min-height: 3.5rem; }
+      min-height: 3.5rem;
+      font-size: 2.5em; }
     .dashboard .card .icon-big .fa-hand-holding-usd:before {
       color: #c655cc; }
     .dashboard .card .icon-big .fa-hospital:before {
@@ -51,7 +48,6 @@
       min-height: 35px;
       border-bottom: 1px dashed #eee;
       color: #666;
-      font-size: 1rem;
       font-weight: normal;
       line-height: 26px;
       margin: 10px 0; }

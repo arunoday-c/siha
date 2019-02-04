@@ -1,5 +1,55 @@
-#employeeDocumGrid_Cntr {
-  .ReactTable {
-    max-height: 60vh !important;
+@import "../../../styles/algaehCssVariables.scss";
+.EmployeeDocumentsScreen {
+  .documentFor {
+    min-height: 70vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    .list-group-item {
+      text-align: left;
+      cursor: pointer;
+    }
+    .list-group-item.active {
+      background-color: $primary-color;
+      border-color: $primary-color;
+      .badge-primary {
+        background-color: $color-white;
+        color: $primary-color;
+      }
+    }
+    .badge-primary {
+      background-color: $primary-color;
+    }
+    span {
+      display: block;
+    }
+  }
+
+  .upload-drop-zone {
+    cursor: grab;
+    height: 150px;
+    border-width: 2px;
+    margin-bottom: 20px;
+    color: #ccc;
+    border-style: dashed;
+    border-color: #ccc;
+    line-height: 1em;
+    text-align: center;
+    padding: 0 10px 10px;
+    padding-top: 3em;
+    b {
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 10px;
+      display: inline-block;
+    }
+    &:hover {
+      border-color: $primary-color;
+      background: lighten($primary-color, 40%);
+    }
+  }
+  #EmployeeDocumentGrid {
+    .ReactTable {
+      max-height: 50vh !important;
+    }
   }
 }

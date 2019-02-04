@@ -7,29 +7,30 @@ header {
   background: #34b8bc;
   color: #fff;
   padding: 0 1rem;
-  border-bottom: 1px solid #008587; }
+  border-bottom: 1px solid #299194;
+  height: 52px; }
 
 .mainPageArea {
   position: fixed;
-  top: 53px;
+  top: 52px;
   height: 94vh;
   overflow: auto;
   overflow-x: hidden; }
 
 .sideMenuBars {
-  border-right: 1px solid #00999c;
+  border-right: 1px solid #53ccd0;
   margin-left: -15px;
   padding: 15px;
   cursor: pointer;
   background: linear-gradient(to right, rgba(228, 171, 89, 0.76) 0%, rgba(0, 186, 190, 0.1) 100%); }
   .sideMenuBars:hover {
-    background: #00999c; }
+    background: #53ccd0; }
 
 .topNavbar-title {
-  font-size: 1.2rem;
   margin: 0;
   padding: 0;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); }
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+  font-size: 1.2em; }
 
 .appLogoCntr {
   width: 115px;
@@ -46,16 +47,14 @@ header {
 
 .btn-userProfile {
   background: none;
-  font-size: 1rem;
   color: #fff;
-  border-left: 1px solid #009689;
+  border-left: 1px solid #53ccd0;
   margin-top: -21px; }
   .btn-userProfile i {
     margin: 3px; }
   .btn-userProfile span {
     display: inline-block;
-    margin: 0 10px;
-    font-size: 0.9rem; }
+    margin: 0 10px; }
 
 #simple-menu {
   top: 33px;
@@ -64,12 +63,10 @@ header {
   #simple-menu ul li {
     padding: 5px 35px 5px 15px;
     margin: 0;
-    text-transform: uppercase;
-    font-size: 0.9rem; }
+    text-transform: uppercase; }
     #simple-menu ul li i {
       margin-right: 15px;
-      color: #34b8bc;
-      font-size: 1rem; }
+      color: #34b8bc; }
   #simple-menu hr {
     margin: 5px 0;
     padding: 0; }
@@ -101,8 +98,7 @@ header {
     text-align: center;
     padding-top: 100%; }
     .hptl-phase1-sideMenuBar .sideMenu-header .menuBarLoader i {
-      color: #00babe;
-      font-size: 3rem; }
+      color: #00babe; }
 
 .hptl-phase1-sideMenuBar .side-menu-title {
   padding: 5px 0;
@@ -110,14 +106,13 @@ header {
   border-bottom: 2px solid #d2d2d2;
   border-top: 1px solid #fff;
   cursor: pointer;
-  font-size: 0.9rem;
   top: 0; }
   .hptl-phase1-sideMenuBar .side-menu-title i {
     text-shadow: 0px 2px 0px #fff; }
 
 .hptl-phase1-sideMenuBar .side-menu-title:hover {
   background: #fff;
-  color: #00bcb0; }
+  color: #53ccd0; }
 
 .hptl-phase1-sideMenuBar .side-menu-arrow {
   margin-top: 5px; }
@@ -135,7 +130,6 @@ header {
     width: 100%; }
     .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li {
       margin: 0;
-      font-size: 0.8rem;
       border-bottom: 1px dotted #818588;
       text-transform: uppercase;
       cursor: pointer;
@@ -152,13 +146,14 @@ header {
         padding: 8px 5px 8px 13px;
         display: inline-block;
         width: 78%;
-        border-left: 1px solid #f7f7f7; }
+        border-left: 1px solid #f7f7f7;
+        font-size: 0.8em; }
       .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li:hover {
         background: #afafaf; }
         .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li:hover i {
           color: #fff; }
       .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li.active {
-        background: #00bcb0;
+        background: #53ccd0;
         color: #fff; }
         .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li.active i {
           color: #fff; }
@@ -171,7 +166,6 @@ header {
 .hptl-phase1-sideMenuBar .menuBar-title {
   display: flex;
   padding: 0 5px;
-  font-size: 20px;
   height: 52px;
   background: #000;
   top: 0;
@@ -185,7 +179,7 @@ header {
   right: 19px;
   top: 14px;
   color: #fff;
-  font-size: 1.3rem; }
+  font-size: 1.5em; }
 
 .hptl-phase1-sideMenuBar .sideBarClose:hover {
   color: #00bcb0;
@@ -211,13 +205,13 @@ header {
     border-bottom: 2px solid #000000;
     border-top: 1px solid #505050;
     cursor: pointer;
-    font-size: 0.9rem;
+    
     i {
       text-shadow: 0px 2px 0px #000;
     }
   }
   .side-menu-title:hover {
-    background: rgb(0, 188, 176);
+    background:  lighten($primary-color, 10%);
     i {
       text-shadow: 0px 2px 0px #000;
     }
@@ -237,7 +231,7 @@ header {
     li {
       padding: 8px 5px;
       margin: 0;
-      font-size: 0.8rem;
+      
       border-bottom: 1px dotted #4e4e4e;
       text-transform: uppercase;
       cursor: pointer;
@@ -255,12 +249,12 @@ header {
       }
     }
     li:hover {
-      background: rgb(0, 188, 176);
+      background:  lighten($primary-color, 10%);
       color: #fff;
     }
 
     li.active {
-      background: rgb(0, 188, 176);
+      background:  lighten($primary-color, 10%);
       color: #fff;
     }
   }
@@ -276,7 +270,7 @@ header {
 
   .menuBar-title {
     display: flex;
-    font-size: 20px;
+    
     height: 49px;
     background: #000;
     position: fixed;
@@ -289,7 +283,7 @@ header {
     right: 19px;
     top: 14px;
     color: #fff;
-    font-size: 1.3rem;
+    
   }
   .sideBarClose:hover {
     color: #00bcb0;
@@ -317,7 +311,6 @@ header {
     line-height: 46px;
     padding: 0;
     margin: 0;
-    font-size: 1.1rem;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
   .screenDisplay span:first-child {
     padding-top: 0px; }
@@ -329,7 +322,6 @@ header {
 
 .selectedLang {
   float: right;
-  font-size: 0.7rem;
   margin-right: 10px;
   border: 1px solid #fff;
   padding: 0px 3px;
@@ -337,7 +329,7 @@ header {
 
 .navTopbar-dropdown {
   padding: 15px;
-  border-left: 1px solid #009c9e;
+  border-left: 1px solid #53ccd0;
   margin: 0;
   margin-right: -15px;
   cursor: pointer; }
@@ -354,14 +346,13 @@ header {
       .navTopbar-dropdown .dropdown-menu .dropdown-item i {
         margin-right: 0.5rem; }
       .navTopbar-dropdown .dropdown-menu .dropdown-item:hover {
-        color: #00999c; }
+        color: #53ccd0; }
   .navTopbar-dropdown:hover {
-    background: #00999c; }
+    background: #53ccd0; }
     .navTopbar-dropdown:hover .dropdown-menu {
       display: block; }
 
 .loginProfileInfo {
-  font-size: 0.8rem;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1); }
   .loginProfileInfo span {
     display: block;
@@ -369,6 +360,5 @@ header {
     margin-right: 10px;
     padding-left: 10px; }
     .loginProfileInfo span:first-child {
-      font-size: 0.9rem;
       font-weight: 600;
       text-transform: uppercase; }

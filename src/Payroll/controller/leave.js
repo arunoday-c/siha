@@ -3,6 +3,7 @@ import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
   getEmployeeLeaveData,
+  getYearlyLeaveData,
   applyEmployeeLeave,
   getEmployeeLeaveHistory,
   getLeaveBalance,
@@ -10,7 +11,29 @@ import {
   addLeaveMaster,
   addAttendanceRegularization,
   getEmployeeAttendReg,
-  processYearlyLeave
+  processYearlyLeave,
+  markAbsent,
+  cancelAbsent,
+  getAllAbsentEmployee,
+  authorizeLeave,
+  getLeaveApllication,
+  updateLeaveMaster,
+  calculateLeaveDays,
+  getLeaveDetailsMaster,
+  addLeaveDetailMaster,
+  getLeaveEncashmentMaster,
+  getLeaveRulesMaster,
+  addLeaveEncashmentMaster,
+  addLeaveRulesMaster,
+  deleteLeaveDetail,
+  deleteLeaveEncash,
+  deleteLeaveRule,
+  updateLeaveDetailMaster,
+  updateLeaveEncashMaster,
+  updateLeaveRuleMaster,
+  deleteLeaveApplication,
+  cancelLeave,
+  regularizeAttendance
 } from "../model/leave";
 import { debugLog } from "../../utils/logging";
 export default ({ config, db }) => {
@@ -21,6 +44,27 @@ export default ({ config, db }) => {
   api.get(
     "/getEmployeeLeaveData",
     getEmployeeLeaveData,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+  // created by irfan :
+  api.get(
+    "/getYearlyLeaveData",
+    getYearlyLeaveData,
     (req, res, next) => {
       let result = req.records;
       if (result.invalid_input == true) {
@@ -183,5 +227,395 @@ export default ({ config, db }) => {
     }
     next();
   });
+
+  // created by irfan :
+  api.post(
+    "/markAbsent",
+    markAbsent,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by irfan
+  api.put("/cancelAbsent", cancelAbsent, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.get("/getAllAbsentEmployee", getAllAbsentEmployee, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.put("/authorizeLeave", authorizeLeave, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.get("/getLeaveApllication", getLeaveApllication, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.put("/updateLeaveMaster", updateLeaveMaster, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan :
+  api.get(
+    "/calculateLeaveDays",
+    calculateLeaveDays,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan
+  api.get("/getLeaveDetailsMaster", getLeaveDetailsMaster, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide the Leave ID to get the details"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by Adnan :
+  api.post(
+    "/addLeaveDetailMaster",
+    addLeaveDetailMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan :
+  api.post(
+    "/addLeaveEncashmentMaster",
+    addLeaveEncashmentMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan :
+  api.post(
+    "/addLeaveRulesMaster",
+    addLeaveRulesMaster,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by Adnan
+  api.get(
+    "/getLeaveEncashmentMaster",
+    getLeaveEncashmentMaster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "Please provide the Leave ID to get the details"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by Adnan
+  api.get("/getLeaveRulesMaster", getLeaveRulesMaster, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide the Leave ID to get the details"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+
+  // created by Adnan
+  api.delete("/deleteLeaveDetail", deleteLeaveDetail, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide valid input controller"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by Adnan
+  api.delete("/deleteLeaveEncash", deleteLeaveEncash, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide the Leave Detail ID to Delete"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by Adnan
+  api.delete("/deleteLeaveRule", deleteLeaveRule, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide the Leave Detail ID to Delete"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  //created by Adnan
+  api.put(
+    "/updateLeaveDetailMaster",
+    updateLeaveDetailMaster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "Please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  //created by Adnan
+  api.put(
+    "/updateLeaveEncashMaster",
+    updateLeaveEncashMaster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: "Please provide valid input"
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  //created by Adnan
+  api.put("/updateLeaveRuleMaster", updateLeaveRuleMaster, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: "Please provide valid input"
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.delete(
+    "/deleteLeaveApplication",
+    deleteLeaveApplication,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.invalid_input == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by irfan
+  api.put("/cancelLeave", cancelLeave, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  // created by irfan
+  api.put("/regularizeAttendance", regularizeAttendance, (req, res, next) => {
+    let result = req.records;
+    if (result.invalid_input == true) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
   return api;
 };

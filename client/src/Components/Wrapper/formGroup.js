@@ -1,9 +1,10 @@
 import React, { PureComponent } from "react";
-import { checkSecurity, numberFormater } from "../../utils/GlobalFunctions";
+import { checkSecurity } from "../../utils/GlobalFunctions";
 import "./wrapper.css";
 import Label from "../Wrapper/label";
 import Cleave from "cleave.js/react";
 import NumberFormat from "react-number-format";
+import { Input, TextArea } from "semantic-ui-react";
 export default class FormGroup extends PureComponent {
   constructor(props) {
     super(props);
@@ -129,11 +130,11 @@ export default class FormGroup extends PureComponent {
   }
   errorInvoid(e) {
     if (typeof this.props.textBox.helperText === "function") {
-      e.currentTarget.setCustomValidity(
+      e.target.setCustomValidity(
         this.props.textBox.helperText(e.currentTarget.value)
       );
     } else {
-      e.currentTarget.setCustomValidity(this.props.textBox.helperText);
+      e.target.setCustomValidity(this.props.textBox.helperText);
     }
   }
 
@@ -200,7 +201,7 @@ export default class FormGroup extends PureComponent {
       const _required =
         this.props.label !== undefined
           ? this.props.label.isImp !== undefined
-            ? { required: this.props.label.isImp }
+            ? { algaeh_required: "" + this.props.label.isImp }
             : {}
           : {};
       const _invalid =
@@ -216,25 +217,27 @@ export default class FormGroup extends PureComponent {
           : { onChange: this.internalStateSetting.bind(this) };
       if (this.props.textBox.decimal !== undefined) {
         return (
-          <NumberFormat
-            name={this.props.textBox.name}
-            {..._disabled}
-            {..._required}
-            {...this.props.textBox.others}
-            {..._class}
-            value={_value}
-            thousandSeparator={this.state.options.thousandSeparator}
-            decimalSeparator={this.state.options.decimalSeparator}
-            decimalScale={this.state.options.decimalScale}
-            allowNegative={this.state.options.allowNegative}
-            fixedDecimalScale={true}
-            // {..._onChange}
-            onValueChange={this.decimalOnChangeHandler}
-          />
+          <div className="ui input txt-fld">
+            <NumberFormat
+              name={this.props.textBox.name}
+              {..._disabled}
+              {..._required}
+              {...this.props.textBox.others}
+              {..._class}
+              value={_value}
+              thousandSeparator={this.state.options.thousandSeparator}
+              decimalSeparator={this.state.options.decimalSeparator}
+              decimalScale={this.state.options.decimalScale}
+              allowNegative={this.state.options.allowNegative}
+              fixedDecimalScale={true}
+              // {..._onChange}
+              onValueChange={this.decimalOnChangeHandler}
+            />
+          </div>
         );
       } else if (this.props.textBox.number !== undefined) {
         return (
-          <input
+          <Input
             type="number"
             name={this.props.textBox.name}
             value={_value}
@@ -269,17 +272,19 @@ export default class FormGroup extends PureComponent {
         };
         return (
           <React.Fragment>
-            <Cleave
-              options={_options}
-              name={this.props.textBox.name}
-              value={_value}
-              {..._onChange}
-              {..._required}
-              {..._disabled}
-              {...this.props.textBox.others}
-              {..._class}
-            />
-            <span className={"creditCardIcon  " + this.state.cardIcon} />
+            <div className="ui input txt-fld">
+              <Cleave
+                options={_options}
+                name={this.props.textBox.name}
+                value={_value}
+                {..._onChange}
+                {..._required}
+                {..._disabled}
+                {...this.props.textBox.others}
+                {..._class}
+              />
+              <span className={"creditCardIcon  " + this.state.cardIcon} />
+            </div>
           </React.Fragment>
         );
       } else {
@@ -291,8 +296,8 @@ export default class FormGroup extends PureComponent {
             : false;
         if (_isMultiline === false)
           return (
-            <input
-              type="text"
+            <Input
+              // type="text"
               name={this.props.textBox.name}
               autoComplete="new-password"
               value={_value}
@@ -310,7 +315,7 @@ export default class FormGroup extends PureComponent {
             delete _others.multiline;
           }
           return (
-            <textarea
+            <TextArea
               name={this.props.textBox.name}
               autoComplete="new-password"
               value={_value}

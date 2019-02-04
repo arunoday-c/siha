@@ -1,24 +1,23 @@
 import React, { Component } from "react";
-
 import "./MonthlyAttendance.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
-  AlgaehDateHandler
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import {
-  algaehApiCall,
-  swalMessage,
-  dateFomater
-} from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { getYears } from "../../../../utils/GlobalFunctions";
 
 export default class MonthlyAttendance extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
+      sub_departments: [],
       department: {
         loader: false,
         sub_department_id: null,
@@ -47,32 +46,26 @@ export default class MonthlyAttendance extends Component {
       .format("MMM DD YYYY");
     return _start + " - " + _end;
   }
+
   componentDidMount() {
-    this.getDepartment();
+    this.getSubDepts();
     this.getOrganization();
   }
-  getDepartment() {
+
+  getSubDepts() {
     const that = this;
-    that.setState({ department: { loader: true } });
+
     algaehApiCall({
-      uri: "/department/get",
+      uri: "/department/get/subdepartment",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
           that.setState({
-            department: {
-              loader: false,
-              data: response.data.records
-            }
+            sub_departments: response.data.records
           });
         }
       },
       onFailure: error => {
-        that.setState({
-          department: {
-            loader: false
-          }
-        });
         swalMessage({
           title: error.message,
           type: "error"
@@ -80,6 +73,36 @@ export default class MonthlyAttendance extends Component {
       }
     });
   }
+
+  // getDepartment() {
+  //   const that = this;
+  //   that.setState({ department: { loader: true } });
+  //   algaehApiCall({
+  //     uri: "/department/get",
+  //     method: "GET",
+  //     onSuccess: response => {
+  //       if (response.data.success) {
+  //         that.setState({
+  //           department: {
+  //             loader: false,
+  //             data: response.data.records
+  //           }
+  //         });
+  //       }
+  //     },
+  //     onFailure: error => {
+  //       that.setState({
+  //         department: {
+  //           loader: false
+  //         }
+  //       });
+  //       swalMessage({
+  //         title: error.message,
+  //         type: "error"
+  //       });
+  //     }
+  //   });
+  // }
 
   getOrganization() {
     const that = this;
@@ -116,6 +139,7 @@ export default class MonthlyAttendance extends Component {
       yearAndMonth: moment(e).startOf("month")._d
     });
   }
+
   onDropDownClearHandler(e) {
     const _stateOf = this["ref_" + e];
     const _getType = _stateOf.getAttribute("stateof");
@@ -128,17 +152,23 @@ export default class MonthlyAttendance extends Component {
     });
   }
 
-  dropDownHandle(e) {
-    const _stateOf = this["ref_" + e.name];
-    const _getType = _stateOf.getAttribute("stateof");
+  // dropDownHandle(e) {
+  //   const _stateOf = this["ref_" + e.name];
+  //   const _getType = _stateOf.getAttribute("stateof");
 
-    this.setState({
-      [_getType]: {
-        [e.name]: e.value,
-        ...this.state[_getType]
-      }
-    });
-  }
+  //   this.setState({
+  //     [_getType]: {
+  //       [e.name]: e.value,
+  //       ...this.state[_getType]
+  //     }
+  //   });
+  // }
+  // dropDownHandle(value) {
+
+  //   this.setState({
+  //   [ value.name] : value.value
+  //   });
+  // }
   processAttandance() {
     const that = this;
     const _empdtl =
@@ -158,16 +188,18 @@ export default class MonthlyAttendance extends Component {
         ? { sub_department_id: that.state.department.sub_department_id }
         : {};
 
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+
     that.setState({ attandance: { loader: true } });
     algaehApiCall({
       uri: "/attendance/processAttendance",
       method: "GET",
       module: "hrManagement",
       data: {
-        yearAndMonth: that.state.yearAndMonth,
+        yearAndMonth: yearMonth,
         ..._empdtl,
-        ..._branch,
-        ..._depatment
+        hospital_id: this.state.hospital_id,
+        sub_department_id: this.state.sub_department_id
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -176,6 +208,14 @@ export default class MonthlyAttendance extends Component {
               loader: false,
               data: response.data.result
             }
+          });
+        } else if (!response.data.success) {
+          swalMessage({
+            title: response.data.result.message,
+            type: "error"
+          });
+          that.setState({
+            attandance: { loader: false }
           });
         }
       },
@@ -193,26 +233,105 @@ export default class MonthlyAttendance extends Component {
     });
   }
 
+  getStartandMonthEnd() {
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+    let startDate = moment(yearMonth)
+      .startOf("month")
+      .format("MMM DD YYYY");
+    let endDate = moment(yearMonth)
+      .endOf("month")
+      .format("MMM DD YYYY");
+
+    this.setState({
+      formatingString: startDate + " - " + endDate
+    });
+  }
+
+  dropDownHandler(value) {
+    switch (value.name) {
+      case "month":
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            this.getStartandMonthEnd();
+          }
+        );
+        break;
+
+      default:
+        this.setState({
+          [value.name]: value.value
+        });
+        break;
+    }
+  }
+
+  textHandler(e) {
+    this.setState(
+      {
+        [e.target.name]: e.target.value
+      },
+      () => {
+        this.getStartandMonthEnd();
+      }
+    );
+  }
+
   render() {
+    let allYears = getYears();
     return (
       <div className="monthly_attendance">
         <div className="row inner-top-search">
-          <AlgaehDateHandler
-            div={{ className: "col mandatory" }}
-            label={{ forceLabel: "Select Month & Year", isImp: true }}
-            textBox={{
-              className: "txt-fld",
-              name: "yearAndMonth"
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Year.",
+              isImp: true
             }}
-            maxDate={new Date()}
-            events={{
-              onChange: this.monthSelectionHandler.bind(this)
+            selector={{
+              name: "year",
+              className: "select-fld",
+              value: this.state.year,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: allYears
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  year: null
+                });
+              }
             }}
-            others={{
-              type: "month"
-            }}
-            value={dateFomater(this.state.yearAndMonth)}
           />
+
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Month.",
+              isImp: true
+            }}
+            selector={{
+              name: "month",
+              className: "select-fld",
+              value: this.state.month,
+              dataSource: {
+                textField: "name",
+                valueField: "value",
+                data: GlobalVariables.MONTHS
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  month: null
+                });
+              }
+            }}
+          />
+
           <AlagehAutoComplete
             div={{ className: "col " }}
             label={{
@@ -222,22 +341,20 @@ export default class MonthlyAttendance extends Component {
             selector={{
               name: "sub_department_id",
               className: "select-fld",
-              value: this.state.department.sub_department_id,
+              value: this.state.sub_department_id,
               dataSource: {
-                textField: "department_name",
-                valueField: "hims_d_department_id",
-                data: this.state.department.data
+                textField: "sub_department_name",
+                valueField: "hims_d_sub_department_id",
+                data: this.state.sub_departments
               },
-              others: {
-                ref: c => {
-                  this.ref_sub_department_id = c;
-                },
-                stateof: "department"
-              },
-              onChange: this.dropDownHandle.bind(this),
-              onClear: this.onDropDownClearHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  sub_department_id: null
+                });
+              }
             }}
-            showLoading={this.state.department.loader}
+            // showLoading={this.state.department.loader}
           />
 
           <AlagehAutoComplete
@@ -249,36 +366,31 @@ export default class MonthlyAttendance extends Component {
             selector={{
               name: "hospital_id",
               className: "select-fld",
-              value: this.state.branch.hospital_id,
+              value: this.state.hospital_id,
               dataSource: {
                 textField: "hospital_name",
-                valueField: "organization_id",
+                valueField: "hims_d_hospital_id",
                 data: this.state.branch.data
               },
-              others: {
-                ref: c => {
-                  this.ref_hospital_id = c;
-                },
-                stateof: "branch"
-              },
-              onChange: this.dropDownHandle.bind(this),
-              onClear: this.onDropDownClearHandler.bind(this)
+              // others: {
+              //   ref: c => {
+              //     this.ref_hospital_id = c;
+              //   },
+              //   stateof: "branch"
+              // },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
             }}
             showLoading={this.state.branch.loader}
           />
 
           <div className="col form-group">
-            <button
-              onClick={this.processAttandance.bind(this)}
-              style={{ marginTop: 21 }}
-              disabled={this.state.attandance.loader}
-              className="btn btn-primary"
-            >
-              {!this.state.attandance.loader ? (
-                <span>Process Attendance</span>
-              ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
+            <button style={{ marginTop: 21 }} className="btn btn-default">
+              Load
             </button>
           </div>
         </div>
@@ -305,7 +417,8 @@ export default class MonthlyAttendance extends Component {
                       <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
                     ),
                     others: {
-                      capitalize: true
+                      capitalize: true,
+                      maxWidth: 200
                     }
                   },
                   {
@@ -345,20 +458,105 @@ export default class MonthlyAttendance extends Component {
                       <AlgaehLabel
                         label={{ forceLabel: "Pending Unpaid Leaves" }}
                       />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.pending_unpaid_leaves
+                            ? row.pending_unpaid_leaves
+                            : 0}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "total_paid_days",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Total Paid Days" }} />
                     )
+                  },
+                  {
+                    fieldName: "total_holidays",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Total Holidays" }} />
+                    )
+                  },
+                  {
+                    fieldName: "total_weekoff_days",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Total Week Off Days" }}
+                      />
+                    )
+                  },
+                  {
+                    fieldName: "ot_work_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "OT Hours" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_work_hours
+                            ? row.ot_work_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "ot_weekoff_hours",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_weekoff_hours
+                            ? row.ot_weekoff_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "ot_holiday_hours",
+                    label: <AlgaehLabel label={{ forceLabel: "Holiday OT" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.ot_holiday_hours
+                            ? row.ot_holiday_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "shortage_hours",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Shortage Hours" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.shortage_hours
+                            ? row.shortage_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
                   }
                 ]}
                 dataSource={{
                   data: this.state.attandance.data
                 }}
-                filterable
-                paging={{ page: 0, rowsPerPage: 10 }}
+                filter={true}
+                paging={{ page: 0, rowsPerPage: 20 }}
                 loading={this.state.attandance.loader}
               />
             </div>
           </div>
         </div>
-        <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+        {/* <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">
@@ -419,6 +617,23 @@ export default class MonthlyAttendance extends Component {
                 isEditable={false}
                 paging={{ page: 0, rowsPerPage: 10 }}
               />
+            </div>
+          </div>
+        </div> */}
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                onClick={this.processAttandance.bind(this)}
+                disabled={this.state.attandance.loader}
+                className="btn btn-primary"
+              >
+                {!this.state.attandance.loader ? (
+                  <span>Process Attendance</span>
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
             </div>
           </div>
         </div>

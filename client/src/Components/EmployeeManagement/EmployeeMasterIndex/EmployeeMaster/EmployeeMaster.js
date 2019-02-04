@@ -58,7 +58,7 @@ class EmployeeMaster extends Component {
   onClose = e => {
     this.props.onClose && this.props.onClose(e);
     let IOputs = EmpMasterIOputs.inputParam();
-    // this.setState(IOputs);
+
     this.setState({
       pageDisplay: "PersonalDetails",
       ...IOputs
@@ -68,7 +68,7 @@ class EmployeeMaster extends Component {
   componentDidMount() {
     // let IOputs = EmpMasterIOputs.inputParam();
     // this.setState(IOputs);
-    
+
     let prevLang = getCookie("Language");
 
     let IOputs = EmpMasterIOputs.inputParam();
@@ -154,9 +154,7 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    
     if (newProps.editEmployee) {
-      
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
       IOputs.samechecked = IOputs.same_address === "Y" ? true : false;
@@ -496,6 +494,9 @@ class EmployeeMaster extends Component {
                         onClick={InsertUpdateEmployee.bind(this, this)}
                         type="button"
                         className="btn btn-primary"
+                        disabled={
+                          this.props.employee_status === "I" ? true : false
+                        }
                       >
                         {this.state.personalDetails.hims_d_employee_id ===
                         null ? (

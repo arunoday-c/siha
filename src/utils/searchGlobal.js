@@ -23,7 +23,7 @@ let algaehSearchConfig = searchName => {
           sheet_discount_amount, sheet_discount_percentage, net_amount, patient_res, company_res, sec_company_res, \
           patient_payable, company_payable, sec_company_payable, patient_tax, company_tax, sec_company_tax, net_tax, \
           credit_amount, receiveable_amount, BH.created_by, BH.created_date, BH.updated_by, BH.updated_date, BH.record_status, \
-          cancel_remarks,cancel_by, bill_comments, PAT.patient_code, PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
+          cancel_remarks,cancel_by, bill_comments, PAT.patient_code, PAT.full_name, PAT.contact_number,PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A'",
         orderBy: "hims_f_billing_header_id desc"
       },
@@ -195,8 +195,8 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "billsforCanel",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date, PAT.patient_code, PATV.visit_code \
-          from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
+          "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date, PAT.patient_code, PAT.full_name, PAT.contact_number,\
+          PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id\
           where BH.record_status ='A' and cancelled='N'",
         orderBy: "hims_f_billing_header_id desc"
@@ -205,7 +205,7 @@ let algaehSearchConfig = searchName => {
         searchName: "cancelbills",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_f_bill_cancel_header_id, bill_cancel_number, bill_cancel_date, \
-          PAT.patient_code, PATV.visit_code,BILLING.bill_number, BILLING.bill_date \
+          PAT.patient_code, PAT.full_name, PAT.contact_number, PATV.visit_code,BILLING.bill_number, BILLING.bill_date \
            from hims_f_bill_cancel_header BH inner join hims_f_patient as PAT on  BH.patient_id = PAT.hims_d_patient_id \
            inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id\
           inner join hims_f_billing_header as BILLING on BH.from_bill_id = BILLING.hims_f_billing_header_id \
@@ -231,7 +231,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "employee",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, title_id, full_name, arabic_name, employee_designation_id,\
+          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code,biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
            sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
             notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
              present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
@@ -243,7 +243,25 @@ let algaehSearchConfig = searchName => {
                    contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
                     hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
                      net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
-                     where record_status='A'",
+                     where record_status='A' ",
+        orderBy: "hims_d_employee_id desc"
+      },
+      {
+        searchName: "exit_employees",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS hims_d_employee_id, employee_code, biometric_id, title_id, full_name, arabic_name, employee_designation_id,\
+           sex, religion_id, marital_status, date_of_birth, date_of_joining, date_of_resignation, reliving_date,\
+            notice_period, exit_date, employe_exit_type, appointment_type, employee_type, present_address, present_address2,\
+             present_pincode, present_city_id, present_state_id, present_country_id, permanent_address, permanent_address2,\
+              permanent_pincode, permanent_city_id, permanent_state_id, permanent_country_id, primary_contact_no, secondary_contact_no,\
+               email, nationality, emergency_contact_person, emergency_contact_no, blood_group, isdoctor, license_number, employee_status,\
+                inactive_date, exclude_machine_data, company_bank_id, employee_bank_name, employee_bank_ifsc_code, employee_account_number,\
+                 mode_of_payment, accomodation_provided, late_coming_rule, leave_salary_process, pf_applicable,\
+                  airfare_process, entitled_daily_ot, suspend_salary, last_salary_process_date, gratuity_applicable,\
+                   contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
+                    hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
+                     net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
+                     where record_status='A' and employee_status in('R','T','E')",
         orderBy: "hims_d_employee_id desc"
       },
 
@@ -262,6 +280,46 @@ let algaehSearchConfig = searchName => {
           emp.employee_code, emp.full_name from hims_f_employee_advance, hims_d_employee emp \
           where hims_f_employee_advance.employee_id = emp.hims_d_employee_id",
         orderBy: "hims_f_employee_advance_id desc"
+      },
+      {
+        searchName: "encash_leave",
+        searchQuery:
+          "select  hims_f_leave_encash_header_id,encashment_number,employee_id, encashment_date,total_amount, \
+          emp.employee_code, emp.full_name from hims_f_leave_encash_header, hims_d_employee emp \
+          where hims_f_leave_encash_header.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_leave_encash_header_id desc"
+      },
+      {
+        searchName: "end_of_service",
+        searchQuery:
+          "select  hims_f_end_of_service_id,end_of_service_number,employee_id, transaction_date,payable_amount, \
+          emp.employee_code, emp.full_name from hims_f_end_of_service, hims_d_employee emp \
+          where hims_f_end_of_service.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_end_of_service_id desc"
+      },
+      {
+        searchName: "final_settlement",
+        searchQuery:
+          "select  hims_f_final_settlement_header_id,final_settlement_number,employee_id, settled_date,total_amount, \
+          emp.employee_code, emp.full_name from hims_f_final_settlement_header, hims_d_employee emp \
+          where hims_f_final_settlement_header.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_final_settlement_header_id desc"
+      },
+      {
+        searchName: "leave_settlement",
+        searchQuery:
+          "select  hims_f_leave_salary_header_id,leave_salary_number,employee_id, hims_f_leave_salary_header.created_date,\
+          total_amount, emp.employee_code, emp.full_name from hims_f_leave_salary_header, hims_d_employee emp \
+          where hims_f_leave_salary_header.employee_id = emp.hims_d_employee_id",
+        orderBy: "hims_f_leave_salary_header_id desc"
+      },
+      {
+        searchName: "users",
+        searchQuery:
+          "select algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,primary_contact_no,sex\
+          from algaeh_d_app_user U inner join  hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
+          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id",
+        orderBy: "algaeh_d_app_user_id desc"
       }
     ]
   };

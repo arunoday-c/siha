@@ -4,7 +4,6 @@
   border-bottom: 1px dashed #d3d3d3; }
   .apply_leave h5 span {
     border-bottom: 2px solid #8c8c8c;
-    font-size: 0.8rem;
     text-transform: uppercase;
     line-height: 0; }
 
@@ -12,7 +11,6 @@
   max-height: 42vh !important; }
 
 .leaveBalanceCntr > div {
-  background: #fff;
   overflow: hidden; }
   .leaveBalanceCntr > div:first-child {
     border-radius: 5px 0 0 5px; }

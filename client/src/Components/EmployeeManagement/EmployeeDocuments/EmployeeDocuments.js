@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import "./EmployeeDocuments.css";
 
 import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
@@ -14,10 +12,9 @@ import {
 export default class EmployeeDocuments extends Component {
   render() {
     return (
-      <div className="EmployeeDocuments row">
+      <div className="EmployeeDocumentsScreen row">
         <div className="col-12">
           <div className="row inner-top-search">
-            {" "}
             <AlagehAutoComplete
               div={{ className: "col form-group mandatory" }}
               label={{
@@ -54,7 +51,33 @@ export default class EmployeeDocuments extends Component {
           </div>
         </div>
 
-        <div className="col-12">
+        <div className="col-3">
+          <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Document for</h3>
+              </div>
+              <div className="actions" />
+            </div>
+            <div className="portlet-body">
+              <ul class="list-group documentFor">
+                <li class="list-group-item d-flex justify-content-between align-items-center active">
+                  Aboobacker Sidhiqe
+                  <span class="badge badge-primary badge-pill">Self</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Febry
+                  <span class="badge badge-primary badge-pill">Spouse</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                  Aaliya
+                  <span class="badge badge-primary badge-pill">Daughter</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="col-9">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -68,13 +91,24 @@ export default class EmployeeDocuments extends Component {
             </div>
             <div className="portlet-body">
               <div className="row">
-                <div className="col-12" id="employeeDocumGrid_Cntr">
+                <div className="col-12" id="EmployeeDocumentGrid_Cntr">
                   <AlgaehDataGrid
-                    id="employeeDocumGrid"
-                    datavalidate="employeeDocumGrid"
+                    id="EmployeeDocumentGrid"
+                    datavalidate="EmployeeDocumentGrid"
                     columns={[
                       {
-                        fieldName: "documentName",
+                        fieldName: "documentType",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Document Type" }}
+                          />
+                        ),
+                        others: {
+                          maxWidth: 200
+                        }
+                      },
+                      {
+                        fieldName: "DocumentName",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Document Name" }}
@@ -82,36 +116,15 @@ export default class EmployeeDocuments extends Component {
                         )
                       },
                       {
-                        fieldName: "documentType",
+                        fieldName: "View_Download",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Document Type" }}
+                            label={{ forceLabel: "View/ Download" }}
                           />
-                        )
-                      },
-                      {
-                        fieldName: "relationType",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Relation Type" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "DependentName",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Dependent Name" }}
-                          />
-                        )
-                      },
-                      {
-                        fieldName: "UploadedDate",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Uploaded Date" }}
-                          />
-                        )
+                        ),
+                        others: {
+                          maxWidth: 150
+                        }
                       }
                     ]}
                     keyId=""
@@ -123,123 +136,42 @@ export default class EmployeeDocuments extends Component {
                   />
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-12">
-          <div className="portlet portlet-bordered margin-bottom-15">
-            <div className="portlet-title">
-              <div className="caption">
-                <h3 className="caption-subject">Add Document</h3>
-              </div>
-              <div className="actions">Ask Sidhiqe about Functionality</div>
-            </div>
-            <div className="portlet-body">
-              <div className="row">
-                {/* <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
-                  label={{
-                    forceLabel: "Documents For",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
-                  label={{
-                    forceLabel: "Select Employee",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-
-                    dataSource: {},
-                    others: {}
-                  }}
-                /> */}
-
-                <AlagehFormGroup
-                  div={{ className: "col form-group mandatory" }}
-                  label={{
-                    forceLabel: "Applicant Name",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "",
-                    value: "",
-                    events: {},
-                    option: {
-                      type: "text"
-                    }
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col form-group mandatory" }}
-                  label={{
-                    forceLabel: "Document Type",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col form-group" }}
-                  label={{
-                    forceLabel: "Relation Type",
-                    isImp: false
-                  }}
-                  selector={{
-                    name: "",
-                    className: "select-fld",
-
-                    dataSource: {},
-                    others: {}
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col form-group" }}
-                  label={{
-                    forceLabel: "Dependent Name",
-                    isImp: false
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "",
-                    value: "",
-                    events: {},
-                    option: {
-                      type: "text"
-                    }
-                  }}
-                />
-
-                <div className="col">
+              <div className="row margin-top-15">
+                {/* <div className="col-12">
                   <label className="label">Attach File</label>
                   <input type="file" />
+                </div> */}
+                <div className="col">
+                  <div className="upload-drop-zone">
+                    {" "}
+                    <b>Passport Copies</b>
+                    <br />
+                    drag and drop files here
+                  </div>
                 </div>
-
-                <div className="col form-group">
-                  <button style={{ marginTop: 21 }} className="btn btn-primary">
-                    Upload
-                  </button>
+                <div className="col">
+                  <div className="upload-drop-zone">
+                    <b>Identity Documents</b> <br />
+                    drag and drop files here
+                  </div>
+                </div>
+                <div className="col">
+                  <div className="upload-drop-zone">
+                    <b>Education Certificates</b> <br />
+                    drag and drop files here
+                  </div>
+                </div>
+                <div className="col">
+                  <div className="upload-drop-zone">
+                    <b>Experience Certificates</b> <br />
+                    drag and drop files here
+                  </div>
+                </div>
+                <div className="col">
+                  <div className="upload-drop-zone">
+                    <b>Others Certificates</b> <br />
+                    drag and drop files here
+                  </div>
                 </div>
               </div>
             </div>

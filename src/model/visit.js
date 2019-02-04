@@ -3,6 +3,7 @@ import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction, logger } from "../utils/logging";
 import { runningNumber, releaseDBConnection } from "../utils";
 import moment from "moment";
+import mysql from "mysql";
 
 //Added by noor for code optimization aug-20-1018
 let insertPatientVisitData = (req, res, next) => {
@@ -919,12 +920,12 @@ let closeVisit = (req, res, next) => {
       let qry = "";
       debugLog("inputParam: ", inputParam);
       for (let i = 0; i < inputParam.length; i++) {
-        qry +=
-          " UPDATE `hims_f_patient_visit` SET visit_status='" +
-          inputParam[i].visit_status +
-          "' WHERE hims_f_patient_visit_id='" +
-          details[i].hims_f_patient_visit_id +
-          "';";
+        debugLog("qry: ", inputParam[i].hims_f_patient_visit_id);
+        qry += mysql.format(
+          "UPDATE `hims_f_patient_visit` SET visit_status='C' WHERE hims_f_patient_visit_id=?;",
+          [inputParam[i].hims_f_patient_visit_id]
+        );
+        debugLog("qry: ", qry);
       }
       debugLog("qry: ", qry);
 

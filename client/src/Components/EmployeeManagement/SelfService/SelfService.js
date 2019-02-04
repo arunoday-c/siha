@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import "./SelfService.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
-
-import Dashboard from "./Dashboard/Dashboard";
+import PersonalDetails from "./PersonalDetails/PersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
 import LeaveEncashment from "./LeaveEncashmemnt/LeaveEncashment";
+
+import HolidayListSelf from "./HolidayListSelf/HolidayListSelf";
+import TimeSheetSelf from "./TimeSheetSelf/TimeSheetSelf";
+
 import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
@@ -15,7 +18,7 @@ export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "Dashboard"
+      pageDisplay: "SelfPersonalDetails"
     };
     this.getEmployeeDetails();
   }
@@ -142,7 +145,7 @@ export default class SelfService extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"Dashboard"}
+                algaehtabs={"SelfPersonalDetails"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
@@ -150,6 +153,20 @@ export default class SelfService extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Personal Info"
+                    }}
+                  />
+                }
+              </li>
+
+              <li
+                algaehtabs={"TimeSheetSelf"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Time Sheet"
                     }}
                   />
                 }
@@ -193,25 +210,26 @@ export default class SelfService extends Component {
                   />
                 }
               </li>
-              {/* <li
-                algaehtabs={"LeaveEncashment"}
+
+              <li
+                algaehtabs={"HolidayListSelf"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Leave Encashment"
+                      forceLabel: "Holiday List"
                     }}
                   />
                 }
-              </li> */}
+              </li>
             </ul>
           </div>
         </div>
         <div className="selfService-setion">
-          {this.state.pageDisplay === "Dashboard" ? (
-            <Dashboard empData={this.state.employee_details} />
+          {this.state.pageDisplay === "PersonalDetails" ? (
+            <PersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
             <AttendanceRegularization empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "ApplyLeave" ? (
@@ -220,6 +238,10 @@ export default class SelfService extends Component {
             <LoanRequest empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "LeaveEncashment" ? (
             <LeaveEncashment />
+          ) : this.state.pageDisplay === "TimeSheetSelf" ? (
+            <TimeSheetSelf />
+          ) : this.state.pageDisplay === "HolidayListSelf" ? (
+            <HolidayListSelf />
           ) : null}
         </div>
       </div>

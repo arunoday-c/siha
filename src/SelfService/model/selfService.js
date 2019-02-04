@@ -21,7 +21,7 @@ let getEmployeeBasicDetails = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.employee_designation_id,\
+        "SELECT E.hims_d_employee_id,E.employee_code,E.title_id,E.full_name,E.arabic_name,E.religion_id,E.employee_designation_id,\
         D.designation_code,D.designation,\
            E.license_number,E.sex,E.date_of_birth,E.date_of_joining,E.date_of_resignation,E.present_address,E.present_address2,\
            E.present_pincode,E.present_pincode,E.present_city_id,CITY.city_name as present_city_name ,\
@@ -36,7 +36,7 @@ let getEmployeeBasicDetails = (req, res, next) => {
            E.late_coming_rule, E.leave_salary_process, E.entitled_daily_ot,\
             E.suspend_salary, E.gratuity_applicable, E.contract_type, E.employee_group_id,\
            E.weekoff_from,E.overtime_group_id, E.reporting_to_id,REP.full_name as reporting_to_name,\
-            E.hospital_id , H.hospital_code,H.hospital_name ,E.sub_department_id ,\
+            E.hospital_id ,E.employee_type, H.hospital_code,H.hospital_name ,E.sub_department_id ,\
             DEP.sub_department_name  from hims_d_employee E left join hims_d_designation D\
              on E.employee_designation_id=D.hims_d_designation_id  left join hims_d_country C on\
               E.present_country_id=C.hims_d_country_id   left join hims_d_city CITY on\
@@ -306,12 +306,14 @@ let getLeaveMaster = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    //, , , , , , ,
-    //, , , , , , created_by, created_date, updated_date, updated_by, record_status
+
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_leave_id, leave_code,  leave_description, leave_type, include_weekoff, religion_required\
-      include_holiday,  leave_mode, leave_accrual, leave_encash, leave_carry_forward, leave_status, religion_id \
+        "select hims_d_leave_id, leave_code,  leave_description, leave_category, calculation_type,\
+         leave_type, include_weekoff, encashment_percentage, religion_required,\
+      include_holiday, holiday_reimbursement,  leave_mode, leave_accrual, leave_encash, leave_carry_forward,\
+      exit_permit_required,  proportionate_leave, document_mandatory, carry_forward_percentage,\
+       leave_status, religion_id , religion_required \
        from hims_d_leave where record_status='A' and leave_status='A'",
         (error, result) => {
           releaseDBConnection(db, connection);

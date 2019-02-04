@@ -25,6 +25,7 @@ class VisitType extends Component {
     super(props);
 
     this.state = {
+      isEditable: true,
       open: false,
       visit_status: "A",
       visit_type_code: "",
@@ -32,13 +33,7 @@ class VisitType extends Component {
       visit_type_desc: "",
 
       arabic_visit_type_desc: "",
-      buttonText: (
-        <AlgaehLabel
-          label={{
-            fieldName: "Addbutton"
-          }}
-        />
-      ),
+      buttonText: <span>Add to List</span>,
       hims_d_visit_type_id: "",
       deleteId: "",
       selectedLang: "en",
@@ -265,7 +260,12 @@ class VisitType extends Component {
     row.update();
     //this.resetState();
   }
-
+  tedting() {
+    debugger;
+    this.setState({
+      isEditable: !this.state.isEditable
+    });
+  }
   render() {
     return (
       <div>
@@ -357,7 +357,10 @@ class VisitType extends Component {
                 </div>
               </div>
             </form>
-
+            <button className="d-none" onClick={this.tedting.bind(this)}>
+              {" "}
+              testing{" "}
+            </button>
             <div className="row form-details" data-validate="visitDiv">
               <div className="col">
                 <AlgaehDataGrid
@@ -510,7 +513,7 @@ class VisitType extends Component {
                         ? []
                         : this.props.visittypes
                   }}
-                  isEditable={true}
+                  isEditable={this.state.isEditable}
                   paging={{ page: 0, rowsPerPage: 10 }}
                   events={{
                     onDelete: this.deleteVisitType.bind(this),

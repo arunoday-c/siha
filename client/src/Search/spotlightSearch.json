@@ -35,6 +35,14 @@
         "label": "Patient Code"
       },
       {
+        "fieldName": "full_name",
+        "label": "Patient Name"
+      },
+      {
+        "fieldName": "contact_number",
+        "label": "Mobile Num."
+      },
+      {
         "fieldName": "visit_code",
         "label": "Visit Code"
       },
@@ -57,6 +65,14 @@
       {
         "fieldName": "patient_code",
         "label": "Patient Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Patient Name"
+      },
+      {
+        "fieldName": "contact_number",
+        "label": "Mobile Num."
       },
       {
         "fieldName": "visit_code",
@@ -347,6 +363,122 @@
       {
         "fieldName": "approved_amount",
         "label": "Approved Amount"
+      }
+    ],
+
+    "encash_leave": [
+      {
+        "fieldName": "encashment_number",
+        "label": "Encashment Number"
+      },
+      {
+        "fieldName": "encashment_date",
+        "label": "Encashment Date"
+      },
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Employee Name"
+      },
+      {
+        "fieldName": "total_amount",
+        "label": "Total Amount"
+      }
+    ],
+
+    "end_of_service": [
+      {
+        "fieldName": "end_of_service_number",
+        "label": "End Of Service Number"
+      },
+      {
+        "fieldName": "transaction_date",
+        "label": "Transaction Date"
+      },
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Employee Name"
+      },
+      {
+        "fieldName": "payable_amount",
+        "label": "Payable Amount"
+      }
+    ],
+
+    "final_settlement": [
+      {
+        "fieldName": "final_settlement_number",
+        "label": "Final Settlement Number"
+      },
+      {
+        "fieldName": "settled_date",
+        "label": "Settled Date"
+      },
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Employee Name"
+      },
+      {
+        "fieldName": "total_amount",
+        "label": "Total Amount"
+      }
+    ],
+
+    "leave_settlement": [
+      {
+        "fieldName": "leave_salary_number",
+        "label": "Leave Salary Number"
+      },
+      {
+        "fieldName": "created_date",
+        "label": "Transaction Date"
+      },
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Employee Name"
+      },
+      {
+        "fieldName": "total_amount",
+        "label": "Total Amount"
+      }
+    ]
+  },
+  "Employee_details": {
+    "employee": [
+      {
+        "fieldName": "employee_code",
+        "label": "Employee Code"
+      },
+      {
+        "fieldName": "full_name",
+        "label": "Name"
+      },
+      {
+        "fieldName": "arabic_name",
+        "label": "Arabic Name"
+      },
+      {
+        "fieldName": "sex",
+        "label": "Gender"
+      },
+      {
+        "fieldName": "primary_contact_no",
+        "label": "Contact Number"
       }
     ]
   }

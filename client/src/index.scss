@@ -1,5 +1,4 @@
-$forntSize: 0.7rem;
-
+@import "./styles/algaehCssVariables.scss";
 :global {
   ::-webkit-scrollbar {
     width: 8px;
@@ -10,14 +9,13 @@ $forntSize: 0.7rem;
   label {
     text-transform: uppercase;
     font-weight: 500;
-    font-size: 0.7rem;
+    font-size: $fontSize;
   }
 
   .UCAF20_Report {
     width: 100%;
     padding: 0;
     margin: 0;
-    font-size: 0.9rem;
   }
 
   .UCAF20_Report td {
@@ -28,28 +26,20 @@ $forntSize: 0.7rem;
 
   //Reports Styles
   .print-body {
-    // width: 98%;
-    // margin: 10px auto;
-    // padding: 10px;
-    // border: 1px solid #e4e4e4;
-    // box-sizing: border-box;
-    // box-shadow: 0 3px 10px #ececec;
-    // background: #fff;
-    body {
-      margin: 10px;
-      padding: 0;
-      color: #3d3d3d;
-      font-size: 0.8rem;
-      background: #f2f2f2;
-    }
-
+    border-right: 0 !important;
+    max-height: 70vh;
+    overflow: auto;
+    padding: 0 15px 0 !important;
+    margin-bottom: 10px;
     /*Header Only CSS*/
     header {
       margin: 0 0 10px;
-      padding: 0 0 10px;
-      border-bottom: 1px solid #3d3d3d;
+      padding: 10px 0;
+      /* border-bottom: 1px solid #3d3d3d; */
+      border-top: 1px solid #e5e5e5;
       display: block;
       width: 100%;
+      background: $color-black;
     }
 
     .hospitalLogo {
@@ -71,6 +61,9 @@ $forntSize: 0.7rem;
       float: right;
       width: 15%;
       border-left: 1px dotted #ccc;
+
+      b {
+      }
     }
 
     .hospitalAddress {
@@ -84,14 +77,14 @@ $forntSize: 0.7rem;
     .hospitalAddress h4 {
       margin: 0 0 5px;
       padding: 0;
-      font-size: 1.3rem;
     }
 
     .hospitalAddress p {
       margin: 0;
       padding: 0;
       line-height: 15px;
-      font-size: 0.7rem;
+
+      font-weight: normal;
     }
 
     /*Content Only CSS*/
@@ -99,16 +92,17 @@ $forntSize: 0.7rem;
     section h2 {
       text-align: left;
       border-bottom: 1px solid #c5c5c5;
-      line-height: 6px;
-      margin-bottom: 20px;
-    }
+      /* line-height: 0; */
+      margin-bottom: 10px;
+      span {
+        background-color: #f2f2f2;
+        padding: 5px 15px;
+        color: #000000;
+        border: 1px solid #c5c5c5;
 
-    section h2 span {
-      background-color: #3d3d3d;
-      padding: 5px 15px;
-      color: #f2f2f2;
-      border: 1px solid #c5c5c5;
-      font-size: 0.8rem;
+        line-height: 29px;
+        border-radius: 5px 5px 0 0;
+      }
     }
 
     /* Clear floats after the columns */
@@ -142,7 +136,8 @@ $forntSize: 0.7rem;
     .tableForData {
       width: 100%;
       border-collapse: collapse;
-      border: 1px solid #00babe;
+      border: 1px solid lighten($primary-color, 10%);
+      font-weight: normal;
     }
 
     .tableForData thead {
@@ -165,14 +160,14 @@ $forntSize: 0.7rem;
     }
 
     .tableForData th {
-      border-bottom: 2px solid #34b8bc !important;
+      border-bottom: 2px solid $primary-color !important;
       vertical-align: middle !important;
       background-color: #e8feff !important;
       padding: 5px;
-      font-size: 0.75rem;
+
       text-transform: uppercase;
       text-align: center;
-      border-right: 1px solid rgba(52, 184, 188, 0.4);
+      border-right: 1px solid darken($primary-color, 10%);
     }
 
     .tableForData td {
@@ -209,14 +204,12 @@ $forntSize: 0.7rem;
     .doctorName h6 {
       margin: 0 0 5px;
       padding: 0;
-      font-size: 0.9rem;
     }
 
     .doctorName p {
       margin: 0;
       padding: 0;
       line-height: 15px;
-      font-size: 0.7rem;
     }
 
     .signatureDiv {
@@ -247,7 +240,7 @@ $forntSize: 0.7rem;
       margin-right: 10px;
       list-style: none;
       margin-top: 5px;
-      font-size: 0.7rem;
+
       span {
         border: 1px solid #ccc;
         float: left;
@@ -280,7 +273,7 @@ $forntSize: 0.7rem;
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: #00bcb0;
+    background: lighten($primary-color, 10%);
     -webkit-border-radius: 3px;
     border-radius: 3px;
     -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5);
@@ -296,7 +289,9 @@ $forntSize: 0.7rem;
   }
 
   .greenCell {
-    background-color: #acffc0 !important;
+    background-color: lighten($primary-color, 48%) !important;
+    color: $primary-color !important;
+    text-decoration: underline !important;
   }
 
   .cancelledClass {
@@ -365,7 +360,6 @@ $forntSize: 0.7rem;
         list-style: none;
         margin: 0px;
         padding: 5px;
-        font-size: 0.85rem;
 
         &.active {
           background: #eafffd;
@@ -373,13 +367,11 @@ $forntSize: 0.7rem;
 
         span {
           width: 80%;
-          font-size: 0.8rem;
         }
         i {
           cursor: pointer;
           padding: 2px 5px 0 0;
           color: #58595b;
-          font-size: 0.7rem;
         }
         i:hover {
           color: red;
@@ -415,7 +407,7 @@ $forntSize: 0.7rem;
         list-style: none;
         margin: 0px;
         padding: 7px 5px;
-        font-size: 0.8rem;
+
         border-bottom: 1px dashed #c1c1c1;
         width: 100%;
         position: relative;
@@ -428,7 +420,7 @@ $forntSize: 0.7rem;
           float: right;
           line-height: 17px;
           margin-right: 6px;
-          color: #212529;
+          color: $color-black;
           margin-left: 10px;
         }
       }
@@ -440,7 +432,7 @@ $forntSize: 0.7rem;
         width: 0;
         height: 0;
         border-top: 8px solid #f5232300;
-        border-left: 8px solid #44b8bd;
+        border-left: 8px solid lighten($primary-color, 10%);
         border-right: 8px solid transparent;
         border-bottom: 8px solid #e8e8e800;
         clear: both;
@@ -458,7 +450,7 @@ $forntSize: 0.7rem;
       text-align: center;
       width: 100%;
       display: inline-block;
-      font-size: 1rem;
+
       margin-top: 15%;
       color: #d3d3d3;
     }
@@ -512,7 +504,7 @@ $forntSize: 0.7rem;
     .caption {
       float: left;
       display: inline-block;
-      font-size: 18px;
+
       line-height: 18px;
     }
     .center {
@@ -522,7 +514,7 @@ $forntSize: 0.7rem;
 
   .caption.caption-green .caption-subject,
   .caption.caption-green i {
-    color: #4db3a2;
+    color: lighten($primary-color, 10%);
     font-weight: 200;
   }
 
@@ -538,16 +530,18 @@ $forntSize: 0.7rem;
     font-weight: 400;
   }
 
-  .caption i {
-    color: #777;
-    font-size: 15px;
-    font-weight: 300;
-    margin-top: 3px;
+  .caption {
+    // i {
+    //   color: #777;
+    //
+    //   font-weight: 300;
+    //   margin-top: 3px;
+    // }
   }
 
   .caption-subject {
     color: #666;
-    font-size: 1rem;
+
     font-weight: normal;
     line-height: 26px;
     margin-bottom: 0;
@@ -558,7 +552,7 @@ $forntSize: 0.7rem;
     margin: 0;
     line-height: 13px;
     color: #9eacb4;
-    font-size: 13px;
+
     font-weight: 400;
   }
 
@@ -576,7 +570,6 @@ $forntSize: 0.7rem;
     .btn {
       color: #666;
       padding: 3px 9px;
-      font-size: 13px;
       line-height: 1.5;
       background-size: 300% 100%;
       background-color: #fff;
@@ -587,8 +580,8 @@ $forntSize: 0.7rem;
       -o-transition: all 0.2s ease-in-out;
       -webkit-transition: all 0.2s ease-in-out;
       transition: all 0.2s ease-in-out;
+      font-size: 0.8em !important;
       i {
-        font-size: 12px;
       }
     }
 
@@ -602,16 +595,9 @@ $forntSize: 0.7rem;
     .btn-primary:not(:disabled):not(.disabled).active,
     .btn-primary:not(:disabled):not(.disabled):active,
     .show > .btn-primary.dropdown-toggle {
-      background-color: none;
-      background-image: linear-gradient(
-        to right,
-        #34b8bc,
-        #25d8df,
-        #34b8bc,
-        #25d8df
-      );
-      //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
-      border-color: #44b8bd;
+      background-color: $primary-color;
+      // box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
+      border-color: lighten($primary-color, 10%);
     }
   }
   /* Pagination */
@@ -619,15 +605,13 @@ $forntSize: 0.7rem;
     margin: -3px 0 0;
     border-radius: 50px;
   }
-
   .pagination > li > a,
   .pagination > li > span {
     padding: 4px 10px;
-    font-size: 12px;
+
     color: #8775a7;
     background: #f7f7f7;
   }
-
   .pagination > li:hover > a,
   .pagination > li.active > a,
   .pagination > li.active:hover > a {
@@ -635,7 +619,6 @@ $forntSize: 0.7rem;
     background: #8775a7;
     border-color: #8775a7;
   }
-
   /* Inputs */
   .inputs {
     float: right;
@@ -643,7 +626,6 @@ $forntSize: 0.7rem;
     padding: 4px 0;
     margin-top: -10px;
   }
-
   .input-inline {
     width: 240px;
     display: inline-block;
@@ -658,7 +640,6 @@ $forntSize: 0.7rem;
     display: inline-block;
     border: 0;
   }
-
   .portlet-title > .nav-tabs > li {
     background: none;
     margin: 0;
@@ -671,7 +652,6 @@ $forntSize: 0.7rem;
     padding: 2px 10px 13px;
     color: #444;
   }
-
   .portlet-title > .nav-tabs > li.active,
   .portlet-title > .nav-tabs > li.active:hover {
     border-bottom: 4px solid #f3565d;
@@ -681,14 +661,12 @@ $forntSize: 0.7rem;
   .portlet-title > .nav-tabs > li:hover {
     border-bottom: 4px solid #f29b9f;
   }
-
   .portlet-title > .nav-tabs > li.active > a,
   .portlet-title > .nav-tabs > li:hover > a {
     color: #333;
     background: #fff;
     border: 0;
   }
-
   /* Btn Circle */
   .actions .btn.btn-circle {
     width: 28px;
@@ -696,9 +674,7 @@ $forntSize: 0.7rem;
     padding: 3px 7px;
     text-align: center;
   }
-
   .actions .btn.btn-circle i {
-    font-size: 12px;
     line-height: 22px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   }
@@ -708,10 +684,9 @@ $forntSize: 0.7rem;
   .actions .btn.btn-green:hover {
     color: #fff;
     box-shadow: none;
-    background: #00bcb0;
+    background: lighten($primary-color, 10%);
     border-color: #01968c;
   }
-
   .customRadio {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
@@ -719,14 +694,12 @@ $forntSize: 0.7rem;
     .inline {
       display: inline-block;
     }
-
     .inline + .inline {
       margin-left: 10px;
     }
-
     .radio {
       color: #999;
-      font-size: 15px;
+
       position: relative;
     }
 
@@ -734,9 +707,7 @@ $forntSize: 0.7rem;
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
-      font-size: 0.9rem;
     }
-
     .radio span:after {
       content: "";
       width: 15px;
@@ -754,7 +725,6 @@ $forntSize: 0.7rem;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
-
     .radio input[type="radio"] {
       cursor: pointer;
       position: absolute;
@@ -763,17 +733,15 @@ $forntSize: 0.7rem;
       z-index: 1;
       opacity: 0;
     }
-
     .radio input[type="radio"]:checked + span {
-      color: #00bcb0;
+      color: lighten($primary-color, 10%);
     }
-
     .radio input[type="radio"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
       position: absolute;
-      background: #00bcb0;
+      background: lighten($primary-color, 10%);
       left: 5px;
       top: 8px;
       border-radius: 100%;
@@ -782,23 +750,19 @@ $forntSize: 0.7rem;
       -webkit-border-radius: 100%;
     }
   }
-
   .customCheckbox {
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
-
     .inline {
       display: inline-block;
       margin-right: 10px;
     }
-
     .inline + .inline {
       margin-left: 0;
     }
-
     .checkbox {
       color: #999;
-      font-size: 15px;
+
       position: relative;
     }
 
@@ -806,9 +770,7 @@ $forntSize: 0.7rem;
       position: relative;
       padding-left: 20px;
       text-transform: capitalize;
-      font-size: 0.9rem;
     }
-
     .checkbox span:after {
       content: "";
       width: 15px;
@@ -826,7 +788,6 @@ $forntSize: 0.7rem;
       -moz-box-sizing: border-box;
       -webkit-box-sizing: border-box;
     }
-
     .checkbox input[type="checkbox"] {
       cursor: pointer;
       position: absolute;
@@ -835,17 +796,15 @@ $forntSize: 0.7rem;
       z-index: 1;
       opacity: 0;
     }
-
     .checkbox input[type="checkbox"]:checked + span {
-      color: #00bcb0;
+      color: lighten($primary-color, 10%);
     }
-
     .checkbox input[type="checkbox"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
       position: absolute;
-      background: #00bcb0;
+      background: lighten($primary-color, 10%);
       left: 5px;
       top: 8px;
       border-radius: 100%;
@@ -854,21 +813,17 @@ $forntSize: 0.7rem;
       -webkit-border-radius: 100%;
     }
   }
-
-  //Portlet Styles End
+  // Portlet Styles End
   .card {
     margin-bottom: 15px;
   }
-
   .mrgn-tp-auto {
     margin-top: auto;
   }
-
   .pain-scale-ul {
     margin: 0;
     padding: 0;
     list-style: none;
-
     li {
       background: url("./assets/images/pain_scale.webp") no-repeat center
         transparent;
@@ -878,37 +833,29 @@ $forntSize: 0.7rem;
       cursor: pointer;
       margin-right: 3.3%;
     }
-
     .pain-1 {
       background-position: 0px 0px;
     }
-
     .pain-2 {
       background-position: 0px -32px;
     }
-
     .pain-3 {
       background-position: 0px -65px;
     }
-
     .pain-4 {
       background-position: 0px -98px;
     }
-
     .pain-5 {
       background-position: 0px -130px;
     }
-
     .pain-6 {
       background-position: 0px -163px;
     }
-
     .active {
       border-radius: 100%;
       box-shadow: 0 3px 8px #00000063;
     }
   }
-
   .algaeh-modal {
     margin: 3% auto 0;
     background-color: #fff;
@@ -916,34 +863,32 @@ $forntSize: 0.7rem;
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4);
-
     .popupHeader {
       background: #dbad64;
       padding: 5px 15px 0;
-
       h4 {
         color: #fff;
-        font-size: 1.1rem;
+
         padding: 0 0 3px;
         line-height: 30px;
+
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
-
       label {
         color: #fff;
-        font-size: 1.1rem;
+        font-size: 1em;
+
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold;
       }
-
       button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
-        font-size: 1.3rem;
         float: right;
         background: none;
         border: none;
@@ -951,24 +896,20 @@ $forntSize: 0.7rem;
         line-height: 30px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
-
       button:hover {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
       }
     }
-
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
       .popSubHdg {
-        font-size: 0.9rem;
         font-weight: bold;
         color: #31afb2;
         margin-top: 10px;
         border-bottom: 1px dashed #d3d3d3;
         padding-bottom: 5px;
       }
-
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -976,7 +917,6 @@ $forntSize: 0.7rem;
         overflow: auto;
         padding: 15px;
       }
-
       .popRightDiv {
         min-height: 30vh;
         max-height: 70vh;
@@ -984,26 +924,23 @@ $forntSize: 0.7rem;
         padding: 15px;
       }
     }
-
     .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
-
       .button-left {
         float: left;
         margin-right: 10px;
         margin-left: 0px;
       }
-
       .btn {
         float: right;
         min-width: 70px;
         padding: 4px 10px;
         margin-top: 2px;
         margin-left: 10px;
-        font-size: 0.8rem;
+
         text-transform: uppercase;
         background-size: 300% 100%;
         -moz-transition: all 0.2s ease-in-out;
@@ -1014,7 +951,8 @@ $forntSize: 0.7rem;
         min-width: 31px;
         -webkit-transition: width 2s; /* Safari */
         transition: width 2s;
-
+        font-size: 0.8em !important;
+        cursor: pointer;
         &:hover {
           background-position: 100% 0;
           -moz-transition: all 0.2s ease-in-out;
@@ -1026,70 +964,53 @@ $forntSize: 0.7rem;
           text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
         }
       }
-
       .btn-primary {
-        color: #fff;
-        background-color: none;
-        background-image: linear-gradient(
-          to right,
-          #34b8bc,
-          #25d8df,
-          #34b8bc,
-          #25d8df
-        );
-        //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
-        border-color: #44b8bd;
-
+        color: $color-white;
+        background-color: $primary-color;
+        border-color: darken($primary-color, 10%);
         &:hover {
-          background-color: none;
-          border-color: #44b8bd;
+          background-color: darken($primary-color, 10%);
+          border-color: lighten($primary-color, 10%);
         }
-
         &:focus {
-          background-color: #34b8bc;
-          border-color: #34b8bc;
+          background-color: $primary-color;
+          border-color: $primary-color;
         }
-
         &.disabled,
         &:disabled {
           opacity: 0.3;
+
+          color: $color-white;
+          background-color: $primary-color;
+          border-color: darken($primary-color, 10%);
           cursor: not-allowed;
         }
         &:active {
-          background-color: #fff;
-          border-color: #fff;
+          background-color: $color-white;
+          border-color: $color-white;
         }
       }
       .btn-default {
-        color: #212529;
-        background-color: none;
-        background-image: linear-gradient(
-          to right,
-          #ffffff,
-          #ececec,
-          #ffffff,
-          #ececec
-        );
-        //box-shadow: 0 4px 15px 0 rgba(23, 168, 108, 0.75);
-        border-color: rgb(182, 182, 182);
+        color: lighten($color-black, 10%);
+        background-color: lighten($color-black, 90%);
+        border-color: lighten($color-black, 50%);
         &:hover,
         &:focus {
-          background-color: none;
-          border-color: rgb(182, 182, 182);
+          background-color: lighten($color-black, 80%);
+          border-color: lighten($color-black, 10%);
         }
       }
-
       .btn-other {
-        color: #212529;
-        border-color: rgb(182, 182, 182);
+        background: none;
+        color: $color-white;
+        border: 1px solid lighten($color-white, 10%);
         &:hover,
         &:focus {
-          background-color: rgb(230, 230, 230);
+          background-color: lighten($color-black, 10%);
         }
       }
     }
   }
-
   .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;
@@ -1099,34 +1020,32 @@ $forntSize: 0.7rem;
     box-shadow: 0px 0px 50px rgba(0, 0, 0, 0.4);
     direction: rtl;
     text-align: right;
-
     .popupHeader {
       background: #dbad64;
       padding: 5px 15px 0;
-
       h4 {
         color: #fff;
-        font-size: 1.1rem;
+
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
-
       label {
         color: #fff;
-        font-size: 1.1rem;
+
+        font-size: 1em;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold;
       }
-
       button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
-        font-size: 1.3rem;
+
         float: left;
         background: none;
         border: none;
@@ -1134,26 +1053,21 @@ $forntSize: 0.7rem;
         line-height: 30px;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       }
-
       button:hover {
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0);
       }
     }
-
     .popupInner {
       overflow-y: auto;
       overflow-x: hidden;
-
       border-bottom: 1px dashed #e5e5e5;
       .popSubHdg {
-        font-size: 0.9rem;
         font-weight: bold;
         color: #31afb2;
         margin-top: 10px;
         border-bottom: 1px dashed #d3d3d3;
         padding-bottom: 5px;
       }
-
       .popLeftDiv {
         border-right: 1px dashed #e0e0e0;
         min-height: 30vh;
@@ -1161,7 +1075,6 @@ $forntSize: 0.7rem;
         overflow: auto;
         padding: 15px 15px 0;
       }
-
       .popRightDiv {
         min-height: 30vh;
         max-height: 70vh;
@@ -1169,8 +1082,8 @@ $forntSize: 0.7rem;
         padding: 15px;
       }
       label {
-        font-size: 0.8rem;
       }
+
       .toggle-section {
         .nav {
           padding: 0;
@@ -1186,35 +1099,30 @@ $forntSize: 0.7rem;
         right: auto;
       }
     }
-
     .popupFooter {
       border-top: 1px dashed #e0e0e0;
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px;
-
       .button-left {
         float: left;
         margin-right: 10px;
         margin-left: 0px;
       }
-
       button {
         float: left;
         margin-right: 10px;
         margin-left: 0;
         padding: 5px 10px;
-        font-size: 0.8rem;
+
         text-transform: uppercase;
         min-width: 70px;
       }
-
       .btn-primary {
-        background: #34b8bc;
-        color: #fff;
-        border: 1px solid #34b8bc;
+        color: $color-white;
+        background-color: $primary-color;
+        border-color: darken($primary-color, 10%);
       }
-
       .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -1222,17 +1130,15 @@ $forntSize: 0.7rem;
       }
     }
   }
-
   // Recipt CSS starts Down
   .cashReciptStyles {
     .receipt-header {
       text-align: center;
       line-height: 62px;
-      font-size: 1.3rem;
+
       text-transform: uppercase;
       color: #717171;
     }
-
     .hospitalLogo {
       width: 150px;
       height: 70px;
@@ -1242,40 +1148,33 @@ $forntSize: 0.7rem;
       color: #ccc;
       text-align: center;
     }
-
     .hospitalAddress {
-      font-size: 0.7rem;
       width: 250px;
       text-align: right;
       float: right;
       margin: 0;
       padding: 0;
     }
-
     span {
       color: #696969;
       text-transform: none;
     }
-
     .table-report {
       border: none;
       border-bottom: 2px;
-
       .table {
         tbody {
           td {
             text-align: left;
             font-weight: bold;
             text-transform: uppercase;
-            color: #44b8bd;
+            color: lighten($primary-color, 10%);
             border: none;
           }
-
           td:first-child {
             color: #696969;
             text-transform: none;
           }
-
           td:nth-child(4) {
             color: #696969;
             text-transform: none;
@@ -1283,22 +1182,20 @@ $forntSize: 0.7rem;
         }
       }
     }
-
     .text-danger strong {
       color: #9f181c;
     }
-
     .receipt-header-mid {
       margin: 15px 0 5px;
       overflow: hidden;
     }
   }
-
   .htpl-phase1-radio-btn {
     margin-right: 5px;
     -webkit-appearance: none;
     -moz-appearance: none;
     -ms-appearance: none;
+
     -o-appearance: none;
     position: relative;
     width: 16px;
@@ -1308,18 +1205,14 @@ $forntSize: 0.7rem;
     outline: none;
     vertical-align: middle;
     bottom: 1px;
-
     &:focus {
       outline: none;
     }
-
     &:checked {
       border: 1px solid #e5e5e5;
-
       &:focus {
         outline: none;
       }
-
       &::before {
         content: "";
         background: #44b6ae;
@@ -1333,9 +1226,7 @@ $forntSize: 0.7rem;
       }
     }
   }
-
   .htpl1-phase1-btn-primary {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: #44b6ae;
@@ -1344,19 +1235,16 @@ $forntSize: 0.7rem;
     padding: 2px 20px;
     margin: 0 !important;
     cursor: pointer;
-
     &:hover {
       color: #ffffff;
       border: solid 1px #44b6ae;
       background-color: #399993;
     }
-
     &:active {
       background-color: #44b6ae;
       box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
       border: solid 1px #44b6ae;
     }
-
     &:disabled {
       background-color: #d0d8dc;
       color: rgba(72, 90, 99, 0.26);
@@ -1364,9 +1252,7 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
-
   .htpl1-phase1-btn-secondary {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: transparent;
@@ -1375,19 +1261,16 @@ $forntSize: 0.7rem;
     padding: 2px 20px;
     margin: 0 !important;
     cursor: pointer;
-
     &:hover {
       color: #44b6ae;
       border: solid 1px #44b6ae;
       background-color: #fff;
     }
-
     &:active {
       color: #44b6ae;
       border: solid 1px #44b6ae;
       background-color: #fff;
     }
-
     &:disabled {
       background-color: #d0d8dc;
       color: rgba(72, 90, 99, 0.26);
@@ -1395,9 +1278,7 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
-
   .htpl1-phase1-btn-others {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: transparent;
@@ -1406,19 +1287,16 @@ $forntSize: 0.7rem;
     padding: 2px 10px;
     cursor: pointer;
     margin: 0 !important;
-
     &:hover {
       background-color: #fff;
       border: 1px solid #fff;
       color: #000;
     }
-
     &:active {
       background-color: #fff;
       border: 1px solid #fff;
       color: #000;
     }
-
     &:disabled {
       background-color: #d0d8dc;
       color: rgba(72, 90, 99, 0.26);
@@ -1426,20 +1304,16 @@ $forntSize: 0.7rem;
       cursor: not-allowed;
     }
   }
-
   .spacing-push {
     margin-top: 5.5em !important;
   }
-
   .box-shadow {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-
   .box-shadow:hover {
     box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   }
-
   .box-shadow-normal {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -1454,16 +1328,13 @@ $forntSize: 0.7rem;
     background-color: #485a63;
     margin: 1px;
   }
-
   .portletHeader {
     border-bottom: 1px solid #e2e2e2;
     padding-top: 10px;
     padding-bottom: 4px;
     width: 100%;
-
     label {
       font-weight: 500;
-      font-size: 0.9rem;
     }
   }
 
@@ -1471,7 +1342,6 @@ $forntSize: 0.7rem;
     text-align: right;
     direction: rtl;
   }
-
   .tabMaster {
     background: white;
     width: 100%;
@@ -1485,11 +1355,11 @@ $forntSize: 0.7rem;
         margin: 0;
         padding: 0;
         height: 32px;
-
         &:after {
           display: block;
+
           content: "";
-          border-bottom: solid 3px #34b8bc;
+          border-bottom: 3px solid $primary-color;
           transform: scaleX(0);
           transition: transform 150ms ease-in-out;
         }
@@ -1497,7 +1367,6 @@ $forntSize: 0.7rem;
           transform: scaleX(1);
         }
         label {
-          font-size: 0.8rem;
           text-transform: uppercase;
           padding: 7px 15px;
           color: #858585;
@@ -1512,22 +1381,19 @@ $forntSize: 0.7rem;
           border: none !important;
           cursor: pointer;
         }
-
         label {
-          border-bottom: 3px solid #238386;
+          border-bottom: 3px solid darken($primary-color, 10%);
           color: #fff;
           cursor: pointer;
-          background: #34b8bc;
+          background: $primary-color;
           text-shadow: 0 1px 1px #868686;
         }
       }
     }
   }
-
   .divInner {
     overflow-y: auto;
     overflow-x: hidden;
-
     .divInnerLeft {
       border-right: 1px dashed #e0e0e0;
       min-height: 30vh;
@@ -1535,7 +1401,6 @@ $forntSize: 0.7rem;
       overflow: auto;
       padding: 15px;
     }
-
     .divInnerRight {
       min-height: 30vh;
       max-height: 70vh;
@@ -1543,4 +1408,96 @@ $forntSize: 0.7rem;
       padding: 15px;
     }
   }
+  .lab_section {
+    font-weight: normal;
+  }
+
+  .imp {
+    color: #ff063e;
+  }
+
+  .txt-fld {
+    background-color: #fbfbfb;
+    width: 100%;
+  }
+
+  .select-fld {
+    padding-left: 8px;
+    background-color: #fbfbfb;
+    width: 100%;
+  }
+
+  .table-details {
+    text-align: center;
+  }
+
+  .table-hover tbody tr:hover {
+    td,
+    th {
+      background-color: #fcffde;
+    }
+  }
+
+  .form-details {
+    margin-top: 20px;
+    margin-left: "auto";
+    margin-right: "auto";
+  }
+
+  th,
+  td {
+    border-right: 1px solid #ffffff;
+  }
 }
+
+//Semantic UI CSS Owerwrite Start Here //
+
+.ui.fluid.dropdown {
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0;
+}
+.mandatory {
+  .ui.selection.dropdown {
+    border: 1px solid rgb(225, 173, 70);
+  }
+}
+
+.ui.search.dropdown .menu {
+  border-color: lighten($color-black, 80%) !important;
+  max-height: 17vh;
+  width: max-content;
+  max-width: calc(100% + 100px);
+}
+.ui.search.dropdown > .text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: inherit;
+  max-width: 85%;
+  padding: 0.5rem;
+}
+.ui.search.selection.dropdown > input.search {
+  padding: 0.64em 0.5em;
+}
+.ui.selection.dropdown > .delete.icon,
+.ui.selection.dropdown > .dropdown.icon,
+.ui.selection.dropdown > .search.icon {
+  line-height: 1.21428571em;
+  top: 0;
+  right: 0;
+  padding: 0.6em;
+  color: lighten($color-black, 40%);
+}
+.ui.selection.dropdown .menu > .item {
+  padding: 0.6em !important;
+}
+.ui.input > input {
+  font-weight: 700;
+  font-size: 0.9em;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0.3em 0.5em;
+}
+
+//Semantic UI CSS Owerwrite End Here //

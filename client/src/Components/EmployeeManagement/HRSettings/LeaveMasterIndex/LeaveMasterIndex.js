@@ -1,19 +1,23 @@
 import React, { Component } from "react";
+import "./LeaveMasterIndex.css";
 import LeaveMaster from "./LeaveMaster/LeaveMaster";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import LeaveEdit from "./LeaveEdit/LeaveEdit";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+
 export default class LeaveMasterIndex extends Component {
   constructor(props) {
     super(props);
     this.state = {
       open: false,
-      leaves: []
+      openEdit: false,
+      leaves: [],
+      edit_window: null
     };
 
     this.getLeaveMaster();
@@ -51,15 +55,52 @@ export default class LeaveMasterIndex extends Component {
     });
   }
 
+  closeEdit() {
+    this.setState({
+      openEdit: false,
+      hims_d_leave_id: null
+    });
+  }
+
+  changeGridEditors(data, e) {
+    this.setState({
+      [e.name]: e.value,
+      openEdit: true,
+      currLeave: data
+    });
+  }
+
+  restoreIndex() {
+    this.getLeaveMaster();
+    this.setState({
+      openEdit: false,
+      open: false,
+      leave_edit: null,
+      currLeave: null
+    });
+  }
+
   render() {
     return (
-      <div className="row leave_master_index">
+      <div className="row leave_master_index margin-top-15">
         <LeaveMaster
           open={this.state.open}
           onClose={this.closeModal.bind(this)}
         />
 
-        <div className="col-12">
+        <LeaveEdit
+          open={this.state.openEdit}
+          onClose={this.closeEdit.bind(this)}
+          type={this.state.leave_edit}
+          data={this.state.currLeave}
+        />
+
+        <button
+          className="d-none"
+          id="lmi-btn"
+          onClick={this.restoreIndex.bind(this)}
+        />
+        <div className="col-lg-12">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
@@ -86,24 +127,27 @@ export default class LeaveMasterIndex extends Component {
                     datavalidate="LeaveMasterList"
                     columns={[
                       {
-                        fieldName: "action",
-
+                        fieldName: "actions",
                         label: <AlgaehLabel label={{ forceLabel: "Action" }} />,
                         displayTemplate: row => {
                           return (
-                            <span>
-                              <i
-                                className="fas fa-pen"
-                                onClick={this.editLeaveMaster.bind(this)}
-                              />
-                            </span>
+                            <AlagehAutoComplete
+                              selector={{
+                                name: "leave_edit",
+                                className: "select-fld",
+                                value: row.leave_edit,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.LEAVE_EDIT
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
                           );
                         },
                         others: {
-                          maxWidth: 65,
-                          resizable: false,
-                          filterable: false,
-                          style: { textAlign: "center" }
+                          maxWidth: 110
                         }
                       },
                       {

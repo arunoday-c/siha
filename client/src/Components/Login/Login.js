@@ -59,6 +59,10 @@ export default class Login extends Component {
   handleLogin(e) {
     e.preventDefault();
 
+    if (this.state.item_id === "") {
+      document.getElementsByName("item_id")[0].focus();
+      return;
+    }
     algaehApiCall({
       uri: "/apiAuth/authUser",
       data: this.state,
@@ -156,15 +160,7 @@ export default class Login extends Component {
                 <div className="row">
                   <div className="col-12">
                     {" "}
-                    <h3
-                      style={{
-                        marginTop: 20,
-                        marginBottom: 20,
-                        textAlign: "center"
-                      }}
-                    >
-                      <span style={{ color: "#3A95AA" }}>Login In</span>
-                    </h3>
+                    <h3 className="LoginCntrHdg">Login In</h3>
                   </div>
                   <div
                     className="col-12"
@@ -179,7 +175,7 @@ export default class Login extends Component {
                       autoComplete="none"
                     >
                       <AlagehFormGroup
-                        div={{ className: "col-12" }}
+                        div={{ className: "col-12 form-group" }}
                         label={{
                           fieldName: "username",
                           isImp: true
@@ -193,7 +189,7 @@ export default class Login extends Component {
                           },
                           others: {
                             tabIndex: "1",
-                            placeHolder: "Enter Username"
+                            placeholder: "Enter Username"
                           },
                           error: this.state.userError,
                           helperText: this.state.userErrorText
@@ -201,7 +197,7 @@ export default class Login extends Component {
                       />
                       <br />
                       <AlagehFormGroup
-                        div={{ className: "col-12" }}
+                        div={{ className: "col-12 form-group" }}
                         label={{
                           fieldName: "password",
                           isImp: true
@@ -216,7 +212,7 @@ export default class Login extends Component {
                           others: {
                             type: "password",
                             tabIndex: "2",
-                            placeHolder: "Enter Password"
+                            placeholder: "Enter Password"
                           },
                           error: this.state.pwdError,
                           helperText: this.state.pwdErrorText
@@ -224,7 +220,7 @@ export default class Login extends Component {
                       />
                       <br />
                       <AlagehAutoComplete
-                        div={{ className: "col-12" }}
+                        div={{ className: "col-12 form-group" }}
                         label={{
                           forceLabel: "Select Hospital Location",
                           isImp: true
@@ -244,7 +240,7 @@ export default class Login extends Component {
                           onClear: this.onHospitalClear.bind(this)
                         }}
                       />
-                      <div className="col-12">
+                      <div className="col-12 form-group">
                         <div className="checkbox">
                           <label>
                             <input type="checkbox" value="remember-me" />{" "}

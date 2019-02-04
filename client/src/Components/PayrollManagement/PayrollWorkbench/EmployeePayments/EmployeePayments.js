@@ -17,11 +17,16 @@ import {
   RequestPaySearch,
   getPaymentDetails,
   Paymenttexthandle,
-  ProessEmpPayment
+  ProessEmpPayment,
+  employeeSearch,
+  ClearData,
+  PaymentOnClear
 } from "./EmployeePaymentEvents.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import Enumerable from "linq";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
+import Options from "../../../../Options.json";
+import moment from "moment";
 
 class EmployeePayment extends Component {
   constructor(props) {
@@ -50,23 +55,6 @@ class EmployeePayment extends Component {
     }
 
     if (
-      this.props.subdepartment === undefined ||
-      this.props.subdepartment.length === 0
-    ) {
-      this.props.getSubDepartment({
-        uri: "/department/get/subdepartment",
-        data: {
-          sub_department_status: "A"
-        },
-        method: "GET",
-        redux: {
-          type: "SUB_DEPT_GET_DATA",
-          mappingName: "subdepartment"
-        }
-      });
-    }
-
-    if (
       this.props.all_employees === undefined ||
       this.props.all_employees.length === 0
     ) {
@@ -80,12 +68,37 @@ class EmployeePayment extends Component {
         }
       });
     }
+
+    if (
+      this.props.payrollcomponents === undefined ||
+      this.props.payrollcomponents.length === 0
+    ) {
+      this.props.getEarningDeduction({
+        uri: "/payrollsettings/getEarningDeduction",
+        module: "hrManagement",
+        method: "GET",
+        redux: {
+          type: "PAYROLL_COMPONENT_DATA",
+          mappingName: "payrollcomponents"
+        }
+      });
+    }
+
+    if (this.props.banks === undefined || this.props.banks.length === 0) {
+      this.props.getBanks({
+        uri: "/masters/getBank",
+        method: "GET",
+        redux: {
+          type: "BANK_GET_DATA",
+          mappingName: "banks"
+        }
+      });
+    }
   }
 
   render() {
-    
-    const depEmployee = Enumerable.from(this.props.all_employees)
-      .where(w => w.hospital_id === this.state.hospital_id)
+    const earnings = Enumerable.from(this.props.payrollcomponents)
+      .where(w => w.component_category === "A")
       .toArray();
     return (
       <React.Fragment>
@@ -110,11 +123,13 @@ class EmployeePayment extends Component {
                 others: {
                   tabIndex: "2"
                 },
-                onClear: () => {
-                  this.setState({
-                    sel_payment_type: null
-                  });
-                }
+                onClear: PaymentOnClear.bind(this, this)
+
+                // () => {
+                //   this.setState({
+                //     sel_payment_type: null
+                //   });
+                // }
               }}
             />
 
@@ -128,7 +143,9 @@ class EmployeePayment extends Component {
                 className: "txt-fld",
                 name: "document_num",
                 value: this.state.document_num,
-                events: {},
+                events: {
+                  onChange: texthandle.bind(this, this)
+                },
                 option: {
                   type: "text"
                 },
@@ -177,32 +194,40 @@ class EmployeePayment extends Component {
               }}
             />
 
-            <AlagehAutoComplete
-              div={{ className: "col" }}
-              label={{
-                forceLabel: "Select a Employee.",
-                isImp: false
-              }}
-              selector={{
-                name: "select_employee_id",
-                className: "select-fld",
-                value: this.state.select_employee_id,
-                dataSource: {
-                  textField: "full_name",
-                  valueField: "hims_d_employee_id",
-                  data:
-                    this.state.department_id === null
-                      ? this.props.all_employees
-                      : depEmployee
-                },
-                onChange: texthandle.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    select_employee_id: null
-                  });
-                }
-              }}
-            />
+            <div className="col-3" style={{ marginTop: 10 }}>
+              <div
+                className="row"
+                style={{
+                  border: " 1px solid #ced4d9",
+                  borderRadius: 5,
+                  marginLeft: 0
+                }}
+              >
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
+                  <h6>
+                    {this.state.employee_name
+                      ? this.state.employee_name
+                      : "------"}
+                  </h6>
+                </div>
+                <div
+                  className="col-lg-3"
+                  style={{ borderLeft: "1px solid #ced4d8" }}
+                >
+                  <i
+                    className="fas fa-search fa-lg"
+                    style={{
+                      paddingTop: 17,
+                      paddingLeft: 3,
+                      cursor: "pointer"
+                    }}
+                    onClick={employeeSearch.bind(this, this)}
+                  />
+                </div>
+              </div>
+            </div>
+
             <div className="col margin-bottom-15">
               <button
                 type="button"
@@ -211,6 +236,17 @@ class EmployeePayment extends Component {
                 onClick={LoadData.bind(this, this)}
               >
                 Load
+              </button>
+            </div>
+
+            <div className="col margin-bottom-15">
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ marginTop: 21 }}
+                onClick={ClearData.bind(this, this)}
+              >
+                Clear
               </button>
             </div>
           </div>
@@ -318,18 +354,17 @@ class EmployeePayment extends Component {
                     <div className="portlet-title">
                       <div className="caption">
                         <h3 className="caption-subject">Payment Form</h3>
-
+                      </div>
+                      <div className="actions">
                         {this.state.request_number === null ? (
                           ""
                         ) : (
-                          <h3>
+                          <span>
                             {this.state.request_number +
                               "/" +
                               this.state.full_name}
-                          </h3>
+                          </span>
                         )}
-                      </div>
-                      <div className="actions">
                         {/* <a className="btn btn-primary btn-circle active">
                         <i className="fas fa-calculator" /> 
                       </a>*/}
@@ -344,20 +379,30 @@ class EmployeePayment extends Component {
                               forceLabel: "Generate Document No."
                             }}
                           />
-                          <h6>*** NEW ***</h6>
+                          <h6>
+                            {this.state.payment_application_code
+                              ? this.state.payment_application_code
+                              : "*** NEW ***"}
+                          </h6>
                         </div>
-                        <div className="col-6">
+                        <div className="col-6 form-group">
                           <AlgaehLabel
                             label={{
                               forceLabel: "Date"
                             }}
                           />
-                          <h6>DD/MM/YYYY</h6>
+                          <h6>
+                            {this.state.payment_date
+                              ? moment(this.state.payment_date).format(
+                                  Options.dateFormat
+                                )
+                              : Options.dateFormat}
+                          </h6>
                         </div>
                       </div>
                       <div className="row">
                         <AlagehAutoComplete
-                          div={{ className: "col-6 form-group" }}
+                          div={{ className: "col-6 form-group mandatory" }}
                           label={{
                             forceLabel: "Mode of Payment",
                             isImp: true
@@ -375,7 +420,7 @@ class EmployeePayment extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
+                          div={{ className: "col-4 form-group mandatory" }}
                           label={{
                             forceLabel: "Payment Amount",
                             isImp: true
@@ -397,25 +442,25 @@ class EmployeePayment extends Component {
                       {this.state.payment_mode === "CH" ? (
                         <div className="row">
                           <AlagehAutoComplete
-                            div={{ className: "col-6  form-group" }}
+                            div={{ className: "col mandatory" }}
                             label={{
                               forceLabel: "Select a Bank",
-                              isImp:
-                                this.state.payment_mode === "CH" ? true : false
+                              isImp: true
                             }}
                             selector={{
-                              name: "hospital_id",
+                              name: "bank_id",
                               className: "select-fld",
-                              value: this.state.hospital_id,
+                              value: this.state.bank_id,
                               dataSource: {
-                                textField: "hospital_name",
-                                valueField: "hims_d_hospital_id",
-                                data: this.props.organizations
-                              }
+                                textField: "bank_name",
+                                valueField: "hims_d_bank_id",
+                                data: this.props.banks
+                              },
+                              onChange: texthandle.bind(this, this)
                             }}
                           />
                           <AlagehFormGroup
-                            div={{ className: "col-6 form-group" }}
+                            div={{ className: "col form-group mandatory" }}
                             label={{
                               forceLabel: "Cheque No.",
                               isImp:
@@ -425,7 +470,9 @@ class EmployeePayment extends Component {
                               className: "txt-fld",
                               name: "cheque_number",
                               value: this.state.cheque_number,
-                              onChange: texthandle.bind(this, this),
+                              events: {
+                                onChange: texthandle.bind(this, this)
+                              },
                               option: {
                                 type: "text"
                               }
@@ -436,7 +483,7 @@ class EmployeePayment extends Component {
                       {this.state.sel_payment_type === "AD" ? (
                         <div className="row">
                           <AlagehAutoComplete
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-4 mandatory" }}
                             label={{
                               forceLabel: "Deduct in Month",
                               isImp:
@@ -457,7 +504,7 @@ class EmployeePayment extends Component {
                             }}
                           />
                           <AlagehFormGroup
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-4 form-group mandatory" }}
                             label={{
                               forceLabel: "Year",
                               isImp:
@@ -469,20 +516,44 @@ class EmployeePayment extends Component {
                               className: "txt-fld",
                               name: "year",
                               value: this.state.year,
-                              onChange: texthandle.bind(this, this),
+                              events: {
+                                onChange: texthandle.bind(this, this)
+                              },
                               option: {
                                 type: "text"
                               }
                             }}
                           />
+                          <AlagehAutoComplete
+                            div={{ className: "col-4 mandatory" }}
+                            label={{
+                              forceLabel: "Earning",
+                              isImp:
+                                this.state.sel_payment_type === "AD"
+                                  ? true
+                                  : false
+                            }}
+                            selector={{
+                              name: "earnings_id",
+                              value: this.state.earnings_id,
+                              className: "select-fld",
+                              dataSource: {
+                                textField: "earning_deduction_description",
+                                valueField: "hims_d_earning_deduction_id",
+                                data: earnings
+                              },
+                              onChange: texthandle.bind(this, this)
+                            }}
+                          />
                         </div>
                       ) : null}
                       <div className="row">
-                        <div className="col-12">
+                        <div className="col-12 form-group">
                           <button
                             type="button"
                             className="btn btn-primary float-right"
                             onClick={ProessEmpPayment.bind(this, this)}
+                            disabled={this.state.processBtn}
                           >
                             Process
                           </button>
@@ -516,59 +587,181 @@ class EmployeePayment extends Component {
                         id="All_trans_Employee_Payment_Cntr"
                         columns={[
                           {
-                            fieldName: "",
-                            label: "Request Type"
+                            fieldName: "payment_type",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Payment Type" }}
+                              />
+                            ),
+
+                            displayTemplate: row => {
+                              let display = GlobalVariables.EMPLOYEE_PAYMENT_TYPE.filter(
+                                f => f.value === row.payment_type
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
-                            fieldName: "",
-                            label: "Request No."
+                            fieldName: "payment_application_code",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Payment No" }}
+                              />
+                            )
                           },
                           {
-                            fieldName: "",
-                            label: "Employee Code"
+                            fieldName: "employee_code",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Employee Code" }}
+                              />
+                            )
                           },
                           {
-                            fieldName: "",
-                            label: "Employee Name"
+                            fieldName: "full_name",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Employee Name" }}
+                              />
+                            )
                           },
                           {
-                            fieldName: "",
-                            label: "Requested Amount"
+                            fieldName: "payment_amount",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Payment Amount" }}
+                              />
+                            )
+                          },
+
+                          {
+                            fieldName: "payment_date",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Process Date" }}
+                              />
+                            )
+                          },
+
+                          {
+                            fieldName: "payment_mode",
+
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Mode of Payment" }}
+                              />
+                            ),
+
+                            displayTemplate: row => {
+                              let display = GlobalVariables.EMP_PAYMENT_MODE.filter(
+                                f => f.value === row.payment_mode
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
-                            fieldName: "",
-                            label: "Document No."
+                            fieldName: "bank_id",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Bank Details" }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              let display =
+                                this.props.banks === undefined
+                                  ? []
+                                  : this.props.banks.filter(
+                                      f => f.hims_d_bank_id === row.bank_id
+                                    );
+
+                              return (
+                                <span>
+                                  {display !== null && display.length !== 0
+                                    ? display[0].bank_name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
-                            fieldName: "",
-                            label: "Process Date"
+                            fieldName: "cheque_number",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Cheque/ Transaction No."
+                                }}
+                              />
+                            )
                           },
                           {
-                            fieldName: "",
-                            label: "Process Amount"
+                            fieldName: "deduction_month",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Deduction Month"
+                                }}
+                              />
+                            ),
+                            displayTemplate: row => {
+                              let display = GlobalVariables.MONTHS.filter(
+                                f => f.value === row.deduction_month
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           },
                           {
-                            fieldName: "",
-                            label: "Mode of Payment"
-                          },
-                          {
-                            fieldName: "",
-                            label: "Bank Details"
-                          },
-                          {
-                            fieldName: "",
-                            label: "Cheque/ Transaction No."
-                          },
-                          {
-                            fieldName: "",
-                            label: "Deduct in the Month of"
+                            fieldName: "cancel",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Cancel"
+                                }}
+                              />
+                            ),
+
+                            displayTemplate: row => {
+                              let display = GlobalVariables.FORMAT_YESNO.filter(
+                                f => f.value === row.cancel
+                              );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].name
+                                    : ""}
+                                </span>
+                              );
+                            }
                           }
                         ]}
                         keyId="algaeh_d_module_id"
                         dataSource={{
-                          data: []
+                          data: this.state.PreviousPayments
                         }}
-                        isEditable={true}
+                        // isEditable={true}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         filter={true}
                         events={{
@@ -591,20 +784,20 @@ class EmployeePayment extends Component {
 
 function mapStateToProps(state) {
   return {
-    subdepartment: state.subdepartment,
     organizations: state.organizations,
     all_employees: state.all_employees,
-    deptanddoctors: state.deptanddoctors
+    payrollcomponents: state.payrollcomponents,
+    banks: state.banks
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getSubDepartment: AlgaehActions,
       getOrganizations: AlgaehActions,
       getEmployees: AlgaehActions,
-      getDepartmentsandDoctors: AlgaehActions
+      getEarningDeduction: AlgaehActions,
+      getBanks: AlgaehActions
     },
     dispatch
   );

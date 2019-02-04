@@ -16,34 +16,34 @@
   :global label {
     text-transform: uppercase;
     font-weight: 500;
-    font-size: 0.7rem; }
+    font-size: 0.8em; }
   :global .UCAF20_Report {
     width: 100%;
     padding: 0;
-    margin: 0;
-    font-size: 0.9rem; }
+    margin: 0; }
   :global .UCAF20_Report td {
     border: 1px solid #f2f2f2;
     padding: 2px 4px;
     margin: 0; }
   :global .print-body {
+    border-right: 0 !important;
+    max-height: 70vh;
+    overflow: auto;
+    padding: 0 15px 0 !important;
+    margin-bottom: 10px;
     /*Header Only CSS*/
     /*Content Only CSS*/
     /* Clear floats after the columns */
     /*Footer Only CSS*/
     /*Print Only CSS*/ }
-    :global .print-body body {
-      margin: 10px;
-      padding: 0;
-      color: #3d3d3d;
-      font-size: 0.8rem;
-      background: #f2f2f2; }
     :global .print-body header {
       margin: 0 0 10px;
-      padding: 0 0 10px;
-      border-bottom: 1px solid #3d3d3d;
+      padding: 10px 0;
+      /* border-bottom: 1px solid #3d3d3d; */
+      border-top: 1px solid #e5e5e5;
       display: block;
-      width: 100%; }
+      width: 100%;
+      background: #000; }
     :global .print-body .hospitalLogo {
       color: #ccc;
       text-align: center;
@@ -67,24 +67,24 @@
       min-height: 54px; }
     :global .print-body .hospitalAddress h4 {
       margin: 0 0 5px;
-      padding: 0;
-      font-size: 1.3rem; }
+      padding: 0; }
     :global .print-body .hospitalAddress p {
       margin: 0;
       padding: 0;
       line-height: 15px;
-      font-size: 0.7rem; }
+      font-weight: normal; }
     :global .print-body section h2 {
       text-align: left;
       border-bottom: 1px solid #c5c5c5;
-      line-height: 6px;
-      margin-bottom: 20px; }
-    :global .print-body section h2 span {
-      background-color: #3d3d3d;
-      padding: 5px 15px;
-      color: #f2f2f2;
-      border: 1px solid #c5c5c5;
-      font-size: 0.8rem; }
+      /* line-height: 0; */
+      margin-bottom: 10px; }
+      :global .print-body section h2 span {
+        background-color: #f2f2f2;
+        padding: 5px 15px;
+        color: #000000;
+        border: 1px solid #c5c5c5;
+        line-height: 29px;
+        border-radius: 5px 5px 0 0; }
     :global .print-body section:after {
       content: "";
       display: table;
@@ -105,7 +105,8 @@
     :global .print-body .tableForData {
       width: 100%;
       border-collapse: collapse;
-      border: 1px solid #00babe; }
+      border: 1px solid #53ccd0;
+      font-weight: normal; }
     :global .print-body .tableForData thead {
       margin: 0;
       padding: 0;
@@ -124,10 +125,9 @@
       vertical-align: middle !important;
       background-color: #e8feff !important;
       padding: 5px;
-      font-size: 0.75rem;
       text-transform: uppercase;
       text-align: center;
-      border-right: 1px solid rgba(52, 184, 188, 0.4); }
+      border-right: 1px solid #299194; }
     :global .print-body .tableForData td {
       border: 1px solid #ccc;
       padding: 3px;
@@ -149,13 +149,11 @@
       height: 55px; }
     :global .print-body .doctorName h6 {
       margin: 0 0 5px;
-      padding: 0;
-      font-size: 0.9rem; }
+      padding: 0; }
     :global .print-body .doctorName p {
       margin: 0;
       padding: 0;
-      line-height: 15px;
-      font-size: 0.7rem; }
+      line-height: 15px; }
     :global .print-body .signatureDiv {
       text-align: left;
       float: left;
@@ -172,8 +170,7 @@
     float: left;
     margin-right: 10px;
     list-style: none;
-    margin-top: 5px;
-    font-size: 0.7rem; }
+    margin-top: 5px; }
     :global ul.ul-legend li span {
       border: 1px solid #ccc;
       float: left;
@@ -190,7 +187,7 @@
     -webkit-border-radius: 3px;
     border-radius: 3px; }
   :global ::-webkit-scrollbar-thumb {
-    background: #00bcb0;
+    background: #53ccd0;
     -webkit-border-radius: 3px;
     border-radius: 3px;
     -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5); }
@@ -199,7 +196,9 @@
   :global .displayInlineBlock {
     display: inline-block; }
   :global .greenCell {
-    background-color: #acffc0 !important; }
+    background-color: #ebf9fa !important;
+    color: #34b8bc !important;
+    text-decoration: underline !important; }
   :global .cancelledClass {
     background-color: #ff400080 !important;
     color: white;
@@ -239,18 +238,15 @@
         cursor: pointer;
         list-style: none;
         margin: 0px;
-        padding: 5px;
-        font-size: 0.85rem; }
+        padding: 5px; }
         :global .bordered-layout ul li.active {
           background: #eafffd; }
         :global .bordered-layout ul li span {
-          width: 80%;
-          font-size: 0.8rem; }
+          width: 80%; }
         :global .bordered-layout ul li i {
           cursor: pointer;
           padding: 2px 5px 0 0;
-          color: #58595b;
-          font-size: 0.7rem; }
+          color: #58595b; }
         :global .bordered-layout ul li i:hover {
           color: red; }
       :global .bordered-layout ul li:nth-child(odd) {
@@ -273,7 +269,6 @@
         list-style: none;
         margin: 0px;
         padding: 7px 5px;
-        font-size: 0.8rem;
         border-bottom: 1px dashed #c1c1c1;
         width: 100%;
         position: relative; }
@@ -284,7 +279,7 @@
           float: right;
           line-height: 17px;
           margin-right: 6px;
-          color: #212529;
+          color: #000;
           margin-left: 10px; }
       :global .bordered-layout-radius ul li.active::after {
         content: "";
@@ -294,7 +289,7 @@
         width: 0;
         height: 0;
         border-top: 8px solid #f5232300;
-        border-left: 8px solid #44b8bd;
+        border-left: 8px solid #53ccd0;
         border-right: 8px solid transparent;
         border-bottom: 8px solid #e8e8e800;
         clear: both; }
@@ -304,7 +299,6 @@
       text-align: center;
       width: 100%;
       display: inline-block;
-      font-size: 1rem;
       margin-top: 15%;
       color: #d3d3d3; }
   :global .margin-top-15 {
@@ -337,13 +331,12 @@
     :global .portlet-title .caption {
       float: left;
       display: inline-block;
-      font-size: 18px;
       line-height: 18px; }
     :global .portlet-title .center {
       text-align: center; }
   :global .caption.caption-green .caption-subject,
   :global .caption.caption-green i {
-    color: #4db3a2;
+    color: #53ccd0;
     font-weight: 200; }
   :global .caption.caption-red .caption-subject,
   :global .caption.caption-red i {
@@ -353,14 +346,8 @@
   :global .caption.caption-purple i {
     color: #8775a7;
     font-weight: 400; }
-  :global .caption i {
-    color: #777;
-    font-size: 15px;
-    font-weight: 300;
-    margin-top: 3px; }
   :global .caption-subject {
     color: #666;
-    font-size: 1rem;
     font-weight: normal;
     line-height: 26px;
     margin-bottom: 0; }
@@ -369,7 +356,6 @@
     margin: 0;
     line-height: 13px;
     color: #9eacb4;
-    font-size: 13px;
     font-weight: 400; }
   :global .actions {
     float: right;
@@ -381,7 +367,6 @@
     :global .actions .btn {
       color: #666;
       padding: 3px 9px;
-      font-size: 13px;
       line-height: 1.5;
       background-size: 300% 100%;
       background-color: #fff;
@@ -390,9 +375,8 @@
       -moz-transition: all 0.2s ease-in-out;
       -o-transition: all 0.2s ease-in-out;
       -webkit-transition: all 0.2s ease-in-out;
-      transition: all 0.2s ease-in-out; }
-      :global .actions .btn i {
-        font-size: 12px; }
+      transition: all 0.2s ease-in-out;
+      font-size: 0.8em !important; }
     :global .actions .btn:hover {
       background-position: 100% 0;
       -moz-transition: all 0.2s ease-in-out;
@@ -402,16 +386,14 @@
     :global .actions .btn-primary:not(:disabled):not(.disabled).active,
     :global .actions .btn-primary:not(:disabled):not(.disabled):active,
     :global .actions .show > .btn-primary.dropdown-toggle {
-      background-color: none;
-      background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
-      border-color: #44b8bd; }
+      background-color: #34b8bc;
+      border-color: #53ccd0; }
   :global .pagination {
     margin: -3px 0 0;
     border-radius: 50px; }
   :global .pagination > li > a,
   :global .pagination > li > span {
     padding: 4px 10px;
-    font-size: 12px;
     color: #8775a7;
     background: #f7f7f7; }
   :global .pagination > li:hover > a,
@@ -461,14 +443,13 @@
     padding: 3px 7px;
     text-align: center; }
   :global .actions .btn.btn-circle i {
-    font-size: 12px;
     line-height: 22px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5); }
   :global .actions .btn.btn-green.active,
   :global .actions .btn.btn-green:hover {
     color: #fff;
     box-shadow: none;
-    background: #00bcb0;
+    background: #53ccd0;
     border-color: #01968c; }
   :global .customRadio {
     border-bottom: 1px solid #eee;
@@ -480,13 +461,11 @@
       margin-left: 10px; }
     :global .customRadio .radio {
       color: #999;
-      font-size: 15px;
       position: relative; }
     :global .customRadio .radio span {
       position: relative;
       padding-left: 20px;
-      text-transform: capitalize;
-      font-size: 0.9rem; }
+      text-transform: capitalize; }
     :global .customRadio .radio span:after {
       content: "";
       width: 15px;
@@ -511,13 +490,13 @@
       z-index: 1;
       opacity: 0; }
     :global .customRadio .radio input[type="radio"]:checked + span {
-      color: #00bcb0; }
+      color: #53ccd0; }
     :global .customRadio .radio input[type="radio"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
       position: absolute;
-      background: #00bcb0;
+      background: #53ccd0;
       left: 5px;
       top: 8px;
       border-radius: 100%;
@@ -534,13 +513,11 @@
       margin-left: 0; }
     :global .customCheckbox .checkbox {
       color: #999;
-      font-size: 15px;
       position: relative; }
     :global .customCheckbox .checkbox span {
       position: relative;
       padding-left: 20px;
-      text-transform: capitalize;
-      font-size: 0.9rem; }
+      text-transform: capitalize; }
     :global .customCheckbox .checkbox span:after {
       content: "";
       width: 15px;
@@ -565,13 +542,13 @@
       z-index: 1;
       opacity: 0; }
     :global .customCheckbox .checkbox input[type="checkbox"]:checked + span {
-      color: #00bcb0; }
+      color: #53ccd0; }
     :global .customCheckbox .checkbox input[type="checkbox"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
       position: absolute;
-      background: #00bcb0;
+      background: #53ccd0;
       left: 5px;
       top: 8px;
       border-radius: 100%;
@@ -620,23 +597,22 @@
       padding: 5px 15px 0; }
       :global .algaeh-modal .popupHeader h4 {
         color: #fff;
-        font-size: 1.1rem;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
       :global .algaeh-modal .popupHeader label {
         color: #fff;
-        font-size: 1.1rem;
+        font-size: 1em;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold; }
       :global .algaeh-modal .popupHeader button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
-        font-size: 1.3rem;
         float: right;
         background: none;
         border: none;
@@ -649,7 +625,6 @@
       overflow-y: auto;
       overflow-x: hidden; }
       :global .algaeh-modal .popupInner .popSubHdg {
-        font-size: 0.9rem;
         font-weight: bold;
         color: #31afb2;
         margin-top: 10px;
@@ -681,7 +656,6 @@
         padding: 4px 10px;
         margin-top: 2px;
         margin-left: 10px;
-        font-size: 0.8rem;
         text-transform: uppercase;
         background-size: 300% 100%;
         -moz-transition: all 0.2s ease-in-out;
@@ -692,7 +666,9 @@
         min-width: 31px;
         -webkit-transition: width 2s;
         /* Safari */
-        transition: width 2s; }
+        transition: width 2s;
+        font-size: 0.8em !important;
+        cursor: pointer; }
         :global .algaeh-modal .popupFooter .btn:hover {
           background-position: 100% 0;
           -moz-transition: all 0.2s ease-in-out;
@@ -703,34 +679,36 @@
           text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5); }
       :global .algaeh-modal .popupFooter .btn-primary {
         color: #fff;
-        background-color: none;
-        background-image: linear-gradient(to right, #34b8bc, #25d8df, #34b8bc, #25d8df);
-        border-color: #44b8bd; }
+        background-color: #34b8bc;
+        border-color: #299194; }
         :global .algaeh-modal .popupFooter .btn-primary:hover {
-          background-color: none;
-          border-color: #44b8bd; }
+          background-color: #299194;
+          border-color: #53ccd0; }
         :global .algaeh-modal .popupFooter .btn-primary:focus {
           background-color: #34b8bc;
           border-color: #34b8bc; }
         :global .algaeh-modal .popupFooter .btn-primary.disabled, :global .algaeh-modal .popupFooter .btn-primary:disabled {
           opacity: 0.3;
+          color: #fff;
+          background-color: #34b8bc;
+          border-color: #299194;
           cursor: not-allowed; }
         :global .algaeh-modal .popupFooter .btn-primary:active {
           background-color: #fff;
           border-color: #fff; }
       :global .algaeh-modal .popupFooter .btn-default {
-        color: #212529;
-        background-color: none;
-        background-image: linear-gradient(to right, #ffffff, #ececec, #ffffff, #ececec);
-        border-color: #b6b6b6; }
+        color: #1a1a1a;
+        background-color: #e6e6e6;
+        border-color: gray; }
         :global .algaeh-modal .popupFooter .btn-default:hover, :global .algaeh-modal .popupFooter .btn-default:focus {
-          background-color: none;
-          border-color: #b6b6b6; }
+          background-color: #cccccc;
+          border-color: #1a1a1a; }
       :global .algaeh-modal .popupFooter .btn-other {
-        color: #212529;
-        border-color: #b6b6b6; }
+        background: none;
+        color: #fff;
+        border: 1px solid white; }
         :global .algaeh-modal .popupFooter .btn-other:hover, :global .algaeh-modal .popupFooter .btn-other:focus {
-          background-color: #e6e6e6; }
+          background-color: #1a1a1a; }
   :global .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;
@@ -745,23 +723,22 @@
       padding: 5px 15px 0; }
       :global .algaeh-modal-Ar .popupHeader h4 {
         color: #fff;
-        font-size: 1.1rem;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3); }
       :global .algaeh-modal-Ar .popupHeader label {
         color: #fff;
-        font-size: 1.1rem;
+        font-size: 1em;
         padding: 0 0 3px;
         line-height: 30px;
         margin: 0;
         text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
         font-weight: bold; }
       :global .algaeh-modal-Ar .popupHeader button {
-        margin: 0;
+        margin: 2px 0 0;
+        font-size: 1.4em;
         padding: 0;
-        font-size: 1.3rem;
         float: left;
         background: none;
         border: none;
@@ -775,7 +752,6 @@
       overflow-x: hidden;
       border-bottom: 1px dashed #e5e5e5; }
       :global .algaeh-modal-Ar .popupInner .popSubHdg {
-        font-size: 0.9rem;
         font-weight: bold;
         color: #31afb2;
         margin-top: 10px;
@@ -792,8 +768,6 @@
         max-height: 70vh;
         overflow: auto;
         padding: 15px; }
-      :global .algaeh-modal-Ar .popupInner label {
-        font-size: 0.8rem; }
       :global .algaeh-modal-Ar .popupInner .toggle-section .nav {
         padding: 0;
         right: auto; }
@@ -817,13 +791,12 @@
         margin-right: 10px;
         margin-left: 0;
         padding: 5px 10px;
-        font-size: 0.8rem;
         text-transform: uppercase;
         min-width: 70px; }
       :global .algaeh-modal-Ar .popupFooter .btn-primary {
-        background: #34b8bc;
         color: #fff;
-        border: 1px solid #34b8bc; }
+        background-color: #34b8bc;
+        border-color: #299194; }
       :global .algaeh-modal-Ar .popupFooter .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -831,7 +804,6 @@
   :global .cashReciptStyles .receipt-header {
     text-align: center;
     line-height: 62px;
-    font-size: 1.3rem;
     text-transform: uppercase;
     color: #717171; }
   :global .cashReciptStyles .hospitalLogo {
@@ -843,7 +815,6 @@
     color: #ccc;
     text-align: center; }
   :global .cashReciptStyles .hospitalAddress {
-    font-size: 0.7rem;
     width: 250px;
     text-align: right;
     float: right;
@@ -859,7 +830,7 @@
       text-align: left;
       font-weight: bold;
       text-transform: uppercase;
-      color: #44b8bd;
+      color: #53ccd0;
       border: none; }
     :global .cashReciptStyles .table-report .table tbody td:first-child {
       color: #696969;
@@ -903,7 +874,6 @@
         top: 3px;
         left: 3px; }
   :global .htpl1-phase1-btn-primary {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: #44b6ae;
@@ -926,7 +896,6 @@
       border: none;
       cursor: not-allowed; }
   :global .htpl1-phase1-btn-secondary {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: transparent;
@@ -949,7 +918,6 @@
       border: none;
       cursor: not-allowed; }
   :global .htpl1-phase1-btn-others {
-    font-size: 0.8rem;
     text-transform: uppercase;
     border-radius: 5px;
     background-color: transparent;
@@ -993,8 +961,7 @@
     padding-bottom: 4px;
     width: 100%; }
     :global .portletHeader label {
-      font-weight: 500;
-      font-size: 0.9rem; }
+      font-weight: 500; }
   :global .arabicInput {
     text-align: right;
     direction: rtl; }
@@ -1014,13 +981,12 @@
         :global .tabMaster ul li:after {
           display: block;
           content: "";
-          border-bottom: solid 3px #34b8bc;
+          border-bottom: 3px solid #34b8bc;
           transform: scaleX(0);
           transition: transform 150ms ease-in-out; }
         :global .tabMaster ul li:hover:after {
           transform: scaleX(1); }
         :global .tabMaster ul li label {
-          font-size: 0.8rem;
           text-transform: uppercase;
           padding: 7px 15px;
           color: #858585;
@@ -1032,7 +998,7 @@
         border: none !important;
         cursor: pointer; }
       :global .tabMaster ul li.active label {
-        border-bottom: 3px solid #238386;
+        border-bottom: 3px solid #299194;
         color: #fff;
         cursor: pointer;
         background: #34b8bc;
@@ -1051,3 +1017,70 @@
       max-height: 70vh;
       overflow: auto;
       padding: 15px; }
+  :global .lab_section {
+    font-weight: normal; }
+  :global .imp {
+    color: #ff063e; }
+  :global .txt-fld {
+    background-color: #fbfbfb;
+    width: 100%; }
+  :global .select-fld {
+    padding-left: 8px;
+    background-color: #fbfbfb;
+    width: 100%; }
+  :global .table-details {
+    text-align: center; }
+  :global .table-hover tbody tr:hover td,
+  :global .table-hover tbody tr:hover th {
+    background-color: #fcffde; }
+  :global .form-details {
+    margin-top: 20px;
+    margin-left: "auto";
+    margin-right: "auto"; }
+  :global th,
+  :global td {
+    border-right: 1px solid #ffffff; }
+
+.ui.fluid.dropdown {
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0; }
+
+.mandatory .ui.selection.dropdown {
+  border: 1px solid #e1ad46; }
+
+.ui.search.dropdown .menu {
+  border-color: #cccccc !important;
+  max-height: 17vh;
+  width: max-content;
+  max-width: calc(100% + 100px); }
+
+.ui.search.dropdown > .text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: inherit;
+  max-width: 85%;
+  padding: 0.5rem; }
+
+.ui.search.selection.dropdown > input.search {
+  padding: 0.64em 0.5em; }
+
+.ui.selection.dropdown > .delete.icon,
+.ui.selection.dropdown > .dropdown.icon,
+.ui.selection.dropdown > .search.icon {
+  line-height: 1.21428571em;
+  top: 0;
+  right: 0;
+  padding: 0.6em;
+  color: #666666; }
+
+.ui.selection.dropdown .menu > .item {
+  padding: 0.6em !important; }
+
+.ui.input > input {
+  font-weight: 700;
+  font-size: 0.9em;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0.3em 0.5em; }

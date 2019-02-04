@@ -6,12 +6,24 @@ import moment from "moment";
 
 const Validations = $this => {
   let isError = false;
-  
+  debugger;
   if ($this.state.personalDetails.date_of_joining === null) {
     isError = true;
     swalMessage({
       type: "warning",
       title: "Date of Joining. Cannot be blank."
+    });
+
+    return isError;
+  } else if (
+    ($this.state.personalDetails.employee_status === "R" ||
+      $this.state.personalDetails.employee_status === "T") &&
+    $this.state.personalDetails.date_of_leaving === null
+  ) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Date of Leaving. Cannot be blank."
     });
 
     return isError;
@@ -79,6 +91,19 @@ const Validations = $this => {
     });
 
     return isError;
+  } else if ($this.state.personalDetails.deptDetails !== 0) {
+    const activeDept = Enumerable.from($this.state.personalDetails.deptDetails)
+      .where(w => w.dep_status === "A")
+      .toArray();
+
+    if (activeDept.length > 1) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Only one Department can be Active."
+      });
+    }
+    return isError;
   } else if ($this.state.personalDetails.hims_d_employee_id !== null) {
     if ($this.state.personalDetails.employee_group_id === null) {
       isError = true;
@@ -97,19 +122,6 @@ const Validations = $this => {
 
       return isError;
     }
-  } else if ($this.state.personalDetails.deptDetails !== 0) {
-    const activeDept = Enumerable.from($this.state.personalDetails.deptDetails)
-      .where(w => w.dep_status === "A")
-      .toArray();
-
-    if (activeDept.length > 1) {
-      isError = true;
-      swalMessage({
-        type: "warning",
-        title: "Only one Department can be Active."
-      });
-    }
-    return isError;
   }
 
   return false;
@@ -122,7 +134,7 @@ const InsertUpdateEmployee = $this => {
     onSuccess: () => {
       const err = Validations($this);
       console.log("Input:", $this.state);
-      
+      debugger;
       if (!err) {
         if ($this.state.personalDetails.insertdeptDetails.length > 0) {
           for (
@@ -164,7 +176,6 @@ const InsertUpdateEmployee = $this => {
           }
         }
 
-        
         const activeDept = Enumerable.from(
           $this.state.personalDetails.deptDetails
         )
@@ -179,6 +190,7 @@ const InsertUpdateEmployee = $this => {
           $this.state.personalDetails.employee_designation_id =
             activeDept[0].employee_designation_id;
         }
+        debugger;
 
         const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
         let inputObj = $this.state.personalDetails;
@@ -204,7 +216,34 @@ const InsertUpdateEmployee = $this => {
             onSuccess: response => {
               if (response.data.success === true) {
                 $this.setState({
-                  hims_d_employee_id: response.data.records.insertId
+                  hims_d_employee_id: response.data.records.insertId,
+                  personalDetails: {
+                    ...$this.state.personalDetails,
+                    insertearnComp: [],
+                    insertDeductionComp: [],
+                    insertContributeComp: [],
+                    deleteearnComp: [],
+                    updateearnComp: [],
+                    deleteDeductionComp: [],
+                    updateDeductionComp: [],
+                    deleteContributeComp: [],
+                    updateContributeComp: [],
+
+                    insertIdDetails: [],
+                    insertDependentDetails: [],
+                    deleteIdDetails: [],
+                    updateIdDetails: [],
+                    deleteDependentDetails: [],
+                    updateDependentDetails: [],
+
+                    insertdeptDetails: [],
+                    updatedeptDetails: [],
+
+                    insertservTypeCommission: [],
+                    insertserviceComm: [],
+                    updateserviceComm: [],
+                    updateservTypeCommission: []
+                  }
                 });
 
                 swalMessage({
@@ -215,12 +254,42 @@ const InsertUpdateEmployee = $this => {
             }
           });
         } else {
+          debugger;
           algaehApiCall({
             uri: "/employee/updateEmployee",
             data: _payload,
             method: "PUT",
             onSuccess: response => {
               if (response.data.success === true) {
+                $this.setState({
+                  personalDetails: {
+                    ...$this.state.personalDetails,
+                    insertearnComp: [],
+                    insertDeductionComp: [],
+                    insertContributeComp: [],
+                    deleteearnComp: [],
+                    updateearnComp: [],
+                    deleteDeductionComp: [],
+                    updateDeductionComp: [],
+                    deleteContributeComp: [],
+                    updateContributeComp: [],
+
+                    insertIdDetails: [],
+                    insertDependentDetails: [],
+                    deleteIdDetails: [],
+                    updateIdDetails: [],
+                    deleteDependentDetails: [],
+                    updateDependentDetails: [],
+
+                    insertdeptDetails: [],
+                    updatedeptDetails: [],
+
+                    insertservTypeCommission: [],
+                    insertserviceComm: [],
+                    updateserviceComm: [],
+                    updateservTypeCommission: []
+                  }
+                });
                 swalMessage({
                   type: "success",
                   title: "Updated Successfully..."

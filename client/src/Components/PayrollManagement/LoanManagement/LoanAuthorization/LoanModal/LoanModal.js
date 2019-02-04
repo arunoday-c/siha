@@ -6,10 +6,14 @@ import {
   AlagehAutoComplete,
   AlagehFormGroup
 } from "../../../../Wrapper/algaehWrapper";
+
 import { MONTHS, NO_OF_EMI } from "../../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../../utils/algaehApiCall";
 import moment from "moment";
-import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getAmountFormart
+} from "../../../../../utils/GlobalFunctions";
 
 class LoanModal extends Component {
   constructor(props) {
@@ -53,7 +57,7 @@ class LoanModal extends Component {
   textHandle(e) {
     switch (e.target.name) {
       case "approved_amount":
-        if (e.target.value <= this.state.loan_maximum_amount) {
+        if (e.target.value <= this.state.loan_amount) {
           this.setState({
             [e.target.name]: e.target.value,
             installment_amount: e.target.value / this.state.loan_tenure
@@ -62,6 +66,9 @@ class LoanModal extends Component {
           swalMessage({
             title: "Approved Amount cannot be greater than requested amount",
             type: "warning"
+          });
+          this.setState({
+            approved_amount: null
           });
         }
         break;
@@ -228,14 +235,12 @@ class LoanModal extends Component {
                 isImp: true
               }}
               textBox={{
+                decimal: { allowNegative: false },
                 className: "txt-fld",
                 name: "approved_amount",
                 value: this.state.approved_amount,
                 events: {
                   onChange: this.textHandle.bind(this)
-                },
-                others: {
-                  type: "number"
                 }
               }}
             />
@@ -264,6 +269,7 @@ class LoanModal extends Component {
                 isImp: true
               }}
               textBox={{
+                decimal: { allowNegative: false },
                 className: "txt-fld",
                 name: "installment_amount",
                 value: this.state.installment_amount,
@@ -314,6 +320,29 @@ class LoanModal extends Component {
                     )
                   },
                   {
+                    fieldName: "loan_authorized",
+                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.loan_authorized === "PEN" ? (
+                            <span className="badge badge-warning">Pending</span>
+                          ) : row.loan_authorized === "APR" ? (
+                            <span className="badge badge-success">
+                              Approved
+                            </span>
+                          ) : row.loan_authorized === "REJ" ? (
+                            <span className="badge badge-danger">Rejected</span>
+                          ) : row.loan_authorized === "IS" ? (
+                            <span className="badge badge-success">Issued</span>
+                          ) : (
+                            "------"
+                          )}
+                        </span>
+                      );
+                    }
+                  },
+                  {
                     fieldName: "loan_application_date",
                     label: (
                       <AlgaehLabel
@@ -336,7 +365,12 @@ class LoanModal extends Component {
                   },
                   {
                     fieldName: "loan_amount",
-                    label: <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Loan Amount" }} />
+                    ),
+                    displayTemplate: row => {
+                      return <span>{getAmountFormart(row.loan_amount)}</span>;
+                    }
                     //disabled: true
                   },
                   {
@@ -351,7 +385,12 @@ class LoanModal extends Component {
                       <AlgaehLabel
                         label={{ forceLabel: "Installment Amount" }}
                       />
-                    )
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>{getAmountFormart(row.installment_amount)}</span>
+                      );
+                    }
                   },
                   {
                     fieldName: "loan_description",
@@ -368,37 +407,12 @@ class LoanModal extends Component {
                       />
                     ),
                     displayTemplate: row => {
-                      return (
-                        <span>{row.pending_loan / row.installment_amount}</span>
-                      );
+                      return <span>{row.loan_tenure}</span>;
                     }
                   },
                   {
                     fieldName: "pending_loan",
                     label: <AlgaehLabel label={{ forceLabel: "Balance Due" }} />
-                  },
-                  {
-                    fieldName: "loan_authorized",
-                    label: <AlgaehLabel label={{ forceLabel: "Status" }} />,
-                    displayTemplate: row => {
-                      return (
-                        <span>
-                          {row.loan_authorized === "PEN" ? (
-                            <span className="badge badge-warning">Pending</span>
-                          ) : row.loan_authorized === "APR" ? (
-                            <span className="badge badge-success">
-                              Approved
-                            </span>
-                          ) : row.loan_authorized === "REJ" ? (
-                            <span className="badge badge-danger">Rejected</span>
-                          ) : row.loan_authorized === "IS" ? (
-                            <span className="badge badge-success">Issued</span>
-                          ) : (
-                            "------"
-                          )}
-                        </span>
-                      );
-                    }
                   }
                 ]}
                 keyId=""
