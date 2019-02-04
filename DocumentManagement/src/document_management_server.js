@@ -28,6 +28,9 @@ process.on("unhandledRejection", (reason, promise) => {
   logger.error("Unhandled rejection", { reason: reason, promise: promise });
 });
 
+if (process.env.NODE_ENV == "production") {
+  app.set("view cache", true);
+}
 //Error Handling MiddleWare
 app.use((error, req, res, next) => {
   error.status = error.status || httpStatus.internalServer;
@@ -84,6 +87,8 @@ app.use((error, req, res, next) => {
     errorDescription: error
   };
   logger.log("error", "%j", _error);
+
+  res.setHeader("connection", "keep-alive");
 });
 app.server.listen(portNumber);
 console.log(`Document management server started on port ${portNumber} *`);
