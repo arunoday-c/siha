@@ -375,9 +375,12 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          _mysql.releaseConnection();
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -387,62 +390,70 @@ module.exports = {
   },
 
   addEmployeeAdvance: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
 
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("input: ", input);
 
-    _mysql
-      .generateRunningNumber({
-        modules: ["EMPLOYEE_ADVANCE"]
-      })
-      .then(generatedNumbers => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("advance_number: ", generatedNumbers[0]);
+      _mysql
+        .generateRunningNumber({
+          modules: ["EMPLOYEE_ADVANCE"]
+        })
+        .then(generatedNumbers => {
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("advance_number: ", generatedNumbers[0]);
 
-        _mysql
-          .executeQuery({
-            query:
-              "INSERT  INTO `hims_f_employee_advance` (advance_number, employee_id,advance_amount, deducting_month,\
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT  INTO `hims_f_employee_advance` (advance_number, employee_id,advance_amount, deducting_month,\
                 deducting_year, advance_reason,created_date,created_by,updated_date,updated_by)\
                 VALUE(?,?,?,?,?,?,?,?,?,?)",
-            values: [
-              generatedNumbers[0],
-              input.employee_id,
-              input.advance_amount,
-              input.deducting_month,
-              input.deducting_year,
-              input.advance_reason,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id
-            ],
-            printQuery: true
-          })
-          .then(employee_advance => {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = employee_advance;
-              next();
+              values: [
+                generatedNumbers[0],
+                input.employee_id,
+                input.advance_amount,
+                input.deducting_month,
+                input.deducting_year,
+                input.advance_reason,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id
+              ],
+              printQuery: true
+            })
+            .then(employee_advance => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = employee_advance;
+                resolve(employee_advance);
+                next();
+              });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                reject(e);
+                next(e);
+              });
             });
-          })
-          .catch(e => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
-            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            reject(e);
+            next(e);
           });
-      })
-      .catch(e => {
-        _mysql.rollBackTransaction(() => {
-          next(e);
         });
-      });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   }
 
   //TODO
