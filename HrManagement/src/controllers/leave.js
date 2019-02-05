@@ -6,7 +6,8 @@ import {
   applyEmployeeLeave,
   getEmployeeLeaveData,
   getYearlyLeaveData,
-  getEmployeeLeaveHistory
+  getEmployeeLeaveHistory,
+  getLeaveBalance
 } from "../models/leave";
 export default () => {
   const api = Router();
@@ -95,6 +96,19 @@ export default () => {
       }
     }
   );
+  api.get("/getLeaveBalance", getLeaveBalance, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  });
 
   return api;
 };

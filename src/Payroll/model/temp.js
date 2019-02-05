@@ -1,4 +1,4 @@
-//created by irfan:
+//created by irfan: how many leaves are left in each leave type
 let getLeaveBalance = (req, res, next) => {
   // let selectWhere = {
   //   employee_id: "ALL"
@@ -11,10 +11,7 @@ let getLeaveBalance = (req, res, next) => {
     let input = extend({}, req.body);
     //let where = whereCondition(extend(selectWhere, req.query));
     const from_year = moment(input.from_date).format("YYYY");
-    const to_year = moment(input.to_date).format("YYYY");
 
-    debugLog("from_year:", from_year);
-    debugLog("to_year:", to_year);
     if (from_year == to_year) {
       db.getConnection((error, connection) => {
         connection.query(
@@ -24,7 +21,7 @@ let getLeaveBalance = (req, res, next) => {
         hims_f_employee_monthly_leave ML inner join\
         hims_d_leave L on ML.leave_id=L.hims_d_leave_id and L.record_status='A'\
         where ML.employee_id=? and ML.leave_id=? and  ML.year in (?)",
-          [input.employee_id, input.leave_id, [from_year, to_year]],
+          [input.employee_id, input.leave_id, from_year],
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {

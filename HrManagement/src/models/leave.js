@@ -1778,6 +1778,55 @@ getEmployeeLeaveHistory: (req, res, next) => {
     next();
     return;
   }
+},
+//created by irfan: how many leaves are left in each leave type
+getLeaveBalance: (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  let input =  req.query;
+ 
+  const from_year = moment(input.from_date).format("YYYY");
+  const to_year = moment(input.to_date).format("YYYY");
+
+ 
+  if (
+    from_year == to_year
+  ) { 
+
+    _mysql
+    .executeQuery({
+      query:
+      "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, total_eligible,\
+        availed_till_date, close_balance,\
+        L.hims_d_leave_id,L.leave_code,L.leave_description,L.leave_type from \
+        hims_f_employee_monthly_leave ML inner join\
+        hims_d_leave L on ML.leave_id=L.hims_d_leave_id and L.record_status='A'\
+        where ML.employee_id=? and ML.leave_id=? and  ML.year in (?)",
+      values: [input.employee_id, input.leave_id, [from_year, to_year]],
+      printQuery: true
+    })
+    .then(result => {
+     
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      
+    })
+    .catch(e => {
+      next(e);
+    });
+
+
+  }
+  else{
+    req.records = {
+      leave_already_exist: true,
+      message: "cannot apply leave for next year "
+    };
+
+    next();
+    return;
+  }
 }
 
 };
