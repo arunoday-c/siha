@@ -1213,6 +1213,14 @@ module.exports = {
                           _mysql: _mysql
                         })
                           .then(Employee_Leave_Salary => {
+                            utilities
+                              .AlgaehUtilities()
+                              .logger()
+                              .log(
+                                "Employee_Leave_Salary: ",
+                                Employee_Leave_Salary
+                              );
+
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               req.records = {
@@ -1530,10 +1538,21 @@ function InsertEmployeeLeaveSalary(options) {
                   leave_salary_accrual_detail[i].airfare_amount
                 ]
               );
+
               utilities
                 .AlgaehUtilities()
                 .logger()
                 .log("strQry:", strQry);
+
+              _mysql
+                .executeQuery({ query: strQry, printQuery: true })
+                .then(update_employee_leave => {
+                  // resolve();
+                })
+                .catch(e => {
+                  reject(e);
+                  next(e);
+                });
             } else {
               _mysql
                 .executeQuery({
@@ -1618,28 +1637,29 @@ function InsertEmployeeLeaveSalary(options) {
             //     leave_salary_accrual_detail - 1
             //   );
 
-            if (i == leave_salary_accrual_detail.length - 1 && strQry != "") {
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("strQry:", strQry);
+            // if (i == leave_salary_accrual_detail.length - 1 && strQry != "") {
+            //   utilities
+            //     .AlgaehUtilities()
+            //     .logger()
+            //     .log("strQry:", strQry);
 
-              _mysql
-                .executeQuery({ query: strQry, printQuery: true })
-                .then(update_employee_leave => {
-                  resolve();
-                })
-                .catch(e => {
-                  reject(e);
-                  next(e);
-                });
-            }
+            //   _mysql
+            //     .executeQuery({ query: strQry, printQuery: true })
+            //     .then(update_employee_leave => {
+            //       // resolve();
+            //     })
+            //     .catch(e => {
+            //       reject(e);
+            //       next(e);
+            //     });
+            // }
           })
           .catch(e => {
             reject(e);
             next(e);
           });
       }
+      resolve();
     } catch (e) {
       reject(e);
     }

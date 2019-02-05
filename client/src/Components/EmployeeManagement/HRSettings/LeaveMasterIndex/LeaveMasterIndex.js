@@ -32,6 +32,7 @@ export default class LeaveMasterIndex extends Component {
   getLeaveMaster() {
     algaehApiCall({
       uri: "/selfService/getLeaveMaster",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {

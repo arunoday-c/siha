@@ -87,22 +87,35 @@ class OvertimeGroups extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/employeesetups/deleteOvertimeGroups",
+          // uri: "/employeesetups/deleteOvertimeGroups",
+          uri: "/hrsettings/updateOvertimeGroups",
+          module: "hrManagement",
           data: {
-            hims_d_overtime_group_id: data.hims_d_overtime_group_id
+            hims_d_overtime_group_id: data.hims_d_overtime_group_id,
+            overtime_group_code: data.overtime_group_code,
+            overtime_group_description: data.overtime_group_description,
+            overtime_group_status: data.overtime_group_status,
+            working_day_hour: data.working_day_hour,
+            weekoff_day_hour: data.weekoff_day_hour,
+            holiday_hour: data.holiday_hour,
+            working_day_rate: data.working_day_rate,
+            weekoff_day_rate: data.weekoff_day_rate,
+            holiday_rate: data.holiday_rate,
+            payment_type: data.payment_type,
+            record_status: "I"
           },
-          method: "DELETE",
+          method: "PUT",
           onSuccess: response => {
-            if (response.data.records.success) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getOvertimeGroups();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
-                title: response.data.records.message,
+                title: response.data.message,
                 type: "error"
               });
             }
@@ -125,7 +138,9 @@ class OvertimeGroups extends Component {
 
   updateOvertimeGroups(data) {
     algaehApiCall({
-      uri: "/employeesetups/updateOvertimeGroups",
+      // uri: "/employeesetups/updateOvertimeGroups",
+      uri: "/hrsettings/updateOvertimeGroups",
+      module: "hrManagement",
       data: {
         hims_d_overtime_group_id: data.hims_d_overtime_group_id,
         overtime_group_code: data.overtime_group_code,
@@ -137,7 +152,8 @@ class OvertimeGroups extends Component {
         working_day_rate: data.working_day_rate,
         weekoff_day_rate: data.weekoff_day_rate,
         holiday_rate: data.holiday_rate,
-        payment_type: data.payment_type
+        payment_type: data.payment_type,
+        record_status: "A"
       },
       method: "PUT",
       onSuccess: res => {
@@ -197,7 +213,9 @@ class OvertimeGroups extends Component {
         };
 
         algaehApiCall({
-          uri: "/employeesetups/addOvertimeGroups",
+          // uri: "/employeesetups/addOvertimeGroups",
+          uri: "/hrsettings/addOvertimeGroups",
+          module: "hrManagement",
           method: "POST",
           data: data,
           onSuccess: res => {
@@ -531,13 +549,36 @@ class OvertimeGroups extends Component {
                     columns={[
                       {
                         fieldName: "overtime_group_code",
-                        label: <AlgaehLabel label={{ forceLabel: "Code" }} />
+                        label: <AlgaehLabel label={{ forceLabel: "Code" }} />,
+                        disable: true
                       },
                       {
                         fieldName: "overtime_group_description",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
-                        )
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "overtime_group_description",
+                                value: row.overtime_group_description,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Field - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
                       },
                       {
                         fieldName: "payment_type",
@@ -819,7 +860,29 @@ class OvertimeGroups extends Component {
                         fieldName: "overtime_group_description",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Description" }} />
-                        )
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "overtime_group_description",
+                                value: row.overtime_group_description,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Field - cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
                       },
                       {
                         fieldName: "payment_type",
