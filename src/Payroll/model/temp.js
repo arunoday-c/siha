@@ -1,86 +1,64 @@
-let saveF = (req, db, next, connection, input, msg) => {
-  connection.beginTransaction(error => {
-    if (error) {
-      connection.rollback(() => {
-        releaseDBConnection(db, connection);
-        next(error);
-      });
+//created by irfan:
+let getEmployeeLeaveData = (req, res, next) => {
+  // let selectWhere = {
+  //   employee_id: "ALL"
+  // };
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
     }
-    req, next, input, msg;
-    debugLog("inside saveF:", msg);
-    new Promise((resolve, reject) => {
-      try {
-        runningNumberGen({
-          db: connection,
-          module_desc: ["EMPLOYEE_LEAVE"],
-          onFailure: error => {
-            reject(error);
-          },
-          onSuccess: result => {
-            resolve(result);
-          }
-        });
-      } catch (e) {
-        connection.rollback(() => {
-          releaseDBConnection(db, connection);
-          reject(e);
-        });
-      }
-    }).then(numGenLeave => {
-      connection.query(
-        "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,application_date,sub_department_id,leave_id,leave_type,\
-    from_date,to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days, created_date, created_by, updated_date, updated_by)\
-    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        [
-          numGenLeave[0]["completeNumber"],
-          input.employee_id,
-          new Date(),
-          input.sub_department_id,
-          input.leave_id,
-          input.leave_type,
-          input.from_date,
-          input.to_date,
-          input.from_leave_session,
-          input.to_leave_session,
-          input.leave_applied_from,
-          input.total_applied_days,
-          new Date(),
-          input.created_by,
-          new Date(),
-          input.updated_by
-        ],
-        (error, results) => {
-          if (error) {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
-              next(error);
-            });
-          }
-          debugLog("inside leave application");
-          if (results.affectedRows > 0) {
-            debugLog("affectedRows");
+    let db = req.db;
 
-            connection.commit(error => {
-              if (error) {
-                connection.rollback(() => {
-                  releaseDBConnection(db, connection);
-                  next(error);
-                });
-              }
+    // let year = "";
 
-              debugLog("commit");
-              releaseDBConnection(db, connection);
-              req.records = results;
-              next();
-            });
-          } else {
-            connection.rollback(() => {
-              releaseDBConnection(db, connection);
+    // let selfservice = "";
+    // if (req.query.selfservice == "Y") {
+    //   selfservice = ` and  (LD.employee_type='${
+    //     req.query.employee_type
+    //   }' and  (LD.gender='${req.query.gender}' or LD.gender='BOTH' ))`;
+    // }
+
+    if (req.query.year > 0 && req.query.employee_id > 0) {
+      // select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
+      // L.leave_description,total_eligible, availed_till_date, close_balance,\
+      // E.employee_code ,E.full_name as employee_name\
+      // from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id \
+      // inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
+      // and L.record_status='A' where ML.year=? and ML.employee_id=? \
+      //  order by hims_f_employee_monthly_leave_id desc;
+      db.getConnection((error, connection) => {
+        connection.query(
+          "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, L.leave_code,\
+          L.leave_description,total_eligible, availed_till_date, close_balance,\
+          E.employee_code ,E.full_name as employee_name,\
+          LD.hims_d_leave_detail_id,LD.employee_type, LD.eligible_days\
+          from hims_f_employee_monthly_leave  ML inner join hims_d_leave L on ML.leave_id=L.hims_d_leave_id       \
+          inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id\
+          inner join hims_d_employee E on ML.employee_id=E.hims_d_employee_id and E.record_status='A'\
+          and L.record_status='A' where ML.year=? and ML.employee_id=?  and  LD.employee_type=E.employee_type and  (LD.gender=E.sex or LD.gender='BOTH' )\
+            order by hims_f_employee_monthly_leave_id desc;",
+          [req.query.year, req.query.employee_id],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
               next(error);
-            });
+            }
+            req.records = result;
+            next();
           }
-        }
-      );
-    });
-  });
+        );
+      });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message:
+          "Please Provide  Valid (year,employee_id,gender,employee_type) "
+      };
+
+      next();
+      return;
+    }
+  } catch (e) {
+    next(e);
+  }
 };
