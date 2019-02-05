@@ -703,7 +703,7 @@ let getEmployeeLeaveHistory = (req, res, next) => {
         connection.query(
           "select hims_f_leave_application_id,leave_application_code,employee_id,application_date,\
         leave_id,from_date,to_date,from_leave_session,to_leave_session,\
-        leave_applied_from,total_applied_days,total_approved_days,status,authorized3,authorized2,authorize1,remarks,L.leave_code,\
+        leave_applied_from,total_applied_days,total_approved_days,status,authorized3,authorized2,authorized1,remarks,L.leave_code,\
         L.leave_description from hims_f_leave_application LA inner join hims_d_leave L on\
          LA.leave_id=L.hims_d_leave_id and L.record_status='A'\
          where LA.record_status='A' and LA.employee_id=? " +
@@ -2184,7 +2184,7 @@ let authorizeLeaveBACK1 = (req, res, next) => {
             });
           }
           connection.query(
-            "UPDATE hims_f_leave_application SET total_approved_days=?,authorize1=?,\
+            "UPDATE hims_f_leave_application SET total_approved_days=?,authorized1=?,\
             authorize1_date=?,authorize1_by=?,authorize1_comment=?,\
              updated_date=?, updated_by=?  WHERE hims_f_leave_application_id=?",
 
@@ -3291,11 +3291,11 @@ let getLeaveApllication = (req, res, next) => {
 
     let auth_level = "";
     if (req.query.auth_level == "L1") {
-      auth_level = "  authorize1='N' ";
+      auth_level = "  authorized1='N' ";
     } else if (req.query.auth_level == "L2") {
-      auth_level = "  authorize1='Y' and authorized2='N' ";
+      auth_level = "  authorized1='Y' and authorized2='N' ";
     } else if (req.query.auth_level == "L3") {
-      auth_level = "  authorize1='Y' and authorized2='Y' and authorized3='N' ";
+      auth_level = "  authorized1='Y' and authorized2='Y' and authorized3='N' ";
     }
 
     let leave_status = "";
@@ -5829,8 +5829,8 @@ let deleteLeaveApplication = (req, res, next) => {
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_f_leave_application_id,employee_id,authorize1,authorized2,\
-        authorized3,`status`from hims_f_leave_application where authorize1='N' \
+        "select hims_f_leave_application_id,employee_id,authorized1,authorized2,\
+        authorized3,`status`from hims_f_leave_application where authorized1='N' \
         and authorized2='N' and authorized3='N' and `status`='PEN' and employee_id=?\
         and hims_f_leave_application_id=?",
         [req.body.employee_id, req.body.hims_f_leave_application_id],

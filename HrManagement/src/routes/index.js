@@ -35,10 +35,7 @@ router.use("/OTManagement", OTManagement());
 router.use("/leavesalaryaccural", leavesalaryaccural());
 router.use("/payrollsettings", payrollsettings());
 router.use("/hrsettings", hrsettings());
-<<<<<<< HEAD
 router.use("/leave", leave());
-=======
 router.use("/selfService", SelfService());
->>>>>>> df2f13d580abbd2a84e54bb29b8e2cd8f246c164
 
 export default router;

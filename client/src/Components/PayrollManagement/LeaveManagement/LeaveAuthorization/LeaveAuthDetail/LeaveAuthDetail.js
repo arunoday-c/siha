@@ -43,76 +43,24 @@ class LeaveAuthDetail extends Component {
       onFailure: err => {}
     });
   }
-  //TOO
-  //ASK ABOUT YEAR
-  authorizeLeave(type) {
-    let send_data =
-      this.state.data.auth_level === 1
-        ? {
-            total_approved_days: this.state.data.total_approved_days,
-            ["authorize" + this.state.data.auth_level]:
-              type === "A" ? "Y" : "N",
-            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
-              .remarks,
-            hims_f_leave_application_id: this.state.data
-              .hims_f_leave_application_id,
-            auth_level: "L" + this.state.data.auth_level,
-            status: type,
-            employee_id: this.state.data.employee_id,
-            leave_id: this.state.data.leave_id,
-            year: moment(this.state.data.from_date).format("YYYY"),
-            religion_id: this.state.data.religion_id,
-            leave_type: this.state.data.leave_type,
-            from_session: this.state.data.from_leave_session,
-            to_session: this.state.data.to_leave_session,
-            from_date: this.state.data.from_date,
-            to_date: this.state.data.to_date
-          }
-        : this.state.data.auth_level === 2
-        ? {
-            total_approved_days: this.state.data.total_approved_days,
-            ["authorized" + this.state.data.auth_level]:
-              type === "A" ? "Y" : "N",
-            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
-              .remarks,
-            hims_f_leave_application_id: this.state.data
-              .hims_f_leave_application_id,
-            auth_level: "L" + this.state.data.auth_level,
-            status: type,
-            employee_id: this.state.data.employee_id,
-            leave_id: this.state.data.leave_id,
-            year: moment(this.state.data.from_date).format("YYYY"),
-            religion_id: this.state.data.religion_id,
-            leave_type: this.state.data.leave_type,
-            from_session: this.state.data.from_leave_session,
-            to_session: this.state.data.to_leave_session,
-            from_date: this.state.data.from_date,
-            to_date: this.state.data.to_date
-          }
-        : this.state.data.auth_level === 3
-        ? {
-            total_approved_days: this.state.data.total_approved_days,
-            ["authorized" + this.state.data.auth_level]:
-              type === "A" ? "Y" : "N",
-            ["authorize" + this.state.data.auth_level + "_comment"]: this.state
-              .remarks,
-            hims_f_leave_application_id: this.state.data
-              .hims_f_leave_application_id,
-            auth_level: "L" + this.state.data.auth_level,
-            status: type,
-            employee_id: this.state.data.employee_id,
-            leave_id: this.state.data.leave_id,
-            leave_type: this.state.data.leave_type,
-            year: moment(this.state.data.from_date).format("YYYY"),
-            religion_id: this.state.data.religion_id,
-            from_session: this.state.data.from_leave_session,
-            to_session: this.state.data.to_leave_session,
-            from_date: this.state.data.from_date,
-            to_date: this.state.data.to_date
-          }
-        : {};
 
-    console.log("Send Data:", JSON.stringify(send_data));
+  authorizeLeave(type) {
+    let send_data = {
+      total_approved_days: this.state.data.total_approved_days,
+      authorized_comment: this.state.remarks,
+      hims_f_leave_application_id: this.state.data.hims_f_leave_application_id,
+      auth_level: "L" + this.state.data.auth_level,
+      status: type,
+      employee_id: this.state.data.employee_id,
+      leave_id: this.state.data.leave_id,
+      year: moment(this.state.data.from_date).format("YYYY"),
+      religion_id: this.state.data.religion_id,
+      leave_type: this.state.data.leave_type,
+      from_session: this.state.data.from_leave_session,
+      to_session: this.state.data.to_leave_session,
+      from_date: this.state.data.from_date,
+      to_date: this.state.data.to_date
+    };
 
     algaehApiCall({
       uri: "/leave/authorizeLeave",
