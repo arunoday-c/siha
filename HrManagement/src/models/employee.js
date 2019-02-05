@@ -2,6 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import utilities from "algaeh-utilities";
 import moment from "moment";
+import extend from "extend";
 module.exports = {
   addMisEarnDedcToEmployee: (req, res, next) => {
     return new Promise((resolve, reject) => {
