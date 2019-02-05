@@ -1630,10 +1630,7 @@ getEmployeeLeaveData: (req, res, next) => {
     req.query.year > 0 &&
     req.query.employee_id > 0
   ) {
-      utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("getEmployeeLeaveData: ", "getEmployeeLeaveData");
+      
 
     _mysql
     .executeQuery({
@@ -1655,10 +1652,7 @@ getEmployeeLeaveData: (req, res, next) => {
       printQuery: true
     })
     .then(result => {
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("result: ", result);
+     
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -1688,10 +1682,7 @@ getYearlyLeaveData: (req, res, next) => {
   if (
     req.query.year > 0 
   ) {
-      utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("getYearlyLeaveData: ", "getYearlyLeaveData");
+     
 
     _mysql
     .executeQuery({
@@ -1709,10 +1700,7 @@ getYearlyLeaveData: (req, res, next) => {
       printQuery: true
     })
     .then(result => {
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("result: ", result);
+     
         _mysql.releaseConnection();
         req.records = result;
         next();
@@ -1729,6 +1717,111 @@ getYearlyLeaveData: (req, res, next) => {
       invalid_input: true,
       message:
         "Please Provide valid year "
+    };
+
+    next();
+    return;
+  }
+},
+//created by irfan: to get all leave history about employee
+getEmployeeLeaveHistory: (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+
+  let status = "";
+  if (req.query.status == "H") {
+    status = " and `status`<>'PEN'";
+  }
+ 
+  if (
+    req.query.employee_id > 0 
+  ) { 
+
+    _mysql
+    .executeQuery({
+      query:
+      "select hims_f_leave_application_id,leave_application_code,employee_id,application_date,\
+      leave_id,from_date,to_date,from_leave_session,to_leave_session,\
+      leave_applied_from,total_applied_days,total_approved_days,status,authorized3,authorized2,authorized1,remarks,L.leave_code,\
+      L.leave_description from hims_f_leave_application LA inner join hims_d_leave L on\
+       LA.leave_id=L.hims_d_leave_id and L.record_status='A'\
+       where LA.record_status='A' and LA.employee_id=? " +
+          status +
+          " order by hims_f_leave_application_id desc",
+      values: [
+        req.query.employee_id
+        
+     
+      ],
+      printQuery: true
+    })
+    .then(result => {
+     
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      
+    })
+    .catch(e => {
+      next(e);
+    });
+
+
+  }
+  else{
+    req.records = {
+      invalid_input: true,
+      message:
+        "Please Provide valid employee_id "
+    };
+
+    next();
+    return;
+  }
+},
+//created by irfan: how many leaves are left in each leave type
+getLeaveBalance: (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  let input =  req.query;
+ 
+  const from_year = moment(input.from_date).format("YYYY");
+  const to_year = moment(input.to_date).format("YYYY");
+
+ 
+  if (
+    from_year == to_year
+  ) { 
+
+    _mysql
+    .executeQuery({
+      query:
+      "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id, total_eligible,\
+        availed_till_date, close_balance,\
+        L.hims_d_leave_id,L.leave_code,L.leave_description,L.leave_type from \
+        hims_f_employee_monthly_leave ML inner join\
+        hims_d_leave L on ML.leave_id=L.hims_d_leave_id and L.record_status='A'\
+        where ML.employee_id=? and ML.leave_id=? and  ML.year in (?)",
+      values: [input.employee_id, input.leave_id, [from_year, to_year]],
+      printQuery: true
+    })
+    .then(result => {
+     
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      
+    })
+    .catch(e => {
+      next(e);
+    });
+
+
+  }
+  else{
+    req.records = {
+      leave_already_exist: true,
+      message: "cannot apply leave for next year "
     };
 
     next();

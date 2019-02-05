@@ -4,82 +4,96 @@ import utilities from "algaeh-utilities";
 import moment from "moment";
 module.exports = {
   addMisEarnDedcToEmployee: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
-    _mysql
-      .executeQuery({
-        values: input.employees,
-        includeValues: ["employee_id", "amount"],
-        extraValues: {
-          earning_deductions_id: input.earning_deduction_id,
-          year: input.year,
-          month: input.month,
-          category: input.category,
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+      _mysql
+        .executeQuery({
+          values: input.employees,
+          includeValues: ["employee_id", "amount"],
+          extraValues: {
+            earning_deductions_id: input.earning_deduction_id,
+            year: input.year,
+            month: input.month,
+            category: input.category,
 
-          created_by: req.userIdentity.algaeh_d_app_user_id,
-          created_date: new Date(),
-          updated_by: req.userIdentity.algaeh_d_app_user_id,
-          updated_date: new Date()
-        },
-        onDuplicateKeyUpdate: [
-          "earning_deductions_id",
-          "year",
-          "month",
-          "employee_id"
-        ],
-        query:
-          "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
-        printQuery: query => {
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            created_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_date: new Date()
+          },
+          onDuplicateKeyUpdate: [
+            "earning_deductions_id",
+            "year",
+            "month",
+            "employee_id"
+          ],
+          query:
+            "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
+          printQuery: query => {
+            utilities
+              .AlgaehUtilities()
+              .logger()
+              .log("Query ", query);
+          },
+          bulkInsertOrUpdate: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
+  },
+  getEmployee: (req, res, next) => {
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+
+      _mysql
+        .executeQuery({
+          query: "SELECT * FROM hims_d_employee WHERE record_status ='A'",
+          printQuery: true
+        })
+        .then(result => {
           utilities
             .AlgaehUtilities()
             .logger()
-            .log("Query ", query);
-        },
-        bulkInsertOrUpdate: true
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
-  },
-  getEmployee: (req, res, next) => {
-    const _mysql = new algaehMysql();
-
-    _mysql
-      .executeQuery({
-        query: "SELECT * FROM hims_d_employee WHERE record_status ='A'",
-        printQuery: true
-      })
-      .then(result => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("HR management ", result);
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+            .log("HR management ", result);
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   addEmployeeMaster: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("input: ", input);
 
-    _mysql
-      .executeQuery({
-        query:
-          "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name,\
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT  INTO hims_d_employee (employee_code,full_name,arabic_name,\
             date_of_birth,sex,primary_contact_no,email,blood_group,nationality,religion_id,\
             marital_status,present_address,present_address2,present_pincode,present_city_id,\
             present_state_id,present_country_id,permanent_address,permanent_address2,permanent_pincode,\
@@ -88,59 +102,65 @@ module.exports = {
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
             accomodation_provided,hospital_id,created_date,created_by,updated_date,updated_by) \
             values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        values: [
-          input.employee_code,
-          input.full_name,
-          input.arabic_name,
-          input.date_of_birth,
-          input.sex,
-          input.primary_contact_no,
-          input.email,
-          input.blood_group,
-          input.nationality,
-          input.religion_id,
-          input.marital_status,
-          input.present_address,
-          input.present_address2,
-          input.present_pincode,
-          input.present_city_id,
-          input.present_state_id,
-          input.present_country_id,
-          input.permanent_address,
-          input.permanent_address2,
-          input.permanent_pincode,
-          input.permanent_city_id,
-          input.permanent_state_id,
-          input.permanent_country_id,
-          input.isdoctor,
-          input.license_number,
-          input.date_of_joining,
-          input.appointment_type,
-          input.employee_type,
-          input.reliving_date,
-          input.notice_period,
-          input.date_of_resignation,
-          input.company_bank_id,
-          input.employee_bank_name,
-          input.employee_bank_ifsc_code,
-          input.employee_account_number,
-          input.mode_of_payment,
-          input.accomodation_provided,
-          input.hospital_id,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id
-        ]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [
+            input.employee_code,
+            input.full_name,
+            input.arabic_name,
+            input.date_of_birth,
+            input.sex,
+            input.primary_contact_no,
+            input.email,
+            input.blood_group,
+            input.nationality,
+            input.religion_id,
+            input.marital_status,
+            input.present_address,
+            input.present_address2,
+            input.present_pincode,
+            input.present_city_id,
+            input.present_state_id,
+            input.present_country_id,
+            input.permanent_address,
+            input.permanent_address2,
+            input.permanent_pincode,
+            input.permanent_city_id,
+            input.permanent_state_id,
+            input.permanent_country_id,
+            input.isdoctor,
+            input.license_number,
+            input.date_of_joining,
+            input.appointment_type,
+            input.employee_type,
+            input.reliving_date,
+            input.notice_period,
+            input.date_of_resignation,
+            input.company_bank_id,
+            input.employee_bank_name,
+            input.employee_bank_ifsc_code,
+            input.employee_account_number,
+            input.mode_of_payment,
+            input.accomodation_provided,
+            input.hospital_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   updateEmployee: (req, res, next) => {
@@ -517,443 +537,542 @@ module.exports = {
   },
 
   getEmployeeDepartments: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
 
-    let inputValues = [];
-    let _stringData = "";
-    if (input.employee_id != null) {
-      _stringData += " AND employee_id=?";
-      inputValues.push(input.employee_id);
-    }
+      let inputValues = [];
+      let _stringData = "";
+      if (input.employee_id != null) {
+        _stringData += " AND employee_id=?";
+        inputValues.push(input.employee_id);
+      }
 
-    _mysql
-      .executeQuery({
-        query:
-          "SELECT ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT ED.hims_d_employee_department_id,ED.employee_id,ED.sub_department_id,ED.category_speciality_id,ED.user_id,\
         ED.services_id,ED.employee_designation_id,ED.reporting_to_id,ED.from_date,ED.to_date,ED.dep_status,\
         CS.hims_m_category_speciality_mappings_id,CS.category_id,CS.speciality_id,\
        CS.category_speciality_status,CS.effective_start_date,CS.effective_end_date \
        from hims_m_employee_department_mappings ED,hims_m_category_speciality_mappings CS\
         Where ED.record_status='A' and CS.record_status='A' \
          and ED.category_speciality_id=CS.hims_m_category_speciality_mappings_id " +
-          _stringData,
-        values: inputValues,
-        printQuery: true
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+            _stringData,
+          values: inputValues,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   getEmployeeWorkExperience: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
 
-    let employee_id = [];
-    if (input.employee_id != "null" && input.employee_id != undefined) {
-      employee_id.push(input.employee_id);
-    } else {
-      employee_id.push(req.userIdentity.employee_id);
-    }
+      let employee_id = [];
+      if (input.employee_id != "null" && input.employee_id != undefined) {
+        employee_id.push(input.employee_id);
+      } else {
+        employee_id.push(req.userIdentity.employee_id);
+      }
 
-    _mysql
-      .executeQuery({
-        query:
-          "select hims_d_employee_experience_id,employee_id,\
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_employee_experience_id,employee_id,\
           from_date,to_date,previous_company_name,designation,experience_years, experience_months from hims_d_employee_experience\
           where record_status='A' and employee_id=?",
-        values: employee_id,
-        printQuery: true
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: employee_id,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   addEmployeeWorkExperience: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("input: ", input);
 
-    _mysql
-      .executeQuery({
-        query:
-          "INSERT  INTO hims_d_employee_experience (employee_id, previous_company_name,from_date,\
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT  INTO hims_d_employee_experience (employee_id, previous_company_name,from_date,\
             to_date,designation,experience_years, experience_months,\
             created_date,created_by,updated_date,updated_by) \
             values(?,?,?,?,?,?,?,?,?,?,?)",
-        values: [
-          input.employee_id,
-          input.previous_company_name,
-          input.from_date,
-          input.to_date,
-          input.designation,
-          input.experience_years,
-          input.experience_months,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id
-        ]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [
+            input.employee_id,
+            input.previous_company_name,
+            input.from_date,
+            input.to_date,
+            input.designation,
+            input.experience_years,
+            input.experience_months,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   updateEmployeeWorkExperience: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("input: ", input);
 
-    _mysql
-      .executeQuery({
-        query:
-          "update hims_d_employee_experience set employee_id=?,from_date=?,to_date=?,previous_company_name=?,\
+      _mysql
+        .executeQuery({
+          query:
+            "update hims_d_employee_experience set employee_id=?,from_date=?,to_date=?,previous_company_name=?,\
           designation=?,experience_years=?, experience_months=?, updated_date=?, updated_by=?  \
           WHERE record_status='A' and  hims_d_employee_experience_id = ?",
-        values: [
-          input.employee_id,
-          input.from_date,
-          input.to_date,
-          input.previous_company_name,
-          input.designation,
-          input.experience_years,
-          input.experience_months,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          input.hims_d_employee_experience_id
-        ]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [
+            input.employee_id,
+            input.from_date,
+            input.to_date,
+            input.previous_company_name,
+            input.designation,
+            input.experience_years,
+            input.experience_months,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_employee_experience_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
   deleteEmployeeWorkExperience: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("input: ", input);
 
-    _mysql
-      .executeQuery({
-        query:
-          "DELETE FROM hims_d_employee_experience  WHERE hims_d_employee_experience_id=?",
-        values: [input.hims_d_employee_experience_id]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+      _mysql
+        .executeQuery({
+          query:
+            "DELETE FROM hims_d_employee_experience  WHERE hims_d_employee_experience_id=?",
+          values: [input.hims_d_employee_experience_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   //Employee Education
   getEmployeeEducation: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
 
-    let employee_id = [];
-    if (input.employee_id != "null" && input.employee_id != undefined) {
-      employee_id.push(input.employee_id);
-    } else {
-      employee_id.push(req.userIdentity.employee_id);
-    }
+      let employee_id = [];
+      if (input.employee_id != "null" && input.employee_id != undefined) {
+        employee_id.push(input.employee_id);
+      } else {
+        employee_id.push(req.userIdentity.employee_id);
+      }
 
-    _mysql
-      .executeQuery({
-        query:
-          "select hims_d_employee_education_id,employee_id,\
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_employee_education_id,employee_id,\
           qualification,qualitfication_type,year,university from hims_d_employee_education\
           where record_status='A' and employee_id=?",
-        values: employee_id,
-        printQuery: true
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: employee_id,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   addEmployeeEducation: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("input: ", input);
 
-    _mysql
-      .executeQuery({
-        query:
-          "INSERT  INTO hims_d_employee_education (employee_id, qualification,qualitfication_type,\
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT  INTO hims_d_employee_education (employee_id, qualification,qualitfication_type,\
             year,university,\
             created_date,created_by,updated_date,updated_by) \
             values(?,?,?,?,?,?,?,?,?)",
-        values: [
-          input.employee_id,
-          input.qualification,
-          input.qualitfication_type,
-          input.year,
-          input.university,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id
-        ]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [
+            input.employee_id,
+            input.qualification,
+            input.qualitfication_type,
+            input.year,
+            input.university,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   updateEmployeeEducation: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("input: ", input);
 
-    _mysql
-      .executeQuery({
-        query:
-          "update hims_d_employee_education set employee_id=?,qualification=?,qualitfication_type=?,year=?,\
+      _mysql
+        .executeQuery({
+          query:
+            "update hims_d_employee_education set employee_id=?,qualification=?,qualitfication_type=?,year=?,\
           university=?,updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_education_id = ?",
-        values: [
-          input.employee_id,
-          input.qualification,
-          input.qualitfication_type,
-          input.year,
-          input.university,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          input.hims_d_employee_experience_id
-        ]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [
+            input.employee_id,
+            input.qualification,
+            input.qualitfication_type,
+            input.year,
+            input.university,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_employee_experience_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
   deleteEmployeeEducation: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+      utilities
+        .AlgaehUtilities()
+        .logger()
+        .log("input: ", input);
 
-    _mysql
-      .executeQuery({
-        query:
-          "DELETE FROM hims_d_employee_education  WHERE hims_d_employee_education_id=?",
-        values: [input.hims_d_employee_education_id]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+      _mysql
+        .executeQuery({
+          query:
+            "DELETE FROM hims_d_employee_education  WHERE hims_d_employee_education_id=?",
+          values: [input.hims_d_employee_education_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   getEmpEarningComponents: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
-    _mysql
-      .executeQuery({
-        query:
-          "SELECT hims_d_employee_earnings_id,employee_id,earnings_id,amount,formula,allocate,\
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_d_employee_earnings_id,employee_id,earnings_id,amount,formula,allocate,\
         calculation_method from hims_d_employee_earnings where employee_id = ?;",
-        values: [input.employee_id],
-        printQuery: true
-      })
-      .then(result => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("HR management ", result);
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [input.employee_id],
+          printQuery: true
+        })
+        .then(result => {
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("HR management ", result);
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   getEmpDeductionComponents: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
-    _mysql
-      .executeQuery({
-        query:
-          "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,amount,formula,allocate,\
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,amount,formula,allocate,\
           calculation_method from hims_d_employee_deductions where employee_id = ?;",
-        values: [input.employee_id],
-        printQuery: true
-      })
-      .then(result => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("HR management ", result);
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [input.employee_id],
+          printQuery: true
+        })
+        .then(result => {
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("HR management ", result);
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
 
   getEmpContibuteComponents: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
-    _mysql
-      .executeQuery({
-        query:
-          "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,amount,formula,allocate,\
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,amount,formula,allocate,\
           calculation_method from hims_d_employee_contributions where employee_id = ?;",
-        values: [input.employee_id],
-        printQuery: true
-      })
-      .then(result => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("HR management ", result);
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [input.employee_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
   getFamilyIdentification: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
-    _mysql
-      .executeQuery({
-        query:
-          "SELECT hims_d_employee_identification_id,employee_id,identity_documents_id,identity_number,\
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_d_employee_identification_id,employee_id,identity_documents_id,identity_number,\
           valid_upto,issue_date,alert_required,alert_date from hims_d_employee_identification where \
           employee_id = ?; \
           SELECT hims_d_employee_dependents_id,employee_id,dependent_type,dependent_name,dependent_identity_type,\
           dependent_identity_no from hims_d_employee_dependents where employee_id = ?;",
-        values: [input.employee_id, input.employee_id],
-        printQuery: true
-      })
-      .then(result => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("HR management ", result);
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [input.employee_id, input.employee_id],
+          printQuery: true
+        })
+        .then(result => {
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("HR management ", result);
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
   getDoctorServiceCommission: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
-    _mysql
-      .executeQuery({
-        query:
-          "select hims_m_doctor_service_commission_id,provider_id,services_id,service_type_id,op_cash_commission_percent,\
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_m_doctor_service_commission_id,provider_id,services_id,service_type_id,op_cash_commission_percent,\
           op_credit_commission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
            from hims_m_doctor_service_commission where record_status='A'and provider_id=?",
-        values: [input.provider_id],
-        printQuery: true
-      })
-      .then(result => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("HR management ", result);
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [input.provider_id],
+          printQuery: true
+        })
+        .then(result => {
+          utilities
+            .AlgaehUtilities()
+            .logger()
+            .log("HR management ", result);
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   },
   getDoctorServiceTypeCommission: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const input = req.query;
-    _mysql
-      .executeQuery({
-        query:
-          "select hims_m_doctor_service_type_commission_id,provider_id,service_type_id,\
+    return new Promise((resolve, reject) => {
+      const _mysql = new algaehMysql();
+      const input = req.query;
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_m_doctor_service_type_commission_id,provider_id,service_type_id,\
         op_cash_comission_percent,op_credit_comission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
          from hims_m_doctor_service_type_commission where record_status='A' and provider_id=?",
-        values: [input.provider_id],
-        printQuery: true
-      })
-      .then(result => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("HR management ", result);
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        next(e);
-      });
+          values: [input.provider_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    }).catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
   }
 };
