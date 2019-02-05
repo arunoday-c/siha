@@ -132,7 +132,8 @@
       .patientProfile .patientTopNav ul li span.active:hover:after {
         display: none !important;
         border: none !important;
-        cursor: pointer; }
+        cursor: pointer;
+        border: 1px solid red; }
   .patientProfile .patientTopNav .patient-quick-info {
     color: #34b8bc;
     margin: 0;
