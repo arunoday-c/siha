@@ -516,6 +516,7 @@ class ApplyLeave extends Component {
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveHistory",
       method: "GET",
+      module: "hrManagement",
       data: {
         employee_id: this.state.employee_id
       },
@@ -534,6 +535,7 @@ class ApplyLeave extends Component {
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
+      module: "hrManagement",
       data: {
         employee_id: this.state.employee_id,
         year: moment().year(),

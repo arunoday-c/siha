@@ -24,6 +24,7 @@ class YearlyLeaveDetail extends Component {
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveData",
       method: "GET",
+      module: "hrManagement",
       data: {
         year: year,
         employee_id: id

@@ -29,6 +29,7 @@ class LeaveAuthDetail extends Component {
     algaehApiCall({
       uri: "/leave/getEmployeeLeaveHistory",
       method: "GET",
+      module: "hrManagement",
       data: {
         employee_id: this.state.data.employee_id,
         status: "H"

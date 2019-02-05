@@ -66,7 +66,6 @@ class SelfPersonalDetails extends Component {
   }
 
   changeGridEditors(row, e) {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
@@ -2250,7 +2249,29 @@ class SelfPersonalDetails extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Qualification" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "qualification",
+                                  value: row.qualification,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "qualitfication_type",
@@ -2302,13 +2323,58 @@ class SelfPersonalDetails extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Year of Passout" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "year",
+                                  value: row.year,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true,
+                                    type: "number"
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "university",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "University" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "university",
+                                  value: row.university,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Field cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         }
                       ]}
                       keyId="hims_d_employee_education_id"
