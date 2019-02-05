@@ -574,7 +574,7 @@ const generateDbConnection = (req, res, next) => {
 };
 //created by irfan: to get maximum AUTH levels
 let getMaxAuth = options => {
-  const db = options.req.db;
+  let db = options.req.db;
 
   let MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth;
 
@@ -669,7 +669,7 @@ let getMaxAuth = options => {
             break;
           default:
         }
-
+        debugLog("redd:", { MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth });
         options.onSuccess({ MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth });
 
         //HOW TO CALL

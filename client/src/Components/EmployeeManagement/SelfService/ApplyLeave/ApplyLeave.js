@@ -244,6 +244,7 @@ class ApplyLeave extends Component {
     algaehApiCall({
       uri: "/leave/calculateLeaveDays",
       method: "GET",
+      module: "hrManagement",
       data: {
         from_session: this.state.from_leave_session,
         to_session: this.state.to_leave_session,
@@ -257,11 +258,11 @@ class ApplyLeave extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            total_applied_days: res.data.records.calculatedLeaveDays
+            total_applied_days: res.data.result.calculatedLeaveDays
           });
         } else if (!res.data.success) {
           swalMessage({
-            title: res.data.records.message,
+            title: res.data.result.message,
             type: "warning"
           });
           this.setState({

@@ -6,7 +6,6 @@ import utilities from "algaeh-utilities";
 //import Sync from "sync";
 module.exports = {
   //created by irfan: to
-
   getHrmsOptions: (req, res, next) => {
     console.log("First Hit");
     const _mysql = new algaehMysql();
@@ -28,6 +27,7 @@ module.exports = {
         next(e);
       });
   },
+  //created by irfan: to
   updateHrmsOptions: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
@@ -95,7 +95,7 @@ module.exports = {
         next(e);
       });
   },
-
+  //created by irfan: to
   getEosOptions: (req, res, next) => {
     const _mysql = new algaehMysql();
 
@@ -114,6 +114,7 @@ module.exports = {
         next(e);
       });
   },
+  //created by irfan: to
   updateEosOptions: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };

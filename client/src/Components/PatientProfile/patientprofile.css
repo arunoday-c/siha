@@ -121,7 +121,8 @@
       text-transform: uppercase;
       padding: 9px 15px 8px;
       color: #858585;
-      cursor: pointer; }
+      cursor: pointer;
+      font-size: 0.8em; }
     .patientProfile .patientTopNav ul li span.active {
       border-bottom: solid 3px #00a9ad;
       color: #fff;
