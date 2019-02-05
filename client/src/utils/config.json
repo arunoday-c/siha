@@ -16,6 +16,10 @@
     "hrManagement": {
       "port": 3004,
       "url": ""
+    },
+    "masterSettings": {
+      "port": 3003,
+      "url": ""
     }
   },
   "apiAuth": {

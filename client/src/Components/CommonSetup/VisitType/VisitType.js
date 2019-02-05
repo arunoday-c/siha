@@ -187,11 +187,6 @@ class VisitType extends Component {
     });
   }
 
-  editTexts(a, b) {
-    // row[e.target.name] = e.target.value;
-    // callback(row);
-  }
-
   editVisitTypes(e) {
     const data = JSON.parse(e.currentTarget.getAttribute("current_edit"));
 
@@ -211,8 +206,6 @@ class VisitType extends Component {
   }
 
   updateVisitType(data) {
-    // data.updated_by = getCookie("UserID");
-
     algaehApiCall({
       uri: "/visitType/update",
       data: data,
@@ -258,7 +251,6 @@ class VisitType extends Component {
     let value = e.value || e.target.value;
     row[name] = value;
     row.update();
-    //this.resetState();
   }
   tedting() {
     debugger;

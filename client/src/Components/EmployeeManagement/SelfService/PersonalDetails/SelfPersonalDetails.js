@@ -66,6 +66,7 @@ class SelfPersonalDetails extends Component {
   }
 
   changeGridEditors(row, e) {
+    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
@@ -119,6 +120,11 @@ class SelfPersonalDetails extends Component {
         null;
         break;
     }
+  }
+
+  changeGridDate(row, selDate, name) {
+    row[name] = moment(selDate).format("YYYY-MM-DD");
+    row.update();
   }
 
   addEmployeeEducation(type) {
@@ -198,11 +204,11 @@ class SelfPersonalDetails extends Component {
       uri: "/employee/updateEmployeeWorkExperience",
       method: "PUT",
       data: {
-        employee_id: data.hims_d_employee_id,
+        employee_id: data.employee_id,
         previous_company_name: data.previous_company_name,
         from_date: data.from_date,
         to_date: data.to_date,
-        designation: data.prev_designation,
+        designation: data.designation,
         experience_years: data.experience_years,
         experience_months: data.experience_months,
         hims_d_employee_experience_id: data.hims_d_employee_experience_id
@@ -1262,6 +1268,7 @@ class SelfPersonalDetails extends Component {
                 <div className="row">
                   <div className="col-12" id="selfService_FamilyTable_Cntr">
                     <AlgaehDataGrid
+                      id="selfServiceFamilyTable"
                       columns={[
                         {
                           fieldName: "dependent_type",
@@ -1925,9 +1932,14 @@ class SelfPersonalDetails extends Component {
 
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-12" id="selfService_WorkExpTable_Cntr">
+                  <div
+                    className="col-12"
+                    id="selfService_WorkExpTable_Cntr"
+                    data-validate="WrkExpGrd"
+                  >
                     <AlgaehDataGrid
                       id="WrkExpGrd"
+                      datavalidate="data-validate='WrkExpGrd'"
                       columns={[
                         {
                           fieldName: "previous_company_name",
@@ -1935,7 +1947,29 @@ class SelfPersonalDetails extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Company Name" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "previous_company_name",
+                                  value: row.previous_company_name,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage: "Name - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "designation",
@@ -1943,19 +1977,72 @@ class SelfPersonalDetails extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Designation" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "designation",
+                                  value: row.designation,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      "Designation - cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "from_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "From Date" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlgaehDateHandler
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "from_date"
+                                }}
+                                events={{
+                                  onChange: this.changeGridDate.bind(this, row)
+                                }}
+                                value={row.from_date}
+                                maxDate={new Date()}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "to_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "To Date" }} />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlgaehDateHandler
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "to_date"
+                                }}
+                                events={{
+                                  onChange: this.changeGridDate.bind(this, row)
+                                }}
+                                value={row.to_date}
+                                maxDate={new Date()}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "experience_years",
@@ -2144,6 +2231,7 @@ class SelfPersonalDetails extends Component {
                     data-validate="qual-grid"
                   >
                     <AlgaehDataGrid
+                      is="qualificationGrid"
                       columns={[
                         {
                           fieldName: "qualification",
@@ -2353,6 +2441,7 @@ class SelfPersonalDetails extends Component {
                 <div className="row">
                   <div className="col-12" id="selfService_AttachmentTable_Cntr">
                     <AlgaehDataGrid
+                      id="documentGrid"
                       columns={[
                         {
                           fieldName: "documentName",

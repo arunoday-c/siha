@@ -1,7 +1,7 @@
 import express from "express";
-import test from "../controllers/test";
+import department from "../controllers/department";
 
 const router = express();
-router.use("/test", test());
+router.use("/department", department());
 
 export default router;

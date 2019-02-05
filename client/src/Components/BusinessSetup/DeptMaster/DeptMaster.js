@@ -374,6 +374,7 @@ class DeptMaster extends Component {
           uri: "/department/add",
           method: "POST",
           data: send_data,
+          module: "masterSettings",
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({

@@ -473,6 +473,7 @@ class ApplyLeave extends Component {
         algaehApiCall({
           uri: "/leave/applyEmployeeLeave",
           method: "POST",
+          module: "hrManagement",
           data: {
             employee_id: this.state.employee_id,
             sub_department_id: this.state.sub_department_id,

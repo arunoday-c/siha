@@ -197,7 +197,8 @@ class AutoComplete extends PureComponent {
           referencevalue: this.state.value,
           data_role: "dropdownlist",
           type: "text",
-          ..._isImportant
+          ..._isImportant,
+          ...this.props.selector.others
         }}
         noResultsMessage={_noResultsMessage}
         value={this.state.value}
