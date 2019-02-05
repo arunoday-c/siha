@@ -58,7 +58,8 @@
     border-right: 1px solid rgba(0, 0, 0, 0.2);
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     cursor: pointer;
-    position: relative; }
+    position: relative;
+    font-size: 0.7em; }
   #dentalTreatment .surface-Marking div:hover {
     background: #ffe79b; }
   #dentalTreatment .surface-Marking div span {

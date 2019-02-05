@@ -121,7 +121,8 @@
       text-transform: uppercase;
       padding: 9px 15px 8px;
       color: #858585;
-      cursor: pointer; }
+      cursor: pointer;
+      font-size: 0.8em; }
     .patientProfile .patientTopNav ul li span.active {
       border-bottom: solid 3px #00a9ad;
       color: #fff;
@@ -132,8 +133,7 @@
       .patientProfile .patientTopNav ul li span.active:hover:after {
         display: none !important;
         border: none !important;
-        cursor: pointer;
-        border: 1px solid red; }
+        cursor: pointer; }
   .patientProfile .patientTopNav .patient-quick-info {
     color: #34b8bc;
     margin: 0;

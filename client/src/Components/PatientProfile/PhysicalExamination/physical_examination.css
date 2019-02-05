@@ -71,3 +71,10 @@
   left: 22px;
   margin-left: -3px;
   background: #cecece; }
+
+.textArea {
+  max-height: 188px; }
+  .textArea .ui.input input,
+  .textArea .ui.input textarea {
+    min-height: 200px !important;
+    max-height: 200px !important; }
