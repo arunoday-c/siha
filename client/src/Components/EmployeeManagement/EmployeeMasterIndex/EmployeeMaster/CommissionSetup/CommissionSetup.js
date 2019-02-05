@@ -47,28 +47,23 @@ class CommissionSetup extends Component {
     // AlgaehLoader({ show: true });
   }
 
-  componentWillMount() {
-    
-    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
-    this.setState({ ...this.state, ...InputOutput });
-  }
-
   componentDidMount() {
-    
+    let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
+    this.setState({ ...this.state, ...InputOutput }, () => {
+      if (this.state.hims_d_employee_id !== null) {
+        if (this.state.servTypeCommission.length === 0) {
+          getServiceTypeDepartments(this);
+        }
 
-    if (this.state.hims_d_employee_id !== null) {
-      if (this.state.servTypeCommission.length === 0) {
-        getServiceTypeDepartments(this);
-      }
-
-      if (this.state.serviceComm.length === 0) {
-        getServiceDepartments(this);
+        if (this.state.serviceComm.length === 0) {
+          getServiceDepartments(this);
+        } else {
+          AlgaehLoader({ show: false });
+        }
       } else {
         AlgaehLoader({ show: false });
       }
-    } else {
-      AlgaehLoader({ show: false });
-    }
+    });
   }
 
   render() {

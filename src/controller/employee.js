@@ -1,46 +1,46 @@
 import { Router } from "express";
 import { releaseConnection } from "../utils";
 import {
-  addEmployee,
+  addEmployee, //Not in Use
   getEmployee,
   addEmployeeAdvance,
   getEmployeeAdvance,
   updateEmployee,
-  getEmployeeDetails,
-  getDoctorServiceCommission,
-  getEmployeeCategory,
-  getDoctorServiceTypeCommission,
-  addEmployeeGroups,
-  getEmployeeGroups,
-  updateEmployeeGroup,
-  deleteEmployeeGroup,
-  addEarningDeduction,
-  getEarningDeduction,
-  updateEarningDeduction,
-  deleteEarningDeduction,
-  addEmployeeMaster,
-  addEmployeeIdentification,
-  getEmployeeIdentification,
-  updateEmployeeIdentification,
-  deleteEmployeeIdentification,
-  addEmployeeInfo,
-  addLoanMaster,
-  getLoanMaster,
-  updateLoanMaster,
-  deleteLoanMaster,
-  getEmployeeWorkExperience,
-  addEmployeeWorkExperience,
-  deleteEmployeeWorkExperience,
-  updateEmployeeWorkExperience,
-  updateEmployeeEducation,
-  deleteEmployeeEducation,
-  addEmployeeEducation,
-  getEmployeeEducation,
-  getEmployeeDepartments,
-  getEmpEarningComponents,
-  getEmpDeductionComponents,
-  getEmpContibuteComponents,
-  getFamilyIdentification,
+  getEmployeeDetails, //Not in Use
+  getDoctorServiceCommission, //Done
+  getEmployeeCategory, //Not in Use
+  getDoctorServiceTypeCommission, //Done
+  addEmployeeGroups, //Done
+  getEmployeeGroups, //Done
+  updateEmployeeGroup, //Done
+  deleteEmployeeGroup, //Done
+  addEarningDeduction, //Done
+  getEarningDeduction, //Done
+  updateEarningDeduction, //Done
+  deleteEarningDeduction, //Done
+  addEmployeeMaster, //Done
+  addEmployeeIdentification, //Done
+  getEmployeeIdentification, //Not in Use
+  updateEmployeeIdentification, //Not in Use
+  deleteEmployeeIdentification, //Not in Use
+  addEmployeeInfo, //Not in Use
+  addLoanMaster, //Done
+  getLoanMaster, //Done
+  updateLoanMaster, //Done
+  deleteLoanMaster, //Done
+  getEmployeeWorkExperience, //Done
+  addEmployeeWorkExperience, //Done
+  deleteEmployeeWorkExperience, //Done
+  updateEmployeeWorkExperience, //Done
+  updateEmployeeEducation, //Done
+  deleteEmployeeEducation, //Done
+  addEmployeeEducation, //Done
+  getEmployeeEducation, //Done
+  getEmployeeDepartments, //Done
+  getEmpEarningComponents, //Done
+  getEmpDeductionComponents, //Done
+  getEmpContibuteComponents, //Done
+  getFamilyIdentification, //Done
   getEmployeesForMisED,
   addMisEarnDedcToEmployees
 } from "../model/employee";

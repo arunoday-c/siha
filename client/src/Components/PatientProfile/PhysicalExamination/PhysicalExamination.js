@@ -30,7 +30,7 @@ class PhysicalExamination extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-12" }}
+                    div={{ className: "col-lg-12 textArea" }}
                     label={{
                       forceLabel: "",
                       isImp: false

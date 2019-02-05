@@ -51,8 +51,6 @@ const numberSet = ($this, e) => {
 };
 
 const AddEarnComponent = ($this, e) => {
-  
-
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='EarnComponent'",
@@ -274,7 +272,6 @@ const deleteEarningComponent = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    
     if (willDelete.value) {
       let deleteearnComp = $this.state.deleteearnComp;
       let insertearnComp = $this.state.insertearnComp;
@@ -369,7 +366,6 @@ const deleteDeductionComponent = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    
     if (willDelete.value) {
       let insertDeductionComp = $this.state.insertDeductionComp;
       let deductioncomponents = $this.state.deductioncomponents;
@@ -464,7 +460,6 @@ const deleteContibuteComponent = ($this, row) => {
     cancelButtonColor: "#d33",
     cancelButtonText: "No"
   }).then(willDelete => {
-    
     if (willDelete.value) {
       let contributioncomponents = $this.state.contributioncomponents;
       let insertContributeComp = $this.state.insertContributeComp;
@@ -550,16 +545,15 @@ const updateContibuteComponent = ($this, row) => {
 };
 
 const getEmpEarningComponents = $this => {
-  
   algaehApiCall({
     uri: "/employee/getEmpEarningComponents",
+    module: "hrManagement",
     method: "GET",
     data: { employee_id: $this.state.hims_d_employee_id },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          
           $this.setState({
             earningComponents: data
           });
@@ -588,16 +582,15 @@ const getEmpEarningComponents = $this => {
 };
 
 const getEmpDeductionComponents = $this => {
-  
   algaehApiCall({
     uri: "/employee/getEmpDeductionComponents",
+    module: "hrManagement",
     method: "GET",
     data: { employee_id: $this.state.hims_d_employee_id },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          
           $this.setState({
             deductioncomponents: data
           });
@@ -625,16 +618,15 @@ const getEmpDeductionComponents = $this => {
   });
 };
 const getEmpContibuteComponents = $this => {
-  
   algaehApiCall({
     uri: "/employee/getEmpContibuteComponents",
+    module: "hrManagement",
     method: "GET",
     data: { employee_id: $this.state.hims_d_employee_id },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          
           $this.setState({
             contributioncomponents: data
           });

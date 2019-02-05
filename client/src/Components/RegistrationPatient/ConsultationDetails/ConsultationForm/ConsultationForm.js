@@ -44,7 +44,7 @@ class AddConsultationForm extends Component {
     let InputOutput;
 
     InputOutput = this.props.PatRegIOputs;
-    
+
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -69,6 +69,7 @@ class AddConsultationForm extends Component {
     ) {
       this.props.getProviderDetails({
         uri: "/employee/get",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",

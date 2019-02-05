@@ -260,6 +260,7 @@ const serviceServTypeHandeler = ($this, e) => {
 const getServiceTypeDepartments = $this => {
   algaehApiCall({
     uri: "/employee/getDoctorServiceTypeCommission",
+    module: "hrManagement",
     method: "GET",
     data: { provider_id: $this.state.hims_d_employee_id },
     onSuccess: response => {
@@ -285,6 +286,7 @@ const getServiceTypeDepartments = $this => {
 const getServiceDepartments = $this => {
   algaehApiCall({
     uri: "/employee/getDoctorServiceCommission",
+    module: "hrManagement",
     method: "GET",
     data: { provider_id: $this.state.hims_d_employee_id },
     onSuccess: response => {

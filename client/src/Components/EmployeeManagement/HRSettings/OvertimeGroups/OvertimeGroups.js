@@ -87,7 +87,6 @@ class OvertimeGroups extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          // uri: "/employeesetups/deleteOvertimeGroups",
           uri: "/hrsettings/updateOvertimeGroups",
           module: "hrManagement",
           data: {
@@ -138,7 +137,6 @@ class OvertimeGroups extends Component {
 
   updateOvertimeGroups(data) {
     algaehApiCall({
-      // uri: "/employeesetups/updateOvertimeGroups",
       uri: "/hrsettings/updateOvertimeGroups",
       module: "hrManagement",
       data: {
@@ -213,7 +211,6 @@ class OvertimeGroups extends Component {
         };
 
         algaehApiCall({
-          // uri: "/employeesetups/addOvertimeGroups",
           uri: "/hrsettings/addOvertimeGroups",
           module: "hrManagement",
           method: "POST",

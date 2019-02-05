@@ -60,6 +60,7 @@ class EmployeePayment extends Component {
     ) {
       this.props.getEmployees({
         uri: "/employee/get",
+        module: "hrManagement",
         method: "GET",
 
         redux: {

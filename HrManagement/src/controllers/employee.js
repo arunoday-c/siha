@@ -1,6 +1,26 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { addMisEarnDedcToEmployee } from "../models/employee";
+import {
+  addMisEarnDedcToEmployee,
+  getEmployee,
+  addEmployeeMaster,
+  updateEmployee,
+  getEmployeeWorkExperience,
+  getEmployeeDepartments,
+  addEmployeeWorkExperience,
+  updateEmployeeWorkExperience,
+  deleteEmployeeWorkExperience,
+  getEmployeeEducation,
+  addEmployeeEducation,
+  updateEmployeeEducation,
+  deleteEmployeeEducation,
+  getEmpEarningComponents,
+  getEmpDeductionComponents,
+  getEmpContibuteComponents,
+  getFamilyIdentification,
+  getDoctorServiceCommission,
+  getDoctorServiceTypeCommission
+} from "../models/employee";
 export default () => {
   const api = Router();
   api.post(
@@ -13,5 +33,182 @@ export default () => {
       });
     }
   );
+
+  api.get("/get", getEmployee, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addEmployeeMaster", addEmployeeMaster, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateEmployee", updateEmployee, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.get(
+    "/getEmployeeDepartments",
+    getEmployeeDepartments,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getEmployeeWorkExperience",
+    getEmployeeWorkExperience,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.post(
+    "/addEmployeeWorkExperience",
+    addEmployeeWorkExperience,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.put(
+    "/updateEmployeeWorkExperience",
+    updateEmployeeWorkExperience,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.delete(
+    "/deleteEmployeeWorkExperience",
+    deleteEmployeeWorkExperience,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get("/getEmployeeEducation", getEmployeeEducation, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+  api.post("/addEmployeeEducation", addEmployeeEducation, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put(
+    "/updateEmployeeEducation",
+    updateEmployeeEducation,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.delete(
+    "/deleteEmployeeEducation",
+    deleteEmployeeEducation,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getEmpEarningComponents",
+    getEmpEarningComponents,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getEmpDeductionComponents",
+    getEmpDeductionComponents,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getEmpContibuteComponents",
+    getEmpContibuteComponents,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getFamilyIdentification",
+    getFamilyIdentification,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getDoctorServiceCommission",
+    getDoctorServiceCommission,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getDoctorServiceTypeCommission",
+    getDoctorServiceTypeCommission,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
   return api;
 };
