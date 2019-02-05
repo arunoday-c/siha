@@ -350,13 +350,15 @@ export function AlgaehValidation(options) {
       typeof settings.onSuccess === "function"
     )
       settings.onSuccess();
-  } else {
-    if (
-      settings.onSuccess !== undefined &&
-      typeof settings.onSuccess === "function"
-    )
-      settings.onFailure();
   }
+
+  // else {
+  //   if (
+  //     settings.onSuccess !== undefined &&
+  //     typeof settings.onSuccess === "function"
+  //   )
+  //     settings.onFailure();
+  // }
 }
 
 export function getAmountFormart(value, options) {

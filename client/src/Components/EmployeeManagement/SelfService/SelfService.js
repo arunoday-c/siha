@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./SelfService.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
-import PersonalDetails from "./PersonalDetails/PersonalDetails";
+import SelfPersonalDetails from "./PersonalDetails/SelfPersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
 import LoanRequest from "./LoanRequest/LoanRequest";
@@ -27,6 +27,7 @@ export default class SelfService extends Component {
     algaehApiCall({
       uri: "/selfService/getEmployeeBasicDetails",
       method: "GET",
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
@@ -228,8 +229,8 @@ export default class SelfService extends Component {
           </div>
         </div>
         <div className="selfService-setion">
-          {this.state.pageDisplay === "PersonalDetails" ? (
-            <PersonalDetails empData={this.state.employee_details} />
+          {this.state.pageDisplay === "SelfPersonalDetails" ? (
+            <SelfPersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
             <AttendanceRegularization empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "ApplyLeave" ? (

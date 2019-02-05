@@ -8,14 +8,44 @@
   margin-right: 15px; }
   .clinicalDeskScreen .cldrPatientList .cldrSection {
     background: #cccccc;
-    height: 200px; }
+    height: 289px; }
+    .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker {
+      width: 100%;
+      border: none;
+      border-radius: 0; }
+      .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container {
+        width: 100%; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__current-month,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker-time__header {
+          display: none; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__header {
+          border-radius: 0; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day-name,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__time-name {
+          margin: 0.1666rem 0.35rem; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--selected,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--in-selecting-range,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--in-range {
+          background-color: #34b8bc; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--today {
+          border: 1px solid #34b8bc;
+          border-radius: 5px; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__month-select,
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__year-select {
+          -webkit-appearance: none;
+          padding: 3px 6px;
+          border: none; }
+  .clinicalDeskScreen .cldrPatientList .viewAllApp {
+    box-shadow: -6px 6px 10px rgba(0, 0, 0, 0.07);
+    padding-bottom: 15px; }
   .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr {
     margin: 0;
     padding: 0;
     list-style: none;
-    max-height: 60vh;
     overflow-y: auto;
-    overflow-x: hidden; }
+    overflow-x: hidden;
+    height: calc(100vh - 407px); }
     .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection {
       border-top: 1px solid #cccccc;
       border-bottom: 1px solid #cccccc;
@@ -226,3 +256,21 @@
         display: none; }
       .clinicalDeskScreen .clinicalAction .rightActionSec li:hover span {
         display: block; }
+
+.clinicalDeskScreen .clinicalDeskWrapper {
+  background: #999999;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 9999;
+  display: none; }
+  .clinicalDeskScreen .clinicalDeskWrapper .clinicalDeskPopup {
+    width: 95vw;
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #fff;
+    height: calc(100vh - 50px);
+    z-index: 9999;
+    box-shadow: 0 0px 200px #1a1a1a;
+    display: none; }

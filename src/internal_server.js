@@ -77,7 +77,13 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   done(null, { msg: "done" });
 });
+<<<<<<< HEAD
 //app.set("view cache", true);
+=======
+if (process.env.NODE_ENV == "production") {
+  app.set("view cache", true);
+}
+>>>>>>> df2f13d580abbd2a84e54bb29b8e2cd8f246c164
 app.use((req, res, next) => {
   let reqH = req.headers;
 

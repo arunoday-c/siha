@@ -210,5 +210,86 @@ module.exports = {
       .catch(e => {
         next(e);
       });
+  },
+  addOvertimeGroups: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = { ...req.body };
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("input: ", input);
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT  INTO hims_d_overtime_group (overtime_group_code, overtime_group_description,\
+            working_day_hour, weekoff_day_hour, holiday_hour, working_day_rate , weekoff_day_rate, holiday_rate, payment_type,\
+            created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.overtime_group_code,
+          input.overtime_group_description,
+          input.working_day_hour,
+          input.weekoff_day_hour,
+          input.holiday_hour,
+          input.working_day_rate,
+          input.weekoff_day_rate,
+          input.holiday_rate,
+          input.payment_type,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
+  },
+
+  updateOvertimeGroups: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = { ...req.body };
+    utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("input: ", input);
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_d_overtime_group SET overtime_group_code = ?,\
+          overtime_group_description = ?, working_day_hour = ?, weekoff_day_hour = ?, holiday_hour = ? , working_day_rate = ?,\
+          weekoff_day_rate = ?, holiday_rate = ?, payment_type = ?, record_status=?,\
+            updated_date=?, updated_by=?  WHERE hims_d_overtime_group_id = ?",
+        values: [
+          input.overtime_group_code,
+          input.overtime_group_description,
+          input.working_day_hour,
+          input.weekoff_day_hour,
+          input.holiday_hour,
+          input.working_day_rate,
+          input.weekoff_day_rate,
+          input.holiday_rate,
+          input.payment_type,
+          input.record_status,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_d_overtime_group_id
+        ]
+      })
+      .then(update_loan => {
+        _mysql.releaseConnection();
+        req.records = update_loan;
+        next();
+      })
+      .catch(e => {
+        next(e);
+      });
   }
 };

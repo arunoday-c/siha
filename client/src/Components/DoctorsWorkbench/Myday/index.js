@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Checkbox } from "semantic-ui-react";
 import ReactCalender from "react-datepicker";
+import { AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import "react-datepicker/dist/react-datepicker.css";
 import { cancelRequest, swalMessage } from "../../../utils/algaehApiCall";
 import MyDayEvents from "./events";
@@ -11,10 +11,9 @@ export default class MyDayView extends Component {
     this.state = {
       fromDate: new Date(),
       toDate: new Date(),
-      patientViewType: "APP",
-      appoinmentPatientsList: [],
-      encounterPatientList: [],
-      selectedPatinetId: undefined
+      mydayList: [],
+      selectedPatinetId: undefined,
+      visit_by: "AW"
     };
   }
   componentDidMount() {
@@ -34,8 +33,10 @@ export default class MyDayView extends Component {
       toDate: e
     });
     this.plotMyDayList({
-      fromDate: e,
-      toDate: e
+      inputParam: {
+        fromDate: e,
+        toDate: e
+      }
     });
   }
   plotMyDayList(options) {
@@ -43,15 +44,8 @@ export default class MyDayView extends Component {
       .loadPatientsList(options)
       .then(res => {
         if (res.data.success) {
-          const _appointment = _.chain(res.data.records)
-            .filter(f => f.encounter_id === null)
-            .value();
-          const _encounter = _.chain(res.data.records)
-            .filter(f => f.encounter_id !== null)
-            .value();
           this.setState({
-            appoinmentPatientsList: _appointment,
-            encounterPatientList: _encounter
+            mydayList: res.data.records
           });
         } else {
           swalMessage({
@@ -59,7 +53,6 @@ export default class MyDayView extends Component {
             type: "error"
           });
         }
-        console.log("res", res);
       })
       .catch(error => {
         swalMessage({
@@ -69,11 +62,22 @@ export default class MyDayView extends Component {
       });
   }
 
+  onVisiByChange(e) {
+    this.setState({
+      visit_by: e.selected.value
+    });
+  }
+  onVisitClear(e) {
+    this.setState({
+      visit_by: undefined
+    });
+  }
+
   render() {
-    const _patientList =
-      this.state.patientViewType === "APP"
-        ? this.state.appoinmentPatientsList
-        : this.state.encounterPatientList;
+    const _patientList = MyDayEvents().myDayOnSelection(
+      this.state.mydayList,
+      this.state.visit_by
+    );
     return (
       <div className="cldrPatientList">
         <div className="cldrSection">
@@ -85,116 +89,77 @@ export default class MyDayView extends Component {
             peekNextMonth
             showMonthDropdown
             showYearDropdown
+            fixedHeight
             dropdownMode="select"
           />
         </div>
         <div className="newPatientSec">
-          <Checkbox slider label="Show Encounter" className="mx-auto" />
+          <AlagehAutoComplete
+            div={{ className: "col viewAllApp" }}
+            label={{ forceLabel: "View by", isImp: false }}
+            selector={{
+              name: "view_by",
+              className: "select-fld",
+              dataSource: {
+                data: MyDayEvents().visitBy,
+                displayText: "text",
+                displayValue: "value"
+              },
+              value: this.state.visit_by,
+              onChange: this.onVisiByChange.bind(this),
+              onClear: this.onVisitClear.bind(this)
+            }}
+          />
+
           <div className="appPatientList">
             <div className="appPatientListCntr">
-              {_patientList.map((patient, index) => {
-                return (
-                  <div
-                    key={index}
-                    className={
-                      "appSection " +
-                      (this.state.selectedPatinetId === patient.patient_id
-                        ? " active"
-                        : "")
-                    }
-                  >
-                    <span className="appIconSec">
-                      {patient.appointment_patient === "N" ? (
-                        <i className="fas fa-walking" />
-                      ) : (
-                        <i className="fas fa-calendar-alt" />
-                      )}
-                      {new Date(patient.encountered_date).toLocaleTimeString()}
-                    </span>
-                    <span className="patName">{patient.full_name}</span>
-                    <span className="patVisit">
-                      {patient.nurse_examine === "Y"
-                        ? "Nursing Done"
-                        : "Nursing Pending"}
-                    </span>
-                    <span className="patStatus inProgress ">
-                      <span
-                        className={
-                          this.state.selectedPatinetId === patient.patient_id
-                            ? "animated infinite flash"
-                            : ""
-                        }
-                      >
-                        In-Progress
+              {_patientList.length !== 0 ? (
+                _patientList.map((patient, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={
+                        "appSection " +
+                        (this.state.selectedPatinetId === patient.patient_id
+                          ? " active"
+                          : "")
+                      }
+                    >
+                      <span className="appIconSec">
+                        {patient.appointment_patient === "N" ? (
+                          <i className="fas fa-walking" />
+                        ) : (
+                          <i className="fas fa-calendar-alt" />
+                        )}
+                        {new Date(
+                          patient.encountered_date
+                        ).toLocaleTimeString()}
                       </span>
-                    </span>
-                  </div>
-                );
-              })}
-
-              {/* <div className="appSection">
-                <span className="appIconSec">
-                  <i className="fas fa-calendar-alt" />
-                  11:25:31
-                </span>
-                <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                <span className="patVisit">New Visit</span>
-                <span className="patStatus nursingDone">Nursing Done</span>
-              </div>
-              <div className="appSection">
-                <span className="appIconSec">
-                  <i className="fas fa-calendar-alt" />
-                  11:25:31
-                </span>
-                <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                <span className="patVisit">New Visit</span>
-                <span className="patStatus nursingDone">Nursing Done</span>
-              </div>
-              <div className="appSection ">
-                <span className="appIconSec">
-                  <i className="fas fa-calendar-alt" />
-                  11:25:31
-                </span>
-                <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                <span className="patVisit">New Visit</span>
-                <span className="patStatus nursingGoing">Nursing Going</span>
-              </div>
-              <div className="appSection">
-                <span className="appIconSec">
-                  <i className="fas fa-walking" />
-                  11:25:31
-                </span>
-                <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                <span className="patVisit">New Visit</span>
-                <span className="patStatus checkedIn">Checked In</span>
-              </div>
-              <div className="appSection ">
-                <span className="appIconSec">
-                  <i className="fas fa-walking" />
-                  11:25:31
-                </span>
-                <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                <span className="patVisit">New Visit</span>
-                <span className="patStatus checkedIn">Checked In</span>
-              </div>
-              <div className="appSection">
-                <span className="appIconSec">
-                  <i className="fas fa-calendar-alt" />
-                  11:25:31
-                </span>
-                <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                <span className="patVisit">New Visit</span>
-                <span className="patStatus notShown">Not Shown</span>
-              </div>
-              <div className="appSection">
-                <span className="appIconSec">
-                  <i className="fas fa-walking" />
-                  11:25:31
-                </span>
-                <span className="patName">SYED ADIL FAWAD NIZAMI</span>
-                <span className="patVisit">New Visit</span>
-                <span className="patStatus notShown">Not Shown</span>
-              </div> */}
+                      <span className="patName">{patient.full_name}</span>
+                      <span className="patVisit">Follow Up</span>
+                      <span className="patStatus inProgress ">
+                        <span
+                          className={
+                            this.state.selectedPatinetId === patient.patient_id
+                              ? "animated infinite flash"
+                              : ""
+                          }
+                        >
+                          {patient.nurse_examine === "Y"
+                            ? "Nursing Done"
+                            : "Nursing Pending"}
+                        </span>
+                      </span>
+                    </div>
+                  );
+                })
+              ) : (
+                <div>
+                  {" "}
+                  No records found for date{" "}
+                  {new Date(this.state.fromDate).toDateString()}{" "}
+                </div>
+              )}
             </div>
           </div>
         </div>

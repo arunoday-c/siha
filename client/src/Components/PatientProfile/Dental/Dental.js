@@ -556,7 +556,7 @@ class Dental extends Component {
     });
   }
 
-  generateToothUpperLeftSet(teeth) {
+  generateToothUpperRight(teeth) {
     let plot = [];
     for (let i = 1; i < 9; i++) {
       const _marking =
@@ -581,7 +581,25 @@ class Dental extends Component {
             i
           }
         >
-          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>
+            {i === 8
+              ? "11"
+              : i === 7
+              ? "12"
+              : i === 6
+              ? "13"
+              : i === 5
+              ? "14"
+              : i === 4
+              ? "15"
+              : i === 3
+              ? "16"
+              : i === 2
+              ? "17"
+              : i === 1
+              ? "18"
+              : null}
+          </span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -662,7 +680,7 @@ class Dental extends Component {
     return plot;
   }
 
-  generateToothUpperRightSet(teeth) {
+  generateToothUpperLeft(teeth) {
     let plot = [];
     for (let i = 9; i < 17; i++) {
       const _marking =
@@ -686,7 +704,25 @@ class Dental extends Component {
             i
           }
         >
-          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>
+            {i === 9
+              ? "21"
+              : i === 10
+              ? "22"
+              : i === 11
+              ? "23"
+              : i === 12
+              ? "24"
+              : i === 13
+              ? "25"
+              : i === 14
+              ? "26"
+              : i === 15
+              ? "27"
+              : i === 16
+              ? "28"
+              : null}
+          </span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -767,7 +803,7 @@ class Dental extends Component {
     return plot;
   }
 
-  generateToothLowerLeftSet(teeth) {
+  generateToothLowerRight(teeth) {
     let plot = [];
     let counter = 1;
 
@@ -794,7 +830,25 @@ class Dental extends Component {
             counter
           }
         >
-          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>
+            {i === 25
+              ? "41"
+              : i === 26
+              ? "42"
+              : i === 27
+              ? "43"
+              : i === 28
+              ? "44"
+              : i === 29
+              ? "45"
+              : i === 30
+              ? "46"
+              : i === 31
+              ? "47"
+              : i === 32
+              ? "48"
+              : null}
+          </span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -876,7 +930,7 @@ class Dental extends Component {
     return plot;
   }
 
-  generateToothLowerRightSet(teeth) {
+  generateToothLowerLeft(teeth) {
     let plot = [];
     let counter = 9;
 
@@ -903,7 +957,25 @@ class Dental extends Component {
             counter
           }
         >
-          <span onClick={this.markAllSurface.bind(this)}>{i}</span>
+          <span onClick={this.markAllSurface.bind(this)}>
+            {i === 24
+              ? "31"
+              : i === 23
+              ? "32"
+              : i === 22
+              ? "33"
+              : i === 21
+              ? "34"
+              : i === 20
+              ? "35"
+              : i === 19
+              ? "36"
+              : i === 18
+              ? "37"
+              : i === 17
+              ? "38"
+              : null}
+          </span>
           <div className="surface-Marking">
             <div
               onClick={this.markTeethSurface.bind(this)}
@@ -1219,17 +1291,18 @@ class Dental extends Component {
   }
 
   loadDentalTreatment(data) {
+    debugger;
     data !== undefined
       ? this.setState(
           {
-            plan_id: data.hims_f_treatment_plan_id
+            hims_f_treatment_plan_id: data.hims_f_treatment_plan_id
           },
           () => {
             algaehApiCall({
               uri: "/dental/getDentalTreatment",
               method: "GET",
               data: {
-                treatment_plan_id: this.state.plan_id
+                treatment_plan_id: this.state.hims_f_treatment_plan_id
               },
               onSuccess: response => {
                 if (response.data.success) {
@@ -1247,7 +1320,7 @@ class Dental extends Component {
           uri: "/dental/getDentalTreatment",
           method: "GET",
           data: {
-            treatment_plan_id: this.state.plan_id
+            treatment_plan_id: this.state.hims_f_treatment_plan_id
           },
           onSuccess: response => {
             if (response.data.success) {
@@ -1819,17 +1892,17 @@ class Dental extends Component {
                   <div className="col-lg-12" id="dentalTreatment">
                     <div className="row top-teeth-sec">
                       <div className="col-lg-6 teeth-sec">
-                        <h6>Upper Left</h6>
+                        <h6>Upper Right</h6>
                         <div className="row">
-                          {this.generateToothUpperLeftSet(
+                          {this.generateToothUpperRight(
                             this.state.highlightTeeth
                           )}
                         </div>
                       </div>
                       <div className="col-lg-6 teeth-sec">
-                        <h6>Upper Right</h6>
+                        <h6>Upper Left</h6>
                         <div className="row">
-                          {this.generateToothUpperRightSet(
+                          {this.generateToothUpperLeft(
                             this.state.highlightTeeth
                           )}
                         </div>
@@ -1839,19 +1912,19 @@ class Dental extends Component {
                     <div className="row bottom-teeth-sec">
                       <div className="col-lg-6 teeth-sec">
                         <div className="row">
-                          {this.generateToothLowerLeftSet(
-                            this.state.highlightTeeth
-                          )}
-                        </div>
-                        <h6>Lower Left</h6>
-                      </div>
-                      <div className="col-lg-6 teeth-sec">
-                        <div className="row">
-                          {this.generateToothLowerRightSet(
+                          {this.generateToothLowerRight(
                             this.state.highlightTeeth
                           )}
                         </div>
                         <h6>Lower Right</h6>
+                      </div>
+                      <div className="col-lg-6 teeth-sec">
+                        <div className="row">
+                          {this.generateToothLowerLeft(
+                            this.state.highlightTeeth
+                          )}
+                        </div>
+                        <h6>Lower Left</h6>
                       </div>
                     </div>
                   </div>

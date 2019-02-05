@@ -7,7 +7,9 @@ import {
   getDesignations,
   addDesignation,
   updateDesignation,
-  getOvertimeGroups
+  getOvertimeGroups,
+  addOvertimeGroups,
+  updateOvertimeGroups
 } from "../models/hrsettings";
 export default () => {
   const api = Router();
@@ -57,6 +59,20 @@ export default () => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
+    });
+  });
+
+  api.post("/addOvertimeGroups", addOvertimeGroups, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.put("/updateOvertimeGroups", updateOvertimeGroups, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
     });
   });
 
