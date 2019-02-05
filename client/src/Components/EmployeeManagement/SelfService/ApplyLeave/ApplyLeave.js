@@ -573,6 +573,7 @@ class ApplyLeave extends Component {
   getEmployees() {
     algaehApiCall({
       uri: "/employee/get",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         this.setState({

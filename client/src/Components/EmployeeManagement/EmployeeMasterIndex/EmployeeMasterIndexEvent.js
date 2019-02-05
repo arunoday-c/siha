@@ -3,6 +3,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 const getEmployeeDetails = $this => {
   algaehApiCall({
     uri: "/employee/get",
+    module: "hrManagement",
     method: "GET",
 
     onSuccess: response => {

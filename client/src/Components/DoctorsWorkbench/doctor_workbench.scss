@@ -354,3 +354,271 @@
     }
   }
 }
+.doctor_workbench {
+  .panel-layout {
+    margin-top: 10px;
+  }
+
+  .go-button {
+    cursor: pointer;
+    margin-top: 15px;
+  }
+
+  .opPatientList {
+    .opList {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      height: 65.5vh;
+      overflow: auto;
+      .noPatientDiv {
+        margin-top: 15%;
+        text-align: center;
+
+        color: #929292;
+      }
+      li {
+        margin: 4px 0;
+        padding: 3px 0;
+        list-style: none;
+        border: 1px solid #f2f2f2;
+        background: #fff;
+        border-radius: 5px;
+        .op-sec-1 {
+          width: 10px;
+          width: 20%;
+          vertical-align: text-top;
+          display: inline-block;
+          text-align: center;
+          border-right: 1px dashed #e6e6e6;
+          margin-right: 10px;
+          i {
+            width: 30px;
+            background: yellow;
+            height: 30px;
+            display: block;
+            margin: auto;
+          }
+          .appointment-icon {
+            background: url("../../assets/icons/appointment-icon.svg") no-repeat
+              center;
+            background-size: 80%;
+          }
+          .walking-icon {
+            background: url("../../assets/icons/walking-icon.svg") no-repeat
+              center;
+            background-size: 80%;
+          }
+          .opTime {
+          }
+        }
+        .op-sec-2 {
+          width: 10px;
+          width: 56%;
+          vertical-align: text-top;
+          display: inline-block;
+          .opPatientName {
+            display: block;
+
+            margin-top: 5px;
+          }
+          .opStatus {
+            display: block;
+          }
+          .nursing {
+            color: #34b8bc;
+          }
+          .checkedIn {
+            color: #00bb4b;
+          }
+        }
+        .op-sec-3 {
+          width: 20%;
+          line-height: 53px;
+          vertical-align: text-top;
+          display: inline-block;
+          text-align: center;
+          .opPatientStatus {
+            display: block;
+          }
+          .newVisit {
+            color: #ff8800;
+          }
+          .followUp {
+            color: #ff005f;
+          }
+        }
+      }
+      li:hover {
+        background: #ebfeff;
+        cursor: pointer;
+      }
+    }
+  }
+  #encounter_table {
+    .ReactTable {
+      max-height: 65.5vh !important;
+    }
+  }
+  .bottom-layout {
+    padding: 5px;
+
+    .right-bottom-panel {
+      margin-top: 5px;
+    }
+    .appointment-panel {
+      .timeline {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      /* The actual timeline (the vertical ruler) */
+      .timeline::after {
+        content: "";
+        position: absolute;
+        width: 2px;
+        background-color: #000;
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        margin-left: -3px;
+      }
+
+      /* Container around content */
+      .container {
+        padding: 10px 40px;
+        position: relative;
+        background-color: inherit;
+        width: 50%;
+      }
+
+      /* The circles on the timeline */
+      .container::after {
+        content: "";
+        position: absolute;
+        width: 25px;
+        height: 25px;
+        right: -17px;
+        background-color: white;
+        border: 4px solid #ff9f55;
+        top: 15px;
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      /* Place the container to the left */
+      .left {
+        left: 0;
+      }
+
+      /* Place the container to the right */
+      .right {
+        left: 50%;
+      }
+
+      /* Add arrows to the left container (pointing right) */
+      .left::before {
+        content: " ";
+        height: 0;
+        position: absolute;
+        top: 22px;
+        width: 0;
+        z-index: 1;
+        right: 30px;
+        border: medium solid white;
+        border-width: 10px 0 10px 10px;
+        border-color: transparent transparent transparent white;
+      }
+
+      /* Add arrows to the right container (pointing left) */
+      .right::before {
+        content: " ";
+        height: 0;
+        position: absolute;
+        top: 22px;
+        width: 0;
+        z-index: 1;
+        left: 30px;
+        border: medium solid white;
+        border-width: 10px 10px 10px 0;
+        border-color: transparent white transparent transparent;
+      }
+
+      /* Fix the circle for containers on the right side */
+      .right::after {
+        left: -16px;
+      }
+
+      /* The actual content */
+      .content {
+        padding: 20px 30px;
+        background-color: white;
+        position: relative;
+        border-radius: 6px;
+      }
+
+      /* Media queries - Responsive timeline on screens less than 600px wide */
+      @media screen and (max-width: 600px) {
+        /* Place the timelime to the left */
+        .timeline::after {
+          left: 31px;
+        }
+
+        /* Full-width containers */
+        .container {
+          width: 100%;
+          padding-left: 70px;
+          padding-right: 25px;
+        }
+
+        /* Make sure that all arrows are pointing leftwards */
+        .container::before {
+          left: 60px;
+          border: medium solid white;
+          border-width: 10px 10px 10px 0;
+          border-color: transparent white transparent transparent;
+        }
+
+        /* Make sure all circles are at the same spot */
+        .left::after,
+        .right::after {
+          left: 15px;
+        }
+
+        /* Make all right containers behave like the left ones */
+        .right {
+          left: 0%;
+        }
+      }
+    }
+
+    .grey-label {
+      color: #292929;
+      padding-left: 10px;
+      padding-top: 5px;
+      font-style: bolder;
+    }
+
+    .grey-label-right {
+      color: #292929;
+      padding-right: 10px;
+      padding-top: 5px;
+      font-style: bolder;
+    }
+  }
+  .rightLabelCount {
+    .countNo {
+      background: #2aafa4;
+      color: #fff;
+      padding: 2px 10px;
+      border-radius: 25%;
+
+      margin-left: 3px;
+      display: inline-block;
+    }
+    .style_Label {
+      text-transform: initial;
+    }
+  }
+}

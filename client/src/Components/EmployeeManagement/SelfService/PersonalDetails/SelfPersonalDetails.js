@@ -134,6 +134,7 @@ class SelfPersonalDetails extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/employee/addEmployeeEducation",
+          module: "hrManagement",
           data: {
             employee_id: this.state.hims_d_employee_id,
             qualification: this.state.qualification,
@@ -178,6 +179,7 @@ class SelfPersonalDetails extends Component {
   updateEmployeeEdu(data) {
     algaehApiCall({
       uri: "/employee/updateEmployeeEducation",
+      module: "hrManagement",
       method: "PUT",
       data: {
         employee_id: data.employee_id,
@@ -200,8 +202,10 @@ class SelfPersonalDetails extends Component {
     });
   }
   updateEmployeeWorkExperience(data) {
+    debugger;
     algaehApiCall({
       uri: "/employee/updateEmployeeWorkExperience",
+      module: "hrManagement",
       method: "PUT",
       data: {
         employee_id: data.employee_id,
@@ -214,6 +218,7 @@ class SelfPersonalDetails extends Component {
         hims_d_employee_experience_id: data.hims_d_employee_experience_id
       },
       onSuccess: res => {
+        debugger;
         if (res.data.success) {
           swalMessage({
             title: "Record updated successfully",
@@ -242,20 +247,21 @@ class SelfPersonalDetails extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/employee/deleteEmployeeEducation",
+          module: "hrManagement",
           data: {
             hims_d_employee_education_id: data.hims_d_employee_education_id
           },
           method: "DELETE",
           onSuccess: response => {
-            if (response.data.records.success) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
               this.getEmployeeEducation();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
-                title: response.data.records.message,
+                title: response.data.message,
                 type: "error"
               });
             }
@@ -291,20 +297,21 @@ class SelfPersonalDetails extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/employee/deleteEmployeeWorkExperience",
+          module: "hrManagement",
           data: {
             hims_d_employee_experience_id: data.hims_d_employee_experience_id
           },
           method: "DELETE",
           onSuccess: response => {
-            if (response.data.records.success) {
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
               this.getEmployeeWorkExp();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
-                title: response.data.records.message,
+                title: response.data.message,
                 type: "error"
               });
             }
@@ -328,6 +335,7 @@ class SelfPersonalDetails extends Component {
   getEmployeeEducation() {
     algaehApiCall({
       uri: "/employee/getEmployeeEducation",
+      module: "hrManagement",
       data: {
         employee_id: this.state.hims_d_employee_id
       },
@@ -346,6 +354,7 @@ class SelfPersonalDetails extends Component {
   getEmployeeWorkExp() {
     algaehApiCall({
       uri: "/employee/getEmployeeWorkExperience",
+      module: "hrManagement",
       data: {
         employee_id: this.state.hims_d_employee_id
       },
@@ -368,6 +377,7 @@ class SelfPersonalDetails extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/employee/addEmployeeWorkExperience",
+          module: "hrManagement",
           data: {
             employee_id: this.state.hims_d_employee_id,
             previous_company_name: this.state.previous_company_name,
@@ -666,6 +676,7 @@ class SelfPersonalDetails extends Component {
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
+        debugger;
         if (res.data.success) {
           this.setState({
             family_details: res.data.records

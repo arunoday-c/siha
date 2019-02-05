@@ -81,6 +81,7 @@ class ResultEntry extends Component {
     ) {
       this.props.getProviderDetails({
         uri: "/employee/get",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
@@ -390,7 +391,6 @@ class ResultEntry extends Component {
                             />
                           ),
                           displayTemplate: row => {
-                            
                             return (
                               <span>
                                 {row.run1 !== "null" ? row.run1 : "----"}

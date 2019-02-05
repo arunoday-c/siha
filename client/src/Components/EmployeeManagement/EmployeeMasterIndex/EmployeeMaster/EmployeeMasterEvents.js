@@ -212,6 +212,7 @@ const InsertUpdateEmployee = $this => {
         if (inputObj.hims_d_employee_id === null) {
           algaehApiCall({
             uri: "/employee/addEmployeeMaster",
+            module: "hrManagement",
             data: _payload,
             onSuccess: response => {
               if (response.data.success === true) {
@@ -257,6 +258,7 @@ const InsertUpdateEmployee = $this => {
           debugger;
           algaehApiCall({
             uri: "/employee/updateEmployee",
+            // module: "hrManagement",
             data: _payload,
             method: "PUT",
             onSuccess: response => {
