@@ -2,6 +2,7 @@ import algaehMysql from "algaeh-mysql";
 module.exports = {
   addDepartment: (req, res, next) => {
     return new Promise((resolve, reject) => {
+      let input = req.body;
       const _mysql = new algaehMysql();
       try {
         _mysql
@@ -19,9 +20,9 @@ module.exports = {
               input.effective_start_date,
               input.effective_end_date,
               new Date(),
-              input.created_by,
+              req.userIdentity.algaeh_d_app_user_id,
               new Date(),
-              input.updated_by
+              req.userIdentity.algaeh_d_app_user_id
             ],
             printQuery: true
           })
@@ -33,7 +34,7 @@ module.exports = {
           })
           .catch(error => {
             _mysql.releaseConnection();
-            reject(error);
+
             next(error);
           });
       } catch (e) {
@@ -42,6 +43,7 @@ module.exports = {
       }
     }).catch(e => {
       _mysql.releaseConnection();
+      reject(error);
       next(e);
     });
   }
