@@ -41,6 +41,7 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
@@ -67,9 +68,11 @@ module.exports = {
             .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -147,9 +150,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -560,9 +565,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -595,9 +602,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -639,9 +648,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -681,9 +692,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -709,9 +722,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -745,9 +760,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -787,9 +804,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -826,9 +845,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -854,9 +875,11 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -884,9 +907,11 @@ module.exports = {
             .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -914,9 +939,11 @@ module.exports = {
             .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -938,15 +965,13 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -976,9 +1001,11 @@ module.exports = {
             .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -1006,9 +1033,12 @@ module.exports = {
             .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
@@ -1030,15 +1060,14 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
+          resolve(result);
+          resolve(result);
           next();
         })
         .catch(e => {
+          reject(e);
           next(e);
         });
     }).catch(e => {
