@@ -47,7 +47,8 @@ class EarningsDeductions extends Component {
 
   updateEarningsDeductions(data) {
     algaehApiCall({
-      uri: "/employee/updateEarningDeduction",
+      uri: "/payrollsettings/updateEarningDeduction",
+      module: "hrManagement",
       method: "PUT",
       data: {
         hims_d_earning_deduction_id: data.hims_d_earning_deduction_id,
@@ -100,7 +101,8 @@ class EarningsDeductions extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/employee/deleteEarningDeduction",
+          uri: "/payrollsettings/deleteEarningDeduction",
+          module: "hrManagement",
           data: {
             hims_d_earning_deduction_id: data.hims_d_earning_deduction_id
           },
@@ -141,7 +143,8 @@ class EarningsDeductions extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/employee/addEarningDeduction",
+          uri: "/payrollsettings/addEarningDeduction",
+          module: "hrManagement",
           method: "POST",
           data: {
             earning_deduction_code: this.state.earning_deduction_code,

@@ -62,6 +62,7 @@ class RadResultEntry extends Component {
     ) {
       this.props.getProviderDetails({
         uri: "/employee/get",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
@@ -71,7 +72,6 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
-    
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
@@ -430,12 +430,8 @@ class RadResultEntry extends Component {
                         fileType: "Patients"
                       }}
                       events={{
-                        onSuccess: data => {
-                          
-                        },
-                        onFileFailure: () => {
-                          
-                        }
+                        onSuccess: data => {},
+                        onFileFailure: () => {}
                       }}
                     />
                     <button

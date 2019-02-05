@@ -313,6 +313,7 @@ const datehandle = ($this, ctrl, e) => {
 const getEmployeeDepartments = $this => {
   algaehApiCall({
     uri: "/employee/getEmployeeDepartments",
+    module: "hrManagement",
     method: "GET",
     data: { employee_id: $this.state.hims_d_employee_id },
     onSuccess: response => {

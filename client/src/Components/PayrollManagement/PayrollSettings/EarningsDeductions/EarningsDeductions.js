@@ -109,7 +109,7 @@ class EarningsDeductions extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          // uri: "/employee/deleteEarningDeduction",
+          
           uri: "/payrollsettings/updateEarningDeduction",
           module: "hrManagement",
           data: {

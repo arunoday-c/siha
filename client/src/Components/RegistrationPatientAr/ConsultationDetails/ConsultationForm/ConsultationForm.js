@@ -66,6 +66,7 @@ class AddConsultationForm extends Component {
     ) {
       this.props.getProviderDetails({
         uri: "/employee/get",
+        module: "hrManagement",
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",

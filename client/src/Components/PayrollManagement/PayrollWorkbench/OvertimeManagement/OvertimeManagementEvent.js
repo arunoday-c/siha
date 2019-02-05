@@ -112,7 +112,6 @@ const employeeSearch = $this => {
 
 const getOvertimeGroups = $this => {
   algaehApiCall({
-    // uri: "/employeesetups/getOvertimeGroups",
     uri: "/hrsettings/getOvertimeGroups",
     module: "hrManagement",
     data: {
