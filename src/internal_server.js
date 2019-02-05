@@ -77,12 +77,12 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((id, done) => {
   done(null, { msg: "done" });
 });
-app.set("view cache", true);
+//app.set("view cache", true);
 app.use((req, res, next) => {
   let reqH = req.headers;
 
   let reqUser = "";
-  res.setHeader("connection", "keep-alive");
+  // res.setHeader("connection", "keep-alive");
   //res.setHeader("Transfer-Encoding", "gzip");
   if (req.url != "/api/v1/apiAuth") {
     if (req.url != "/api/v1/apiAuth/authUser") {
