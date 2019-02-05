@@ -8,7 +8,9 @@ import {
   updateEmployeeDependentDetails,
   updateEmployeeIdentificationDetails,
   updateEmployeeBasicDetails,
-  addEmployeeDependentDetails
+  addEmployeeDependentDetails,
+  getEmployeeAdvance,
+  addEmployeeAdvance
 } from "../models/selfService";
 
 export default () => {
@@ -141,6 +143,24 @@ export default () => {
       next();
     }
   );
+
+  api.get("/getEmployeeAdvance", getEmployeeAdvance, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+
+  api.post("/addEmployeeAdvance", addEmployeeAdvance, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
 
   //TODO
   //DELETE API IN MICRO SERVICE(TASK DUE NOOR MOHSIN)

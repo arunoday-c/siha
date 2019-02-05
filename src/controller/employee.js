@@ -2,9 +2,9 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import {
   addEmployee, //Not in Use
-  getEmployee,
-  addEmployeeAdvance,
-  getEmployeeAdvance,
+  getEmployee, //Done
+  addEmployeeAdvance, //Done
+  getEmployeeAdvance, //Done
   updateEmployee,
   getEmployeeDetails, //Not in Use
   getDoctorServiceCommission, //Done

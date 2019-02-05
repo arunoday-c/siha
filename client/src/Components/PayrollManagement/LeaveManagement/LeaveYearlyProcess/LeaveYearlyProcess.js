@@ -36,6 +36,7 @@ export default class LeaveYearlyProcess extends Component {
     algaehApiCall({
       uri: "/leave/getYearlyLeaveData",
       method: "GET",
+      module: "hrManagement",
       data: {
         year: this.state.year
       },

@@ -40,7 +40,8 @@ class LoanRequest extends Component {
 
   getEmployeeAdvances() {
     algaehApiCall({
-      uri: "/employee/getEmployeeAdvance",
+      uri: "/selfService/getEmployeeAdvance",
+      module: "hrManagement",
       method: "GET",
       data: {
         employee_id: this.state.hims_d_employee_id
@@ -123,7 +124,8 @@ class LoanRequest extends Component {
           });
         } else {
           algaehApiCall({
-            uri: "/employee/addEmployeeAdvance",
+            uri: "/selfService/addEmployeeAdvance",
+            module: "hrManagement",
             method: "POST",
             data: {
               employee_id: this.state.hims_d_employee_id,
