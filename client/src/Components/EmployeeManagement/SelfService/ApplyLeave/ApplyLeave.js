@@ -591,7 +591,9 @@ class ApplyLeave extends Component {
     });
   }
   render() {
-    let leaveData = this.state.emp_leaves_data;
+    let leaveData = this.state.emp_leaves_data
+      ? this.state.emp_leaves_data
+      : [];
     return (
       <React.Fragment>
         <div className="row apply_leave">
