@@ -254,281 +254,159 @@ module.exports = {
         ]
       })
       .then(update_employee => {
-        let execute_query = "";
+        const syscCall = async function() {
+          if (input.insertdeptDetails.length > 0) {
+            let _InsertEmployeeDept = await InsertEmployeeDepartment({
+              req: req
+            });
 
-        //Insert Department
-        if (input.insertdeptDetails.length > 0) {
-          const insurtColumns = [
-            "employee_id",
-            "services_id",
-            "sub_department_id",
-            "category_speciality_id",
-            "user_id",
-            "employee_designation_id",
-            "reporting_to_id",
-            "from_date"
-          ];
+            // Promise.all([_attandance, _sarary]).then(rse => {});
+          }
 
-          execute_query = {
-            query:
-              "INSERT INTO hims_m_employee_department_mappings(??) VALUES ?",
-            values: req.body.insertdeptDetails,
-            includeValues: insurtColumns,
-            extraValues: {
-              created_by: req.userIdentity.algaeh_d_app_user_id,
-              created_date: new Date(),
-              updated_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_date: new Date()
-            },
-            bulkInsertOrUpdate: true,
-            printQuery: true
-          };
+          if (input.updatedeptDetails.length > 0) {
+            let _UpdateEmployeeDept = await UpdateEmployeeDepartment({
+              req: req
+            });
+          }
+          if (input.insertserviceComm.length > 0) {
+            let _InsertServiceComm = await InsertServiceCommission({
+              req: req
+            });
+          }
+        };
+        syscCall();
+
+        //Update Service Commission
+        if (input.updateserviceComm.length > 0) {
+          let inputParam = extend([], req.body.updateserviceComm);
+
+          for (let i = 0; i < input.updateserviceComm.length; i++) {
+            qry_doctor_service += mysql.format(
+              "UPDATE `hims_m_doctor_service_commission` SET services_id=?,\
+                          `service_type_id`=?,`op_cash_commission_percent`=?,`op_credit_commission_percent`=?,`ip_cash_commission_percent`=?,\
+                          `ip_credit_commission_percent`=?,record_status`=?,\
+                          updated_date=?,updated_by=? where record_status='A' and hims_m_doctor_service_commission_id=?;",
+              [
+                inputParam[i].services_id,
+                inputParam[i].service_type_id,
+                inputParam[i].op_cash_commission_percent,
+                inputParam[i].op_credit_commission_percent,
+                inputParam[i].ip_cash_commission_percent,
+                inputParam[i].ip_credit_commission_percent,
+                inputParam[i].record_status,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                inputParam[i].hims_m_doctor_service_commission_id
+              ]
+            );
+          }
         } else {
-          execute_query = {
-            query: "select 1"
-          };
+          qry_doctor_service = "select 1";
         }
 
         utilities
           .AlgaehUtilities()
           .logger()
-          .log("execute_query: ", execute_query);
-
+          .log("qry_doctor_service: ", qry_doctor_service);
         _mysql
-          .executeQuery(execute_query)
-          .then(employee_department => {
-            let qry_employee_department = "";
+          .executeQuery({
+            query: qry_doctor_service,
+            bulkInsertOrUpdate: true,
+            printQuery: true
+          })
+          .then(update_service_commission => {
+            //Insert Service Type Commission
+            if (input.insertservTypeCommission.length > 0) {
+              const insurtColumns = [
+                "provider_id",
+                "service_type_id",
+                "op_cash_comission_percent",
+                "op_credit_comission_percent",
+                "ip_cash_commission_percent",
+                "ip_credit_commission_percent"
+              ];
 
-            //Update Department
-            if (input.updatedeptDetails.length > 0) {
-              let inputParam = extend([], req.body.updatedeptDetails);
-
-              for (let i = 0; i < input.updatedeptDetails.length; i++) {
-                qry_employee_department += mysql.format(
-                  "UPDATE `hims_m_employee_department_mappings` SET services_id=?,`sub_department_id`=?,\
-                  `category_speciality_id`=?,`employee_designation_id`=?,`reporting_to_id`=?,`to_date`=?,\
-                  `dep_status`=?, `record_status`=?,`updated_date`=?,`updated_by`=? \
-                  where record_status='A' and hims_d_employee_department_id=?;",
-                  [
-                    inputParam[i].services_id,
-                    inputParam[i].sub_department_id,
-                    inputParam[i].category_speciality_id,
-                    inputParam[i].employee_designation_id,
-                    inputParam[i].reporting_to_id,
-                    inputParam[i].to_date,
-                    inputParam[i].dep_status,
-                    inputParam[i].record_status,
-                    new Date(),
-                    req.userIdentity.algaeh_d_app_user_id,
-                    inputParam[i].hims_d_employee_department_id
-                  ]
-                );
-              }
+              execute_query = {
+                query:
+                  "INSERT INTO hims_m_doctor_service_type_commission(??) VALUES ?",
+                values: req.body.insertservTypeCommission,
+                includeValues: insurtColumns,
+                extraValues: {
+                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                  created_date: new Date(),
+                  updated_by: req.userIdentity.algaeh_d_app_user_id,
+                  updated_date: new Date()
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              };
             } else {
-              qry_employee_department = "select 1";
+              execute_query = {
+                query: "select 1"
+              };
             }
 
             utilities
               .AlgaehUtilities()
               .logger()
-              .log("qry_employee_department: ", qry_employee_department);
+              .log("execute_query: ", execute_query);
+
             _mysql
-              .executeQuery({
-                query: qry_employee_department,
-                bulkInsertOrUpdate: true,
-                printQuery: true
-              })
-              .then(update_employee_department => {
-                //Insert Service Commission
-                if (input.insertserviceComm.length > 0) {
-                  const insurtColumns = [
-                    "provider_id",
-                    "services_id",
-                    "service_type_id",
-                    "op_cash_commission_percent",
-                    "op_credit_commission_percent",
-                    "ip_cash_commission_percent",
-                    "ip_credit_commission_percent"
-                  ];
+              .executeQuery(execute_query)
+              .then(service_type_commission => {
+                let qry_doctor_service_type = "";
+                //Update Service Type Commission
+                if (input.updateserviceComm.length > 0) {
+                  let inputParam = extend([], req.body.updateserviceComm);
 
-                  execute_query = {
-                    query:
-                      "INSERT INTO hims_m_doctor_service_commission(??) VALUES ?",
-                    values: req.body.insertserviceComm,
-                    includeValues: insurtColumns,
-                    extraValues: {
-                      created_by: req.userIdentity.algaeh_d_app_user_id,
-                      created_date: new Date(),
-                      updated_by: req.userIdentity.algaeh_d_app_user_id,
-                      updated_date: new Date()
-                    },
-                    bulkInsertOrUpdate: true,
-                    printQuery: true
-                  };
-                } else {
-                  execute_query = {
-                    query: "select 1"
-                  };
-                }
-
-                _mysql
-                  .executeQuery(execute_query)
-                  .then(service_commission => {
-                    let qry_doctor_service = "";
-                    //Update Service Commission
-                    if (input.updateserviceComm.length > 0) {
-                      let inputParam = extend([], req.body.updateserviceComm);
-
-                      for (let i = 0; i < input.updateserviceComm.length; i++) {
-                        qry_doctor_service += mysql.format(
-                          "UPDATE `hims_m_doctor_service_commission` SET services_id=?,\
-                          `service_type_id`=?,`op_cash_commission_percent`=?,`op_credit_commission_percent`=?,`ip_cash_commission_percent`=?,\
-                          `ip_credit_commission_percent`=?,record_status`=?,\
-                          updated_date=?,updated_by=? where record_status='A' and hims_m_doctor_service_commission_id=?;",
-                          [
-                            inputParam[i].services_id,
-                            inputParam[i].service_type_id,
-                            inputParam[i].op_cash_commission_percent,
-                            inputParam[i].op_credit_commission_percent,
-                            inputParam[i].ip_cash_commission_percent,
-                            inputParam[i].ip_credit_commission_percent,
-                            inputParam[i].record_status,
-                            new Date(),
-                            req.userIdentity.algaeh_d_app_user_id,
-                            inputParam[i].hims_m_doctor_service_commission_id
-                          ]
-                        );
-                      }
-                    } else {
-                      qry_doctor_service = "select 1";
-                    }
-
-                    utilities
-                      .AlgaehUtilities()
-                      .logger()
-                      .log("qry_doctor_service: ", qry_doctor_service);
-                    _mysql
-                      .executeQuery({
-                        query: qry_doctor_service,
-                        bulkInsertOrUpdate: true,
-                        printQuery: true
-                      })
-                      .then(update_service_commission => {
-                        //Insert Service Type Commission
-                        if (input.insertservTypeCommission.length > 0) {
-                          const insurtColumns = [
-                            "provider_id",
-                            "service_type_id",
-                            "op_cash_comission_percent",
-                            "op_credit_comission_percent",
-                            "ip_cash_commission_percent",
-                            "ip_credit_commission_percent"
-                          ];
-
-                          execute_query = {
-                            query:
-                              "INSERT INTO hims_m_doctor_service_type_commission(??) VALUES ?",
-                            values: req.body.insertservTypeCommission,
-                            includeValues: insurtColumns,
-                            extraValues: {
-                              created_by: req.userIdentity.algaeh_d_app_user_id,
-                              created_date: new Date(),
-                              updated_by: req.userIdentity.algaeh_d_app_user_id,
-                              updated_date: new Date()
-                            },
-                            bulkInsertOrUpdate: true,
-                            printQuery: true
-                          };
-                        } else {
-                          execute_query = {
-                            query: "select 1"
-                          };
-                        }
-
-                        utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("execute_query: ", execute_query);
-
-                        _mysql
-                          .executeQuery(execute_query)
-                          .then(service_type_commission => {
-                            let qry_doctor_service_type = "";
-                            //Update Service Type Commission
-                            if (input.updateserviceComm.length > 0) {
-                              let inputParam = extend(
-                                [],
-                                req.body.updateserviceComm
-                              );
-
-                              for (
-                                let i = 0;
-                                i < input.updateserviceComm.length;
-                                i++
-                              ) {
-                                qry_doctor_service_type += mysql.format(
-                                  "UPDATE `hims_m_doctor_service_type_commission` SET \
+                  for (let i = 0; i < input.updateserviceComm.length; i++) {
+                    qry_doctor_service_type += mysql.format(
+                      "UPDATE `hims_m_doctor_service_type_commission` SET \
                               `service_type_id`=?,`op_cash_comission_percent`=?,`op_credit_comission_percent`=?,`ip_cash_commission_percent`=?,\
                               `ip_credit_commission_percent`=?,record_status`=?,\
                               updated_date=?,updated_by=? where record_status='A' and hims_m_doctor_service_type_commission_id=?;",
-                                  [
-                                    inputParam[i].service_type_id,
-                                    inputParam[i].op_cash_comission_percent,
-                                    inputParam[i].op_credit_comission_percent,
-                                    inputParam[i].ip_cash_commission_percent,
-                                    inputParam[i].ip_credit_commission_percent,
-                                    inputParam[i].record_status,
-                                    new Date(),
-                                    req.userIdentity.algaeh_d_app_user_id,
-                                    inputParam[i]
-                                      .hims_m_doctor_service_type_commission_id
-                                  ]
-                                );
-                              }
-                            } else {
-                              qry_doctor_service_type = "select 1";
-                            }
+                      [
+                        inputParam[i].service_type_id,
+                        inputParam[i].op_cash_comission_percent,
+                        inputParam[i].op_credit_comission_percent,
+                        inputParam[i].ip_cash_commission_percent,
+                        inputParam[i].ip_credit_commission_percent,
+                        inputParam[i].record_status,
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
+                        inputParam[i].hims_m_doctor_service_type_commission_id
+                      ]
+                    );
+                  }
+                } else {
+                  qry_doctor_service_type = "select 1";
+                }
 
-                            utilities
-                              .AlgaehUtilities()
-                              .logger()
-                              .log(
-                                "qry_doctor_service_type: ",
-                                qry_doctor_service_type
-                              );
-                            _mysql
-                              .executeQuery({
-                                query: qry_doctor_service_type,
-                                bulkInsertOrUpdate: true,
-                                printQuery: true
-                              })
-                              .then(update_service_type_commission => {
-                                _mysql.releaseConnection();
-                                req.records = update_service_type_commission;
-                                next();
-                              })
-                              .catch(error => {
-                                next(error);
-                              });
-                          })
-                          .catch(e => {
-                            next(e);
-                          });
-                      })
-                      .catch(error => {
-                        next(error);
-                      });
+                utilities
+                  .AlgaehUtilities()
+                  .logger()
+                  .log("qry_doctor_service_type: ", qry_doctor_service_type);
+                _mysql
+                  .executeQuery({
+                    query: qry_doctor_service_type,
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
                   })
-                  .catch(e => {
-                    next(e);
+                  .then(update_service_type_commission => {
+                    _mysql.releaseConnection();
+                    req.records = update_service_type_commission;
+                    next();
+                  })
+                  .catch(error => {
+                    next(error);
                   });
               })
-              .catch(error => {
-                next(error);
+              .catch(e => {
+                next(e);
               });
           })
-          .catch(e => {
-            next(e);
+          .catch(error => {
+            next(error);
           });
       })
       .catch(e => {
@@ -1076,3 +954,198 @@ module.exports = {
     });
   }
 };
+
+function InsertEmployeeDepartment(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let req = options.req;
+      const insurtColumns = [
+        "employee_id",
+        "services_id",
+        "sub_department_id",
+        "category_speciality_id",
+        "user_id",
+        "employee_designation_id",
+        "reporting_to_id",
+        "from_date"
+      ];
+
+      _mysql
+        .executeQuery({
+          query: "INSERT INTO hims_m_employee_department_mappings(??) VALUES ?",
+          values: req.body.insertdeptDetails,
+          includeValues: insurtColumns,
+          extraValues: {
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            created_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_date: new Date()
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    next(e);
+  });
+}
+
+function UpdateEmployeeDepartment(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let req = options.req;
+
+      for (let i = 0; i < input.updatedeptDetails.length; i++) {
+        qry_employee_department += mysql.format(
+          "UPDATE `hims_m_employee_department_mappings` SET services_id=?,`sub_department_id`=?,\
+          `category_speciality_id`=?,`employee_designation_id`=?,`reporting_to_id`=?,`to_date`=?,\
+          `dep_status`=?, `record_status`=?,`updated_date`=?,`updated_by`=? \
+          where record_status='A' and hims_d_employee_department_id=?;",
+          [
+            inputParam[i].services_id,
+            inputParam[i].sub_department_id,
+            inputParam[i].category_speciality_id,
+            inputParam[i].employee_designation_id,
+            inputParam[i].reporting_to_id,
+            inputParam[i].to_date,
+            inputParam[i].dep_status,
+            inputParam[i].record_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam[i].hims_d_employee_department_id
+          ]
+        );
+      }
+
+      _mysql
+        .executeQuery({
+          query: qry_employee_department,
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    next(e);
+  });
+}
+
+function InsertServiceCommission(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let req = options.req;
+      const insurtColumns = [
+        "provider_id",
+        "services_id",
+        "service_type_id",
+        "op_cash_commission_percent",
+        "op_credit_commission_percent",
+        "ip_cash_commission_percent",
+        "ip_credit_commission_percent"
+      ];
+
+      _mysql
+        .executeQuery({
+          query: "INSERT INTO hims_m_doctor_service_commission(??) VALUES ?",
+          values: req.body.insertserviceComm,
+          includeValues: insurtColumns,
+          extraValues: {
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            created_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_date: new Date()
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    next(e);
+  });
+}
+
+function UpdateEmployeeDepartment(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let req = options.req;
+
+      for (let i = 0; i < input.updatedeptDetails.length; i++) {
+        qry_employee_department += mysql.format(
+          "UPDATE `hims_m_employee_department_mappings` SET services_id=?,`sub_department_id`=?,\
+          `category_speciality_id`=?,`employee_designation_id`=?,`reporting_to_id`=?,`to_date`=?,\
+          `dep_status`=?, `record_status`=?,`updated_date`=?,`updated_by`=? \
+          where record_status='A' and hims_d_employee_department_id=?;",
+          [
+            inputParam[i].services_id,
+            inputParam[i].sub_department_id,
+            inputParam[i].category_speciality_id,
+            inputParam[i].employee_designation_id,
+            inputParam[i].reporting_to_id,
+            inputParam[i].to_date,
+            inputParam[i].dep_status,
+            inputParam[i].record_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam[i].hims_d_employee_department_id
+          ]
+        );
+      }
+
+      _mysql
+        .executeQuery({
+          query: qry_employee_department,
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          resolve(result);
+          next();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    next(e);
+  });
+}
