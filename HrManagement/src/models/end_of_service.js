@@ -19,6 +19,7 @@ module.exports = {
       .then(end_of_service => {
         let endofServexit = false;
         utilities.logger().log("end_of_service: ", end_of_service);
+        // TODO
         if (end_of_service.length > 0) {
           endofServexit = true;
         }
