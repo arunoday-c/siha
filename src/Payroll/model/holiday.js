@@ -821,7 +821,7 @@ let getDailyTimeSheet = (req, res, next) => {
          from  hims_f_daily_time_sheet TS \
         left join hims_d_employee E on TS.biometric_id=E.biometric_id\
         where attendance_date between (?) and (?)" +
-          biometric_id,
+        bio_ids,
         [req.query.from_date, req.query.to_date],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -946,9 +946,16 @@ let postTimeSheet = (req, res, next) => {
                       next(error);
                     });
                   }
-
-                  // req.records = insertResult;
-                  // next();
+                  connection.commit(error => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
+                    }
+                  req.records = insertResult;
+                  next();
+                  });
                 }
               );
             });
