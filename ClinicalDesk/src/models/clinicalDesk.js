@@ -1,8 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 module.exports = {
   getChiefComplaints: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       try {
         _mysql
           .executeQuery({

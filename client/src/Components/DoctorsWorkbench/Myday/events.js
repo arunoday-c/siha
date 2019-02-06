@@ -5,10 +5,11 @@ export default function MyDayEvents() {
     loadPatientsList: data => {
       return new Promise((resolve, reject) => {
         algaehApiCall({
-          uri: "/doctorsWorkBench/getMyDay",
+          uri: "/clinicalDesk/getMyDay",
           data: data.inputParam,
           method: "GET",
           cancelRequestId: "getMyDay",
+          module: "clicnicalDesk",
           onSuccess: response => {
             resolve(response);
           },

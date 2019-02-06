@@ -4,7 +4,8 @@ import {
   getHrmsOptions,
   updateHrmsOptions,
   getEosOptions,
-  updateEosOptions
+  updateEosOptions,
+  getSalarySetUp
 } from "../models/payrollOptions";
 export default () => {
   const api = Router();
@@ -59,6 +60,12 @@ export default () => {
         result: req.records
       });
     }
+  });
+  api.get("/getSalarySetUp", getSalarySetUp, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
   });
 
   return api;

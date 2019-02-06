@@ -3,7 +3,7 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import exxpress from "express";
 import keys from "algaeh-keys";
-import utliites from "algaeh-utilities";
+import algaehUtilities from "algaeh-utilities/utilities";
 import routes from "./routes";
 import compression from "compression";
 const app = exxpress();
@@ -22,47 +22,41 @@ if (process.env.NODE_ENV == "production") {
 app.use((req, res, next) => {
   const reqH = req.headers;
   const _token = reqH["x-api-key"];
-
-  utliites
-    .AlgaehUtilities()
-    .logger()
-    .log("Xapi", _token, "debug");
-  const _verify = utliites.AlgaehUtilities().tokenVerify(_token);
+  const utilities = new algaehUtilities();
+  utilities.logger().log("Xapi", _token, "debug");
+  const _verify = utilities.tokenVerify(_token);
   if (_verify) {
     let header = reqH["x-app-user-identity"];
     if (header != null && header != "" && header != "null") {
-      header = utliites.AlgaehUtilities().decryption(header);
+      header = utilities.decryption(header);
       req.userIdentity = header;
-      let reqUser = utliites.AlgaehUtilities().getTokenData(_token).id;
-      utliites
-        .AlgaehUtilities()
-        .logger("res-tracking")
-        .log(
-          "",
-          {
-            dateTime: new Date().toLocaleString(),
-            requestIdentity: {
-              requestClient: reqH["x-client-ip"],
-              requestAPIUser: reqUser,
-              reqUserIdentity: req.userIdentity
-            },
-            requestUrl: req.originalUrl,
-            requestHeader: {
-              host: reqH.host,
-              "user-agent": reqH["user-agent"],
-              "cache-control": reqH["cache-control"],
-              origin: reqH.origin
-            },
-            requestMethod: req.method
+      let reqUser = utilities.getTokenData(_token).id;
+      utilities.logger("res-tracking").log(
+        "",
+        {
+          dateTime: new Date().toLocaleString(),
+          requestIdentity: {
+            requestClient: reqH["x-client-ip"],
+            requestAPIUser: reqUser,
+            reqUserIdentity: req.userIdentity
           },
-          "info"
-        );
+          requestUrl: req.originalUrl,
+          requestHeader: {
+            host: reqH.host,
+            "user-agent": reqH["user-agent"],
+            "cache-control": reqH["cache-control"],
+            origin: reqH.origin
+          },
+          requestMethod: req.method
+        },
+        "info"
+      );
     }
 
     res.setHeader("connection", "keep-alive");
     next();
   } else {
-    res.status(utliites.AlgaehUtilities().httpStatus().unAuthorized).json({
+    res.status(utilities.httpStatus().unAuthorized).json({
       success: false,
       message: "unauthorized access"
     });
@@ -72,51 +66,44 @@ app.use((req, res, next) => {
 app.use("/api/v1", routes);
 
 process.on("warning", warning => {
-  utliites
-    .AlgaehUtilities()
-    .logger()
-    .log("warn", warning, "warn");
+  const utliites = new algaehUtilities();
+  utliites.logger().log("warn", warning, "warn");
 });
 process.on("uncaughtException", error => {
-  utliites
-    .AlgaehUtilities()
-    .logger()
-    .log("uncatched Exception", error, "error");
+  const utliites = new algaehUtilities();
+  utliites.logger().log("uncatched Exception", error, "error");
 });
 process.on("unhandledRejection", (reason, promise) => {
+  const utliites = new algaehUtilities();
   utliites
-    .AlgaehUtilities()
     .logger()
     .log("Unhandled rejection", { reason: reason, promise: promise }, "error");
 });
 app.use((error, req, res, next) => {
-  error.status =
-    error.status || utliites.AlgaehUtilities().httpStatus().internalServer;
+  const utliites = new algaehUtilities();
+  error.status = error.status || utliites.httpStatus().internalServer;
   const errorMessage =
     error.sqlMessage != null ? error.sqlMessage : error.message;
   const reqH = req.headers;
-  utliites
-    .AlgaehUtilities()
-    .logger()
-    .log(
-      "Exception",
-      {
-        ...{
-          dateTime: new Date().toLocaleString(),
-          method: req.method,
-          ...(req.method === "GET" ? {} : { body: req.body }),
-          requestUrl: req.originalUrl,
-          requestHeader: {
-            host: reqH.host,
-            "user-agent": reqH["user-agent"],
-            "cache-control": reqH["cache-control"],
-            origin: reqH.origin
-          }
-        },
-        message: errorMessage
+  utliites.logger().log(
+    "Exception",
+    {
+      ...{
+        dateTime: new Date().toLocaleString(),
+        method: req.method,
+        ...(req.method === "GET" ? {} : { body: req.body }),
+        requestUrl: req.originalUrl,
+        requestHeader: {
+          host: reqH.host,
+          "user-agent": reqH["user-agent"],
+          "cache-control": reqH["cache-control"],
+          origin: reqH.origin
+        }
       },
-      "error"
-    );
+      message: errorMessage
+    },
+    "error"
+  );
   res.status(error.status).json({
     success: false,
     isSql: error.sqlMessage != null ? true : false,
