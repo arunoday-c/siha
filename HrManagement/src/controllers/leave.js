@@ -7,7 +7,8 @@ import {
   getEmployeeLeaveData,
   getYearlyLeaveData,
   getEmployeeLeaveHistory,
-  getLeaveLevels
+  getLeaveLevels,
+  addLeaveMaster
 } from "../models/leave";
 export default () => {
   const api = Router();
@@ -15,12 +16,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        records: req.records
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        records: req.records
       });
     }
   });
@@ -29,12 +30,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        records: req.records
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        records: req.records
       });
     }
   });
@@ -43,12 +44,12 @@ export default () => {
     if (req.records.leave_already_exist == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        records: req.records
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        records: req.records
       });
     }
   });
@@ -57,12 +58,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        records: req.records
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        records: req.records
       });
     }
   });
@@ -70,12 +71,12 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        records: req.records
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        records: req.records
       });
     }
   });
@@ -86,12 +87,12 @@ export default () => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
-          result: req.records
+          records: req.records
         });
       } else {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
-          result: req.records
+          records: req.records
         });
       }
     }
@@ -100,12 +101,25 @@ export default () => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
-        result: req.records
+        records: req.records
       });
     } else {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
-        result: req.records
+        records: req.records
+      });
+    }
+  });
+  api.post("/addLeaveMaster", addLeaveMaster, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
       });
     }
   });

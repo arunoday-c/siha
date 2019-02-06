@@ -231,6 +231,9 @@ const PageToPlot = {
   ),
   PayrollOptions: React.lazy(() =>
     import("./Components/PayrollManagement/PayrollOptions/PayrollOptions")
+  ),
+  ClinicalDeskNew: React.lazy(() =>
+    import("./Components/DoctorsWorkbench/DoctorsWorkbench-new")
   )
 };
 

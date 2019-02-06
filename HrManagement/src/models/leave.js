@@ -1839,7 +1839,141 @@ getEmployeeLeaveHistory: (req, res, next) => {
   } catch (e) {
     next(e);
   }
+},
+
+//created by irfan: to 
+addLeaveMaster: (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  let input =  req.body;
+ 
+    _mysql
+    .executeQueryWithTransaction({
+      query:
+      "INSERT INTO `hims_d_leave` (leave_code,leave_description,leave_category,calculation_type,\
+        include_weekoff,include_holiday,leave_mode,leave_accrual,leave_encash,leave_type,\
+        encashment_percentage,leave_carry_forward,carry_forward_percentage,\
+        religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
+        proportionate_leave,document_mandatory,created_by,created_date,updated_by,updated_date)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      values:    [
+        input.leave_code,
+        input.leave_description,
+        input.leave_category,
+        input.include_weekoff,
+        input.include_holiday,
+        input.leave_mode,
+        input.calculation_type,
+        input.leave_accrual,
+        input.leave_encash,
+        input.leave_type,
+        input.encashment_percentage,
+        input.leave_carry_forward,
+        input.carry_forward_percentage,
+        input.religion_required,
+        input.religion_id,
+        input.holiday_reimbursement,
+        input.exit_permit_required,
+        input.proportionate_leave,
+        input.document_mandatory,
+        req.userIdentity.algaeh_d_app_user_id,
+        new Date(),
+        req.userIdentity.algaeh_d_app_user_id,
+        new Date()
+      ],
+      printQuery: true
+    })
+    .then(leaveHeadResult => {
+      utilities
+      .AlgaehUtilities()
+      .logger()
+      .log("leaveHeadResult: ", leaveHeadResult);
+      
+        if (leaveHeadResult.insertId > 0) {
+
+
+          new Promise((resolve, reject) => {
+            try {
+              
+
+              if (
+                input.leaveEncash != undefined &&
+                input.leaveEncash.length > 0
+              ) {
+                const insurtColumns = [
+                  "earnings_id",
+                  "percent",
+                  "created_by",
+                  "updated_by"
+                ];
+    
+                _mysql
+                .executeQuery({
+                  query: "INSERT INTO hims_d_leave_encashment(??) VALUES ?",
+                  values: input.leaveEncash,
+                  includeValues: insurtColumns,
+                  extraValues: {
+                    leave_header_id: leaveHeadResult.insertId,
+
+
+created_date:new Date(),updated_date:new Date()
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: true
+                })
+                .then(leave_detail => {}).catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+              }else{
+    
+                resolve({ leaveHeadResult });
+              
+              }
+
+
+
+
+            } catch (e) {
+              reject(e);
+            }
+          }).then(leaveEncashRes => {
+
+
+
+
+          });
+
+
+
+
+
+          
+        }
+        else{
+          req.records = {
+            invalid_input: true,
+            message:
+              "Please Provide valid input "
+          };
+      
+          next();
+          return;
+        }
+      
+    })
+    .catch(e => {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    });
+
+
+  
+ 
 }
+
 
 
 
