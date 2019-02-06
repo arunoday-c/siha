@@ -18,10 +18,7 @@ module.exports = {
       getMaxAuth({
         mysql: _mysql
       }).then(maxAuth => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("maxAuth: ", maxAuth);
+    
 
         if (
           req.userIdentity.leave_authorize_privilege != maxAuth.MaxLeave ||
@@ -29,10 +26,7 @@ module.exports = {
         ) {
           //for lower level authorize
           getLeaveAuthFields(input.auth_level).then(authFields => {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("myyy: ", authFields);
+        
 
             _mysql
               .executeQueryWithTransaction({
@@ -94,10 +88,7 @@ module.exports = {
         ) {
           //if he has highest previlege
           getLeaveAuthFields(input.auth_level).then(authFields => {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("libbb: ", authFields);
+          
 
             _mysql
               .executeQueryWithTransaction({
@@ -164,10 +155,7 @@ module.exports = {
 
                             salary_processed="Y"
                             resolve({ salResult})
-                            utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("salResult: ",salResult);
+                       
                           }
                           else{
 
@@ -175,16 +163,10 @@ module.exports = {
                           }
 
                         }).then(pendingUpdaidResult=>{
-                          utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("pendingUpdaidResult: ");
+                        
                           calc(_mysql, req.body)
                           .then(deductionResult => {
-                            utilities
-                              .AlgaehUtilities()
-                              .logger()
-                              .log("deductionResult: ", deductionResult);
+                           
 
 
 
@@ -233,10 +215,6 @@ module.exports = {
                                   .then(leaveData => {
 
 
-                                    utilities
-                                    .AlgaehUtilities()
-                                    .logger()
-                                    .log("leaveData:", leaveData);
 
                                     if (
                                       leaveData.length > 0 &&
@@ -280,10 +258,6 @@ module.exports = {
                                           }
                                    
                     
-                                        utilities
-                                        .AlgaehUtilities()
-                                        .logger()
-                                        .log("oldMonthsData:", oldMonthsData);
 
                                         let mergemonths = oldMonthsData.concat(
                                           deductionResult.monthWiseCalculatedLeaveDeduction
@@ -309,10 +283,7 @@ module.exports = {
                                             .value();
                                          // debugLog("finalData:", finalData);
                           
-                                         utilities
-                                         .AlgaehUtilities()
-                                         .logger()
-                                         .log("finalData:", finalData);
+                                      
 
                                               let insertPendLeave="";
                                               if (salary_processed=="Y"){
@@ -345,10 +316,6 @@ module.exports = {
                                               })
                                               .then(finalRes => {
 
-                                                utilities
-                                                .AlgaehUtilities()
-                                                .logger()
-                                                .log("finalRes:", finalRes);
 
                                                 _mysql.commitTransaction(() => {
                                                   _mysql.releaseConnection();
@@ -358,10 +325,7 @@ module.exports = {
 
 
                                               }) .catch(error => {
-                                                utilities
-                                                .AlgaehUtilities()
-                                                .logger()
-                                                .log("error:", error);
+                                              
 
                                                 reject(error);
                                                 _mysql.rollBackTransaction(() => {
@@ -372,10 +336,7 @@ module.exports = {
                                     }
                                     else{
 
-                                      utilities
-                                      .AlgaehUtilities()
-                                      .logger()
-                                      .log("else:");
+                                  
 
                                         //invalid data
                                         req.records = {
@@ -416,10 +377,7 @@ module.exports = {
 
                           })
                           .catch(e => {
-                            utilities
-                              .AlgaehUtilities()
-                              .logger()
-                              .log("catch 5: ",e);
+                         
                             reject(e);
                           });
 
@@ -468,20 +426,14 @@ module.exports = {
       let _mysql = null;
       let input;
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("calcul");
+
       if (req.options == null) {
         input = req.query;
       } else {
         input = req.body;
       }
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input dd: ", input);
+  
 
       let from_date = moment(input.from_date).format("YYYY-MM-DD");
       let to_date = moment(input.to_date).format("YYYY-MM-DD");
@@ -538,10 +490,7 @@ module.exports = {
         dateStart.add(1, "month");
       }
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("dateRange: ", dateRange);
+    
       // ---END OF---------get month names and start_of_month and end_of_month number of days in a full month
 
       //---START OF-------calculate begning_of_leave and end_of_leave and leaveDays in leaveDates Range
@@ -617,10 +566,7 @@ module.exports = {
 
         calculatedLeaveDays = leave_applied_days;
       }
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("dateRange: ", dateRange);
+   
       //---END OF-------calculate begning_of_leave and end_of_leave and leaveDays in leaveDates Range
       new Promise((resolve, reject) => {
         try {
@@ -739,10 +685,7 @@ module.exports = {
                   printQuery: true
                 })
                 .then(holidayResult => {
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("holidayResult: ", holidayResult);
+             
 
                   //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
                   let total_weekOff = new LINQ(holidayResult)
@@ -1068,10 +1011,7 @@ applyEmployeeLeave: (req, res, next) => {
   try {
     const _mysql = new algaehMysql();
     let input = req.body;
-    utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("input",input);
+  
     const m_fromDate = moment(input.from_date).format("YYYY-MM-DD");
     const m_toDate = moment(input.to_date).format("YYYY-MM-DD");
     const from_year = moment(input.from_date).format("YYYY");
@@ -1103,10 +1043,7 @@ applyEmployeeLeave: (req, res, next) => {
         .then(empResult => {
 
 
-          utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("empResult:",empResult);
+       
 
           if (
             empResult.length > 0 &&
@@ -1135,10 +1072,6 @@ applyEmployeeLeave: (req, res, next) => {
 
 
 
-                utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("monthly lv:",result);
 
                 if (result.length > 0) {
                   let m_total_eligible = result[0]["total_eligible"];
@@ -1172,20 +1105,13 @@ applyEmployeeLeave: (req, res, next) => {
                       .then(result => {
 
 
-                        utilities
-                        .AlgaehUtilities()
-                        .logger()
-                        .log("previous data:",result);
+                       
 
                         // DISCARDING LEAVE APPLICATION
                         if (result.length > 0) {
 
 
-                          
-                          utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log(" am ball:");
+                         
                           //clashing both from_leave_session and  to_leave_session
                           const clashing_sessions = new LINQ(result)
                             .Where(
@@ -1208,10 +1134,7 @@ applyEmployeeLeave: (req, res, next) => {
                             })
                             .ToArray();
 
-                            utilities
-                            .AlgaehUtilities()
-                            .logger()
-                            .log(" am cat:");
+                         
                           // debugLog("clashing_sessions:", clashing_sessions);
                           //clashing only  new from_leave_session  with existing  to_leave_session
                           const clashing_to_leave_session = new LINQ(result)
@@ -1273,11 +1196,7 @@ applyEmployeeLeave: (req, res, next) => {
                           //   not_clashing_sessions
                           // );
 
-                          
-                          utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log(" am dog:");
+                      
                           new Promise((resolve, reject) => {
                             try {
                               let curr_from_session = input.from_leave_session;
@@ -1552,18 +1471,11 @@ applyEmployeeLeave: (req, res, next) => {
                           // );
 
 
-                          utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log(" am apple:");
                           saveF(_mysql,req,  next,  input,  2);
                         }
                       })
                       .catch(e => {
-                        utilities
-                        .AlgaehUtilities()
-                        .logger()
-                        .log(" catch 5:");
+                    
                         
                         next(e);
                       });
@@ -2077,7 +1989,333 @@ addLeaveMaster: (req, res, next) => {
         next(e);
       });
     });
+},
+
+//created by irfan:
+processYearlyLeave: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+ 
+  let year = "";
+
+  let yearArray = [];
+  let monthlyArray = [];
+
+  let employee_id = "";
+
+  let AllEmployees = [];
+  let AllLeaves = [];
+  let AllYearlyLeaves = [];
+  let AllMonthlyLeaves = [];
+
+  if (req.query.employee_id > 0) {
+    employee_id = ` and hims_d_employee_id=${req.query.employee_id} `;
+  }
+
+  if (req.query.year > 0) {
+    year = req.query.year;
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_employee_id, employee_code,full_name  as employee_name,\
+                employee_status,date_of_joining ,hospital_id ,employee_type,sex\
+                from hims_d_employee where employee_status <>'I' and  record_status='A' " +
+          employee_id +
+          ";\
+                select L.hims_d_leave_id,L.leave_code,LD.employee_type,LD.gender,LD.eligible_days from hims_d_leave  L \
+                inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  and L.record_status='A' ;\
+                select hims_f_employee_yearly_leave_id,employee_id,`year` from hims_f_employee_yearly_leave\
+                 where record_status='A' and `year`=? ;\
+                 select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from\
+                hims_f_employee_monthly_leave where   `year`=?; ",
+        values: [year, year],
+        printQuery: true
+      })
+      .then(allResult => {
+
+
+  // utilities.logger().log("AllEmployees: ", allResult[0]);
+
+        AllEmployees = allResult[0];
+        AllLeaves = allResult[1];
+        AllYearlyLeaves = allResult[2];
+        AllMonthlyLeaves = allResult[3];
+
+
+        if (AllEmployees.length > 0) {
+          new Promise((resolve, reject) => {
+            try {
+              for (let i = 0; i < AllEmployees.length; i++) {
+                // fetch all the fileds of apllicable_leavs
+                const apllicable_leavsDetail = new LINQ(AllLeaves)
+                  .Where(
+                    w =>
+                      w.employee_type == AllEmployees[i]["employee_type"] &&
+                      (w.gender == AllEmployees[i]["sex"] || w.gender == "BOTH")
+                  )
+                  .Select(s => {
+                    return {
+                      hims_d_leave_id: s.hims_d_leave_id,
+                      eligible_days: s.eligible_days,
+                      eligible_days: s.eligible_days
+                    };
+                  })
+                  .ToArray();
+
+                // fetch only leave ids of apllicable_leavs
+                const apllicable_leavs = new LINQ(AllLeaves)
+                  .Where(
+                    w =>
+                      w.employee_type == AllEmployees[i]["employee_type"] &&
+                      (w.gender == AllEmployees[i]["sex"] || w.gender == "BOTH")
+                  )
+                  .Select(s => s.hims_d_leave_id)
+                  .ToArray();
+
+                if (apllicable_leavs.length > 0) {
+           
+
+                  let new_leave_ids = apllicable_leavs.filter((item, pos) => {
+                    return apllicable_leavs.indexOf(item) == pos;
+                  });
+                  //  debugLog("new_leave_ids:", new_leave_ids);
+                  //step1---checking if yearly leave is  already processed for this employee
+                  const yearlyLvExist = new LINQ(AllYearlyLeaves)
+                    .Where(
+                      w =>
+                        w.employee_id ==
+                          AllEmployees[i]["hims_d_employee_id"] &&
+                        w.year == year
+                    )
+                    .Select(s => s.hims_f_employee_yearly_leave_id)
+                    .ToArray().length;
+
+                  // debugLog("yearlyLvExist:", yearlyLvExist);
+                  //if yearly leave is  not processed for this employee process now
+                  if (yearlyLvExist < 1) {
+                    yearArray.push({
+                      employee_id: AllEmployees[i].hims_d_employee_id,
+                      year: year
+                    });
+                  }
+
+                  //step2----checking if monthly leave is  already processed for this employee
+                  const monthlyLvExist = new LINQ(AllMonthlyLeaves)
+                    .Where(
+                      w =>
+                        w.employee_id ==
+                          AllEmployees[i]["hims_d_employee_id"] &&
+                        w.year == year
+                    )
+                    .Select(s => s.leave_id)
+                    .ToArray();
+
+                  // debugLog("monthlyLvExist:", monthlyLvExist);
+                  if (monthlyLvExist.length > 0) {
+                    // const old_leave_ids = new LINQ(
+                    //   monthlyLvExist
+                    // )
+                    //   .Select(s => s.leave_id)
+                    //   .ToArray();
+
+                    //   debugLog("old_leave_ids:", old_leave_ids);
+
+                    // remove existing leave ids from applicable leave ids
+                    let leaves_to_insert = new_leave_ids.filter(
+                      val => !monthlyLvExist.includes(val)
+                    );
+
+                    const _leaves = leaves_to_insert.map(item => {
+                      return _.chain(apllicable_leavsDetail)
+                        .find(o => {
+                          return o.hims_d_leave_id == item;
+                        })
+
+                        .omit(_.isNull)
+                        .value();
+                    });
+                    //  debugLog("_leaves:", _leaves);
+                    monthlyArray.push(
+                      ...new LINQ(_leaves)
+                        .Where(w => w.hims_d_leave_id > 0)
+                        .Select(s => {
+                          return {
+                            employee_id: AllEmployees[i].hims_d_employee_id,
+                            year: year,
+                            leave_id: s.hims_d_leave_id,
+                            total_eligible: s.eligible_days,
+                            close_balance: s.eligible_days
+                          };
+                        })
+                        .ToArray()
+                    );
+                  } else {
+                    // if monthly table data not exist
+                    monthlyArray.push(
+                      ...new LINQ(apllicable_leavsDetail)
+                        .Where(w => w.hims_d_leave_id > 0)
+                        .Select(s => {
+                          return {
+                            employee_id: AllEmployees[i].hims_d_employee_id,
+                            year: year,
+                            leave_id: s.hims_d_leave_id,
+                            total_eligible: s.eligible_days,
+                            close_balance: s.eligible_days
+                          };
+                        })
+                        .ToArray()
+                    );
+                  }
+                }
+
+                if (i == AllEmployees.length - 1) {
+                  //insert in two tables
+                  resolve(yearArray);
+                }
+              }
+            } catch (e) {
+              reject(e);
+            }
+          }).then(arrayResult => {
+            new Promise((resolve, reject) => {
+              try {
+                if (yearArray.length > 0) {
+                  const insurtColumns = ["employee_id", "year"];
+
+                  _mysql
+                    .executeQueryWithTransaction({
+                      query:
+                        "INSERT INTO hims_f_employee_yearly_leave(??) VALUES ?",
+                      values: yearArray,
+                      includeValues: insurtColumns,
+                      extraValues: {
+                        created_date: new Date(),
+                        updated_date: new Date(),
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_by: req.userIdentity.algaeh_d_app_user_id
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
+                    .then(yearResult => {
+                      utilities.logger().log("yearResult: ", yearResult);
+
+                      if (yearResult.affectedRows > 0) {
+                        resolve({ yearResult });
+                      } else {
+                        _mysql.rollBackTransaction(() => {
+                          req.records = {
+                            invalid_data: true,
+                            message: "interuption in proccessing year "
+                          };
+                          next();
+                          return;
+                        });
+                      }
+
+                   
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                } else {
+                  resolve({});
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(resultofYearInsert => {
+              new Promise((resolve, reject) => {
+                try {
+                  if (monthlyArray.length > 0) {
+                    //functionality plus commit
+
+                    const insurtColumns = [
+                      "employee_id",
+                      "year",
+                      "leave_id",
+                      "total_eligible",
+                      "close_balance"
+                    ];
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO hims_f_employee_monthly_leave(??) VALUES ?",
+                        values: monthlyArray,
+                        includeValues: insurtColumns,
+
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(monthResult => {
+                        utilities.logger().log("monthResult: ", monthResult);
+
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = monthResult;
+                          next();
+                        });
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  } else {
+                    //commit
+
+                    _mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      if (Object.keys(resultofYearInsert).length === 0) {
+                        req.records = {
+                          already_processed: true,
+                          message: "Leave already processed"
+                        };
+                        next();
+                      } else {
+                        req.records = resultofYearInsert;
+                        next();
+                      }
+                    });
+                  }
+                } catch (e) {
+                  reject(e);
+                }
+              }).then(resultMonthlyInsert => {
+                //pppppppppppp
+              });
+            });
+          });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "No Employees found"
+          };
+          next();
+          return;
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+      
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "Please Provide valid year "
+    };
+
+    next();
+    return;
+  }
 }
+
 
 
 };
@@ -2183,10 +2421,7 @@ function getMaxAuth(options) {
 
  //created by irfan: to get database field for authrzation
 function getLeaveAuthFields(auth_level) {
-  utilities
-    .AlgaehUtilities()
-    .logger()
-    .log("auth_level: ", auth_level);
+
 
   return new Promise((resolve, reject) => {
     let authFields;
@@ -2251,20 +2486,7 @@ function calc(db, body) {
       let _mysql = db;
       let input = body;
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("ooption:");
-      // if (options == null) {
-      //   input = req.query;
-      // } else {
-      //   input = req.body;
-      // }
-
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input dd: ", input);
+    
 
       let from_date = moment(input.from_date).format("YYYY-MM-DD");
       let to_date = moment(input.to_date).format("YYYY-MM-DD");
@@ -2321,10 +2543,7 @@ function calc(db, body) {
         dateStart.add(1, "month");
       }
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("dateRange: ", dateRange);
+
       // ---END OF---------get month names and start_of_month and end_of_month number of days in a full month
 
       //---START OF-------calculate begning_of_leave and end_of_leave and leaveDays in leaveDates Range
@@ -2400,17 +2619,11 @@ function calc(db, body) {
 
         calculatedLeaveDays = leave_applied_days;
       }
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("dateRange: ", dateRange);
+     
       //---END OF-------calculate begning_of_leave and end_of_leave and leaveDays in leaveDates Range
       return new Promise((resolve, reject) => {
         try {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("am one : ");
+      
 
           _mysql
             .executeQuery({
@@ -2471,10 +2684,7 @@ function calc(db, body) {
                   printQuery: true
                 })
                 .then(holidayResult => {
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("holidayResult: ", holidayResult);
+               
 
                   //s -------START OF--- get count of holidays and weekOffs betwen apllied leave range
                   let total_weekOff = new LINQ(holidayResult)
