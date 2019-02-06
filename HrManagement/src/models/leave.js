@@ -3,8 +3,8 @@ import _ from "lodash";
 import extend from "extend";
 import moment from "moment";
 import { LINQ } from "node-linq";
-import utilities from "algaeh-utilities";
-
+//import utilities from "algaeh-utilities";
+import algaehUtilities from "algaeh-utilities/utilities";
 //import { getMaxAuth } from "../../../src/utils";
 // import Sync from "sync";
 module.exports = {
@@ -1841,22 +1841,23 @@ getEmployeeLeaveHistory: (req, res, next) => {
   }
 },
 
-//created by irfan: to 
+
+//created by irfan: to
 addLeaveMaster: (req, res, next) => {
   const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+  let input = req.body;
 
-  let input =  req.body;
- 
-    _mysql
+  _mysql
     .executeQueryWithTransaction({
       query:
-      "INSERT INTO `hims_d_leave` (leave_code,leave_description,leave_category,calculation_type,\
-        include_weekoff,include_holiday,leave_mode,leave_accrual,leave_encash,leave_type,\
-        encashment_percentage,leave_carry_forward,carry_forward_percentage,\
-        religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
-        proportionate_leave,document_mandatory,created_by,created_date,updated_by,updated_date)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      values:    [
+        "INSERT INTO `hims_d_leave` (leave_code,leave_description,leave_category,calculation_type,\
+          include_weekoff,include_holiday,leave_mode,leave_accrual,leave_encash,leave_type,\
+          encashment_percentage,leave_carry_forward,carry_forward_percentage,\
+          religion_required,religion_id,holiday_reimbursement,exit_permit_required,\
+          proportionate_leave,document_mandatory,created_by,created_date,updated_by,updated_date)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      values: [
         input.leave_code,
         input.leave_description,
         input.leave_category,
@@ -1884,97 +1885,199 @@ addLeaveMaster: (req, res, next) => {
       printQuery: true
     })
     .then(leaveHeadResult => {
-      utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("leaveHeadResult: ", leaveHeadResult);
-      
-        if (leaveHeadResult.insertId > 0) {
+      utilities.logger().log("leaveHeadResult: ", leaveHeadResult);
 
+      if (leaveHeadResult.insertId > 0) {
+        new Promise((resolve, reject) => {
+          try {
+            if (
+              input.leaveEncash != undefined &&
+              input.leaveEncash.length > 0
+            ) {
+              const insurtColumns = ["earnings_id", "percent"];
 
-          new Promise((resolve, reject) => {
-            try {
-              
-
-              if (
-                input.leaveEncash != undefined &&
-                input.leaveEncash.length > 0
-              ) {
-                const insurtColumns = [
-                  "earnings_id",
-                  "percent",
-                  "created_by",
-                  "updated_by"
-                ];
-    
-                _mysql
+              _mysql
                 .executeQuery({
                   query: "INSERT INTO hims_d_leave_encashment(??) VALUES ?",
                   values: input.leaveEncash,
                   includeValues: insurtColumns,
                   extraValues: {
                     leave_header_id: leaveHeadResult.insertId,
-
-
-created_date:new Date(),updated_date:new Date()
+                    created_date: new Date(),
+                    updated_date: new Date(),
+                    created_by: req.userIdentity.algaeh_d_app_user_id,
+                    updated_by: req.userIdentity.algaeh_d_app_user_id
                   },
                   bulkInsertOrUpdate: true,
                   printQuery: true
                 })
-                .then(leave_detail => {}).catch(e => {
+                .then(encashResult => {
+                  utilities.logger().log("encashResult: ", encashResult);
+
+                  if (encashResult.insertId > 0) {
+                    resolve({ encashResult });
+                  } else {
+                    _mysql.rollBackTransaction(() => {
+                      req.records = {
+                        invalid_data: true,
+                        message: "please send correct encashment data"
+                      };
+                      next();
+                      return;
+                    });
+                  }
+                })
+                .catch(e => {
                   _mysql.rollBackTransaction(() => {
                     next(e);
                   });
                 });
-              }else{
-    
-                resolve({ leaveHeadResult });
-              
+            } else {
+              resolve({ leaveHeadResult });
+            }
+          } catch (e) {
+            reject(e);
+          }
+        }).then(leaveEncashRes => {
+          new Promise((resolve, reject) => {
+            try {
+              if (
+                input.leaveRules != undefined &&
+                input.leaveRules.length > 0
+              ) {
+                const insurtColumnsRules = [
+                  "calculation_type",
+                  "earning_id",
+                  "paytype",
+                  "from_value",
+                  "to_value",
+                  "value_type",
+                  "total_days"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO hims_d_leave_rule(??) VALUES ?",
+                    values: input.leaveRules,
+                    includeValues: insurtColumnsRules,
+                    extraValues: {
+                      leave_header_id: leaveHeadResult.insertId
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(ruleResult => {
+                    utilities.logger().log("ruleResult: ", ruleResult);
+                    if (ruleResult.insertId > 0) {
+                      resolve({ ruleResult });
+                    } else {
+                      _mysql.rollBackTransaction(() => {
+                        req.records = {
+                          invalid_data: true,
+                          message: "please send correct leave rule data"
+                        };
+                        next();
+                        return;
+                      });
+                    }
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
+              } else {
+                resolve({ leaveEncashRes });
               }
-
-
-
-
             } catch (e) {
               reject(e);
             }
-          }).then(leaveEncashRes => {
+          }).then(leaveRulesRes => {
+            new Promise((resolve, reject) => {
+              try {
+                if (
+                  input.leaveDetails != undefined &&
+                  input.leaveDetails.length > 0
+                ) {
+                  const insurtColumnsdetails = [
+                    "employee_type",
+                    "gender",
+                    "eligible_days",
+                    "min_service_required",
+                    "service_years",
+                    "once_life_term",
+                    "allow_probation",
+                    "max_number_days",
+                    "mandatory_utilize_days"
+                  ];
 
+                  _mysql
+                    .executeQuery({
+                      query: "INSERT INTO hims_d_leave_detail(??) VALUES ?",
+                      values: input.leaveDetails,
+                      includeValues: insurtColumnsdetails,
+                      extraValues: {
+                        leave_header_id: leaveHeadResult.insertId,
+                        created_date: new Date(),
+                        updated_date: new Date(),
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_by: req.userIdentity.algaeh_d_app_user_id
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
+                    .then(detailResult => {
+                      utilities.logger().log("detailResult: ", detailResult);
 
-
-
+                      if (detailResult.insertId > 0) {
+                        resolve({ detailResult });
+                      } else {
+                        _mysql.rollBackTransaction(() => {
+                          req.records = {
+                            invalid_data: true,
+                            message: "please send correct leave details data"
+                          };
+                          next();
+                          return;
+                        });
+                      }
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                } else {
+                  resolve({ leaveRulesRes });
+                }
+              } catch (e) {
+                reject(e);
+              }
+            }).then(finalResult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = finalResult;
+                next();
+              });
+            });
           });
+        });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please Provide valid input "
+        };
 
-
-
-
-
-          
-        }
-        else{
-          req.records = {
-            invalid_input: true,
-            message:
-              "Please Provide valid input "
-          };
-      
-          next();
-          return;
-        }
-      
+        next();
+        return;
+      }
     })
     .catch(e => {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
     });
-
-
-  
- 
 }
-
-
 
 
 };
