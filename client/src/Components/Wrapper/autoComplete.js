@@ -30,20 +30,32 @@ class AutoComplete extends PureComponent {
           props.selector.dataSource.data === undefined
             ? []
             : props.selector.dataSource.data;
-        const _data = _estData
-          .sort((a, b) => {
-            return ("" + a[props.selector.dataSource.textField]).localeCompare(
-              b[props.selector.dataSource.textField]
-            );
-          })
-          .map((item, index) => {
-            return {
-              key: index,
-              value: item[props.selector.dataSource.valueField],
-              text: item[props.selector.dataSource.textField],
-              ...item
-            };
-          });
+
+        const _data =
+          this.props.selector.sort === null ||
+          this.props.selector.sort === undefined
+            ? _estData
+                .sort((a, b) => {
+                  return (
+                    "" + a[this.props.selector.dataSource.textField]
+                  ).localeCompare(b[this.props.selector.dataSource.textField]);
+                })
+                .map((item, index) => {
+                  return {
+                    key: index,
+                    value: item[this.props.selector.dataSource.valueField],
+                    text: item[this.props.selector.dataSource.textField],
+                    ...item
+                  };
+                })
+            : _estData.map((item, index) => {
+                return {
+                  key: index,
+                  value: item[this.props.selector.dataSource.valueField],
+                  text: item[this.props.selector.dataSource.textField],
+                  ...item
+                };
+              });
 
         this.setState({
           data: _data,
@@ -89,20 +101,33 @@ class AutoComplete extends PureComponent {
       this.props.selector.dataSource.data === undefined
         ? []
         : this.props.selector.dataSource.data;
-    const _data = _estData
-      .sort((a, b) => {
-        return ("" + a[that.props.selector.dataSource.textField]).localeCompare(
-          b[that.props.selector.dataSource.textField]
-        );
-      })
-      .map((item, index) => {
-        return {
-          key: index,
-          value: item[that.props.selector.dataSource.valueField],
-          text: item[that.props.selector.dataSource.textField],
-          ...item
-        };
-      });
+
+    const _data =
+      this.props.selector.sort === null ||
+      this.props.selector.sort === undefined
+        ? _estData
+            .sort((a, b) => {
+              return (
+                "" + a[that.props.selector.dataSource.textField]
+              ).localeCompare(b[that.props.selector.dataSource.textField]);
+            })
+            .map((item, index) => {
+              return {
+                key: index,
+                value: item[that.props.selector.dataSource.valueField],
+                text: item[that.props.selector.dataSource.textField],
+                ...item
+              };
+            })
+        : _estData.map((item, index) => {
+            return {
+              key: index,
+              value: item[that.props.selector.dataSource.valueField],
+              text: item[that.props.selector.dataSource.textField],
+              ...item
+            };
+          });
+
     this.setState({
       value: this.props.selector.value,
       data: _data,

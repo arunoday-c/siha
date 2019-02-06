@@ -116,6 +116,7 @@ let updateDepartment = (req, res, next) => {
     next(e);
   }
 };
+
 let deleteDepartment = (req, res, next) => {
   try {
     if (req.db == null) {

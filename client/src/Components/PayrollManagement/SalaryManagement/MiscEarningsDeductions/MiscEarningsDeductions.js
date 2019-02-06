@@ -40,6 +40,7 @@ export default class MiscEarningsDeductions extends Component {
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
+      module : "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
           this.setState({

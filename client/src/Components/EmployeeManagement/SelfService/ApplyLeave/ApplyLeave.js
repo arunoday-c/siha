@@ -258,11 +258,11 @@ class ApplyLeave extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            total_applied_days: res.data.result.calculatedLeaveDays
+            total_applied_days: res.data.records.calculatedLeaveDays
           });
         } else if (!res.data.success) {
           swalMessage({
-            title: res.data.result.message,
+            title: res.data.records.message,
             type: "warning"
           });
           this.setState({
@@ -496,7 +496,7 @@ class ApplyLeave extends Component {
               this.clearState();
             } else if (!res.data.success) {
               swalMessage({
-                title: res.data.message,
+                title: res.data.records.message,
                 type: "error"
               });
             }
@@ -546,7 +546,7 @@ class ApplyLeave extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            emp_leaves_data: res.data.result
+            emp_leaves_data: res.data.records
           });
         }
       },

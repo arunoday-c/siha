@@ -60,6 +60,7 @@ class EmployeeMasterIndex extends Component {
     ) {
       this.props.getSubDepartment({
         uri: "/department/get/subdepartment",
+        module: "masterSettings",
         data: {
           sub_department_status: "A"
         },

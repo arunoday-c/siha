@@ -58,6 +58,7 @@ export default class MonthlyAttendance extends Component {
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
           that.setState({
@@ -315,6 +316,7 @@ export default class MonthlyAttendance extends Component {
               isImp: true
             }}
             selector={{
+              sort: "off",
               name: "month",
               className: "select-fld",
               value: this.state.month,

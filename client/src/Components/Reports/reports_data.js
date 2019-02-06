@@ -1,4 +1,4 @@
-import { APPT_TYPE } from "../../utils/GlobalVariables.json";
+import { APPT_TYPE, LEAVE_STATUS } from "../../utils/GlobalVariables.json";
 
 export default [
   {
@@ -710,6 +710,59 @@ export default [
     name: "PAYROLL REPORTS",
     submenu: [
       {
+        subitem: "Leave Reports",
+        template_name: "leave_reports",
+        reportQuery: "leaveReport",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "dropdown",
+            name: "hims_d_leave_id",
+            initialLoad: true,
+            isImp: true,
+            link: {
+              uri: "/selfService/getLeaveMaster",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "leave_description",
+              valueField: "hims_d_leave_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "status",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LEAVE_STATUS
+            },
+            events: {
+              onChange: (reportState, currentValue) => {}
+            }
+          }
+        ]
+      },
+      {
         subitem: "Salary Slips",
         template_name: "asset_war_exp",
         reportParameters: []
@@ -739,12 +792,7 @@ export default [
         reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
-      {
-        subitem: "Leave Reports",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
+
       {
         subitem: "Shift Rostering reports",
         template_name: "asset_war_exp",
