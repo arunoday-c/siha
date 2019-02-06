@@ -38,6 +38,7 @@ const DisplayDateFormat = ($this, date) => {
 const getVisitDetails = $this => {
   algaehApiCall({
     uri: "/frontDesk/get",
+    module: "frontDesk",
     method: "GET",
     data: { patient_code: $this.state.patient_code },
     onSuccess: response => {
@@ -55,7 +56,6 @@ const getVisitDetails = $this => {
 };
 
 const SelectVisitToClose = ($this, row, e) => {
-  
   let visitDetails = $this.state.visitDetails;
   let name = e.target.name;
 
@@ -74,7 +74,6 @@ const ClearData = $this => {
 };
 
 const CloseVisits = $this => {
-  
   let inputObj = Enumerable.from($this.state.visitDetails)
     .where(w => w.select === "Y")
     .toArray();

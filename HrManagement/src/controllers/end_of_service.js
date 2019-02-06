@@ -11,7 +11,7 @@ export default () => {
   });
   api.post("/save", endOfServiceAdd, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
+      success: req.flag == 1 ? false : true,
       result: req.records
     });
   });

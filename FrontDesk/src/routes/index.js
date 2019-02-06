@@ -1,7 +1,7 @@
 import express from "express";
-import test from "../controllers/test";
+import frontDesk from "../controllers/frontDesk";
 
 const router = express();
-router.use("/test", test());
+router.use("/frontDesk", frontDesk());
 
 export default router;
