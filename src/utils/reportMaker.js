@@ -65,6 +65,35 @@ let algaehReportConfig = reportName => {
           and  date(?) and   BH.record_status='A'  and BD.record_status='A'  group by S.sub_department_id",
 
         questionOrder: ["from_date", "to_date"]
+      },
+      {
+        reportName: "leaveReport",
+        reportQuery:
+          "select hims_f_leave_application_id, leave_application_code,employee_id, leave_id ,\
+          from_date,to_date,total_applied_days,`status` ,L.leave_code,L.leave_description,L.leave_type,\
+          E.employee_code,full_name as employee_name,E.sex,E.employee_status,\
+          SD.sub_department_code,SD.sub_department_name\
+          FROM hims_f_leave_application LA inner join  hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
+          inner join hims_d_employee E  on LA.employee_id=E.hims_d_employee_id\
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+          where((from_date>= ? and from_date <= ?) or (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?))",
+        questionOrder: [
+          "from_date",
+          "to_date",
+          "from_date",
+          "to_date",
+          "from_date",
+          "to_date"
+        ]
+      },
+      {
+        reportName: "employeeDetails",
+        reportQuery:
+          "select E.employee_code,full_name as employee_name,E.sex,E.date_of_joining,E.employee_status,\
+          D.designation_code,D.designation,SD.sub_department_code,SD.sub_department_name\
+          FROM hims_d_employee E  left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id",
+        questionOrder: []
       }
     ]
   };

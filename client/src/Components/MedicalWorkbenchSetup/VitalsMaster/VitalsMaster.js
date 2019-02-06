@@ -93,6 +93,7 @@ class VitalsMaster extends Component {
       //uri: "/department/get",
       uri: "/department/get/subdepartment",
       method: "GET",
+      module : "masterSettings",
       // data: {
       //   department_type: "CLINICAL"
       // },

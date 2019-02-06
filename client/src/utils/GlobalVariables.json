@@ -637,7 +637,8 @@
     { "name": "Active", "value": "A", "arabic_name": "نشيط" },
     { "name": "Inactive", "value": "I", "arabic_name": "غير نشط" },
     { "name": "Resigned", "value": "R", "arabic_name": "استقال" },
-    { "name": "Terminated", "value": "T", "arabic_name": "إنهاء" }
+    { "name": "Terminated", "value": "T", "arabic_name": "إنهاء" },
+    { "name": "Retirement", "value": "E", "arabic_name": "تقاعد" }
   ],
   "NO_OF_EMI": [
     {

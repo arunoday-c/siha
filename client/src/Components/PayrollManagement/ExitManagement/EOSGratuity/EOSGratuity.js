@@ -17,7 +17,8 @@ class EOSGratuity extends Component {
         componentList: []
       },
       previous_gratuity_amount: 0,
-      saveDisabled: true
+      saveDisabled: true,
+      gratuity_done: false
     };
   }
 
@@ -56,7 +57,8 @@ class EOSGratuity extends Component {
       calculated_gratutity_amount: null,
       payable_amount: null,
       remarks: "",
-      saveDisabled: true
+      saveDisabled: true,
+      gratuity_done: false
     });
   }
 
@@ -66,18 +68,16 @@ class EOSGratuity extends Component {
         columns: Employee
       },
       searchName: "exit_employees",
+      inputs: "gratuity_applicable = 'Y'",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
       onRowSelect: row => {
-        this.setState(
-          {
-            employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
-          },
-          () => {}
-        );
+        this.setState({
+          employee_name: row.full_name,
+          hims_d_employee_id: row.hims_d_employee_id
+        });
       }
     });
   }
@@ -146,13 +146,25 @@ class EOSGratuity extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            this.setState({
-              loading: false,
-              data: res.data.result,
-              calculated_gratutity_amount: res.data.result.computed_amount,
-              payable_amount: res.data.result.paybale_amout,
-              saveDisabled: false
-            });
+            debugger;
+            if (res.data.result.endofServexit) {
+              this.setState({
+                loading: false,
+                data: res.data.result,
+                calculated_gratutity_amount: res.data.result.computed_amount,
+                payable_amount: res.data.result.paybale_amout,
+                saveDisabled: true,
+                gratuity_done: true
+              });
+            } else {
+              this.setState({
+                loading: false,
+                data: res.data.result,
+                calculated_gratutity_amount: res.data.result.computed_amount,
+                payable_amount: res.data.result.paybale_amout,
+                saveDisabled: false
+              });
+            }
           }
         },
         onFailure: err => {
@@ -257,6 +269,16 @@ class EOSGratuity extends Component {
             >
               CLEAR
             </button>
+          </div>
+
+          <div className="col form-group">
+            {this.state.gratuity_done === true ? (
+              <h3 style={{ paddingTop: "21px" }}>
+                <font color="green">Gratuity Done</font>
+              </h3>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 
@@ -480,6 +502,7 @@ class EOSGratuity extends Component {
                         onChange: this.textHandler.bind(this)
                       },
                       others: {
+                        disabled: this.state.gratuity_done
                         // type: "number"
                       }
                     }}

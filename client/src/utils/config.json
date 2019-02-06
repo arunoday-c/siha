@@ -17,6 +17,10 @@
       "port": 3004,
       "url": ""
     },
+    "clicnicalDesk": {
+      "port": 3011,
+      "url": ""
+    },
     "masterSettings": {
       "port": 3003,
       "url": ""

@@ -1,13 +1,46 @@
 import { Router } from "express";
-import utlities from "algaeh-utilities";
-import { addDepartment } from "../models/department";
+import algaehUtlities from "algaeh-utilities/utilities";
+import {
+  addDepartment,
+  updateDepartment,
+  selectDepartment,
+  selectSubDepartment
+} from "../models/department";
 
 export default () => {
   let api = Router();
+  const utlities = new algaehUtlities();
 
   api.post("/addDepartment", addDepartment, (req, res, next) => {
     let result = req.records;
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+
+  api.put("/updateDepartment", updateDepartment, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+
+  api.get("/get", selectDepartment, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+
+  api.get("/get/subdepartment", selectSubDepartment, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
       success: true,
       records: result
     });

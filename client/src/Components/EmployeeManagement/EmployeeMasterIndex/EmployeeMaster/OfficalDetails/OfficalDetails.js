@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import "./OfficalDetails.css";
 
 import {
@@ -21,7 +21,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { getCookie } from "../../../../../utils/algaehApiCall";
-class OfficalDetails extends PureComponent {
+class OfficalDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -135,7 +135,17 @@ class OfficalDetails extends PureComponent {
                 <AlgaehDateHandler
                   div={{ className: "col" }}
                   label={{
-                    forceLabel: this.state.date_of_releaving_label,
+                    forceLabel:
+                      this.state.employee_status === "A" ||
+                      this.state.employee_status === "I"
+                        ? "Date of leaving"
+                        : this.state.employee_status === "R"
+                        ? "Date of Resigned"
+                        : this.state.employee_status === "T"
+                        ? "Date of Terminating"
+                        : this.state.employee_status === "E"
+                        ? "Date of Retirement"
+                        : "",
                     isImp:
                       this.state.employee_status === "R" ||
                       this.state.employee_status === "T"
@@ -144,7 +154,7 @@ class OfficalDetails extends PureComponent {
                   }}
                   textBox={{
                     className: "txt-fld",
-                    name: "date_of_leaving",
+                    name: "date_of_resignation",
                     others: {
                       disabled:
                         this.state.enable_active_status === "I" ? true : false
@@ -154,7 +164,7 @@ class OfficalDetails extends PureComponent {
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
-                  value={this.state.date_of_leaving}
+                  value={this.state.date_of_resignation}
                 />
                 <AlagehFormGroup
                   div={{ className: "col" }}

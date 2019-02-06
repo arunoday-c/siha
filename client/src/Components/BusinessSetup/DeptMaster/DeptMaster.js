@@ -188,6 +188,7 @@ class DeptMaster extends Component {
             hims_d_department_id: data.hims_d_department_id
           },
           method: "PUT",
+          module: "masterSettings",
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
@@ -267,6 +268,7 @@ class DeptMaster extends Component {
     algaehApiCall({
       uri: "/department/get",
       method: "GET",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ allDepartments: response.data.records });
@@ -286,6 +288,7 @@ class DeptMaster extends Component {
       uri: "/department/get/subdepartment",
       data: { department_id: id },
       method: "GET",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ subDepartments: response.data.records });

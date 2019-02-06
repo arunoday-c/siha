@@ -84,6 +84,7 @@ class HospitalServiceSetup extends Component {
     ) {
       this.props.getSubDepatments({
         uri: "/department/get/subdepartment",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",

@@ -48,6 +48,7 @@ export default class AuthorizationSetup extends Component {
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
+      module : "masterSettings",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({

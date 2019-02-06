@@ -44,7 +44,7 @@ const accomodationProvided = ($this, e) => {
 
 const datehandle = ($this, ctrl, e) => {
   let _notice = {};
-  if (e === "date_of_leaving") {
+  if (e === "date_of_resignation") {
     if ($this.state.notice_period !== null) {
       _notice = {
         reliving_date: moment(ctrl).add(
@@ -64,6 +64,7 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const employeeStatusHandler = ($this, e) => {
+  debugger;
   let _enable_active_status = "";
   let _date_of_releaving = "";
   let _other = {};
@@ -80,9 +81,12 @@ const employeeStatusHandler = ($this, e) => {
   } else if (e.value === "T") {
     _enable_active_status = "T";
     _date_of_releaving = "Date of Terminating";
+  } else if (e.value === "E") {
+    _enable_active_status = "E";
+    _date_of_releaving = "Date of Retirement";
   }
   $this.setState({
-    enable_active_status: _enable_active_status,
+    enable_active_status: e.value,
     date_of_releaving_label: _date_of_releaving,
     employee_status: e.value,
     ..._other
