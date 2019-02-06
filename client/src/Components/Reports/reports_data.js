@@ -763,6 +763,12 @@ export default [
         ]
       },
       {
+        subitem: "Employee Details",
+        template_name: "employee_details",
+        reportQuery: "employeeDetails",
+        reportParameters: []
+      },
+      {
         subitem: "Salary Slips",
         template_name: "asset_war_exp",
         reportParameters: []
@@ -825,12 +831,6 @@ export default [
       },
       {
         subitem: "Document Expiry Reports",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Employee Details",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
