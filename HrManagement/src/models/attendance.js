@@ -2,50 +2,33 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
 import { LINQ } from "node-linq";
-import utilities from "algaeh-utilities";
+import algaehUtilities from "algaeh-utilities/utilities";
 // import Sync from "sync";
 module.exports = {
   //created by irfan: to
   processAttendance: (req, res, next) => {
     return new Promise((resolve, reject) => {
       const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+      const utilities = new algaehUtilities();
       let yearAndMonth = req.query.yearAndMonth;
       let leave_end_date = req.query.leave_end_date;
       delete req.query.yearAndMonth;
-
+      utilities.logger().log("yearAndMonth: ", yearAndMonth);
       const startOfMonth = moment(yearAndMonth)
         .startOf("month")
         .format("YYYY-MM-DD");
 
-      // const endOfMonth = moment(yearAndMonth)
-      //   .endOf("month")
-      //   .format("YYYY-MM-DD");
-
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("leave_end_date: ", leave_end_date);
-
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("yearAndMonth: ", yearAndMonth);
+      utilities.logger().log("leave_end_date: ", leave_end_date);
       const endOfMonth =
-        leave_end_date === undefined
+        leave_end_date == null
           ? moment(yearAndMonth)
               .endOf("month")
               .format("YYYY-MM-DD")
           : moment(leave_end_date).format("YYYY-MM-DD");
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("startOfMonth: ", startOfMonth);
+      utilities.logger().log("startOfMonth: ", startOfMonth);
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("endOfMonth: ", endOfMonth);
+      utilities.logger().log("endOfMonth: ", endOfMonth);
 
       const totalMonthDays = moment(yearAndMonth, "YYYY-MM").daysInMonth();
       const month_name = moment(yearAndMonth).format("MMMM");
@@ -62,10 +45,7 @@ module.exports = {
         ...req.query
       };
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("selectWhere: ", selectWhere);
+      utilities.logger().log("selectWhere: ", selectWhere);
 
       let inputValues = [endOfMonth, startOfMonth, endOfMonth];
       let _stringData = "";
@@ -96,15 +76,9 @@ module.exports = {
         inputValues.push(selectWhere.hims_d_employee_id);
       }
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("_stringData: ", _stringData);
+      utilities.logger().log("_stringData: ", _stringData);
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("inputValues: ", inputValues);
+      utilities.logger().log("inputValues: ", inputValues);
 
       // Sync(() => {
       // .sync(null,
@@ -122,7 +96,6 @@ module.exports = {
         .then(empResult => {
           if (empResult.length > 0) {
             utilities
-              .AlgaehUtilities()
               .logger()
               .log("hospital_id: ", empResult[0]["hospital_id"]);
             _mysql
@@ -377,15 +350,9 @@ module.exports = {
                               return obj.leave_id;
                             });
 
-                            utilities
-                              .AlgaehUtilities()
-                              .logger()
-                              .log("leave_ids: ", leave_ids);
+                            utilities.logger().log("leave_ids: ", leave_ids);
 
-                            utilities
-                              .AlgaehUtilities()
-                              .logger()
-                              .log("month_name: ", month_name);
+                            utilities.logger().log("month_name: ", month_name);
 
                             if (leave_ids.length > 0) {
                               _mysql
@@ -405,7 +372,6 @@ module.exports = {
                                 })
                                 .then(monthlyLeaveResult => {
                                   utilities
-                                    .AlgaehUtilities()
                                     .logger()
                                     .log(
                                       "monthlyLeaveResult: ",
@@ -423,7 +389,6 @@ module.exports = {
                                       .value();
 
                                     utilities
-                                      .AlgaehUtilities()
                                       .logger()
                                       .log("_paid_leave: ", _paid_leave);
 
@@ -452,7 +417,6 @@ module.exports = {
                                       empResult[i]["defaults"].unpaid_leave;
                                   }
                                   utilities
-                                    .AlgaehUtilities()
                                     .logger()
                                     .log(
                                       "leave_salary: ",

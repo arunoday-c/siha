@@ -12,7 +12,7 @@ function algaehUtilities(options) {
 }
 algaehUtilities.prototype.encryption = function(data) {
   try {
-    const stringData = JSON.stringify({
+    var stringData = JSON.stringify({
       ...require("./cryptoData.json"),
       ...data
     });
@@ -23,7 +23,7 @@ algaehUtilities.prototype.encryption = function(data) {
 };
 algaehUtilities.prototype.decryption = function(data) {
   try {
-    const stringData = new cryptr(this.keys.SECRETKey).decrypt(data);
+    var stringData = new cryptr(this.keys.SECRETKey).decrypt(data);
     return JSON.parse(stringData);
   } catch (error) {
     throw error;
@@ -32,7 +32,7 @@ algaehUtilities.prototype.decryption = function(data) {
 
 algaehUtilities.prototype.getTokenData = function(token) {
   try {
-    const _details = jwt.decode(token, this.keys.SECRETKey);
+    var _details = jwt.decode(token, this.keys.SECRETKey);
     return _details;
   } catch (error) {
     throw error;
@@ -40,7 +40,7 @@ algaehUtilities.prototype.getTokenData = function(token) {
 };
 algaehUtilities.prototype.tokenVerify = function(token) {
   try {
-    const _verify = jwt.verify(token, this.keys.SECRETKey);
+    var _verify = jwt.verify(token, this.keys.SECRETKey);
     return _verify;
   } catch (error) {
     throw error;
@@ -61,7 +61,7 @@ algaehUtilities.prototype.httpStatus = function() {
     internalServer: 500,
     serviceUnavailable: 503,
     generateError: (errorStatus, message) => {
-      const error = new Error();
+      var error = new Error();
       error.status = errorStatus || 500;
       error.message = message;
       return error;
@@ -72,4 +72,64 @@ algaehUtilities.prototype.httpStatus = function() {
   };
 };
 
-algaehUtilities.prototype.logger = function(reqTracker) {};
+algaehUtilities.prototype.logger = function(reqTracker) {
+  reqTracker = reqTracker || "";
+  var _logPath = path.join(process.cwd(), "/LOGS");
+  if (!fs.existsSync(_logPath)) {
+    fs.mkdirSync(_logPath);
+  }
+  var _levels = process.env.NODE_ENV == "production" ? "info" : "debug";
+  var transport = new winston.transports.DailyRotateFile({
+    filename: `${_logPath}/%DATE%.log`,
+    datePattern: "YYYY-MM-DD-HH",
+    zippedArchive: true,
+    maxSize: "20m",
+    maxFiles: "14d",
+    level: _levels,
+    eol: "\r\n"
+  });
+  var colorizer = winston.format.colorize();
+  colorizer.addColors({
+    error: "red",
+    warn: "yellow",
+    info: "cyan",
+    debug: "green"
+  });
+  var logger = winston.createLogger({
+    handleExceptions: true,
+    format: winston.format.combine(
+      winston.format.timestamp(),
+      // winston.format.prettyPrint(),
+      // winston.format.colorize(),
+      winston.format.json(),
+      winston.format.printf(msg => {
+        var _data = colorizer.colorize(
+          msg.level,
+          `{${new Date(msg.timestamp).toLocaleString()} - ${msg.level}:   -${
+            msg.message
+          } , data -${msg.data} } `
+        );
+        return _data;
+      })
+    ),
+    transports: [transport]
+  });
+  return {
+    log: (message, obj, logtype) => {
+      logtype = logtype || "debug";
+      var _data =
+        obj != null
+          ? { data: typeof obj == "string" ? obj : JSON.stringify(obj) }
+          : {};
+
+      logger.log({
+        level: logtype,
+        message: message,
+        ..._data
+      });
+      return this;
+    }
+  };
+};
+
+module.exports = algaehUtilities;
