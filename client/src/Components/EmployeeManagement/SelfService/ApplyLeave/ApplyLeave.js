@@ -546,7 +546,7 @@ class ApplyLeave extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            emp_leaves_data: res.data.records
+            emp_leaves_data: res.data.result
           });
         }
       },
