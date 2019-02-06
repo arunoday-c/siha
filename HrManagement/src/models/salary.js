@@ -1,7 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import _ from "lodash";
-import utilities from "algaeh-utilities";
 import mysql from "mysql";
 
 module.exports = {
@@ -12,21 +11,6 @@ module.exports = {
       const input = req.query;
       const month_number = input.month;
       const year = input.year;
-
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input:", input);
-
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("employee_id:", input.employee_id);
-
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("sub_department_id:", input.sub_department_id);
 
       let inputValues = [input.year, input.month, input.hospital_id];
       let _stringData = "";
@@ -51,11 +35,6 @@ module.exports = {
         salary_input.push(input.sub_department_id);
       }
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input:", input);
-
       _mysql
         .executeQuery({
           query:
@@ -72,10 +51,6 @@ module.exports = {
         .then(empResult => {
           // let empResult = empOutput;
           if (empResult.length > 0) {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("empResult", empResult);
             let _allEmployees = _.map(empResult, o => {
               return o.employee_id;
             });
@@ -90,11 +65,6 @@ module.exports = {
               })
               .then(existing => {
                 console.log("Existing Block", existing);
-
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("_allEmployees", _allEmployees);
 
                 let _salary_processed = _.chain(existing)
                   .filter(f => {
@@ -114,20 +84,11 @@ module.exports = {
                 );
                 let _myemp = [];
 
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("_salary_processed", _salary_processed);
                 let _itWentInside = false;
 
                 let _salaryHeader_id = existing.map(item => {
                   return item.hims_f_salary_id;
                 });
-
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("_salaryHeader_id", _salaryHeader_id);
 
                 if (_salary_processed.length > 0) {
                   _itWentInside = true;
@@ -188,11 +149,6 @@ module.exports = {
                     L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
                   month_name +
                   " > 0 and  employee_id in (?) and year=? ;";
-
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("strQuery:", strQuery);
 
                 _salaryHeader_id =
                   _salaryHeader_id.length == 0 ? null : _salaryHeader_id;
@@ -303,11 +259,6 @@ module.exports = {
                         _LeaveRule: _LeaveRule
                       })
                         .then(earningOutput => {
-                          utilities
-                            .AlgaehUtilities()
-                            .logger()
-                            .log("earningOutput", earningOutput);
-
                           current_earning_amt_array =
                             earningOutput.current_earning_amt_array;
                           final_earning_amount =
@@ -415,11 +366,6 @@ module.exports = {
                                             }
                                           );
 
-                                          utilities
-                                            .AlgaehUtilities()
-                                            .logger()
-                                            .log("_over_time", _over_time);
-
                                           getOtManagement({
                                             earnings: _earnings,
                                             current_earning_amt_array: current_earning_amt_array,
@@ -468,99 +414,15 @@ module.exports = {
 
                                                   //Salary Calculation Starts
 
-                                                  // utilities
-                                                  //   .AlgaehUtilities()
-                                                  //   .logger()
-                                                  //   .log(
-                                                  //     "final_earning_amount",
-                                                  //     final_earning_amount
-                                                  //   );
-
-                                                  // utilities
-                                                  //   .AlgaehUtilities()
-                                                  //   .logger()
-                                                  //   .log(
-                                                  //     "final_deduction_amount",
-                                                  //     final_deduction_amount
-                                                  //   );
-
-                                                  // utilities
-                                                  //   .AlgaehUtilities()
-                                                  //   .logger()
-                                                  //   .log(
-                                                  //     "final_contribution_amount",
-                                                  //     final_contribution_amount
-                                                  //   );
-
-                                                  // utilities
-                                                  //   .AlgaehUtilities()
-                                                  //   .logger()
-                                                  //   .log(
-                                                  //     "total_loan_payable_amount",
-                                                  //     total_loan_payable_amount
-                                                  //   );
-
-                                                  // utilities
-                                                  //   .AlgaehUtilities()
-                                                  //   .logger()
-                                                  //   .log(
-                                                  //     "total_loan_due_amount",
-                                                  //     total_loan_due_amount
-                                                  //   );
-
-                                                  // utilities
-                                                  //   .AlgaehUtilities()
-                                                  //   .logger()
-                                                  //   .log(
-                                                  //     "advance_due_amount",
-                                                  //     advance_due_amount
-                                                  //   );
-
                                                   let per_day_sal =
                                                     empResult[i][
                                                       "gross_salary"
                                                     ] /
                                                     empResult[i]["total_days"];
 
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log("SaralyProcess", {
-                                                      employee_id:
-                                                        empResult[i][
-                                                          "employee_id"
-                                                        ],
-                                                      per_day_sal
-                                                    });
-
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "employee_code",
-                                                      empResult[i][
-                                                        "employee_code"
-                                                      ]
-                                                    );
-
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "empResult",
-                                                      empResult[i]
-                                                    );
                                                   let _salary_number = empResult[
                                                     i
                                                   ]["employee_code"].trim();
-
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "_salary_number",
-                                                      _salary_number
-                                                    );
 
                                                   _salary_number +=
                                                     req.query.leave_salary ==
@@ -578,13 +440,6 @@ module.exports = {
                                                   _net_salary =
                                                     _net_salary +
                                                     total_loan_payable_amount;
-                                                  utilities
-                                                    .AlgaehUtilities()
-                                                    .logger()
-                                                    .log(
-                                                      "_net_salary",
-                                                      _net_salary
-                                                    );
 
                                                   _mysql
                                                     .executeQueryWithTransaction(
@@ -652,13 +507,6 @@ module.exports = {
                                                       }
                                                     )
                                                     .then(inserted_salary => {
-                                                      utilities
-                                                        .AlgaehUtilities()
-                                                        .logger()
-                                                        .log(
-                                                          "inserted_salary",
-                                                          inserted_salary.insertId
-                                                        );
                                                       _requestCollector.push(
                                                         inserted_salary
                                                       );
@@ -831,14 +679,6 @@ module.exports = {
                                                                     )
                                                                     .catch(
                                                                       error => {
-                                                                        utilities
-                                                                          .AlgaehUtilities()
-                                                                          .logger()
-                                                                          .log(
-                                                                            "ErrorContri:",
-                                                                            "ErrorContri"
-                                                                          );
-
                                                                         _mysql.rollBackTransaction(
                                                                           () => {
                                                                             reject(
@@ -854,14 +694,6 @@ module.exports = {
                                                                 }
                                                               )
                                                               .catch(error => {
-                                                                utilities
-                                                                  .AlgaehUtilities()
-                                                                  .logger()
-                                                                  .log(
-                                                                    "ErrorDect:",
-                                                                    "ErrorDect"
-                                                                  );
-
                                                                 _mysql.rollBackTransaction(
                                                                   () => {
                                                                     reject(
@@ -942,11 +774,6 @@ module.exports = {
                 next(e);
               });
           } else {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("empResult: ", empResult);
-
             _mysql.releaseConnection();
             req.records = empResult;
             resolve(empResult);
@@ -969,11 +796,6 @@ module.exports = {
     let salaryprocess_header = [];
 
     /* Select statemwnt  */
-
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("inputParam:", inputParam);
 
     let _stringData =
       inputParam.employee_id != null ? " and employee_id=? " : "";
@@ -1001,10 +823,6 @@ module.exports = {
             return item.hims_f_salary_id;
           });
           salaryprocess_header = salary_process;
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("_salaryHeader_id: ", _salaryHeader_id);
 
           _mysql
             .executeQuery({
@@ -1019,11 +837,6 @@ module.exports = {
               printQuery: true
             })
             .then(result => {
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("result: ", result);
-
               _mysql.releaseConnection();
               req.records = [
                 {
@@ -1094,11 +907,6 @@ module.exports = {
     const _mysql = new algaehMysql();
     const inputParam = { ...req.body };
 
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("inputParam: ", inputParam);
-
     _mysql
       .generateRunningNumber({
         modules: ["LEAVE_ACCRUAL"]
@@ -1106,10 +914,6 @@ module.exports = {
       .then(generatedNumbers => {
         let leave_salary_number = generatedNumbers[0];
 
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("leave_salary_number: ", generatedNumbers[0]);
         _mysql
           .executeQuery({
             query:
@@ -1165,18 +969,6 @@ module.exports = {
               })
               .then(accrual_header => {
                 let leave_salary_header_id = accrual_header.insertId;
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("accrual_header: ", accrual_header);
-
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log(
-                    "leave_salary_accrual_detail: ",
-                    leave_salary_accrual_detail
-                  );
 
                 let IncludeValues = [
                   "employee_id",
@@ -1213,14 +1005,6 @@ module.exports = {
                           _mysql: _mysql
                         })
                           .then(Employee_Leave_Salary => {
-                            utilities
-                              .AlgaehUtilities()
-                              .logger()
-                              .log(
-                                "Employee_Leave_Salary: ",
-                                Employee_Leave_Salary
-                              );
-
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               req.records = {
@@ -1437,11 +1221,6 @@ module.exports = {
 function InsertEmployeeLeaveSalary(options) {
   return new Promise((resolve, reject) => {
     try {
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("InsertEmployeeLeaveSalary:", "InsertEmployeeLeaveSalary");
-
       let leave_salary_accrual_detail = options.leave_salary_accrual_detail;
       let _mysql = options._mysql;
       let strQry = "";
@@ -1460,14 +1239,6 @@ function InsertEmployeeLeaveSalary(options) {
             printQuery: true
           })
           .then(employee_leave_salary_header => {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log(
-                "employee_leave_salary_header:",
-                employee_leave_salary_header
-              );
-
             if (employee_leave_salary_header.length > 0) {
               let leave_days =
                 parseFloat(employee_leave_salary_header[0].leave_days) +
@@ -1494,31 +1265,6 @@ function InsertEmployeeLeaveSalary(options) {
               let airfare_months =
                 parseFloat(employee_leave_salary_header[0].airfare_months) + 1;
 
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("leave_days:", leave_days);
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("leave_salary_amount:", leave_salary_amount);
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("airticket_amount:", airticket_amount);
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("balance_leave_days:", balance_leave_days);
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("balance_airticket_amount:", balance_airticket_amount);
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("airfare_months:", airfare_months);
-
               strQry += mysql.format(
                 "UPDATE `hims_f_employee_leave_salary_header` SET leave_days=?,`leave_salary_amount`=?,\
                   `airticket_amount`=?,`balance_leave_days`=?,`balance_leave_salary_amount`=?,\
@@ -1543,11 +1289,6 @@ function InsertEmployeeLeaveSalary(options) {
                   leave_salary_accrual_detail[i].airfare_amount
                 ]
               );
-
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("strQry:", strQry);
 
               _mysql
                 .executeQuery({ query: strQry, printQuery: true })
@@ -1580,10 +1321,6 @@ function InsertEmployeeLeaveSalary(options) {
                   printQuery: true
                 })
                 .then(employee_leave_header => {
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("employee_leave_header:", employee_leave_header);
                   let IncludeValues = [
                     "employee_leave_salary_header_id",
                     "leave_days",
@@ -1601,11 +1338,6 @@ function InsertEmployeeLeaveSalary(options) {
                         leave_salary_accrual_detail[i].airfare_amount
                     }
                   ];
-
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("inputValues:", inputValues);
 
                   _mysql
                     .executeQuery({
@@ -1629,35 +1361,6 @@ function InsertEmployeeLeaveSalary(options) {
                   next(e);
                 });
             }
-
-            // utilities
-            //   .AlgaehUtilities()
-            //   .logger()
-            //   .log("i:", i);
-            // utilities
-            //   .AlgaehUtilities()
-            //   .logger()
-            //   .log(
-            //     "leave_salary_accrual_detail:",
-            //     leave_salary_accrual_detail - 1
-            //   );
-
-            // if (i == leave_salary_accrual_detail.length - 1 && strQry != "") {
-            //   utilities
-            //     .AlgaehUtilities()
-            //     .logger()
-            //     .log("strQry:", strQry);
-
-            //   _mysql
-            //     .executeQuery({ query: strQry, printQuery: true })
-            //     .then(update_employee_leave => {
-            //       // resolve();
-            //     })
-            //     .catch(e => {
-            //       reject(e);
-            //       next(e);
-            //     });
-            // }
           })
           .catch(e => {
             reject(e);
@@ -1688,16 +1391,6 @@ function getOtManagement(options) {
       let final_earning_amount = 0;
       let current_ot_amt_array = [];
       if (options.over_time.length > 0) {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("over_time:", over_time);
-
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("empResult:", empResult);
-
         let ot_hours =
           parseFloat(empResult["ot_work_hours"]) +
           parseFloat(empResult["ot_weekoff_hours"]) +
@@ -1709,11 +1402,6 @@ function getOtManagement(options) {
         if (_earnings.length == 0) {
           resolve({ current_ot_amt_array, final_earning_amount });
         }
-
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("payment_type:", over_time["payment_type"]);
 
         if (over_time["payment_type"] === "RT") {
           let working_day_amt = 0;
@@ -1736,11 +1424,6 @@ function getOtManagement(options) {
           }
 
           let per_hour_salary = working_day_amt + weekoff_day_amt + holiday_amt;
-
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("per_hour_salary: ", per_hour_salary);
 
           if (per_hour_salary > 0) {
             current_ot_amt_array.push({
@@ -1804,11 +1487,6 @@ function getOtManagement(options) {
 function getEarningComponents(options) {
   return new Promise((resolve, reject) => {
     try {
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("options: ", options.earnings);
-
       const _earnings = options.earnings;
       const empResult = options.empResult;
       const leave_salary = options.leave_salary;
@@ -1837,11 +1515,6 @@ function getEarningComponents(options) {
             leave_salary_days =
               parseFloat(empResult["total_days"]) -
               parseFloat(empResult["paid_leave"]);
-
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("leave_salary_days:", leave_salary_days);
 
             current_earning_per_day_salary = parseFloat(
               obj["amount"] / parseFloat(empResult["total_days"])
@@ -1887,15 +1560,6 @@ function getEarningComponents(options) {
 
           if (leave_salary != "Y") {
             let perday_salary = current_earning_amt / total_days;
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("Apply Leave Rule: ", "Apply Leave Rule");
-
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("_LeaveRule:", _LeaveRule);
 
             let balance_days = 0;
             let previous_leaves = 0;
@@ -1909,25 +1573,12 @@ function getEarningComponents(options) {
                 if (_LeaveRule[i].calculation_type == "CO") {
                 }
 
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("calculation_type:", _LeaveRule[i].calculation_type);
                 //Slab
                 if (_LeaveRule[i].calculation_type == "SL") {
                   if (_LeaveRule[i].value_type == "RA") {
                     let leave_rule_days = _LeaveRule[i].total_days;
 
-                    utilities
-                      .AlgaehUtilities()
-                      .logger()
-                      .log("1:", balance_days);
                     if (balance_days > 0) {
-                      utilities
-                        .AlgaehUtilities()
-                        .logger()
-                        .log("if inside:", previous_leaves);
-
                       if (previous_leaves == current_leave) {
                         previous_leaves =
                           leaves_till_date - current_leave - leave_rule_days;
@@ -1943,27 +1594,12 @@ function getEarningComponents(options) {
                       } else {
                         balance_days = balance_days;
                       }
-
-                      utilities
-                        .AlgaehUtilities()
-                        .logger()
-                        .log("previous_leaves:", previous_leaves);
                     } else {
-                      utilities
-                        .AlgaehUtilities()
-                        .logger()
-                        .log("else:", balance_days);
-
                       previous_leaves = leaves_till_date - current_leave;
                       if (previous_leaves === 0) {
                         balance_days = current_leave - leave_rule_days;
                         previous_leaves = current_leave - balance_days;
                       } else {
-                        utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("previous_leaves>0 :", previous_leaves);
-
                         previous_leaves = leave_rule_days - previous_leaves;
                         previous_leaves =
                           previous_leaves < 0 ? 0 : previous_leaves;
@@ -1975,16 +1611,6 @@ function getEarningComponents(options) {
                       previous_leaves != 0 &&
                       previous_leaves <= leave_rule_days
                     ) {
-                      utilities
-                        .AlgaehUtilities()
-                        .logger()
-                        .log("leave_rule_start:", previous_leaves);
-
-                      utilities
-                        .AlgaehUtilities()
-                        .logger()
-                        .log("paytype:", paytype);
-
                       let remaining_days = total_days - previous_leaves;
                       let split_sal = 0;
                       let remaining_sal = 0;
@@ -1995,39 +1621,19 @@ function getEarningComponents(options) {
                         split_sal = perday_salary / 2;
                         split_sal = split_sal * previous_leaves;
 
-                        utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("split_sal: ", split_sal);
-
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "UN") {
                         split_sal = perday_salary * previous_leaves;
-
-                        utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("split_sal: ", split_sal);
 
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "QD") {
                         split_sal = (perday_salary * 3) / 4;
                         split_sal = split_sal * previous_leaves;
 
-                        utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("split_sal: ", split_sal);
-
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "TQ") {
                         split_sal = perday_salary / 4;
                         split_sal = split_sal * previous_leaves;
-
-                        utilities
-                          .AlgaehUtilities()
-                          .logger()
-                          .log("split_sal: ", split_sal);
 
                         current_earning_amt = current_earning_amt - split_sal;
                       }
@@ -2053,10 +1659,7 @@ function getEarningComponents(options) {
           }
         }
       });
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("current_earning_amt_array: ", current_earning_amt_array);
+
       final_earning_amount = _.sumBy(current_earning_amt_array, s => {
         return s.amount;
       });
@@ -2257,11 +1860,6 @@ function getLoanDueandPayable(options) {
             current_loan_array
           });
         } else {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("_loanPayable", _loanPayable);
-
           total_loan_payable_amount = _.sumBy(_loanPayable, s => {
             return s.approved_amount;
           });
@@ -2311,11 +1909,6 @@ function getAdvanceDue(options) {
 
       let advance_due_amount = 0;
       let current_deduct_compoment = [];
-
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("_dedcomponent", _dedcomponent);
 
       if (_advance.length == 0) {
         resolve({ advance_due_amount, current_deduct_compoment });

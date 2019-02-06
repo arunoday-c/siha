@@ -1,6 +1,5 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import utilities from "algaeh-utilities";
 
 module.exports = {
   getEncashmentToProcess: (req, res, next) => {
@@ -18,19 +17,6 @@ module.exports = {
       })
       .then(leave_Encash => {
         if (leave_Encash.length > 0) {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("Leave_Encash_Header: ", leave_Encash);
-
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log(
-              "leave_Encash: ",
-              leave_Encash[0].hims_f_leave_encash_header_id
-            );
-
           let Leave_Encash_Header = leave_Encash;
 
           _mysql
@@ -43,11 +29,6 @@ module.exports = {
               printQuery: true
             })
             .then(result => {
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("Exists: ", result);
-
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = [
@@ -81,10 +62,6 @@ module.exports = {
             })
             .then(monthlyLeaves => {
               _mysql.releaseConnection();
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("monthlyLeaves: ", monthlyLeaves);
 
               req.records = monthlyLeaves.map(data => {
                 return {
@@ -93,13 +70,7 @@ module.exports = {
                 };
               });
 
-              // req.records = monthlyLeaves;
               next();
-
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("monthlyLeaves: ", monthlyLeaves);
             })
             .catch(e => {
               next(e);
@@ -146,10 +117,6 @@ module.exports = {
     const _mysql = new algaehMysql();
     let inputParam = { ...req.body };
     let encashment_number = "";
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("inputParam: ", inputParam);
 
     _mysql
       .generateRunningNumber({
@@ -175,11 +142,6 @@ module.exports = {
             ]
           })
           .then(inserted_encash => {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("inserted_encash: ", inserted_encash);
-
             _mysql
               .executeQuery({
                 query: "INSERT INTO hims_f_leave_encash_detail(??) VALUES ?",
@@ -197,10 +159,6 @@ module.exports = {
                 printQuery: true
               })
               .then(resultContribute => {
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("inserted_encash: ", inserted_encash);
                 let result = { encashment_number: encashment_number };
                 _mysql.commitTransaction(() => {
                   _mysql.releaseConnection();
@@ -240,11 +198,6 @@ module.exports = {
 
     /* Select statemwnt  */
 
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("inputParam: ", inputParam);
-
     _mysql
       .executeQuery({
         query:
@@ -256,20 +209,11 @@ module.exports = {
         printQuery: true
       })
       .then(leave_Encash => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("leave_Encash: ", leave_Encash);
-
         if (leave_Encash.length > 0) {
           const Encash_header_id = leave_Encash.map(item => {
             return item.hims_f_leave_encash_header_id;
           });
           leaveEncash_header = leave_Encash;
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("Encash_header_id: ", Encash_header_id);
 
           _mysql
             .executeQuery({
@@ -280,11 +224,6 @@ module.exports = {
               printQuery: true
             })
             .then(result => {
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("result: ", result);
-
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = [
@@ -317,10 +256,6 @@ module.exports = {
 
     let strQuery = "";
     let values = [];
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("inputParam: ", inputParam);
 
     if (inputParam.auth_level == "1") {
       strQuery =
