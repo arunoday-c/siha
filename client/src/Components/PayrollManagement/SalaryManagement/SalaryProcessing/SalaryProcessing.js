@@ -388,7 +388,7 @@ class SalaryProcessing extends Component {
                                       No
                                     </span>
                                   ) : (
-                                    <span className="badge badge-Success">
+                                    <span className="badge badge-success">
                                       Yes
                                     </span>
                                   );
