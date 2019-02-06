@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import utilities from "algaeh-utilities";
+
 import moment from "moment";
 import { processAttendance } from "./attendance";
 import { processSalary } from "./salary";
@@ -131,19 +131,6 @@ module.exports = {
 
     let strGetdataQry = "";
     delete req.query.leave_end_date;
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("start_date:", start_date);
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("end_date:", end_date);
-
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("end_date_month:", end_date_month);
 
     _mysql
       .executeQueryWithTransaction({
@@ -167,11 +154,6 @@ module.exports = {
         let employee_leave_salary = all_result[1][0];
         let annual_leave_result = all_result[2];
 
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("all_result:", all_result);
-
         if (employee_leave_salary == undefined) {
           _mysql.commitTransaction((error, result) => {
             _mysql.releaseConnection();
@@ -181,19 +163,6 @@ module.exports = {
           });
           return;
         }
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("employee_result:", employee_result[0].hospital_id);
-
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("employee_leave_salary:", employee_leave_salary);
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("annual_leave_result:", annual_leave_result);
 
         let balance_leave_days =
           parseFloat(employee_leave_salary.balance_leave_days) -
@@ -204,11 +173,6 @@ module.exports = {
             ? 0
             : employee_leave_salary.balance_airticket_amount;
 
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("balance_leave_days:", balance_leave_days);
-
         if (balance_leave_days > 0) {
           for (let k = 0; k < annual_leave_result.length; k++) {
             let per_day_sal = 0;
@@ -218,11 +182,6 @@ module.exports = {
 
             leave_amount = leave_amount + per_day_sal;
           }
-
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("leave_amount:", leave_amount);
 
           req.query.hospital_id = employee_result[0].hospital_id;
           req.query.employee_id = req.query.hims_d_employee_id;
@@ -238,14 +197,6 @@ module.exports = {
                 req.query.year = date_year;
                 req.query.month = date_month;
 
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("date_year:", date_year);
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("date_month:", date_month);
                 req.query.leave_salary = "N";
                 req.query.yearAndMonth = moment(
                   date_year + "-" + date_month + "-01",
@@ -256,22 +207,12 @@ module.exports = {
                   req.query.leave_salary = "Y";
                 }
 
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("req.query:", req.query);
-
                 req.mySQl = _mysql;
 
                 let _attandance = await processAttendance(req, res, next);
 
                 req.mySQl = _mysql;
                 let _sarary = await processSalary(req, res, next);
-
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("_sarary:", _sarary);
 
                 _sarary = parseFloat(_sarary) + 1;
 
@@ -280,11 +221,6 @@ module.exports = {
                     "select hims_f_salary_id,salary_number,month,year,employee_id,salary_date,gross_salary,net_salary from hims_f_salary where hims_f_salary_id=" +
                     _sarary +
                     "; ";
-
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("strGetdataQry:", strGetdataQry);
 
                   fromDate_lastDate = moment(start_date)
                     .endOf("month")
@@ -309,10 +245,6 @@ module.exports = {
               .then(Salary_result => {
                 _mysql.commitTransaction((error, result) => {
                   _mysql.releaseConnection();
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("Salary_result:", Salary_result);
 
                   if (error) {
                     _mysql.rollBackTransaction(() => {
@@ -331,11 +263,6 @@ module.exports = {
                       } else {
                         result_data.push(Salary_result[i]);
                       }
-
-                      utilities
-                        .AlgaehUtilities()
-                        .logger()
-                        .log("result_data:", result_data);
                     }
 
                     let amount_data = [];
@@ -345,10 +272,6 @@ module.exports = {
                     });
 
                     final_result.push(result_data, amount_data);
-                    utilities
-                      .AlgaehUtilities()
-                      .logger()
-                      .log("final_result:", final_result);
 
                     req.records = final_result;
                     next();
@@ -383,21 +306,11 @@ module.exports = {
     let inputParam = { ...req.body };
     let leave_salary_number = "";
 
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("inputParam: ", inputParam);
-
     _mysql
       .generateRunningNumber({
         modules: ["LEAVE_SALARY"]
       })
       .then(generatedNumbers => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("leave_salary_number: ", generatedNumbers[0]);
-
         leave_salary_number = generatedNumbers[0];
         _mysql
           .executeQuery({
@@ -426,11 +339,6 @@ module.exports = {
             printQuery: true
           })
           .then(leave_header => {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("leave_header: ", leave_header);
-
             let IncludeValues = [
               "year",
               "month",
@@ -458,33 +366,14 @@ module.exports = {
                 printQuery: true
               })
               .then(leave_detail => {
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("leave_salary_detail: ", inputParam.leave_salary_detail);
-
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("leave_detail: ", leave_detail);
-
                 let leave_application_id = _.chain(
                   inputParam.leave_salary_detail
                 )
                   .groupBy("leave_application_id")
                   .map(function(items, data) {
-                    utilities
-                      .AlgaehUtilities()
-                      .logger()
-                      .log("data: ", data);
                     return data;
                   })
                   .value();
-
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("leave_application_id: ", leave_application_id);
 
                 _mysql
                   .executeQuery({
@@ -566,20 +455,11 @@ module.exports = {
         printQuery: true
       })
       .then(leave_salary_header => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("leave_salary_header: ", leave_salary_header);
-
         if (leave_salary_header.length > 0) {
           const leave_salary_header_id = leave_salary_header.map(item => {
             return item.hims_f_leave_salary_header_id;
           });
           leaveSalary_header = leave_salary_header[0];
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("leaveSalary_header: ", leaveSalary_header);
 
           _mysql
             .executeQuery({

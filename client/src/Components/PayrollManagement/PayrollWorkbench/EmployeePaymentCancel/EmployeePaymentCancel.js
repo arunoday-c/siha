@@ -41,7 +41,7 @@ class EmployeePaymentCancel extends Component {
         <div className="hptl-EmployeePayment-form">
           <div className="row">
             <div className="col-12">
-              <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
                 <div className="portlet-title">
                   <div className="caption">
                     <h3 className="caption-subject">Previous Payment List</h3>
@@ -87,6 +87,24 @@ class EmployeePaymentCancel extends Component {
                               maxWidth: 70,
                               resizable: false,
                               style: { textAlign: "center" }
+                            }
+                          },
+                          {
+                            fieldName: "cancel",
+                            label: (
+                              <AlgaehLabel
+                                label={{
+                                  forceLabel: "Cancelled"
+                                }}
+                              />
+                            ),
+
+                            displayTemplate: row => {
+                              return row.cancel === "N" ? (
+                                <span className="badge badge-warning">No</span>
+                              ) : (
+                                <span className="badge badge-success">Yes</span>
+                              );
                             }
                           },
                           {
@@ -224,30 +242,6 @@ class EmployeePaymentCancel extends Component {
                             displayTemplate: row => {
                               let display = GlobalVariables.MONTHS.filter(
                                 f => f.value === row.deduction_month
-                              );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].name
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "cancel",
-                            label: (
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Cancel"
-                                }}
-                              />
-                            ),
-
-                            displayTemplate: row => {
-                              let display = GlobalVariables.FORMAT_YESNO.filter(
-                                f => f.value === row.cancel
                               );
 
                               return (
