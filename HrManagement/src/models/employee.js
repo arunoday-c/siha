@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import utilities from "algaeh-utilities";
+import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
 import extend from "extend";
 import mysql from "mysql";
@@ -9,6 +9,7 @@ module.exports = {
   addMisEarnDedcToEmployee: (req, res, next) => {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
+      const utilities = new algaehUtilities();
       let input = { ...req.body };
       _mysql
         .executeQuery({
@@ -34,10 +35,7 @@ module.exports = {
           query:
             "insert into  hims_f_miscellaneous_earning_deduction (??) values ? ON DUPLICATE KEY UPDATE ?",
           printQuery: query => {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("Query ", query);
+            utilities.logger().log("Query: ", Query);
           },
           bulkInsertOrUpdate: true
         })
@@ -65,10 +63,6 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
           resolve(result);
@@ -88,10 +82,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
 
       _mysql
         .executeQuery({
@@ -170,10 +160,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
 
       _mysql
         .executeQuery({
@@ -279,11 +265,6 @@ module.exports = {
               _mysql: _mysql
             });
 
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("_UpdateServiceComm: ", "_UpdateServiceComm");
-
             let _InsertServiceTypeComm = await InsertServiceTypeCommission({
               req: req,
               _mysql: _mysql
@@ -304,20 +285,10 @@ module.exports = {
               _mysql: _mysql
             });
 
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("_UpdateEmpEarning: ", "_UpdateEmpEarning");
-
             let _DeleteEmpEarning = await DeleteEmployeeEarnings({
               req: req,
               _mysql: _mysql
             });
-
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("_DeleteEmpEarning: ", "_DeleteEmpEarning");
 
             let _InsertEmpDeduction = await InsertEmployeeDeduction({
               req: req,
@@ -402,10 +373,6 @@ module.exports = {
               _UpdateEmpDependents,
               _DeleteEmpDependents
             ]).then(result => {
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("result: ", result);
               _mysql.releaseConnection();
               req.records = result;
               resolve(result);
@@ -507,10 +474,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
 
       _mysql
         .executeQuery({
@@ -553,10 +516,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
 
       _mysql
         .executeQuery({
@@ -596,10 +555,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
 
       _mysql
         .executeQuery({
@@ -665,10 +620,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
 
       _mysql
         .executeQuery({
@@ -709,10 +660,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
 
       _mysql
         .executeQuery({
@@ -749,10 +696,6 @@ module.exports = {
     return new Promise((resolve, reject) => {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
 
       _mysql
         .executeQuery({
@@ -789,10 +732,6 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
           resolve(result);
@@ -821,10 +760,6 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
           resolve(result);
@@ -883,10 +818,6 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
           resolve(result);
@@ -915,10 +846,6 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("HR management ", result);
           _mysql.releaseConnection();
           req.records = result;
           resolve(result);
@@ -1405,22 +1332,12 @@ function DeleteEmployeeEarnings(options) {
         let qry = "";
         let inputParam = extend([], req.body.deleteearnComp);
 
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("deleteearnComp: ", req.body.deleteearnComp);
-
         for (let i = 0; i < req.body.deleteearnComp.length; i++) {
           qry += mysql.format(
             "DELETE FROM `hims_d_employee_earnings` where hims_d_employee_earnings_id=?;",
             [inputParam[i].hims_d_employee_earnings_id]
           );
         }
-
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("qry: ", qry);
 
         _mysql
           .executeQuery({

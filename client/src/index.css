@@ -703,10 +703,12 @@
           border-color: #1a1a1a; }
       :global .algaeh-modal .popupFooter .btn-other {
         background: none;
-        color: #fff;
-        border: 1px solid white; }
+        color: gray;
+        border: 1px solid gray; }
         :global .algaeh-modal .popupFooter .btn-other:hover, :global .algaeh-modal .popupFooter .btn-other:focus {
-          background-color: #1a1a1a; }
+          background-color: #299194;
+          color: #fff !important;
+          border-color: #53ccd0; }
   :global .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;

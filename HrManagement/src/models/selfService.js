@@ -2,7 +2,6 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import moment from "moment";
 import { LINQ } from "node-linq";
-import utilities from "algaeh-utilities";
 
 module.exports = {
   getLeaveMaster: (req, res, next) => {
@@ -394,21 +393,11 @@ module.exports = {
       const _mysql = new algaehMysql();
       let input = { ...req.body };
 
-      utilities
-        .AlgaehUtilities()
-        .logger()
-        .log("input: ", input);
-
       _mysql
         .generateRunningNumber({
           modules: ["EMPLOYEE_ADVANCE"]
         })
         .then(generatedNumbers => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("advance_number: ", generatedNumbers[0]);
-
           _mysql
             .executeQuery({
               query:

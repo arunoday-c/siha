@@ -22,7 +22,8 @@ class EarningsDeductions extends Component {
       calculation_type: "F",
       calculation_method: "FI",
       allow_round_off: false,
-      overtime_applicable: false
+      overtime_applicable: false,
+      selectCalculate: "d-none"
     };
     this.getEarningDeductions();
   }
@@ -109,7 +110,6 @@ class EarningsDeductions extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          
           uri: "/payrollsettings/updateEarningDeduction",
           module: "hrManagement",
           data: {
@@ -317,207 +317,227 @@ class EarningsDeductions extends Component {
     row.update();
   }
 
+  OpenCalculator(e) {
+    debugger;
+    this.setState({
+      selectCalculate: "d-block"
+    });
+  }
+
+  CLoseCalculator(e) {
+    debugger;
+    this.setState({
+      selectCalculate: "d-none"
+    });
+  }
+
   render() {
     let i = 10;
 
     return (
       <div className="earnings_deductions">
-        {i < 5 ? (
-          <div id="calc-contain">
-            <form name="calculator">
-              <div className="row">
-                <div className="col-12">
-                  <input type="text" name="answer" />
-                </div>
+        {/* {i < 5 ? ( */}
+        <div id="calc-contain" className={this.state.selectCalculate}>
+          <form name="calculator">
+            <div className="row">
+              <div className="col-12">
+                <input type="text" name="answer" />
               </div>
+            </div>
 
-              <div className="row">
-                <div className="col-8 number-sec">
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="1"
-                    onClick="calculator.answer.value += '1'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="2"
-                    onClick="calculator.answer.value += '2'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="3"
-                    onClick="calculator.answer.value += '3'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="4"
-                    onClick="calculator.answer.value += '4'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="5"
-                    onClick="calculator.answer.value += '5'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="6"
-                    onClick="calculator.answer.value += '6'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="7"
-                    onClick="calculator.answer.value += '7'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="8"
-                    onClick="calculator.answer.value += '8'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="9"
-                    onClick="calculator.answer.value += '9'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="C"
-                    onClick="calculator.answer.value = ''"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="0"
-                    onClick="calculator.answer.value += '0'"
-                  />
-                  <input
-                    type="button"
-                    className="col-4"
-                    value="="
-                    onClick="calculator.answer.value = eval(calculator.answer.value)"
-                  />
-                </div>
-                <div className="col-4 delimeter-sec">
-                  <input
-                    type="button"
-                    className="col-6"
-                    value="+"
-                    onClick="calculator.answer.value += '+'"
-                  />
-                  <input
-                    type="button"
-                    className="col-6"
-                    value="-"
-                    onClick="calculator.answer.value += '-'"
-                  />
-                  <input
-                    type="button"
-                    className="col-6"
-                    value="x"
-                    onClick="calculator.answer.value += '*'"
-                  />
-                  <input
-                    type="button"
-                    className="col-6"
-                    value="/"
-                    onClick="calculator.answer.value += '/'"
-                  />
-                  <input
-                    type="button"
-                    className="col-6"
-                    value="("
-                    onClick="calculator.answer.value += '('"
-                  />
-                  <input
-                    type="button"
-                    className="col-6"
-                    value=")"
-                    onClick="calculator.answer.value += ')'"
-                  />
-                  <input
-                    type="button"
-                    className="col-6"
-                    value="."
-                    onClick="calculator.answer.value += '.'"
-                  />
-                  <input
-                    type="button"
-                    className="col-6"
-                    value="%"
-                    onClick="calculator.answer.value += '%'"
-                  />
-                </div>
-                <div className="col-12 ComponentsFormula">
-                  <input
-                    type="button"
-                    className="col-3"
-                    value="Basic"
-                    onClick="calculator.answer.value += 'Basic'"
-                  />
-                  <input
-                    type="button"
-                    className="col-3"
-                    value="H.R.A"
-                    onClick="calculator.answer.value += 'H.R.A'"
-                  />
-                  <input
-                    type="button"
-                    className="col-3"
-                    value="T.R.A"
-                    onClick="calculator.answer.value += 'T.R.A'"
-                  />
-                  <input
-                    type="button"
-                    className="col-3"
-                    value="E.A"
-                    onClick="calculator.answer.value += 'E.A'"
-                  />
-                  <input
-                    type="button"
-                    className="col-3"
-                    value="F.A"
-                    onClick="calculator.answer.value += 'F.A'"
-                  />
-                  <input
-                    type="button"
-                    className="col-3"
-                    value="H.R.A"
-                    onClick="calculator.answer.value += 'T.A'"
-                  />
-                  <input
-                    type="button"
-                    className="col-3"
-                    value="H.R.A"
-                    onClick="calculator.answer.value += 'S.P.A'"
-                  />
-                  <input
-                    type="button"
-                    className="col-3"
-                    value="H.R.A"
-                    onClick="calculator.answer.value += 'C.L.A'"
-                  />
-                </div>
-                <div className="col-12 submitBtn">
-                  <input
-                    type="button"
-                    className="col"
-                    value="Apply"
-                    onClick="calculator.answer.value += 'C.L.A'"
-                  />
-                </div>
+            <div className="row">
+              <div className="col-8 number-sec">
+                <input
+                  type="button"
+                  className="col-4"
+                  value="1"
+                  onClick="calculator.answer.value += '1'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="2"
+                  onClick="calculator.answer.value += '2'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="3"
+                  onClick="calculator.answer.value += '3'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="4"
+                  onClick="calculator.answer.value += '4'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="5"
+                  onClick="calculator.answer.value += '5'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="6"
+                  onClick="calculator.answer.value += '6'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="7"
+                  onClick="calculator.answer.value += '7'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="8"
+                  onClick="calculator.answer.value += '8'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="9"
+                  onClick="calculator.answer.value += '9'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="C"
+                  onClick="calculator.answer.value = ''"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="0"
+                  onClick="calculator.answer.value += '0'"
+                />
+                <input
+                  type="button"
+                  className="col-4"
+                  value="="
+                  onClick="calculator.answer.value = eval(calculator.answer.value)"
+                />
               </div>
-            </form>
-          </div>
-        ) : null}
+              <div className="col-4 delimeter-sec">
+                <input
+                  type="button"
+                  className="col-6"
+                  value="+"
+                  onClick="calculator.answer.value += '+'"
+                />
+                <input
+                  type="button"
+                  className="col-6"
+                  value="-"
+                  onClick="calculator.answer.value += '-'"
+                />
+                <input
+                  type="button"
+                  className="col-6"
+                  value="x"
+                  onClick="calculator.answer.value += '*'"
+                />
+                <input
+                  type="button"
+                  className="col-6"
+                  value="/"
+                  onClick="calculator.answer.value += '/'"
+                />
+                <input
+                  type="button"
+                  className="col-6"
+                  value="("
+                  onClick="calculator.answer.value += '('"
+                />
+                <input
+                  type="button"
+                  className="col-6"
+                  value=")"
+                  onClick="calculator.answer.value += ')'"
+                />
+                <input
+                  type="button"
+                  className="col-6"
+                  value="."
+                  onClick="calculator.answer.value += '.'"
+                />
+                <input
+                  type="button"
+                  className="col-6"
+                  value="%"
+                  onClick="calculator.answer.value += '%'"
+                />
+              </div>
+              <div className="col-12 ComponentsFormula">
+                <input
+                  type="button"
+                  className="col-3"
+                  value="Basic"
+                  onClick="calculator.answer.value += 'Basic'"
+                />
+                <input
+                  type="button"
+                  className="col-3"
+                  value="H.R.A"
+                  onClick="calculator.answer.value += 'H.R.A'"
+                />
+                <input
+                  type="button"
+                  className="col-3"
+                  value="T.R.A"
+                  onClick="calculator.answer.value += 'T.R.A'"
+                />
+                <input
+                  type="button"
+                  className="col-3"
+                  value="E.A"
+                  onClick="calculator.answer.value += 'E.A'"
+                />
+                <input
+                  type="button"
+                  className="col-3"
+                  value="F.A"
+                  onClick="calculator.answer.value += 'F.A'"
+                />
+                <input
+                  type="button"
+                  className="col-3"
+                  value="H.R.A"
+                  onClick="calculator.answer.value += 'T.A'"
+                />
+                <input
+                  type="button"
+                  className="col-3"
+                  value="H.R.A"
+                  onClick="calculator.answer.value += 'S.P.A'"
+                />
+                <input
+                  type="button"
+                  className="col-3"
+                  value="H.R.A"
+                  onClick="calculator.answer.value += 'C.L.A'"
+                />
+              </div>
+              <div className="col-12 submitBtn">
+                <input
+                  type="button"
+                  className="col-6"
+                  value="Close"
+                  onClick={this.CLoseCalculator.bind(this)}
+                />
+                <input
+                  type="button"
+                  className="col-6"
+                  value="Apply"
+                  onClick="calculator.answer.value += 'C.L.A'"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+        {/* ) : null} */}
 
         <div className="row">
           <div className="col-5">
@@ -720,7 +740,8 @@ class EarningsDeductions extends Component {
                         },
                         others: {
                           placeholder: "Eg: (a+b)/c",
-                          disabled: this.state.calculation_method === "FI"
+                          disabled: this.state.calculation_method === "FI",
+                          onFocus: this.OpenCalculator.bind(this)
                         }
                       }}
                     />

@@ -1,7 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import utilities from "algaeh-utilities";
-import moment from "moment";
+
 module.exports = {
   getEmployeeGroups: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -27,10 +26,6 @@ module.exports = {
   addEmployeeGroups: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({
@@ -62,10 +57,6 @@ module.exports = {
   updateEmployeeGroup: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({
@@ -116,10 +107,6 @@ module.exports = {
   addDesignation: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({
@@ -149,10 +136,6 @@ module.exports = {
   updateDesignation: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({
@@ -214,10 +197,6 @@ module.exports = {
   addOvertimeGroups: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({
@@ -255,10 +234,6 @@ module.exports = {
   updateOvertimeGroups: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({

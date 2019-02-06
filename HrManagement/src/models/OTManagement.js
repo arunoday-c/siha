@@ -1,15 +1,9 @@
-import utilities from "algaeh-utilities";
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 module.exports = {
   InsertOTManagement: (req, res, next) => {
     const _input = req.body;
     const _mysql = new algaehMysql();
-
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("_input:", _input);
 
     try {
       _mysql
@@ -39,11 +33,6 @@ module.exports = {
           printQuery: true
         })
         .then(header_result => {
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("header_result:", header_result);
-
           let query = "";
           for (let i = 0; i < _input.monthlyOverTime.length; i++) {
             query += _mysql.mysqlQueryFormat(
@@ -64,11 +53,6 @@ module.exports = {
               ]
             );
           }
-
-          utilities
-            .AlgaehUtilities()
-            .logger()
-            .log("query:", query);
 
           _mysql
             .executeQuery({
