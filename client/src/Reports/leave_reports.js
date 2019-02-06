@@ -1,6 +1,5 @@
 import Enumerable from "linq";
-import { header } from "./header";
-import { signature_footer } from "./signature_footer";
+import { payrollHeader } from "./payrollHeader";
 
 export function printReport(data) {
   const leaveType = Enumerable.from(data)
@@ -14,6 +13,7 @@ export function printReport(data) {
 
   return `
   <div class="print-body">
+  <header> ${payrollHeader(data)} </header> 
    
 <section>
     <h2><span>Leave Report Details</span></h2>
