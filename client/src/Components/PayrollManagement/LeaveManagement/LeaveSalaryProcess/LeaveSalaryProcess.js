@@ -58,6 +58,7 @@ class LeaveSalaryProcess extends Component {
         data: {
           sub_department_status: "A"
         },
+        module : "masterSettings",
         method: "GET",
         redux: {
           type: "SUB_DEPT_GET_DATA",

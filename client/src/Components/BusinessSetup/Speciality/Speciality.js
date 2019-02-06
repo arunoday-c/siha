@@ -53,6 +53,7 @@ class Speciality extends Component {
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ departments: response.data.records });

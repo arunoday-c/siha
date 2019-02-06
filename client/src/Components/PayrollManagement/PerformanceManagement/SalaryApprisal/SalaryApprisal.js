@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import "./salary_apprsl.css";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 
+import "./salary_apprsl.css";
 import {
   AlagehFormGroup,
   AlgaehLabel,
@@ -8,7 +11,37 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+import { employeeSearch } from "./SalaryApprisalEvent";
+
 class SalaryApprisal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      employee_name: null,
+      earningComponents: [],
+      deductioncomponents: [],
+      contributioncomponents: []
+    };
+  }
+
+  componentDidMount() {
+    if (
+      this.props.payrollcomponents === undefined ||
+      this.props.payrollcomponents.length === 0
+    ) {
+      this.props.getEarningDeduction({
+        uri: "/payrollsettings/getEarningDeduction",
+        module: "hrManagement",
+        method: "GET",
+        redux: {
+          type: "PAYROLL_COMPONENT_DATA",
+          mappingName: "payrollcomponents"
+        }
+      });
+    }
+  }
+
   render() {
     return (
       <div className="SalaryApprisalWrapper">
@@ -24,7 +57,11 @@ class SalaryApprisal extends Component {
             >
               <div className="col">
                 <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                <h6>---------</h6>
+                <h6>
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "------"}
+                </h6>
               </div>
               <div
                 className="col-lg-3"
@@ -37,7 +74,7 @@ class SalaryApprisal extends Component {
                     paddingLeft: 3,
                     cursor: "pointer"
                   }}
-                  //   onClick={employeeSearch.bind(this, this)}
+                  onClick={employeeSearch.bind(this, this)}
                 />
               </div>
             </div>
@@ -381,15 +418,51 @@ class SalaryApprisal extends Component {
                           datavalidate="NewAppraisalEarnings"
                           columns={[
                             {
-                              fieldName: "EarningDesc.",
+                              fieldName: "earnings_id",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Earning Desc." }}
+                                  label={{ forceLabel: "Earnings" }}
                                 />
-                              )
+                              ),
+                              displayTemplate: row => {
+                                let display =
+                                  this.props.payrollcomponents === undefined
+                                    ? []
+                                    : this.props.payrollcomponents.filter(
+                                        f =>
+                                          f.hims_d_earning_deduction_id ===
+                                          row.earnings_id
+                                      );
+
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].earning_deduction_description
+                                      : ""}
+                                  </span>
+                                );
+                              },
+                              editorTemplate: row => {
+                                let display =
+                                  this.props.payrollcomponents === undefined
+                                    ? []
+                                    : this.props.payrollcomponents.filter(
+                                        f =>
+                                          f.hims_d_earning_deduction_id ===
+                                          row.earnings_id
+                                      );
+
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].earning_deduction_description
+                                      : ""}
+                                  </span>
+                                );
+                              }
                             },
                             {
-                              fieldName: "PMAmount",
+                              fieldName: "amount",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "PM Amount" }}
@@ -405,7 +478,7 @@ class SalaryApprisal extends Component {
                               )
                             },
                             {
-                              fieldName: "PYAmount",
+                              fieldName: "py_amount",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "PY Amount" }}
@@ -422,7 +495,7 @@ class SalaryApprisal extends Component {
                             }
                           ]}
                           keyId=""
-                          dataSource={{ data: [] }}
+                          dataSource={{ data: this.state.earningComponents }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{}}
@@ -456,17 +529,55 @@ class SalaryApprisal extends Component {
                               datavalidate="NewAppraisalDeductions"
                               columns={[
                                 {
-                                  fieldName: "EarningDesc.",
+                                  fieldName: "deductions_id",
                                   label: (
                                     <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Deductions Desc."
-                                      }}
+                                      label={{ forceLabel: "Deductions" }}
                                     />
-                                  )
+                                  ),
+                                  displayTemplate: row => {
+                                    let display =
+                                      this.props.payrollcomponents === undefined
+                                        ? []
+                                        : this.props.payrollcomponents.filter(
+                                            f =>
+                                              f.hims_d_earning_deduction_id ===
+                                              row.deductions_id
+                                          );
+
+                                    return (
+                                      <span>
+                                        {display !== null &&
+                                        display.length !== 0
+                                          ? display[0]
+                                              .earning_deduction_description
+                                          : ""}
+                                      </span>
+                                    );
+                                  },
+                                  editorTemplate: row => {
+                                    let display =
+                                      this.props.payrollcomponents === undefined
+                                        ? []
+                                        : this.props.payrollcomponents.filter(
+                                            f =>
+                                              f.hims_d_earning_deduction_id ===
+                                              row.deductions_id
+                                          );
+
+                                    return (
+                                      <span>
+                                        {display !== null &&
+                                        display.length !== 0
+                                          ? display[0]
+                                              .earning_deduction_description
+                                          : ""}
+                                      </span>
+                                    );
+                                  }
                                 },
                                 {
-                                  fieldName: "PMAmount",
+                                  fieldName: "amount",
                                   label: (
                                     <AlgaehLabel
                                       label={{ forceLabel: "PM Amount" }}
@@ -482,7 +593,7 @@ class SalaryApprisal extends Component {
                                   )
                                 },
                                 {
-                                  fieldName: "PYAmount",
+                                  fieldName: "py_amount",
                                   label: (
                                     <AlgaehLabel
                                       label={{ forceLabel: "PY Amount" }}
@@ -499,7 +610,9 @@ class SalaryApprisal extends Component {
                                 }
                               ]}
                               keyId=""
-                              dataSource={{ data: [] }}
+                              dataSource={{
+                                data: this.state.deductioncomponents
+                              }}
                               isEditable={false}
                               paging={{ page: 0, rowsPerPage: 10 }}
                               events={{}}
@@ -530,17 +643,56 @@ class SalaryApprisal extends Component {
                               datavalidate="NewAppraisalContributions"
                               columns={[
                                 {
-                                  fieldName: "ContributionsDesc.",
+                                  fieldName: "contributions_id",
                                   label: (
                                     <AlgaehLabel
-                                      label={{
-                                        forceLabel: "Contributions Desc."
-                                      }}
+                                      label={{ forceLabel: "Contributions" }}
                                     />
-                                  )
+                                  ),
+
+                                  displayTemplate: row => {
+                                    let display =
+                                      this.props.payrollcomponents === undefined
+                                        ? []
+                                        : this.props.payrollcomponents.filter(
+                                            f =>
+                                              f.hims_d_earning_deduction_id ===
+                                              row.contributions_id
+                                          );
+
+                                    return (
+                                      <span>
+                                        {display !== null &&
+                                        display.length !== 0
+                                          ? display[0]
+                                              .earning_deduction_description
+                                          : ""}
+                                      </span>
+                                    );
+                                  },
+                                  editorTemplate: row => {
+                                    let display =
+                                      this.props.payrollcomponents === undefined
+                                        ? []
+                                        : this.props.payrollcomponents.filter(
+                                            f =>
+                                              f.hims_d_earning_deduction_id ===
+                                              row.contributions_id
+                                          );
+
+                                    return (
+                                      <span>
+                                        {display !== null &&
+                                        display.length !== 0
+                                          ? display[0]
+                                              .earning_deduction_description
+                                          : ""}
+                                      </span>
+                                    );
+                                  }
                                 },
                                 {
-                                  fieldName: "PMAmount",
+                                  fieldName: "amount",
                                   label: (
                                     <AlgaehLabel
                                       label={{ forceLabel: "PM Amount" }}
@@ -556,7 +708,7 @@ class SalaryApprisal extends Component {
                                   )
                                 },
                                 {
-                                  fieldName: "PYAmount",
+                                  fieldName: "py_amount",
                                   label: (
                                     <AlgaehLabel
                                       label={{ forceLabel: "PY Amount" }}
@@ -573,7 +725,9 @@ class SalaryApprisal extends Component {
                                 }
                               ]}
                               keyId=""
-                              dataSource={{ data: [] }}
+                              dataSource={{
+                                data: this.state.contributioncomponents
+                              }}
                               isEditable={false}
                               paging={{ page: 0, rowsPerPage: 10 }}
                               events={{}}
@@ -594,4 +748,24 @@ class SalaryApprisal extends Component {
   }
 }
 
-export default SalaryApprisal;
+function mapStateToProps(state) {
+  return {
+    payrollcomponents: state.payrollcomponents
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getEarningDeduction: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(SalaryApprisal)
+);

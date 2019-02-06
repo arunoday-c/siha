@@ -5,7 +5,7 @@ import {
   getEmployee, //Done
   addEmployeeAdvance, //Done
   getEmployeeAdvance, //Done
-  updateEmployee,
+  updateEmployee, //Done
   getEmployeeDetails, //Not in Use
   getDoctorServiceCommission, //Done
   getEmployeeCategory, //Not in Use

@@ -62,6 +62,7 @@ class LeaveEncashmentAuth extends Component {
     ) {
       this.props.getDepartments({
         uri: "/department/get/subdepartment",
+        module : "masterSettings",
         method: "GET",
         redux: {
           type: "DEPARTENTS_GET_DATA",

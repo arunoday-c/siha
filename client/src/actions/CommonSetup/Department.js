@@ -8,6 +8,7 @@ export function getDepartments() {
     algaehApiCall({
       uri: "/department/get",
       method: "GET",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success === true) {
           dispatch({
@@ -29,12 +30,16 @@ export function getDepartments() {
 
 export function getSubDepartments(datavalue) {
   return function(dispatch) {
+    let sendData =
+      datavalue != null && datavalue != ""
+        ? { department_id: datavalue }
+        : null;
+
     algaehApiCall({
-      uri:
-        datavalue != null && datavalue != ""
-          ? "/department/get/subdepartment?department_id=" + datavalue
-          : "/department/get/subdepartment",
+      uri: "/department/get/subdepartment",
+      data: sendData,
       method: "GET",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success === true) {
           dispatch({

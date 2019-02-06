@@ -40,13 +40,9 @@ class FamilyAndIdentification extends PureComponent {
   }
 
   componentDidMount() {
-    
     let InputOutput = this.props.EmpMasterIOputs.state.personalDetails;
     this.setState({ ...this.state, ...InputOutput }, () => {
-      if (
-        this.state.hims_d_employee_id !== null &&
-        this.state.dataFamIdsExists === false
-      ) {
+      if (this.state.hims_d_employee_id !== null) {
         getFamilyIdentification(this);
       }
     });
@@ -63,12 +59,9 @@ class FamilyAndIdentification extends PureComponent {
     }
   }
 
-  componentWillReceiveProps() {
-    
-  }
+  componentWillReceiveProps() {}
 
   render() {
-    
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">

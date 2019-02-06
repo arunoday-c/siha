@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import utilities from "algaeh-utilities";
+import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
 
 module.exports = {
@@ -257,6 +257,7 @@ module.exports = {
   },
 
   InsertEmployeePayment: (req, res, next) => {
+    const utilities = new algaehUtilities();
     const _mysql = new algaehMysql();
     let inputParam = { ...req.body };
     let payment_application_code = "";
@@ -301,10 +302,7 @@ module.exports = {
             ]
           })
           .then(result => {
-            utilities
-              .AlgaehUtilities()
-              .logger()
-              .log("payment_type: ", inputParam.payment_type);
+            utilities.logger().log("payment_type: ", inputParam.payment_type);
             if (inputParam.payment_type == "AD") {
               _mysql
                 .executeQuery({
@@ -479,20 +477,6 @@ module.exports = {
                 })
                 .then(LeaveSettleResult => {
                   // LeaveSettleResult
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("LeaveSettleResult:", LeaveSettleResult[1][0]);
-
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("LeaveSettleResult2:", LeaveSettleResult[2][0]);
-
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("LeaveSettleResult2:", LeaveSettleResult[3]);
 
                   let leave_salary = LeaveSettleResult[1][0];
                   let leave_salary_header = LeaveSettleResult[2][0];
@@ -502,10 +486,6 @@ module.exports = {
                     return o.salary_header_id;
                   });
 
-                  utilities
-                    .AlgaehUtilities()
-                    .logger()
-                    .log("salary_header_id:", salary_header_id);
                   let start_year = moment(leave_salary.leave_start_date).format(
                     "YYYY"
                   );
@@ -639,11 +619,6 @@ module.exports = {
                       end_year
                     );
 
-                    utilities
-                      .AlgaehUtilities()
-                      .logger()
-                      .log("strQuery:", strQuery);
-
                     _mysql
                       .executeQuery({
                         query: strQuery,
@@ -704,10 +679,6 @@ module.exports = {
         printQuery: true
       })
       .then(result => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("payment_type: ", inputParam.payment_type);
         if (inputParam.payment_type == "AD") {
           _mysql
             .executeQuery({
@@ -859,11 +830,6 @@ module.exports = {
               printQuery: true
             })
             .then(LeaveSettleResult => {
-              utilities
-                .AlgaehUtilities()
-                .logger()
-                .log("LeaveSettleResult:", LeaveSettleResult[2][0]);
-
               let leave_salary = LeaveSettleResult[1][0];
               let leave_salary_header = LeaveSettleResult[2][0];
               let leave_salary_detail = LeaveSettleResult[3][0];
@@ -994,11 +960,6 @@ module.exports = {
                   end_year
                 );
 
-                utilities
-                  .AlgaehUtilities()
-                  .logger()
-                  .log("strQuery:", strQuery);
-
                 _mysql
                   .executeQuery({
                     query: strQuery,
@@ -1037,11 +998,6 @@ module.exports = {
       inputValues.push(input.employee_id);
       inputValues.push(input.payment_type);
     }
-
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("inputValues:", inputValues);
 
     _mysql
       .executeQuery({

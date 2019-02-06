@@ -1,6 +1,5 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import utilities from "algaeh-utilities";
 
 module.exports = {
   getLeaveSalaryAccural: (req, res, next) => {

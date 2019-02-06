@@ -1,9 +1,5 @@
 import algaehMysql from "algaeh-mysql";
-// import _ from "lodash";
-// import moment from "moment";
-//import { LINQ } from "node-linq";
-import utilities from "algaeh-utilities";
-//import Sync from "sync";
+
 module.exports = {
   //created by irfan: to
   getHrmsOptions: (req, res, next) => {

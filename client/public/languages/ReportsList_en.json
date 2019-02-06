@@ -14,5 +14,7 @@
   "office_branch": "Office / Branch",
   "appt_status": "Appointment Status",
   "appt_type": "Appointment Type",
-  "service_type_id": "Service Type"
+  "service_type_id": "Service Type",
+  "hims_d_leave_id": "Leave Type",
+  "status": "Status"
 }

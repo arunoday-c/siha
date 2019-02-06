@@ -89,6 +89,7 @@ class AddConsultationForm extends Component {
     ) {
       this.props.getSubDepartment({
         uri: "/department/get/subdepartment",
+        module : "masterSettings",
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",

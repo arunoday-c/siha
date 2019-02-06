@@ -1,6 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-import utilities from "algaeh-utilities";
+
 import moment from "moment";
 module.exports = {
   getLoanMaster: (req, res, next) => {
@@ -27,10 +27,6 @@ module.exports = {
   addLoanMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({
@@ -63,10 +59,6 @@ module.exports = {
   updateLoanMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({
@@ -147,11 +139,6 @@ module.exports = {
       delete input.religion_id;
     }
 
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("addHoliday: ", "addHoliday");
-
     _mysql
       .executeQuery({
         query:
@@ -162,10 +149,6 @@ module.exports = {
         printQuery: true
       })
       .then(holiday_details => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("holiday_details: ", holiday_details);
         if (holiday_details.length > 0) {
           _mysql.releaseConnection();
           req.records = {
@@ -219,11 +202,6 @@ module.exports = {
 
     const year = moment("'" + input.year + "'").format("YYYY");
 
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("year: ", year);
-
     const start_of_year = moment(year)
       .startOf("year")
       .format("YYYY-MM-DD");
@@ -231,15 +209,6 @@ module.exports = {
     const end_of_year = moment(year)
       .endOf("year")
       .format("YYYY-MM-DD");
-
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("start_of_year: ", start_of_year);
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("end_of_year: ", end_of_year);
 
     let holidays = [];
 
@@ -261,27 +230,11 @@ module.exports = {
 
     let newDateList = [];
 
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("inputDays: ", inputDays);
-
     newDateList = getDaysArray(
       new Date(start_of_year),
       new Date(end_of_year),
       holidays
     );
-
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("newDateList: ", newDateList);
-    newDateList.map(v => v.toLocaleString());
-
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("newDateList: ", newDateList);
 
     _mysql
       .executeQuery({
@@ -294,11 +247,6 @@ module.exports = {
         printQuery: true
       })
       .then(weekOff_details => {
-        utilities
-          .AlgaehUtilities()
-          .logger()
-          .log("weekOff_details: ", weekOff_details);
-
         if (weekOff_details.length > 0) {
           _mysql.releaseConnection();
 
@@ -406,10 +354,6 @@ module.exports = {
   addEarningDeduction: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({
@@ -460,10 +404,6 @@ module.exports = {
   updateEarningDeduction: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-    utilities
-      .AlgaehUtilities()
-      .logger()
-      .log("input: ", input);
 
     _mysql
       .executeQuery({

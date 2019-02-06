@@ -72,7 +72,7 @@ export default class LeaveSalaryAccural extends Component {
             </div>
 
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col form-group" }}
               label={{
                 forceLabel: "Select a Year.",
                 isImp: true
@@ -96,7 +96,7 @@ export default class LeaveSalaryAccural extends Component {
             />
 
             <AlagehAutoComplete
-              div={{ className: "col" }}
+              div={{ className: "col form-group" }}
               label={{
                 forceLabel: "Select a Month.",
                 isImp: true

@@ -89,6 +89,7 @@ class SalaryProcessing extends Component {
     ) {
       this.props.getSubDepartment({
         uri: "/department/get/subdepartment",
+        module : "masterSettings",
         data: {
           sub_department_status: "A"
         },
@@ -388,7 +389,7 @@ class SalaryProcessing extends Component {
                                       No
                                     </span>
                                   ) : (
-                                    <span className="badge badge-Success">
+                                    <span className="badge badge-success">
                                       Yes
                                     </span>
                                   );

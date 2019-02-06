@@ -68,7 +68,8 @@ export default class WeeklyAttendance extends Component {
       .format("YYYY-MM-DD");
 
     algaehApiCall({
-      uri: "/holiday/getTimeSheet",
+      // uri: "/holiday/getTimeSheet",
+      uri: "/holiday/getDailyTimeSheet",
       method: "GET",
       data: {
         from_date: _fromDate,

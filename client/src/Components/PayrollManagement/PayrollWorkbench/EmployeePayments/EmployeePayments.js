@@ -134,7 +134,7 @@ class EmployeePayment extends Component {
               }}
             />
 
-            <AlagehFormGroup
+            {/* <AlagehFormGroup
               div={{ className: "col form-group" }}
               label={{
                 forceLabel: "Document No",
@@ -169,7 +169,7 @@ class EmployeePayment extends Component {
               >
                 <i className="fas fa-search" />
               </span>
-            </div>
+            </div> */}
 
             <AlagehAutoComplete
               div={{ className: "col" }}
@@ -238,13 +238,10 @@ class EmployeePayment extends Component {
               >
                 Load
               </button>
-            </div>
-
-            <div className="col margin-bottom-15">
               <button
                 type="button"
-                className="btn btn-primary"
-                style={{ marginTop: 21 }}
+                className="btn btn-default"
+                style={{ marginTop: 21, marginLeft: 10 }}
                 onClick={ClearData.bind(this, this)}
               >
                 Clear
