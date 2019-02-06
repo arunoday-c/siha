@@ -236,76 +236,99 @@ module.exports = {
   endOfServiceAdd: (req, res, next) => {
     const _input = req.body;
     const _mysql = new algaehMysql();
-    _mysql
-      .generateRunningNumber({
-        modules: ["END_OF_SERVICE_NO"]
-      })
-      .then(result => {
-        if (result.length == 0) {
-          _mysql.rollBackTransaction(() => {
-            next(
-              utlities
-                .AlgaehUtilities()
-                .httpStatus()
-                .generateError(
-                  utlities.AlgaehUtilities().httpStatus().noContent,
-                  "Please add number generation for end of service"
-                )
-            );
-          });
-          return;
-        }
 
-        _mysql
-          .executeQuery({
-            query:
-              "insert into hims_f_end_of_service(`end_of_service_number`,\
+    _mysql
+      .executeQuery({
+        query:
+          "select employee_id from hims_f_end_of_service EOS where employee_id = ? ;",
+        values: [_input.employee_id]
+      })
+      .then(end_of_service => {
+        utilities.logger().log("end_of_service: ", end_of_service.length);
+        if (end_of_service.length > 0) {
+          _mysql.releaseConnection();
+          req.records = {
+            message: "End of Service/Gratuity already processed."
+          };
+          req.flag = 1;
+          next();
+        } else {
+          _mysql
+            .generateRunningNumber({
+              modules: ["END_OF_SERVICE_NO"]
+            })
+            .then(result => {
+              if (result.length == 0) {
+                _mysql.rollBackTransaction(() => {
+                  next(
+                    utlities
+                      .AlgaehUtilities()
+                      .httpStatus()
+                      .generateError(
+                        utlities.AlgaehUtilities().httpStatus().noContent,
+                        "Please add number generation for end of service"
+                      )
+                  );
+                });
+                return;
+              }
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "insert into hims_f_end_of_service(`end_of_service_number`,\
             `employee_id`,`transaction_date`,`exit_type`,`join_date`,\
             `exit_date`,`service_years`,`payable_days`,`previous_gratuity_amount`,\
             `calculated_gratutity_amount`,`payable_amount`, `gratuity_status`, `remarks`,\
             `created_by`,`created_date`,`updated_by`,`updated_date`) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-            values: [
-              result[0],
-              _input.employee_id,
-              new Date(),
-              _input.exit_type,
-              _input.join_date,
-              _input.exit_date,
-              _input.service_years,
-              _input.payable_days,
-              0,
-              _input.computed_amount,
-              _input.paybale_amout,
-              _input.gratuity_status,
-              _input.remarks,
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date()
-            ]
-          })
-          .then(insertResult => {
-            _mysql.commitTransaction((error, resu) => {
-              if (error) {
-                _mysql.rollBackTransaction(() => {
-                  next(error);
+                  values: [
+                    result[0],
+                    _input.employee_id,
+                    new Date(),
+                    _input.exit_type,
+                    _input.join_date,
+                    _input.exit_date,
+                    _input.service_years,
+                    _input.payable_days,
+                    0,
+                    _input.computed_amount,
+                    _input.paybale_amout,
+                    _input.gratuity_status,
+                    _input.remarks,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date()
+                  ]
+                })
+                .then(insertResult => {
+                  _mysql.commitTransaction((error, resu) => {
+                    if (error) {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                      });
+                    } else {
+                      req.records = {
+                        ...insertResult,
+                        end_of_service_number: result[0]
+                      };
+                      next();
+                    }
+                  });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
                 });
-              } else {
-                req.records = {
-                  ...insertResult,
-                  end_of_service_number: result[0]
-                };
-                next();
-              }
-            });
-          })
-          .catch(e => {
-            _mysql.rollBackTransaction(() => {
+            })
+            .catch(e => {
               next(e);
             });
-          });
+        }
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   }

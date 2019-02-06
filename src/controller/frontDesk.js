@@ -6,7 +6,7 @@ import { debugLog, debugFunction } from "../utils/logging";
 import {
   addFrontDesk,
   updateFrontDesk,
-  selectFrontDesk,
+  selectFrontDesk, //Done
   getCashHandoverDetails,
   updateCashHandoverDetails
 } from "../model/frontDesk";
