@@ -5,7 +5,7 @@ import { addDepartment } from "../models/department";
 export default () => {
   let api = Router();
 
-  api.post("/add", addDepartment, (req, res, next) => {
+  api.post("/addDepartment", addDepartment, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,

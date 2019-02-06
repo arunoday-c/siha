@@ -371,7 +371,7 @@ class DeptMaster extends Component {
         };
 
         algaehApiCall({
-          uri: "/department/add",
+          uri: "/department/addDepartment",
           method: "POST",
           data: send_data,
           module: "masterSettings",

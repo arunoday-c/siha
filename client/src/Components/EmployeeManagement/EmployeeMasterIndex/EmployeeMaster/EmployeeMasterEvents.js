@@ -258,7 +258,7 @@ const InsertUpdateEmployee = $this => {
           debugger;
           algaehApiCall({
             uri: "/employee/updateEmployee",
-            // module: "hrManagement",
+            module: "hrManagement",
             data: _payload,
             method: "PUT",
             onSuccess: response => {

@@ -1342,7 +1342,7 @@ module.exports = {
                       _mysql
                         .executeQuery({
                           query:
-                            "select loan_skip_months,installment_amount, pending_loan from hims_f_loan_application  where hims_f_loan_application_id in (?)",
+                            "select loan_skip_months,installment_amount, pending_loan,pending_tenure from hims_f_loan_application  where hims_f_loan_application_id in (?)",
                           values: [loan_application_ids],
                           printQuery: true
                         })
@@ -1352,6 +1352,9 @@ module.exports = {
                               loan_application[i].loan_skip_months;
                             let pending_loan = loan_application[i].pending_loan;
                             let loan_closed = "N";
+
+                            let pending_tenure =
+                              loan_application[i].pending_tenure - 1;
                             if (loan_skip_months > 0) {
                               loan_skip_months--;
                             } else {
@@ -1363,15 +1366,17 @@ module.exports = {
                             if (pending_loan == 0) {
                               loan_closed = "Y";
                             }
+
                             _mysql
                               .executeQuery({
                                 query:
-                                  "UPDATE hims_f_loan_application SET pending_loan = ?, loan_closed=?, loan_skip_months=?, \
+                                  "UPDATE hims_f_loan_application SET pending_loan = ?, loan_closed=?, loan_skip_months=?, pending_tenure=?,\
                                     updated_date=?, updated_by=? where hims_f_loan_application_id in (?)",
                                 values: [
                                   pending_loan,
                                   loan_closed,
                                   loan_skip_months,
+                                  pending_tenure,
                                   new Date(),
                                   req.userIdentity.algaeh_d_app_user_id,
                                   loan_application_ids
