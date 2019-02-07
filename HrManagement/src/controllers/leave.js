@@ -11,7 +11,10 @@ import {
   addLeaveMaster,
   processYearlyLeave,
   getLeaveApllication,
-  updateLeaveMaster
+  updateLeaveMaster,
+  addLeaveDetailMaster,
+  getLeaveDetailsMaster,
+  deleteLeaveEncash
 } from "../models/leave";
 export default () => {
   const api = Router();
@@ -156,6 +159,46 @@ export default () => {
     }
   });
   api.put("/updateLeaveMaster", updateLeaveMaster, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+
+  api.get("/getLeaveDetailsMaster", getLeaveDetailsMaster, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.post("/addLeaveDetailMaster", addLeaveDetailMaster, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.delete("/deleteLeaveEncash", deleteLeaveEncash, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
