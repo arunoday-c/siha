@@ -115,6 +115,15 @@ class DoctorsWorkbench extends Component {
               </div>
             </div>
             <div className="col patientReportSection">
+              <div className="row patientChiefSec">
+                <div className="col-12">
+                  <h4 className="patientSecHdg">Chief Complaints</h4>
+                </div>
+                <div className="col-6">
+                  <textarea className="chiefComplaintsTextArea" />
+                </div>
+              </div>
+              <hr />
               <div className="row patientVitalsSec">
                 <div className="col-12">
                   <h4 className="patientSecHdg">Vitals</h4>
@@ -163,15 +172,6 @@ class DoctorsWorkbench extends Component {
                   <h6>
                     <label>Weight</label>65cm
                   </h6>
-                </div>
-              </div>
-              <hr />
-              <div className="row patientChiefSec">
-                <div className="col-12">
-                  <h4 className="patientSecHdg">Chief Complaints</h4>
-                </div>
-                <div className="col-6">
-                  <textarea className="chiefComplaintsTextArea" />
                 </div>
               </div>
               <hr />
