@@ -496,6 +496,7 @@ class LeaveEdit extends Component {
         algaehApiCall({
           uri: "/leave/addLeaveEncashmentMaster",
           method: "POST",
+          module: "hrManagement",
           data: send_data,
           onSuccess: res => {
             if (res.data.success) {
