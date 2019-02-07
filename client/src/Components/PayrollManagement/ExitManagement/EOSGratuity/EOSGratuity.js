@@ -18,7 +18,8 @@ class EOSGratuity extends Component {
       },
       previous_gratuity_amount: 0,
       saveDisabled: true,
-      gratuity_done: false
+      gratuity_done: false,
+      gratuity_status: "PRO"
     };
   }
 

@@ -26,6 +26,7 @@ module.exports = {
         .then(headerresult => {
           const _header = headerresult[0];
           const _employee = headerresult[1];
+          utilities.logger().log("_header: ", _header);
           if (_header.length == 0) {
             _mysql
               .executeQuery({
@@ -57,6 +58,7 @@ where E.hims_d_employee_id=? ",
               .then(result => {
                 const _loanList = result[0];
                 const _options = result[1];
+                utilities.logger().log("_options Y: ", _options);
                 const _total_salary_amount =
                   result[2].length === 0 ? 0 : result[2][0]["total_salary"];
                 const _hims_f_salary_id =
@@ -77,12 +79,14 @@ where E.hims_d_employee_id=? ",
                   mysql: _mysql
                 })
                   .then(data => {
+                    utilities.logger().log("data Y: ", data);
                     const _total_loan_amount = _.chain(_loanList).sumBy(
                       s => s.pending_loan
                     );
                     let _gratuity = 0;
                     let _hims_f_end_of_service_id = null;
                     if (data !== null && data.length > 0) {
+                      utilities.logger().log("data: ", data);
                       _gratuity =
                         data.length === 0
                           ? 0
@@ -336,23 +340,35 @@ where E.hims_d_employee_id=? ",
 };
 function endOfServiceDicession(options) {
   const _mysql = options.mysql;
+  const utilities = new algaehUtilities();
   return new Promise((resolve, reject) => {
-    if (options.result.gratuity_in_final_settle === "Y") {
-      _mysql
-        .executeQuery({
-          query:
-            "select hims_f_end_of_service_id,end_of_service_number,calculated_gratutity_amount,payable_amount\
+    try {
+      utilities
+        .logger()
+        .log(
+          "gratuity_in_final_settle : ",
+          options.result.gratuity_in_final_settle
+        );
+      if (options.result.gratuity_in_final_settle == "Y") {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_f_end_of_service_id,end_of_service_number,calculated_gratutity_amount,payable_amount\
              from hims_f_end_of_service where employee_id=? and gratuity_status != 'PAI'",
-          values: [options.employee_id]
-        })
-        .then(endofServiceResult => {
-          resolve(endofServiceResult);
-        })
-        .catch(e => {
-          reject(e);
-        });
-    } else {
-      resolve(null);
+            values: [options.employee_id],
+            printQuery: true
+          })
+          .then(endofServiceResult => {
+            resolve(endofServiceResult);
+          })
+          .catch(e => {
+            reject(e);
+          });
+      } else {
+        resolve(null);
+      }
+    } catch (e) {
+      next(e);
     }
   });
 }
