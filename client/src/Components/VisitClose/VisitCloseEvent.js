@@ -43,7 +43,14 @@ const getVisitDetails = $this => {
     data: { patient_code: $this.state.patient_code },
     onSuccess: response => {
       if (response.data.success) {
-        $this.setState({ visitDetails: response.data.records.visitDetails });
+        if (response.data.records.visitDetails.length > 0) {
+          let visit_data = Enumerable.from(response.data.records.visitDetails)
+            .where(w => w.visit_status === "O")
+            .toArray();
+          debugger;
+
+          $this.setState({ visitDetails: visit_data });
+        }
       }
     },
     onFailure: error => {
@@ -74,11 +81,13 @@ const ClearData = $this => {
 };
 
 const CloseVisits = $this => {
+  debugger;
   let inputObj = Enumerable.from($this.state.visitDetails)
     .where(w => w.select === "Y")
     .toArray();
   algaehApiCall({
     uri: "/visit/closeVisit",
+    module: "frontDesk",
     method: "POST",
     data: inputObj,
     onSuccess: response => {

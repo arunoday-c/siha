@@ -1,6 +1,7 @@
-import algaehUtilities from "algaeh-utilities/utilities";
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import algaehUtilities from "algaeh-utilities/utilities";
+
 module.exports = {
   finalSettlement: (req, res, next) => {
     const _input = req.query;
@@ -81,7 +82,7 @@ where E.hims_d_employee_id=? ",
                     );
                     let _gratuity = 0;
                     let _hims_f_end_of_service_id = null;
-                    if (data !== null) {
+                    if (data !== null && data.length > 0) {
                       _gratuity =
                         data.length === 0
                           ? 0

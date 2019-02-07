@@ -9,8 +9,8 @@ const texthandle = ($this, e) => {
 
   if (name === "notice_period") {
     if (
-      $this.state.date_of_leaving === null ||
-      $this.state.date_of_leaving === ""
+      $this.state.date_of_resignation === null ||
+      $this.state.date_of_resignation === ""
     ) {
       swalMessage({
         type: "error",
@@ -19,7 +19,8 @@ const texthandle = ($this, e) => {
       return;
     }
     _notice = {
-      reliving_date: moment($this.state.date_of_leaving).add(value, "days")._d
+      reliving_date: moment($this.state.date_of_resignation).add(value, "days")
+        ._d
     };
   }
 

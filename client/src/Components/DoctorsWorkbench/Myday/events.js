@@ -5,7 +5,7 @@ export default function MyDayEvents() {
     loadPatientsList: data => {
       return new Promise((resolve, reject) => {
         algaehApiCall({
-          uri: "/clinicalDesk/getMyDay",
+          uri: "/myDay",
           data: data.inputParam,
           method: "GET",
           cancelRequestId: "getMyDay",
@@ -31,9 +31,6 @@ export default function MyDayEvents() {
             break;
           case "V":
           case "W":
-          case "W":
-          case "C":
-          case "CA":
           case "CO":
             _data = _.chain(data)
               .filter(f => f.status === type)
@@ -56,22 +53,12 @@ export default function MyDayEvents() {
         text: "Appointment & Walking",
         value: "AW"
       },
-      {
-        text: "Visit Created",
-        value: "V"
-      },
+
       {
         text: "Work in progress",
         value: "W"
       },
-      {
-        text: "Closed",
-        value: "C"
-      },
-      {
-        text: "Cancelled",
-        value: "CA"
-      },
+
       {
         text: "Completed",
         value: "CO"
