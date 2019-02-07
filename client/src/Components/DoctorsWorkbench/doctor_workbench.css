@@ -107,6 +107,18 @@
       .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection:hover {
         background: #cbf0f1;
         cursor: pointer; }
+    .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .noAppRecord {
+      text-align: center;
+      padding-top: 10vh; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .noAppRecord i {
+        font-size: 4em;
+        margin-bottom: 20px;
+        color: #e6e6e6; }
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .noAppRecord span {
+        display: block; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .noAppRecord span span {
+          color: #34b8bc;
+          font-weight: 700; }
   .clinicalDeskScreen .cldrPatientList .completedPatientSec {
     background: #999999;
     height: 30vh; }
@@ -121,83 +133,107 @@
   margin-left: 15px;
   border-radius: 0 0 0 5px;
   overflow: hidden; }
-  .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top {
+  .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top {
     background: #fff;
     width: calc(100vw - 260px);
-    height: 88px;
+    height: 117px;
     padding: 5px 0 0;
     position: fixed;
     z-index: 999;
     border-radius: 0 0 0 5px;
     overflow: hidden; }
-    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top div {
+    .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top div {
       float: left;
       color: #858585;
       overflow: hidden; }
-    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .backBtn {
+    .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .backBtn {
       border-right: 1px solid #e1e1e1;
       padding-right: 10px;
       padding-left: 10px; }
-      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .backBtn button {
+      .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .backBtn button {
         height: 60px;
         border: 1px solid #e1e1e1; }
-      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .backBtn i {
+      .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .backBtn i {
         display: block;
         margin-bottom: 5px; }
-    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeImg {
+    .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientImg {
       margin: 1px 10px; }
-      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeImg .image-drop-area {
+      .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientImg .image-drop-area {
         min-height: 72px;
         max-height: 72px; }
-        .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeImg .image-drop-area img {
+        .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientImg .image-drop-area img {
           height: 70px;
           width: auto; }
-    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeName {
+    .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientName {
       max-width: 30%;
       margin-top: 2px;
       border-left: 1px solid #e1e1e1;
       border-right: 1px solid #e1e1e1;
       padding-left: 10px;
       padding-right: 10px; }
-      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeName h6 {
+      .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientName h6 {
         margin-bottom: 2px;
         color: #000;
         line-height: 1.6rem;
         min-height: 50px;
         font-size: 1.3em; }
-      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeName p {
+      .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientName p {
         margin: 0;
         padding: 0; }
-        .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeName p b {
+        .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientName p b {
           color: #34b8bc;
           font-size: 0.9em;
           font-weight: 700; }
-    .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic {
+    .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientDemographic {
       line-height: 1.3rem;
       border-right: 1px solid #e1e1e1;
       padding-left: 10px;
       padding-right: 10px; }
-      .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span {
+      .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientDemographic span {
         display: block;
         line-height: 1.7rem;
         font-size: 0.9em;
         font-weight: 700; }
-        .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span i {
+        .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientDemographic span i {
           text-align: center;
           width: 20px; }
-        .clinicalDeskScreen .patientMainInfo .EmployeeProfile .EmployeeInfo-Top .EmployeeDemographic span b {
+        .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientDemographic span b {
           color: #34b8bc; }
+    .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientVitals {
+      background: #333333;
+      color: #e6e6e6;
+      width: calc(100vw - 265px);
+      height: 30px;
+      padding: 5px 15px 0;
+      border-radius: 0 0 0 5px;
+      margin-top: 8px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap; }
+      .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientVitals span {
+        border-right: 1px solid gray;
+        padding-right: 5px;
+        margin-right: 5px;
+        font-size: 0.75em;
+        text-transform: uppercase; }
+        .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientVitals span b {
+          font-weight: 700;
+          font-size: 1.3em;
+          color: #fff; }
+        .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientVitals span i {
+          text-transform: capitalize;
+          margin-left: 3px; }
 
 .clinicalDeskScreen .patientReportSection {
   box-shadow: 0 0 5px #cccccc;
   background: #fff;
-  margin: 15px;
+  margin: 40px 15px 15px;
   padding-top: 15px;
   padding-bottom: 15px;
   border-radius: 5px;
   width: calc(100vw - 50px);
-  min-height: calc(100vh - 170px);
-  max-height: calc(100vh - 170px);
+  min-height: calc(100vh - 238px);
+  max-height: calc(100vh - 238px);
   overflow-y: auto;
   overflow-x: hidden; }
   .clinicalDeskScreen .patientReportSection .patientSecHdg {
@@ -216,9 +252,9 @@
     width: 100%; }
 
 .clinicalDeskScreen .clinicalAction {
-  margin-top: 15px;
+  margin-top: 40px;
   width: 50px;
-  height: calc(100vh - 170px); }
+  height: calc(100vh - 238px); }
   .clinicalDeskScreen .clinicalAction .rightActionSec {
     margin: 0;
     padding: 0;
@@ -256,6 +292,25 @@
         display: none; }
       .clinicalDeskScreen .clinicalAction .rightActionSec li:hover span {
         display: block; }
+
+.clinicalDeskScreen .clinicalFooter {
+  background: #333333;
+  color: #e6e6e6; }
+  .clinicalDeskScreen .clinicalFooter .inline-formGroup {
+    padding-top: 5px;
+    padding-bottom: 4px; }
+    .clinicalDeskScreen .clinicalFooter .inline-formGroup .style_Label {
+      vertical-align: top;
+      padding-top: 8px;
+      padding-right: 13px; }
+    .clinicalDeskScreen .clinicalFooter .inline-formGroup .ui.fluid.dropdown {
+      padding: 0;
+      width: 50%;
+      display: inline-block; }
+  .clinicalDeskScreen .clinicalFooter .btn {
+    float: right;
+    margin-top: 5px;
+    margin-left: 10px; }
 
 .clinicalDeskScreen .clinicalDeskWrapper {
   background: #999999;

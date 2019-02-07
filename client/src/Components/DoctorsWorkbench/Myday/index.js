@@ -154,10 +154,16 @@ export default class MyDayView extends Component {
                   );
                 })
               ) : (
-                <div>
-                  {" "}
-                  No records found for date{" "}
-                  {new Date(this.state.fromDate).toDateString()}{" "}
+                <div className="noAppRecord">
+                  <i className="fas fa-calendar-alt" />
+                  <span>
+                    {" "}
+                    No appointment for
+                    <span>
+                      {" "}
+                      {new Date(this.state.fromDate).toDateString()}
+                    </span>{" "}
+                  </span>
                 </div>
               )}
             </div>
