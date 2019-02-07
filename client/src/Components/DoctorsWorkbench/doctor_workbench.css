@@ -48,62 +48,56 @@
     height: calc(100vh - 407px); }
     .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection {
       border-top: 1px solid #cccccc;
-      border-bottom: 1px solid #cccccc;
-      /* display: block; */
       float: left;
-      margin-bottom: 2px; }
+      font-size: 0.8em; }
       .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .appIconSec {
         float: left;
-        height: 75px;
-        width: 75px;
+        width: 60px;
         text-align: center;
-        border-right: 1px solid #cccccc; }
+        font-size: 0.8em;
+        font-weight: bold; }
         .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .appIconSec i {
           display: block;
-          font-size: 1.5em;
+          font-size: 2em;
           margin-top: 14px;
           margin-bottom: 5px; }
-      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patName {
+      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec {
+        width: 180px;
         float: left;
-        height: 75px;
-        width: 159px;
-        padding-left: 5px;
-        padding-top: 5px; }
-      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patVisit {
-        float: left;
-        height: 20px;
-        width: 75px;
-        border-right: 1px solid #cccccc;
-        border-top: 1px dotted #cccccc;
-        text-align: center;
-        font-size: 0.85em; }
-      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus {
-        border-top: 1px dotted #cccccc;
-        float: left;
-        height: 20px;
-        width: 159px;
-        padding-left: 5px;
-        font-size: 0.85em; }
-        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.inProgress {
-          font-weight: bold; }
-        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.nursingDone {
-          background: #34b8bc;
-          color: #fff; }
-        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.nursingGoing {
-          background: #ffffb5; }
-        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.checkedIn {
-          background: #a0c6ff; }
-        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .patStatus.notShown {
-          background: #b3b3b3; }
+        padding: 5px;
+        border-left: 1px solid #cccccc;
+        min-height: 60px; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patName {
+          display: block;
+          font-weight: bold;
+          font-size: 1.2em;
+          min-height: 29px; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patVisit {
+          display: inline-block; }
+        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus {
+          display: inline-block;
+          text-align: right;
+          float: right; }
+          .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.inProgress {
+            font-weight: bold;
+            color: #ec5c09; }
+          .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.nursingDone {
+            color: #34b8bc; }
+          .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.nursingGoing {
+            color: #5b5eeb; }
+          .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.checkedIn {
+            background: #a0c6ff; }
+          .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.notShown {
+            background: #b3b3b3; }
+          .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus.active {
+            background: #34b8bc;
+            color: #fff; }
+            .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus.active:hover {
+              background: #299194;
+              color: #fff;
+              cursor: pointer; }
       .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection:nth-child(odd) {
         background: #f2f2f2; }
-      .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection.active {
-        background: #34b8bc;
-        color: #fff; }
-        .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection.active:hover {
-          background: #299194;
-          color: #fff;
-          cursor: pointer; }
       .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection:hover {
         background: #cbf0f1;
         cursor: pointer; }
