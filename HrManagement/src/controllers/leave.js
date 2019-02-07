@@ -9,7 +9,8 @@ import {
   getEmployeeLeaveHistory,
   getLeaveLevels,
   addLeaveMaster,
-  processYearlyLeave
+  processYearlyLeave,
+  getLeaveApllication
 } from "../models/leave";
 export default () => {
   const api = Router();
@@ -129,6 +130,19 @@ export default () => {
       req.records.invalid_input == true ||
       req.records.already_processed == true
     ) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.get("/getLeaveApllication", getLeaveApllication, (req, res, next) => {
+    if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
         records: req.records
