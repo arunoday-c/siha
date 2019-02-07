@@ -33,7 +33,7 @@ module.exports = {
         query:
           "update hims_d_hrms_options set salary_process_date=?,salary_pay_before_end_date=?,payroll_payment_date=?,\
           salary_calendar=?,salary_calendar_fixed_days=?,attendance_type=?,fetch_punch_data_reporting=?,\
-          gratuity_in_final_settle=?,leave_level=?,loan_level=?,leave_encash_level=?,review_auth_level=?,\
+          leave_level=?,loan_level=?,leave_encash_level=?,review_auth_level=?,\
           yearly_working_days=?,advance_deduction=?,overtime_type=?,overtime_payment=?,overtime_calculation=?,\
           overtime_hourly_calculation=?,standard_intime=?,standard_outime=?,standard_working_hours=?,\
           standard_break_hours=?,biometric_database=?,biometric_server_name=?,biometric_port_no=?,\
@@ -48,7 +48,6 @@ module.exports = {
           input.salary_calendar_fixed_days,
           input.attendance_type,
           input.fetch_punch_data_reporting,
-          input.gratuity_in_final_settle,
           input.leave_level,
           input.loan_level,
           input.leave_encash_level,
@@ -102,8 +101,6 @@ module.exports = {
         printQuery: true
       })
       .then(result => {
-        utilities.logger().log("result: ", result);
-
         let componentArray = [];
         let fromServiceArray = [];
         let eligibleDaysArray = [];
@@ -131,14 +128,40 @@ module.exports = {
           result[0]["eligible_days5"]
         );
 
-        _mysql.releaseConnection();
-        req.records = {
-          ...result[0],
-          componentArray,
-          fromServiceArray,
-          eligibleDaysArray
-        };
-        next();
+        if (result.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_d_earning_deduction_id, earning_deduction_code, earning_deduction_description from \
+                        hims_d_earning_deduction where hims_d_earning_deduction_id  in (?)",
+              values: [componentArray],
+
+              printQuery: true
+            })
+            .then(earning_comp => {
+              _mysql.releaseConnection();
+              req.records = {
+                ...result[0],
+                earning_comp,
+                fromServiceArray,
+                eligibleDaysArray
+              };
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "no data found"
+          };
+
+          next();
+          return;
+        }
       })
       .catch(e => {
         _mysql.releaseConnection();

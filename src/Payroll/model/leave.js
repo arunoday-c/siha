@@ -4754,6 +4754,14 @@ let addLeaveDetailMaster = (req, res, next) => {
   }
 };
 
+
+
+
+
+
+
+
+
 //created by Adnan
 let deleteLeaveEncash = (req, res, next) => {
   try {
