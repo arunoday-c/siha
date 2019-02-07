@@ -7,88 +7,155 @@ module.exports = {
     const _input = req.query;
     const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
-
     try {
       _mysql
         .executeQuery({
           query:
-            "select employee_id,loan_id,application_reason,hims_f_loan_application_id,approved_amount, loan_amount,\
-            installment_amount,pending_loan,loan_tenure,start_month,start_year,loan_application_date,L.loan_description \
-            from hims_f_loan_application,hims_d_loan L where loan_authorized = 'APR' and loan_closed='N' and loan_amount >0 \
-            and employee_id=? and L.hims_d_loan_id=hims_f_loan_application.loan_id; \
-            select gratuity_in_final_settle from hims_d_end_of_service_options;\
-            select hims_f_salary_id, sum(net_salary)total_salary from hims_f_salary where employee_id=? \
-            and salary_settled='N' and salary_paid='N' group by employee_id; \
-            SELECT hims_f_leave_encash_header_id, sum(total_amount)total_leave_amount FROM hims_f_leave_encash_header \
-            where employee_id =? and authorized='APR' group by employee_id; \
-            select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
+            "SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans,total_salary,total_leave_encash as total_leave_encash_amount,\
+            total_eos as gratuity_amount,forfiet,remarks \
+  FROM algaeh_hims_db.hims_f_final_settlement_header where employee_id=?; select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
+  E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
+    E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,SD.arabic_sub_department_name \
+    from hims_d_employee E Left join hims_d_sub_department SD \
+   on SD.hims_d_sub_department_id = E.sub_department_id \
+   left join hims_d_title T \
+   on T.his_d_title_id = E.title_id \
+   where E.hims_d_employee_id=?",
+          values: [_input.employee_id, _input.employee_id]
+        })
+        .then(headerresult => {
+          const _header = headerresult[0];
+          const _employee = headerresult[1];
+          if (_header.length == 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select employee_id,loan_id,application_reason,hims_f_loan_application_id,approved_amount, loan_amount,\
+      installment_amount,pending_loan,loan_tenure,start_month,start_year,loan_application_date,L.loan_description \
+      from hims_f_loan_application,hims_d_loan L where loan_authorized = 'APR' and loan_closed='N' and loan_amount >0 \
+      and employee_id=? and L.hims_d_loan_id=hims_f_loan_application.loan_id; \
+      select gratuity_in_final_settle from hims_d_end_of_service_options;\
+      select hims_f_salary_id, sum(net_salary)total_salary from hims_f_salary where employee_id=? \
+      and salary_settled='N' and salary_paid='N' group by employee_id; \
+      SELECT hims_f_leave_encash_header_id, sum(total_amount)total_leave_amount FROM hims_f_leave_encash_header \
+      where employee_id =? and authorized='APR' group by employee_id; \
+      select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
 E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
-  E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,SD.arabic_sub_department_name \
-  from hims_d_employee E Left join hims_d_sub_department SD \
- on SD.hims_d_sub_department_id = E.sub_department_id \
- left join hims_d_title T \
- on T.his_d_title_id = E.title_id \
- where E.hims_d_employee_id=? ",
-          values: [
-            _input.employee_id,
-            _input.employee_id,
-            _input.employee_id,
-            _input.employee_id
-          ]
-        })
-        .then(result => {
-          const _loanList = result[0];
-          const _options = result[1];
-          const _total_salary_amount =
-            result[2].length === 0 ? 0 : result[2][0]["total_salary"];
-          const _hims_f_salary_id =
-            result[2].length === 0 ? null : result[2][0]["hims_f_salary_id"];
-          const _total_leave_encash =
-            result[3].length === 0 ? 0 : result[3][0]["total_leave_amount"];
-          const _hims_f_leave_encash_header_id =
-            result[3].length === 0
-              ? null
-              : result[3][0]["hims_f_leave_encash_header_id"];
-          endOfServiceDicession({
-            result: _options[0],
-            employee_id: _input.employee_id,
-            mysql: _mysql
-          })
-            .then(data => {
-              utilities.logger().log("data: ", data);
+E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,SD.arabic_sub_department_name \
+from hims_d_employee E Left join hims_d_sub_department SD \
+on SD.hims_d_sub_department_id = E.sub_department_id \
+left join hims_d_title T \
+on T.his_d_title_id = E.title_id \
+where E.hims_d_employee_id=? ",
+                values: [
+                  _input.employee_id,
+                  _input.employee_id,
+                  _input.employee_id,
+                  _input.employee_id
+                ]
+              })
+              .then(result => {
+                const _loanList = result[0];
+                const _options = result[1];
+                const _total_salary_amount =
+                  result[2].length === 0 ? 0 : result[2][0]["total_salary"];
+                const _hims_f_salary_id =
+                  result[2].length === 0
+                    ? null
+                    : result[2][0]["hims_f_salary_id"];
+                const _total_leave_encash =
+                  result[3].length === 0
+                    ? 0
+                    : result[3][0]["total_leave_amount"];
+                const _hims_f_leave_encash_header_id =
+                  result[3].length === 0
+                    ? null
+                    : result[3][0]["hims_f_leave_encash_header_id"];
+                endOfServiceDicession({
+                  result: _options[0],
+                  employee_id: _input.employee_id,
+                  mysql: _mysql
+                })
+                  .then(data => {
+                    const _total_loan_amount = _.chain(_loanList).sumBy(
+                      s => s.pending_loan
+                    );
+                    let _gratuity = 0;
+                    let _hims_f_end_of_service_id = null;
+                    if (data !== null && data.length > 0) {
+                      _gratuity =
+                        data.length === 0
+                          ? 0
+                          : data[0].calculated_gratutity_amount;
+                      _hims_f_end_of_service_id =
+                        data.length === 0
+                          ? null
+                          : data[0].hims_f_end_of_service_id;
+                    }
+                    req.records = {
+                      ..._.first(result[4], 0),
+                      loans: _loanList,
+                      total_loan_amount: _total_loan_amount,
+                      hims_f_salary_id: _hims_f_salary_id,
+                      hims_f_leave_encash_header_id: _hims_f_leave_encash_header_id,
+                      hims_f_end_of_service_id: _hims_f_end_of_service_id,
+                      gratuity_amount: _gratuity,
+                      total_salary: _total_salary_amount,
+                      total_leave_encash_amount: _total_leave_encash
+                    };
+                    next();
+                  })
+                  .catch(e => {
+                    _mysql.releaseConnection();
+                    next(e);
+                  });
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql
+              .executeQuery({
+                query:
+                  "SELECT LM.loan_description,L.balance_amount as pending_loan FROM hims_f_final_settle_loan_details L, hims_d_loan LM \
+              where L.loan_application_id=LM.hims_d_loan_id and L.final_settlement_header_id=?; \
+              SELECT earnings_id, D.earning_deduction_description as earning_name, amount FROM hims_f_final_settle_earnings_detail \
+              ,hims_d_earning_deduction D where D.hims_d_earning_deduction_id = hims_f_final_settle_earnings_detail.earnings_id and \
+              final_settlement_header=?; \
+              SELECT D.earning_deduction_description as deduction_name,amount FROM hims_f_final_settle_deductions_detail,hims_d_earning_deduction D where \
+              D.hims_d_earning_deduction_id = hims_f_final_settle_deductions_detail.deductions_id and final_settlement_header_id=?;",
+                values: [
+                  _header[0]["hims_f_final_settlement_header_id"],
+                  _header[0]["hims_f_final_settlement_header_id"],
+                  _header[0]["hims_f_final_settlement_header_id"]
+                ]
+              })
+              .then(details => {
+                _mysql.releaseConnection();
+                req.records = {
+                  flag: "Settled",
+                  data: {
+                    ..._.first(_header, 0),
+                    ..._.first(_employee, 0)
+                  },
+                  isEnable: false,
+                  loans: details[0],
+                  earningList: details[1],
+                  deductingList: details[2]
+                };
 
-              const _total_loan_amount = _.chain(_loanList).sumBy(
-                s => s.pending_loan
-              );
-              let _gratuity = 0;
-              let _hims_f_end_of_service_id = null;
-              if (data !== null && data.length > 0) {
-                _gratuity =
-                  data.length === 0 ? 0 : data[0].calculated_gratutity_amount;
-                _hims_f_end_of_service_id =
-                  data.length === 0 ? null : data[0].hims_f_end_of_service_id;
-              }
-              req.records = {
-                ..._.first(result[4], 0),
-                loans: _loanList,
-                total_loan_amount: _total_loan_amount,
-                hims_f_salary_id: _hims_f_salary_id,
-                hims_f_leave_encash_header_id: _hims_f_leave_encash_header_id,
-                hims_f_end_of_service_id: _hims_f_end_of_service_id,
-                gratuity_amount: _gratuity,
-                total_salary: _total_salary_amount,
-                total_leave_encash_amount: _total_leave_encash
-              };
-              next();
-            })
-            .catch(e => {
-              _mysql.releaseConnection();
-              next(e);
-            });
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          }
         })
-        .catch(e => {
+        .catch(error => {
           _mysql.releaseConnection();
-          next(e);
+          next(error);
         });
     } catch (e) {
       _mysql.releaseConnection();
@@ -98,6 +165,7 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
   finalSettlemntAdd: (req, res, next) => {
     const _input = req.body;
     const _mysql = new algaehMysql();
+    const utlities = new algaehUtilities();
     try {
       _mysql
         .generateRunningNumber({
@@ -107,7 +175,7 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
           if (newNumber.length === 0) {
             _mysql.rollBackTransaction(() => {
               next(
-                utilities
+                utlities
                   .httpStatus()
                   .generateError(
                     utlities.httpStatus().forbidden,

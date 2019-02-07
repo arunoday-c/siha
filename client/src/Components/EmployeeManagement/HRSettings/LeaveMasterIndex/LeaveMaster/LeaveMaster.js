@@ -151,6 +151,7 @@ class LeaveMaster extends Component {
       algaehApiCall({
         uri: "/leave/addLeaveMaster",
         method: "POST",
+        module: "hrManagement",
         data: send_data,
         onSuccess: res => {
           if (res.data.success) {
