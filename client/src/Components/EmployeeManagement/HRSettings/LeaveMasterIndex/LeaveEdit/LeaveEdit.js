@@ -307,6 +307,7 @@ class LeaveEdit extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/leave/deleteLeaveRule",
+          module: "hrManagement",
           method: "DELETE",
           data: {
             hims_d_leave_rule_id: row.hims_d_leave_rule_id
