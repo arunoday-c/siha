@@ -48,6 +48,7 @@ class LeaveEdit extends Component {
     algaehApiCall({
       uri: "/leave/getLeaveDetailsMaster",
       method: "GET",
+      module: "hrManagement",
       data: { leave_id: this.state.hims_d_leave_id },
       onSuccess: res => {
         if (res.data.success) {
@@ -306,6 +307,7 @@ class LeaveEdit extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/leave/deleteLeaveRule",
+          module: "hrManagement",
           method: "DELETE",
           data: {
             hims_d_leave_rule_id: row.hims_d_leave_rule_id
@@ -349,6 +351,7 @@ class LeaveEdit extends Component {
         algaehApiCall({
           uri: "/leave/deleteLeaveEncash",
           method: "DELETE",
+          module: "hrManagement",
           data: {
             hims_d_leave_encashment_id: row.hims_d_leave_encashment_id
           },
@@ -445,6 +448,7 @@ class LeaveEdit extends Component {
         algaehApiCall({
           uri: "/leave/addLeaveDetailMaster",
           method: "POST",
+          module: "hrManagement",
           data: send_data,
           onSuccess: res => {
             if (res.data.success) {

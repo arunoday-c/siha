@@ -6,14 +6,41 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import { EOS_CALC } from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import Enumerable from "linq";
 
 export default class EndServiceOption extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      earnings: [],
+      componentArray: []
+    };
     this.getEosOptions();
+    this.getEarnings();
+  }
+
+  getEarnings() {
+    algaehApiCall({
+      uri: "/payrollSettings/getMiscEarningDeductions",
+      method: "GET",
+      data: {
+        component_category: "E"
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            earnings: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getEosOptions() {
@@ -23,7 +50,10 @@ export default class EndServiceOption extends Component {
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState(res.data.result[0]);
+          this.setState({
+            ...res.data.result,
+            componentArray: res.data.result.componentArray
+          });
         }
       },
       onFailure: err => {
@@ -375,17 +405,25 @@ export default class EndServiceOption extends Component {
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <label>Apply late rules</label>
-                        <div className="customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value="yes"
-                              name="fetchMachineData"
-                            />
-                            <span>Yes</span>
-                          </label>
-                        </div>
+                        <AlagehAutoComplete
+                          div={{ className: "col form-group" }}
+                          label={{ forceLabel: "Earnings", isImp: false }}
+                          selector={{
+                            name: "earning_id",
+                            className: "select-fld",
+                            dataSource: {
+                              textField: "earning_deduction_description",
+                              valueField: "hims_d_earning_deduction_id",
+                              data: this.state.earnings
+                            },
+                            onChange: this.dropDownHandler.bind(this),
+                            onClear: () => {
+                              this.setState({
+                                earnings: null
+                              });
+                            }
+                          }}
+                        />
                       </div>
                       <div className="col-12" id="ResignationMinYear_Cntr">
                         <AlgaehDataGrid
@@ -393,23 +431,45 @@ export default class EndServiceOption extends Component {
                           datavalidate="ResignationMinYear"
                           columns={[
                             {
-                              fieldName: "Column_1",
+                              fieldName: "earning_deduction_code",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Column 1" }}
+                                  label={{ forceLabel: "Earnings Code" }}
                                 />
-                              )
+                              ),
+                              displayTemplate: row => {
+                                let comp = Enumerable.from(
+                                  this.state.earnings
+                                ).where(
+                                  w => w.hims_d_earning_deduction_id === row
+                                );
+                                return (
+                                  <span>{comp.earning_deduction_code}</span>
+                                );
+                              }
                             },
                             {
-                              fieldName: "Column_2",
+                              fieldName: "earnings_id",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Column 2" }}
+                                  label={{ forceLabel: "Earnings" }}
                                 />
-                              )
+                              ),
+                              displayTemplate: row => {
+                                let comp = Enumerable.from(
+                                  this.state.earnings
+                                ).where(
+                                  w => w.hims_d_earning_deduction_id === row
+                                );
+                                return (
+                                  <span>
+                                    {comp.earning_deduction_description}
+                                  </span>
+                                );
+                              }
                             }
                           ]}
-                          keyId=""
+                          keyId="earnings_id"
                           dataSource={{ data: [] }}
                           isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
