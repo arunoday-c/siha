@@ -1,4 +1,11 @@
-import { APPT_TYPE, LEAVE_STATUS } from "../../utils/GlobalVariables.json";
+import {
+  APPT_TYPE,
+  LEAVE_STATUS,
+  MONTHS
+} from "../../utils/GlobalVariables.json";
+import { getYears } from "../../utils/GlobalFunctions";
+
+let allYears = getYears();
 
 export default [
   {
@@ -769,17 +776,63 @@ export default [
         reportParameters: []
       },
       {
+        subitem: "Salary Statement",
+        template_name: "salary_statement",
+        reportQuery: "salaryStatement",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "year",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            type: "dropdown",
+            name: "month",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          }
+        ]
+      },
+      {
         subitem: "Salary Slips",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Salary Statement",
+        subitem: "Recon Report",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
+      {
+        subitem: "Salary Statement Detail",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Absent Report",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+
       {
         subitem: "Bank Transfer letter with statement",
         template_name: "asset_war_exp",

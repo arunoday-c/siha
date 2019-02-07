@@ -30,28 +30,28 @@ class DoctorsWorkbench extends Component {
         <div className="patientDetailSection">
           <div className="row">
             <div className="col-12  patientMainInfo">
-              <div className="row EmployeeProfile">
-                <div className="EmployeeInfo-Top box-shadow-normal">
-                  <div className="EmployeeImg">
-                    {/* <img alt="Algaeh-HIS" src={employeeProfileImg} /> */}
+              <div className="row  PatientProfile">
+                <div className="PatientInfo-Top box-shadow-normal">
+                  <div className="PatientImg">
+                    {/* <img alt="Algaeh-HIS" src={ PatientProfileImg} /> */}
 
                     <AlgaehFile
                       name="attach_photo"
                       accept="image/*"
                       showActions={false}
                       serviceParameters={{
-                        fileType: "Employees"
+                        fileType: " Patients"
                       }}
                     />
                   </div>
-                  <div className="EmployeeName">
+                  <div className="PatientName">
                     {/* <h6>SYED ADIL FAWAD NIZAMI</h6> */}
                     <h6>SYED ADIL FAWAD NIZAMI</h6>
                     <p>
                       <b>Male, 43Y 7M 10D</b>
                     </p>
                   </div>
-                  <div className="EmployeeDemographic">
+                  <div className="PatientDemographic">
                     <span>
                       DOB: <b>31/02/2019 </b>
                     </span>
@@ -62,7 +62,7 @@ class DoctorsWorkbench extends Component {
                       Nationality: <b>Indian </b>
                     </span>
                   </div>
-                  <div className="EmployeeDemographic">
+                  <div className="PatientDemographic">
                     <span>
                       MRN: <b>PAT-3872565 </b>
                     </span>
@@ -71,6 +71,44 @@ class DoctorsWorkbench extends Component {
                     </span>
                     <span>
                       Payment: <b>Self Paying </b>
+                    </span>
+                  </div>
+                  <div className="PatientVitals">
+                    <span>
+                      Temp.: <b>70</b>
+                      <i>°C</i>
+                    </span>
+                    <span>
+                      O2 Sat: <b>32</b>
+                      <i>°C</i>
+                    </span>
+                    <span>
+                      Bp Systolic: <b>73</b>
+                      <i>cm</i>
+                    </span>
+                    <span>
+                      Bp Diastolic: <b>67</b>
+                      <i>cm</i>
+                    </span>
+                    <span>
+                      RR: <b>90</b>
+                      <i>bpm</i>
+                    </span>
+                    <span>
+                      HR: <b>76</b>
+                      <i>bpm</i>
+                    </span>
+                    <span>
+                      Weight: <b>76</b>
+                      <i>kg</i>
+                    </span>{" "}
+                    <span>
+                      Height: <b>189</b>
+                      <i>cm</i>
+                    </span>
+                    <span>
+                      BMI: <b>24.915</b>
+                      <i>cm</i>
                     </span>
                   </div>
                 </div>
@@ -210,6 +248,29 @@ class DoctorsWorkbench extends Component {
                   </span>
                 </li>
               </ul>
+            </div>
+            <div className="col-12 clinicalFooter">
+              <div className="row">
+                <div className="col-6">
+                  <AlagehAutoComplete
+                    div={{ className: "col inline-formGroup" }}
+                    label={{ forceLabel: "View Visit", isImp: false }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      dataSource: {},
+                      others: {}
+                    }}
+                  />
+                </div>
+                <div className="col-6">
+                  {" "}
+                  <button className="btn btn-primary">
+                    Close Encounter & Print
+                  </button>
+                  <button className="btn btn-default">Print</button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

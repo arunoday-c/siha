@@ -18,8 +18,10 @@ export default class MyDayView extends Component {
   }
   componentDidMount() {
     this.plotMyDayList({
-      fromDate: this.state.fromDate,
-      toDate: this.state.toDate
+      inputParam: {
+        fromDate: this.state.fromDate,
+        toDate: this.state.toDate
+      }
     });
   }
 
@@ -71,6 +73,30 @@ export default class MyDayView extends Component {
     this.setState({
       visit_by: undefined
     });
+  }
+
+  patientStatusWisePlotUI(status, nursing) {
+    let _element = undefined;
+    switch (status) {
+      case "V":
+        if (nursing === "Y")
+          _element = <span className="nursingDone">Nursing Done</span>;
+        else _element = <span className="nursingGoing">Nursing Pending</span>;
+        break;
+      case "W":
+        _element = <span className="inProgress">WIP</span>;
+        break;
+      case "C":
+        _element = <span className="close">Close</span>;
+        break;
+      case "CA":
+        _element = <span className="cancelled">Cancelled</span>;
+        break;
+      case "CO":
+        _element = <span className="completed">Completed</span>;
+        break;
+    }
+    return _element;
   }
 
   render() {
@@ -136,8 +162,8 @@ export default class MyDayView extends Component {
                         ).toLocaleTimeString()}
                       </span>
                       <span className="patName">{patient.full_name}</span>
-                      <span className="patVisit">Follow Up</span>
-                      <span className="patStatus inProgress ">
+                      <span className="patVisit">{patient.visit_type}</span>
+                      <span className="patStatus ">
                         <span
                           className={
                             this.state.selectedPatinetId === patient.patient_id
@@ -145,19 +171,26 @@ export default class MyDayView extends Component {
                               : ""
                           }
                         >
-                          {patient.nurse_examine === "Y"
-                            ? "Nursing Done"
-                            : "Nursing Pending"}
+                          {this.patientStatusWisePlotUI(
+                            patient.status,
+                            patient.nurse_examine
+                          )}
                         </span>
                       </span>
                     </div>
                   );
                 })
               ) : (
-                <div>
-                  {" "}
-                  No records found for date{" "}
-                  {new Date(this.state.fromDate).toDateString()}{" "}
+                <div className="noAppRecord">
+                  <i className="fas fa-calendar-alt" />
+                  <span>
+                    {" "}
+                    No appointment for
+                    <span>
+                      {" "}
+                      {new Date(this.state.fromDate).toDateString()}
+                    </span>{" "}
+                  </span>
                 </div>
               )}
             </div>

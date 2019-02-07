@@ -140,6 +140,22 @@
               cursor: pointer;
             }
           }
+          .noAppRecord {
+            text-align: center;
+            padding-top: 10vh;
+            i {
+              font-size: 4em;
+              margin-bottom: 20px;
+              color: lighten($color-black, 90%);
+            }
+            span {
+              display: block;
+              span {
+                color: $primary-color;
+                font-weight: 700;
+              }
+            }
+          }
         }
       }
     }
@@ -159,17 +175,16 @@
     border-radius: 0 0 0 5px;
     overflow: hidden;
 
-    .EmployeeProfile {
-      .EmployeeInfo-Top {
+    .PatientProfile {
+      .PatientInfo-Top {
         background: $color-white;
         width: calc(100vw - 260px);
-        height: 88px;
+        height: 117px;
         padding: 5px 0 0;
         position: fixed;
         z-index: 999;
         border-radius: 0 0 0 5px;
         overflow: hidden;
-
         div {
           float: left;
           color: #858585;
@@ -190,7 +205,7 @@
           }
         }
 
-        .EmployeeImg {
+        .PatientImg {
           margin: 1px 10px;
 
           .image-drop-area {
@@ -202,7 +217,7 @@
             }
           }
         }
-        .EmployeeName {
+        .PatientName {
           max-width: 30%;
           margin-top: 2px;
           border-left: 1px solid #e1e1e1;
@@ -226,7 +241,7 @@
             }
           }
         }
-        .EmployeeDemographic {
+        .PatientDemographic {
           line-height: 1.3rem;
           border-right: 1px solid #e1e1e1;
           padding-left: 10px;
@@ -245,19 +260,47 @@
             }
           }
         }
+        .PatientVitals {
+          background: lighten($color-black, 20%);
+          color: lighten($color-black, 90%);
+          width: calc(100vw - 265px);
+          height: 30px;
+          padding: 5px 15px 0;
+          border-radius: 0 0 0 5px;
+          margin-top: 8px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          span {
+            border-right: 1px solid lighten($color-black, 50%);
+            padding-right: 5px;
+            margin-right: 5px;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            b {
+              font-weight: 700;
+              font-size: 1.3em;
+              color: $color-white;
+            }
+            i {
+              text-transform: capitalize;
+              margin-left: 3px;
+            }
+          }
+        }
       }
     }
   }
   .patientReportSection {
     box-shadow: 0 0 5px lighten($color-black, 80%);
     background: $color-white;
-    margin: 15px;
+    margin: 40px 15px 15px;
     padding-top: 15px;
     padding-bottom: 15px;
     border-radius: 5px;
     width: calc(100vw - 50px);
-    min-height: calc(100vh - 170px);
-    max-height: calc(100vh - 170px);
+    min-height: calc(100vh - 238px);
+    max-height: calc(100vh - 238px);
     overflow-y: auto;
     overflow-x: hidden;
     .patientSecHdg {
@@ -285,9 +328,9 @@
     }
   }
   .clinicalAction {
-    margin-top: 15px;
+    margin-top: 40px;
     width: 50px;
-    height: calc(100vh - 170px);
+    height: calc(100vh - 238px);
     .rightActionSec {
       margin: 0;
       padding: 0;
@@ -334,6 +377,30 @@
       }
     }
   }
+  .clinicalFooter {
+    background: lighten($color-black, 20%);
+    color: lighten($color-black, 90%);
+    .inline-formGroup {
+      padding-top: 5px;
+      padding-bottom: 4px;
+      .style_Label {
+        vertical-align: top;
+        padding-top: 8px;
+        padding-right: 13px;
+      }
+      .ui.fluid.dropdown {
+        padding: 0;
+        width: 50%;
+        display: inline-block;
+      }
+    }
+    .btn {
+      float: right;
+      margin-top: 5px;
+      margin-left: 10px;
+    }
+  }
+
   .clinicalDeskWrapper {
     background: lighten($color-black, 60%);
     width: 100vw;

@@ -160,7 +160,7 @@ class OfficalDetails extends Component {
                         this.state.enable_active_status === "I" ? true : false
                     }
                   }}
-                  maxDate={new Date()}
+                  // maxDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
@@ -206,7 +206,7 @@ class OfficalDetails extends Component {
                     className: "txt-fld",
                     name: "exit_date"
                   }}
-                  minDate={this.state.date_of_leaving}
+                  minDate={this.state.date_of_resignation}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
