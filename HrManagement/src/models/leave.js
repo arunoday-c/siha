@@ -367,8 +367,7 @@ module.exports = {
                                     invalid_input: true,
                                     message: "please provide valid month"
                                   };
-                                  connection.rollback(() => {
-                                    releaseDBConnection(db, connection);
+                                  _mysql.rollBackTransaction(() => {
                                     next();
                                   });
                                 }
@@ -377,7 +376,9 @@ module.exports = {
 
                           })
                           .catch(e => {
-                         
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
+                            });
                             reject(e);
                           });
 
@@ -620,6 +621,7 @@ module.exports = {
               })
 
               .catch(e => {
+                _mysql.releaseConnection();
                 next(e);
               });
           } else {
@@ -1476,7 +1478,7 @@ applyEmployeeLeave: (req, res, next) => {
                       })
                       .catch(e => {
                     
-                        
+                        _mysql.releaseConnection();
                         next(e);
                       });
                   } else {
@@ -1499,6 +1501,7 @@ applyEmployeeLeave: (req, res, next) => {
                 }
               })
               .catch(e => {
+                _mysql.releaseConnection();
                 next(e);
               });
           } else {
@@ -1571,6 +1574,7 @@ getEmployeeLeaveData: (req, res, next) => {
       
     })
     .catch(e => {
+      _mysql.releaseConnection();
       next(e);
     });
 
@@ -1619,6 +1623,7 @@ getYearlyLeaveData: (req, res, next) => {
       
     })
     .catch(e => {
+      _mysql.releaseConnection();
       next(e);
     });
 
@@ -1675,6 +1680,7 @@ getEmployeeLeaveHistory: (req, res, next) => {
       
     })
     .catch(e => {
+      _mysql.releaseConnection();
       next(e);
     });
 
@@ -1991,7 +1997,7 @@ addLeaveMaster: (req, res, next) => {
     });
 },
 
-//created by irfan:
+//created by irfan: to assign leaves for all employees for a purticular year
 processYearlyLeave: (req, res, next) => {
   const _mysql = new algaehMysql();
   const utilities = new algaehUtilities();
@@ -2314,11 +2320,132 @@ processYearlyLeave: (req, res, next) => {
     next();
     return;
   }
+},
+
+
+
+//created by irfan: to show leave application to authorize
+getLeaveApllication: (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  let employee = "";
+  let range = "";
+
+  if (req.query.employee_id > 0) {
+    employee = ` and employee_id=${req.query.employee_id} `;
+  }
+
+  if (
+    req.query.from_date != "null" &&
+    req.query.from_date != "" &&
+    req.query.from_date != null &&
+    req.query.to_date != "null" &&
+    req.query.to_date != "" &&
+    req.query.to_date != null
+  ) {
+    range = ` and date(application_date)
+        between date('${req.query.from_date}') and date('${
+      req.query.to_date
+    }') `;
+  }
+
+  let auth_level = "";
+  if (req.query.auth_level == "AL1") {
+    auth_level = "  authorized1='N' ";
+  } else if (req.query.auth_level == "AL2") {
+    auth_level = "  authorized1='Y' and authorized2='N' ";
+  } else if (req.query.auth_level == "AL3") {
+    auth_level = "  authorized1='Y' and authorized2='Y' and authorized3='N' ";
+  } else if (req.query.auth_level == "AL4") {
+    auth_level =
+      "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='N' ";
+  } else if (req.query.auth_level == "AL5") {
+    auth_level =
+      "  authorized1='Y' and authorized2='Y' and authorized3='Y' and authorized4='Y'  and authorized5='N' ";
+  }
+
+  let leave_status = "";
+
+  if (req.query.leave_status == "APR") {
+    auth_level = "";
+    leave_status = "  status='APR' ";
+  } else if (req.query.leave_status == "REJ") {
+    auth_level = "";
+    leave_status = "  status='REJ' ";
+  } else if (req.query.leave_status == "CAN") {
+    auth_level = "";
+    leave_status = "  status='CAN' ";
+  } else {
+    leave_status = "  status='PEN' and ";
+  }
+
+  if (req.userIdentity.leave_authorize_privilege != "N") {
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.employee_id,\
+        LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
+        LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
+        LA.total_applied_days,LA.total_approved_days,LA.`status`\
+        ,L.leave_code,L.leave_description,L.leave_type,E.employee_code,\
+        E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name \
+        from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
+        and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
+        and E.record_status='A' inner join hims_d_sub_department SD \
+        on LA.sub_department_id=SD.hims_d_sub_department_id  where " +
+          leave_status +
+          "" +
+          auth_level +
+          "" +
+          range +
+          "" +
+          employee +
+          "order by hims_f_leave_application_id desc",
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "you dont have admin privilege "
+    };
+
+    next();
+    return;
+  }
 }
 
 
 
+
 };
+
+
+
+
+
+
+
+
+
+
+
+
+// finish
+
+
+
+
+
  //created by irfan: to get hieghest auth level
 function getMaxAuth(options) {
   const _mysql = options.mysql;
@@ -2329,6 +2456,7 @@ function getMaxAuth(options) {
         query: "SELECT * FROM hims_d_hrms_options"
       })
       .then(result => {
+        _mysql.releaseConnection();
         //LEAVE
         switch (result[0]["leave_level"]) {
           case "1":
@@ -2414,6 +2542,7 @@ function getMaxAuth(options) {
         resolve({ MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth });
       })
       .catch(e => {
+        _mysql.releaseConnection();
         reject(e);
       });
   });
@@ -2932,6 +3061,7 @@ function calc(db, body) {
             }
           })
           .catch(e => {
+            
             next(e);
           });
       });
