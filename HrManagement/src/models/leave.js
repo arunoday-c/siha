@@ -2616,9 +2616,135 @@ deleteLeaveEncash: (req, res, next) => {
     next();
     return;
   }
-}
+},
+//created by irfan:
+deleteLeaveRule: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
 
+  if (req.body.hims_d_leave_rule_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+        "DELETE from  hims_d_leave_rule WHERE hims_d_leave_rule_id=?",
+        values: [req.body.hims_d_leave_rule_id],
 
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        if (result.affectedRows > 0) {
+          req.records = result;
+          next();
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "please provide valid id"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
+//created by irfan:
+deleteLeaveDetail: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+
+  if (req.body.hims_d_leave_detail_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+        "DELETE from  hims_d_leave_detail WHERE hims_d_leave_detail_id=?",
+        values: [req.body.hims_d_leave_detail_id],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        if (result.affectedRows > 0) {
+          req.records = result;
+          next();
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "please provide valid id"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
+
+//created by irfan: to addLeave Encashment Master
+addLeaveEncashmentMaster: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+  let input = req.body;
+  if (input.leave_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+        "INSERT  INTO hims_d_leave_encashment ( leave_header_id,\
+          earnings_id, percent,created_date, created_by, updated_date, updated_by) values(\
+          ?,?,?,?,?,?,?)",
+        values: [
+          input.leave_id,
+          input.earnings_id,
+          input.percent,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
 
 
 

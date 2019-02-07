@@ -102,8 +102,6 @@ module.exports = {
         printQuery: true
       })
       .then(result => {
-        utilities.logger().log("result: ", result);
-
         let componentArray = [];
         let fromServiceArray = [];
         let eligibleDaysArray = [];
@@ -131,14 +129,40 @@ module.exports = {
           result[0]["eligible_days5"]
         );
 
-        _mysql.releaseConnection();
-        req.records = {
-          ...result[0],
-          componentArray,
-          fromServiceArray,
-          eligibleDaysArray
-        };
-        next();
+        if (result.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_d_earning_deduction_id, earning_deduction_code, earning_deduction_description from \
+                        hims_d_earning_deduction where hims_d_earning_deduction_id  in (?)",
+              values: [componentArray],
+
+              printQuery: true
+            })
+            .then(earning_comp => {
+              _mysql.releaseConnection();
+              req.records = {
+                ...result[0],
+                earning_comp,
+                fromServiceArray,
+                eligibleDaysArray
+              };
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "no data found"
+          };
+
+          next();
+          return;
+        }
       })
       .catch(e => {
         _mysql.releaseConnection();
