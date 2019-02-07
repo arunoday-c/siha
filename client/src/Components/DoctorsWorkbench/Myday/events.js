@@ -48,6 +48,23 @@ export default function MyDayEvents() {
         });
       }
     },
+    getPatientDetails: data => {
+      return new Promise((resolve, reject) => {
+        algaehApiCall({
+          uri: "/myDay/patientDetails",
+          data: data.inputParam,
+          method: "GET",
+          cancelRequestId: "update",
+          module: "clicnicalDesk",
+          onSuccess: response => {
+            resolve(response);
+          },
+          onFailure: error => {
+            reject(error);
+          }
+        });
+      });
+    },
     visitBy: [
       {
         text: "Appointment & Walking",
@@ -55,7 +72,7 @@ export default function MyDayEvents() {
       },
 
       {
-        text: "Work in progress",
+        text: "In progress",
         value: "W"
       },
 
