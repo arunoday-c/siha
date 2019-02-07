@@ -1,4 +1,3 @@
-import utlities from "algaeh-utilities";
 // import moment from "moment";
 import _ from "lodash";
 import algaehMysql from "algaeh-mysql";
@@ -45,11 +44,10 @@ module.exports = {
             if (_result.length == 0) {
               _mysql.releaseConnection();
               next(
-                utlities
-                  .AlgaehUtilities()
+                utilities
                   .httpStatus()
                   .generateError(
-                    utlities.AlgaehUtilities().httpStatus().noContent,
+                    utilities.httpStatus().noContent,
                     "There are no employees to process end of service"
                   )
               );
@@ -59,8 +57,7 @@ module.exports = {
             if (_options.length == 0) {
               _mysql.releaseConnection();
               next(
-                utlities
-                  .AlgaehUtilities()
+                utilities
                   .httpStatus()
                   .generateError(500, "Please update end of service options.")
               );
@@ -236,7 +233,7 @@ module.exports = {
   endOfServiceAdd: (req, res, next) => {
     const _input = req.body;
     const _mysql = new algaehMysql();
-
+    const utilities = new algaehUtilities();
     _mysql
       .executeQuery({
         query:
@@ -261,11 +258,10 @@ module.exports = {
               if (result.length == 0) {
                 _mysql.rollBackTransaction(() => {
                   next(
-                    utlities
-                      .AlgaehUtilities()
+                    utilities
                       .httpStatus()
                       .generateError(
-                        utlities.AlgaehUtilities().httpStatus().noContent,
+                        utilities.httpStatus().noContent,
                         "Please add number generation for end of service"
                       )
                   );

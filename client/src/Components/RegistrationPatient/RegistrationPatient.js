@@ -339,6 +339,7 @@ class RegistrationPatient extends PureComponent {
       method: "GET",
       data: { patient_code: patcode },
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           let data = response.data.records;
 

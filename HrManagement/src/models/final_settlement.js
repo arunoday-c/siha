@@ -1,10 +1,13 @@
-import utlities from "algaeh-utilities";
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import algaehUtilities from "algaeh-utilities/utilities";
+
 module.exports = {
   finalSettlement: (req, res, next) => {
     const _input = req.query;
     const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+
     try {
       _mysql
         .executeQuery({
@@ -52,12 +55,14 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
             mysql: _mysql
           })
             .then(data => {
+              utilities.logger().log("data: ", data);
+
               const _total_loan_amount = _.chain(_loanList).sumBy(
                 s => s.pending_loan
               );
               let _gratuity = 0;
               let _hims_f_end_of_service_id = null;
-              if (data !== null) {
+              if (data !== null && data.length > 0) {
                 _gratuity =
                   data.length === 0 ? 0 : data[0].calculated_gratutity_amount;
                 _hims_f_end_of_service_id =
@@ -102,11 +107,10 @@ E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.ti
           if (newNumber.length === 0) {
             _mysql.rollBackTransaction(() => {
               next(
-                utlities
-                  .AlgaehUtilities()
+                utilities
                   .httpStatus()
                   .generateError(
-                    utlities.AlgaehUtilities().httpStatus().forbidden,
+                    utlities.httpStatus().forbidden,
                     "Please add options for final settlement"
                   )
               );
