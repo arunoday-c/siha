@@ -5,9 +5,8 @@ import { LINQ } from "node-linq";
 
 module.exports = {
   getLeaveMaster: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
-
       try {
         _mysql
           .executeQuery({
@@ -42,8 +41,8 @@ module.exports = {
   },
 
   getEmployeeBasicDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       try {
         _mysql
           .executeQuery({
@@ -98,8 +97,8 @@ module.exports = {
   },
 
   getEmployeeDependentDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       try {
         _mysql
           .executeQuery({
@@ -135,8 +134,8 @@ module.exports = {
   },
 
   getEmployeeIdentificationDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       try {
         _mysql
           .executeQuery({
@@ -172,8 +171,8 @@ module.exports = {
   },
 
   updateEmployeeIdentificationDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       try {
         _mysql
           .executeQuery({
@@ -216,8 +215,8 @@ module.exports = {
     });
   },
   updateEmployeeDependentDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       try {
         _mysql
           .executeQuery({
@@ -258,8 +257,8 @@ module.exports = {
   },
 
   updateEmployeeBasicDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       try {
         _mysql
           .executeQuery({
@@ -305,8 +304,8 @@ module.exports = {
   },
 
   addEmployeeDependentDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       try {
         _mysql
           .executeQuery({
@@ -350,8 +349,8 @@ module.exports = {
   },
 
   getEmployeeAdvance: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       const input = req.query;
 
       let inputValues = [];
@@ -389,8 +388,8 @@ module.exports = {
   },
 
   addEmployeeAdvance: (req, res, next) => {
+    const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
       let input = { ...req.body };
 
       _mysql

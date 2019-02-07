@@ -1,19 +1,21 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { endOfService, endOfServiceAdd } from "../models/end_of_service";
+import { closeVisit, checkVisitExists } from "../models/visit";
 export default () => {
   const api = Router();
-  api.get("/", endOfService, (req, res, next) => {
+  api.post("/closeVisit", closeVisit, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      records: req.records
     });
   });
-  api.post("/save", endOfServiceAdd, (req, res, next) => {
+
+  api.get("/checkVisitExists", checkVisitExists, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: req.flag == 1 ? false : true,
-      result: req.records
+      success: true,
+      records: req.records
     });
   });
+
   return api;
 };

@@ -332,6 +332,7 @@ class RegistrationPatientAr extends PureComponent {
 
     algaehApiCall({
       uri: "/frontDesk/get",
+      module: "frontDesk",
       method: "GET",
       data: { patient_code: patcode },
       onSuccess: response => {

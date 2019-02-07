@@ -32,7 +32,8 @@ class FinalSettlement extends Component {
       total_deductions: 0,
       net_earnings: 0,
       net_deductions: 0,
-      net_amount: 0
+      net_amount: 0,
+      isEnable: true
     };
     this.getEarningsDeductions();
   }
@@ -73,17 +74,32 @@ class FinalSettlement extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            this.setState(
-              {
-                data: res.data.result,
-                disableSave: false,
-                loading: false
-              },
-              () => {
-                this.setNetEarnings();
-                this.setNetDeductions();
-              }
-            );
+            if (
+              res.data.result.flag !== undefined &&
+              res.data.result.flag === "Settled"
+            ) {
+              this.setState(
+                {
+                  ...res.data.result
+                },
+                () => {
+                  this.setNetEarnings();
+                  this.setNetDeductions();
+                }
+              );
+            } else {
+              this.setState(
+                {
+                  data: res.data.result,
+                  disableSave: false,
+                  loading: false
+                },
+                () => {
+                  this.setNetEarnings();
+                  this.setNetDeductions();
+                }
+              );
+            }
           }
         },
         onFailure: err => {
@@ -419,7 +435,7 @@ class FinalSettlement extends Component {
   getEarningsDeductions() {
     algaehApiCall({
       uri: "/payrollsettings/getEarningDeduction",
-        module: "hrManagement",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -473,17 +489,6 @@ class FinalSettlement extends Component {
     return (
       <div className="FinalSettlementScreen">
         <div className="row  inner-top-search">
-          {/* <AlagehAutoComplete
-            div={{ className: "col-3 form-group" }}
-            label={{ forceLabel: "Search by Settlement No.", isImp: false }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
-            }}
-          /> */}
-
           <div className="col-lg-3" style={{ marginTop: 10 }}>
             <div
               className="row"
@@ -534,6 +539,7 @@ class FinalSettlement extends Component {
             >
               CLEAR
             </button>
+            {this.state.flag !== undefined ? <h4>{this.state.flag}</h4> : null}
           </div>
         </div>
         <div className="row">
@@ -581,63 +587,63 @@ class FinalSettlement extends Component {
                     <div className="caption">
                       <h3 className="caption-subject">Earnings</h3>
                     </div>
-                    <div className="actions">
-                      {/* <a className="btn btn-primary btn-circle active">
-                          <i className="fas fa-calculator" /> 
-                        </a>*/}
-                    </div>
+                    <div className="actions" />
                   </div>
 
                   <div className="portlet-body">
                     <div className="row" data-validate="fsErnDiv">
-                      <AlagehAutoComplete
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Select Earning Type",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "earnings_id",
-                          value: this.state.earnings_id,
-                          className: "select-fld",
-                          dataSource: {
-                            textField: "earning_deduction_description",
-                            valueField: "hims_d_earning_deduction_id",
-                            data: this.state.earnings
-                          },
-                          onChange: this.dropDownHandler.bind(this)
-                        }}
-                      />
+                      {this.state.isEnable ? (
+                        <React.Fragment>
+                          <AlagehAutoComplete
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "Select Earning Type",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "earnings_id",
+                              value: this.state.earnings_id,
+                              className: "select-fld",
+                              dataSource: {
+                                textField: "earning_deduction_description",
+                                valueField: "hims_d_earning_deduction_id",
+                                data: this.state.earnings
+                              },
+                              onChange: this.dropDownHandler.bind(this)
+                            }}
+                          />
 
-                      <AlagehFormGroup
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Amount",
-                          isImp: true
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "earning_amount",
-                          value: this.state.earning_amount,
-                          events: {
-                            onChange: this.textHandler.bind(this)
-                          },
-                          others: {
-                            type: "number"
-                          }
-                        }}
-                      />
+                          <AlagehFormGroup
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "Amount",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "earning_amount",
+                              value: this.state.earning_amount,
+                              events: {
+                                onChange: this.textHandler.bind(this)
+                              },
+                              others: {
+                                type: "number"
+                              }
+                            }}
+                          />
 
-                      <div className="col-2" style={{ paddingLeft: 0 }}>
-                        <button
-                          onClick={this.addEarning.bind(this)}
-                          className="btn btn-primary"
-                          style={{ marginTop: 21 }}
-                          disabled={this.state.disableSave}
-                        >
-                          Add
-                        </button>
-                      </div>
+                          <div className="col-2" style={{ paddingLeft: 0 }}>
+                            <button
+                              onClick={this.addEarning.bind(this)}
+                              className="btn btn-primary"
+                              style={{ marginTop: 21 }}
+                              disabled={this.state.disableSave}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        </React.Fragment>
+                      ) : null}
 
                       <div className="col-lg-12" id="Salary_Earning_Cntr">
                         <AlgaehDataGrid
@@ -707,7 +713,7 @@ class FinalSettlement extends Component {
                           dataSource={{
                             data: this.state.earningList
                           }}
-                          isEditable={true}
+                          isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onEdit: () => {},
@@ -744,54 +750,59 @@ class FinalSettlement extends Component {
 
                   <div className="portlet-body">
                     <div className="row" data-validate="fsDedDiv">
-                      <AlagehAutoComplete
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Select Deduction Type",
-                          isImp: true
-                        }}
-                        selector={{
-                          name: "deductions_id",
-                          value: this.state.deductions_id,
-                          className: "select-fld",
-                          dataSource: {
-                            textField: "earning_deduction_description",
-                            valueField: "hims_d_earning_deduction_id",
-                            data: this.state.deductions
-                          },
-                          onChange: this.dropDownHandler.bind(this)
-                        }}
-                      />
+                      {this.state.isEnable ? (
+                        <React.Fragment>
+                          <AlagehAutoComplete
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "Select Deduction Type",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "deductions_id",
+                              value: this.state.deductions_id,
+                              className: "select-fld",
+                              dataSource: {
+                                textField: "earning_deduction_description",
+                                valueField: "hims_d_earning_deduction_id",
+                                data: this.state.deductions
+                              },
+                              onChange: this.dropDownHandler.bind(this)
+                            }}
+                          />
 
-                      <AlagehFormGroup
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Amount",
-                          isImp: true
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "deduction_amount",
-                          value: this.state.deduction_amount,
-                          events: {
-                            onChange: this.textHandler.bind(this)
-                          },
-                          others: {
-                            type: "number"
-                          }
-                        }}
-                      />
+                          <AlagehFormGroup
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "Amount",
+                              isImp: true
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "deduction_amount",
+                              value: this.state.deduction_amount,
+                              events: {
+                                onChange: this.textHandler.bind(this)
+                              },
+                              others: {
+                                type: "number"
+                              }
+                            }}
+                          />
 
-                      <div className="col-2" style={{ paddingLeft: 0 }}>
-                        <button
-                          onClick={this.addDeduction.bind(this)}
-                          className="btn btn-primary"
-                          style={{ marginTop: 21 }}
-                          disabled={this.state.disableSave}
-                        >
-                          Add
-                        </button>
-                      </div>
+                          <div className="col-2" style={{ paddingLeft: 0 }}>
+                            <button
+                              onClick={this.addDeduction.bind(this)}
+                              className="btn btn-primary"
+                              style={{ marginTop: 21 }}
+                              disabled={this.state.disableSave}
+                            >
+                              Add
+                            </button>
+                          </div>
+                        </React.Fragment>
+                      ) : null}
+
                       <div className="col-lg-12" id="Employee_Deductions_Cntr">
                         <AlgaehDataGrid
                           id="Employee_Deductions_Cntr_grid"
@@ -861,7 +872,7 @@ class FinalSettlement extends Component {
                           dataSource={{
                             data: this.state.deductingList
                           }}
-                          isEditable={true}
+                          isEditable={this.state.isEnable}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onEdit: () => {},
@@ -1040,6 +1051,13 @@ class FinalSettlement extends Component {
                             <input
                               type="checkbox"
                               name="forfiet"
+                              checked={
+                                FsData.forfiet !== undefined
+                                  ? FsData.forfiet === "Y"
+                                    ? true
+                                    : false
+                                  : false
+                              }
                               onChange={this.changeChecks.bind(this)}
                             />
                             <span>Forfeit Final Settlement</span>

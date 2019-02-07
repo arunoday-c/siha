@@ -17,7 +17,7 @@ export default {
       sex: null,
       date_of_birth: null,
       date_of_joining: null,
-      date_of_leaving: null,
+      date_of_resignation: null,
       category_id: null,
       speciality_id: null,
       employee_id: null,

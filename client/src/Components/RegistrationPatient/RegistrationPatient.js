@@ -335,9 +335,11 @@ class RegistrationPatient extends PureComponent {
 
     algaehApiCall({
       uri: "/frontDesk/get",
+      module: "frontDesk",
       method: "GET",
       data: { patient_code: patcode },
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           let data = response.data.records;
 

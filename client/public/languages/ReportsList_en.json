@@ -16,5 +16,7 @@
   "appt_type": "Appointment Type",
   "service_type_id": "Service Type",
   "hims_d_leave_id": "Leave Type",
-  "status": "Status"
+  "status": "Status",
+  "month": "Month",
+  "year": "Year"
 }

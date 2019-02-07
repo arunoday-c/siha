@@ -68,18 +68,16 @@ class EOSGratuity extends Component {
         columns: Employee
       },
       searchName: "exit_employees",
+      inputs: "gratuity_applicable = 'Y'",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
         callBack(text);
       },
       onRowSelect: row => {
-        this.setState(
-          {
-            employee_name: row.full_name,
-            hims_d_employee_id: row.hims_d_employee_id
-          },
-          () => {}
-        );
+        this.setState({
+          employee_name: row.full_name,
+          hims_d_employee_id: row.hims_d_employee_id
+        });
       }
     });
   }

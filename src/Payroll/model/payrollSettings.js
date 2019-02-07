@@ -537,44 +537,80 @@ let dummy = (req, res, next) => {
       next(httpStatus.dataBaseNotInitilizedError());
     }
     let db = req.db;
-    let date_of_joining = moment("2019-01-05").format("YYYY-MM-DD");
 
-    let exit_date = moment("2019-01-20").format("YYYY-MM-DD");
-    let startOfMonth = moment("2019-01-01")
-      .startOf("month")
-      .format("YYYY-MM-DD");
-    let endOfMonth = moment("2019-01-01")
-      .endOf("month")
-      .format("YYYY-MM-DD");
+    let ary = [
+      "mir aisha",
+      "kiriraj pathan",
+      "lilly dae",
+      "mock man",
+      "elli jhon",
+      "josh frank",
+      "jerry prank",
+      "john morgan",
+      "haris jaison",
+      "herry sejal",
+      "edison roy",
+      "marry thomas",
+      "johnson",
+      "ericsson",
+      "nawaz ahmed",
+      "john",
+      "shirin",
+      "zeenat",
+      "noor",
+      "noor",
+      "savad",
+      "nowshaba",
+      "heeba",
+      "arish",
+      "babalo",
+      "khalid",
+      "basha",
+      "fareed",
+      "sofiya kuriyan",
+      "sofiya kuriyan",
+      "david",
+      "zakeer hussain",
+      "abhishek srivastav",
+      "ziya ulla",
+      "hidayath",
+      "ghafoor",
+      "sameer",
+      "anil",
+      "bahadur",
+      "rayan",
+      "abu bakar",
+      "raman sharma",
+      "yahya",
+      "asfaq ulla khan",
+      "gopal pandey",
+      "jagmohan",
+      "rincy",
+      "anwar",
+      "narendra sody",
+      "amar shah",
+      "khaleel",
+      "uday",
+      "ahad",
+      "habeeb",
+      "krishna murthy",
+      "shadab khan",
+      "khan",
+      "khursheed",
+      "khadar",
+      "mohammed saleem",
+      "salma fathima",
+      "awdhesh choubey",
+      "wakar zaka",
+      "yakub ansari",
+      "thiruva perera",
+      "farhaan khan",
+      "damodar prasad",
+      "joginder sharma",
+      "mashoor gulati",
+      "lalaram jogi"
+    ];
 
-    debugLog(
-      "join diff:",
-      moment(date_of_joining, "YYYY-MM-DD").diff(
-        moment(startOfMonth, "YYYY-MM-DD"),
-        "days"
-      )
-    );
-    //--------------------------
-    debugLog(
-      "exist  diff:",
-      moment(endOfMonth, "YYYY-MM-DD").diff(
-        moment(exit_date, "YYYY-MM-DD"),
-        "days"
-      )
-    );
-    //-----------------------
-
-    debugLog(
-      "both:",
-      moment(date_of_joining, "YYYY-MM-DD").diff(
-        moment(startOfMonth, "YYYY-MM-DD"),
-        "days"
-      ) +
-        moment(endOfMonth, "YYYY-MM-DD").diff(
-          moment(exit_date, "YYYY-MM-DD"),
-          "days"
-        )
-    );
     // new Promise((resolve, reject) => {
     //   try {
     //     getMaxAuth({

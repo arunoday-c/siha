@@ -18,7 +18,7 @@ const Validations = $this => {
   } else if (
     ($this.state.personalDetails.employee_status === "R" ||
       $this.state.personalDetails.employee_status === "T") &&
-    $this.state.personalDetails.date_of_leaving === null
+    $this.state.personalDetails.date_of_resignation === null
   ) {
     isError = true;
     swalMessage({
