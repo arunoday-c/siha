@@ -7,11 +7,34 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import { EOS_CALC } from "../../../../utils/GlobalVariables.json";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default class EndServiceOption extends Component {
   constructor(props) {
     super(props);
     this.state = {};
+    this.getEosOptions();
+  }
+
+  getEosOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/getEosOptions",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            data: res.data.result[0]
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   textHandler(e) {
