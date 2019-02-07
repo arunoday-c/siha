@@ -378,10 +378,10 @@ module.exports = {
                                       month_name +
                                       " as present_month,close_balance, processed,\
                                 carry_forward_done, carry_forward_leave, encashment_leave FROM hims_f_employee_monthly_leave ML,hims_d_leave L\
-                                where  employee_id=? and ML.leave_id=L.hims_d_leave_id and leave_id in (?)",
+                                where  employee_id=? and ML.leave_id=L.hims_d_leave_id and leave_id in (?) and year=?",
                                     values: [
                                       empResult[i]["hims_d_employee_id"],
-                                      leave_ids
+                                      leave_ids,year
                                     ],
                                     printQuery: true
                                   })
