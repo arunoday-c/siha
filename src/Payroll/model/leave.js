@@ -3429,6 +3429,8 @@ let updateLeaveMaster = (req, res, next) => {
   }
 };
 
+
+
 //created by irfan:
 let calculateLeaveDays = (req, res, next) => {
   try {
@@ -4751,6 +4753,14 @@ let addLeaveDetailMaster = (req, res, next) => {
     next(e);
   }
 };
+
+
+
+
+
+
+
+
 
 //created by Adnan
 let deleteLeaveEncash = (req, res, next) => {

@@ -2422,8 +2422,329 @@ getLeaveApllication: (req, res, next) => {
     next();
     return;
   }
-}
+},
 
+//created by irfan: update leave header
+updateLeaveMaster: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+  let input =  req.body;
+  if (input.hims_d_leave_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+        "UPDATE hims_d_leave SET leave_description=?,leave_category=?, calculation_type=?,include_weekoff=?,include_holiday=?,leave_mode=?,leave_status=?,leave_accrual=?,\
+        leave_encash=?,leave_type=?,encashment_percentage=?,leave_carry_forward=?,carry_forward_percentage=?,religion_required=?,\
+        religion_id=?,holiday_reimbursement=?,exit_permit_required=?,proportionate_leave=?,document_mandatory=?,\
+        updated_date=?, updated_by=?  WHERE hims_d_leave_id = ?",
+        values: [
+          input.leave_description,
+          input.leave_category,
+          input.calculation_type,
+          input.include_weekoff,
+          input.include_holiday,
+          input.leave_mode,
+          input.leave_status,
+          input.leave_accrual,
+          input.leave_encash,
+          input.leave_type,
+          input.encashment_percentage,
+          input.leave_carry_forward,
+          input.carry_forward_percentage,
+          input.religion_required,
+          input.religion_id,
+          input.holiday_reimbursement,
+          input.exit_permit_required,
+          input.proportionate_leave,
+          input.document_mandatory,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_d_leave_id
+        ],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+
+       
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input" 
+    };
+
+    next();
+    return;
+  }
+},
+//created by irfan: to get leave details
+getLeaveDetailsMaster: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+
+  if (req.query.hims_d_leave_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+          "Select hims_d_leave_detail_id, leave_header_id, employee_type,\
+          gender, eligible_days, min_service_required, service_years,\
+          once_life_term, allow_probation, max_number_days, mandatory_utilize_days\
+          from hims_d_leave_detail where leave_header_id=?",
+
+        values: [req.query.hims_d_leave_id],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
+//created by irfan: to add leave detail
+addLeaveDetailMaster: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+  let input = req.body;
+  if (input.leave_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT  INTO hims_d_leave_detail ( leave_header_id,\
+            employee_type, gender, eligible_days, min_service_required, service_years,\
+             once_life_term, allow_probation, max_number_days,\
+            mandatory_utilize_days, created_date, created_by, updated_date, updated_by) values(\
+           ?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.leave_id,
+          input.employee_type,
+          input.gender,
+          input.eligible_days,
+          input.min_service_required,
+          input.service_years,
+          input.once_life_term,
+          input.allow_probation,
+          input.max_number_days,
+          input.mandatory_utilize_days,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
+
+//created by irfan:
+deleteLeaveEncash: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+
+  if (req.body.hims_d_leave_encashment_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+          "DELETE from  hims_d_leave_encashment WHERE hims_d_leave_encashment_id=?",
+        values: [req.body.hims_d_leave_encashment_id],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        if (result.affectedRows > 0) {
+          req.records = result;
+          next();
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "please provide valid id"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
+//created by irfan:
+deleteLeaveRule: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+
+  if (req.body.hims_d_leave_rule_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+        "DELETE from  hims_d_leave_rule WHERE hims_d_leave_rule_id=?",
+        values: [req.body.hims_d_leave_rule_id],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        if (result.affectedRows > 0) {
+          req.records = result;
+          next();
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "please provide valid id"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
+//created by irfan:
+deleteLeaveDetail: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+
+  if (req.body.hims_d_leave_detail_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+        "DELETE from  hims_d_leave_detail WHERE hims_d_leave_detail_id=?",
+        values: [req.body.hims_d_leave_detail_id],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+
+        if (result.affectedRows > 0) {
+          req.records = result;
+          next();
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "please provide valid id"
+          };
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
+
+//created by irfan: to addLeave Encashment Master
+addLeaveEncashmentMaster: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+  let input = req.body;
+  if (input.leave_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+        "INSERT  INTO hims_d_leave_encashment ( leave_header_id,\
+          earnings_id, percent,created_date, created_by, updated_date, updated_by) values(\
+          ?,?,?,?,?,?,?)",
+        values: [
+          input.leave_id,
+          input.earnings_id,
+          input.percent,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+},
 
 
 
