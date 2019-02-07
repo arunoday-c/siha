@@ -84,7 +84,11 @@ export default class MyDayView extends Component {
         else _element = <span className="nursingGoing">Nursing Pending</span>;
         break;
       case "W":
-        _element = <span className="inProgress">WIP</span>;
+        _element = (
+          <span className="inProgress animated infinite flash">
+            In-Progress
+          </span>
+        );
         break;
       case "C":
         _element = <span className="close">Close</span>;
@@ -151,7 +155,7 @@ export default class MyDayView extends Component {
                           : "")
                       }
                     >
-                      <span className="appIconSec">
+                      <div className="appIconSec">
                         {patient.appointment_patient === "N" ? (
                           <i className="fas fa-walking" />
                         ) : (
@@ -160,23 +164,17 @@ export default class MyDayView extends Component {
                         {new Date(
                           patient.encountered_date
                         ).toLocaleTimeString()}
-                      </span>
-                      <span className="patName">{patient.full_name}</span>
-                      <span className="patVisit">{patient.visit_type}</span>
-                      <span className="patStatus ">
-                        <span
-                          className={
-                            this.state.selectedPatinetId === patient.patient_id
-                              ? "animated infinite flash"
-                              : ""
-                          }
-                        >
+                      </div>
+                      <div className="apptDetailsSec">
+                        <span className="patName">{patient.full_name}</span>
+                        <span className="patVisit">{patient.visit_type}</span>
+                        <span className="patStatus ">
                           {this.patientStatusWisePlotUI(
                             patient.status,
                             patient.nurse_examine
                           )}
                         </span>
-                      </span>
+                      </div>
                     </div>
                   );
                 })
