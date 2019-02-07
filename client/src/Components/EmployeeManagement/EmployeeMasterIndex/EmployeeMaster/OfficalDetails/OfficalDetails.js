@@ -160,7 +160,7 @@ class OfficalDetails extends Component {
                         this.state.enable_active_status === "I" ? true : false
                     }
                   }}
-                  maxDate={new Date()}
+                  // maxDate={new Date()}
                   events={{
                     onChange: datehandle.bind(this, this)
                   }}
