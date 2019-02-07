@@ -117,6 +117,7 @@ class OPBillingAr extends Component {
 
     algaehApiCall({
       uri: "/frontDesk/get",
+      module: "frontDesk",
       method: "GET",
       data: { patient_code: this.state.patient_code },
       onSuccess: response => {

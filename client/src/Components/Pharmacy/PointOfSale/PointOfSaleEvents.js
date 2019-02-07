@@ -91,6 +91,7 @@ const getPatientDetails = ($this, output) => {
   AlgaehLoader({ show: true });
   $this.props.getPatientDetails({
     uri: "/frontDesk/get",
+    module: "frontDesk",
     method: "GET",
     printInput: true,
     data: { patient_code: $this.state.patient_code || output.patient_code },
