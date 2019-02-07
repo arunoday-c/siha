@@ -67,6 +67,7 @@ export default class LeaveYearlyProcess extends Component {
     algaehApiCall({
       uri: "/leave/processYearlyLeave",
       method: "GET",
+      module: "hrManagement",
       data: {
         year: this.state.year,
         employee_id: this.state.hims_d_employee_id
@@ -121,6 +122,7 @@ export default class LeaveYearlyProcess extends Component {
     algaehApiCall({
       uri: "/selfService/getLeaveMaster",
       method: "GET",
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({

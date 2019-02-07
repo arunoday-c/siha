@@ -276,6 +276,7 @@ export default class ReportUI extends Component {
     } = require("./algaehWrapper");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
+
       switch (_param.type) {
         case "dropdown":
           const _data =
