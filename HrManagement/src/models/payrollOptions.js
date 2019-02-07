@@ -1,5 +1,7 @@
 import algaehMysql from "algaeh-mysql";
-
+import algaehUtilities from "algaeh-utilities/utilities";
+import { LINQ } from "node-linq";
+import _ from "lodash";
 module.exports = {
   //created by irfan: to
   getHrmsOptions: (req, res, next) => {
@@ -92,19 +94,54 @@ module.exports = {
   //created by irfan: to
   getEosOptions: (req, res, next) => {
     const _mysql = new algaehMysql();
-
+    const utilities = new algaehUtilities();
     _mysql
       .executeQuery({
-        query: "select * from hims_d_end_of_service_options",
+        query: "select * from hims_d_end_of_service_options;",
 
         printQuery: true
       })
       .then(result => {
+        utilities.logger().log("result: ", result);
+
+        let componentArray = [];
+        let fromServiceArray = [];
+        let eligibleDaysArray = [];
+
+        componentArray.push(
+          result[0]["end_of_service_component1"],
+          result[0]["end_of_service_component2"],
+          result[0]["end_of_service_component3"],
+          result[0]["end_of_service_component4"]
+        );
+
+        fromServiceArray.push(
+          result[0]["from_service_range1"],
+          result[0]["from_service_range2"],
+          result[0]["from_service_range3"],
+          result[0]["from_service_range4"],
+          result[0]["from_service_range5"]
+        );
+
+        eligibleDaysArray.push(
+          result[0]["eligible_days1"],
+          result[0]["eligible_days2"],
+          result[0]["eligible_days3"],
+          result[0]["eligible_days4"],
+          result[0]["eligible_days5"]
+        );
+
         _mysql.releaseConnection();
-        req.records = result;
+        req.records = {
+          ...result[0],
+          componentArray,
+          fromServiceArray,
+          eligibleDaysArray
+        };
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
