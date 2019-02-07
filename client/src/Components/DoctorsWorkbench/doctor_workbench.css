@@ -36,6 +36,10 @@
           -webkit-appearance: none;
           padding: 3px 6px;
           border: none; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--outside-month {
+          color: #cccccc !important; }
+        .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__today-button {
+          background: white !important; }
   .clinicalDeskScreen .cldrPatientList .viewAllApp {
     box-shadow: -6px 6px 10px rgba(0, 0, 0, 0.07);
     padding-bottom: 15px; }
