@@ -255,148 +255,139 @@ module.exports = {
             ]
           })
           .then(update_employee => {
-            const syscCall = async function() {
-              let _InsertEmployeeDept = await InsertEmployeeDepartment({
-                req: req,
-                _mysql: _mysql
-              });
+            let _InsertEmployeeDept = InsertEmployeeDepartment({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _UpdateEmployeeDept = await UpdateEmployeeDepartment({
-                req: req,
-                _mysql: _mysql
-              });
+            let _UpdateEmployeeDept = UpdateEmployeeDepartment({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _InsertServiceComm = await InsertServiceCommission({
-                req: req,
-                _mysql: _mysql
-              });
+            let _InsertServiceComm = InsertServiceCommission({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _UpdateServiceComm = await UpdateServiceCommission({
-                req: req,
-                _mysql: _mysql
-              });
+            let _UpdateServiceComm = UpdateServiceCommission({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _InsertServiceTypeComm = await InsertServiceTypeCommission({
-                req: req,
-                _mysql: _mysql
-              });
+            let _InsertServiceTypeComm = InsertServiceTypeCommission({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _UpdateServiceTypeComm = await UpdateServiceTypeCommission({
-                req: req,
-                _mysql: _mysql
-              });
+            let _UpdateServiceTypeComm = UpdateServiceTypeCommission({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _InsertEmpEarning = await InsertEmployeeEarnings({
-                req: req,
-                _mysql: _mysql
-              });
+            let _InsertEmpEarning = InsertEmployeeEarnings({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _UpdateEmpEarning = await UpdateEmployeeEarnings({
-                req: req,
-                _mysql: _mysql
-              });
+            let _UpdateEmpEarning = UpdateEmployeeEarnings({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _DeleteEmpEarning = await DeleteEmployeeEarnings({
-                req: req,
-                _mysql: _mysql
-              });
+            let _DeleteEmpEarning = DeleteEmployeeEarnings({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _InsertEmpDeduction = await InsertEmployeeDeduction({
-                req: req,
-                _mysql: _mysql
-              });
+            let _InsertEmpDeduction = InsertEmployeeDeduction({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _UpdateEmpDeduction = await UpdateEmployeeDeduction({
-                req: req,
-                _mysql: _mysql
-              });
+            let _UpdateEmpDeduction = UpdateEmployeeDeduction({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _DeleteEmpDeduction = await DeleteEmployeeDeduction({
-                req: req,
-                _mysql: _mysql
-              });
+            let _DeleteEmpDeduction = DeleteEmployeeDeduction({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _InsertEmpContributions = await InsertEmployeeContributions({
-                req: req,
-                _mysql: _mysql
-              });
+            let _InsertEmpContributions = InsertEmployeeContributions({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _UpdateEmpContributions = await UpdateEmployeeContributions({
-                req: req,
-                _mysql: _mysql
-              });
+            let _UpdateEmpContributions = UpdateEmployeeContributions({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _DeleteEmpContributions = await DeleteEmployeeContributions({
-                req: req,
-                _mysql: _mysql
-              });
+            let _DeleteEmpContributions = DeleteEmployeeContributions({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _InsertEmpIdentification = await InsertEmployeeIdentification(
-                {
-                  req: req,
-                  _mysql: _mysql
-                }
-              );
+            let _InsertEmpIdentification = InsertEmployeeIdentification({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _UpdateEmpIdentification = await UpdateEmployeeIdentification(
-                {
-                  req: req,
-                  _mysql: _mysql
-                }
-              );
+            let _UpdateEmpIdentification = UpdateEmployeeIdentification({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _DeleteEmpIdentification = await DeleteEmployeeIdentification(
-                {
-                  req: req,
-                  _mysql: _mysql
-                }
-              );
+            let _DeleteEmpIdentification = DeleteEmployeeIdentification({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _InsertEmpDependents = await InsertEmployeeDependents({
-                req: req,
-                _mysql: _mysql
-              });
+            let _InsertEmpDependents = InsertEmployeeDependents({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _UpdateEmpDependents = await UpdateEmployeeDependents({
-                req: req,
-                _mysql: _mysql
-              });
+            let _UpdateEmpDependents = UpdateEmployeeDependents({
+              req: req,
+              _mysql: _mysql
+            });
 
-              let _DeleteEmpDependents = await DeleteEmployeeDependents({
-                req: req,
-                _mysql: _mysql
-              });
+            let _DeleteEmpDependents = DeleteEmployeeDependents({
+              req: req,
+              _mysql: _mysql
+            });
 
-              Promise.all([
-                _InsertEmployeeDept,
-                _UpdateEmployeeDept,
-                _InsertServiceComm,
-                _UpdateServiceComm,
-                _InsertServiceTypeComm,
-                _UpdateServiceTypeComm,
-                _InsertEmpEarning,
-                _UpdateEmpEarning,
-                _DeleteEmpEarning,
-                _InsertEmpDeduction,
-                _UpdateEmpDeduction,
-                _DeleteEmpDeduction,
-                _InsertEmpContributions,
-                _UpdateEmpContributions,
-                _DeleteEmpContributions,
-                _InsertEmpIdentification,
-                _UpdateEmpIdentification,
-                _DeleteEmpIdentification,
-                _InsertEmpDependents,
-                _UpdateEmpDependents,
-                _DeleteEmpDependents
-              ]).then(result => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
-                resolve(result);
-              });
-            };
-            syscCall();
+            Promise.all([
+              _InsertEmployeeDept,
+              _UpdateEmployeeDept,
+              _InsertServiceComm,
+              _UpdateServiceComm,
+              _InsertServiceTypeComm,
+              _UpdateServiceTypeComm,
+              _InsertEmpEarning,
+              _UpdateEmpEarning,
+              _DeleteEmpEarning,
+              _InsertEmpDeduction,
+              _UpdateEmpDeduction,
+              _DeleteEmpDeduction,
+              _InsertEmpContributions,
+              _UpdateEmpContributions,
+              _DeleteEmpContributions,
+              _InsertEmpIdentification,
+              _UpdateEmpIdentification,
+              _DeleteEmpIdentification,
+              _InsertEmpDependents,
+              _UpdateEmpDependents,
+              _DeleteEmpDependents
+            ]).then(result => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+              resolve(result);
+            });
           })
           .catch(e => {
             next(e);
