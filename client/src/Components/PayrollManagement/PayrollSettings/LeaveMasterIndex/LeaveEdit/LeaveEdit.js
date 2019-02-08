@@ -279,6 +279,7 @@ class LeaveEdit extends Component {
       uri: "/leave/updateLeaveRuleMaster",
       method: "PUT",
       data: data,
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           swalMessage({

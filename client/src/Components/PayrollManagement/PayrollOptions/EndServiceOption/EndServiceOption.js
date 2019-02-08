@@ -15,10 +15,13 @@ export default class EndServiceOption extends Component {
     super(props);
     this.state = {
       earnings: [],
+      deductions: [],
+      earning_ids: [],
+      deduction_ids: [],
       componentArray: []
     };
     this.getEosOptions();
-    this.getEarnings();
+    this.getEarningDeducts();
   }
 
   addEarningComponent() {
@@ -34,17 +37,19 @@ export default class EndServiceOption extends Component {
     });
   }
 
-  getEarnings() {
+  getEarningDeducts() {
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
       method: "GET",
-      data: {
-        component_category: "E"
-      },
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            earnings: res.data.records
+            earnings: Enumerable.from(res.data.records)
+              .where(w => w.component_category === "E")
+              .toArray(),
+            deductions: Enumerable.from(res.data.records)
+              .where(w => w.component_category === "D")
+              .toArray()
           });
         }
       },
@@ -490,6 +495,7 @@ export default class EndServiceOption extends Component {
                       </div>
                     </div>
                   </div>
+
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
@@ -498,7 +504,8 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col form-group" }}
                             label={{ forceLabel: "Earnings", isImp: true }}
                             selector={{
-                              name: "earning_id",
+                              name: "earning_ids",
+                              value: this.state.earning_ids,
                               multiselect: true,
                               className: "select-fld",
                               dataSource: {
@@ -592,28 +599,88 @@ export default class EndServiceOption extends Component {
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <label>Apply late rules</label>
-                        <div className="customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value="yes"
-                              name="fetchMachineData"
-                            />
-                            <span>Yes</span>
-                          </label>
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{ className: "col-3 form-group mandatory" }}
+                            label={{
+                              forceLabel: "From Range",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "service_range1",
+                              value: this.state.service_range1,
+                              events: {
+                                // onChange: this.textHandler.bind(this)
+                              },
+                              others: {
+                                type: "number",
+                                disabled: true
+                              }
+                            }}
+                          />
+
+                          <AlagehFormGroup
+                            div={{ className: "col-3 form-group" }}
+                            label={{
+                              forceLabel: "To Range",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "from_service_range",
+                              value: this.state.from_service_range,
+                              events: {
+                                onChange: this.textHandler.bind(this)
+                              },
+                              others: {
+                                type: "number"
+                              }
+                            }}
+                          />
+
+                          <AlagehFormGroup
+                            div={{ className: "col-3 form-group" }}
+                            label={{
+                              forceLabel: "Eligible Days",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "eligible_days",
+                              value: this.state.eligible_days,
+                              events: {
+                                onChange: this.textHandler.bind(this)
+                              },
+                              others: {
+                                type: "number"
+                              }
+                            }}
+                          />
+
+                          <div
+                            className="col-3 align-middle"
+                            style={{ paddingTop: 21 }}
+                          >
+                            <button
+                              // onClick={this.addIDType.bind(this)}
+                              className="btn btn-primary"
+                            >
+                              Add to List
+                            </button>
+                          </div>
                         </div>
                       </div>
-                      <div className="col-12" id="TerminationEligility_Cntr">
+                      <div className="col-12" id="ResignationEligibility_Cntr">
                         <AlgaehDataGrid
-                          id="TerminationEligility"
-                          datavalidate="TerminationEligility"
+                          id="ResignationEligibility"
+                          datavalidate="ResignationEligibility"
                           columns={[
                             {
                               fieldName: "Column_1",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Column 1" }}
+                                  label={{ forceLabel: "From Range" }}
                                 />
                               )
                             },
@@ -621,7 +688,15 @@ export default class EndServiceOption extends Component {
                               fieldName: "Column_2",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Column 2" }}
+                                  label={{ forceLabel: "To Range" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "Column_2",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Eligible Days" }}
                                 />
                               )
                             }
@@ -636,19 +711,43 @@ export default class EndServiceOption extends Component {
                       </div>
                     </div>
                   </div>
+
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <label>Apply late rules</label>
-                        <div className="customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value="yes"
-                              name="fetchMachineData"
-                            />
-                            <span>Yes</span>
-                          </label>
+                        <div className="row" data-validate="addErndv">
+                          <AlagehAutoComplete
+                            div={{ className: "col form-group" }}
+                            label={{ forceLabel: "Deductions", isImp: true }}
+                            selector={{
+                              name: "deduction_ids",
+                              value: this.state.deduction_ids,
+                              multiselect: true,
+                              className: "select-fld",
+                              dataSource: {
+                                textField: "earning_deduction_description",
+                                valueField: "hims_d_earning_deduction_id",
+                                data: this.state.deductions
+                              },
+                              onChange: this.dropDownHandler.bind(this),
+                              onClear: () => {
+                                this.setState({
+                                  earning_id: null
+                                });
+                              }
+                            }}
+                          />
+                          <div
+                            className="col-2 align-middle"
+                            style={{ paddingTop: 21 }}
+                          >
+                            <button
+                              onClick={this.addEarningComponent.bind(this)}
+                              className="btn btn-primary"
+                            >
+                              Add to List
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <div className="col-12" id="TerminationMinYear_Cntr">
