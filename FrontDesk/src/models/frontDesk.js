@@ -84,11 +84,11 @@ module.exports = {
   addFrontDesk: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();
-      const utilities = new algaehUtilities();
 
+      const utilities = new algaehUtilities();
       _mysql
         .generateRunningNumber({
-          modules: ["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"]
+          modules: ["PAT_REGS", "PAT_VISIT"]
         })
         .then(generatedNumbers => {
           utilities.logger().log("generatedNumbers: ", generatedNumbers);

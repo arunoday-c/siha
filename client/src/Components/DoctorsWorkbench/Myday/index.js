@@ -74,8 +74,39 @@ export default class MyDayView extends Component {
       visit_by: undefined
     });
   }
-  onClickMyDayHandler(e) {
-    debugger;
+  onClickMyDayHandler(patientID, e) {
+    MyDayEvents()
+      .getPatientDetails({
+        inputParam: {
+          hims_d_patient_id: patientID
+        }
+      })
+      .then(response => {
+        const _result = response.data;
+        if (_result.success) {
+          this.setState(
+            {
+              selectedPatinetId: patientID
+            },
+            () => {
+              this.props.onupdatingdata({
+                selectedPatientDetails: response.data.records
+              });
+            }
+          );
+        } else {
+          swalMessage({
+            title: _result.message,
+            type: "error"
+          });
+        }
+      })
+      .catch(error => {
+        swalMessage({
+          title: e.message,
+          type: "error"
+        });
+      });
   }
 
   patientStatusWisePlotUI(status, nursing) {
@@ -152,11 +183,15 @@ export default class MyDayView extends Component {
                     <div
                       key={index}
                       className={
-                        "appSection " +
+                        "appSection" +
                         (this.state.selectedPatinetId === patient.patient_id
                           ? " active"
                           : "")
                       }
+                      onClick={this.onClickMyDayHandler.bind(
+                        this,
+                        patient.patient_id
+                      )}
                     >
                       <div className="appIconSec">
                         {patient.appointment_patient === "N" ? (
@@ -169,7 +204,9 @@ export default class MyDayView extends Component {
                         ).toLocaleTimeString()}
                       </div>
                       <div className="apptDetailsSec">
-                        <span className="patName">{patient.full_name}</span>
+                        <span className="patName">
+                          {_.startCase(_.toLower(patient.full_name))}
+                        </span>
                         <span className="patVisit">{patient.visit_type}</span>
                         <span className="patStatus ">
                           {this.patientStatusWisePlotUI(
