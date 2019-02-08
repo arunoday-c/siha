@@ -73,6 +73,7 @@ class ApplyLeave extends Component {
         algaehApiCall({
           uri: "/leave/deleteLeaveApplication",
           method: "DELETE",
+          module: "hrManagement",
           data: {
             employee_id: data.employee_id,
             hims_f_leave_application_id: data.hims_f_leave_application_id

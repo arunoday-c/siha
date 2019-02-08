@@ -4,14 +4,13 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import EmployeeGroups from "./EmployeeGroups/EmployeeGroups";
 import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";
 import OvertimeGroups from "./OvertimeGroups/OvertimeGroups";
-import LeaveMasterIndex from "./LeaveMasterIndex/LeaveMasterIndex";
 import AuthorizationSetup from "./AuthorizationSetup/AuthorizationSetup";
 
 class HRSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "LeaveMasterIndex"
+      pageDisplay: "EmployeeGroups"
     };
   }
 
@@ -34,22 +33,8 @@ class HRSettings extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"LeaveMasterIndex"}
-                className={"nav-item tab-button active"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Leave Master"
-                    }}
-                  />
-                }
-              </li>
-
-              <li
                 algaehtabs={"EmployeeGroups"}
-                className={"nav-item tab-button"}
+                className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -109,8 +94,6 @@ class HRSettings extends Component {
             <EmployeeDesignations />
           ) : this.state.pageDisplay === "OvertimeGroups" ? (
             <OvertimeGroups />
-          ) : this.state.pageDisplay === "LeaveMasterIndex" ? (
-            <LeaveMasterIndex />
           ) : this.state.pageDisplay === "AuthorizationSetup" ? (
             <AuthorizationSetup />
           ) : //)

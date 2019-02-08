@@ -3,6 +3,7 @@ import "./payroll_settings.css";
 import EarningsDeductions from "./EarningsDeductions/EarningsDeductions";
 import LoanMaster from "./LoanMaster/LoanMaster";
 import HolidayMaster from "./HolidayMaster/HolidayMaster";
+import LeaveMasterIndex from "./LeaveMasterIndex/LeaveMasterIndex";
 
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
@@ -10,7 +11,7 @@ class PayrollSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "EarningsDeductions"
+      pageDisplay: "LeaveMaster"
     };
   }
 
@@ -33,8 +34,21 @@ class PayrollSettings extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"EarningsDeductions"}
+                algaehtabs={"LeaveMaster"}
                 className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Leave Master"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"EarningsDeductions"}
+                className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -79,11 +93,11 @@ class PayrollSettings extends Component {
             <EarningsDeductions />
           ) : this.state.pageDisplay === "LoanMaster" ? (
             <LoanMaster />
+          ) : this.state.pageDisplay === "LeaveMaster" ? (
+            <LeaveMasterIndex />
           ) : this.state.pageDisplay === "HolidayMaster" ? (
             <HolidayMaster />
-          ) : // this.state.pageDisplay === "AppointmentClinics" ? (
-          //     <AppointmentClinics />
-          null}
+          ) : null}
         </div>
       </div>
     );
