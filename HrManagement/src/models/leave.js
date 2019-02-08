@@ -2493,7 +2493,7 @@ getLeaveDetailsMaster: (req, res, next) => {
   const _mysql = new algaehMysql();
   const utilities = new algaehUtilities();
 
-  if (req.query.hims_d_leave_id > 0) {
+  if (req.query.leave_id > 0) {
     _mysql
       .executeQuery({
         query:
@@ -2502,7 +2502,7 @@ getLeaveDetailsMaster: (req, res, next) => {
           once_life_term, allow_probation, max_number_days, mandatory_utilize_days\
           from hims_d_leave_detail where leave_header_id=?",
 
-        values: [req.query.hims_d_leave_id],
+        values: [req.query.leave_id],
 
         printQuery: true
       })
