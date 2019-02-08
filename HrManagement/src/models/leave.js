@@ -4073,9 +4073,7 @@ function saveF  (_mysql,req,  next,  input, msg){
     });
 
   })
-  .catch(e => {
-
-  
+  .catch(e => { 
     _mysql.rollBackTransaction(() => {
       next(e);
     });
