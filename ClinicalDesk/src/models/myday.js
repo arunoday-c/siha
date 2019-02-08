@@ -64,5 +64,95 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+  getPatientDetailList: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.query;
+      _mysql
+        .executeQuery({
+          query:
+            "select PE.episode_id,PE.encounter_id , P.hims_d_patient_id,P.full_name,P.patient_code,P.vat_applicable,P.gender, \
+             P.date_of_birth,P.contact_number,N.nationality, \
+             concat(PV.age_in_years,' Y')years,concat(PV.age_in_months,' M')months,\
+             concat(PV.age_in_days,' D')days,case PE.payment_type when PE.payment_type ='S' then 'Self Paying' else 'Insurance' end payment_type ,\
+             PE.updated_date as Encounter_Date  from hims_f_patient_encounter PE ,\
+             hims_f_patient P ,hims_d_nationality N,hims_f_patient_visit PV \
+             where P.hims_d_patient_id=PE.patient_id and N.hims_d_nationality_id=P.nationality_id \
+             and PV.hims_f_patient_visit_id=PE.visit_id \
+             and P.hims_d_patient_id=? order by PE.updated_date desc",
+          values: [input.hims_d_patient_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  patientEncounterUpdate: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "SELECT encounter_id,(encounter_id+1) as newEncounterNo FROM algaeh_d_app_config where param_name='VISITEXPERIDAY';\
+        update algaeh_d_app_config set encounter_id=encounter_id+1,updated_by=?,updated_date=? where param_name='VISITEXPERIDAY';",
+          values: [req.userIdentity.algaeh_d_app_user_id, new Date()]
+        })
+        .then(result => {
+          const _encounterNumber = result[0]["newEncounterNo"];
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE  hims_f_patient_encounter SET  `status`='W',encounter_id=?,updated_by=?,updated_date=? WHERE \
+  hims_f_patient_encounter_id=? AND  record_status='A'",
+              values: [
+                _encounterNumber,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.body.patient_encounter_id
+              ]
+            })
+            .then(data => {
+              _mysql.commitTransaction(error => {
+                if (error) {
+                  _mysql.rollBackTransaction(() => {
+                    _mysql.releaseConnection();
+                    next(error);
+                  });
+                } else {
+                  _mysql.releaseConnection();
+                  req.records = data;
+                  next();
+                }
+              });
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+            });
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+    }
   }
 };

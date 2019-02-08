@@ -48,6 +48,12 @@
             padding: 3px 6px;
             border: none;
           }
+          .react-datepicker__day--outside-month {
+            color: lighten($color-black, 80%) !important;
+          }
+          .react-datepicker__today-button {
+            background: lighten($primary-color, 80%) !important;
+          }
         }
       }
     }

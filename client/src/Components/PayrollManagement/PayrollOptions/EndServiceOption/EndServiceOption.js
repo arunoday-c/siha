@@ -52,7 +52,7 @@ export default class EndServiceOption extends Component {
         if (res.data.success) {
           this.setState({
             ...res.data.result,
-            componentArray: res.data.result.componentArray
+            earning_comp: res.data.result.earning_comp
           });
         }
       },
@@ -358,16 +358,76 @@ export default class EndServiceOption extends Component {
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <label>Eligibility Required</label>
-                        <div className="customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value="yes"
-                              name="fetchMachineData"
-                            />
-                            <span>Yes</span>
-                          </label>
+                        <div className="row">
+                          <AlagehFormGroup
+                            div={{ className: "col form-group mandatory" }}
+                            label={{
+                              forceLabel: "From Range",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "service_range1",
+                              value: this.state.service_range1,
+                              events: {
+                                // onChange: this.textHandler.bind(this)
+                              },
+                              others: {
+                                type: "number",
+                                disabled: true
+                              }
+                            }}
+                          />
+
+                          <AlagehFormGroup
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "To Range",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "from_service_range",
+                              value: this.state.from_service_range,
+                              events: {
+                                onChange: this.textHandler.bind(this)
+                              },
+                              others: {
+                                type: "number"
+                              }
+                            }}
+                          />
+
+                          <AlagehFormGroup
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "Eligible Days",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "eligible_days",
+                              value: this.state.eligible_days,
+                              events: {
+                                onChange: this.textHandler.bind(this)
+                              },
+                              others: {
+                                type: "number"
+                              }
+                            }}
+                          />
+
+                          <div
+                            className="col-lg-2 align-middle"
+                            style={{ paddingTop: 21 }}
+                          >
+                            <button
+                              // onClick={this.addIDType.bind(this)}
+                              className="btn btn-primary"
+                            >
+                              Add to List
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <div className="col-12" id="ResignationEligibility_Cntr">
@@ -379,7 +439,7 @@ export default class EndServiceOption extends Component {
                               fieldName: "Column_1",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Column 1" }}
+                                  label={{ forceLabel: "From Range" }}
                                 />
                               )
                             },
@@ -387,7 +447,15 @@ export default class EndServiceOption extends Component {
                               fieldName: "Column_2",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Column 2" }}
+                                  label={{ forceLabel: "To Range" }}
+                                />
+                              )
+                            },
+                            {
+                              fieldName: "Column_2",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Eligible Days" }}
                                 />
                               )
                             }
@@ -405,25 +473,38 @@ export default class EndServiceOption extends Component {
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <AlagehAutoComplete
-                          div={{ className: "col form-group" }}
-                          label={{ forceLabel: "Earnings", isImp: false }}
-                          selector={{
-                            name: "earning_id",
-                            className: "select-fld",
-                            dataSource: {
-                              textField: "earning_deduction_description",
-                              valueField: "hims_d_earning_deduction_id",
-                              data: this.state.earnings
-                            },
-                            onChange: this.dropDownHandler.bind(this),
-                            onClear: () => {
-                              this.setState({
-                                earnings: null
-                              });
-                            }
-                          }}
-                        />
+                        <div className="row">
+                          <AlagehAutoComplete
+                            div={{ className: "col-4 form-group" }}
+                            label={{ forceLabel: "Earnings", isImp: false }}
+                            selector={{
+                              name: "earning_id",
+                              className: "select-fld",
+                              dataSource: {
+                                textField: "earning_deduction_description",
+                                valueField: "hims_d_earning_deduction_id",
+                                data: this.state.earnings
+                              },
+                              onChange: this.dropDownHandler.bind(this),
+                              onClear: () => {
+                                this.setState({
+                                  earning_id: null
+                                });
+                              }
+                            }}
+                          />
+                          <div
+                            className="col-lg-2 align-middle"
+                            style={{ paddingTop: 21 }}
+                          >
+                            <button
+                              // onClick={this.addIDType.bind(this)}
+                              className="btn btn-primary"
+                            >
+                              Add to List
+                            </button>
+                          </div>
+                        </div>
                       </div>
                       <div className="col-12" id="ResignationMinYear_Cntr">
                         <AlgaehDataGrid
@@ -431,47 +512,36 @@ export default class EndServiceOption extends Component {
                           datavalidate="ResignationMinYear"
                           columns={[
                             {
+                              fieldName: "actions",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Actions" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return <i className="fas fa-trash-alt" />;
+                              }
+                            },
+                            {
                               fieldName: "earning_deduction_code",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Earnings Code" }}
                                 />
-                              ),
-                              displayTemplate: row => {
-                                let comp = Enumerable.from(
-                                  this.state.earnings
-                                ).where(
-                                  w => w.hims_d_earning_deduction_id === row
-                                );
-                                return (
-                                  <span>{comp.earning_deduction_code}</span>
-                                );
-                              }
+                              )
                             },
                             {
-                              fieldName: "earnings_id",
+                              fieldName: "earning_deduction_description",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Earnings" }}
                                 />
-                              ),
-                              displayTemplate: row => {
-                                let comp = Enumerable.from(
-                                  this.state.earnings
-                                ).where(
-                                  w => w.hims_d_earning_deduction_id === row
-                                );
-                                return (
-                                  <span>
-                                    {comp.earning_deduction_description}
-                                  </span>
-                                );
-                              }
+                              )
                             }
                           ]}
-                          keyId="earnings_id"
-                          dataSource={{ data: [] }}
-                          isEditable={true}
+                          keyId="hims_d_earning_deduction_id"
+                          dataSource={{ data: this.state.earning_comp }}
+                          isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{}}
                           others={{}}
@@ -593,6 +663,32 @@ export default class EndServiceOption extends Component {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="hptl-phase1-footer">
+            <div className="row">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  //  onClick={this.saveOptions.bind(this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Update", returnText: true }}
+                  />
+                </button>
+
+                {/* <button
+                  type="button"
+                  className="btn btn-default"
+                  //onClick={ClearData.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button> */}
               </div>
             </div>
           </div>

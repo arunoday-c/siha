@@ -8,9 +8,9 @@ module.exports = {
     return new Promise((resolve, reject) => {
       try {
         const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
-        if (req.mySQl == null) {
-          req.mySQl = _mysql;
-        }
+        // if (req.mySQl == null) {
+        //   req.mySQl = _mysql;
+        // }
         const input = req.query;
         const month_number = input.month;
         const year = input.year;
@@ -677,12 +677,12 @@ module.exports = {
                                                                             )
                                                                             .catch(
                                                                               error => {
-                                                                                reject(
-                                                                                  error
-                                                                                );
                                                                                 _mysql.rollBackTransaction(
                                                                                   () => {
                                                                                     next(
+                                                                                      error
+                                                                                    );
+                                                                                    reject(
                                                                                       error
                                                                                     );
                                                                                   }
@@ -695,10 +695,10 @@ module.exports = {
                                                                         error => {
                                                                           _mysql.rollBackTransaction(
                                                                             () => {
-                                                                              reject(
+                                                                              next(
                                                                                 error
                                                                               );
-                                                                              next(
+                                                                              reject(
                                                                                 error
                                                                               );
                                                                             }
@@ -711,10 +711,10 @@ module.exports = {
                                                                   error => {
                                                                     _mysql.rollBackTransaction(
                                                                       () => {
-                                                                        reject(
+                                                                        next(
                                                                           error
                                                                         );
-                                                                        next(
+                                                                        reject(
                                                                           error
                                                                         );
                                                                       }
@@ -724,72 +724,72 @@ module.exports = {
                                                             }
                                                           )
                                                           .catch(error => {
-                                                            reject(error);
                                                             _mysql.rollBackTransaction(
                                                               () => {
                                                                 next(error);
+                                                                reject(error);
                                                               }
                                                             );
                                                           });
                                                       })
                                                       .catch(error => {
-                                                        reject(error);
                                                         _mysql.rollBackTransaction(
                                                           () => {
                                                             next(error);
+                                                            reject(error);
                                                           }
                                                         );
                                                       });
                                                   })
                                                   .catch(e => {
-                                                    reject(e);
                                                     next(e);
+                                                    reject(e);
                                                   });
                                               })
                                               .catch(e => {
-                                                reject(e);
                                                 next(e);
+                                                reject(e);
                                               });
                                           })
                                           .catch(e => {
-                                            reject(e);
                                             next(e);
+                                            reject(e);
                                           });
                                       })
                                       .catch(e => {
-                                        reject(e);
                                         next(e);
+                                        reject(e);
                                       });
                                     //Loan Due End
                                   })
                                   .catch(e => {
-                                    reject(e);
                                     next(e);
+                                    reject(e);
                                   });
                                 //Contribution -- End
                               })
                               .catch(e => {
-                                reject(e);
                                 next(e);
+                                reject(e);
                               });
 
                             //Deduction -- End
                           })
                           .catch(e => {
-                            reject(e);
                             next(e);
+                            reject(e);
                           });
                         //Earnigs --- End
                       }
                     })
                     .catch(e => {
-                      reject(e);
                       next(e);
+                      reject(e);
                     });
                 })
                 .catch(e => {
-                  reject(e);
                   next(e);
+                  reject(e);
                 });
             } else {
               _mysql.releaseConnection();
@@ -798,13 +798,13 @@ module.exports = {
               next();
             }
           })
-          .catch(error => {
-            reject(error);
-            next(error);
+          .catch(e => {
+            next(e);
+            reject(e);
           });
       } catch (e) {
-        reject(e);
         next(e);
+        reject(e);
       }
     }).catch(e => {
       next(e);

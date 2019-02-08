@@ -43,7 +43,7 @@ export default class PatientDetails extends PureComponent {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-patient-details margin-bottom-15">
+            <div className="hptl-phase1-patient-details margin-bottom-15 margin-top-15">
               <div className="tab-container toggle-section">
                 <ul className="nav">
                   <li

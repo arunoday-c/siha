@@ -74,6 +74,9 @@ export default class MyDayView extends Component {
       visit_by: undefined
     });
   }
+  onClickMyDayHandler(e) {
+    debugger;
+  }
 
   patientStatusWisePlotUI(status, nursing) {
     let _element = undefined;
@@ -182,12 +185,13 @@ export default class MyDayView extends Component {
                 <div className="noAppRecord">
                   <i className="fas fa-calendar-alt" />
                   <span>
-                    {" "}
                     No appointment for
                     <span>
-                      {" "}
-                      {new Date(this.state.fromDate).toDateString()}
-                    </span>{" "}
+                      {new Date(this.state.fromDate).toDateString() ===
+                      new Date().toDateString()
+                        ? "Today"
+                        : new Date(this.state.fromDate).toDateString()}
+                    </span>
                   </span>
                 </div>
               )}
