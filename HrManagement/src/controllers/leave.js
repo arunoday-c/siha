@@ -17,7 +17,12 @@ import {
   deleteLeaveEncash,
   deleteLeaveRule,
   deleteLeaveDetail,
-  addLeaveEncashmentMaster
+  addLeaveEncashmentMaster,
+  addLeaveRulesMaster,
+  getLeaveEncashmentMaster,
+  getLeaveRulesMaster,
+  updateLeaveDetailMaster,
+  updateLeaveEncashMaster
 } from "../models/leave";
 export default () => {
   const api = Router();
@@ -243,6 +248,84 @@ export default () => {
   api.post(
     "/addLeaveEncashmentMaster",
     addLeaveEncashmentMaster,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
+    }
+  );
+  api.post("/addLeaveRulesMaster", addLeaveRulesMaster, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+
+  api.get(
+    "/getLeaveEncashmentMaster",
+    getLeaveEncashmentMaster,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
+    }
+  );
+  api.get("/getLeaveRulesMaster", getLeaveRulesMaster, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.put(
+    "/updateLeaveDetailMaster",
+    updateLeaveDetailMaster,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
+    }
+  );
+  api.put(
+    "/updateLeaveEncashMaster",
+    updateLeaveEncashMaster,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
