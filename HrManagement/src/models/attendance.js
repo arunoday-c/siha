@@ -784,11 +784,11 @@ module.exports = {
   },
   //created by irfan:
   cancelAbsent: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
+  
     let input = req.body;
 
     if (input.hims_f_absent_id > 0) {
+      const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
           query:
@@ -822,7 +822,7 @@ module.exports = {
           next(e);
         });
     } else {
-      _mysql.releaseConnection();
+      
       req.records = {
         invalid_input: true,
         message: "please provide valid input"
@@ -834,11 +834,11 @@ module.exports = {
   },
   //created by irfan:
   getAllAbsentEmployee: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
+  
     let input = req.query;
 
     if (input.yearAndMonth != undefined && input.yearAndMonth != "null") {
+      const _mysql = new algaehMysql();
       const startOfMonth = moment(input.yearAndMonth)
         .startOf("month")
         .format("YYYY-MM-DD");
@@ -941,11 +941,11 @@ module.exports = {
 
   //created by irfan:
   regularizeAttendance: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
+
     let input = req.body;
 
     if (input.regularize_status == "REJ" || input.regularize_status == "APR") {
+      const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
           query:
@@ -977,7 +977,7 @@ module.exports = {
           next(e);
         });
     } else {
-      _mysql.releaseConnection();
+      
       req.records = {
         invalid_input: true,
         message: "please provide valid input"
@@ -990,8 +990,7 @@ module.exports = {
 
     //created by irfan:
     getEmployeeAttendReg: (req, res, next) => {
-      const _mysql = new algaehMysql();
-      const utilities = new algaehUtilities();
+
    
       let dateRange = "";
       let employee = "";
@@ -1024,6 +1023,7 @@ module.exports = {
         return;
       }
       else {
+        const _mysql = new algaehMysql();
 
         _mysql
         .executeQuery({
@@ -1046,7 +1046,8 @@ module.exports = {
           next();
         })
         .catch(e => {
-      _mysql.releaseConnection();
+          _mysql.releaseConnection();
+       
           next(e);
         });
 

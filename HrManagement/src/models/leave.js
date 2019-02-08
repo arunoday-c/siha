@@ -10,10 +10,11 @@ import algaehUtilities from "algaeh-utilities/utilities";
 module.exports = {
   //created by irfan: to
   authorizeLeave: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    
     const input = req.body;
     let salary_processed = "N";
     if (req.userIdentity.leave_authorize_privilege != "N") {
+      const _mysql = new algaehMysql();
       // get highest auth level
       getMaxAuth({
         mysql: _mysql
@@ -1014,7 +1015,7 @@ module.exports = {
 //created by irfan:
 applyEmployeeLeave: (req, res, next) => {
   try {
-    const _mysql = new algaehMysql();
+   
     let input = req.body;
   
     const m_fromDate = moment(input.from_date).format("YYYY-MM-DD");
@@ -1036,6 +1037,9 @@ applyEmployeeLeave: (req, res, next) => {
       next();
       return;
     } else if (from_year == to_year) {
+
+
+      const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
           query:
@@ -1542,13 +1546,13 @@ applyEmployeeLeave: (req, res, next) => {
 },
 //created by irfan: to get which leaves applicable  for employee 
 getEmployeeLeaveData: (req, res, next) => {
-  const _mysql = new algaehMysql();
+  
  
   if (
     req.query.year > 0 &&
     req.query.employee_id > 0
   ) {
-      
+    const _mysql = new algaehMysql();
 
     _mysql
     .executeQuery({
@@ -1596,12 +1600,12 @@ getEmployeeLeaveData: (req, res, next) => {
 },
 //created by irfan: to get all employees whose yearly leave is proccessed
 getYearlyLeaveData: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
  
   if (
     req.query.year > 0 
   ) {
-     
+    const _mysql = new algaehMysql(); 
 
     _mysql
     .executeQuery({
@@ -1645,7 +1649,7 @@ getYearlyLeaveData: (req, res, next) => {
 },
 //created by irfan: to get all leave history about employee
 getEmployeeLeaveHistory: (req, res, next) => {
-  const _mysql = new algaehMysql();
+  
 
 
   let status = "";
@@ -1656,7 +1660,7 @@ getEmployeeLeaveHistory: (req, res, next) => {
   if (
     req.query.employee_id > 0 
   ) { 
-
+    const _mysql = new algaehMysql();
     _mysql
     .executeQuery({
       query:
@@ -1995,6 +1999,7 @@ addLeaveMaster: (req, res, next) => {
     })
     .catch(e => {
       _mysql.rollBackTransaction(() => {
+        _mysql.releaseConnection();
         next(e);
       });
     });
@@ -2002,7 +2007,7 @@ addLeaveMaster: (req, res, next) => {
 
 //created by irfan: to assign leaves for all employees for a purticular year
 processYearlyLeave: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
   const utilities = new algaehUtilities();
  
   let year = "";
@@ -2023,7 +2028,7 @@ processYearlyLeave: (req, res, next) => {
 
   if (req.query.year > 0) {
     year = req.query.year;
-
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2329,7 +2334,7 @@ processYearlyLeave: (req, res, next) => {
 
 //created by irfan: to show leave application to authorize
 getLeaveApllication: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
 
   let employee = "";
   let range = "";
@@ -2383,6 +2388,7 @@ getLeaveApllication: (req, res, next) => {
   }
 
   if (req.userIdentity.leave_authorize_privilege != "N") {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2429,10 +2435,11 @@ getLeaveApllication: (req, res, next) => {
 
 //created by irfan: update leave header
 updateLeaveMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
   const utilities = new algaehUtilities();
   let input =  req.body;
   if (input.hims_d_leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2490,10 +2497,11 @@ updateLeaveMaster: (req, res, next) => {
 },
 //created by irfan: to get leave details
 getLeaveDetailsMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
 
   if (req.query.leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2527,10 +2535,12 @@ getLeaveDetailsMaster: (req, res, next) => {
 },
 //created by irfan: to add leave detail
 addLeaveDetailMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
   let input = req.body;
   if (input.leave_id > 0) {
+
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2580,10 +2590,11 @@ addLeaveDetailMaster: (req, res, next) => {
 
 //created by irfan:
 deleteLeaveEncash: (req, res, next) => {
-  const _mysql = new algaehMysql();
+  
   const utilities = new algaehUtilities();
 
   if (req.body.hims_d_leave_encashment_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2622,10 +2633,11 @@ deleteLeaveEncash: (req, res, next) => {
 },
 //created by irfan:
 deleteLeaveRule: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
   const utilities = new algaehUtilities();
 
   if (req.body.hims_d_leave_rule_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2664,10 +2676,11 @@ deleteLeaveRule: (req, res, next) => {
 },
 //created by irfan:
 deleteLeaveDetail: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
 
   if (req.body.hims_d_leave_detail_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2707,10 +2720,11 @@ deleteLeaveDetail: (req, res, next) => {
 
 //created by irfan: to addLeave Encashment Master
 addLeaveEncashmentMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
   const utilities = new algaehUtilities();
   let input = req.body;
   if (input.leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2750,10 +2764,12 @@ addLeaveEncashmentMaster: (req, res, next) => {
 },
 //created by irfan: to addLeaveRulesMaster
 addLeaveRulesMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
   let input = req.body;
   if (input.leave_id > 0) {
+
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2797,10 +2813,10 @@ addLeaveRulesMaster: (req, res, next) => {
 
 //created by irfan: to 
 getLeaveEncashmentMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+
 
   if (req.query.leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2833,10 +2849,11 @@ getLeaveEncashmentMaster: (req, res, next) => {
 },
 //created by irfan: to 
 getLeaveRulesMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+
+
 
   if (req.query.leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2870,10 +2887,11 @@ getLeaveRulesMaster: (req, res, next) => {
 
 //created by irfan: 
 updateLeaveDetailMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
   let input =  req.body;
   if (input.hims_d_leave_detail_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2932,10 +2950,10 @@ updateLeaveDetailMaster: (req, res, next) => {
 },
 //created by irfan: 
 updateLeaveEncashMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+
   let input =  req.body;
   if (input.hims_d_leave_encashment_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2984,10 +3002,10 @@ updateLeaveEncashMaster: (req, res, next) => {
 },
 //created by irfan: 
 updateLeaveRuleMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+ 
   let input =  req.body;
   if (input.hims_d_leave_rule_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -3039,10 +3057,11 @@ updateLeaveRuleMaster: (req, res, next) => {
 },
 //created by irfan:
 deleteLeaveApplication: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+  
   let input = req.body;
   if (input.hims_f_leave_application_id > 0) {
+
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:

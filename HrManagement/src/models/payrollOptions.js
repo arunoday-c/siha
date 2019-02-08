@@ -5,7 +5,6 @@ import _ from "lodash";
 module.exports = {
   //created by irfan: to
   getHrmsOptions: (req, res, next) => {
-    console.log("First Hit");
     const _mysql = new algaehMysql();
 
     _mysql
@@ -20,6 +19,7 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
@@ -87,13 +87,14 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
   //created by irfan: to
   getEosOptions: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
+
     _mysql
       .executeQuery({
         query: "select * from hims_d_end_of_service_options;",
@@ -221,6 +222,7 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
