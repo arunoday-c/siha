@@ -260,6 +260,16 @@ export default class MonthlyAttendance extends Component {
           }
         );
         break;
+      case "year":
+        this.setState(
+          {
+            [value.name]: value.value
+          },
+          () => {
+            this.getStartandMonthEnd();
+          }
+        );
+        break;
 
       default:
         this.setState({

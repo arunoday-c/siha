@@ -94,8 +94,9 @@ class AttendanceRegularization extends Component {
           });
         } else {
           algaehApiCall({
-            uri: "/leave/addAttendanceRegularization",
+            uri: "/attendance/addAttendanceRegularization",
             method: "POST",
+            module: "hrManagement",
             data: {
               attendance_date: this.state.login_date,
               employee_id: this.state.hims_d_employee_id,

@@ -157,9 +157,7 @@ class ApplyLeave extends Component {
               from_leave_session: null,
               to_leave_session: null
             },
-            () => {
-              //  this.getAppliedDays();
-            }
+            () => {}
           );
         } else if (from_leave_session === "FD" || to_leave_session === "FD") {
           this.setState(
@@ -167,9 +165,7 @@ class ApplyLeave extends Component {
               to_leave_session: "FD",
               from_leave_session: "FD"
             },
-            () => {
-              //  this.getAppliedDays();
-            }
+            () => {}
           );
         }
 
@@ -183,18 +179,14 @@ class ApplyLeave extends Component {
             {
               from_leave_session: "FD"
             },
-            () => {
-              //  this.getAppliedDays();
-            }
+            () => {}
           );
         } else if (to_leave_session === "SH") {
           this.setState(
             {
               to_leave_session: "FD"
             },
-            () => {
-              //  this.getAppliedDays();
-            }
+            () => {}
           );
         } else if (from_leave_session === "FH" && to_leave_session === "SH") {
           this.setState(

@@ -66,7 +66,7 @@ export default () => {
     }
   });
 
-  api.get(
+  api.post(
     "/addAttendanceRegularization",
     addAttendanceRegularization,
     (req, res, next) => {

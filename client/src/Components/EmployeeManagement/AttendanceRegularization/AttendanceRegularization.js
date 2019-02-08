@@ -37,8 +37,9 @@ export default class AttendanceRegularization extends Component {
           });
 
           algaehApiCall({
-            uri: "/leave/getEmployeeAttendReg",
+            uri: "/attendance/getEmployeeAttendReg",
             method: "GET",
+            module: "hrManagement",
             data: {
               from_date: this.state.from_date,
               to_date: this.state.to_date
@@ -48,6 +49,14 @@ export default class AttendanceRegularization extends Component {
                 this.setState({
                   regularization_list: res.data.records,
                   loading: false
+                });
+              } else if (!res.data.success) {
+                this.setState({
+                  loading: false
+                });
+                swalMessage({
+                  title: err.message,
+                  type: "error"
                 });
               }
             },
@@ -81,13 +90,14 @@ export default class AttendanceRegularization extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         algaehApiCall({
-          uri: "/leave/regularizeAttendance",
+          uri: "/attendance/regularizeAttendance",
           method: "PUT",
           data: {
             regularize_status: type,
             hims_f_attendance_regularize_id:
               data.hims_f_attendance_regularize_id
           },
+          module: "hrManagement",
           onSuccess: res => {
             if (res.data.success) {
               swalMessage({
