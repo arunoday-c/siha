@@ -22,7 +22,9 @@ import {
   getLeaveEncashmentMaster,
   getLeaveRulesMaster,
   updateLeaveDetailMaster,
-  updateLeaveEncashMaster
+  updateLeaveEncashMaster,
+  updateLeaveRuleMaster,
+  deleteLeaveApplication
 } from "../models/leave";
 export default () => {
   const api = Router();
@@ -326,6 +328,36 @@ export default () => {
   api.put(
     "/updateLeaveEncashMaster",
     updateLeaveEncashMaster,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
+    }
+  );
+  api.put("/updateLeaveRuleMaster", updateLeaveRuleMaster, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.delete(
+    "/deleteLeaveApplication",
+    deleteLeaveApplication,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
