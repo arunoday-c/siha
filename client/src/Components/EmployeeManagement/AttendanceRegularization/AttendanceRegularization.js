@@ -47,7 +47,7 @@ export default class AttendanceRegularization extends Component {
             onSuccess: res => {
               if (res.data.success) {
                 this.setState({
-                  regularization_list: res.data.records,
+                  regularization_list: res.data.result,
                   loading: false
                 });
               } else if (!res.data.success) {
@@ -55,7 +55,7 @@ export default class AttendanceRegularization extends Component {
                   loading: false
                 });
                 swalMessage({
-                  title: err.message,
+                  title: res.data.result.message,
                   type: "error"
                 });
               }

@@ -18,7 +18,8 @@ export default class EndServiceOption extends Component {
       deductions: [],
       earning_ids: [],
       deduction_ids: [],
-      componentArray: []
+      componentArray: [],
+      from_service_range: 0
     };
     this.getEosOptions();
     this.getEarningDeducts();
@@ -572,17 +573,6 @@ export default class EndServiceOption extends Component {
                           id="ResignationMinYear"
                           datavalidate="ResignationMinYear"
                           columns={[
-                            {
-                              fieldName: "actions",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Actions" }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                return <i className="fas fa-trash-alt" />;
-                              }
-                            },
                             {
                               fieldName: "earning_deduction_code",
                               label: (
