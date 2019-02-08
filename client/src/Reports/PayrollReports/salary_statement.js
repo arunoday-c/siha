@@ -18,8 +18,6 @@ export function printReport(data) {
                 <th>Net Salary</th>
                 <th>Advance Due</th>
                 <th>Loan Due Amount</th>
-             
-                
             </tr>
         </thead>
         <tbody>

@@ -19,7 +19,7 @@ export default class EndServiceOption extends Component {
       earning_ids: [],
       deduction_ids: [],
       componentArray: [],
-      from_service_range: 0
+      service_range1: 0
     };
     this.getEosOptions();
     this.getEarningDeducts();

@@ -718,7 +718,7 @@ export default [
     submenu: [
       {
         subitem: "Leave Reports",
-        template_name: "leave_reports",
+        template_name: "PayrollReports/leave_reports",
         reportQuery: "leaveReport",
         reportParameters: [
           {
@@ -771,13 +771,13 @@ export default [
       },
       {
         subitem: "Employee Details",
-        template_name: "employee_details",
+        template_name: "PayrollReports/employee_details",
         reportQuery: "employeeDetails",
         reportParameters: []
       },
       {
         subitem: "Salary Statement",
-        template_name: "salary_statement",
+        template_name: "PayrollReports/salary_statement",
         reportQuery: "salaryStatement",
         reportParameters: [
           {
@@ -809,6 +809,83 @@ export default [
         ]
       },
       {
+        subitem: "Absent Report",
+        template_name: "PayrollReports/absent_report",
+        reportQuery: "absentReport",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Employee Loan report",
+        template_name: "PayrollReports/employee_loans",
+        reportQuery: "loanApplication",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
+        subitem: "Employee Advance report",
+        template_name: "PayrollReports/employee_loans",
+        reportQuery: "loanApplication",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+        //reportParameters: () => <General ui="asset_warty_exp_rep" />
+      },
+      {
         subitem: "Salary Slips",
         template_name: "asset_war_exp",
         reportParameters: []
@@ -822,12 +899,6 @@ export default [
       },
       {
         subitem: "Salary Statement Detail",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Absent Report",
         template_name: "asset_war_exp",
         reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
@@ -858,12 +929,7 @@ export default [
         reportParameters: []
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
-      {
-        subitem: "Employee Loan and Advance report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <General ui="asset_warty_exp_rep" />
-      },
+
       {
         subitem: "Salary Component Wise reports",
         template_name: "asset_war_exp",
