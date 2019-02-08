@@ -42,12 +42,12 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
-          resolve(result);
           next();
+          resolve(result);
         })
         .catch(e => {
-          reject(e);
           next(e);
+          reject(e);
         });
     }).catch(e => {
       _mysql.releaseConnection();
@@ -66,12 +66,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -149,12 +149,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -392,15 +392,15 @@ module.exports = {
               ]).then(result => {
                 _mysql.releaseConnection();
                 req.records = result;
-                resolve(result);
                 next();
+                resolve(result);
               });
             };
             syscCall();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -442,12 +442,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -484,12 +484,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -531,12 +531,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -576,12 +576,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -607,12 +607,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -650,12 +650,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -695,12 +695,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -737,12 +737,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -768,12 +768,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -801,12 +801,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -834,12 +834,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -867,12 +867,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -902,12 +902,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -935,13 +935,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -969,13 +968,12 @@ module.exports = {
           .then(result => {
             _mysql.releaseConnection();
             req.records = result;
-            resolve(result);
-            resolve(result);
             next();
+            resolve(result);
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
         reject(e);
@@ -1025,11 +1023,10 @@ function InsertEmployeeDepartment(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1083,11 +1080,10 @@ function UpdateEmployeeDepartment(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1136,11 +1132,10 @@ function InsertServiceCommission(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1193,11 +1188,10 @@ function UpdateServiceCommission(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1246,11 +1240,10 @@ function InsertServiceTypeCommission(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1302,11 +1295,10 @@ function UpdateServiceTypeCommission(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1353,11 +1345,10 @@ function InsertEmployeeEarnings(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1401,11 +1392,10 @@ function UpdateEmployeeEarnings(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1444,11 +1434,10 @@ function DeleteEmployeeEarnings(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1494,11 +1483,10 @@ function InsertEmployeeDeduction(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1542,11 +1530,10 @@ function UpdateEmployeeDeduction(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1585,11 +1572,10 @@ function DeleteEmployeeDeduction(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1635,11 +1621,10 @@ function InsertEmployeeContributions(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1683,11 +1668,10 @@ function UpdateEmployeeContributions(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1726,11 +1710,10 @@ function DeleteEmployeeContributions(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1779,11 +1762,10 @@ function InsertEmployeeIdentification(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1828,11 +1810,10 @@ function UpdateEmployeeIdentification(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1871,11 +1852,10 @@ function DeleteEmployeeIdentification(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1922,11 +1902,10 @@ function InsertEmployeeDependents(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -1972,11 +1951,10 @@ function UpdateEmployeeDependents(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});
@@ -2015,11 +1993,10 @@ function DeleteEmployeeDependents(options) {
           .then(result => {
             req.records = result;
             resolve(result);
-            next();
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } else {
         resolve({});

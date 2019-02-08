@@ -98,8 +98,7 @@ class RegistrationPatient extends PureComponent {
           consultation: "Y",
           appointment_patient: "Y",
           billdetail: false,
-          hims_f_patient_appointment_id: this.state
-            .hims_f_patient_appointment_id
+          appointment_id: this.state.hims_f_patient_appointment_id
         },
         () => {
           if (this.props.fromAppoinment === true) {
@@ -327,8 +326,7 @@ class RegistrationPatient extends PureComponent {
         : this.props.fromAppoinment;
 
     let department_id = this.props.department_id || null;
-    let hims_f_patient_appointment_id =
-      this.props.hims_f_patient_appointment_id || null;
+    let appointment_id = this.props.hims_f_patient_appointment_id || null;
     let title_id = Window.global["appt-title-id"] || null;
 
     AlgaehLoader({ show: true });
@@ -362,7 +360,7 @@ class RegistrationPatient extends PureComponent {
             data.patientRegistration.billdetail = false;
             data.patientRegistration.consultation = "Y";
             data.patientRegistration.appointment_patient = "Y";
-            data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+            data.patientRegistration.appointment_id = appointment_id;
             data.patientRegistration.title_id = title_id;
           }
           //Appoinment End

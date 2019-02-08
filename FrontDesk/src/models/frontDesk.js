@@ -1,5 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
+import { LINQ } from "node-linq";
+import { insertPatientData } from "./patientRegistration";
 
 module.exports = {
   selectFrontDesk: (req, res, next) => {
@@ -79,5 +81,45 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     });
+  },
+  addFrontDesk: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = { ...req.body };
+
+    _mysql
+      .generateRunningNumber({
+        modules: ["PAT_REGS", "PAT_VISIT", "PAT_BILL", "RECEIPT"]
+      })
+      .then(generatedNumbers => {
+        let patients = new LINQ(generatedNumbers)
+          .Where(w => w.module_desc == "PAT_REGS")
+          .FirstOrDefault();
+
+        req.query.patient_code = patients.completeNumber;
+        req.body.patient_code = patients.completeNumber;
+
+        let visit = new LINQ(output)
+          .Where(w => w.module_desc == "PAT_VISIT")
+          .FirstOrDefault();
+
+        req.query.visit_code = visit.completeNumber;
+        req.body.visit_code = visit.completeNumber;
+
+        const syscCall = async function() {
+          let _insertPatient = await insertPatientData(req, res, next);
+
+          let _insertPatientVisit = await insertPatientVisitData(
+            req,
+            res,
+            next
+          );
+        };
+        syscCall();
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
   }
 };
