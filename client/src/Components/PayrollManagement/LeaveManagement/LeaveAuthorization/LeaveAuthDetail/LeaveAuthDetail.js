@@ -118,6 +118,7 @@ class LeaveAuthDetail extends Component {
       uri: "/leave/cancelLeave",
       method: "PUT",
       data: send_data,
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           swalMessage({
