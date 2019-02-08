@@ -206,7 +206,6 @@ module.exports = {
           input.end_of_service_payment,
           input.end_of_service_years,
           input.limited_years,
-
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           input.hims_d_end_of_service_options_id
