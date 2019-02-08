@@ -40,15 +40,18 @@ let getReport = (req, res, next) => {
     //   req.query.fieldName == null        ? " "        : " and upper(" +          req.query.fieldName +         ") like  upper('%" +
     //       req.query.fieldContains +
     //       "%')";
+    let inputs = req.query.inputs == null ? "" : req.query.inputs;
 
     const _groupby =
       queryConfig.groupBy != null ? " " + queryConfig.groupBy + " " : "";
 
     const _orderBy =
       queryConfig.orderBy != null ? " " + queryConfig.orderBy + " " : "";
-    let query = queryConfig.reportQuery + _groupby + _orderBy + " ;";
+
+    let query = queryConfig.reportQuery + inputs + _groupby + _orderBy + " ;";
 
     const _queryHasQuestion = queryConfig.questionOrder != null ? true : false;
+
     let inputData = [];
     if (_queryHasQuestion == true) {
       queryConfig.questionOrder.map(item => {
