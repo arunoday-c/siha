@@ -244,6 +244,7 @@ class RegistrationPatient extends PureComponent {
             delete patientdata.cities;
             algaehApiCall({
               uri: "/frontDesk/add",
+              module: "frontDesk",
               data: patientdata,
               method: "POST",
               onSuccess: response => {

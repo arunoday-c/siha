@@ -1,10 +1,13 @@
 import algaehMysql from "algaeh-mysql";
+import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   insertPatientData: (req, res, next) => {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
       try {
+        const utilities = new algaehUtilities();
+        utilities.logger().log("genNumber: ", req.genNumber);
         let inputparam = { ...req.body };
         inputparam.registration_date = new Date();
         _mysql
@@ -77,12 +80,12 @@ module.exports = {
             }
           })
           .catch(e => {
-            reject(e);
             next(e);
+            reject(e);
           });
       } catch (e) {
-        reject(e);
         next(e);
+        reject(e);
       }
     }).catch(e => {
       _mysql.releaseConnection();
