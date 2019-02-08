@@ -745,5 +745,175 @@ module.exports = {
     }).catch(e => {
       next(e);
     });
-  }
-};
+  },
+
+  //created by irfan: to mark absent
+  markAbsent: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input =  req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_absent` (employee_id,absent_date,from_session,to_session, absent_duration,\
+            absent_reason,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,date(?),?,?,?,?,?,?,?,?)",
+        values: [
+          input.employee_id,
+          input.absent_date,
+          input.from_session,
+          input.to_session,
+          input.absent_duration,
+          input.absent_reason,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {    
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan:
+  cancelAbsent: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (input.hims_f_absent_id > 0) {
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_absent SET cancel='Y',cancel_by=?,cancel_date=?,cancel_reason=?,\
+          updated_date=?, updated_by=?  WHERE hims_f_absent_id = ?",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.cancel_reason,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_f_absent_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "please provide valid absent id"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  getAllAbsentEmployee: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    let input = req.query;
+
+    if (input.yearAndMonth != undefined && input.yearAndMonth != "null") {
+
+      const startOfMonth = moment(input.yearAndMonth)
+      .startOf("month")
+      .format("YYYY-MM-DD");
+
+    const endOfMonth = moment(input.yearAndMonth)
+      .endOf("month")
+      .format("YYYY-MM-DD");
+
+      _mysql
+        .executeQuery({
+          query:
+          "select  hims_f_absent_id, employee_id, absent_date, from_session, to_session,\
+          absent_reason, cancel ,absent_duration,cancel_reason,E.employee_code,E.full_name as employee_name\
+          from hims_f_absent A,hims_d_employee E where A.record_status='A'\
+          and date(absent_date) between date(?) and date(?) and A.employee_id=E.hims_d_employee_id order by hims_f_absent_id desc",
+         
+          values:  [startOfMonth, endOfMonth]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          
+            req.records = result;
+            next();
+           
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid year and month"
+      };
+
+      next();
+      return;
+    }
+  },
+   //created by irfan: 
+   addAttendanceRegularization: (req, res, next) => {
+      const _mysql = new algaehMysql();
+      let input =  req.body;
+  
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_f_absent` (employee_id,absent_date,from_session,to_session, absent_duration,\
+              absent_reason,created_date, created_by, updated_date, updated_by)\
+              VALUE(?,date(?),?,?,?,?,?,?,?,?)",
+          values: [
+            input.employee_id,
+            input.absent_date,
+            input.from_session,
+            input.to_session,
+            input.absent_duration,
+            input.absent_reason,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {    
+          _mysql.releaseConnection();
+          next(e);
+        });
+    },
+
+
+
+
+  };
