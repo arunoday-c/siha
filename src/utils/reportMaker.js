@@ -105,6 +105,16 @@ let algaehReportConfig = reportName => {
         left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
         WHERE month=? and year=?",
         questionOrder: ["month", "year"]
+      },
+      {
+        reportName: "absentReport",
+        reportQuery:
+          "select  hims_f_absent_id,employee_id,absent_date,from_session,to_session,absent_reason,\
+          absent_duration,cancel,cancel_reason,cancel_by,cancel_date,E.employee_code,E.full_name as employee_name,\
+          SD.sub_department_code,SD.sub_department_name from hims_f_absent AB inner join hims_d_employee E on \
+          AB.employee_id=E.hims_d_employee_id inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+          where date(absent_date) between date(?) and date(?)",
+        questionOrder: ["from_date", "to_date"]
       }
     ]
   };
