@@ -2979,6 +2979,132 @@ updateLeaveEncashMaster: (req, res, next) => {
     return;
   }
 },
+//created by irfan: 
+updateLeaveRuleMaster: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+  let input =  req.body;
+  if (input.hims_d_leave_rule_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+        "UPDATE hims_d_leave_rule SET leave_header_id = ?,\
+        calculation_type = ?, earning_id = ?, paytype = ?, from_value = ? , to_value = ?,\
+        value_type = ?, total_days = ?  WHERE hims_d_leave_rule_id = ?",
+        values: [
+          input.leave_header_id,
+          input.calculation_type,
+          input.earning_id,
+          input.paytype,
+          input.from_value,
+          input.to_value,
+          input.value_type,
+          input.total_days,
+          input.hims_d_leave_rule_id
+
+        ],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        if (result.affectedRows > 0) {
+          req.records = result;
+          next();
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "please provide valid id"
+          };
+          next();
+        }
+
+      })
+      .catch(e => {       
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input" 
+    };
+
+    next();
+    return;
+  }
+},
+//created by irfan:
+deleteLeaveApplication: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+  let input = req.body;
+  if (input.hims_f_leave_application_id > 0) {
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_leave_application_id,employee_id,authorized1,authorized2,\
+          authorized3,`status`from hims_f_leave_application where authorized1='N' \
+          and authorized2='N' and authorized3='N' and `status`='PEN' and employee_id=?\
+          and hims_f_leave_application_id=?",
+        values: [req.body.employee_id, req.body.hims_f_leave_application_id],
+
+        printQuery: true
+      })
+      .then(result => {
+      
+        if (result.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "delete from hims_f_leave_application where hims_f_leave_application_id=?",
+              values: [req.body.hims_f_leave_application_id],
+
+              printQuery: true
+            })
+            .then(delResult => {
+              _mysql.releaseConnection();
+
+              if (delResult.affectedRows > 0) {
+                req.records = delResult;
+                next();
+              } else {
+                req.records = {
+                  invalid_input: true,
+                  message: `invalid input`
+                };
+                next();
+              }
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: `can't delete, Application is under proccess`
+          };
+          next();
+          return;
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  } else {
+    req.records = {
+      invalid_input: true,
+      message: "please provide valid input"
+    };
+
+    next();
+    return;
+  }
+}
+
 
 
 };
