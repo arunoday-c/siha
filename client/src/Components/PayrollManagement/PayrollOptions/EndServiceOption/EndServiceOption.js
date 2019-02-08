@@ -8,6 +8,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 export default class EndServiceOption extends Component {
   constructor(props) {
@@ -18,6 +19,19 @@ export default class EndServiceOption extends Component {
     };
     this.getEosOptions();
     this.getEarnings();
+  }
+
+  addEarningComponent() {
+    AlgaehValidation({
+      querySelector: "data-validate='addErndv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        swalMessage({
+          title: "EEEEEEE",
+          type: "success"
+        });
+      }
+    });
   }
 
   getEarnings() {
@@ -72,9 +86,15 @@ export default class EndServiceOption extends Component {
   }
 
   dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
+    debugger;
+    this.setState(
+      {
+        [value.name]: value.value
+      },
+      () => {
+        console.log("State", this.state);
+      }
+    );
   }
 
   render() {
@@ -360,7 +380,7 @@ export default class EndServiceOption extends Component {
                       <div className="col-12">
                         <div className="row">
                           <AlagehFormGroup
-                            div={{ className: "col form-group mandatory" }}
+                            div={{ className: "col-3 form-group mandatory" }}
                             label={{
                               forceLabel: "From Range",
                               isImp: false
@@ -380,7 +400,7 @@ export default class EndServiceOption extends Component {
                           />
 
                           <AlagehFormGroup
-                            div={{ className: "col form-group" }}
+                            div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "To Range",
                               isImp: false
@@ -399,7 +419,7 @@ export default class EndServiceOption extends Component {
                           />
 
                           <AlagehFormGroup
-                            div={{ className: "col form-group" }}
+                            div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "Eligible Days",
                               isImp: false
@@ -418,7 +438,7 @@ export default class EndServiceOption extends Component {
                           />
 
                           <div
-                            className="col-lg-2 align-middle"
+                            className="col-3 align-middle"
                             style={{ paddingTop: 21 }}
                           >
                             <button
@@ -473,12 +493,13 @@ export default class EndServiceOption extends Component {
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <div className="row">
+                        <div className="row" data-validate="addErndv">
                           <AlagehAutoComplete
-                            div={{ className: "col-4 form-group" }}
-                            label={{ forceLabel: "Earnings", isImp: false }}
+                            div={{ className: "col form-group" }}
+                            label={{ forceLabel: "Earnings", isImp: true }}
                             selector={{
                               name: "earning_id",
+                              multiselect: true,
                               className: "select-fld",
                               dataSource: {
                                 textField: "earning_deduction_description",
@@ -494,11 +515,11 @@ export default class EndServiceOption extends Component {
                             }}
                           />
                           <div
-                            className="col-lg-2 align-middle"
+                            className="col-2 align-middle"
                             style={{ paddingTop: 21 }}
                           >
                             <button
-                              // onClick={this.addIDType.bind(this)}
+                              onClick={this.addEarningComponent.bind(this)}
                               className="btn btn-primary"
                             >
                               Add to List
