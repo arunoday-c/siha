@@ -115,6 +115,17 @@ let algaehReportConfig = reportName => {
           AB.employee_id=E.hims_d_employee_id inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
           where date(absent_date) between date(?) and date(?)",
         questionOrder: ["from_date", "to_date"]
+      },
+      {
+        reportName: "loanApplication",
+        reportQuery:
+          "select loan_application_number,employee_id,loan_id,application_reason,loan_application_date,\
+          loan_authorized,loan_closed,loan_amount,approved_amount,start_month,start_year,loan_tenure,\
+          pending_tenure,installment_amount,pending_loan,loan_dispatch_from,E.employee_code,E.full_name as employee_name,\
+          SD.sub_department_code,SD.sub_department_name from hims_f_loan_application LA inner join  hims_d_employee E on \
+           LA.employee_id=E.hims_d_employee_id inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+           where date(loan_application_date) between date(?) and date(?)",
+        questionOrder: ["from_date", "to_date"]
       }
     ]
   };
