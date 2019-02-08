@@ -822,6 +822,7 @@ module.exports = {
           next(e);
         });
     } else {
+      _mysql.releaseConnection();
       req.records = {
         invalid_input: true,
         message: "please provide valid input"
@@ -867,6 +868,7 @@ module.exports = {
           next(e);
         });
     } else {
+      _mysql.releaseConnection();
       req.records = {
         invalid_input: true,
         message: "please provide valid year and month"
@@ -924,12 +926,14 @@ module.exports = {
           })
           .catch(e => {
             _mysql.rollBackTransaction(() => {
+              _mysql.releaseConnection();
               next(e);
             });
           });
       })
       .catch(e => {
         _mysql.rollBackTransaction(() => {
+          _mysql.releaseConnection();
           next(e);
         });
       });
@@ -973,6 +977,7 @@ module.exports = {
           next(e);
         });
     } else {
+      _mysql.releaseConnection();
       req.records = {
         invalid_input: true,
         message: "please provide valid input"
@@ -981,5 +986,73 @@ module.exports = {
       next();
       return;
     }
-  }
+  },
+
+    //created by irfan:
+    getEmployeeAttendReg: (req, res, next) => {
+      const _mysql = new algaehMysql();
+      const utilities = new algaehUtilities();
+   
+      let dateRange = "";
+      let employee = "";
+      if (
+        req.query.from_date != "" &&
+        req.query.from_date != null &&
+        req.query.from_date != "null" &&
+        req.query.to_date != "" &&
+        req.query.to_date != null &&
+        req.query.to_date != "null"
+      ) {
+        dateRange = ` date(attendance_date)
+        between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+      }
+  
+      if (
+        req.query.employee_id != "" &&
+        req.query.employee_id != null &&
+        req.query.employee_id != "null"
+      ) {
+        employee = ` employee_id=${req.query.employee_id} `;
+      }
+  
+      if (dateRange == "" && employee == "") {
+        req.records = {
+          invalid_input: true,
+          message: "please provide valid input"
+        };
+        next();
+        return;
+      }
+      else {
+
+        _mysql
+        .executeQuery({
+          query:
+          "select hims_f_attendance_regularize_id,regularization_code,employee_id,\
+          E.employee_code,E.full_name as employee_name ,attendance_date,\
+          regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
+          regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
+          from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where" +
+            employee +
+            "" +
+            dateRange +
+            " order by\
+          hims_f_attendance_regularize_id desc ;"
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+      _mysql.releaseConnection();
+          next(e);
+        });
+
+      }
+
+
+
+    }
 };
