@@ -26,7 +26,8 @@ const VisitSearch = ($this, e) => {
         },
         () => {
           algaehApiCall({
-            uri: "/insurance/getPatientInsurance",
+            uri: "/patientRegistration/getPatientInsurance",
+            module: "frontDesk",
             method: "GET",
             data: {
               patient_id: $this.state.patient_id,
@@ -69,7 +70,6 @@ const getVisitWiseBillDetailS = $this => {
     method: "GET",
     data: inputobj,
     onSuccess: response => {
-      
       AlgaehLoader({ show: true });
       if (response.data.success) {
         let data = response.data.records;
@@ -259,7 +259,6 @@ const getCtrlCode = ($this, docNumber) => {
       mappingName: "invoiceGen"
     },
     afterSuccess: data => {
-      
       data.generateVoice = false;
       data.clearEnable = false;
 

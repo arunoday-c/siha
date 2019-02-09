@@ -85,14 +85,108 @@ module.exports = {
     try {
       const _mysql = new algaehMysql();
 
-      const utilities = new algaehUtilities();
+      req.mySQl = _mysql;
+      //Patient
       _mysql
         .generateRunningNumber({
-          modules: ["PAT_REGS", "PAT_VISIT"]
+          modules: ["PAT_REGS"]
         })
         .then(generatedNumbers => {
-          utilities.logger().log("generatedNumbers: ", generatedNumbers);
-          req.genNumber = generatedNumbers;
+          req.body.patient_code = generatedNumbers[0];
+
+          //Visit
+          _mysql
+            .generateRunningNumber({
+              modules: ["PAT_VISIT"]
+            })
+            .then(generatedNumbers => {
+              req.body.visit_code = generatedNumbers[0];
+
+              //Bill
+              _mysql
+                .generateRunningNumber({
+                  modules: ["PAT_BILL"]
+                })
+                .then(generatedNumbers => {
+                  req.body.bill_number = generatedNumbers[0];
+
+                  //Receipt
+                  _mysql
+                    .generateRunningNumber({
+                      modules: ["RECEIPT"]
+                    })
+                    .then(generatedNumbers => {
+                      req.body.receipt_number = generatedNumbers[0];
+                      next();
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+  updateFrontDesk: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      const utilities = new algaehUtilities();
+      req.mySQl = _mysql;
+      //Visit
+      _mysql
+        .generateRunningNumber({
+          modules: ["PAT_VISIT"]
+        })
+        .then(generatedNumbers => {
+          req.body.visit_code = generatedNumbers[0];
+
+          //Bill
+          _mysql
+            .generateRunningNumber({
+              modules: ["PAT_BILL"]
+            })
+            .then(generatedNumbers => {
+              req.body.bill_number = generatedNumbers[0];
+
+              //Receipt
+              _mysql
+                .generateRunningNumber({
+                  modules: ["RECEIPT"]
+                })
+                .then(generatedNumbers => {
+                  req.body.receipt_number = generatedNumbers[0];
+                  next();
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {

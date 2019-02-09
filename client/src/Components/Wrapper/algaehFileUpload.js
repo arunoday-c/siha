@@ -26,27 +26,38 @@ export default class AlgaehFileUploader extends Component {
     };
   }
   componentWillReceiveProps(nextProps) {
-    if (this.state.croppingDone === true && nextProps.saveFile !== undefined) {
-      this.setState({
-        croppingDone: false
-      });
-      this.SavingImageOnServer();
-    }
-    if (
-      nextProps.serviceParameters.uniqueID !==
-      this.props.serviceParameters.uniqueID
-    ) {
-      this.getDisplayImage(nextProps);
+    if (nextProps.onlyDragDrop === undefined) {
+      if (
+        this.state.croppingDone === true &&
+        nextProps.saveFile !== undefined
+      ) {
+        this.setState({
+          croppingDone: false
+        });
+        this.SavingImageOnServer();
+      }
+      if (
+        nextProps.serviceParameters.uniqueID !==
+        this.props.serviceParameters.uniqueID
+      ) {
+        this.getDisplayImage(nextProps);
+      }
     }
   }
   componentDidMount() {
-    if (
-      this.props.onref !== undefined &&
-      typeof this.props.onref === "function"
-    ) {
-      this.props.onref(this);
-      this.getDisplayImage(this.props);
-    } else this.getDisplayImage(this.props);
+    if (this.props.onlyDragDrop === undefined) {
+      if (
+        this.props.onref !== undefined &&
+        typeof this.props.onref === "function"
+      ) {
+        this.props.onref(this);
+        this.getDisplayImage(this.props);
+      } else this.getDisplayImage(this.props);
+    } else {
+      this.setState({
+        filePreview: undefined
+      });
+    }
   }
   componentWillUnmount() {
     if (
@@ -129,17 +140,9 @@ export default class AlgaehFileUploader extends Component {
       return true;
     } else return false;
   }
-  // resizingAndCompressImage(file) {
-  //   const _buffer = sharp(file.preview)
-  //     .webp({
-  //       lossless: true,
-  //       alphaQuality: 80
-  //     })
-  //     .toBuffer();
-  //   return new Buffer(_buffer).toString("base64");
-  // }
 
   dropZoneHandlerOnDrop(file) {
+    debugger;
     if (file.length === 0) {
       return;
     }
@@ -172,12 +175,18 @@ export default class AlgaehFileUploader extends Component {
       };
       //---End compression
     } else {
-      this.setState({
-        fileExtention: _fileExtention[_fileExtention.length - 1],
-        croppingDone: false
-      });
+      const reader = new FileReader();
+      reader.readAsDataURL(_file);
+      const _result = reader.result;
+
+      // this.setState({
+      //   fileExtention: _fileExtention[_fileExtention.length - 1],
+      //   filePreview: _result,
+      //   croppingDone: false
+      // });
     }
   }
+
   onCloseCropperHandler(e) {
     const _from = e.target.getAttribute("from");
     if (_from === "crop")
@@ -276,19 +285,15 @@ export default class AlgaehFileUploader extends Component {
     fileExtention = fileExtention || that.state.fileExtention;
     //
 
-    const _pageName = getCookie("ScreenName").replace("/", "");
+    const _pageName =
+      this.props.pageName !== undefined
+        ? this.props.pageName
+        : getCookie("ScreenName").replace("/", "");
     const _needConvertion =
       that.props.needConvertion === undefined
         ? {}
         : { needConvertion: that.props.needConvertion };
     const _splitter = dataToSave.split(",");
-    // const mime = _splitter[0].match(/:(.*?);/)[1];
-    // const _blob = atob(_splitter[1]);
-    // const reader = new FileReader();
-    // reader.readAsArrayBuffer([_blob], { type: mime });
-
-    // reader.onloadend = () => {
-    //console.log("Render result", reader.result);
     algaehApiCall({
       uri: "/Document/save",
       method: "POST",
@@ -428,52 +433,92 @@ export default class AlgaehFileUploader extends Component {
     const _showActions =
       this.props.showActions === undefined ? true : this.props.showActions;
     const _disabled = { disabled: !_showActions };
-    if (_showControl) {
+    const _onDragDrop =
+      this.props.onlyDragDrop === undefined ? false : this.props.onlyDragDrop;
+    if (!_onDragDrop) {
+      if (_showControl) {
+        return (
+          <React.Fragment>
+            {this.cropperImplement()}
+            {this.zoomImageImplement()}
+            {this.implementWebCam()}
+            <div className="image-drop-area">
+              <Dropzone
+                className="dropzone"
+                name={this.props.name + "_DropZone"}
+                onDrop={this.dropZoneHandlerOnDrop.bind(this)}
+                {..._accept}
+                {..._disabled}
+              >
+                <img
+                  src={this.state.filePreview}
+                  alt={_alt}
+                  ref={ref => {
+                    this.imager = ref;
+                  }}
+                />
+                {this.implementProgressBar()}
+              </Dropzone>
+              {this.implementLoader()}
+
+              {_showActions ? (
+                <div className="img-upload-actions">
+                  <i
+                    className="fas fa-paperclip"
+                    onClick={this.showAttachmentHandler.bind(this)}
+                  />
+                  <i
+                    className="fas fa-camera"
+                    onClick={this.webCamHandler.bind(this)}
+                  />
+                  <i
+                    className="fas fa-search-plus"
+                    onClick={this.zoomHandler.bind(this)}
+                  />
+                </div>
+              ) : null}
+            </div>
+          </React.Fragment>
+        );
+      } else {
+        return <React.Fragment />;
+      }
+    } else {
       return (
         <React.Fragment>
-          {this.cropperImplement()}
-          {this.zoomImageImplement()}
-          {this.implementWebCam()}
-          <div className="image-drop-area">
-            <Dropzone
-              className="dropzone"
-              name={this.props.name + "_DropZone"}
-              onDrop={this.dropZoneHandlerOnDrop.bind(this)}
-              {..._accept}
-              {..._disabled}
-            >
-              <img
-                src={this.state.filePreview}
-                alt={_alt}
-                ref={ref => {
-                  this.imager = ref;
-                }}
-              />
-              {this.implementProgressBar()}
-            </Dropzone>
-            {this.implementLoader()}
+          <Dropzone
+            className="dropzone"
+            maxSize={15728640}
+            {..._accept}
+            onDrop={this.dropZoneHandlerOnDrop.bind(this)}
+          >
+            <div className="upload-drop-zone">
+              <b> {this.props.textAltMessage} </b>
+              <br />
+              <span>drag and drop files here</span>
+            </div>
+            {this.implementProgressBar()}
+          </Dropzone>
+          {this.implementLoader()}
 
-            {_showActions ? (
-              <div className="img-upload-actions">
-                <i
-                  className="fas fa-paperclip"
-                  onClick={this.showAttachmentHandler.bind(this)}
-                />
-                <i
-                  className="fas fa-camera"
-                  onClick={this.webCamHandler.bind(this)}
-                />
-                <i
-                  className="fas fa-search-plus"
-                  onClick={this.zoomHandler.bind(this)}
-                />
-              </div>
-            ) : null}
-          </div>
+          {_showActions ? (
+            <div className="img-upload-actions">
+              <i
+                className="fas fa-paperclip"
+                onClick={this.showAttachmentHandler.bind(this)}
+              />
+              <i
+                className="fas fa-camera"
+                onClick={this.webCamHandler.bind(this)}
+              />
+              <i
+                className="fas fa-search-plus"
+                onClick={this.zoomHandler.bind(this)}
+              />
+            </div>
+          ) : null}
         </React.Fragment>
       );
-    } else {
-      return <React.Fragment />;
     }
   }
 }
