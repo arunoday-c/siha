@@ -58,12 +58,10 @@ module.exports = {
          
         }
         if (selectWhere.sub_department_id != null) {
-          department = " and sub_department_id="+selectWhere.sub_department_id;
-         
+          department = " and sub_department_id="+selectWhere.sub_department_id;         
         }
         let deleteString=` delete from hims_f_attendance_monthly where employee_id>0 and year=${year} and
-                         month=${month_number}  ${hospital} ${department};`;
-                         utilities.logger().log("deleteString: ", deleteString);
+                         month=${month_number}  ${hospital} ${department};`;                       
 
     //---------delete old records
         let _stringData = "";
