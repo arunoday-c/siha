@@ -102,7 +102,7 @@ class SalaryPayment extends Component {
                 isImp: true
               }}
               selector={{
-                name: "month",
+                sort: "off", name: "month",
                 className: "select-fld",
                 value: this.state.month,
                 dataSource: {
@@ -117,7 +117,7 @@ class SalaryPayment extends Component {
                   });
                 },
                 others: {
-                  disabled: this.state.lockEarnings
+                  disabled: this.state.lockEarnings,
                 }
               }}
             />

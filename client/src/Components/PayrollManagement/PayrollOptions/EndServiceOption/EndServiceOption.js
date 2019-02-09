@@ -602,7 +602,7 @@ export default class EndServiceOption extends Component {
             </div>
           </div>
 
-          <div className="col-12">
+          <div className="col-12" style={{ marginBottom: 50 }}>
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">

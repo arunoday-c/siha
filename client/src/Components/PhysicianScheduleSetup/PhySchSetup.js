@@ -979,7 +979,7 @@ class PhySchSetup extends Component {
                           fieldName: "sel_month"
                         }}
                         selector={{
-                          name: "month",
+                          sort:"off",name: "month",
                           className: "select-fld",
                           value: this.state.month,
                           dataSource: {
@@ -1396,7 +1396,7 @@ class PhySchSetup extends Component {
                           fieldName: "sel_month"
                         }}
                         selector={{
-                          name: "month",
+                          sort:"off",name: "month",
                           className: "select-fld",
                           value: this.state.month,
                           dataSource: {
@@ -1732,7 +1732,7 @@ class PhySchSetup extends Component {
               fieldName: "sel_month"
             }}
             selector={{
-              name: "month",
+              sort:"off",name: "month",
               className: "select-fld",
               value: this.state.month,
               dataSource: {

@@ -243,7 +243,7 @@ class LeaveSalaryProcess extends Component {
                         label: <AlgaehLabel label={{ forceLabel: "Year" }} />
                       },
                       {
-                        fieldName: "month",
+                        fieldsort:"off",name: "month",
                         label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
                         displayTemplate: row => {
                           let display = GlobalVariables.MONTHS.filter(
