@@ -111,11 +111,11 @@ export default class EmployeeShiftRostering extends Component {
 								<div className="caption">
 									<h3 className="caption-subject">Shift Roasting List</h3>
 								</div>
-								{/* <div className="actions">
-									<a className="btn btn-primary btn-circle active">
-										<i className="fas fa-pen" />
-									</a>
-								</div> */}
+								<div className="actions">
+									<span style={{ background: "#3f9c62" }} className="legends">Weekly Off (WO)</span>
+									<span style={{ background: "#3f789c" }} className="legends">Holiday (H)</span>
+									<span style={{ background: "#879c3f" }} className="legends">Leave Authorized (LV)</span>
+									<span style={{ background: "#9c7d3f" }} className="legends">Leave Applied (LA)</span></div>
 							</div>
 							<div className="portlet-body">
 								<div className="col-12" id="shiftRosterTable">
@@ -157,29 +157,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -187,29 +187,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -217,29 +217,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -247,29 +247,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -277,29 +277,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -307,29 +307,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -337,29 +337,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -367,29 +367,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -397,29 +397,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -427,29 +427,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -457,29 +457,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -487,29 +487,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -517,29 +517,29 @@ export default class EmployeeShiftRostering extends Component {
 												<tr>
 													<td>Emp 34754534</td>
 													<td>Mr. Donald Broad - Regional Managing Director</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
-													<td>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
+													<td style={{ background: "lightgray" }}>C1</td>
 													<td />
 													<td />
 													<td />
@@ -552,6 +552,113 @@ export default class EmployeeShiftRostering extends Component {
 						</div>
 					</div>
 				</div>
+				<div className="row">
+					<div className="col-12">
+						<div className="portlet portlet-bordered margin-bottom-15">
+
+							<div className="portlet-body">
+								<div className="row">
+									<div className="col">
+										{/* <label>Calculation Method</label> */}
+										<div className="customCheckbox">
+											<label className="checkbox inline">
+												<input
+													type="checkbox"
+													value=""
+													name=""
+												/>
+												<span>Swap Employee</span>
+											</label>
+										</div>
+									</div>
+
+									<AlgaehDateHandler
+										div={{ className: "col" }}
+										label={{
+											forceLabel: "Start date",
+											isImp: false
+										}}
+										textBox={{
+											className: "txt-fld",
+											name: ""
+										}}
+										maxDate={new Date()}
+										events={{}}
+									/>
+
+									<AlgaehDateHandler
+										div={{ className: "col" }}
+										label={{
+											forceLabel: "To date",
+											isImp: false
+										}}
+										textBox={{
+											className: "txt-fld",
+											name: ""
+										}}
+										maxDate={new Date()}
+										events={{}}
+									/>
+
+
+									<div className="col-3" style={{ marginTop: 10 }}>
+										<div
+											className="row"
+											style={{
+												border: ' 1px solid #ced4d9',
+												borderRadius: 5,
+												marginLeft: 0,
+												marginRight: 0
+											}}
+										>
+											<div className="col">
+												<AlgaehLabel label={{ forceLabel: 'Select From Employee.' }} />
+												<h6>----</h6>
+											</div>
+											<div className="col-lg-3" style={{ borderLeft: '1px solid #ced4d8' }}>
+												<i
+													className="fas fa-search fa-lg"
+													style={{
+														paddingTop: 17,
+														paddingLeft: 3,
+														cursor: 'pointer'
+													}}
+												/>
+											</div>
+										</div>
+									</div>
+
+									<div className="col-3" style={{ marginTop: 10 }}>
+										<div
+											className="row"
+											style={{
+												border: ' 1px solid #ced4d9',
+												borderRadius: 5,
+												marginLeft: 0,
+												marginRight: 0
+											}}
+										>
+											<div className="col">
+												<AlgaehLabel label={{ forceLabel: 'Select to Employee.' }} />
+												<h6>----</h6>
+											</div>
+											<div className="col-lg-3" style={{ borderLeft: '1px solid #ced4d8' }}>
+												<i
+													className="fas fa-search fa-lg"
+													style={{
+														paddingTop: 17,
+														paddingLeft: 3,
+														cursor: 'pointer'
+													}}
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div></div></div>
+
+
 			</div>
 		);
 	}

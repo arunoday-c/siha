@@ -24,8 +24,8 @@ class LoanModal extends Component {
   componentWillReceiveProps(nextProps) {
     nextProps.open === true
       ? this.setState(nextProps.data, () => {
-          this.getEmployeeLoans();
-        })
+        this.getEmployeeLoans();
+      })
       : null;
   }
 
@@ -126,15 +126,15 @@ class LoanModal extends Component {
               if (res.data.success) {
                 type === "A"
                   ? swalMessage({
-                      title: "Loan Authorized Successfully",
-                      type: "success"
-                    })
+                    title: "Loan Authorized Successfully",
+                    type: "success"
+                  })
                   : type === "R"
-                  ? swalMessage({
+                    ? swalMessage({
                       title: "Loan Rejected",
                       type: "success"
                     })
-                  : null;
+                    : null;
 
                 document.getElementById("loan-reload").click();
               }
@@ -175,14 +175,14 @@ class LoanModal extends Component {
             </div>
 
             <div className="col form-group">
+              <AlgaehLabel label={{ forceLabel: "Requested Amount" }} />
+              <h6>{this.state.loan_amount}</h6>
+            </div>
+            <div className="col form-group">
               <AlgaehLabel label={{ forceLabel: "Loan Type" }} />
               <h6>{this.state.loan_description}</h6>
             </div>
 
-            <div className="col form-group">
-              <AlgaehLabel label={{ forceLabel: "Requested Amount" }} />
-              <h6>{this.state.loan_amount}</h6>
-            </div>
 
             <div className="col form-group">
               <AlgaehLabel label={{ forceLabel: "Authorization Level" }} />
@@ -335,8 +335,8 @@ class LoanModal extends Component {
                           ) : row.loan_authorized === "IS" ? (
                             <span className="badge badge-success">Issued</span>
                           ) : (
-                            "------"
-                          )}
+                                    "------"
+                                  )}
                         </span>
                       );
                     }

@@ -1,4 +1,11 @@
 .EmpShiftRost_Screen {
+	.legends{
+		color: white;
+		font-size: 12px;
+		padding: 5px;
+		font-size: 0.7em;
+		border-radius: 6px;
+	}
 	#shiftRosterTable {
 		overflow: auto;
 		border: 1px solid #d2d2d2;
@@ -7,7 +14,7 @@
 			box-sizing: border-box;
 			table-layout: fixed;
 			min-height: 20vh;
-			max-height: 70vh;
+			max-height: 55vh;
 			thead {
 				th {
 					//			display: table-cell;
