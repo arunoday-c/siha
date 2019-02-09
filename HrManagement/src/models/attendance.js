@@ -85,8 +85,7 @@ module.exports = {
 
         utilities.logger().log("inputValues: ", inputValues);
 
-        // Sync(() => {
-        // .sync(null,
+     
         _mysql
         .executeQuery({
           query:
