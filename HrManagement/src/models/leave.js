@@ -10,10 +10,11 @@ import algaehUtilities from "algaeh-utilities/utilities";
 module.exports = {
   //created by irfan: to
   authorizeLeave: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    
     const input = req.body;
     let salary_processed = "N";
     if (req.userIdentity.leave_authorize_privilege != "N") {
+      const _mysql = new algaehMysql();
       // get highest auth level
       getMaxAuth({
         mysql: _mysql
@@ -411,7 +412,10 @@ module.exports = {
               });
           });
         }
-      });
+      }).catch(e => {
+        _mysql.releaseConnection();
+            next(e);
+          });
     } else {
       req.records = {
         invalid_user: true,
@@ -1011,7 +1015,7 @@ module.exports = {
 //created by irfan:
 applyEmployeeLeave: (req, res, next) => {
   try {
-    const _mysql = new algaehMysql();
+   
     let input = req.body;
   
     const m_fromDate = moment(input.from_date).format("YYYY-MM-DD");
@@ -1033,6 +1037,9 @@ applyEmployeeLeave: (req, res, next) => {
       next();
       return;
     } else if (from_year == to_year) {
+
+
+      const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
           query:
@@ -1539,13 +1546,13 @@ applyEmployeeLeave: (req, res, next) => {
 },
 //created by irfan: to get which leaves applicable  for employee 
 getEmployeeLeaveData: (req, res, next) => {
-  const _mysql = new algaehMysql();
+  
  
   if (
     req.query.year > 0 &&
     req.query.employee_id > 0
   ) {
-      
+    const _mysql = new algaehMysql();
 
     _mysql
     .executeQuery({
@@ -1593,12 +1600,12 @@ getEmployeeLeaveData: (req, res, next) => {
 },
 //created by irfan: to get all employees whose yearly leave is proccessed
 getYearlyLeaveData: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
  
   if (
     req.query.year > 0 
   ) {
-     
+    const _mysql = new algaehMysql(); 
 
     _mysql
     .executeQuery({
@@ -1642,7 +1649,7 @@ getYearlyLeaveData: (req, res, next) => {
 },
 //created by irfan: to get all leave history about employee
 getEmployeeLeaveHistory: (req, res, next) => {
-  const _mysql = new algaehMysql();
+  
 
 
   let status = "";
@@ -1653,7 +1660,7 @@ getEmployeeLeaveHistory: (req, res, next) => {
   if (
     req.query.employee_id > 0 
   ) { 
-
+    const _mysql = new algaehMysql();
     _mysql
     .executeQuery({
       query:
@@ -1992,6 +1999,7 @@ addLeaveMaster: (req, res, next) => {
     })
     .catch(e => {
       _mysql.rollBackTransaction(() => {
+        _mysql.releaseConnection();
         next(e);
       });
     });
@@ -1999,7 +2007,7 @@ addLeaveMaster: (req, res, next) => {
 
 //created by irfan: to assign leaves for all employees for a purticular year
 processYearlyLeave: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
   const utilities = new algaehUtilities();
  
   let year = "";
@@ -2020,7 +2028,7 @@ processYearlyLeave: (req, res, next) => {
 
   if (req.query.year > 0) {
     year = req.query.year;
-
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2326,7 +2334,7 @@ processYearlyLeave: (req, res, next) => {
 
 //created by irfan: to show leave application to authorize
 getLeaveApllication: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
 
   let employee = "";
   let range = "";
@@ -2380,6 +2388,7 @@ getLeaveApllication: (req, res, next) => {
   }
 
   if (req.userIdentity.leave_authorize_privilege != "N") {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2426,10 +2435,11 @@ getLeaveApllication: (req, res, next) => {
 
 //created by irfan: update leave header
 updateLeaveMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
   const utilities = new algaehUtilities();
   let input =  req.body;
   if (input.hims_d_leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2487,10 +2497,11 @@ updateLeaveMaster: (req, res, next) => {
 },
 //created by irfan: to get leave details
 getLeaveDetailsMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
 
-  if (req.query.hims_d_leave_id > 0) {
+  if (req.query.leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2499,7 +2510,7 @@ getLeaveDetailsMaster: (req, res, next) => {
           once_life_term, allow_probation, max_number_days, mandatory_utilize_days\
           from hims_d_leave_detail where leave_header_id=?",
 
-        values: [req.query.hims_d_leave_id],
+        values: [req.query.leave_id],
 
         printQuery: true
       })
@@ -2524,10 +2535,12 @@ getLeaveDetailsMaster: (req, res, next) => {
 },
 //created by irfan: to add leave detail
 addLeaveDetailMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
   let input = req.body;
   if (input.leave_id > 0) {
+
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2577,10 +2590,11 @@ addLeaveDetailMaster: (req, res, next) => {
 
 //created by irfan:
 deleteLeaveEncash: (req, res, next) => {
-  const _mysql = new algaehMysql();
+  
   const utilities = new algaehUtilities();
 
   if (req.body.hims_d_leave_encashment_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2619,10 +2633,11 @@ deleteLeaveEncash: (req, res, next) => {
 },
 //created by irfan:
 deleteLeaveRule: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
   const utilities = new algaehUtilities();
 
   if (req.body.hims_d_leave_rule_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2661,10 +2676,11 @@ deleteLeaveRule: (req, res, next) => {
 },
 //created by irfan:
 deleteLeaveDetail: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
 
   if (req.body.hims_d_leave_detail_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2704,10 +2720,11 @@ deleteLeaveDetail: (req, res, next) => {
 
 //created by irfan: to addLeave Encashment Master
 addLeaveEncashmentMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+ 
   const utilities = new algaehUtilities();
   let input = req.body;
   if (input.leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2747,10 +2764,12 @@ addLeaveEncashmentMaster: (req, res, next) => {
 },
 //created by irfan: to addLeaveRulesMaster
 addLeaveRulesMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
   let input = req.body;
   if (input.leave_id > 0) {
+
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2794,10 +2813,10 @@ addLeaveRulesMaster: (req, res, next) => {
 
 //created by irfan: to 
 getLeaveEncashmentMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+
 
   if (req.query.leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2830,10 +2849,11 @@ getLeaveEncashmentMaster: (req, res, next) => {
 },
 //created by irfan: to 
 getLeaveRulesMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+
+
 
   if (req.query.leave_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2867,10 +2887,11 @@ getLeaveRulesMaster: (req, res, next) => {
 
 //created by irfan: 
 updateLeaveDetailMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
+
   const utilities = new algaehUtilities();
   let input =  req.body;
   if (input.hims_d_leave_detail_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2929,10 +2950,10 @@ updateLeaveDetailMaster: (req, res, next) => {
 },
 //created by irfan: 
 updateLeaveEncashMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+
   let input =  req.body;
   if (input.hims_d_leave_encashment_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -2981,10 +3002,10 @@ updateLeaveEncashMaster: (req, res, next) => {
 },
 //created by irfan: 
 updateLeaveRuleMaster: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+ 
   let input =  req.body;
   if (input.hims_d_leave_rule_id > 0) {
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -3036,10 +3057,11 @@ updateLeaveRuleMaster: (req, res, next) => {
 },
 //created by irfan:
 deleteLeaveApplication: (req, res, next) => {
-  const _mysql = new algaehMysql();
-  const utilities = new algaehUtilities();
+  
   let input = req.body;
   if (input.hims_f_leave_application_id > 0) {
+
+    const _mysql = new algaehMysql();
     _mysql
       .executeQuery({
         query:
@@ -3103,9 +3125,274 @@ deleteLeaveApplication: (req, res, next) => {
     next();
     return;
   }
+},
+//created by irfan:
+cancelLeave: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  const utilities = new algaehUtilities();
+  let input = req.body;
+
+  getMaxAuth({
+    mysql: _mysql
+  })
+    .then(result => {
+      if (req.userIdentity.leave_authorize_privilege == result.MaxLeave) {
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_f_leave_application_id,leave_application_code ,`status`\
+           from hims_f_leave_application where hims_f_leave_application_id=? ",
+            values: [input.hims_f_leave_application_id],
+
+            printQuery: true
+          })
+          .then(leaveStaus => {
+            
+          if(leaveStaus.length>0){
+            if (leaveStaus[0]["status"] == "APR") {
+              const month_number = moment(input.from_date).format("M");
+              _mysql
+                .executeQuery({
+                  query:
+                    "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid from \
+                    hims_f_salary where `month`=? and `year`=? and employee_id=? ",
+                  values: [month_number, input.year, input.employee_id],
+
+                  printQuery: true
+                })
+                .then(salResult => {
+                  utilities.logger().log("salResult: ", salResult);
+
+                  if (
+                    salResult.length < 1 ||
+                    (salResult.length > 0 &&
+                      salResult[0]["salary_processed"] == "N" &&
+                      salResult[0]["salary_paid"] == "N")
+                  ) {
+                    //YOU CAN CANCEL
+
+                    //------------------------------------------------------------------
+
+                    calc(_mysql, req.body)
+                      .then(deductionResult => {
+                        if (deductionResult.invalid_input == true) {
+                          _mysql.releaseConnection();
+
+
+                          req.records = deductionResult;
+                          next();
+                          return;
+                        } else {
+                          utilities.logger().log("deductionResult: ", deductionResult);
+                          return deductionResult;
+                          
+                        }
+                      })
+                      .then(deductionResult => {
+                        utilities.logger().log("deductionResult 55: ", deductionResult);
+                        let monthArray = new LINQ(
+                          deductionResult.monthWiseCalculatedLeaveDeduction
+                        )
+                          .Select(s => s.month_name)
+                          .ToArray();
+
+                        if (monthArray.length > 0) {
+                          _mysql
+                            .executeQuery({
+                              query: `select hims_f_employee_monthly_leave_id, total_eligible,close_balance, ${monthArray} ,availed_till_date
+                               from hims_f_employee_monthly_leave where
+                              employee_id=? and year=? and leave_id=?`,
+                              values: [
+                                input.employee_id,
+                                input.year,
+                                input.leave_id
+                              ],
+
+                              printQuery: true
+                            })
+                            .then(monthlyLeaveData => {
+                              let updateMonths = {};
+                              let newCloseBal =
+                                parseFloat(
+                                  monthlyLeaveData[0]["close_balance"]
+                                ) +
+                                parseFloat(deductionResult.calculatedLeaveDays);
+                              let newAvailTillDate =
+                                parseFloat(
+                                  monthlyLeaveData[0]["availed_till_date"]
+                                ) -
+                                parseFloat(deductionResult.calculatedLeaveDays);
+                              for (
+                                let i = 0;
+                                i <
+                                deductionResult
+                                  .monthWiseCalculatedLeaveDeduction.length;
+                                i++
+                              ) {
+                                Object.keys(monthlyLeaveData[0]).map(key => {
+                                  // debugLog("ke:",key);
+                                  // debugLog("m name",deductionResult.monthWiseCalculatedLeaveDeduction[i]["month_name"]);
+                                  if (
+                                    key ==
+                                    deductionResult
+                                      .monthWiseCalculatedLeaveDeduction[i][
+                                      "month_name"
+                                    ]
+                                  ) {
+                                    updateMonths = {
+                                      ...updateMonths,
+                                      [key]:
+                                        parseFloat(monthlyLeaveData[0][key]) -
+                                        parseFloat(
+                                          deductionResult
+                                            .monthWiseCalculatedLeaveDeduction[
+                                            i
+                                          ]["finalLeave"]
+                                        )
+                                    };
+                                  }
+                                });
+                              }
+
+                              //oooooooooooooooooooo
+
+                              _mysql
+                                .executeQueryWithTransaction({
+                                  query:
+                                    " update hims_f_leave_application set status='CAN',cancelled_date='" +
+                                    moment().format("YYYY-MM-DD") +
+                                    "',\
+                                    cancelled_by=" +
+                                    req.userIdentity.algaeh_d_app_user_id +
+                                    ",cancelled_remarks='" +
+                                    input.cancelled_remarks +
+                                    "' where record_status='A' \
+                                     and hims_f_leave_application_id=" +
+                                    input.hims_f_leave_application_id +
+                                    ";update hims_f_employee_monthly_leave set ?  where \
+                                      hims_f_employee_monthly_leave_id='" +
+                                    monthlyLeaveData[0]
+                                      .hims_f_employee_monthly_leave_id +
+                                    "'",
+                                  values: [
+                                    {
+                                      ...updateMonths,
+                                      close_balance: newCloseBal,
+                                      availed_till_date: newAvailTillDate
+                                    }
+                                  ],
+
+                                  printQuery: true
+                                })
+                                .then(finalRes => {
+                                  _mysql.commitTransaction(() => {
+                                    _mysql.releaseConnection();
+                                    req.records = finalRes;
+                                    next();
+                                  });
+                                })
+                                .catch(e => {
+                                  reject(error);
+                                  _mysql.rollBackTransaction(() => {
+                                    next(error);
+                                  });
+                                });
+                              //oooooooooooooooooooo
+                            })
+                            .catch(e => {
+                              _mysql.releaseConnection();
+                              next(e);
+                            });
+                        } else {
+                          _mysql.releaseConnection();
+                          req.records = {
+                            invalid_input: true,
+                            message: "leaves not found"
+                          };
+                          next();
+                          return;
+                        }
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                        reject(e);
+                      });
+
+                    //------------------------------------------------------------------
+                  } else {
+                    //salary is proceesd
+
+                    _mysql.releaseConnection();
+                    req.records = {
+                      invalid_input: true,
+                      message: "salary is already processed"
+                    };
+                    next();
+                    return;
+                  }
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            } else if (leaveStaus[0]["status"] == "CAN") {
+              // already cancelled
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "leave already cancelled"
+              };
+              next();
+              return;
+            } else {
+              // already cancelled
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "cant cancel,leave is not Approved yet"
+              };
+              next();
+              return;
+            }
+
+          }
+          else{
+
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "please send valid input"
+            };
+            next();
+            return;
+
+
+          }
+
+
+
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        _mysql.releaseConnection();
+        req.records = {
+          invalid_input: true,
+          message: "you dont have privilege"
+        };
+        next();
+        return;
+      }
+    })
+    .catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
 }
-
-
 
 };
 
@@ -3805,9 +4092,7 @@ function saveF  (_mysql,req,  next,  input, msg){
     });
 
   })
-  .catch(e => {
-
-  
+  .catch(e => { 
     _mysql.rollBackTransaction(() => {
       next(e);
     });

@@ -74,8 +74,8 @@ module.exports = {
           query:
             "select PE.episode_id,PE.encounter_id , P.hims_d_patient_id,P.full_name,P.patient_code,P.vat_applicable,P.gender, \
              P.date_of_birth,P.contact_number,N.nationality, \
-             concat(PV.age_in_years,' Y')years,concat(PV.age_in_months,' M')months,\
-             concat(PV.age_in_days,' D')days,case PE.payment_type when PE.payment_type ='S' then 'Self Paying' else 'Insurance' end payment_type ,\
+             concat(PV.age_in_years,'Y')years,concat(PV.age_in_months,'M')months,\
+             concat(PV.age_in_days,'D')days,case PE.payment_type when PE.payment_type ='S' then 'Self Paying' else 'Insurance' end payment_type ,\
              PE.updated_date as Encounter_Date  from hims_f_patient_encounter PE ,\
              hims_f_patient P ,hims_d_nationality N,hims_f_patient_visit PV \
              where P.hims_d_patient_id=PE.patient_id and N.hims_d_nationality_id=P.nationality_id \

@@ -84,7 +84,6 @@ module.exports = {
   addFrontDesk: (req, res, next) => {
     try {
       const _mysql = new algaehMysql();
-      const utilities = new algaehUtilities();
 
       req.mySQl = _mysql;
       //Patient

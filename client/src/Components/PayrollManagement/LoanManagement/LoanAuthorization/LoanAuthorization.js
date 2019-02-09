@@ -9,6 +9,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import LoanModal from "./LoanModal/LoanModal";
 import Enumerable from "linq";
+import moment from "moment";
 
 class LoanAuthorization extends Component {
   constructor(props) {
@@ -360,7 +361,16 @@ class LoanAuthorization extends Component {
                           <AlgaehLabel
                             label={{ forceLabel: "Application Date" }}
                           />
-                        )
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(row.loan_application_date).format(
+                                "DD-MM-YYYY"
+                              )}
+                            </span>
+                          );
+                        }
                       },
                       {
                         fieldName: "loan_description",

@@ -381,7 +381,8 @@ module.exports = {
                                 where  employee_id=? and ML.leave_id=L.hims_d_leave_id and leave_id in (?) and year=?",
                                     values: [
                                       empResult[i]["hims_d_employee_id"],
-                                      leave_ids,year
+                                      leave_ids,
+                                      year
                                     ],
                                     printQuery: true
                                   })
@@ -745,5 +746,314 @@ module.exports = {
     }).catch(e => {
       next(e);
     });
-  }
+  },
+
+  //created by irfan: to mark absent
+  markAbsent: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_absent` (employee_id,absent_date,from_session,to_session, absent_duration,\
+            absent_reason,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,date(?),?,?,?,?,?,?,?,?)",
+        values: [
+          input.employee_id,
+          input.absent_date,
+          input.from_session,
+          input.to_session,
+          input.absent_duration,
+          input.absent_reason,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan:
+  cancelAbsent: (req, res, next) => {
+  
+    let input = req.body;
+
+    if (input.hims_f_absent_id > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_absent SET cancel='Y',cancel_by=?,cancel_date=?,cancel_reason=?,\
+          updated_date=?, updated_by=?  WHERE hims_f_absent_id = ?",
+          values: [
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.cancel_reason,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_f_absent_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "please provide valid absent id"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  getAllAbsentEmployee: (req, res, next) => {
+  
+    let input = req.query;
+
+    if (input.yearAndMonth != undefined && input.yearAndMonth != "null") {
+      const _mysql = new algaehMysql();
+      const startOfMonth = moment(input.yearAndMonth)
+        .startOf("month")
+        .format("YYYY-MM-DD");
+
+      const endOfMonth = moment(input.yearAndMonth)
+        .endOf("month")
+        .format("YYYY-MM-DD");
+
+      _mysql
+        .executeQuery({
+          query:
+            "select  hims_f_absent_id, employee_id, absent_date, from_session, to_session,\
+          absent_reason, cancel ,absent_duration,cancel_reason,E.employee_code,E.full_name as employee_name\
+          from hims_f_absent A,hims_d_employee E where A.record_status='A'\
+          and date(absent_date) between date(?) and date(?) and A.employee_id=E.hims_d_employee_id order by hims_f_absent_id desc",
+
+          values: [startOfMonth, endOfMonth]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      _mysql.releaseConnection();
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid year and month"
+      };
+
+      next();
+      return;
+    }
+  },
+
+  //created by irfan:
+  addAttendanceRegularization: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    _mysql
+      .generateRunningNumber({
+        modules: ["ATTENDANCE_REGULARIZE"]
+      })
+      .then(numGenReg => {
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO `hims_f_attendance_regularize` (regularization_code,employee_id,attendance_date,\
+            login_date,logout_date,\
+            punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
+            created_by,created_date,updated_by,updated_date)\
+            VALUE(?,?,date(?),date(?),date(?),?,?,?,?,?,?,?,?,?)",
+            values: [
+              numGenReg[0],
+              input.employee_id,
+              input.attendance_date,
+              input.login_date,
+              input.logout_date,
+              input.punch_in_time,
+              input.punch_out_time,
+              input.regularize_in_time,
+              input.regularize_out_time,
+              input.regularization_reason,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date()
+            ]
+          })
+          .then(result => {
+            
+
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            });
+
+
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+          });
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+      });
+  },
+
+  //created by irfan:
+  regularizeAttendance: (req, res, next) => {
+
+    let input = req.body;
+
+    if (input.regularize_status == "REJ" || input.regularize_status == "APR") {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_attendance_regularize SET regularize_status = ?,\
+             updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
+          values: [
+            input.regularize_status,
+            new Date(),
+            input.updated_by,
+            input.hims_f_attendance_regularize_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "please provide valid input"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
+      next();
+      return;
+    }
+  },
+
+    //created by irfan:
+    getEmployeeAttendReg: (req, res, next) => {
+
+   
+      let dateRange = "";
+      let employee = "";
+      if (
+        req.query.from_date != "" &&
+        req.query.from_date != null &&
+        req.query.from_date != "null" &&
+        req.query.to_date != "" &&
+        req.query.to_date != null &&
+        req.query.to_date != "null"
+      ) {
+        dateRange = ` date(attendance_date)
+        between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+      }
+  
+      if (
+        req.query.employee_id != "" &&
+        req.query.employee_id != null &&
+        req.query.employee_id != "null"
+      ) {
+        employee = ` employee_id=${req.query.employee_id} `;
+      }
+  
+      if (dateRange == "" && employee == "") {
+        req.records = {
+          invalid_input: true,
+          message: "please provide valid input"
+        };
+        next();
+        return;
+      }
+      else {
+        const _mysql = new algaehMysql();
+
+        _mysql
+        .executeQuery({
+          query:
+          "select hims_f_attendance_regularize_id,regularization_code,employee_id,\
+          E.employee_code,E.full_name as employee_name ,attendance_date,\
+          regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
+          regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
+          from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where" +
+            employee +
+            "" +
+            dateRange +
+            " order by\
+          hims_f_attendance_regularize_id desc ;"
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+       
+          next(e);
+        });
+
+      }
+
+
+
+    }
 };

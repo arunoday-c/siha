@@ -21,10 +21,12 @@ class LoanModal extends Component {
     this.state = {};
   }
 
-  componentDidMount() {
-    this.setState(this.props.data, () => {
-      this.getEmployeeLoans();
-    });
+  componentWillReceiveProps(nextProps) {
+    nextProps.open === true
+      ? this.setState(nextProps.data, () => {
+          this.getEmployeeLoans();
+        })
+      : null;
   }
 
   getEmployeeLoans() {
@@ -48,10 +50,6 @@ class LoanModal extends Component {
         });
       }
     });
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.data);
   }
 
   textHandle(e) {
@@ -199,6 +197,7 @@ class LoanModal extends Component {
                 isImp: true
               }}
               selector={{
+                sort: "off",
                 name: "start_month",
                 className: "select-fld",
                 value: this.state.start_month,
@@ -251,6 +250,7 @@ class LoanModal extends Component {
                 isImp: true
               }}
               selector={{
+                sort: "off",
                 name: "loan_tenure",
                 className: "select-fld",
                 value: this.state.loan_tenure,
@@ -277,7 +277,6 @@ class LoanModal extends Component {
                   onChange: this.textHandle.bind(this)
                 },
                 others: {
-                  type: "number",
                   disabled: true
                 }
               }}

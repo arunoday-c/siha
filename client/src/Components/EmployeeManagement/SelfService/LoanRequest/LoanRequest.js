@@ -11,6 +11,7 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
+import { getYears } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 
@@ -283,6 +284,7 @@ class LoanRequest extends Component {
   }
 
   render() {
+    let allYears = getYears();
     return (
       <div className="row loan_request">
         <div className="col-3">
@@ -374,6 +376,7 @@ class LoanRequest extends Component {
                         isImp: true
                       }}
                       selector={{
+                        sort: "off",
                         name: "loan_tenure",
                         className: "select-fld",
                         value: this.state.loan_tenure,
@@ -402,6 +405,7 @@ class LoanRequest extends Component {
                         isImp: true
                       }}
                       selector={{
+                        sort: "off",
                         name: "start_month",
                         className: "select-fld",
                         value: this.state.start_month,
@@ -414,29 +418,35 @@ class LoanRequest extends Component {
                       }}
                     />
 
-                    <AlagehFormGroup
+                    <AlagehAutoComplete
                       div={{ className: "col-6" }}
                       label={{
-                        forceLabel: "Start Year",
+                        forceLabel: "Start Year.",
                         isImp: true
                       }}
-                      textBox={{
-                        className: "txt-fld",
+                      selector={{
                         name: "start_year",
+                        className: "select-fld",
                         value: this.state.start_year,
-                        events: {
-                          onChange: this.textHandle.bind(this)
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: allYears
                         },
-                        others: {
-                          type: "number"
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            start_year: null
+                          });
                         }
                       }}
                     />
+
                     <AlagehFormGroup
                       div={{ className: "col-12" }}
                       label={{
                         forceLabel: "Reason for Loan",
-                        isImp: true
+                        isImp: false
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -477,21 +487,26 @@ class LoanRequest extends Component {
                       }}
                     />
 
-                    <AlagehFormGroup
+                    <AlagehAutoComplete
                       div={{ className: "col-6" }}
                       label={{
                         forceLabel: "Deducting Year",
                         isImp: true
                       }}
-                      textBox={{
-                        className: "txt-fld",
+                      selector={{
                         name: "deducting_year",
+                        className: "select-fld",
                         value: this.state.deducting_year,
-                        events: {
-                          onChange: this.textHandle.bind(this)
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: allYears
                         },
-                        others: {
-                          type: "number"
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            deducting_year: null
+                          });
                         }
                       }}
                     />
@@ -503,6 +518,7 @@ class LoanRequest extends Component {
                         isImp: true
                       }}
                       selector={{
+                        sort: "off",
                         name: "deducting_month",
                         className: "select-fld",
                         value: this.state.deducting_month,
@@ -519,7 +535,7 @@ class LoanRequest extends Component {
                       div={{ className: "col-12" }}
                       label={{
                         forceLabel: "Reason for Advance",
-                        isImp: true
+                        isImp: false
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -659,7 +675,7 @@ class LoanRequest extends Component {
                           return (
                             <span>
                               {moment(row.loan_application_date).format(
-                                "MM-DD-YYYY"
+                                "DD-MM-YYYY"
                               )}
                             </span>
                           );

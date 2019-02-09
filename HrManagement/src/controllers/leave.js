@@ -24,7 +24,8 @@ import {
   updateLeaveDetailMaster,
   updateLeaveEncashMaster,
   updateLeaveRuleMaster,
-  deleteLeaveApplication
+  deleteLeaveApplication,
+  cancelLeave
 } from "../models/leave";
 export default () => {
   const api = Router();
@@ -372,6 +373,19 @@ export default () => {
       }
     }
   );
+  api.put("/cancelLeave", cancelLeave, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
 
   return api;
 };

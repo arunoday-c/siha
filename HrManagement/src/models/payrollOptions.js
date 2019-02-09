@@ -5,7 +5,6 @@ import _ from "lodash";
 module.exports = {
   //created by irfan: to
   getHrmsOptions: (req, res, next) => {
-    console.log("First Hit");
     const _mysql = new algaehMysql();
 
     _mysql
@@ -20,6 +19,7 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
@@ -87,13 +87,14 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
   //created by irfan: to
   getEosOptions: (req, res, next) => {
     const _mysql = new algaehMysql();
-    const utilities = new algaehUtilities();
+
     _mysql
       .executeQuery({
         query: "select * from hims_d_end_of_service_options;",
@@ -180,8 +181,8 @@ module.exports = {
           end_of_service_component4=?,from_service_range1=?,from_service_range2=?,from_service_range3=?,\
           from_service_range4=?,from_service_range5=?,eligible_days1=?,eligible_days2=?,eligible_days3=?,\
           eligible_days4=?,eligible_days5=?,end_of_service_calculation=?,end_of_service_days=?,\
-          end_of_service_type=?,gratuity_in_final_settle=?,terminate_salary=?,end_of_service_payment=?,\
-          end_of_service_years=?,limited_years=?,updated_by=?,updated_date=? \
+          end_of_service_type=?,gratuity_in_final_settle=?,round_off_nearest_year=?, terminate_salary=?,end_of_service_payment=?,\
+          end_of_service_years=?, pending_salary_with_final=?, limited_years=?,updated_by=?,updated_date=? \
                    where hims_d_end_of_service_options_id=?",
         values: [
           input.end_of_service_component1,
@@ -202,14 +203,15 @@ module.exports = {
           input.end_of_service_days,
           input.end_of_service_type,
           input.gratuity_in_final_settle,
+          input.round_off_nearest_year,
           input.terminate_salary,
           input.end_of_service_payment,
           input.end_of_service_years,
+          input.pending_salary_with_final,
           input.limited_years,
-
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          input.hims_d_end_of_service_options_id
+          1
         ],
 
         printQuery: true
@@ -220,6 +222,7 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },

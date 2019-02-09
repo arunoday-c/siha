@@ -18,7 +18,8 @@ export default class EndServiceOption extends Component {
       deductions: [],
       earning_ids: [],
       deduction_ids: [],
-      componentArray: []
+      componentArray: [],
+      service_range1: 0
     };
     this.getEosOptions();
     this.getEarningDeducts();
@@ -32,6 +33,39 @@ export default class EndServiceOption extends Component {
         swalMessage({
           title: "EEEEEEE",
           type: "success"
+        });
+      }
+    });
+  }
+
+  updateEosOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/updateEosOptions",
+      method: "PUT",
+      module: "hrManagement",
+      data: {
+        end_of_service_calculation: this.state.end_of_service_calculation,
+        terminate_salary: this.state.terminate_salary,
+        end_of_service_payment: this.state.end_of_service_payment,
+        end_of_service_type: this.state.end_of_service_type,
+        end_of_service_years: this.state.end_of_service_years,
+        limited_years: this.state.limited_years,
+        gratuity_in_final_settle: this.state.gratuity_in_final_settle,
+        pending_salary_with_final: this.state.pending_salary_with_final,
+        round_off_nearest_year: this.state.round_off_nearest_year
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Updated Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
         });
       }
     });
@@ -540,17 +574,6 @@ export default class EndServiceOption extends Component {
                           datavalidate="ResignationMinYear"
                           columns={[
                             {
-                              fieldName: "actions",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Actions" }}
-                                />
-                              ),
-                              displayTemplate: row => {
-                                return <i className="fas fa-trash-alt" />;
-                              }
-                            },
-                            {
                               fieldName: "earning_deduction_code",
                               label: (
                                 <AlgaehLabel
@@ -793,22 +816,12 @@ export default class EndServiceOption extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  //  onClick={this.saveOptions.bind(this)}
+                  onClick={this.updateEosOptions.bind(this)}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Update", returnText: true }}
                   />
                 </button>
-
-                {/* <button
-                  type="button"
-                  className="btn btn-default"
-                  //onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button> */}
               </div>
             </div>
           </div>

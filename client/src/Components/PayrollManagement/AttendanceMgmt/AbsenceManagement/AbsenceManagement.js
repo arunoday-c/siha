@@ -37,8 +37,9 @@ export default class AbsenceManagement extends Component {
 
   updateAbsent(data) {
     algaehApiCall({
-      uri: "/leave/cancelAbsent",
+      uri: "/attendance/cancelAbsent",
       method: "PUT",
+      module: "hrManagement",
       data: {
         hims_f_absent_id: data.hims_f_absent_id,
         cancel_reason: data.cancel_reason
@@ -67,7 +68,7 @@ export default class AbsenceManagement extends Component {
     let yearAndMonth = this.state.year + "-" + this.state.month + "-01";
 
     algaehApiCall({
-      uri: "/leave/getAllAbsentEmployee",
+      uri: "/attendance/getAllAbsentEmployee",
       method: "GET",
       data: {
         year: this.state.year,
@@ -254,6 +255,7 @@ export default class AbsenceManagement extends Component {
           algaehApiCall({
             uri: "/leave/markAbsent",
             method: "POST",
+            module: "hrManagement",
             data: {
               employee_id: this.state.hims_d_employee_id,
               absent_date: this.state.absent_date,
