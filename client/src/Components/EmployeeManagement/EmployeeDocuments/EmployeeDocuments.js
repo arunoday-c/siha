@@ -10,11 +10,7 @@ const AlgaehFileUploader = React.memo(
   React.lazy(() => import("../../Wrapper/algaehFileUpload"))
 );
 export default class EmployeeDocuments extends Component {
-
-
-afterPassPortSave(rawData){
-  
-}
+  afterPassPortSave(rawData) {}
   render() {
     return (
       <div className="EmployeeDocumentsScreen row">
@@ -159,11 +155,9 @@ afterPassPortSave(rawData){
                       fileType: "Employees"
                     }}
                     onlyDragDrop={true}
-                    events={
-                      {
-                        afterSave: 
-                      }
-                    }
+                    events={{
+                      afterSave: ""
+                    }}
                   />
                   {/* <div className="upload-drop-zone">
                     {" "}
