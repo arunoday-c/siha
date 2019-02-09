@@ -41,6 +41,13 @@ class DocumentMaster extends Component {
     });
   }
 
+  clearState() {
+    this.setState({
+      document_type: null,
+      document_description: null
+    });
+  }
+
   changeTexts(e) {
     this.setState({
       [e.target.name]: e.target.value
@@ -54,24 +61,29 @@ class DocumentMaster extends Component {
   }
 
   updateDocument(data) {
-    algaehApiCall({
-      uri: "/hrsettings/updateDocumentType",
-      module: "hrManagement",
-      method: "PUT",
-      data: data,
-      onSuccess: response => {
-        if (response.data.success) {
-          swalMessage({
-            title: "Record updated successfully",
-            type: "success"
-          });
-          this.getDocTypes();
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='docsDivGrid'",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/hrsettings/updateDocumentType",
+          module: "hrManagement",
+          method: "PUT",
+          data: data,
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
     });
@@ -155,6 +167,7 @@ class DocumentMaster extends Component {
                 type: "success"
               });
               this.getDocTypes();
+              this.clearState();
             }
           },
           onFailure: err => {
@@ -223,7 +236,7 @@ class DocumentMaster extends Component {
             </div>
           </div>
 
-          <div id="docTypeDivGrid_Cntr">
+          <div id="docTypeDivGrid_Cntr" data-validate="docsDivGrid">
             <AlgaehDataGrid
               id="docTypeDivGrid"
               data-validate="docsDivGrid"
@@ -280,7 +293,10 @@ class DocumentMaster extends Component {
                             data: DOC_TYPE
                           },
                           onChange: this.changeGridEditors.bind(this, row),
-                          others: {}
+                          others: {
+                            errormessage: "Type - cannot be blank",
+                            required: true
+                          }
                         }}
                       />
                     );
