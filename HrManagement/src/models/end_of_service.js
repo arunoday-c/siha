@@ -75,7 +75,7 @@ module.exports = {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days1;
               } else if (
-                _employee.endOfServiceYears >
+                _employee.endOfServiceYears >=
                   _optionsDetals.from_service_range1 &&
                 _employee.endOfServiceYears <=
                   _optionsDetals.from_service_range2
