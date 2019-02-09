@@ -3573,7 +3573,6 @@ function getLeaveAuthFields(auth_level) {
           "authorized5=?",
           "authorized5_date=?",
           "authorized5_by=?",
-
           "authorized5_comment=?"
         ];
         break;
@@ -4085,9 +4084,9 @@ function saveF  (_mysql,req,  next,  input, msg){
         input.leave_applied_from,
         input.total_applied_days,
         new Date(),
-        input.created_by,
+        req.userIdentity.algaeh_d_app_user_id,
         new Date(),
-        input.updated_by
+        req.userIdentity.algaeh_d_app_user_id
       ],
 
       printQuery: true

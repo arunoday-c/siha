@@ -1,0 +1,44 @@
+import { Router } from "express";
+import utlities from "algaeh-utilities";
+import {
+  addLoanApplication,
+  adjustLoanApplication,
+  getLoanApplication
+} from "../models/loan";
+export default () => {
+  const api = Router();
+  api.post("/addLoanApplication", addLoanApplication, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/adjustLoanApplication", adjustLoanApplication, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.get("/getLoanApplication", getLoanApplication, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  return api;
+};

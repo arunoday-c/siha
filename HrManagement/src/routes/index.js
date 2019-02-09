@@ -17,6 +17,7 @@ import leavesalaryaccural from "../controllers/leave_salary_accural";
 import payrollsettings from "../controllers/payrollsettings";
 import hrsettings from "../controllers/hrsettings";
 import leave from "../controllers/leave";
+import loan from "../controllers/loan";
 
 const router = express();
 router.use("/attendance", attendance());
@@ -37,5 +38,6 @@ router.use("/payrollsettings", payrollsettings());
 router.use("/hrsettings", hrsettings());
 router.use("/leave", leave());
 router.use("/selfService", SelfService());
+router.use("/loan", loan());
 
 export default router;
