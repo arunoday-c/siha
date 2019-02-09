@@ -75,13 +75,13 @@ module.exports = {
                 _eligibleDays =
                   _employee.endOfServiceYears * _optionsDetals.eligible_days1;
               } else if (
-                _employee.endOfServiceYears >=
+                _employee.endOfServiceYears >
                   _optionsDetals.from_service_range1 &&
                 _employee.endOfServiceYears <=
                   _optionsDetals.from_service_range2
               ) {
                 _eligibleDays =
-                  _employee.endOfServiceYears * _optionsDetals.eligible_days1;
+                  _employee.endOfServiceYears * _optionsDetals.eligible_days2;
               } else if (
                 _employee.endOfServiceYears >=
                   _optionsDetals.from_service_range2 &&
@@ -89,7 +89,7 @@ module.exports = {
                   _optionsDetals.from_service_range3
               ) {
                 _eligibleDays =
-                  _employee.endOfServiceYears * _optionsDetals.eligible_days2;
+                  _employee.endOfServiceYears * _optionsDetals.eligible_days3;
               } else if (
                 _employee.endOfServiceYears >=
                   _optionsDetals.from_service_range3 &&
@@ -97,7 +97,7 @@ module.exports = {
                   _optionsDetals.from_service_range4
               ) {
                 _eligibleDays =
-                  _employee.endOfServiceYears * _optionsDetals.eligible_days3;
+                  _employee.endOfServiceYears * _optionsDetals.eligible_days4;
               } else if (
                 _employee.endOfServiceYears >=
                   _optionsDetals.from_service_range4 &&
@@ -105,7 +105,7 @@ module.exports = {
                   _optionsDetals.from_service_range5
               ) {
                 _eligibleDays =
-                  _employee.endOfServiceYears * _optionsDetals.eligible_days4;
+                  _employee.endOfServiceYears * _optionsDetals.eligible_days5;
               } else if (
                 _employee.endOfServiceYears >=
                 _optionsDetals.from_service_range5
