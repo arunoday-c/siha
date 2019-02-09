@@ -327,7 +327,7 @@ export default class MonthlyAttendance extends Component {
             }}
             selector={{
               sort: "off",
-              name: "month",
+              sort:"off",name: "month",
               className: "select-fld",
               value: this.state.month,
               dataSource: {

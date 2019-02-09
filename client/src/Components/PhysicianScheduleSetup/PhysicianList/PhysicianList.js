@@ -363,7 +363,7 @@ class PhysicianList extends Component {
                             forceLabel: "Select Month"
                           }}
                           selector={{
-                            name: "month",
+                            sort:"off",name: "month",
                             className: "select-fld",
                             value: this.state.month,
                             dataSource: {
