@@ -52,7 +52,9 @@ export default class EndServiceOption extends Component {
         limited_years: this.state.limited_years,
         gratuity_in_final_settle: this.state.gratuity_in_final_settle,
         pending_salary_with_final: this.state.pending_salary_with_final,
-        round_off_nearest_year: this.state.round_off_nearest_year
+        round_off_nearest_year: this.state.round_off_nearest_year,
+        end_of_service_component1: 1,
+        end_of_service_component2: 7
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -126,14 +128,9 @@ export default class EndServiceOption extends Component {
 
   dropDownHandler(value) {
     debugger;
-    this.setState(
-      {
-        [value.name]: value.value
-      },
-      () => {
-        console.log("State", this.state);
-      }
-    );
+    this.setState({
+      [value.name]: value.value
+    });
   }
 
   render() {

@@ -82,9 +82,8 @@ module.exports = {
     });
   },
   addFrontDesk: (req, res, next) => {
+    const _mysql = new algaehMysql();
     try {
-      const _mysql = new algaehMysql();
-
       req.mySQl = _mysql;
       //Patient
       _mysql
@@ -143,12 +142,14 @@ module.exports = {
           });
         });
     } catch (e) {
-      next(e);
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   },
   updateFrontDesk: (req, res, next) => {
+    const _mysql = new algaehMysql();
     try {
-      const _mysql = new algaehMysql();
       const utilities = new algaehUtilities();
       req.mySQl = _mysql;
       //Visit
@@ -194,7 +195,9 @@ module.exports = {
           });
         });
     } catch (e) {
-      next(e);
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };

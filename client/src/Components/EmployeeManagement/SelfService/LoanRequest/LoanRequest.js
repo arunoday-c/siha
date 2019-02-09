@@ -606,14 +606,24 @@ class LoanRequest extends Component {
                         }
                       },
                       {
-                        fieldName: "loan_tenure",
+                        fieldName: "pending_tenure",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "No. of EMI Pending" }}
                           />
                         ),
                         displayTemplate: row => {
-                          return <span>{row.loan_tenure}</span>;
+                          return (
+                            <span>
+                              {row.pending_tenure !== 0 ? (
+                                row.pending_tenure
+                              ) : (
+                                <span className="badge badge-success">
+                                  Closed
+                                </span>
+                              )}
+                            </span>
+                          );
                         }
                       },
                       {

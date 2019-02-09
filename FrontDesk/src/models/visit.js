@@ -103,8 +103,8 @@ module.exports = {
     });
   },
   insertPatientVisitData: (req, res, next) => {
+    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
     try {
-      const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
       const inputParam = { ...req.body };
       const utilities = new algaehUtilities();
 
@@ -365,8 +365,8 @@ module.exports = {
     }
   },
   addEpisodeEncounterData: (req, res, next) => {
+    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
     try {
-      const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
       const input = { ...req.body };
       const utilities = new algaehUtilities();
       utilities.logger().log("input Encounter: ", input);
@@ -444,9 +444,8 @@ module.exports = {
   },
 
   addPatientInsuranceData: (req, res, next) => {
+    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
     try {
-      const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
-
       let input = { ...req.body };
 
       const utilities = new algaehUtilities();

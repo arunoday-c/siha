@@ -302,5 +302,98 @@ module.exports = {
     } catch (e) {
       next(e);
     }
+  },
+
+  getDocumentsMaster: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_document_type_id, document_type,\
+            document_description, arabic_name, document_type_status,record_status, created_date from hims_d_document_type\
+         where record_status='A'  order by hims_d_document_type_id desc",
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  addDocumentType: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT  INTO hims_d_document_type (document_type, document_description,\
+              arabic_name, created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?)",
+          values: [
+            input.document_type,
+            input.document_description,
+            input.arabic_name,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  updateDocumentType: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_document_type SET document_type = ?,\
+            document_description = ?, arabic_name = ?, record_status=?,\
+            updated_date=?, updated_by=?  WHERE hims_d_document_type_id = ?",
+          values: [
+            input.document_type,
+            input.document_description,
+            input.arabic_name,
+            input.record_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_document_type_id
+          ]
+        })
+        .then(update_loan => {
+          _mysql.releaseConnection();
+          req.records = update_loan;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
   }
 };

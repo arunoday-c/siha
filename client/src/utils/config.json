@@ -28,6 +28,10 @@
     "masterSettings": {
       "port": 3003,
       "url": ""
+    },
+    "billing": {
+      "port": 3014,
+      "url": ""
     }
   },
   "apiAuth": {

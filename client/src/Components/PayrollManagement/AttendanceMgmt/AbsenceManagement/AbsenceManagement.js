@@ -70,6 +70,7 @@ export default class AbsenceManagement extends Component {
     algaehApiCall({
       uri: "/attendance/getAllAbsentEmployee",
       method: "GET",
+      module: "hrManagement",
       data: {
         year: this.state.year,
         month: this.state.month,

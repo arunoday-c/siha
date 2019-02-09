@@ -66,7 +66,7 @@ class DisplayVisitDetails extends Component {
             {context => (
               <div className="container-fluid">
                 <div className="row form-details">
-                  <div className="col-lg-12 gridWithRadio">
+                  <div className="col-lg-12 gridWithRadio" id="opVisitGrid_Cntr">
                     <AlgaehDataGrid
                       columns={[
                         {
@@ -124,9 +124,9 @@ class DisplayVisitDetails extends Component {
                               this.props.visittypes === undefined
                                 ? []
                                 : this.props.visittypes.filter(
-                                    f =>
-                                      f.hims_d_visit_type_id === row.visit_type
-                                  );
+                                  f =>
+                                    f.hims_d_visit_type_id === row.visit_type
+                                );
 
                             return (
                               <span>
@@ -151,13 +151,13 @@ class DisplayVisitDetails extends Component {
                             let display = [];
                             this.props.deptanddoctors !== 0
                               ? (display =
-                                  this.props.deptanddoctors === undefined
-                                    ? []
-                                    : this.props.deptanddoctors.departmets.filter(
-                                        f =>
-                                          f.sub_department_id ===
-                                          row.sub_department_id
-                                      ))
+                                this.props.deptanddoctors === undefined
+                                  ? []
+                                  : this.props.deptanddoctors.departmets.filter(
+                                    f =>
+                                      f.sub_department_id ===
+                                      row.sub_department_id
+                                  ))
                               : [];
 
                             return (
@@ -183,11 +183,11 @@ class DisplayVisitDetails extends Component {
                             let display;
                             this.props.deptanddoctors !== 0
                               ? (display =
-                                  this.props.deptanddoctors === undefined
-                                    ? []
-                                    : this.props.deptanddoctors.doctors.filter(
-                                        f => f.employee_id === row.doctor_id
-                                      ))
+                                this.props.deptanddoctors === undefined
+                                  ? []
+                                  : this.props.deptanddoctors.doctors.filter(
+                                    f => f.employee_id === row.doctor_id
+                                  ))
                               : [];
 
                             return (

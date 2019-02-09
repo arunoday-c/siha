@@ -60,7 +60,7 @@ class SalaryPayment extends Component {
     ) {
       this.props.getSubDepartment({
         uri: "/department/get/subdepartment",
-        module : "masterSettings",
+        module: "masterSettings",
         data: {
           sub_department_status: "A"
         },
@@ -270,9 +270,16 @@ class SalaryPayment extends Component {
                         </h3>
                       </div>
                       <div className="actions">
-                        {/*    <a className="btn btn-primary btn-circle active">
-                       <i className="fas fa-calculator" /> 
-                      </a>*/}
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              value=""
+                              name=""
+                            />
+                            <span>Select All</span>
+                          </label>
+                        </div>
                       </div>
                     </div>
 
@@ -337,10 +344,10 @@ class SalaryPayment extends Component {
                                       No
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Yes
+                                      <span className="badge badge-success">
+                                        Yes
                                     </span>
-                                  );
+                                    );
                                 }
                               },
                               {
@@ -506,8 +513,8 @@ class SalaryPayment extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
-                  //   onClick={PostDoctorCommission.bind(this, this)}
-                  // disabled={this.state.postEnable}
+                //   onClick={PostDoctorCommission.bind(this, this)}
+                // disabled={this.state.postEnable}
                 >
                   Generate Payslip PDF
                 </button>
