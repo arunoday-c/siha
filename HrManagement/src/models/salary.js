@@ -2,12 +2,14 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import _ from "lodash";
 import mysql from "mysql";
+import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   processSalary: (req, res, next) => {
+    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
     return new Promise((resolve, reject) => {
       try {
-        const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+        const utilities = new algaehUtilities();
         // if (req.mySQl == null) {
         //   req.mySQl = _mysql;
         // }
@@ -38,6 +40,8 @@ module.exports = {
           salary_input.push(input.sub_department_id);
         }
 
+        utilities.logger().log("input: ", input);
+
         _mysql
           .executeQuery({
             query:
@@ -51,10 +55,11 @@ module.exports = {
             values: inputValues,
             printQuery: true
           })
-          .then(empResult => {
+          .then(attandenceResult => {
             // let empResult = empOutput;
-            if (empResult.length > 0) {
-              let _allEmployees = _.map(empResult, o => {
+            utilities.logger().log("attandenceResult: ", attandenceResult);
+            if (attandenceResult.length > 0) {
+              let _allEmployees = _.map(attandenceResult, o => {
                 return o.employee_id;
               });
 
@@ -67,7 +72,8 @@ module.exports = {
                   printQuery: true
                 })
                 .then(existing => {
-                  console.log("Existing Block", existing);
+                  utilities.logger().log("Existing Block", existing);
+                  // console.log("Existing Block", existing);
 
                   let _salary_processed = _.chain(existing)
                     .filter(f => {
@@ -104,14 +110,18 @@ module.exports = {
                       val => !_salary_processed_salary_id.includes(val)
                     );
 
-                    let removal_index = _.findIndex(empResult, function(o) {
+                    let removal_index = _.findIndex(attandenceResult, function(
+                      o
+                    ) {
                       return o.employee_id == _salary_processed_emp;
                     });
 
-                    empResult.splice(removal_index, 1);
+                    attandenceResult.splice(removal_index, 1);
                   } else {
                     _myemp = _allEmployees;
                   }
+
+                  utilities.logger().log("_myemp: ", _myemp);
 
                   if (_myemp.length > 0) {
                     _allEmployees = _myemp;
@@ -131,7 +141,7 @@ module.exports = {
                     }
                   }
 
-                  const month_name = moment(input.month).format("MMMM");
+                  const month_name = moment(input.month, "MM").format("MMMM");
 
                   let strQuery =
                     "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
@@ -226,8 +236,26 @@ module.exports = {
                       printQuery: true
                     })
                     .then(Salaryresults => {
+                      utilities.logger().log("Salaryresults", Salaryresults[0]);
+
                       let _requestCollector = [];
+
+                      var empResult = _.remove(attandenceResult, n => {
+                        return _.find(_myemp, d => d == n.employee_id);
+                      });
+
+                      utilities.logger().log("empResult", empResult);
+
                       for (let i = 0; i < empResult.length; i++) {
+                        utilities
+                          .logger()
+                          .log("employee_id", empResult[i]["employee_id"]);
+
+                        const employee_exit = _.filter(_myemp, f => {
+                          return f.employee_id == empResult[i]["employee_id"];
+                        });
+
+                        utilities.logger().log("employee_exit", employee_exit);
                         let results = Salaryresults;
                         let salary_header_id = 0;
                         let final_earning_amount = 0;
@@ -455,6 +483,33 @@ module.exports = {
                                                       _net_salary +
                                                       total_loan_payable_amount;
 
+                                                    utilities
+                                                      .logger()
+                                                      .log(
+                                                        "_net_salary",
+                                                        _net_salary
+                                                      );
+
+                                                    utilities
+                                                      .logger()
+                                                      .log(
+                                                        "current_earning_amt_array",
+                                                        current_earning_amt_array
+                                                      );
+
+                                                    utilities
+                                                      .logger()
+                                                      .log(
+                                                        "current_deduction_amt_array",
+                                                        current_deduction_amt_array
+                                                      );
+
+                                                    utilities
+                                                      .logger()
+                                                      .log(
+                                                        "current_contribution_amt_array",
+                                                        current_contribution_amt_array
+                                                      );
                                                     _mysql
                                                       .executeQueryWithTransaction(
                                                         {
@@ -521,6 +576,12 @@ module.exports = {
                                                         }
                                                       )
                                                       .then(inserted_salary => {
+                                                        utilities
+                                                          .logger()
+                                                          .log(
+                                                            "inserted_salary",
+                                                            inserted_salary
+                                                          );
                                                         _requestCollector.push(
                                                           inserted_salary
                                                         );
@@ -552,12 +613,19 @@ module.exports = {
                                                             query: "select 1"
                                                           };
                                                         }
+
                                                         _mysql
                                                           .executeQuery(
                                                             execute_query
                                                           )
                                                           .then(
                                                             resultEarnings => {
+                                                              utilities
+                                                                .logger()
+                                                                .log(
+                                                                  "resultEarnings",
+                                                                  resultEarnings
+                                                                );
                                                               if (
                                                                 current_deduction_amt_array.length >
                                                                 0
@@ -583,12 +651,24 @@ module.exports = {
                                                                     "select 1"
                                                                 };
                                                               }
+                                                              utilities
+                                                                .logger()
+                                                                .log(
+                                                                  "execute_query",
+                                                                  execute_query
+                                                                );
                                                               _mysql
                                                                 .executeQuery(
                                                                   execute_query
                                                                 )
                                                                 .then(
                                                                   resultDeductions => {
+                                                                    utilities
+                                                                      .logger()
+                                                                      .log(
+                                                                        "resultDeductions",
+                                                                        resultDeductions
+                                                                      );
                                                                     if (
                                                                       current_contribution_amt_array.length >
                                                                       0
@@ -619,6 +699,12 @@ module.exports = {
                                                                       )
                                                                       .then(
                                                                         resultContribute => {
+                                                                          utilities
+                                                                            .logger()
+                                                                            .log(
+                                                                              "resultContribute",
+                                                                              resultContribute
+                                                                            );
                                                                           if (
                                                                             current_loan_array.length >
                                                                             0
@@ -651,6 +737,12 @@ module.exports = {
                                                                             )
                                                                             .then(
                                                                               resultLoan => {
+                                                                                utilities
+                                                                                  .logger()
+                                                                                  .log(
+                                                                                    "resultLoan",
+                                                                                    resultLoan
+                                                                                  );
                                                                                 if (
                                                                                   i ==
                                                                                   empResult.length -
@@ -665,6 +757,9 @@ module.exports = {
                                                                                         _mysql.releaseConnection();
                                                                                         req.records = resultLoan;
                                                                                         next();
+                                                                                        resolve(
+                                                                                          resultLoan
+                                                                                        );
                                                                                       }
                                                                                     );
                                                                                   } else {
@@ -793,9 +888,9 @@ module.exports = {
                 });
             } else {
               _mysql.releaseConnection();
-              req.records = empResult;
-              resolve(empResult);
+              req.records = attandenceResult;
               next();
+              resolve(attandenceResult);
             }
           })
           .catch(e => {
@@ -807,6 +902,7 @@ module.exports = {
         reject(e);
       }
     }).catch(e => {
+      _mysql.releaseConnection();
       next(e);
     });
   },
