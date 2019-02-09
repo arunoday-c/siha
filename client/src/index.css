@@ -464,7 +464,8 @@
     :global .customRadio .radio span {
       position: relative;
       padding-left: 20px;
-      text-transform: capitalize; }
+      text-transform: capitalize;
+      font-size: 1.2em; }
     :global .customRadio .radio span:after {
       content: "";
       width: 15px;
@@ -516,7 +517,8 @@
     :global .customCheckbox .checkbox span {
       position: relative;
       padding-left: 20px;
-      text-transform: capitalize; }
+      text-transform: capitalize;
+      font-size: 1.2em; }
     :global .customCheckbox .checkbox span:after {
       content: "";
       width: 15px;

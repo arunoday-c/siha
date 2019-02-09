@@ -1,13 +1,13 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { newReceiptData } from "../models/billing";
+import { getPatientInsurance } from "../models/patientRegistration";
 
 export default () => {
   const api = Router();
 
-  api.post(
-    "/newReceiptData",
-    newReceiptData,
+  api.get(
+    "/getPatientInsurance",
+    getPatientInsurance,
 
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

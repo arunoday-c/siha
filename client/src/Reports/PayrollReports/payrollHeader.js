@@ -1,4 +1,4 @@
-import hims_app_logo from "../assets/images/hospital_logo_reports.webp";
+import hims_app_logo from "../../assets/images/hospital_logo_reports.webp";
 import moment from "moment";
 
 export function payrollHeader(data) {
