@@ -114,45 +114,66 @@ module.exports = {
                   _employee.endOfServiceYears * _optionsDetals.eligible_days5;
               }
             } else if (_optionsDetals.end_of_service_type == "H") {
-              let _serciveYrs =
+              let by =
                 _employee.endOfServiceYears -
                 _optionsDetals.from_service_range1;
-              _eligibleDays =
-                _employee.endOfServiceYears * _optionsDetals.eligible_days1;
-              if (_serciveYrs > 0) {
-                if (_optionsDetals.from_service_range2 != null) {
-                  const _fromRange2 =
-                    _serciveYrs * _optionsDetals.eligible_days2;
-                  _eligibleDays += _fromRange2;
-                  _serciveYrs =
-                    _serciveYrs - _optionsDetals.from_service_range2;
-                  if (_serciveYrs > 0) {
-                    if (_optionsDetals.from_service_range3 != null) {
-                      const _fromRange3 =
-                        _serciveYrs * _optionsDetals.eligible_days3;
-                      _eligibleDays += _fromRange3;
-                      _serciveYrs =
-                        _serciveYrs - _optionsDetals.from_service_range3;
-                    }
-                    if (_serciveYrs > 0) {
-                      if (_optionsDetals.from_service_range3 != null) {
-                        const _fromRange4 =
-                          _serciveYrs * _optionsDetals.eligible_days4;
-                        _eligibleDays += _fromRange4;
-                        _serciveYrs =
-                          _serciveYrs - _optionsDetals.from_service_range4;
+              let ted = 0;
+              if (by > 0) {
+                ted =
+                  _optionsDetals.from_service_range1 *
+                  _optionsDetals.eligible_days1;
+                by =
+                  _employee.endOfServiceYears -
+                  _optionsDetals.from_service_range2;
+                if (by > 0) {
+                  ted =
+                    (ted +
+                      (_optionsDetals.from_service_range2 -
+                        _optionsDetals.from_service_range1)) *
+                    by;
+                  by =
+                    _employee.endOfServiceYears -
+                    _optionsDetals.from_service_range3;
+                  if (by > 0) {
+                    ted =
+                      (ted +
+                        (_optionsDetals.from_service_range3 -
+                          _optionsDetals.from_service_range2)) *
+                      by;
+                    by =
+                      _employee.endOfServiceYears -
+                      _optionsDetals.from_service_range3;
+                    if (by > 0) {
+                      ted =
+                        (ted +
+                          (_optionsDetals.from_service_range4 -
+                            _optionsDetals.from_service_range3)) *
+                        by;
+                      by =
+                        _employee.endOfServiceYears -
+                        _optionsDetals.from_service_range4;
+                      if (by > 0) {
+                        ted =
+                          (ted +
+                            (_optionsDetals.from_service_range5 -
+                              _optionsDetals.from_service_range4)) *
+                          by;
+                      } else {
+                        _eligibleDays =
+                          ted + by * _optionsDetals.eligible_days4;
                       }
-                      if (_serciveYrs > 0) {
-                        if (_optionsDetals.from_service_range3 != null) {
-                          const _fromRange5 =
-                            _serciveYrs * _optionsDetals.eligible_days4;
-                          _eligibleDays += _fromRange4;
-                        }
-                      }
+                    } else {
+                      _eligibleDays = ted + by * _optionsDetals.eligible_days3;
                     }
                   }
+                } else {
+                  _eligibleDays = ted + by * _optionsDetals.eligible_days2;
                 }
+              } else {
+                ted =
+                  _employee.endOfServiceYears * _optionsDetals.eligible_days1;
               }
+              ted = _eligibleDays;
             }
 
             let _componentsList_total = [];

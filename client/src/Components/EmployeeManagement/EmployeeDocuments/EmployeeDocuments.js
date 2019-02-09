@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
+import { AlgaehActions } from "../../../actions/algaehActions";
 import "./EmployeeDocuments.css";
 import {
   AlgaehLabel,
@@ -11,7 +12,7 @@ import {
 const AlgaehFileUploader = React.memo(
   React.lazy(() => import("../../Wrapper/algaehFileUpload"))
 );
-export default class EmployeeDocuments extends Component {
+class EmployeeDocuments extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -236,3 +237,22 @@ export default class EmployeeDocuments extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return {
+    employeedetails: state.employeedetails
+  };
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getEmployeeDetails: AlgaehActions
+    },
+    dispatch
+  );
+}
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EmployeeDocuments)
+);
