@@ -1,6 +1,8 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
 import "./EmployeeDocuments.css";
-
 import {
   AlgaehLabel,
   AlagehAutoComplete,
@@ -10,7 +12,33 @@ const AlgaehFileUploader = React.memo(
   React.lazy(() => import("../../Wrapper/algaehFileUpload"))
 );
 export default class EmployeeDocuments extends Component {
-  afterPassPortSave(rawData) {}
+  constructor(props) {
+    super(props);
+    this.state = {
+      document_grid: [],
+      document_type: undefined,
+      disable_employee: false
+    };
+  }
+  afterPassPortSave(rawData) {
+    debugger;
+    let details = this.state.document_grid;
+    let _type = String(rawData.fileType).charAt(0);
+
+    details.push({
+      document_name: rawData.fileName,
+      document_type: _type
+    });
+    alert(JSON.stringify(rawData));
+  }
+  onChangeDocTypeHandler(e) {
+    const _isDisable =
+      e.value === "C"
+        ? { disable_employee: true }
+        : { disable_employee: false };
+    this.setState({ document_type: e.value, ..._isDisable });
+  }
+
   render() {
     return (
       <div className="EmployeeDocumentsScreen row">
@@ -23,11 +51,18 @@ export default class EmployeeDocuments extends Component {
                 isImp: true
               }}
               selector={{
-                name: "",
+                name: "document_type",
                 className: "select-fld",
-
-                dataSource: {},
-                others: {}
+                value: this.state.document_type,
+                dataSource: {
+                  data: [
+                    { text: "Employee", value: "E" },
+                    { text: "Company", value: "C" }
+                  ],
+                  textField: "text",
+                  valueField: "value"
+                },
+                onChange: this.onChangeDocTypeHandler.bind(this)
               }}
             />
             <AlagehAutoComplete
@@ -37,11 +72,13 @@ export default class EmployeeDocuments extends Component {
                 isImp: true
               }}
               selector={{
-                name: "",
+                name: "employee_id",
                 className: "select-fld",
 
                 dataSource: {},
-                others: {}
+                others: {
+                  disabled: this.state.disable_employee
+                }
               }}
             />
             <div className="col form-group">
@@ -146,17 +183,18 @@ export default class EmployeeDocuments extends Component {
                 </div> */}
                 <div className="col">
                   <AlgaehFileUploader
-                    name="attach_photo"
+                    name="attach_PassportProof"
                     textAltMessage="Passport Copies"
                     showActions={true}
                     serviceParameters={{
-                      uniqueID: "",
-                      destinationName: "",
+                      uniqueID: "10001110011",
+                      destinationName: "10001110011",
                       fileType: "Employees"
                     }}
                     onlyDragDrop={true}
-                    events={{
-                      afterSave: ""
+                    componentType="Passport"
+                    afterSave={result => {
+                      this.afterPassPortSave(result);
                     }}
                   />
                   {/* <div className="upload-drop-zone">

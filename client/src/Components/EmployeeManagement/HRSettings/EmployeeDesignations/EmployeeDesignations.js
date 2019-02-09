@@ -219,6 +219,7 @@ class EmployeeDesignations extends Component {
               </button>
             </div>
           </div>
+
           <div id="empDsgnDivGrid_Cntr">
             <AlgaehDataGrid
               id="empDsgnDivGrid"

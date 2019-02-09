@@ -5,6 +5,7 @@ import EmployeeGroups from "./EmployeeGroups/EmployeeGroups";
 import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";
 import OvertimeGroups from "./OvertimeGroups/OvertimeGroups";
 import AuthorizationSetup from "./AuthorizationSetup/AuthorizationSetup";
+import DocumentMaster from "./DocumentMaster/DocumentMaster";
 
 class HRSettings extends Component {
   constructor(props) {
@@ -72,6 +73,19 @@ class HRSettings extends Component {
                 }
               </li>
               <li
+                algaehtabs={"DocMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Document Master"
+                    }}
+                  />
+                }
+              </li>
+              <li
                 algaehtabs={"AuthorizationSetup"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -96,12 +110,9 @@ class HRSettings extends Component {
             <OvertimeGroups />
           ) : this.state.pageDisplay === "AuthorizationSetup" ? (
             <AuthorizationSetup />
-          ) : //)
-          //   : this.state.pageDisplay === "AppointmentRooms" ? (
-          //     <AppointmentRooms />
-          //   ) : this.state.pageDisplay === "AppointmentClinics" ? (
-          //     <AppointmentClinics />
-          null}
+          ) : this.state.pageDisplay === "DocMaster" ? (
+            <DocumentMaster />
+          ) : null}
         </div>
       </div>
     );
