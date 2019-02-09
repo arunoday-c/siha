@@ -48,20 +48,24 @@ module.exports = {
 
         utilities.logger().log("selectWhere: ", selectWhere);
 
-        let inputValues = [endOfMonth, startOfMonth, endOfMonth];
+        let inputValues = [year,month_number,endOfMonth, startOfMonth, endOfMonth];
+
+        //---------delete old records
+        let department="";
+        let hospital="";
+        if (selectWhere.hospital_id != null) {
+          hospital = " and hospital_id="+selectWhere.hospital_id;
+         
+        }
+        if (selectWhere.sub_department_id != null) {
+          department = " and sub_department_id="+selectWhere.sub_department_id;         
+        }
+        let deleteString=` delete from hims_f_attendance_monthly where employee_id>0 and year=${year} and
+                         month=${month_number}  ${hospital} ${department};`;                       
+
+    //---------delete old records
         let _stringData = "";
-        // let _stringData = selectWhere.hospital_id > 0 ? " hospital_id=? " : "";
-        // if (_stringData != "" && selectWhere.sub_department_id > 0)
-        //   _stringData += " AND ";
-        // _stringData +=
-        //   selectWhere.sub_department_id > 0 ? " sub_department_id=?" : "";
-
-        // if (_stringData != "" && selectWhere.hims_d_employee_id != null)
-        //   _stringData += " AND ";
-        // _stringData +=
-        //   selectWhere.hims_d_employee_id != null ? " hims_d_employee_id=?" : "";
-
-        // const _appendString = _stringData != "" ? " AND " + _stringData : "";
+     
 
         if (selectWhere.hospital_id != null) {
           _stringData += " and hospital_id=?";
@@ -81,20 +85,29 @@ module.exports = {
 
         utilities.logger().log("inputValues: ", inputValues);
 
-        // Sync(() => {
-        // .sync(null,
+     
+        _mysql
+        .executeQuery({
+          query:
+          deleteString,   
+          printQuery: true
+        })
+        .then(del => {
         _mysql
           .executeQueryWithTransaction({
             query:
-              "select hims_d_employee_id, employee_code,full_name  as employee_name,\
-      employee_status,date_of_joining ,date_of_resignation ,religion_id,sub_department_id,hospital_id,exit_date from hims_d_employee where employee_status <>'I'\
-      and (( date(date_of_joining) <= date(?) and date(exit_date) >= date(?)) or \
-      (date(date_of_joining) <= date(?) and exit_date is null)) and  record_status='A' " +
+           "select hims_d_employee_id, employee_code,full_name  as employee_name,\
+            employee_status,date_of_joining ,date_of_resignation ,religion_id,sub_department_id,hospital_id,\
+            exit_date from hims_d_employee E left join hims_f_employee_annual_leave A on E.hims_d_employee_id=A.employee_id \
+            and  A.year=? and A.month=? and A.cancelled='N' where employee_status <>'I'\
+            and (( date(date_of_joining) <= date(?) and date(exit_date) >= date(?)) or \
+            (date(date_of_joining) <= date(?) and exit_date is null)) and  E.record_status='A'\
+            and hims_f_employee_annual_leave_id is null" +
               _stringData,
             values: inputValues,
             printQuery: true
-          })
-          .then(empResult => {
+            })
+            .then(empResult => {
             if (empResult.length > 0) {
               utilities
                 .logger()
@@ -103,11 +116,11 @@ module.exports = {
                 .executeQuery({
                   query:
                     "select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,\
-          weekoff, holiday, holiday_type, religion_id from \
-       hims_d_holiday where record_status='A' and  \
-          date(holiday_date) between date(?) and date(?) \
-          and (weekoff='Y' or holiday='Y') and hospital_id=?",
-                  values: [
+                      weekoff, holiday, holiday_type, religion_id from \
+                  hims_d_holiday where record_status='A' and  \
+                      date(holiday_date) between date(?) and date(?) \
+                      and (weekoff='Y' or holiday='Y') and hospital_id=?",
+                 values: [
                     startOfMonth,
                     endOfMonth,
                     empResult[0]["hospital_id"]
@@ -739,6 +752,14 @@ module.exports = {
               next(error);
             });
           });
+        })
+        .catch(e => {
+      _mysql.releaseConnection();
+          next(e);
+        });
+
+
+
       } catch (e) {
         reject(e);
         next(e);
@@ -926,14 +947,14 @@ module.exports = {
           })
           .catch(e => {
             _mysql.rollBackTransaction(() => {
-              _mysql.releaseConnection();
+              
               next(e);
             });
           });
       })
       .catch(e => {
         _mysql.rollBackTransaction(() => {
-          _mysql.releaseConnection();
+         
           next(e);
         });
       });

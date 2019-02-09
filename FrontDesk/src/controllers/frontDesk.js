@@ -11,7 +11,15 @@ import {
   addPatientInsuranceData,
   addEpisodeEncounterData
 } from "../models/visit";
-import { addBillData, newReceiptData } from "billing/src/models/billing";
+// import algaehPath from "algaeh-utilities/algaeh-path-format";
+import { addBillData, newReceiptData } from "algaeh-billing/src/models/billing";
+// const { addBillData, newReceiptData } = require(algaehPath(
+//   "algaeh-billing/src/model/billing"
+// ));
+
+// const { addBillData, newReceiptData } = require(algaehPath(
+//   "algaeh-billing/src/model/billing"
+// ));
 
 export default () => {
   const api = Router();

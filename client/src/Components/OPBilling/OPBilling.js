@@ -200,9 +200,11 @@ class OPBilling extends Component {
 
     algaehApiCall({
       uri: "/opBilling/get",
+      module: "billing",
       method: "GET",
       data: { bill_number: billcode },
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           let data = response.data.records;
 
@@ -320,6 +322,7 @@ class OPBilling extends Component {
   SaveBill(e) {
     const err = Validations(this);
     if (!err) {
+      debugger;
       if (this.state.unbalanced_amount === 0) {
         this.GenerateReciept($this => {
           let Inputobj = $this.state;
@@ -328,6 +331,7 @@ class OPBilling extends Component {
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
+            module: "billing",
             data: Inputobj,
             method: "POST",
             onSuccess: response => {

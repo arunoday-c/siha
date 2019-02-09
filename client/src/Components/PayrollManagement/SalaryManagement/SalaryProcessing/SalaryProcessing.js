@@ -89,7 +89,7 @@ class SalaryProcessing extends Component {
     ) {
       this.props.getSubDepartment({
         uri: "/department/get/subdepartment",
-        module : "masterSettings",
+        module: "masterSettings",
         data: {
           sub_department_status: "A"
         },
@@ -332,9 +332,17 @@ class SalaryProcessing extends Component {
                         </h3>
                       </div>
                       <div className="actions">
-                        {/*    <a className="btn btn-primary btn-circle active">
-                       <i className="fas fa-calculator" /> 
-                      </a>*/}
+
+                        <div className="customCheckbox">
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              value=""
+                              name=""
+                            />
+                            <span>Select All</span>
+                          </label>
+                        </div>
                       </div>
                     </div>
 
@@ -373,6 +381,44 @@ class SalaryProcessing extends Component {
                                   filterable: false
                                 }
                               },
+                              // {
+                              //   fieldName: "",
+                              //   label: (
+                              //     <AlgaehLabel
+                              //       label={{
+                              //         forceLabel: "Select"
+                              //       }}
+                              //     />
+                              //   ),
+                              //   //disabled: true
+                              //   displayTemplate: row => {
+                              //     return (
+                              //       <span>
+                              //         <input
+                              //           type="checkbox"
+                              //           value="Salary Processs"
+                              //         // onChange={selectToPay.bind(
+                              //         //   this,
+                              //         //   this,
+                              //         //   row
+                              //         // )}
+                              //         // checked={
+                              //         //   row.select_to_pay === "Y"
+                              //         //     ? true
+                              //         //     : false
+                              //         // }
+                              //         // disabled={
+                              //         //   row.salary_paid === "Y" ? true : false
+                              //         // }
+                              //         />
+                              //       </span>
+                              //     );
+                              //   },
+                              //   others: {
+                              //     maxWidth: 50,
+                              //     filterable: false
+                              //   }
+                              // },
                               {
                                 fieldName: "salary_processed",
 
@@ -389,10 +435,10 @@ class SalaryProcessing extends Component {
                                       No
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Yes
+                                      <span className="badge badge-success">
+                                        Yes
                                     </span>
-                                  );
+                                    );
                                 }
                               },
                               {
@@ -411,10 +457,10 @@ class SalaryProcessing extends Component {
                                       No
                                     </span>
                                   ) : (
-                                    <span className="badge badge-success">
-                                      Yes
+                                      <span className="badge badge-success">
+                                        Yes
                                     </span>
-                                  );
+                                    );
                                 }
                               },
                               {
@@ -544,9 +590,9 @@ class SalaryProcessing extends Component {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 20 }}
                             events={{
-                              onEdit: () => {},
-                              onDelete: () => {},
-                              onDone: () => {}
+                              onEdit: () => { },
+                              onDelete: () => { },
+                              onDone: () => { }
                             }}
                           />
                         </div>

@@ -351,7 +351,7 @@ let addFrontDesk = (req, res, next) => {
                         }
                       };
 
-                      newReceiptData(req, res, next);
+                      newReceiptData(req, res, next); //Done
 
                       // debugLog("Orver all records number gen", output);
                       // let bill = new LINQ(output)
@@ -400,7 +400,7 @@ let addFrontDesk = (req, res, next) => {
                           }
                         };
                         //Bill generation
-                        addBillData(req, res, next);
+                        addBillData(req, res, next); //Done
                         // req.query.billing_header_id = billOutput.insertId;
                         // req.body.billing_header_id = billOutput.insertId;
 
@@ -431,11 +431,11 @@ let addFrontDesk = (req, res, next) => {
                             resolve(records);
                           };
                           debugLog("Visit", records);
-                          addEpisodeEncounterData(req, res, next);
+                          addEpisodeEncounterData(req, res, next); //Done
                         })
                           .then(encounterResult => {
                             debugLog("inside front desk chier functionalityL:");
-                            addCashHandover(req, res, next);
+                            addCashHandover(req, res, next); //Irfan
                           })
                           .then(cashier_result => {
                             connection.commit(error => {
@@ -961,7 +961,7 @@ let updateFrontDesk = (req, res, next) => {
               //   resolve(result);
               // };
               // Calling Visit
-              insertPatientVisitData(req, res, next);
+              insertPatientVisitData(req, res, next); //Done
             }).then(visitData => {
               req.query.visit_id = visitData["insertId"];
               req.visit_id = visitData["insertId"];
@@ -981,7 +981,7 @@ let updateFrontDesk = (req, res, next) => {
                     resolve(data);
                   };
                   //Check for insurace
-                  addPatientInsuranceData(req, res, next);
+                  addPatientInsuranceData(req, res, next); //Done
                 } else {
                   resolve({});
                 }
@@ -1023,7 +1023,7 @@ let updateFrontDesk = (req, res, next) => {
                   req.options.onSuccess = records => {
                     resolve(records);
                   };
-                  newReceiptData(req, res, next);
+                  newReceiptData(req, res, next); //Done
                 }).then(billOutput => {
                   // req.query.billing_header_id = billOutput.insertId;
                   // req.body.billing_header_id = billOutput.insertId;
@@ -1064,7 +1064,7 @@ let updateFrontDesk = (req, res, next) => {
                       resolve(data);
                     };
 
-                    addBillData(req, res, next);
+                    addBillData(req, res, next); //Done
                   }).then(records => {
                     return new Promise((resolve, reject) => {
                       debugLog("Inside Episode");
@@ -1077,12 +1077,12 @@ let updateFrontDesk = (req, res, next) => {
                         resolve(records);
                       };
                       debugLog("Before Episode");
-                      addEpisodeEncounterData(req, res, next);
+                      addEpisodeEncounterData(req, res, next); //Done
                       debugLog("After Episode");
                     })
                       .then(encounterResult => {
                         debugLog("inside front desk chier functionalityL:");
-                        addCashHandover(req, res, next);
+                        addCashHandover(req, res, next); //Irfan
                       })
                       .then(cashier_result => {
                         connection.commit(error => {

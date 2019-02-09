@@ -313,7 +313,7 @@ let authorizeLoan = (req, res, next) => {
           connection.query(
             "UPDATE hims_f_loan_application SET authorized1_by=?,authorized1_date=?,\
           authorized1=?,approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
-          loan_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+          loan_tenure=?,pending_tenure=? updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
 
             [
               input.updated_by,
@@ -323,6 +323,7 @@ let authorizeLoan = (req, res, next) => {
               input.start_year,
               input.start_month,
               input.installment_amount,
+              input.loan_tenure,
               input.loan_tenure,
               new Date(),
               input.updated_by,
@@ -398,7 +399,7 @@ let authorizeLoan = (req, res, next) => {
           connection.query(
             "UPDATE hims_f_loan_application SET authorized2_by=?,authorized2_date=?,\
             authorized2=?,approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
-          loan_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+          loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
 
             [
               input.updated_by,
@@ -408,6 +409,7 @@ let authorizeLoan = (req, res, next) => {
               input.start_year,
               input.start_month,
               input.installment_amount,
+              input.loan_tenure,
               input.loan_tenure,
               new Date(),
               input.updated_by,

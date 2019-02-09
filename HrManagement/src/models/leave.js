@@ -10,9 +10,10 @@ import algaehUtilities from "algaeh-utilities/utilities";
 module.exports = {
   //created by irfan: to
   authorizeLeave: (req, res, next) => {
-    
+    const utilities = new algaehUtilities();
     const input = req.body;
     let salary_processed = "N";
+    let annual_leave_process_separately = "N";
     if (req.userIdentity.leave_authorize_privilege != "N") {
       const _mysql = new algaehMysql();
       // get highest auth level
@@ -65,6 +66,7 @@ module.exports = {
                     .catch(error => {
                       reject(error);
                       _mysql.rollBackTransaction(() => {
+                        
                         next(error);
                       });
                     });
@@ -79,6 +81,7 @@ module.exports = {
               .catch(error => {
                 reject(error);
                 _mysql.rollBackTransaction(() => {
+                
                   next(error);
                 });
               });
@@ -90,7 +93,6 @@ module.exports = {
           //if he has highest previlege
           getLeaveAuthFields(input.auth_level).then(authFields => {
           
-
             _mysql
               .executeQueryWithTransaction({
                 query:
@@ -125,8 +127,9 @@ module.exports = {
                       });
                     })
                     .catch(error => {
-                      reject(error);
+                      
                       _mysql.rollBackTransaction(() => {
+                      
                         next(error);
                       });
                     });
@@ -144,14 +147,17 @@ module.exports = {
                         .executeQuery({
                           query:
                             "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid from \
-                          hims_f_salary where `month`=? and `year`=? and employee_id=? ",
+                          hims_f_salary where `month`=? and `year`=? and employee_id=?;\
+                          SELECT annual_leave_process_separately from hims_d_hrms_options ",
                           values: [month_number, input.year, input.employee_id],
                           printQuery: true
                         })
                         .then(salResult => {
+
+                          annual_leave_process_separately=salResult[1][0]["annual_leave_process_separately"];
                           if (
-                            salResult.length > 0 &&
-                            salResult[0]["salary_processed"] == "Y"
+                            salResult[0].length > 0 &&
+                            salResult[0][0]["salary_processed"] == "Y"
                           ) {
 
                             salary_processed="Y"
@@ -164,18 +170,15 @@ module.exports = {
                           }
 
                         }).then(pendingUpdaidResult=>{
-                        
+                          utilities.logger().log("befor: ");
                           calc(_mysql, req.body)
                           .then(deductionResult => {
-                           
-
-
-
+                            utilities.logger().log("after: ",deductionResult);
                               if (deductionResult.invalid_input == true) {
-                                _mysql.rollBackTransaction(() => {
+                                _mysql.rollBackTransaction(() => {                                
                                   req.records = deductionResult;
                                   next();
-                                  return;
+                                 
                                 });                               
                               }
                               
@@ -185,10 +188,6 @@ module.exports = {
 
                              
                           }).then(deductionResult =>{
-
-
-                           
-
                             updaid_leave_duration = new LINQ(
                               deductionResult.monthWiseCalculatedLeaveDeduction
                             )
@@ -216,14 +215,12 @@ module.exports = {
                                   .then(leaveData => {
 
 
-
                                     if (
                                       leaveData.length > 0 &&
                                       parseFloat(
                                         deductionResult.calculatedLeaveDays
                                       ) <= parseFloat(leaveData[0]["close_balance"])
                                     ) {
-
 
 
                                       let newCloseBal =
@@ -295,6 +292,15 @@ module.exports = {
 
                                               }
 
+                                              let anualLeave="";
+                                              if (annual_leave_process_separately=="Y"&&input.leave_category=="A"){
+                                                anualLeave=` insert into hims_f_employee_annual_leave (employee_id,year,month,leave_application_id) VALUE(${input.employee_id},
+                                                  ${input.year},
+                                                  ${month_number},
+                                                  ${input.hims_f_leave_application_id});`
+
+                                              }
+
 
 
                                             _mysql
@@ -307,7 +313,7 @@ module.exports = {
                                               hims_f_employee_monthly_leave_id='" +
                                                   leaveData[0]
                                                     .hims_f_employee_monthly_leave_id +
-                                                  "';"+insertPendLeave,
+                                                  "';"+insertPendLeave+anualLeave,
                                                   values: [{
                                                     ...finalData,
                                                     close_balance: newCloseBal,
@@ -325,11 +331,9 @@ module.exports = {
                                                 })
 
 
-                                              }) .catch(error => {
-                                              
-
-                                                reject(error);
-                                                _mysql.rollBackTransaction(() => {
+                                              }) .catch(error => {                                              
+                                                utilities.logger().log("error: ", error);                                               
+                                                _mysql.rollBackTransaction(() => {                                                
                                                   next(error);
                                                 });
                                               });
@@ -353,11 +357,12 @@ module.exports = {
 
 
                                   }).catch(error => {
-                                    reject(error);
+                                    
                                     _mysql.rollBackTransaction(() => {
+                                   
                                       next(error);
                                     });
-                                  });;
+                                  });
 
 
                                 }
@@ -370,6 +375,7 @@ module.exports = {
                                   };
                                   _mysql.rollBackTransaction(() => {
                                     next();
+                                    return;
                                   });
                                 }
 
@@ -377,16 +383,19 @@ module.exports = {
 
                           })
                           .catch(e => {
-                            _mysql.rollBackTransaction(() => {
-                              next(e);
+                            utilities.logger().log("apple: ",e);
+                            _mysql.rollBackTransaction(() => {                                                   
+                              next(e);                             
                             });
-                            reject(e);
+                             
+                           
                           });
 
                         })
                         .catch(e => {
-                          reject(e);
+                          
                           _mysql.rollBackTransaction(() => {
+                         
                             next(e);
                           });
                         });
@@ -1999,7 +2008,7 @@ addLeaveMaster: (req, res, next) => {
     })
     .catch(e => {
       _mysql.rollBackTransaction(() => {
-        _mysql.releaseConnection();
+       
         next(e);
       });
     });
@@ -3583,7 +3592,7 @@ function calc(db, body) {
       let input = body;
 
     
-
+      const utilities = new algaehUtilities();
       let from_date = moment(input.from_date).format("YYYY-MM-DD");
       let to_date = moment(input.to_date).format("YYYY-MM-DD");
       let leave_applied_days = 0;
@@ -4000,8 +4009,14 @@ function calc(db, body) {
                 }
               }
 
+
+
               calculatedLeaveDays =
                 parseFloat(calculatedLeaveDays) - parseFloat(session_diff);
+
+     utilities.logger().log("calculatedLeaveDays: ", calculatedLeaveDays);
+     utilities.logger().log("currentClosingBal: ", currentClosingBal);
+
 
               //checking if he has enough eligible days
               if (currentClosingBal >= calculatedLeaveDays) {
