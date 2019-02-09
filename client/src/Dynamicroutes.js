@@ -234,6 +234,9 @@ const PageToPlot = {
   ),
   ClinicalDeskNew: React.lazy(() =>
     import("./Components/DoctorsWorkbench/DoctorsWorkbench-new")
+  ),
+  EmpShiftRost: React.lazy(() =>
+    import("./Components/EmployeeShiftRostering/EmployeeShiftRostering")
   )
 };
 
