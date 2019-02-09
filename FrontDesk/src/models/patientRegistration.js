@@ -3,8 +3,8 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   insertPatientData: (req, res, next) => {
+    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
     try {
-      const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
       let inputparam = { ...req.body };
       const utilities = new algaehUtilities();
 
