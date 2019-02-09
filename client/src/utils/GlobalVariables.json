@@ -871,5 +871,9 @@
     { "name": "Loan", "value": "LO" },
     { "name": "Salary", "value": "S" },
     { "name": "Performance", "value": "P" }
+  ],
+  "DOC_TYPE": [
+    { "name": "Company", "value": "C" },
+    { "name": "Employee", "value": "E" }
   ]
 }

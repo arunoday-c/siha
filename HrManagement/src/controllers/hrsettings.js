@@ -9,7 +9,10 @@ import {
   updateDesignation,
   getOvertimeGroups,
   addOvertimeGroups,
-  updateOvertimeGroups
+  updateOvertimeGroups,
+  getDocumentsMaster,
+  addDocumentType,
+  updateDocumentType
 } from "../models/hrsettings";
 export default () => {
   const api = Router();
@@ -70,6 +73,27 @@ export default () => {
   });
 
   api.put("/updateOvertimeGroups", updateOvertimeGroups, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.get("/getDocumentsMaster", getDocumentsMaster, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.post("/addDocumentType", addDocumentType, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateDocumentType", updateDocumentType, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       result: req.records
