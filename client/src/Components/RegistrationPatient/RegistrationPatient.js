@@ -276,6 +276,7 @@ class RegistrationPatient extends PureComponent {
           } else {
             algaehApiCall({
               uri: "/frontDesk/update",
+              module: "frontDesk",
               data: $this.state,
               method: "POST",
               onSuccess: response => {
@@ -380,7 +381,9 @@ class RegistrationPatient extends PureComponent {
           });
 
           $this.props.getPatientInsurance({
-            uri: "/insurance/getPatientInsurance",
+            // uri: "/insurance/getPatientInsurance",
+            uri: "/patientRegistration/getPatientInsurance",
+            module: "frontDesk",
             method: "GET",
             data: {
               patient_id: data.patientRegistration.hims_d_patient_id
