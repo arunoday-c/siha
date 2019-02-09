@@ -1,5 +1,5 @@
 {
-  "name": "billing",
+  "name": "algaeh-billing",
   "version": "1.0.0",
   "description": "Algaeh Billing Module",
   "main": "dist",
@@ -10,7 +10,7 @@
     "api": "npm run billing_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env PORT=3014 NODE_ENV=production pm2 start  -i 1 billing_server.js"
+    "start": "cross-env PORT=3014 NODE_ENV=production pm2 start  -i 2 billing_server.js"
   },
   "dependencies": {
     "algaeh-mysql": "^1.1.13",
