@@ -6,10 +6,15 @@ import {
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
-
-//import GlobalVariables from "../../../../../utils/GlobalVariables.json";
-
+const AlgaehFileUploader = React.memo(
+  React.lazy(() => import("../../Wrapper/algaehFileUpload"))
+);
 export default class EmployeeDocuments extends Component {
+
+
+afterPassPortSave(rawData){
+  
+}
   render() {
     return (
       <div className="EmployeeDocumentsScreen row">
@@ -60,18 +65,20 @@ export default class EmployeeDocuments extends Component {
               <div className="actions" />
             </div>
             <div className="portlet-body">
-              <ul class="list-group documentFor">
-                <li class="list-group-item d-flex justify-content-between align-items-center active">
+              <ul className="list-group documentFor">
+                <li className="list-group-item d-flex justify-content-between align-items-center active">
                   Aboobacker Sidhiqe
-                  <span class="badge badge-primary badge-pill">Self</span>
+                  <span className="badge badge-primary badge-pill">Self</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
+                <li className="list-group-item d-flex justify-content-between align-items-center">
                   Febry
-                  <span class="badge badge-primary badge-pill">Spouse</span>
+                  <span className="badge badge-primary badge-pill">Spouse</span>
                 </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
+                <li className="list-group-item d-flex justify-content-between align-items-center">
                   Aaliya
-                  <span class="badge badge-primary badge-pill">Daughter</span>
+                  <span className="badge badge-primary badge-pill">
+                    Daughter
+                  </span>
                 </li>
               </ul>
             </div>
@@ -142,12 +149,28 @@ export default class EmployeeDocuments extends Component {
                   <input type="file" />
                 </div> */}
                 <div className="col">
-                  <div className="upload-drop-zone">
+                  <AlgaehFileUploader
+                    name="attach_photo"
+                    textAltMessage="Passport Copies"
+                    showActions={true}
+                    serviceParameters={{
+                      uniqueID: "",
+                      destinationName: "",
+                      fileType: "Employees"
+                    }}
+                    onlyDragDrop={true}
+                    events={
+                      {
+                        afterSave: 
+                      }
+                    }
+                  />
+                  {/* <div className="upload-drop-zone">
                     {" "}
                     <b>Passport Copies</b>
                     <br />
                     drag and drop files here
-                  </div>
+                  </div> */}
                 </div>
                 <div className="col">
                   <div className="upload-drop-zone">
