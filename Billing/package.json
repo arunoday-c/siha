@@ -10,7 +10,7 @@
     "api": "npm run billing_server",
     "lint": "eslint src && eslint test",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "cross-env PORT=3014 NODE_ENV=production pm2 start  -i 1 billing_server.js"
+    "start": "cross-env PORT=3014 NODE_ENV=production pm2 start  -i 2 billing_server.js"
   },
   "dependencies": {
     "algaeh-mysql": "^1.1.13",
@@ -20,6 +20,7 @@
     "cors": "^2.8.4",
     "cross-env": "^5.1.4",
     "express": "^4.16.3",
+    "node-linq": "0.0.5",
     "winston": "^2.4.2",
     "winston-daily-rotate-file": "^3.1.4"
   },
