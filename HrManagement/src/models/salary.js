@@ -1161,7 +1161,7 @@ module.exports = {
                         _mysql
                           .executeQuery({
                             query:
-                              "select loan_skip_months,installment_amount, pending_loan,pending_tenure from hims_f_loan_application  where hims_f_loan_application_id in (?)",
+                              "select hims_f_loan_application_id,loan_skip_months,installment_amount, pending_loan,pending_tenure from hims_f_loan_application  where hims_f_loan_application_id in (?)",
                             values: [loan_application_ids],
                             printQuery: true
                           })
@@ -1191,7 +1191,7 @@ module.exports = {
                                 .executeQuery({
                                   query:
                                     "UPDATE hims_f_loan_application SET pending_loan = ?, loan_closed=?, loan_skip_months=?, pending_tenure=?,\
-                                    updated_date=?, updated_by=? where hims_f_loan_application_id in (?)",
+                                    updated_date=?, updated_by=? where hims_f_loan_application_id =?",
                                   values: [
                                     pending_loan,
                                     loan_closed,
@@ -1199,7 +1199,8 @@ module.exports = {
                                     pending_tenure,
                                     new Date(),
                                     req.userIdentity.algaeh_d_app_user_id,
-                                    loan_application_ids
+                                    loan_application[i]
+                                      .hims_f_loan_application_id
                                   ],
                                   printQuery: true
                                 })

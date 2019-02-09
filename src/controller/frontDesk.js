@@ -4,8 +4,8 @@ import { downloadImage, readFileToBase64 } from "../utils/images";
 import { releaseConnection } from "../utils";
 import { debugLog, debugFunction } from "../utils/logging";
 import {
-  addFrontDesk,
-  updateFrontDesk,
+  addFrontDesk, //Done
+  updateFrontDesk, //Done
   selectFrontDesk, //Done
   getCashHandoverDetails,
   updateCashHandoverDetails
