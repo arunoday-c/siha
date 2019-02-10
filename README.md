@@ -16,5 +16,5 @@ add flags in 3 tables Manually
 # Link the modules
 
 1. billing module --> sudo npm link Use in front desk
-2. Laboratory --> sudo npm link Use in billing
+2. Laboratory module --> sudo npm link Use in billing
 3. Radiology module --> sudo npm link Use in billing
