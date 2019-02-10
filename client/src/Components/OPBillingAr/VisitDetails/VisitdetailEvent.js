@@ -46,7 +46,7 @@ const handleChange = ($this, row, context, e) => {
         $this.props.getPatientInsurance({
           // uri: "/insurance/getPatientInsurance",
           uri: "/patientRegistration/getPatientInsurance",
-          module: "frontDesk",
+          // module: "frontDesk",
           method: "GET",
           data: {
             patient_id: $this.state.hims_d_patient_id,
