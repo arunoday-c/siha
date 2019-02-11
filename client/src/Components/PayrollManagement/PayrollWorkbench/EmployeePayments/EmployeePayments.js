@@ -380,7 +380,7 @@ class EmployeePayment extends Component {
                           <h6>
                             {this.state.payment_application_code
                               ? this.state.payment_application_code
-                              : "*** NEW ***"}
+                              : "----------"}
                           </h6>
                         </div>
                         <div className="col-6 form-group">

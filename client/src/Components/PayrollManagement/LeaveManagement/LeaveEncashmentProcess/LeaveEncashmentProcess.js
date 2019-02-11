@@ -210,7 +210,7 @@ class LeaveEncashmentProcess extends Component {
               <h6>
                 {this.state.encashment_number
                   ? this.state.encashment_number
-                  : "*** NEW ***"}
+                  : "----------"}
               </h6>
             </div>
             <div className="col">

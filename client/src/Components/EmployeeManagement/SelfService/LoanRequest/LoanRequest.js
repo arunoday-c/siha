@@ -692,6 +692,27 @@ class LoanRequest extends Component {
                         }
                       },
                       {
+                        fieldName: "start_month",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Start Month" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(
+                                "01-" + row.start_month + "-" + row.start_year
+                              ).format("MMMM")}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "start_year",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Start Year" }} />
+                        )
+                      },
+                      {
                         fieldName: "loan_description",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Loan Type" }} />

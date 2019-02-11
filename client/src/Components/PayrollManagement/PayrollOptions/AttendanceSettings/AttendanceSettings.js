@@ -86,7 +86,7 @@ export default class AttendanceSettings extends Component {
             title: "Updated Successfully",
             type: "success"
           });
-          this.getOptions();
+          // this.getOptions();
         }
       },
       onFailure: err => {
@@ -379,87 +379,6 @@ export default class AttendanceSettings extends Component {
                     }
                   }}
                 />
-
-                <div className="col-2">
-                  <label>Process Annual Leave Separately</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="Y"
-                        name="annual_leave_process_separately"
-                        checked={
-                          this.state.annual_leave_process_separately === "Y"
-                        }
-                        onChange={this.textHandler.bind(this)}
-                        type="radio"
-                      />
-                      <span>Yes</span>
-                    </label>
-
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="N"
-                        name="annual_leave_process_separately"
-                        checked={
-                          this.state.annual_leave_process_separately === "N"
-                        }
-                        onChange={this.textHandler.bind(this)}
-                        type="radio"
-                      />
-                      <span>No</span>
-                    </label>
-                  </div>
-                </div>
-
-                <div className="col-2">
-                  <label>Airfare Factor</label>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="PB"
-                        name="airfare_factor"
-                        checked={this.state.airfare_factor === "PB"}
-                        onChange={this.textHandler.bind(this)}
-                      />
-                      <span>Percentage Basic</span>
-                    </label>
-
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="FI"
-                        name="airfare_factor"
-                        checked={this.state.airfare_factor === "FI"}
-                        onChange={this.textHandler.bind(this)}
-                      />
-                      <span>Fixed</span>
-                    </label>
-                  </div>
-                </div>
-
-                {this.state.airfare_factor === "PB" ? (
-                  <AlagehFormGroup
-                    div={{ className: "col-2 form-group" }}
-                    label={{
-                      forceLabel: "Airfare Percentage",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "airfare_percentage",
-                      value: this.state.airfare_percentage,
-                      events: {
-                        onChange: this.textHandler.bind(this)
-                      },
-                      others: {
-                        type: "number"
-                      }
-                    }}
-                  />
-                ) : null}
 
                 <AlagehAutoComplete
                   div={{ className: "col-2 form-group" }}
@@ -984,16 +903,6 @@ export default class AttendanceSettings extends Component {
                     label={{ forceLabel: "Update", returnText: true }}
                   />
                 </button>
-
-                {/* <button
-                  type="button"
-                  className="btn btn-default"
-                  //onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "Clear", returnText: true }}
-                  />
-                </button> */}
               </div>
             </div>
           </div>

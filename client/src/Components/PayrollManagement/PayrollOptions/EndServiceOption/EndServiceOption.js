@@ -9,6 +9,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import swal from "sweetalert2";
 
 export default class EndServiceOption extends Component {
   constructor(props) {
@@ -16,13 +17,99 @@ export default class EndServiceOption extends Component {
     this.state = {
       earnings: [],
       deductions: [],
-      earning_ids: [],
       deduction_ids: [],
       componentArray: [],
-      service_range1: 0
+      earning_comp: [],
+      service_days: [],
+      comps: {},
+      service_range: 0
     };
     this.getEosOptions();
     this.getEarningDeducts();
+  }
+
+  addServiceRange() {
+    AlgaehValidation({
+      querySelector: "data-validate='addServRng'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        let arr = this.state.service_days;
+
+        arr.push({
+          service_range: this.state.service_range,
+          from_service_range: this.state.from_service_range,
+          eligible_days: this.state.eligible_days
+        });
+
+        this.setState({
+          service_days: arr,
+          service_range: this.state.from_service_range,
+          from_service_range: null,
+          eligible_days: null
+        });
+      }
+    });
+  }
+
+  deleteResignComponents(row) {
+    swal({
+      title: "Delete Components",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.earning_comp.pop(row);
+        this.setState({
+          earning_comp: this.state.earning_comp
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  deleteServiceDays(row) {
+    swal({
+      title: "Delete Service Days",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.service_days.pop(row);
+        //service_range : this.state.service_days
+        this.setState(
+          {
+            service_days: this.state.service_days
+          },
+          () => {
+            this.setState({
+              service_range:
+                Enumerable.from(this.state.service_days).lastOrDefault() !==
+                undefined
+                  ? Enumerable.from(this.state.service_days).lastOrDefault()
+                      .from_service_range
+                  : 0
+            });
+          }
+        );
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
   }
 
   addEarningComponent() {
@@ -30,47 +117,72 @@ export default class EndServiceOption extends Component {
       querySelector: "data-validate='addErndv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        swalMessage({
-          title: "EEEEEEE",
-          type: "success"
-        });
+        if (this.state.earning_comp.length > 4) {
+          swalMessage({
+            title: "Cannot Add More than 4 Components",
+            type: "success"
+          });
+        } else {
+          let x = Enumerable.from(this.state.earning_comp)
+            .where(
+              w =>
+                w.hims_d_earning_deduction_id ===
+                this.state.comps.hims_d_earning_deduction_id
+            )
+            .firstOrDefault();
+
+          if (x === undefined) {
+            let earn_cmp = this.state.earning_comp;
+            earn_cmp.push(this.state.comps);
+
+            this.setState({
+              earning_id: null,
+              earning_comp: earn_cmp
+            });
+          } else {
+            swalMessage({
+              title: "Already Exist in the list",
+              type: "warning"
+            });
+          }
+        }
       }
     });
   }
 
   updateEosOptions() {
-    algaehApiCall({
-      uri: "/payrollOptions/updateEosOptions",
-      method: "PUT",
-      module: "hrManagement",
-      data: {
-        end_of_service_calculation: this.state.end_of_service_calculation,
-        terminate_salary: this.state.terminate_salary,
-        end_of_service_payment: this.state.end_of_service_payment,
-        end_of_service_type: this.state.end_of_service_type,
-        end_of_service_years: this.state.end_of_service_years,
-        limited_years: this.state.limited_years,
-        gratuity_in_final_settle: this.state.gratuity_in_final_settle,
-        pending_salary_with_final: this.state.pending_salary_with_final,
-        round_off_nearest_year: this.state.round_off_nearest_year,
-        end_of_service_component1: 1,
-        end_of_service_component2: 7
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          swalMessage({
-            title: "Updated Successfully",
-            type: "success"
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
+    // algaehApiCall({
+    //   uri: "/payrollOptions/updateEosOptions",
+    //   method: "PUT",
+    //   module: "hrManagement",
+    //   data: {
+    //     end_of_service_calculation: this.state.end_of_service_calculation,
+    //     terminate_salary: this.state.terminate_salary,
+    //     end_of_service_payment: this.state.end_of_service_payment,
+    //     end_of_service_type: this.state.end_of_service_type,
+    //     end_of_service_years: this.state.end_of_service_years,
+    //     limited_years: this.state.limited_years,
+    //     gratuity_in_final_settle: this.state.gratuity_in_final_settle,
+    //     pending_salary_with_final: this.state.pending_salary_with_final,
+    //     round_off_nearest_year: this.state.round_off_nearest_year,
+    //     end_of_service_component1: 1,
+    //     end_of_service_component2: 7
+    //   },
+    //   onSuccess: res => {
+    //     if (res.data.success) {
+    //       swalMessage({
+    //         title: "Updated Successfully",
+    //         type: "success"
+    //       });
+    //     }
+    //   },
+    //   onFailure: err => {
+    //     swalMessage({
+    //       title: err.message,
+    //       type: "error"
+    //     });
+    //   }
+    // });
   }
 
   getEarningDeducts() {
@@ -127,10 +239,13 @@ export default class EndServiceOption extends Component {
   }
 
   dropDownHandler(value) {
-    debugger;
-    this.setState({
-      [value.name]: value.value
-    });
+    switch (value.name) {
+      case "earning_id":
+        this.setState({
+          comps: value.selected
+        });
+        break;
+    }
   }
 
   render() {
@@ -414,17 +529,17 @@ export default class EndServiceOption extends Component {
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <div className="row">
+                        <div className="row" data-validate="addServRng">
                           <AlagehFormGroup
                             div={{ className: "col-3 form-group mandatory" }}
                             label={{
                               forceLabel: "From Range",
-                              isImp: false
+                              isImp: true
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "service_range1",
-                              value: this.state.service_range1,
+                              name: "service_range",
+                              value: this.state.service_range,
                               events: {
                                 // onChange: this.textHandler.bind(this)
                               },
@@ -439,7 +554,7 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "To Range",
-                              isImp: false
+                              isImp: true
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -458,7 +573,7 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col-3 form-group" }}
                             label={{
                               forceLabel: "Eligible Days",
-                              isImp: false
+                              isImp: true
                             }}
                             textBox={{
                               className: "txt-fld",
@@ -478,7 +593,7 @@ export default class EndServiceOption extends Component {
                             style={{ paddingTop: 21 }}
                           >
                             <button
-                              // onClick={this.addIDType.bind(this)}
+                              onClick={this.addServiceRange.bind(this)}
                               className="btn btn-primary"
                             >
                               Add to List
@@ -492,7 +607,24 @@ export default class EndServiceOption extends Component {
                           datavalidate="ResignationEligibility"
                           columns={[
                             {
-                              fieldName: "Column_1",
+                              fieldName: "action",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Acion" }} />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <i
+                                    className="fas fa-trash-alt"
+                                    onClick={this.deleteServiceDays.bind(
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "service_range",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "From Range" }}
@@ -500,7 +632,7 @@ export default class EndServiceOption extends Component {
                               )
                             },
                             {
-                              fieldName: "Column_2",
+                              fieldName: "from_service_range",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "To Range" }}
@@ -508,7 +640,7 @@ export default class EndServiceOption extends Component {
                               )
                             },
                             {
-                              fieldName: "Column_2",
+                              fieldName: "eligible_days",
                               label: (
                                 <AlgaehLabel
                                   label={{ forceLabel: "Eligible Days" }}
@@ -517,8 +649,8 @@ export default class EndServiceOption extends Component {
                             }
                           ]}
                           keyId=""
-                          dataSource={{ data: [] }}
-                          isEditable={true}
+                          dataSource={{ data: this.state.service_days }}
+                          isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{}}
                           others={{}}
@@ -535,9 +667,8 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col form-group" }}
                             label={{ forceLabel: "Earnings", isImp: true }}
                             selector={{
-                              name: "earning_ids",
-                              value: this.state.earning_ids,
-                              multiselect: true,
+                              name: "earning_id",
+                              value: this.state.earning_id,
                               className: "select-fld",
                               dataSource: {
                                 textField: "earning_deduction_description",
@@ -570,6 +701,23 @@ export default class EndServiceOption extends Component {
                           id="ResignationMinYear"
                           datavalidate="ResignationMinYear"
                           columns={[
+                            {
+                              fieldName: "action",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Acion" }} />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <i
+                                    className="fas fa-trash-alt"
+                                    onClick={this.deleteResignComponents.bind(
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                );
+                              }
+                            },
                             {
                               fieldName: "earning_deduction_code",
                               label: (
@@ -629,7 +777,7 @@ export default class EndServiceOption extends Component {
                             textBox={{
                               className: "txt-fld",
                               name: "service_range1",
-                              value: this.state.service_range1,
+                              // value: this.state.service_range1,
                               events: {
                                 // onChange: this.textHandler.bind(this)
                               },
@@ -649,7 +797,7 @@ export default class EndServiceOption extends Component {
                             textBox={{
                               className: "txt-fld",
                               name: "from_service_range",
-                              value: this.state.from_service_range,
+                              // value: this.state.from_service_range,
                               events: {
                                 onChange: this.textHandler.bind(this)
                               },
