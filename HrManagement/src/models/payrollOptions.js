@@ -98,8 +98,7 @@ module.exports = {
       })
       .then(result => {
         let componentArray = [];
-        let fromServiceArray = [];
-        let eligibleDaysArray = [];
+        let service_days = [];
 
         componentArray.push(
           result[0]["end_of_service_component1"],
@@ -107,22 +106,49 @@ module.exports = {
           result[0]["end_of_service_component3"],
           result[0]["end_of_service_component4"]
         );
+        let Obj = {};
+        if (result[0]["from_service_range1"] != null) {
+          Obj["service_range"] = 0;
+          Obj["from_service_range"] = result[0]["from_service_range1"];
+          Obj["eligible_days"] = result[0]["eligible_days1"];
+        }
+        service_days.push(Obj);
+        Obj = {};
+        if (result[0]["from_service_range2"] != null) {
+          Obj["service_range"] = 1;
+          Obj["from_service_range"] = result[0]["from_service_range2"];
+          Obj["eligible_days"] = result[0]["eligible_days2"];
+        }
+        service_days.push(Obj);
+        Obj = {};
+        if (result[0]["from_service_range3"] != null) {
+          Obj["service_range"] = 2;
+          Obj["from_service_range"] = result[0]["from_service_range3"];
+          Obj["eligible_days"] = result[0]["eligible_days3"];
+        }
+        service_days.push(Obj);
+        Obj = {};
+        if (result[0]["from_service_range4"] != null) {
+          Obj["service_range"] = 3;
+          Obj["from_service_range"] = result[0]["from_service_range4"];
+          Obj["eligible_days"] = result[0]["eligible_days4"];
+        }
+        service_days.push(Obj);
+        // fromServiceArray.push(
+        //   result[0]["from_service_range1"],
+        //   result[0]["from_service_range2"],
+        //   result[0]["from_service_range3"],
+        //   result[0]["from_service_range4"],
+        //   result[0]["from_service_range5"]
+        // );
 
-        fromServiceArray.push(
-          result[0]["from_service_range1"],
-          result[0]["from_service_range2"],
-          result[0]["from_service_range3"],
-          result[0]["from_service_range4"],
-          result[0]["from_service_range5"]
-        );
-
-        eligibleDaysArray.push(
-          result[0]["eligible_days1"],
-          result[0]["eligible_days2"],
-          result[0]["eligible_days3"],
-          result[0]["eligible_days4"],
-          result[0]["eligible_days5"]
-        );
+        // eligibleDaysArray.push(
+        //   result[0]["eligible_days1"],
+        //   result[0]["eligible_days2"],
+        //   result[0]["eligible_days3"],
+        //   result[0]["eligible_days4"],
+        //   result[0]["eligible_days5"]
+        // );
 
         if (result.length > 0) {
           _mysql
@@ -139,8 +165,7 @@ module.exports = {
               req.records = {
                 ...result[0],
                 earning_comp,
-                fromServiceArray,
-                eligibleDaysArray
+                service_days
               };
               next();
             })
@@ -168,7 +193,18 @@ module.exports = {
   updateEosOptions: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-
+    if (Array.isArray(input.earning_comp)) {
+      input.earning_comp.map((item, index) => {
+        input["end_of_service_component" + index + 1] =
+          item.hims_d_earning_deduction_id;
+      });
+    }
+    if (Array.isArray(input.service_days)) {
+      input.service_days.map((item, index) => {
+        input["from_service_range" + index + 1] = item.from_service_range;
+        input["eligible_days" + index + 1] = item.eligible_days;
+      });
+    }
     _mysql
       .executeQuery({
         query:
