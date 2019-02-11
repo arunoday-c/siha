@@ -197,41 +197,43 @@ export default class LeaveSalarySetup extends Component {
                 </div>
 
                 {this.state.airfare_factor === "PB" ? (
-                  <AlagehFormGroup
-                    div={{ className: "col-2 form-group" }}
-                    label={{
-                      forceLabel: "Airfare Percentage",
-                      isImp: true
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "airfare_percentage",
-                      value: this.state.airfare_percentage,
-                      events: {
-                        onChange: this.textHandler.bind(this)
-                      },
-                      others: {
-                        type: "number"
-                      }
-                    }}
-                  />
-                ) : null}
+                  <React.Fragment>
+                    <AlagehFormGroup
+                      div={{ className: "col-2 form-group" }}
+                      label={{
+                        forceLabel: "Airfare Percentage",
+                        isImp: true
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "airfare_percentage",
+                        value: this.state.airfare_percentage,
+                        events: {
+                          onChange: this.textHandler.bind(this)
+                        },
+                        others: {
+                          type: "number"
+                        }
+                      }}
+                    />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-2 form-group" }}
-                  label={{ forceLabel: "Basic Components", isImp: false }}
-                  selector={{
-                    name: "basic_earning_component",
-                    className: "select-fld",
-                    dataSource: {
-                      data: this.state.earningDeductionList,
-                      textField: "earning_deduction_description",
-                      valueField: "hims_d_earning_deduction_id"
-                    },
-                    onChange: this.basicComponentChange.bind(this),
-                    value: this.state.basic_earning_component
-                  }}
-                />
+                    <AlagehAutoComplete
+                      div={{ className: "col-2 form-group" }}
+                      label={{ forceLabel: "Basic Components", isImp: false }}
+                      selector={{
+                        name: "basic_earning_component",
+                        className: "select-fld",
+                        dataSource: {
+                          data: this.state.earningDeductionList,
+                          textField: "earning_deduction_description",
+                          valueField: "hims_d_earning_deduction_id"
+                        },
+                        onChange: this.basicComponentChange.bind(this),
+                        value: this.state.basic_earning_component
+                      }}
+                    />
+                  </React.Fragment>
+                ) : null}
               </div>
             </div>
           </div>
