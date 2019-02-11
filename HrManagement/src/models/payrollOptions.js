@@ -276,7 +276,6 @@ module.exports = {
           input.airfare_factor,
           input.basic_earning_component,
           input.airfare_percentage,
-
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           1
