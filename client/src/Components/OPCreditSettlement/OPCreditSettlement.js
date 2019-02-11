@@ -188,7 +188,7 @@ class OPCreditSettlement extends Component {
                   <h6>
                     {this.state.patient_code
                       ? this.state.patient_code
-                      : "*** New ***"}
+                      : "----------"}
                   </h6>
                 </div>
                 <div
