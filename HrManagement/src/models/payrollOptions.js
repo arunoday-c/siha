@@ -115,21 +115,21 @@ module.exports = {
         service_days.push(Obj);
         Obj = {};
         if (result[0]["from_service_range2"] != null) {
-          Obj["service_range"] = 1;
+          Obj["service_range"] = result[0]["from_service_range1"];
           Obj["from_service_range"] = result[0]["from_service_range2"];
           Obj["eligible_days"] = result[0]["eligible_days2"];
         }
         service_days.push(Obj);
         Obj = {};
         if (result[0]["from_service_range3"] != null) {
-          Obj["service_range"] = 2;
+          Obj["service_range"] = result[0]["from_service_range2"];
           Obj["from_service_range"] = result[0]["from_service_range3"];
           Obj["eligible_days"] = result[0]["eligible_days3"];
         }
         service_days.push(Obj);
         Obj = {};
         if (result[0]["from_service_range4"] != null) {
-          Obj["service_range"] = 3;
+          Obj["service_range"] = result[0]["from_service_range3"];
           Obj["from_service_range"] = result[0]["from_service_range4"];
           Obj["eligible_days"] = result[0]["eligible_days4"];
         }
