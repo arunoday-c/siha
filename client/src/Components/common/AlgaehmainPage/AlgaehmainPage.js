@@ -94,6 +94,7 @@ class PersistentDrawer extends React.Component {
   }
 
   Languaue(secLang, e) {
+    debugger;
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
@@ -110,13 +111,14 @@ class PersistentDrawer extends React.Component {
           languageName: "English",
           Language: "en",
           title: this.state.enlabl,
-          renderComponent: ""
-        },
-        () => {
-          this.setState({
-            renderComponent: renderComp
-          });
+          renderComponent: renderComp
         }
+        // ,
+        // () => {
+        //   this.setState({
+        //     renderComponent: renderComp
+        //   });
+        // }
       );
     } else if (secLang === "ar") {
       if (renderComp === "FrontDesk" || renderComp === "OPBilling") {
@@ -128,13 +130,20 @@ class PersistentDrawer extends React.Component {
           languageName: "عربي",
           Language: "ar",
           title: this.state.arlabl,
-          renderComponent: ""
-        },
-        () => {
-          this.setState({
-            renderComponent: renderComp
-          });
+          renderComponent: renderComp
         }
+        // ,
+        // () => {
+        //   debugger;
+        //   this.setState(
+        //     {
+        //       renderComponent: renderComp
+        //     },
+        //     () => {
+        //       debugger;
+        //     }
+        //   );
+        // }
       );
     }
   }
@@ -221,6 +230,7 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(submenu, e) {
+    debugger;
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
 
     // submenu.screen_name === "Doctor Appointment"
