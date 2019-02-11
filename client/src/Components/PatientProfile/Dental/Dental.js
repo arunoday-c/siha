@@ -265,7 +265,7 @@ class Dental extends Component {
     algaehApiCall({
       // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",
-      module: "frontDesk",
+      // module: "frontDesk",
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],

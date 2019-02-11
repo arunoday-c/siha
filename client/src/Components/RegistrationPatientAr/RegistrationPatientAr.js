@@ -332,7 +332,7 @@ class RegistrationPatientAr extends PureComponent {
 
     algaehApiCall({
       uri: "/frontDesk/get",
-      module: "frontDesk",
+      // module: "frontDesk",
       method: "GET",
       data: { patient_code: patcode },
       onSuccess: response => {
@@ -374,7 +374,7 @@ class RegistrationPatientAr extends PureComponent {
           $this.props.getPatientInsurance({
             // uri: "/insurance/getPatientInsurance",
             uri: "/patientRegistration/getPatientInsurance",
-            module: "frontDesk",
+            // module: "frontDesk",
             method: "GET",
             data: {
               patient_id: data.patientRegistration.hims_d_patient_id

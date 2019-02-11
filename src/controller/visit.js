@@ -22,7 +22,7 @@ export default ({ config, db }) => {
     releaseConnection
   );
 
-  api.post(
+  api.get(
     "/checkVisitExists",
     checkVisitExists,
     (req, res, next) => {

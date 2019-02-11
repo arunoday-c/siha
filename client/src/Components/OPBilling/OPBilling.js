@@ -128,7 +128,7 @@ class OPBilling extends Component {
 
     algaehApiCall({
       uri: "/frontDesk/get",
-      module: "frontDesk",
+      // module: "frontDesk",
       method: "GET",
       data: { patient_code: this.state.patient_code },
       onSuccess: response => {
@@ -200,7 +200,7 @@ class OPBilling extends Component {
 
     algaehApiCall({
       uri: "/opBilling/get",
-      module: "billing",
+      // module: "billing",
       method: "GET",
       data: { bill_number: billcode },
       onSuccess: response => {
@@ -331,7 +331,7 @@ class OPBilling extends Component {
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
-            module: "billing",
+            // module: "billing",
             data: Inputobj,
             method: "POST",
             onSuccess: response => {
