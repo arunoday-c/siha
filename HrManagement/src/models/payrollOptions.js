@@ -201,10 +201,11 @@ module.exports = {
     }
     if (Array.isArray(input.service_days)) {
       input.service_days.map((item, index) => {
-        input["from_service_range" + index + 1] = item.from_service_range;
-        input["eligible_days" + index + 1] = item.eligible_days;
+        input["from_service_range" + (index + 1)] = item.from_service_range;
+        input["eligible_days" + (index + 1)] = item.eligible_days;
       });
     }
+    console.log("input.service_days", input.service_days);
     _mysql
       .executeQuery({
         query:

@@ -20,6 +20,7 @@ export default class EndServiceOption extends Component {
       deduction_ids: [],
       componentArray: [],
       earning_comp: [],
+      t_earning_comp: [],
       service_days: [],
       comps: {},
       service_range: 0
@@ -150,39 +151,80 @@ export default class EndServiceOption extends Component {
     });
   }
 
+  addTerminationComps() {
+    AlgaehValidation({
+      querySelector: "data-validate='addTermndv'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        if (this.state.t_earning_comp.length > 4) {
+          swalMessage({
+            title: "Cannot Add More than 4 Components",
+            type: "success"
+          });
+        } else {
+          let x = Enumerable.from(this.state.t_earning_comp)
+            .where(
+              w =>
+                w.hims_d_earning_deduction_id ===
+                this.state.Tcomps.hims_d_earning_deduction_id
+            )
+            .firstOrDefault();
+
+          if (x === undefined) {
+            let earn_cmp = this.state.t_earning_comp;
+            earn_cmp.push(this.state.comps);
+
+            this.setState({
+              deduction_id: null,
+              t_earning_comp: earn_cmp
+            });
+          } else {
+            swalMessage({
+              title: "Already Exist in the list",
+              type: "warning"
+            });
+          }
+        }
+      }
+    });
+  }
+
   updateEosOptions() {
-    // algaehApiCall({
-    //   uri: "/payrollOptions/updateEosOptions",
-    //   method: "PUT",
-    //   module: "hrManagement",
-    //   data: {
-    //     end_of_service_calculation: this.state.end_of_service_calculation,
-    //     terminate_salary: this.state.terminate_salary,
-    //     end_of_service_payment: this.state.end_of_service_payment,
-    //     end_of_service_type: this.state.end_of_service_type,
-    //     end_of_service_years: this.state.end_of_service_years,
-    //     limited_years: this.state.limited_years,
-    //     gratuity_in_final_settle: this.state.gratuity_in_final_settle,
-    //     pending_salary_with_final: this.state.pending_salary_with_final,
-    //     round_off_nearest_year: this.state.round_off_nearest_year,
-    //     end_of_service_component1: 1,
-    //     end_of_service_component2: 7
-    //   },
-    //   onSuccess: res => {
-    //     if (res.data.success) {
-    //       swalMessage({
-    //         title: "Updated Successfully",
-    //         type: "success"
-    //       });
-    //     }
-    //   },
-    //   onFailure: err => {
-    //     swalMessage({
-    //       title: err.message,
-    //       type: "error"
-    //     });
-    //   }
-    // });
+    // console.log("Comps", JSON.stringify(this.state.earning_comp));
+    // console.log("Serv Days", JSON.stringify(this.state.service_days));
+
+    algaehApiCall({
+      uri: "/payrollOptions/updateEosOptions",
+      method: "PUT",
+      module: "hrManagement",
+      data: {
+        end_of_service_calculation: this.state.end_of_service_calculation,
+        terminate_salary: this.state.terminate_salary,
+        end_of_service_payment: this.state.end_of_service_payment,
+        end_of_service_type: this.state.end_of_service_type,
+        end_of_service_years: this.state.end_of_service_years,
+        limited_years: this.state.limited_years,
+        gratuity_in_final_settle: this.state.gratuity_in_final_settle,
+        pending_salary_with_final: this.state.pending_salary_with_final,
+        round_off_nearest_year: this.state.round_off_nearest_year,
+        earning_comp: this.state.earning_comp,
+        service_days: this.state.service_days
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Updated Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getEarningDeducts() {
@@ -243,6 +285,12 @@ export default class EndServiceOption extends Component {
       case "earning_id":
         this.setState({
           comps: value.selected
+        });
+        break;
+
+      case "dedution_id":
+        this.setState({
+          Tcomps: value.selected
         });
         break;
     }
@@ -767,7 +815,7 @@ export default class EndServiceOption extends Component {
                   <div className="col-6">
                     <div className="row">
                       <div className="col-12">
-                        <div className="row">
+                        <div className="row" data-validate="addTermndv">
                           <AlagehFormGroup
                             div={{ className: "col-3 form-group mandatory" }}
                             label={{
@@ -776,8 +824,8 @@ export default class EndServiceOption extends Component {
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "service_range1",
-                              // value: this.state.service_range1,
+                              name: "service_range_t",
+                              value: this.state.service_range_t,
                               events: {
                                 // onChange: this.textHandler.bind(this)
                               },
@@ -796,8 +844,8 @@ export default class EndServiceOption extends Component {
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "from_service_range",
-                              // value: this.state.from_service_range,
+                              name: "from_service_range_t",
+                              value: this.state.from_service_range_t,
                               events: {
                                 onChange: this.textHandler.bind(this)
                               },
@@ -815,8 +863,8 @@ export default class EndServiceOption extends Component {
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "eligible_days",
-                              value: this.state.eligible_days,
+                              name: "eligible_days_t",
+                              value: this.state.eligible_days_t,
                               events: {
                                 onChange: this.textHandler.bind(this)
                               },
@@ -831,7 +879,7 @@ export default class EndServiceOption extends Component {
                             style={{ paddingTop: 21 }}
                           >
                             <button
-                              // onClick={this.addIDType.bind(this)}
+                              onClick={this.addTerminationComps.bind(this)}
                               className="btn btn-primary"
                             >
                               Add to List
@@ -888,8 +936,8 @@ export default class EndServiceOption extends Component {
                             div={{ className: "col form-group" }}
                             label={{ forceLabel: "Deductions", isImp: true }}
                             selector={{
-                              name: "deduction_ids",
-                              value: this.state.deduction_ids,
+                              name: "deduction_id",
+                              value: this.state.deduction_id,
                               multiselect: true,
                               className: "select-fld",
                               dataSource: {
@@ -924,24 +972,22 @@ export default class EndServiceOption extends Component {
                           datavalidate="TerminationMinYear"
                           columns={[
                             {
-                              fieldName: "Column_1",
+                              fieldName: "earning_deduction_code",
                               label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Column 1" }}
-                                />
+                                <AlgaehLabel label={{ forceLabel: "Code" }} />
                               )
                             },
                             {
-                              fieldName: "Column_2",
+                              fieldName: "earning_deduction_description",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Column 2" }}
+                                  label={{ forceLabel: "Description" }}
                                 />
                               )
                             }
                           ]}
                           keyId=""
-                          dataSource={{ data: [] }}
+                          dataSource={{ data: this.state.t_earning_comp }}
                           isEditable={true}
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{}}

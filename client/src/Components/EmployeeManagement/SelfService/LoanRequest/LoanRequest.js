@@ -700,7 +700,8 @@ class LoanRequest extends Component {
                           return (
                             <span>
                               {moment(
-                                "01-" + row.start_month + "-" + row.start_year
+                                "01-" + row.start_month + "-" + row.start_year,
+                                "DD-MM-YYYY"
                               ).format("MMMM")}
                             </span>
                           );
