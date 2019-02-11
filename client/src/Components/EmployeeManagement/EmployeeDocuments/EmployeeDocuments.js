@@ -30,8 +30,12 @@ class EmployeeDocuments extends Component {
     const _type = this.state.document_type;
     const _unique = rawData.uniqueID.split("_");
     let _document_id = undefined;
+    let _document_type_name = undefined;
     if (_unique.length > 2) {
       _document_id = _unique[_unique.length - 2];
+    }
+    if (_unique.length > 1) {
+      _document_type_name = _unique[_unique.length - 1];
     }
     eventLogic()
       .saveDocument({
@@ -40,12 +44,13 @@ class EmployeeDocuments extends Component {
         employee_id: this.state.employee_id,
         document_name: rawData.fileName,
         dependent_id: this.state.selected_id,
-        download_uniq_id: rawData.uniqueID
+        download_uniq_id: rawData.uniqueID,
+        document_type_name: _document_type_name
       })
       .then(result => {
         details.push({
           document_name: rawData.fileName,
-          document_type: _type,
+          document_type_name: _document_type_name,
           download_doc: rawData.uniqueID
         });
         this.setState({
@@ -120,9 +125,31 @@ class EmployeeDocuments extends Component {
   }
   onHandleDocumentForClick(item, e) {
     debugger;
-    this.setState({
-      selected_id: item.hims_d_employee_dependents_id
-    });
+
+    this.setState(
+      {
+        selected_id: item.hims_d_employee_dependents_id
+      },
+      () => {
+        eventLogic()
+          .getSaveDocument({
+            document_type: this.state.document_type,
+            employee_id: this.state.employee_id,
+            dependent_id: item.hims_d_employee_dependents_id
+          })
+          .then(result => {
+            this.setState({
+              document_grid: result
+            });
+          })
+          .catch(error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          });
+      }
+    );
   }
   onClearDocTypeHandler(e) {
     this.setState({
@@ -272,7 +299,7 @@ class EmployeeDocuments extends Component {
                     datavalidate="EmployeeDocumentGrid"
                     columns={[
                       {
-                        fieldName: "document_type",
+                        fieldName: "document_type_name",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Document Type" }}
@@ -325,7 +352,9 @@ class EmployeeDocuments extends Component {
                           showActions={true}
                           serviceParameters={{
                             uniqueID:
-                              this.state.selected_id +
+                              (this.state.selected_id === null
+                                ? "Me"
+                                : this.state.selected_id) +
                               "_" +
                               this.state.document_type +
                               (this.state.employee_id !== undefined
@@ -336,7 +365,9 @@ class EmployeeDocuments extends Component {
                               "_" +
                               item.document_description,
                             destinationName:
-                              this.state.selected_id +
+                              (this.state.selected_id === null
+                                ? "Me"
+                                : this.state.selected_id) +
                               "_" +
                               this.state.document_type +
                               (this.state.employee_id !== undefined
