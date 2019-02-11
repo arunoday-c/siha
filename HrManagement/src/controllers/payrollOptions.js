@@ -5,7 +5,9 @@ import {
   updateHrmsOptions,
   getEosOptions,
   updateEosOptions,
-  getSalarySetUp
+  getSalarySetUp,
+  getLeaveSalaryOptions,
+  updateLeaveSalaryOptions
 } from "../models/payrollOptions";
 export default () => {
   const api = Router();
@@ -67,6 +69,30 @@ export default () => {
       records: req.records
     });
   });
+  api.get("/getLeaveSalaryOptions", getLeaveSalaryOptions, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      result: req.records
+    });
+  });
+
+  api.put(
+    "/updateLeaveSalaryOptions",
+    updateLeaveSalaryOptions,
+    (req, res, next) => {
+      if (req.records.no_data == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
+    }
+  );
 
   return api;
 };

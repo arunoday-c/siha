@@ -38,7 +38,6 @@ module.exports = {
           overtime_hourly_calculation=?,standard_intime=?,standard_outime=?,standard_working_hours=?,\
           standard_break_hours=?,biometric_database=?,biometric_server_name=?,biometric_port_no=?,\
           biometric_database_name=?,biometric_database_login=?,biometric_database_password=?,biometric_swipe_id=?,\
-          annual_leave_process_separately=?,airfare_factor=?,basic_earning_component=?,airfare_percentage=?,\
           updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
         values: [
           input.salary_process_date,
@@ -69,10 +68,6 @@ module.exports = {
           input.biometric_database_login,
           input.biometric_database_password,
           input.biometric_swipe_id,
-          input.annual_leave_process_separately,
-          input.airfare_factor,
-          input.basic_earning_component,
-          input.airfare_percentage,
 
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
@@ -226,6 +221,7 @@ module.exports = {
         next(e);
       });
   },
+
   getSalarySetUp: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -243,5 +239,59 @@ module.exports = {
       _mysql.releaseConnection();
       next(error);
     }
+  },
+
+  getLeaveSalaryOptions: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT basic_earning_component,airfare_factor,annual_leave_process_separately,airfare_percentage FROM algaeh_hims_db.hims_d_hrms_options;"
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+    } catch (error) {
+      _mysql.releaseConnection();
+      next(error);
+    }
+  },
+
+  //created by Adnan: to
+  updateLeaveSalaryOptions: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = { ...req.body };
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_hrms_options set \
+          annual_leave_process_separately=?,airfare_factor=?,basic_earning_component=?,airfare_percentage=?,\
+          updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
+        values: [
+          input.annual_leave_process_separately,
+          input.airfare_factor,
+          input.basic_earning_component,
+          input.airfare_percentage,
+
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          1
+        ],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };

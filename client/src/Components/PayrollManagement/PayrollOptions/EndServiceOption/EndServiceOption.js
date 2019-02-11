@@ -51,8 +51,31 @@ export default class EndServiceOption extends Component {
     });
   }
 
+  deleteResignComponents(row) {
+    swal({
+      title: "Delete Components",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        this.state.earning_comp.pop(row);
+        this.setState({
+          earning_comp: this.state.earning_comp
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
   deleteServiceDays(row) {
-    debugger;
     swal({
       title: "Delete Service Days",
       type: "warning",
@@ -64,12 +87,22 @@ export default class EndServiceOption extends Component {
     }).then(willDelete => {
       if (willDelete.value) {
         this.state.service_days.pop(row);
-
         //service_range : this.state.service_days
-
-        this.setState({
-          service_days: this.state.service_days
-        });
+        this.setState(
+          {
+            service_days: this.state.service_days
+          },
+          () => {
+            this.setState({
+              service_range:
+                Enumerable.from(this.state.service_days).lastOrDefault() !==
+                undefined
+                  ? Enumerable.from(this.state.service_days).lastOrDefault()
+                      .from_service_range
+                  : 0
+            });
+          }
+        );
       } else {
         swalMessage({
           title: "Delete request cancelled",
@@ -669,6 +702,23 @@ export default class EndServiceOption extends Component {
                           datavalidate="ResignationMinYear"
                           columns={[
                             {
+                              fieldName: "action",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Acion" }} />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <i
+                                    className="fas fa-trash-alt"
+                                    onClick={this.deleteResignComponents.bind(
+                                      this,
+                                      row
+                                    )}
+                                  />
+                                );
+                              }
+                            },
+                            {
                               fieldName: "earning_deduction_code",
                               label: (
                                 <AlgaehLabel
@@ -727,7 +777,7 @@ export default class EndServiceOption extends Component {
                             textBox={{
                               className: "txt-fld",
                               name: "service_range1",
-                              value: this.state.service_range1,
+                              // value: this.state.service_range1,
                               events: {
                                 // onChange: this.textHandler.bind(this)
                               },
@@ -747,7 +797,7 @@ export default class EndServiceOption extends Component {
                             textBox={{
                               className: "txt-fld",
                               name: "from_service_range",
-                              value: this.state.from_service_range,
+                              // value: this.state.from_service_range,
                               events: {
                                 onChange: this.textHandler.bind(this)
                               },
