@@ -65,7 +65,7 @@ class DisPatientForm extends Component {
                       <h6>
                         {this.state.patient_code
                           ? this.state.patient_code
-                          : "*** New ***"}
+                          : "----------"}
                       </h6>
                     </div>
                     <div className="col-lg-3 spotlightSearchIconBox">

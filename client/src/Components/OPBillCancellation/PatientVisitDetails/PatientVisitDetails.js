@@ -94,7 +94,7 @@ class PatientVisitDetails extends Component {
                       <h6>
                         {this.state.bill_number
                           ? this.state.bill_number
-                          : "*** New ***"}
+                          : "----------"}
                       </h6>
                     </div>
                     <div

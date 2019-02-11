@@ -67,6 +67,7 @@ class LeaveAuthDetail extends Component {
       uri: "/leave/authorizeLeave",
       method: "PUT",
       data: send_data,
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           type === "A"
