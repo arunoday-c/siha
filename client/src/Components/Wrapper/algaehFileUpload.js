@@ -177,10 +177,11 @@ export default class AlgaehFileUploader extends Component {
       reader.readAsDataURL(_file);
       reader.onloadend = () => {
         const _result = reader.result;
+
         this.SavingImageOnServer(
           _result,
           _fileExtention[_fileExtention.length - 1],
-          file.name
+          _file.name
         );
       };
 
@@ -284,6 +285,7 @@ export default class AlgaehFileUploader extends Component {
   }
 
   SavingImageOnServer(dataToSave, fileExtention, fileName) {
+    debugger;
     const that = this;
     dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;
@@ -335,6 +337,7 @@ export default class AlgaehFileUploader extends Component {
                     typeof that.props.afterSave === "function"
                   )
                     that.props.afterSave({
+                      uniqueID: that.props.serviceParameters.uniqueID,
                       fileType: that.props.serviceParameters.fileType,
                       fileName: fileName,
                       filePreview: dataToSave,

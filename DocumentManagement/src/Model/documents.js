@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import EmployeeDocModel from "./employeeDoc";
 import PatientDocModel from "./patientDoc";
+import CompanyDocModel from "./company";
 import { logger, debugLog } from "../Utils/logging";
 import stream from "stream";
 module.exports = db => {
@@ -92,6 +93,45 @@ module.exports = db => {
                 }
               }
 
+              res.status(200).json({
+                success: true,
+                records: "Success"
+              });
+            }
+          );
+        } else if (_headerFile.fileType == "Company") {
+          CompanyDocModel.findOneAndUpdate(
+            {
+              pageName: _headerFile.pageName,
+              destinationName: _headerFile.destinationName
+            },
+            {
+              pageName: _headerFile.pageName,
+              destinationName: _headerFile.destinationName,
+              clientID: _clientID,
+              image: _utf,
+              fileExtention: _headerFile.fileExtention,
+              updatedDate: new Date()
+            },
+            (error, result) => {
+              if (error) {
+                res.status(400).json({
+                  success: false,
+                  records: error
+                });
+              } else {
+                if (result == null) {
+                  let _CompanyDocModel = new CompanyDocModel();
+                  _CompanyDocModel.pageName = _headerFile.pageName;
+                  _CompanyDocModel.destinationName =
+                    _headerFile.destinationName;
+                  _CompanyDocModel.clientID = _clientID;
+                  _CompanyDocModel.image = _utf;
+                  _CompanyDocModel.fileExtention = _headerFile.fileExtention;
+                  _CompanyDocModel.updatedDate = new Date();
+                  _CompanyDocModel.save();
+                }
+              }
               res.status(200).json({
                 success: true,
                 records: "Success"

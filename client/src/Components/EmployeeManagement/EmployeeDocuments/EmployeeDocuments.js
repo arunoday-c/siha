@@ -1,45 +1,166 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { AlgaehActions } from "../../../actions/algaehActions";
 import "./EmployeeDocuments.css";
 import {
   AlgaehLabel,
   AlagehAutoComplete,
   AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
+import { swalMessage, cancelRequest } from "../../../utils/algaehApiCall";
+import eventLogic from "./eventsLogic/employeeDocumentLogic";
 const AlgaehFileUploader = React.memo(
   React.lazy(() => import("../../Wrapper/algaehFileUpload"))
 );
+
 class EmployeeDocuments extends Component {
   constructor(props) {
     super(props);
     this.state = {
       document_grid: [],
       document_type: undefined,
-      disable_employee: false
+      disable_employee: true,
+      employee_list: [],
+      employee_id: undefined,
+      document_for_list: [],
+      selected_id: undefined,
+      document_type_list: []
     };
   }
   afterPassPortSave(rawData) {
-    debugger;
     let details = this.state.document_grid;
-    let _type = String(rawData.fileType).charAt(0);
-
-    details.push({
-      document_name: rawData.fileName,
-      document_type: _type
-    });
-    alert(JSON.stringify(rawData));
+    const _type = this.state.document_type;
+    const _unique = rawData.uniqueID.split("_");
+    let _document_id = undefined;
+    if (_unique.length > 2) {
+      _document_id = _unique[_unique.length - 2];
+    }
+    eventLogic()
+      .saveDocument({
+        document_id: _document_id,
+        document_type: _type,
+        employee_id: this.state.employee_id,
+        document_name: rawData.fileName,
+        dependent_id: this.state.selected_id,
+        download_uniq_id: rawData.uniqueID
+      })
+      .then(result => {
+        details.push({
+          document_name: rawData.fileName,
+          document_type: _type,
+          download_doc: rawData.uniqueID
+        });
+        this.setState({
+          document_grid: details
+        });
+        swalMessage({
+          title: "Successfully done",
+          type: "success"
+        });
+      })
+      .catch(error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      });
   }
   onChangeDocTypeHandler(e) {
-    const _isDisable =
-      e.value === "C"
-        ? { disable_employee: true }
-        : { disable_employee: false };
-    this.setState({ document_type: e.value, ..._isDisable });
-  }
+    eventLogic()
+      .getDocumentTypes({
+        document_type: e.value
+      })
+      .then(result => {
+        this.setState({
+          document_type_list: result
+        });
+      })
+      .catch(error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      });
 
+    if (e.value === "E") {
+      if (this.state.employee_list.length === 0) {
+        eventLogic()
+          .getEmployeeDetails()
+          .then(result => {
+            this.setState({
+              document_type: e.value,
+              disable_employee: false,
+              employee_list: result,
+              document_for_list: []
+            });
+          })
+          .catch(error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          });
+      }
+    } else {
+      eventLogic()
+        .getCompanyDependents()
+        .then(result => {
+          this.setState({
+            document_type: e.value,
+            disable_employee: true,
+            employee_id: undefined,
+            document_for_list: result
+          });
+        })
+        .catch(error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        });
+    }
+  }
+  onHandleDocumentForClick(item, e) {
+    debugger;
+    this.setState({
+      selected_id: item.hims_d_employee_dependents_id
+    });
+  }
+  onClearDocTypeHandler(e) {
+    this.setState({
+      selected_id: undefined,
+      document_for_list: [],
+      employee_id: undefined,
+      disable_employee: true
+    });
+  }
+  onClearEmployeeHandler(e) {
+    this.setState({
+      selected_id: undefined,
+      document_for_list: [],
+      employee_id: undefined
+    });
+  }
+  onChangeEmployeeHandler(e) {
+    eventLogic()
+      .getEmployeeDependents({ employee_id: e.value })
+      .then(result => {
+        this.setState({
+          employee_id: e.value,
+          document_for_list: result
+        });
+      })
+      .catch(error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      });
+  }
+  componentWillUnmount() {
+    cancelRequest("getEmployees");
+    cancelRequest("employeeDependents");
+    cancelRequest("companyDependents");
+    cancelRequest("types");
+  }
   render() {
     return (
       <div className="EmployeeDocumentsScreen row">
@@ -63,7 +184,9 @@ class EmployeeDocuments extends Component {
                   textField: "text",
                   valueField: "value"
                 },
-                onChange: this.onChangeDocTypeHandler.bind(this)
+                onChange: this.onChangeDocTypeHandler.bind(this),
+                onClear: this.onClearDocTypeHandler.bind(this),
+                autoComplete: "off"
               }}
             />
             <AlagehAutoComplete
@@ -75,11 +198,18 @@ class EmployeeDocuments extends Component {
               selector={{
                 name: "employee_id",
                 className: "select-fld",
-
-                dataSource: {},
+                value: this.state.employee_id,
+                dataSource: {
+                  data: this.state.employee_list,
+                  textField: "full_name",
+                  valueField: "employee_id"
+                },
+                onChange: this.onChangeEmployeeHandler.bind(this),
+                onClear: this.onClearEmployeeHandler.bind(this),
                 others: {
                   disabled: this.state.disable_employee
-                }
+                },
+                autoComplete: "off"
               }}
             />
             <div className="col form-group">
@@ -100,20 +230,24 @@ class EmployeeDocuments extends Component {
             </div>
             <div className="portlet-body">
               <ul className="list-group documentFor">
-                <li className="list-group-item d-flex justify-content-between align-items-center active">
-                  Aboobacker Sidhiqe
-                  <span className="badge badge-primary badge-pill">Self</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                  Febry
-                  <span className="badge badge-primary badge-pill">Spouse</span>
-                </li>
-                <li className="list-group-item d-flex justify-content-between align-items-center">
-                  Aaliya
-                  <span className="badge badge-primary badge-pill">
-                    Daughter
-                  </span>
-                </li>
+                {this.state.document_for_list.map((item, index) => (
+                  <li
+                    key={index}
+                    className={
+                      "list-group-item d-flex justify-content-between align-items-center" +
+                      (this.state.selected_id ===
+                      item.hims_d_employee_dependents_id
+                        ? " active"
+                        : "")
+                    }
+                    onClick={this.onHandleDocumentForClick.bind(this, item)}
+                  >
+                    {item.dependent_name}
+                    <span className="badge badge-primary badge-pill">
+                      {item.dependent_type}
+                    </span>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -138,7 +272,7 @@ class EmployeeDocuments extends Component {
                     datavalidate="EmployeeDocumentGrid"
                     columns={[
                       {
-                        fieldName: "documentType",
+                        fieldName: "document_type",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Document Type" }}
@@ -149,7 +283,7 @@ class EmployeeDocuments extends Component {
                         }
                       },
                       {
-                        fieldName: "DocumentName",
+                        fieldName: "document_name",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "Document Name" }}
@@ -163,72 +297,69 @@ class EmployeeDocuments extends Component {
                             label={{ forceLabel: "View/ Download" }}
                           />
                         ),
+                        displayTemplate: row => <button>Download</button>,
                         others: {
                           maxWidth: 150
                         }
                       }
                     ]}
-                    keyId=""
-                    dataSource={{ data: [] }}
+                    keyId="documentManagement"
+                    dataSource={{ data: this.state.document_grid }}
                     isEditable={true}
                     paging={{ page: 0, rowsPerPage: 10 }}
-                    events={{}}
-                    others={{}}
+                    events={{
+                      onDelete: rows => {}, //deleteDeptUser.bind(this, this),
+                      onEdit: row => {},
+                      onDone: rows => {} //updateDeptUser.bind(this, this)
+                    }}
                   />
                 </div>
               </div>
               <div className="row margin-top-15">
-                {/* <div className="col-12">
-                  <label className="label">Attach File</label>
-                  <input type="file" />
-                </div> */}
-                <div className="col">
-                  <AlgaehFileUploader
-                    name="attach_PassportProof"
-                    textAltMessage="Passport Copies"
-                    showActions={true}
-                    serviceParameters={{
-                      uniqueID: "10001110011",
-                      destinationName: "10001110011",
-                      fileType: "Employees"
-                    }}
-                    onlyDragDrop={true}
-                    componentType="Passport"
-                    afterSave={result => {
-                      this.afterPassPortSave(result);
-                    }}
-                  />
-                  {/* <div className="upload-drop-zone">
-                    {" "}
-                    <b>Passport Copies</b>
-                    <br />
-                    drag and drop files here
-                  </div> */}
-                </div>
-                <div className="col">
-                  <div className="upload-drop-zone">
-                    <b>Identity Documents</b> <br />
-                    drag and drop files here
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="upload-drop-zone">
-                    <b>Education Certificates</b> <br />
-                    drag and drop files here
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="upload-drop-zone">
-                    <b>Experience Certificates</b> <br />
-                    drag and drop files here
-                  </div>
-                </div>
-                <div className="col">
-                  <div className="upload-drop-zone">
-                    <b>Others Certificates</b> <br />
-                    drag and drop files here
-                  </div>
-                </div>
+                {this.state.selected_id !== undefined
+                  ? this.state.document_type_list.map((item, index) => (
+                      <div className="col" key={index}>
+                        <AlgaehFileUploader
+                          name={"attach_" + item.hims_d_document_type_id}
+                          textAltMessage={item.document_description}
+                          showActions={true}
+                          serviceParameters={{
+                            uniqueID:
+                              this.state.selected_id +
+                              "_" +
+                              this.state.document_type +
+                              (this.state.employee_id !== undefined
+                                ? "_" + this.state.employee_id
+                                : "") +
+                              "_" +
+                              item.hims_d_document_type_id +
+                              "_" +
+                              item.document_description,
+                            destinationName:
+                              this.state.selected_id +
+                              "_" +
+                              this.state.document_type +
+                              (this.state.employee_id !== undefined
+                                ? "_" + this.state.employee_id
+                                : "") +
+                              "_" +
+                              item.hims_d_document_type_id +
+                              "_" +
+                              item.document_description,
+                            fileType:
+                              this.state.document_type === "C"
+                                ? "Company"
+                                : "Employees"
+                          }}
+                          onlyDragDrop={true}
+                          componentType={item.document_description}
+                          afterSave={result => {
+                            this.afterPassPortSave(result);
+                          }}
+                        />
+                      </div>
+                    ))
+                  : null}
               </div>
             </div>
           </div>
@@ -237,22 +368,5 @@ class EmployeeDocuments extends Component {
     );
   }
 }
-function mapStateToProps(state) {
-  return {
-    employeedetails: state.employeedetails
-  };
-}
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getEmployeeDetails: AlgaehActions
-    },
-    dispatch
-  );
-}
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(EmployeeDocuments)
-);
+
+export default EmployeeDocuments;
