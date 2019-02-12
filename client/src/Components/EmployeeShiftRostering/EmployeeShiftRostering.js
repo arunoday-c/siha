@@ -154,7 +154,9 @@ export default class EmployeeShiftRostering extends Component {
     while (now.isSameOrBefore(lastDate)) {
       dates.push(
         <th>
-          <span> {now.format("ddd")}</span> {now.format("ddd d/MMM")}
+          <span> {now.format("ddd")}</span>
+          <br />
+          <span>{now.format("DD/MMM")}</span>
         </th>
       );
       now.add(1, "days");
