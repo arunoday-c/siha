@@ -205,7 +205,7 @@ let getLoanApplication = (req, res, next) => {
       req.query.to_date != null
     ) {
       range = ` and date(loan_application_date)
-between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+      between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     }
 
     let auth_level = "";
@@ -313,7 +313,7 @@ let authorizeLoan = (req, res, next) => {
           connection.query(
             "UPDATE hims_f_loan_application SET authorized1_by=?,authorized1_date=?,\
           authorized1=?,approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
-          loan_tenure=?,pending_tenure=? updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+          loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
 
             [
               input.updated_by,

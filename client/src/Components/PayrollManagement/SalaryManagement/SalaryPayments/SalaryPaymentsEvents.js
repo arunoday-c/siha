@@ -49,7 +49,14 @@ const LoadSalaryPayment = ($this, e) => {
             });
           } else {
             swalMessage({
-              title: "No Salary Processed for selected month and year.",
+              title:
+                "Salary Not Finalized for " +
+                moment(
+                  "1-" + $this.state.month + "-" + $this.state.year,
+                  "DD-MM-YYYY"
+                ).format("MMMM") +
+                " " +
+                $this.state.year,
               type: "warning"
             });
           }

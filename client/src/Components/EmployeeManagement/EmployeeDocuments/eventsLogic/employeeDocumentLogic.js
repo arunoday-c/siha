@@ -42,9 +42,22 @@ export default function eventsLogEmployeeDocument() {
           onSuccess: response => {
             if (response.data.success) {
               let data = response.data.records;
+              data.unshift({
+                dependent_name: "Me",
+                dependent_type: "Self",
+                hims_d_employee_dependents_id: null,
+                dependent_identity_type: undefined
+              });
               resolve(data);
             } else {
-              resolve([]);
+              resolve([
+                {
+                  dependent_name: "Me",
+                  dependent_type: "Self",
+                  hims_d_employee_dependents_id: null,
+                  dependent_identity_type: undefined
+                }
+              ]);
             }
           },
           onFailure: error => {
@@ -105,6 +118,28 @@ export default function eventsLogEmployeeDocument() {
           method: "POST",
           data: data,
           cancelRequestId: "save",
+          onSuccess: response => {
+            if (response.data.success) {
+              let data = response.data.records;
+              resolve(data);
+            } else {
+              resolve([]);
+            }
+          },
+          onFailure: error => {
+            reject(error);
+          }
+        });
+      });
+    },
+    getSaveDocument: data => {
+      return new Promise((resolve, reject) => {
+        algaehApiCall({
+          uri: "/documents/getdocuments",
+          module: "hrManagement",
+          method: "GET",
+          data: data,
+          cancelRequestId: "getdocuments",
           onSuccess: response => {
             if (response.data.success) {
               let data = response.data.records;

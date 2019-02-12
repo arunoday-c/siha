@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
 import {
   AlagehFormGroup,
   AlgaehLabel,
@@ -102,7 +101,8 @@ class SalaryPayment extends Component {
                 isImp: true
               }}
               selector={{
-                sort: "off", name: "month",
+                sort: "off",
+                name: "month",
                 className: "select-fld",
                 value: this.state.month,
                 dataSource: {
@@ -117,7 +117,7 @@ class SalaryPayment extends Component {
                   });
                 },
                 others: {
-                  disabled: this.state.lockEarnings,
+                  disabled: this.state.lockEarnings
                 }
               }}
             />
@@ -272,11 +272,7 @@ class SalaryPayment extends Component {
                       <div className="actions">
                         <div className="customCheckbox">
                           <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value=""
-                              name=""
-                            />
+                            <input type="checkbox" value="" name="" />
                             <span>Select All</span>
                           </label>
                         </div>
@@ -344,10 +340,10 @@ class SalaryPayment extends Component {
                                       No
                                     </span>
                                   ) : (
-                                      <span className="badge badge-success">
-                                        Yes
+                                    <span className="badge badge-success">
+                                      Yes
                                     </span>
-                                    );
+                                  );
                                 }
                               },
                               {
@@ -513,8 +509,8 @@ class SalaryPayment extends Component {
                 <button
                   type="button"
                   className="btn btn-other"
-                //   onClick={PostDoctorCommission.bind(this, this)}
-                // disabled={this.state.postEnable}
+                  //   onClick={PostDoctorCommission.bind(this, this)}
+                  // disabled={this.state.postEnable}
                 >
                   Generate Payslip PDF
                 </button>

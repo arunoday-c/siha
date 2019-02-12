@@ -85,8 +85,8 @@ module.exports = {
         .executeQuery({
           query:
             "insert into hims_f_employee_documents(document_type,employee_id,document_id,\
-            document_name,dependent_id,download_uniq_id,create_by,created_date,update_by,update_date)\
-             values(?,?,?,?,?,?,?,?,?,?)",
+            document_name,dependent_id,download_uniq_id,create_by,created_date,update_by,update_date,document_type_name)\
+             values(?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.document_type,
             input.employee_id,
@@ -97,8 +97,43 @@ module.exports = {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
+            input.document_type_name
           ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  getDocumentsDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const input = req.query;
+    let appendString = "";
+    if (input.dependent_id == "null") {
+      appendString = " and dependent_id is null";
+    } else {
+      appendString = " and dependent_id ='" + input.dependent_id + "'";
+    }
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_f_employee_documents_id,document_type,\
+          document_type_name,document_name,download_uniq_id from hims_f_employee_documents \
+          where document_type=? and employee_id=? " +
+            appendString,
+          values: [input.document_type, input.employee_id],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();

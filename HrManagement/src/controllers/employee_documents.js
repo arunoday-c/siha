@@ -4,7 +4,8 @@ import {
   getEmployeeDepenedents,
   getCompanyDependents,
   getDocumentTypes,
-  saveDocument
+  saveDocument,
+  getDocumentsDetails
 } from "../models/employee_documents";
 
 export default () => {
@@ -35,6 +36,14 @@ export default () => {
     delete req.records;
   });
   api.post("/save", saveDocument, (req, res, next) => {
+    const _result = req.records;
+    res.status(utilities.httpStatus().ok).json({
+      success: true,
+      records: _result
+    });
+    delete req.records;
+  });
+  api.get("/getdocuments", getDocumentsDetails, (req, res, next) => {
     const _result = req.records;
     res.status(utilities.httpStatus().ok).json({
       success: true,

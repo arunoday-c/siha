@@ -101,19 +101,17 @@ module.exports = {
 
     let _stringData = " ";
     if (input.type == "W") {
-      _stringData = " and  H.weekoff='Y' ";
+      _stringData = " and  H.weekoff='Y' and  H.holiday='N' ";
     } else if (input.type == "H") {
-      _stringData = " and  H.holiday='Y' ";
+      _stringData = " and  H.weekoff='N' and  H.holiday='Y' ";
     }
 
     _mysql
       .executeQuery({
-        query:
-          "select hims_d_holiday_id,hospital_id,holiday_date,holiday_description,weekoff,holiday,\
+        query: `select hims_d_holiday_id,hospital_id,holiday_date,holiday_description,weekoff,holiday,\
           holiday_type,religion_id,R.religion_name,R.arabic_religion_name from  hims_d_holiday  H left join\
           hims_d_religion R on H.religion_id=R.hims_d_religion_id where H.record_status='A' and date(holiday_date) \
-          between date(?) and date(?) and hospital_id=? order by holiday_date " +
-          _stringData,
+          between date(?) and date(?) and hospital_id=? ${_stringData} order by holiday_date `,
         values: [start_of_year, end_of_year, input.hospital_id],
         printQuery: true
       })

@@ -98,7 +98,8 @@ class LoanAdjustment extends Component {
         method: "GET",
         data: {
           employee_id: this.state.hims_d_employee_id,
-          loan_issued: "Y"
+          loan_issued: "Y",
+          loan_closed: "N"
         },
         onSuccess: res => {
           if (res.data.success) {

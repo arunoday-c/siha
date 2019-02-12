@@ -94,7 +94,6 @@ class PersistentDrawer extends React.Component {
   }
 
   Languaue(secLang, e) {
-    debugger;
     let prevLang = getCookie("Language");
     setCookie("Language", secLang, 30);
     setCookie("prevLanguage", prevLang, 30);
@@ -230,7 +229,6 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(submenu, e) {
-    debugger;
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
 
     // submenu.screen_name === "Doctor Appointment"

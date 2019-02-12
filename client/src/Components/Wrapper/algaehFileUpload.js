@@ -285,7 +285,6 @@ export default class AlgaehFileUploader extends Component {
   }
 
   SavingImageOnServer(dataToSave, fileExtention, fileName) {
-    debugger;
     const that = this;
     dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;

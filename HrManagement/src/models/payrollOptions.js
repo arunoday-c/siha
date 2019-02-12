@@ -38,7 +38,6 @@ module.exports = {
           overtime_hourly_calculation=?,standard_intime=?,standard_outime=?,standard_working_hours=?,\
           standard_break_hours=?,biometric_database=?,biometric_server_name=?,biometric_port_no=?,\
           biometric_database_name=?,biometric_database_login=?,biometric_database_password=?,biometric_swipe_id=?,\
-          annual_leave_process_separately=?,airfare_factor=?,basic_earning_component=?,airfare_percentage=?,\
           updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
         values: [
           input.salary_process_date,
@@ -69,10 +68,6 @@ module.exports = {
           input.biometric_database_login,
           input.biometric_database_password,
           input.biometric_swipe_id,
-          input.annual_leave_process_separately,
-          input.airfare_factor,
-          input.basic_earning_component,
-          input.airfare_percentage,
 
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
@@ -103,8 +98,7 @@ module.exports = {
       })
       .then(result => {
         let componentArray = [];
-        let fromServiceArray = [];
-        let eligibleDaysArray = [];
+        let service_days = [];
 
         componentArray.push(
           result[0]["end_of_service_component1"],
@@ -112,22 +106,49 @@ module.exports = {
           result[0]["end_of_service_component3"],
           result[0]["end_of_service_component4"]
         );
+        let Obj = {};
+        if (result[0]["from_service_range1"] != null) {
+          Obj["service_range"] = 0;
+          Obj["from_service_range"] = result[0]["from_service_range1"];
+          Obj["eligible_days"] = result[0]["eligible_days1"];
+        }
+        service_days.push(Obj);
+        Obj = {};
+        if (result[0]["from_service_range2"] != null) {
+          Obj["service_range"] = result[0]["from_service_range1"];
+          Obj["from_service_range"] = result[0]["from_service_range2"];
+          Obj["eligible_days"] = result[0]["eligible_days2"];
+        }
+        service_days.push(Obj);
+        Obj = {};
+        if (result[0]["from_service_range3"] != null) {
+          Obj["service_range"] = result[0]["from_service_range2"];
+          Obj["from_service_range"] = result[0]["from_service_range3"];
+          Obj["eligible_days"] = result[0]["eligible_days3"];
+        }
+        service_days.push(Obj);
+        Obj = {};
+        if (result[0]["from_service_range4"] != null) {
+          Obj["service_range"] = result[0]["from_service_range3"];
+          Obj["from_service_range"] = result[0]["from_service_range4"];
+          Obj["eligible_days"] = result[0]["eligible_days4"];
+        }
+        service_days.push(Obj);
+        // fromServiceArray.push(
+        //   result[0]["from_service_range1"],
+        //   result[0]["from_service_range2"],
+        //   result[0]["from_service_range3"],
+        //   result[0]["from_service_range4"],
+        //   result[0]["from_service_range5"]
+        // );
 
-        fromServiceArray.push(
-          result[0]["from_service_range1"],
-          result[0]["from_service_range2"],
-          result[0]["from_service_range3"],
-          result[0]["from_service_range4"],
-          result[0]["from_service_range5"]
-        );
-
-        eligibleDaysArray.push(
-          result[0]["eligible_days1"],
-          result[0]["eligible_days2"],
-          result[0]["eligible_days3"],
-          result[0]["eligible_days4"],
-          result[0]["eligible_days5"]
-        );
+        // eligibleDaysArray.push(
+        //   result[0]["eligible_days1"],
+        //   result[0]["eligible_days2"],
+        //   result[0]["eligible_days3"],
+        //   result[0]["eligible_days4"],
+        //   result[0]["eligible_days5"]
+        // );
 
         if (result.length > 0) {
           _mysql
@@ -144,8 +165,7 @@ module.exports = {
               req.records = {
                 ...result[0],
                 earning_comp,
-                fromServiceArray,
-                eligibleDaysArray
+                service_days
               };
               next();
             })
@@ -173,7 +193,19 @@ module.exports = {
   updateEosOptions: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = { ...req.body };
-
+    if (Array.isArray(input.earning_comp)) {
+      input.earning_comp.map((item, index) => {
+        input["end_of_service_component" + index + 1] =
+          item.hims_d_earning_deduction_id;
+      });
+    }
+    if (Array.isArray(input.service_days)) {
+      input.service_days.map((item, index) => {
+        input["from_service_range" + (index + 1)] = item.from_service_range;
+        input["eligible_days" + (index + 1)] = item.eligible_days;
+      });
+    }
+    console.log("input.service_days", input.service_days);
     _mysql
       .executeQuery({
         query:
@@ -226,6 +258,7 @@ module.exports = {
         next(e);
       });
   },
+
   getSalarySetUp: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
@@ -243,5 +276,58 @@ module.exports = {
       _mysql.releaseConnection();
       next(error);
     }
+  },
+
+  getLeaveSalaryOptions: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT basic_earning_component,airfare_factor,annual_leave_process_separately,airfare_percentage FROM algaeh_hims_db.hims_d_hrms_options;"
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+    } catch (error) {
+      _mysql.releaseConnection();
+      next(error);
+    }
+  },
+
+  //created by Adnan: to
+  updateLeaveSalaryOptions: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = { ...req.body };
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_hrms_options set \
+          annual_leave_process_separately=?,airfare_factor=?,basic_earning_component=?,airfare_percentage=?,\
+          updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
+        values: [
+          input.annual_leave_process_separately,
+          input.airfare_factor,
+          input.basic_earning_component,
+          input.airfare_percentage,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          1
+        ],
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };

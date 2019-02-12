@@ -129,11 +129,12 @@ class PosListItems extends Component {
                                   context
                                 ),
                                 others: {
-                                  disabled: this.state.dataExitst
+                                  disabled: this.state.dataExitst,
+                                  tabIndex: "1"
                                 }
                               }}
                             />
-                            <AlagehAutoComplete
+                            {/* <AlagehAutoComplete
                               div={{ className: "col" }}
                               label={{ forceLabel: "Item Category" }}
                               selector={{
@@ -168,31 +169,7 @@ class PosListItems extends Component {
                                 },
                                 onChange: null
                               }}
-                            />
-                          </div>
-                          <div className="row">
-                            <AlagehAutoComplete
-                              div={{ className: "col" }}
-                              label={{ forceLabel: "UOM", isImp: true }}
-                              selector={{
-                                name: "uom_id",
-                                className: "select-fld",
-                                value: this.state.uom_id,
-                                dataSource: {
-                                  textField: "uom_description",
-                                  valueField: "uom_id",
-                                  data: this.state.ItemUOM
-                                },
-                                onChange: UomchangeTexts.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  disabled: this.state.dataExitst
-                                }
-                              }}
-                            />
+                            /> */}
                             <AlagehFormGroup
                               div={{ className: "col" }}
                               label={{
@@ -224,6 +201,29 @@ class PosListItems extends Component {
                               }}
                               value={this.state.expiry_date}
                             />
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              label={{ forceLabel: "UOM", isImp: true }}
+                              selector={{
+                                name: "uom_id",
+                                className: "select-fld",
+                                value: this.state.uom_id,
+                                dataSource: {
+                                  textField: "uom_description",
+                                  valueField: "uom_id",
+                                  data: this.state.ItemUOM
+                                },
+                                onChange: UomchangeTexts.bind(
+                                  this,
+                                  this,
+                                  context
+                                ),
+                                others: {
+                                  disabled: this.state.dataExitst,
+                                  tabIndex: "2"
+                                }
+                              }}
+                            />
                             <AlagehFormGroup
                               div={{ className: "col" }}
                               label={{
@@ -245,25 +245,8 @@ class PosListItems extends Component {
                                   )
                                 },
                                 others: {
-                                  disabled: this.state.dataExitst
-                                }
-                              }}
-                            />
-                            <AlagehFormGroup
-                              div={{ className: "col" }}
-                              label={{
-                                forceLabel: "Unit Cost"
-                              }}
-                              textBox={{
-                                decimal: { allowNegative: false },
-                                value: this.state.unit_cost,
-                                className: "txt-fld",
-                                name: "unit_cost",
-                                events: {
-                                  onChange: numberchangeTexts.bind(this, this)
-                                },
-                                others: {
-                                  disabled: true
+                                  disabled: this.state.dataExitst,
+                                  tabIndex: "3"
                                 }
                               }}
                             />
@@ -285,6 +268,43 @@ class PosListItems extends Component {
                                 }
                               }}
                             />
+
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              label={{
+                                forceLabel: "Discount (%)",
+                                isImp: false
+                              }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "",
+                                value: "",
+                                events: {},
+                                others: {
+                                  type: "number",
+                                  tabIndex: "4"
+                                }
+                              }}
+                            />
+
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              label={{
+                                forceLabel: "Unit Cost"
+                              }}
+                              textBox={{
+                                decimal: { allowNegative: false },
+                                value: this.state.unit_cost,
+                                className: "txt-fld",
+                                name: "unit_cost",
+                                events: {
+                                  onChange: numberchangeTexts.bind(this, this)
+                                },
+                                others: {
+                                  disabled: true
+                                }
+                              }}
+                            />
                           </div>
                         </div>
                         <div className="row">
@@ -293,6 +313,7 @@ class PosListItems extends Component {
                               className="btn btn-primary"
                               onClick={AddItems.bind(this, this, context)}
                               disabled={this.state.addItemButton}
+                              tabIndex="5"
                             >
                               Add Item
                             </button>
@@ -309,7 +330,7 @@ class PosListItems extends Component {
                                 <button
                                   className="btn btn-default"
                                   onClick={ViewInsurance.bind(this, this)}
-                                  // disabled={this.state.mode_of_pay === 2 ? false? true}
+                                // disabled={this.state.mode_of_pay === 2 ? false? true}
                                 >
                                   View Insurance
                                 </button>
@@ -355,15 +376,15 @@ class PosListItems extends Component {
                                         this.props.positemlist === undefined
                                           ? []
                                           : this.props.positemlist.filter(
-                                              f =>
-                                                f.hims_d_item_master_id ===
-                                                row.item_id
-                                            );
+                                            f =>
+                                              f.hims_d_item_master_id ===
+                                              row.item_id
+                                          );
 
                                       return (
                                         <span>
                                           {display !== undefined &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].item_description
                                             : ""}
                                         </span>
@@ -374,15 +395,15 @@ class PosListItems extends Component {
                                         this.props.positemlist === undefined
                                           ? []
                                           : this.props.positemlist.filter(
-                                              f =>
-                                                f.hims_d_item_master_id ===
-                                                row.item_id
-                                            );
+                                            f =>
+                                              f.hims_d_item_master_id ===
+                                              row.item_id
+                                          );
 
                                       return (
                                         <span>
                                           {display !== undefined &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].item_description
                                             : ""}
                                         </span>
@@ -402,15 +423,15 @@ class PosListItems extends Component {
                                         this.props.itemcategory === undefined
                                           ? []
                                           : this.props.itemcategory.filter(
-                                              f =>
-                                                f.hims_d_item_category_id ===
-                                                row.item_category
-                                            );
+                                            f =>
+                                              f.hims_d_item_category_id ===
+                                              row.item_category
+                                          );
 
                                       return (
                                         <span>
                                           {display !== null &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].category_desc
                                             : ""}
                                         </span>
@@ -421,15 +442,15 @@ class PosListItems extends Component {
                                         this.props.itemcategory === undefined
                                           ? []
                                           : this.props.itemcategory.filter(
-                                              f =>
-                                                f.hims_d_item_category_id ===
-                                                row.item_category
-                                            );
+                                            f =>
+                                              f.hims_d_item_category_id ===
+                                              row.item_category
+                                          );
 
                                       return (
                                         <span>
                                           {display !== null &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].category_desc
                                             : ""}
                                         </span>
@@ -490,15 +511,15 @@ class PosListItems extends Component {
                                         this.props.itemuom === undefined
                                           ? []
                                           : this.props.itemuom.filter(
-                                              f =>
-                                                f.hims_d_pharmacy_uom_id ===
-                                                row.uom_id
-                                            );
+                                            f =>
+                                              f.hims_d_pharmacy_uom_id ===
+                                              row.uom_id
+                                          );
 
                                       return (
                                         <span>
                                           {display !== null &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].uom_description
                                             : ""}
                                         </span>
@@ -509,15 +530,15 @@ class PosListItems extends Component {
                                         this.props.itemuom === undefined
                                           ? []
                                           : this.props.itemuom.filter(
-                                              f =>
-                                                f.hims_d_pharmacy_uom_id ===
-                                                row.uom_id
-                                            );
+                                            f =>
+                                              f.hims_d_pharmacy_uom_id ===
+                                              row.uom_id
+                                          );
 
                                       return (
                                         <span>
                                           {display !== null &&
-                                          display.length !== 0
+                                            display.length !== 0
                                             ? display[0].uom_description
                                             : ""}
                                         </span>
@@ -698,9 +719,9 @@ class PosListItems extends Component {
                                   )
                                 }}
 
-                                // onRowSelect={row => {
-                                //   getItemLocationStock(this, row);
-                                // }}
+                              // onRowSelect={row => {
+                              //   getItemLocationStock(this, row);
+                              // }}
                               />
                             </div>
                           </div>

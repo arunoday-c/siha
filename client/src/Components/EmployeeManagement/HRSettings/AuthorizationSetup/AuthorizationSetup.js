@@ -48,7 +48,7 @@ export default class AuthorizationSetup extends Component {
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
-      module : "masterSettings",
+      module: "masterSettings",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
@@ -303,7 +303,12 @@ export default class AuthorizationSetup extends Component {
               >
                 <div className="col">
                   <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                  <h6>------------</h6>
+                  <h6>
+                    {" "}
+                    {this.state.selected_dept
+                      ? this.state.selected_dept
+                      : "------"}
+                  </h6>
                 </div>
                 <div
                   className="col-3"
