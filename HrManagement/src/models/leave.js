@@ -3178,7 +3178,7 @@ cancelLeave: (req, res, next) => {
                       salResult[0]["salary_processed"] == "N" &&
                       salResult[0]["salary_paid"] == "N")
                   ) {
-                    //YOU CAN CANCEL
+                    //YOU CAN CANCEL 
 
                     //------------------------------------------------------------------
 
@@ -3264,11 +3264,15 @@ cancelLeave: (req, res, next) => {
                               }
 
                               //oooooooooooooooooooo
+                              let anualLeave="";
+                              if (input.leave_category=="A"){
+                                anualLeave= " update hims_f_employee_annual_leave set cancelled='Y' where leave_application_id="+input.hims_f_leave_application_id+"; ";
+                              }
 
                               _mysql
                                 .executeQueryWithTransaction({
                                   query:
-                                    " update hims_f_leave_application set status='CAN',cancelled_date='" +
+                                  anualLeave+" update hims_f_leave_application set status='CAN',cancelled_date='" +
                                     moment().format("YYYY-MM-DD") +
                                     "',\
                                     cancelled_by=" +
