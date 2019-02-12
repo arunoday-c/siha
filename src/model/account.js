@@ -187,6 +187,8 @@ let authUser = (req, res, next) => {
     // WHERE P.password=md5(?) AND U.username=? AND U.record_status='A' \
     // AND P.record_status='A' AND G.record_status='A' AND R.record_status='A'
 
+    debugLog("inputData: ", inputData);
+
     db.getConnection((error, connection) => {
       let query =
         "SELECT algaeh_d_app_user_id, username, user_display_name,  locked, user_type,login_attempts,\
@@ -200,15 +202,24 @@ let authUser = (req, res, next) => {
         inner join hims_m_user_employee UEM on  RU.user_id=UEM.user_id\
         inner join  algaeh_d_app_password P on U.algaeh_d_app_user_id=P.userid\
         WHERE P.password=md5(?) AND U.username=? AND U.record_status='A' \
-        AND P.record_status='A' AND G.record_status='A' AND R.record_status='A' ";
+        AND P.record_status='A' AND G.record_status='A' AND R.record_status='A';\
+        SELECT hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
+      default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
+      arabic_hospital_name, hospital_address, city_id, organization_id, effective_start_date, effective_end_date, \
+      hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
+      decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator FROM \
+      hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
+      CUR.hims_d_currency_id=default_currency AND hims_d_hospital_id=? ";
       connection.query(
         query,
-        [inputData.password, inputData.username],
+        [inputData.password, inputData.username, inputData.item_id],
         (error, result) => {
           if (error) {
             connection.release();
             next(error);
           }
+
+          debugLog("result: ", result[0]);
 
           req.records = result;
           next();

@@ -7,8 +7,8 @@ import {
   addFrontDesk, //Done
   updateFrontDesk, //Done
   selectFrontDesk, //Done
-  getCashHandoverDetails,
-  updateCashHandoverDetails
+  getCashHandoverDetails, //Done
+  updateCashHandoverDetails //Done
 } from "../model/frontDesk";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {

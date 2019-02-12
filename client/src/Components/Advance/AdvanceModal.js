@@ -13,7 +13,7 @@ import {
   AlgaehDateHandler,
   Modal
 } from "../Wrapper/algaehWrapper";
-import variableJson from "../../utils/GlobalVariables.json";
+
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 
 import {
@@ -25,14 +25,21 @@ import {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  Validations
+  Validations,
+  countertexthandle,
+  getCashiersAndShiftMAP
 } from "./AdvanceModalHandaler";
 
 import AdvRefunIOputs from "../../Models/AdvanceRefund";
-import { successfulMessage } from "../../utils/GlobalFunctions";
+import AlgaehLoader from "../Wrapper/fullPageLoader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-
-import { postAdvance } from "../../actions/RegistrationPatient/Billingactions";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../utils/algaehApiCall.js";
+import { AlgaehActions } from "../../actions/algaehActions";
+// import { postAdvance } from "../../actions/RegistrationPatient/Billingactions";
 import MyContext from "../../utils/MyContext";
 
 class AddAdvanceModal extends PureComponent {
@@ -53,8 +60,46 @@ class AddAdvanceModal extends PureComponent {
     this.setState({ selectedLang: Window.global.selectedLang });
   }
 
+  componentDidMount() {
+    if (this.props.shifts === undefined || this.props.shifts.length === 0) {
+      this.props.getShifts({
+        uri: "/shiftAndCounter/getShiftMaster",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "shifts"
+        }
+      });
+    }
+    if (this.props.counters === undefined || this.props.counters.length === 0) {
+      this.props.getCounters({
+        uri: "/shiftAndCounter/getCounterMaster",
+        method: "GET",
+        redux: {
+          type: "CTRY_GET_DATA",
+          mappingName: "counters"
+        }
+      });
+    }
+    getCashiersAndShiftMAP(this, this);
+
+    let _screenName = getCookie("ScreenName").replace("/", "");
+    algaehApiCall({
+      uri: "/userPreferences/get",
+      data: {
+        screenName: _screenName,
+        identifier: "Counter"
+      },
+      method: "GET",
+      onSuccess: response => {
+        this.setState({
+          counter_id: response.data.records.selectedValue
+        });
+      }
+    });
+  }
+
   onClose = e => {
-    
     this.props.onClose && this.props.onClose(e);
   };
 
@@ -116,22 +161,39 @@ class AddAdvanceModal extends PureComponent {
 
     if (!err) {
       this.GenerateReciept($this => {
-        $this.props.postAdvance($this.state, data => {
-          $this.setState({
-            receipt_number: data.receipt_number
-          });
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/billing/patientAdvanceRefund",
+          method: "POST",
+          module: "billing",
+          data: $this.state,
+          onSuccess: response => {
+            AlgaehLoader({ show: false });
+            if (response.data.success) {
+              debugger;
+              let data = response.data.records;
+              $this.setState({
+                receipt_number: data.receipt_number
+              });
 
-          context.updateState({
-            advance_amount: data.total_advance_amount,
-            AdvanceOpen: false,
-            RefundOpen: false
-          });
-
-          successfulMessage({
-            message: "Done Successfully",
-            title: "Success",
-            icon: "success"
-          });
+              context.updateState({
+                advance_amount: data.total_advance_amount,
+                AdvanceOpen: false,
+                RefundOpen: false
+              });
+              swalMessage({
+                title: "Done Successfully...",
+                type: "success"
+              });
+            }
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       });
     }
@@ -182,6 +244,49 @@ class AddAdvanceModal extends PureComponent {
                           isImp: true
                         }}
                         selector={{
+                          name: "counter_id",
+                          className: "select-fld",
+                          value: this.state.counter_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "counter_description"
+                                : "arabic_name",
+                            valueField: "hims_d_counter_id",
+                            data: this.props.counters
+                          },
+                          onChange: countertexthandle.bind(this, this)
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "shift_id",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "shift_id",
+                          className: "select-fld",
+                          value: this.state.shift_id,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "shift_description"
+                                : "arabic_name",
+                            valueField: "hims_d_shift_id",
+                            data: this.props.shifts
+                          },
+                          onChange: texthandle.bind(this, this, context)
+                        }}
+                      />
+                      {/* <AlagehAutoComplete
+                        div={{ className: "col-lg-3 mandatory" }}
+                        label={{
+                          fieldName: "counter_id",
+                          isImp: true
+                        }}
+                        selector={{
                           name: "decimal",
                           className: "select-fld",
                           value: this.state.decimal,
@@ -214,7 +319,7 @@ class AddAdvanceModal extends PureComponent {
                           },
                           onChange: texthandle.bind(this, this)
                         }}
-                      />
+                      /> */}
                     </div>
                     <hr />
 
@@ -514,14 +619,16 @@ class AddAdvanceModal extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    genbill: state.genbill
+    shifts: state.shifts,
+    counters: state.counters
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      postAdvance: postAdvance
+      getShifts: AlgaehActions,
+      getCounters: AlgaehActions
     },
     dispatch
   );

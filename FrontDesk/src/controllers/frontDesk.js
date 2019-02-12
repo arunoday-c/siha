@@ -3,7 +3,9 @@ import utlities from "algaeh-utilities";
 import {
   selectFrontDesk,
   addFrontDesk,
-  updateFrontDesk
+  updateFrontDesk,
+  getCashHandoverDetails,
+  updateCashHandoverDetails
 } from "../models/frontDesk";
 import { insertPatientData } from "../models/patientRegistration";
 import algaehPath from "algaeh-utilities/algaeh-path-format";
@@ -52,6 +54,28 @@ export default () => {
     newReceiptData,
     addBillData,
     addEpisodeEncounterData,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getCashHandoverDetails",
+    getCashHandoverDetails,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.put(
+    "/updateCashHandoverDetails",
+    updateCashHandoverDetails,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
