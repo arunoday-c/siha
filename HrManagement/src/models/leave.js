@@ -3182,7 +3182,7 @@ cancelLeave: (req, res, next) => {
 
                     //------------------------------------------------------------------
 
-                    calc(_mysql, req.body)
+                    calc(_mysql, {...req.body,cancel:"Y"})
                       .then(deductionResult => {
                         if (deductionResult.invalid_input == true) {
                           _mysql.releaseConnection();
@@ -4018,7 +4018,7 @@ function calc(db, body) {
 
 
               //checking if he has enough eligible days
-              if (currentClosingBal >= calculatedLeaveDays) {
+              if (currentClosingBal >= calculatedLeaveDays||input.cancel=="Y") {
                 resolve({
                   leave_applied_days: leave_applied_days,
                   calculatedLeaveDays: calculatedLeaveDays,
