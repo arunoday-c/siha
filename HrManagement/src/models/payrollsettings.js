@@ -101,9 +101,9 @@ module.exports = {
 
     let _stringData = " ";
     if (input.type == "W") {
-      _stringData = " and  H.weekoff='Y' ";
+      _stringData = " and  H.weekoff='Y' and  H.holiday='N' ";
     } else if (input.type == "H") {
-      _stringData = " and  H.holiday='Y' ";
+      _stringData = " and  H.weekoff='N' and  H.holiday='Y' ";
     }
 
     _mysql
