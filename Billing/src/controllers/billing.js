@@ -1,6 +1,10 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import { newReceiptData } from "../models/billing";
+import {
+  newReceiptData,
+  patientAdvanceRefund,
+  billingCalculations
+} from "../models/billing";
 
 export default () => {
   const api = Router();
@@ -8,6 +12,30 @@ export default () => {
   api.post(
     "/newReceiptData",
     newReceiptData,
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/patientAdvanceRefund",
+    patientAdvanceRefund,
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/billingCalculations",
+    billingCalculations,
 
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

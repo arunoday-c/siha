@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
+import math from "mathjs";
 
 module.exports = {
   newReceiptData: (req, res, next) => {
@@ -343,6 +344,10 @@ module.exports = {
 
   billingCalculations: (req, res, next) => {
     try {
+      const utilities = new algaehUtilities();
+
+      let decimal_places = req.userIdentity.decimal_places;
+      utilities.logger().log("decimal_places: ", decimal_places);
       let hasCalculateall =
         req.body.intCalculateall == undefined ? true : req.body.intCalculateall;
       let inputParam =
@@ -357,8 +362,6 @@ module.exports = {
       }
       let sendingObject = {};
 
-      debugLog("bool Value: ", hasCalculateall);
-      debugLog("Input", req.body);
       if (hasCalculateall == true) {
         sendingObject.sub_total_amount = new LINQ(inputParam).Sum(
           d => d.gross_amount
@@ -443,14 +446,23 @@ module.exports = {
 
         sendingObject.patient_payable = math.round(
           sendingObject.patient_payable,
-          2
+          decimal_places
         );
-        sendingObject.total_tax = math.round(sendingObject.total_tax, 2);
-        sendingObject.patient_tax = math.round(sendingObject.patient_tax, 2);
-        sendingObject.company_tax = math.round(sendingObject.company_tax, 2);
+        sendingObject.total_tax = math.round(
+          sendingObject.total_tax,
+          decimal_places
+        );
+        sendingObject.patient_tax = math.round(
+          sendingObject.patient_tax,
+          decimal_places
+        );
+        sendingObject.company_tax = math.round(
+          sendingObject.company_tax,
+          decimal_places
+        );
         sendingObject.sec_company_tax = math.round(
           sendingObject.sec_company_tax,
-          2
+          decimal_places
         );
       } else {
         //Reciept
@@ -476,11 +488,11 @@ module.exports = {
 
           sendingObject.sheet_discount_amount = math.round(
             sendingObject.sheet_discount_amount,
-            2
+            decimal_places
           );
           sendingObject.sheet_discount_percentage = math.round(
             sendingObject.sheet_discount_percentage,
-            2
+            decimal_places
           );
 
           sendingObject.net_amount =
@@ -520,6 +532,192 @@ module.exports = {
       next();
     } catch (e) {
       next(e);
+    }
+  },
+
+  patientAdvanceRefund: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = { ...req.body };
+
+      const utilities = new algaehUtilities();
+      utilities.logger().log("inputParam Receipt: ", inputParam);
+
+      if (
+        inputParam.receiptdetails == null ||
+        inputParam.receiptdetails.length == 0
+      ) {
+        next(
+          httpStatus.generateError(
+            httpStatus.badRequest,
+            "Please select atleast one service."
+          )
+        );
+      }
+      let Module_Name = "";
+      //Advance
+      if (inputParam.pay_type == "R") {
+        Module_Name = "RECEIPT";
+      } else if (inputParam.pay_type == "P") {
+        Module_Name = "REFUND";
+      }
+      utilities.logger().log("inputParam pay_type: ", inputParam.pay_type);
+      _mysql
+        .generateRunningNumber({
+          modules: [Module_Name]
+        })
+        .then(generatedNumbers => {
+          utilities.logger().log("generatedNumbers: ", generatedNumbers[0]);
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, total_amount,\
+                  created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_type) \
+                  VALUES (?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                generatedNumbers[0],
+                new Date(),
+                inputParam.total_amount,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                inputParam.counter_id,
+                inputParam.shift_id,
+                inputParam.pay_type
+              ],
+              printQuery: true
+            })
+            .then(headerRcptResult => {
+              utilities.logger().log("headerRcptResult: ", headerRcptResult);
+              if (
+                headerRcptResult.insertId != null &&
+                headerRcptResult.insertId != ""
+              ) {
+                req.body.receipt_header_id = headerRcptResult.insertId;
+                const receptSample = [
+                  "card_check_number",
+                  "expiry_date",
+                  "pay_type",
+                  "amount",
+                  "created_by",
+                  "updated_by",
+                  "card_type"
+                ];
+
+                _mysql
+                  .executeQuery({
+                    query: "INSERT INTO hims_f_receipt_details(??) VALUES ?",
+                    values: inputParam.receiptdetails,
+                    includeValues: receptSample,
+                    extraValues: {
+                      hims_f_receipt_header_id: headerRcptResult.insertId
+                    },
+                    bulkInsertOrUpdate: true,
+                    printQuery: true
+                  })
+                  .then(RcptDetailsRecords => {
+                    utilities
+                      .logger()
+                      .log("RcptDetailsRecords: ", RcptDetailsRecords);
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT  INTO hims_f_patient_advance ( hims_f_patient_id, hims_f_receipt_header_id,\
+                            transaction_type, advance_amount, created_by, \
+                            created_date, updated_by, update_date,  record_status) VALUES (?,?,?,?,?,?,?,?,?) ",
+                        values: [
+                          inputParam.hims_f_patient_id,
+                          headerRcptResult.insertId,
+                          inputParam.transaction_type,
+                          inputParam.advance_amount,
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          req.userIdentity.algaeh_d_app_user_id,
+                          new Date(),
+                          inputParam.record_status
+                        ],
+                        printQuery: true
+                      })
+                      .then(Insert_Advance => {
+                        utilities
+                          .logger()
+                          .log("Insert_Advance: ", Insert_Advance[1]);
+
+                        let existingAdvance =
+                          Insert_Advance[1][0].advance_amount;
+
+                        utilities
+                          .logger()
+                          .log("existingAdvance: ", existingAdvance);
+
+                        if (existingAdvance != null) {
+                          if (inputParam.transaction_type == "AD") {
+                            inputParam.advance_amount += existingAdvance;
+                            debugLog("existingAdvance:", existingAdvance);
+                          } else if (inputParam.transaction_type == "RF") {
+                            inputParam.advance_amount =
+                              existingAdvance - inputParam.advance_amount;
+                          }
+                        }
+
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "UPDATE  `hims_f_patient` SET  `advance_amount`=?, \
+                                        `updated_by`=?, `updated_date`=? WHERE `hims_d_patient_id`=?",
+                            values: [
+                              inputParam.advance_amount,
+                              req.userIdentity.algaeh_d_app_user_id,
+                              new Date(),
+                              inputParam.hims_f_patient_id
+                            ],
+                            printQuery: true
+                          })
+                          .then(update_advance => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = {
+                                receipt_number: generatedNumbers[0],
+                                total_advance_amount: inputParam.advance_amount
+                              };
+                              next();
+                            });
+                          })
+                          .catch(error => {
+                            _mysql.rollBackTransaction(() => {
+                              next(error);
+                            });
+                          });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              }
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };

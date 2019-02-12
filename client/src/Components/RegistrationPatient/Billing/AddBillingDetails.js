@@ -39,6 +39,7 @@ const calculateRecipt = ($this, context) => {
 
   algaehApiCall({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
@@ -264,6 +265,7 @@ const billheaderCalculation = ($this, context) => {
 
   algaehApiCall({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
@@ -352,6 +354,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
 
           algaehApiCall({
             uri: "/billing/billingCalculations",
+            module: "billing",
             method: "POST",
             data: response.data.records,
             onSuccess: response => {

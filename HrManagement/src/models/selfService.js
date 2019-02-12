@@ -140,12 +140,12 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "select hims_d_employee_id, employee_code, hims_d_employee_dependents_id, ED.dependent_type,ED.dependent_name,\
-            ED.dependent_identity_no,ED.dependent_identity_type,ID.identity_document_name\
-            from hims_d_employee E left join hims_d_employee_dependents ED on\
-            E.hims_d_employee_id=ED.employee_id and ED.record_status='A'\
-            left join hims_d_identity_document ID on ED.dependent_identity_type=ID.hims_d_identity_document_id \
-            and ID.record_status='A' where E.record_status='A' and E.hims_d_employee_id=?",
+              "select hims_d_employee_id, employee_code,  full_name ,\
+            hims_d_employee_identification_id,  identity_documents_id, \
+            identity_number, valid_upto, issue_date ,ID.identity_document_name from hims_d_employee E \
+            left join hims_d_employee_identification EI on E.hims_d_employee_id=EI.employee_id and  EI.record_status='A'\
+            left join hims_d_identity_document ID on EI.identity_documents_id=ID.hims_d_identity_document_id \
+            and  ID.record_status='A' where  E.record_status='A' and E.hims_d_employee_id=?",
             values: [req.userIdentity.employee_id],
             printQuery: true
           })
