@@ -242,7 +242,6 @@ const PageToPlot = {
 };
 
 const DirectRoutes = props => {
-  debugger;
   const PlotPage = PageToPlot[props.componet];
 
   return (

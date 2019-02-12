@@ -89,15 +89,6 @@ export default class EmployeeShiftRostering extends Component {
       .endOf("month")
       .format("MMM DD YYYY");
 
-    this.setState({
-      start_day: moment(yearAndMonth)
-        .startOf("month")
-        .format("D"),
-      end_day: moment(yearAndMonth)
-        .endOf("month")
-        .format("D")
-    });
-
     return _start + " - " + _end;
   }
 
@@ -111,13 +102,7 @@ export default class EmployeeShiftRostering extends Component {
       .format("MMM DD YYYY");
 
     this.setState({
-      formatingString: startDate + " - " + endDate,
-      start_day: moment(yearMonth)
-        .startOf("month")
-        .format("D"),
-      end_day: moment(yearMonth)
-        .endOf("month")
-        .format("D")
+      formatingString: startDate + " - " + endDate
     });
   }
 
@@ -152,7 +137,30 @@ export default class EmployeeShiftRostering extends Component {
     }
   }
 
-  getDaysOfMonth() {}
+  getDaysOfMonth() {
+    var dates = [];
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+
+    var currDate = moment(yearMonth)
+      .startOf("month")
+      .format("MMM DD YYYY");
+    var lastDate = moment(yearMonth)
+      .endOf("month")
+      .format("MMM DD YYYY");
+
+    var now = moment(currDate).clone(),
+      dates = [];
+
+    while (now.isSameOrBefore(lastDate)) {
+      dates.push(
+        <th>
+          <span> {now.format("ddd")}</span> {now.format("ddd d/MMM")}
+        </th>
+      );
+      now.add(1, "days");
+    }
+    return dates;
+  }
 
   render() {
     let allYears = getYears();
@@ -319,30 +327,7 @@ export default class EmployeeShiftRostering extends Component {
                         <tr>
                           <th>Employee Code</th>
                           <th>Employee Name</th>
-                          {/* {this.getDaysOfMonth()} */}
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
-                          <th>Fri 01/01</th>
+                          {this.getDaysOfMonth()}
                           <th>Joining Date</th>
                           <th>Exit Date</th>
                         </tr>

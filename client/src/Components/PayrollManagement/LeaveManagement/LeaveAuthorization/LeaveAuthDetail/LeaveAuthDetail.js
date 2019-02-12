@@ -20,6 +20,7 @@ class LeaveAuthDetail extends Component {
         data: nextProps.data
       },
       () => {
+        console.log("DATA:", this.state.data.leave_category);
         nextProps.open ? this.getEmployeeLeaveHistory() : null;
       }
     );
@@ -60,7 +61,8 @@ class LeaveAuthDetail extends Component {
       from_session: this.state.data.from_leave_session,
       to_session: this.state.data.to_leave_session,
       from_date: this.state.data.from_date,
-      to_date: this.state.data.to_date
+      to_date: this.state.data.to_date,
+      leave_category: this.state.leave_category
     };
 
     algaehApiCall({
@@ -112,7 +114,8 @@ class LeaveAuthDetail extends Component {
       from_session: this.state.data.from_leave_session,
       to_session: this.state.data.to_leave_session,
       from_date: this.state.data.from_date,
-      to_date: this.state.data.to_date
+      to_date: this.state.data.to_date,
+      leave_category: this.state.data.leave_category
     };
 
     algaehApiCall({
