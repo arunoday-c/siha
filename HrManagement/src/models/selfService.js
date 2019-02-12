@@ -172,93 +172,73 @@ module.exports = {
 
   updateEmployeeIdentificationDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
-    return new Promise((resolve, reject) => {
-      try {
-        _mysql
-          .executeQuery({
-            query:
-              "update hims_d_employee_identification set \
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_employee_identification set \
             identity_documents_id=?, identity_number=?, valid_upto=?, \
             issue_date=?, alert_required=?, alert_date=?,  updated_date=?, updated_by=?\
             where record_status='A' and hims_d_employee_identification_id=?;",
-            values: [
-              input.identity_documents_id,
-              input.identity_number,
-              input.valid_upto,
-              input.issue_date,
-              input.alert_required,
-              input.alert_date,
-              new Date(),
-              input.updated_by,
-              input.hims_d_employee_identification_id
-            ],
-            printQuery: true
-          })
-          .then(result => {
-            _mysql.releaseConnection();
-            req.records = result;
-            resolve(result);
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            reject(error);
-            next(error);
-          });
-      } catch (e) {
+        values: [
+          input.identity_documents_id,
+          input.identity_number,
+          input.valid_upto,
+          input.issue_date,
+          input.alert_required,
+          input.alert_date,
+          new Date(),
+          input.updated_by,
+          input.hims_d_employee_identification_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
         _mysql.releaseConnection();
-        next(e);
-      }
-    }).catch(e => {
-      _mysql.releaseConnection();
-      next(e);
-    });
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   },
   updateEmployeeDependentDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
-    return new Promise((resolve, reject) => {
-      try {
-        _mysql
-          .executeQuery({
-            query:
-              "update hims_d_employee_dependents set dependent_type=?,dependent_name=?,\
-            dependent_identity_type=?,dependent_identity_no=?, updated_date=?, updated_by=?\
-          where record_status='A' and hims_d_employee_dependents_id=?;",
-            values: [
-              input.dependent_type,
-              input.dependent_name,
-              input.dependent_identity_type,
-              input.dependent_identity_no,
-              new Date(),
-              input.updated_by,
-              input.hims_d_employee_dependents_id
-            ],
-            printQuery: true
-          })
-          .then(result => {
-            _mysql.releaseConnection();
-            req.records = result;
-            resolve(result);
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            reject(error);
-            next(error);
-          });
-      } catch (e) {
+
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_d_employee_dependents set dependent_type=?,dependent_name=?,\
+               dependent_identity_type=?,dependent_identity_no=?, updated_date=?, updated_by=?\
+                where record_status='A' and hims_d_employee_dependents_id=?;",
+        values: [
+          input.dependent_type,
+          input.dependent_name,
+          input.dependent_identity_type,
+          input.dependent_identity_no,
+          new Date(),
+          input.updated_by,
+          input.hims_d_employee_dependents_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
         _mysql.releaseConnection();
-        next(e);
-      }
-    }).catch(e => {
-      _mysql.releaseConnection();
-      next(e);
-    });
+        req.records = result;
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   },
 
   updateEmployeeBasicDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
-    let input = { ...req.body };
+    let input = req.body;
 
     _mysql
       .executeQuery({
@@ -295,47 +275,36 @@ module.exports = {
 
   addEmployeeDependentDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
-    return new Promise((resolve, reject) => {
-      try {
-        _mysql
-          .executeQuery({
-            query:
-              "INSERT  INTO hims_d_employee_dependents ( employee_id, dependent_type, dependent_name, \
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT  INTO hims_d_employee_dependents ( employee_id, dependent_type, dependent_name, \
                 dependent_identity_type, dependent_identity_no,\
                 created_date,created_by,updated_date,updated_by) values(\
                   ?,?,?,?,?,?,?,?,?)",
-            values: [
-              input.employee_id,
-              input.dependent_type,
-              input.dependent_name,
-              input.dependent_identity_type,
-              input.dependent_identity_no,
-              new Date(),
-              input.created_by,
-              new Date(),
-              input.updated_by
-            ],
-            printQuery: true
-          })
-          .then(result => {
-            _mysql.releaseConnection();
-            req.records = result;
-            resolve(result);
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            reject(error);
-            next(error);
-          });
-      } catch (e) {
+        values: [
+          input.employee_id,
+          input.dependent_type,
+          input.dependent_name,
+          input.dependent_identity_type,
+          input.dependent_identity_no,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        printQuery: true
+      })
+      .then(result => {
         _mysql.releaseConnection();
-        next(e);
-      }
-    }).catch(e => {
-      _mysql.releaseConnection();
-      next(e);
-    });
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   },
 
   getEmployeeAdvance: (req, res, next) => {
@@ -436,49 +405,38 @@ module.exports = {
 
   addEmployeeIdentification: (req, res, next) => {
     const _mysql = new algaehMysql();
-    return new Promise((resolve, reject) => {
-      try {
-        _mysql
-          .executeQuery({
-            query:
-              "INSERT  INTO hims_d_employee_identification (employee_id,identity_documents_id,\
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT  INTO hims_d_employee_identification (employee_id,identity_documents_id,\
               identity_number,valid_upto,issue_date,alert_required,alert_date,\
               created_date,created_by,updated_date,updated_by) values(\
                 ?,?,?,?,?,?,?,?,?,?,?)",
-            values: [
-              input.employee_id,
-              input.identity_documents_id,
-              input.identity_number,
-              input.valid_upto,
-              input.issue_date,
-              input.alert_required,
-              input.alert_date,
-              new Date(),
-              input.created_by,
-              new Date(),
-              input.updated_by
-            ],
-            printQuery: true
-          })
-          .then(result => {
-            _mysql.releaseConnection();
-            req.records = result;
-            resolve(result);
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            reject(error);
-            next(error);
-          });
-      } catch (e) {
+        values: [
+          input.employee_id,
+          input.identity_documents_id,
+          input.identity_number,
+          input.valid_upto,
+          input.issue_date,
+          input.alert_required,
+          input.alert_date,
+          new Date(),
+          input.created_by,
+          new Date(),
+          input.updated_by
+        ],
+        printQuery: true
+      })
+      .then(result => {
         _mysql.releaseConnection();
-        next(e);
-      }
-    }).catch(e => {
-      _mysql.releaseConnection();
-      next(e);
-    });
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   }
 
   //TODO
