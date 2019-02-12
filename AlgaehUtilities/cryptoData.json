@@ -7,5 +7,6 @@
   "role_id": null,
   "group_type": null,
   "role_type": null,
-  "user_type": null
+  "user_type": null,
+  "decimal_places": null
 }

@@ -132,6 +132,7 @@ module.exports = {
                           _mysql.releaseConnection();
                           req.records = {};
                           next();
+                          resolve({});
                         });
                       } else {
                         resolve({});
@@ -246,396 +247,369 @@ module.exports = {
 
                       utilities.logger().log("empResult", empResult);
 
-                      for (let i = 0; i < empResult.length; i++) {
-                        utilities
-                          .logger()
-                          .log("employee_id", empResult[i]["employee_id"]);
+                      if (empResult.length > 0) {
+                        for (let i = 0; i < empResult.length; i++) {
+                          utilities
+                            .logger()
+                            .log("employee_id", empResult[i]["employee_id"]);
 
-                        const employee_exit = _.filter(_myemp, f => {
-                          return f.employee_id == empResult[i]["employee_id"];
-                        });
+                          const employee_exit = _.filter(_myemp, f => {
+                            return f.employee_id == empResult[i]["employee_id"];
+                          });
 
-                        utilities.logger().log("employee_exit", employee_exit);
-                        let results = Salaryresults;
-                        let salary_header_id = 0;
-                        let final_earning_amount = 0;
-                        let current_earning_amt_array = [];
+                          utilities
+                            .logger()
+                            .log("employee_exit", employee_exit);
+                          let results = Salaryresults;
+                          let salary_header_id = 0;
+                          let final_earning_amount = 0;
+                          let current_earning_amt_array = [];
 
-                        let final_deduction_amount = 0;
-                        let current_deduction_amt_array = [];
+                          let final_deduction_amount = 0;
+                          let current_deduction_amt_array = [];
 
-                        let final_contribution_amount = 0;
-                        let current_contribution_amt_array = [];
+                          let final_contribution_amount = 0;
+                          let current_contribution_amt_array = [];
 
-                        let total_loan_due_amount = 0;
-                        let total_loan_payable_amount = 0;
+                          let total_loan_due_amount = 0;
+                          let total_loan_payable_amount = 0;
 
-                        let advance_due_amount = 0;
-                        let current_loan_array = [];
-                        //Earnigs --- satrt
-                        const _earnings = _.filter(results[0], f => {
-                          return f.employee_id == empResult[i]["employee_id"];
-                        });
+                          let advance_due_amount = 0;
+                          let current_loan_array = [];
+                          //Earnigs --- satrt
+                          const _earnings = _.filter(results[0], f => {
+                            return f.employee_id == empResult[i]["employee_id"];
+                          });
 
-                        const _LeaveRule = _.filter(results[16], f => {
-                          return f.employee_id == empResult[i]["employee_id"];
-                        });
+                          const _LeaveRule = _.filter(results[16], f => {
+                            return f.employee_id == empResult[i]["employee_id"];
+                          });
 
-                        getEarningComponents({
-                          earnings: _earnings,
-                          empResult: empResult[i],
-                          leave_salary: req.query.leave_salary,
-                          _mysql: _mysql,
-                          input: input,
-                          _LeaveRule: _LeaveRule
-                        })
-                          .then(earningOutput => {
-                            current_earning_amt_array =
-                              earningOutput.current_earning_amt_array;
-                            final_earning_amount =
-                              earningOutput.final_earning_amount;
+                          getEarningComponents({
+                            earnings: _earnings,
+                            empResult: empResult[i],
+                            leave_salary: req.query.leave_salary,
+                            _mysql: _mysql,
+                            input: input,
+                            _LeaveRule: _LeaveRule
+                          })
+                            .then(earningOutput => {
+                              current_earning_amt_array =
+                                earningOutput.current_earning_amt_array;
+                              final_earning_amount =
+                                earningOutput.final_earning_amount;
 
-                            const _deduction = _.filter(results[1], f => {
-                              return (
-                                f.employee_id == empResult[i]["employee_id"]
-                              );
-                            });
-
-                            getDeductionComponents({
-                              deduction: _deduction,
-                              empResult: empResult[i],
-                              leave_salary: req.query.leave_salary
-                            })
-                              .then(deductionOutput => {
-                                current_deduction_amt_array =
-                                  deductionOutput.current_deduction_amt_array;
-                                final_deduction_amount =
-                                  deductionOutput.final_deduction_amount;
-
-                                //Contribution -- Start
-                                const _contrubutions = _.filter(
-                                  results[2],
-                                  f => {
-                                    return (
-                                      f.employee_id ==
-                                      empResult[i]["employee_id"]
-                                    );
-                                  }
+                              const _deduction = _.filter(results[1], f => {
+                                return (
+                                  f.employee_id == empResult[i]["employee_id"]
                                 );
-                                getContrubutionsComponents({
-                                  contribution: _contrubutions,
-                                  empResult: empResult[i],
-                                  leave_salary: req.query.leave_salary
-                                })
-                                  .then(contributionOutput => {
-                                    current_contribution_amt_array =
-                                      contributionOutput.current_contribution_amt_array;
-                                    final_contribution_amount =
-                                      contributionOutput.final_contribution_amount;
+                              });
 
-                                    //Loan Due Start
-                                    const _loan = _.filter(results[3], f => {
+                              getDeductionComponents({
+                                deduction: _deduction,
+                                empResult: empResult[i],
+                                leave_salary: req.query.leave_salary
+                              })
+                                .then(deductionOutput => {
+                                  current_deduction_amt_array =
+                                    deductionOutput.current_deduction_amt_array;
+                                  final_deduction_amount =
+                                    deductionOutput.final_deduction_amount;
+
+                                  //Contribution -- Start
+                                  const _contrubutions = _.filter(
+                                    results[2],
+                                    f => {
                                       return (
                                         f.employee_id ==
                                         empResult[i]["employee_id"]
                                       );
-                                    });
+                                    }
+                                  );
+                                  getContrubutionsComponents({
+                                    contribution: _contrubutions,
+                                    empResult: empResult[i],
+                                    leave_salary: req.query.leave_salary
+                                  })
+                                    .then(contributionOutput => {
+                                      current_contribution_amt_array =
+                                        contributionOutput.current_contribution_amt_array;
+                                      final_contribution_amount =
+                                        contributionOutput.final_contribution_amount;
 
-                                    //Loan Payable
-                                    const _loanPayable = _.filter(
-                                      results[6],
-                                      f => {
+                                      //Loan Due Start
+                                      const _loan = _.filter(results[3], f => {
                                         return (
                                           f.employee_id ==
                                           empResult[i]["employee_id"]
                                         );
-                                      }
-                                    );
+                                      });
 
-                                    getLoanDueandPayable({
-                                      loan: _loan,
-                                      loanPayable: _loanPayable
-                                    })
-                                      .then(loanOutput => {
-                                        total_loan_due_amount =
-                                          loanOutput.total_loan_due_amount;
-                                        total_loan_payable_amount =
-                                          loanOutput.total_loan_payable_amount;
+                                      //Loan Payable
+                                      const _loanPayable = _.filter(
+                                        results[6],
+                                        f => {
+                                          return (
+                                            f.employee_id ==
+                                            empResult[i]["employee_id"]
+                                          );
+                                        }
+                                      );
 
-                                        current_loan_array =
-                                          loanOutput.current_loan_array;
+                                      getLoanDueandPayable({
+                                        loan: _loan,
+                                        loanPayable: _loanPayable
+                                      })
+                                        .then(loanOutput => {
+                                          total_loan_due_amount =
+                                            loanOutput.total_loan_due_amount;
+                                          total_loan_payable_amount =
+                                            loanOutput.total_loan_payable_amount;
 
-                                        //Advance
-                                        const _advance = _.filter(
-                                          results[4],
-                                          f => {
-                                            return (
-                                              f.employee_id ==
-                                              empResult[i]["employee_id"]
-                                            );
-                                          }
-                                        );
+                                          current_loan_array =
+                                            loanOutput.current_loan_array;
 
-                                        getAdvanceDue({
-                                          advance: _advance,
-                                          dedcomponent: results[7]
-                                        })
-                                          .then(advanceOutput => {
-                                            advance_due_amount =
-                                              advanceOutput.advance_due_amount;
+                                          //Advance
+                                          const _advance = _.filter(
+                                            results[4],
+                                            f => {
+                                              return (
+                                                f.employee_id ==
+                                                empResult[i]["employee_id"]
+                                              );
+                                            }
+                                          );
 
-                                            final_deduction_amount =
-                                              final_deduction_amount +
-                                              advanceOutput.advance_due_amount;
+                                          getAdvanceDue({
+                                            advance: _advance,
+                                            dedcomponent: results[7]
+                                          })
+                                            .then(advanceOutput => {
+                                              advance_due_amount =
+                                                advanceOutput.advance_due_amount;
 
-                                            current_deduction_amt_array = current_deduction_amt_array.concat(
-                                              advanceOutput.current_deduct_compoment
-                                            );
+                                              final_deduction_amount =
+                                                final_deduction_amount +
+                                                advanceOutput.advance_due_amount;
 
-                                            //Miscellaneous Earning Deduction
-                                            const _over_time = _.filter(
-                                              results[10],
-                                              f => {
-                                                return (
-                                                  f.employee_id ==
-                                                  empResult[i]["employee_id"]
-                                                );
-                                              }
-                                            );
+                                              current_deduction_amt_array = current_deduction_amt_array.concat(
+                                                advanceOutput.current_deduct_compoment
+                                              );
 
-                                            getOtManagement({
-                                              earnings: _earnings,
-                                              current_earning_amt_array: current_earning_amt_array,
-                                              empResult: empResult[i],
-                                              hrms_option: results[8],
-                                              over_time_comp: results[9],
-                                              over_time: _over_time,
-                                              leave_salary:
-                                                req.query.leave_salary
-                                            })
-                                              .then(OTManagement => {
-                                                final_earning_amount =
-                                                  final_earning_amount +
-                                                  OTManagement.final_earning_amount;
+                                              //Miscellaneous Earning Deduction
+                                              const _over_time = _.filter(
+                                                results[10],
+                                                f => {
+                                                  return (
+                                                    f.employee_id ==
+                                                    empResult[i]["employee_id"]
+                                                  );
+                                                }
+                                              );
 
-                                                current_earning_amt_array = current_earning_amt_array.concat(
-                                                  OTManagement.current_ot_amt_array
-                                                );
+                                              getOtManagement({
+                                                earnings: _earnings,
+                                                current_earning_amt_array: current_earning_amt_array,
+                                                empResult: empResult[i],
+                                                hrms_option: results[8],
+                                                over_time_comp: results[9],
+                                                over_time: _over_time,
+                                                leave_salary:
+                                                  req.query.leave_salary
+                                              })
+                                                .then(OTManagement => {
+                                                  final_earning_amount =
+                                                    final_earning_amount +
+                                                    OTManagement.final_earning_amount;
 
-                                                //Miscellaneous Earning Deduction
-                                                const _miscellaneous = _.filter(
-                                                  results[5],
-                                                  f => {
-                                                    return (
-                                                      f.employee_id ==
-                                                      empResult[i][
-                                                        "employee_id"
-                                                      ]
-                                                    );
-                                                  }
-                                                );
-                                                getMiscellaneous({
-                                                  miscellaneous: _miscellaneous
-                                                })
-                                                  .then(miscellaneousOutput => {
-                                                    current_earning_amt_array = current_earning_amt_array.concat(
-                                                      miscellaneousOutput.current_earn_compoment
-                                                    );
-                                                    current_deduction_amt_array = current_deduction_amt_array.concat(
-                                                      miscellaneousOutput.current_deduct_compoment
-                                                    );
+                                                  current_earning_amt_array = current_earning_amt_array.concat(
+                                                    OTManagement.current_ot_amt_array
+                                                  );
 
-                                                    final_earning_amount =
-                                                      final_earning_amount +
-                                                      miscellaneousOutput.final_earning_amount;
-                                                    final_deduction_amount =
-                                                      final_deduction_amount +
-                                                      miscellaneousOutput.final_deduction_amount;
-
-                                                    //Salary Calculation Starts
-
-                                                    let per_day_sal =
-                                                      empResult[i][
-                                                        "gross_salary"
-                                                      ] /
-                                                      empResult[i][
-                                                        "total_days"
-                                                      ];
-
-                                                    let _salary_number = empResult[
-                                                      i
-                                                    ]["employee_code"].trim();
-
-                                                    _salary_number +=
-                                                      req.query.leave_salary ==
-                                                      null
-                                                        ? "-NS-"
-                                                        : "-LS-";
-                                                    _salary_number +=
-                                                      month_number + "-" + year;
-
-                                                    let _net_salary =
-                                                      final_earning_amount -
-                                                      final_deduction_amount -
-                                                      total_loan_due_amount;
-
-                                                    _net_salary =
-                                                      _net_salary +
-                                                      total_loan_payable_amount;
-
-                                                    utilities
-                                                      .logger()
-                                                      .log(
-                                                        "_net_salary",
-                                                        _net_salary
+                                                  //Miscellaneous Earning Deduction
+                                                  const _miscellaneous = _.filter(
+                                                    results[5],
+                                                    f => {
+                                                      return (
+                                                        f.employee_id ==
+                                                        empResult[i][
+                                                          "employee_id"
+                                                        ]
                                                       );
+                                                    }
+                                                  );
+                                                  getMiscellaneous({
+                                                    miscellaneous: _miscellaneous
+                                                  })
+                                                    .then(
+                                                      miscellaneousOutput => {
+                                                        current_earning_amt_array = current_earning_amt_array.concat(
+                                                          miscellaneousOutput.current_earn_compoment
+                                                        );
+                                                        current_deduction_amt_array = current_deduction_amt_array.concat(
+                                                          miscellaneousOutput.current_deduct_compoment
+                                                        );
 
-                                                    utilities
-                                                      .logger()
-                                                      .log(
-                                                        "current_earning_amt_array",
-                                                        current_earning_amt_array
-                                                      );
+                                                        final_earning_amount =
+                                                          final_earning_amount +
+                                                          miscellaneousOutput.final_earning_amount;
+                                                        final_deduction_amount =
+                                                          final_deduction_amount +
+                                                          miscellaneousOutput.final_deduction_amount;
 
-                                                    utilities
-                                                      .logger()
-                                                      .log(
-                                                        "current_deduction_amt_array",
-                                                        current_deduction_amt_array
-                                                      );
+                                                        //Salary Calculation Starts
 
-                                                    utilities
-                                                      .logger()
-                                                      .log(
-                                                        "current_contribution_amt_array",
-                                                        current_contribution_amt_array
-                                                      );
-                                                    _mysql
-                                                      .executeQueryWithTransaction(
-                                                        {
-                                                          query:
-                                                            "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
+                                                        let per_day_sal =
+                                                          empResult[i][
+                                                            "gross_salary"
+                                                          ] /
+                                                          empResult[i][
+                                                            "total_days"
+                                                          ];
+
+                                                        let _salary_number = empResult[
+                                                          i
+                                                        ][
+                                                          "employee_code"
+                                                        ].trim();
+
+                                                        _salary_number +=
+                                                          req.query
+                                                            .leave_salary ==
+                                                          null
+                                                            ? "-NS-"
+                                                            : "-LS-";
+                                                        _salary_number +=
+                                                          month_number +
+                                                          "-" +
+                                                          year;
+
+                                                        let _net_salary =
+                                                          final_earning_amount -
+                                                          final_deduction_amount -
+                                                          total_loan_due_amount;
+
+                                                        _net_salary =
+                                                          _net_salary +
+                                                          total_loan_payable_amount;
+
+                                                        utilities
+                                                          .logger()
+                                                          .log(
+                                                            "_net_salary",
+                                                            _net_salary
+                                                          );
+
+                                                        utilities
+                                                          .logger()
+                                                          .log(
+                                                            "current_earning_amt_array",
+                                                            current_earning_amt_array
+                                                          );
+
+                                                        utilities
+                                                          .logger()
+                                                          .log(
+                                                            "current_deduction_amt_array",
+                                                            current_deduction_amt_array
+                                                          );
+
+                                                        utilities
+                                                          .logger()
+                                                          .log(
+                                                            "current_contribution_amt_array",
+                                                            current_contribution_amt_array
+                                                          );
+                                                        _mysql
+                                                          .executeQueryWithTransaction(
+                                                            {
+                                                              query:
+                                                                "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                             present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                             unpaid_leave,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                             total_contributions,net_salary, total_paid_days) \
                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
-                                                          values: [
-                                                            _salary_number,
-                                                            parseInt(
-                                                              month_number
-                                                            ),
-                                                            parseInt(year),
-                                                            empResult[i][
-                                                              "employee_id"
-                                                            ],
-                                                            empResult[i][
-                                                              "sub_department_id"
-                                                            ],
-                                                            new Date(),
-                                                            per_day_sal,
-                                                            empResult[i][
-                                                              "total_days"
-                                                            ],
-                                                            empResult[i][
-                                                              "present_days"
-                                                            ],
-                                                            empResult[i][
-                                                              "absent_days"
-                                                            ],
-                                                            empResult[i][
-                                                              "total_work_days"
-                                                            ],
-                                                            empResult[i][
-                                                              "total_weekoff_days"
-                                                            ],
-                                                            empResult[i][
-                                                              "total_holidays"
-                                                            ],
-                                                            empResult[i][
-                                                              "total_leave"
-                                                            ],
-                                                            empResult[i][
-                                                              "paid_leave"
-                                                            ],
-                                                            empResult[i][
-                                                              "unpaid_leave"
-                                                            ],
-                                                            total_loan_payable_amount,
-                                                            total_loan_due_amount,
-                                                            advance_due_amount,
-                                                            final_earning_amount,
-                                                            final_earning_amount, //Gross salary = total earnings
-                                                            final_deduction_amount,
-                                                            final_contribution_amount,
-                                                            _net_salary,
-                                                            empResult[i][
-                                                              "total_paid_days"
-                                                            ]
-                                                          ],
-                                                          printQuery: true
-                                                        }
-                                                      )
-                                                      .then(inserted_salary => {
-                                                        utilities
-                                                          .logger()
-                                                          .log(
-                                                            "inserted_salary",
-                                                            inserted_salary
-                                                          );
-                                                        _requestCollector.push(
-                                                          inserted_salary
-                                                        );
-
-                                                        salary_header_id =
-                                                          inserted_salary.insertId;
-                                                        let execute_query = {};
-                                                        if (
-                                                          current_earning_amt_array.length >
-                                                          0
-                                                        ) {
-                                                          execute_query = {
-                                                            query:
-                                                              "INSERT INTO hims_f_salary_earnings(??) VALUES ?",
-                                                            values: current_earning_amt_array,
-                                                            includeValues: [
-                                                              "earnings_id",
-                                                              "amount",
-                                                              "per_day_salary"
-                                                            ],
-                                                            extraValues: {
-                                                              salary_header_id: salary_header_id
-                                                            },
-                                                            bulkInsertOrUpdate: true,
-                                                            printQuery: true
-                                                          };
-                                                        } else {
-                                                          execute_query = {
-                                                            query: "select 1"
-                                                          };
-                                                        }
-
-                                                        _mysql
-                                                          .executeQuery(
-                                                            execute_query
+                                                              values: [
+                                                                _salary_number,
+                                                                parseInt(
+                                                                  month_number
+                                                                ),
+                                                                parseInt(year),
+                                                                empResult[i][
+                                                                  "employee_id"
+                                                                ],
+                                                                empResult[i][
+                                                                  "sub_department_id"
+                                                                ],
+                                                                new Date(),
+                                                                per_day_sal,
+                                                                empResult[i][
+                                                                  "total_days"
+                                                                ],
+                                                                empResult[i][
+                                                                  "present_days"
+                                                                ],
+                                                                empResult[i][
+                                                                  "absent_days"
+                                                                ],
+                                                                empResult[i][
+                                                                  "total_work_days"
+                                                                ],
+                                                                empResult[i][
+                                                                  "total_weekoff_days"
+                                                                ],
+                                                                empResult[i][
+                                                                  "total_holidays"
+                                                                ],
+                                                                empResult[i][
+                                                                  "total_leave"
+                                                                ],
+                                                                empResult[i][
+                                                                  "paid_leave"
+                                                                ],
+                                                                empResult[i][
+                                                                  "unpaid_leave"
+                                                                ],
+                                                                total_loan_payable_amount,
+                                                                total_loan_due_amount,
+                                                                advance_due_amount,
+                                                                final_earning_amount,
+                                                                final_earning_amount, //Gross salary = total earnings
+                                                                final_deduction_amount,
+                                                                final_contribution_amount,
+                                                                _net_salary,
+                                                                empResult[i][
+                                                                  "total_paid_days"
+                                                                ]
+                                                              ],
+                                                              printQuery: true
+                                                            }
                                                           )
                                                           .then(
-                                                            resultEarnings => {
+                                                            inserted_salary => {
                                                               utilities
                                                                 .logger()
                                                                 .log(
-                                                                  "resultEarnings",
-                                                                  resultEarnings
+                                                                  "inserted_salary",
+                                                                  inserted_salary
                                                                 );
+                                                              _requestCollector.push(
+                                                                inserted_salary
+                                                              );
+
+                                                              salary_header_id =
+                                                                inserted_salary.insertId;
+                                                              let execute_query = {};
                                                               if (
-                                                                current_deduction_amt_array.length >
+                                                                current_earning_amt_array.length >
                                                                 0
                                                               ) {
                                                                 execute_query = {
                                                                   query:
-                                                                    "INSERT INTO hims_f_salary_deductions(??) VALUES ?",
-                                                                  values: current_deduction_amt_array,
+                                                                    "INSERT INTO hims_f_salary_earnings(??) VALUES ?",
+                                                                  values: current_earning_amt_array,
                                                                   includeValues: [
-                                                                    "deductions_id",
+                                                                    "earnings_id",
                                                                     "amount",
                                                                     "per_day_salary"
                                                                   ],
@@ -651,35 +625,31 @@ module.exports = {
                                                                     "select 1"
                                                                 };
                                                               }
-                                                              utilities
-                                                                .logger()
-                                                                .log(
-                                                                  "execute_query",
-                                                                  execute_query
-                                                                );
+
                                                               _mysql
                                                                 .executeQuery(
                                                                   execute_query
                                                                 )
                                                                 .then(
-                                                                  resultDeductions => {
+                                                                  resultEarnings => {
                                                                     utilities
                                                                       .logger()
                                                                       .log(
-                                                                        "resultDeductions",
-                                                                        resultDeductions
+                                                                        "resultEarnings",
+                                                                        resultEarnings
                                                                       );
                                                                     if (
-                                                                      current_contribution_amt_array.length >
+                                                                      current_deduction_amt_array.length >
                                                                       0
                                                                     ) {
                                                                       execute_query = {
                                                                         query:
-                                                                          "INSERT INTO hims_f_salary_contributions(??) VALUES ?",
-                                                                        values: current_contribution_amt_array,
+                                                                          "INSERT INTO hims_f_salary_deductions(??) VALUES ?",
+                                                                        values: current_deduction_amt_array,
                                                                         includeValues: [
-                                                                          "contributions_id",
-                                                                          "amount"
+                                                                          "deductions_id",
+                                                                          "amount",
+                                                                          "per_day_salary"
                                                                         ],
                                                                         extraValues: {
                                                                           salary_header_id: salary_header_id
@@ -693,30 +663,35 @@ module.exports = {
                                                                           "select 1"
                                                                       };
                                                                     }
+                                                                    utilities
+                                                                      .logger()
+                                                                      .log(
+                                                                        "execute_query",
+                                                                        execute_query
+                                                                      );
                                                                     _mysql
                                                                       .executeQuery(
                                                                         execute_query
                                                                       )
                                                                       .then(
-                                                                        resultContribute => {
+                                                                        resultDeductions => {
                                                                           utilities
                                                                             .logger()
                                                                             .log(
-                                                                              "resultContribute",
-                                                                              resultContribute
+                                                                              "resultDeductions",
+                                                                              resultDeductions
                                                                             );
                                                                           if (
-                                                                            current_loan_array.length >
+                                                                            current_contribution_amt_array.length >
                                                                             0
                                                                           ) {
                                                                             execute_query = {
                                                                               query:
-                                                                                "INSERT INTO hims_f_salary_loans(??) VALUES ?",
-                                                                              values: current_loan_array,
+                                                                                "INSERT INTO hims_f_salary_contributions(??) VALUES ?",
+                                                                              values: current_contribution_amt_array,
                                                                               includeValues: [
-                                                                                "loan_application_id",
-                                                                                "loan_due_amount",
-                                                                                "balance_amount"
+                                                                                "contributions_id",
+                                                                                "amount"
                                                                               ],
                                                                               extraValues: {
                                                                                 salary_header_id: salary_header_id
@@ -730,44 +705,97 @@ module.exports = {
                                                                                 "select 1"
                                                                             };
                                                                           }
-
                                                                           _mysql
                                                                             .executeQuery(
                                                                               execute_query
                                                                             )
                                                                             .then(
-                                                                              resultLoan => {
+                                                                              resultContribute => {
                                                                                 utilities
                                                                                   .logger()
                                                                                   .log(
-                                                                                    "resultLoan",
-                                                                                    resultLoan
+                                                                                    "resultContribute",
+                                                                                    resultContribute
                                                                                   );
                                                                                 if (
-                                                                                  i ==
-                                                                                  empResult.length -
-                                                                                    1
+                                                                                  current_loan_array.length >
+                                                                                  0
                                                                                 ) {
-                                                                                  if (
-                                                                                    req.mySQl ==
-                                                                                    null
-                                                                                  ) {
-                                                                                    _mysql.commitTransaction(
-                                                                                      () => {
-                                                                                        _mysql.releaseConnection();
-                                                                                        req.records = resultLoan;
-                                                                                        next();
-                                                                                        resolve(
+                                                                                  execute_query = {
+                                                                                    query:
+                                                                                      "INSERT INTO hims_f_salary_loans(??) VALUES ?",
+                                                                                    values: current_loan_array,
+                                                                                    includeValues: [
+                                                                                      "loan_application_id",
+                                                                                      "loan_due_amount",
+                                                                                      "balance_amount"
+                                                                                    ],
+                                                                                    extraValues: {
+                                                                                      salary_header_id: salary_header_id
+                                                                                    },
+                                                                                    bulkInsertOrUpdate: true,
+                                                                                    printQuery: true
+                                                                                  };
+                                                                                } else {
+                                                                                  execute_query = {
+                                                                                    query:
+                                                                                      "select 1"
+                                                                                  };
+                                                                                }
+
+                                                                                _mysql
+                                                                                  .executeQuery(
+                                                                                    execute_query
+                                                                                  )
+                                                                                  .then(
+                                                                                    resultLoan => {
+                                                                                      utilities
+                                                                                        .logger()
+                                                                                        .log(
+                                                                                          "resultLoan",
                                                                                           resultLoan
                                                                                         );
+                                                                                      if (
+                                                                                        i ==
+                                                                                        empResult.length -
+                                                                                          1
+                                                                                      ) {
+                                                                                        if (
+                                                                                          req.mySQl ==
+                                                                                          null
+                                                                                        ) {
+                                                                                          _mysql.commitTransaction(
+                                                                                            () => {
+                                                                                              _mysql.releaseConnection();
+                                                                                              req.records = resultLoan;
+                                                                                              next();
+                                                                                              resolve(
+                                                                                                resultLoan
+                                                                                              );
+                                                                                            }
+                                                                                          );
+                                                                                        } else {
+                                                                                          resolve(
+                                                                                            salary_header_id
+                                                                                          );
+                                                                                        }
                                                                                       }
-                                                                                    );
-                                                                                  } else {
-                                                                                    resolve(
-                                                                                      salary_header_id
-                                                                                    );
-                                                                                  }
-                                                                                }
+                                                                                    }
+                                                                                  )
+                                                                                  .catch(
+                                                                                    error => {
+                                                                                      _mysql.rollBackTransaction(
+                                                                                        () => {
+                                                                                          next(
+                                                                                            error
+                                                                                          );
+                                                                                          reject(
+                                                                                            error
+                                                                                          );
+                                                                                        }
+                                                                                      );
+                                                                                    }
+                                                                                  );
                                                                               }
                                                                             )
                                                                             .catch(
@@ -826,63 +854,70 @@ module.exports = {
                                                               }
                                                             );
                                                           });
-                                                      })
-                                                      .catch(error => {
-                                                        _mysql.rollBackTransaction(
-                                                          () => {
-                                                            next(error);
-                                                            reject(error);
-                                                          }
-                                                        );
-                                                      });
-                                                  })
-                                                  .catch(e => {
-                                                    next(e);
-                                                    reject(e);
-                                                  });
-                                              })
-                                              .catch(e => {
-                                                next(e);
-                                                reject(e);
-                                              });
-                                          })
-                                          .catch(e => {
-                                            next(e);
-                                            reject(e);
-                                          });
-                                      })
-                                      .catch(e => {
-                                        next(e);
-                                        reject(e);
-                                      });
-                                    //Loan Due End
-                                  })
-                                  .catch(e => {
-                                    next(e);
-                                    reject(e);
-                                  });
-                                //Contribution -- End
-                              })
-                              .catch(e => {
-                                next(e);
-                                reject(e);
-                              });
+                                                      }
+                                                    )
+                                                    .catch(e => {
+                                                      _mysql.releaseConnection();
+                                                      next(e);
+                                                      reject(e);
+                                                    });
+                                                })
+                                                .catch(e => {
+                                                  _mysql.releaseConnection();
+                                                  next(e);
+                                                  reject(e);
+                                                });
+                                            })
+                                            .catch(e => {
+                                              _mysql.releaseConnection();
+                                              next(e);
+                                              reject(e);
+                                            });
+                                        })
+                                        .catch(e => {
+                                          _mysql.releaseConnection();
+                                          next(e);
+                                          reject(e);
+                                        });
+                                      //Loan Due End
+                                    })
+                                    .catch(e => {
+                                      _mysql.releaseConnection();
+                                      next(e);
+                                      reject(e);
+                                    });
+                                  //Contribution -- End
+                                })
+                                .catch(e => {
+                                  _mysql.releaseConnection();
+                                  next(e);
+                                  reject(e);
+                                });
 
-                            //Deduction -- End
-                          })
-                          .catch(e => {
-                            next(e);
-                            reject(e);
-                          });
-                        //Earnigs --- End
+                              //Deduction -- End
+                            })
+                            .catch(e => {
+                              _mysql.releaseConnection();
+                              next(e);
+                              reject(e);
+                            });
+                          //Earnigs --- End
+                        }
+                      } else {
+                        _mysql.releaseConnection();
+                        req.records = empResult;
+                        next();
+                        resolve(empResult);
                       }
                     })
                     .catch(e => {
+                      _mysql.releaseConnection();
                       next(e);
                       reject(e);
                     });
                 })
                 .catch(e => {
+                  _mysql.releaseConnection();
                   next(e);
                   reject(e);
                 });
@@ -894,10 +929,12 @@ module.exports = {
             }
           })
           .catch(e => {
+            _mysql.releaseConnection();
             next(e);
             reject(e);
           });
       } catch (e) {
+        _mysql.releaseConnection();
         next(e);
         reject(e);
       }
@@ -1269,14 +1306,17 @@ module.exports = {
                                 loan_application[i].pending_loan;
                               let loan_closed = "N";
 
-                              let pending_tenure =
-                                loan_application[i].pending_tenure - 1;
+                              let pending_tenure = 0;
                               if (loan_skip_months > 0) {
                                 loan_skip_months--;
+                                pending_tenure =
+                                  loan_application[i].pending_tenure;
                               } else {
                                 pending_loan =
                                   pending_loan -
                                   loan_application[i].installment_amount;
+                                pending_tenure =
+                                  loan_application[i].pending_tenure;
                               }
 
                               if (pending_loan == 0) {

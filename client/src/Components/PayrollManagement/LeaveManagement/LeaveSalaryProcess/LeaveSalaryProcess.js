@@ -194,7 +194,7 @@ class LeaveSalaryProcess extends Component {
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
               <div className="caption">
-                <h3 className="caption-subject">Encashment Details</h3>
+                <h3 className="caption-subject">Leave Salary Details</h3>
               </div>
               <div className="actions">
                 {/* <a className="btn btn-primary btn-circle active">

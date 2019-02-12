@@ -44,6 +44,7 @@ const generateBillDetails = $this => {
 
         algaehApiCall({
           uri: "/billing/billingCalculations",
+          module: "billing",
           method: "POST",
           data: response.data.records,
           onSuccess: response => {
