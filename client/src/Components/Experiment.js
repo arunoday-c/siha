@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
-import { algaehApiCall } from "../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../utils/algaehApiCall";
 import AlgaehReport from "./Wrapper/printReports";
 import _ from "lodash";
 
@@ -48,7 +48,13 @@ class Experiment extends Component {
           onClick={() => {
             algaehApiCall({
               uri: "/masters/killDbConnections",
-              method: "GET"
+              method: "GET",
+              onSuccess: res => {
+                swalMessage({
+                  title: "Killed It !!",
+                  type: "success"
+                });
+              }
             });
           }}
         >
