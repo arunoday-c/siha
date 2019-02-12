@@ -47,7 +47,7 @@ class BreadCrumb extends PureComponent {
               <AlgaehLabel
                 label={{ forceLabel: this.props.soptlightSearch.label }}
               />
-              <h6>{this.state.value ? this.state.value : "*** New ***"}</h6>
+              <h6>{this.state.value ? this.state.value : "----------"}</h6>
             </div>
             <div className="col spotlightSearchIconBox">
               <i
@@ -116,7 +116,7 @@ class BreadCrumb extends PureComponent {
     }
   }
   render() {
-    //   let NewCreate = this.state.createNew ? "*** NEW ***" : "";
+    //   let NewCreate = this.state.createNew ? "----------" : "";
     return (
       <React.Fragment>
         <div

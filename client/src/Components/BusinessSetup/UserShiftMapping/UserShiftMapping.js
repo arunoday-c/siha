@@ -266,7 +266,7 @@ class UserShiftMapping extends Component {
                 fieldName: "select_month"
               }}
               selector={{
-                name: "month",
+                sort:"off",name: "month",
                 className: "select-fld",
                 value: this.state.month,
                 dataSource: {
@@ -349,7 +349,7 @@ class UserShiftMapping extends Component {
                   }
                 },
                 {
-                  fieldName: "month",
+                  fieldsort:"off",name: "month",
                   label: "Month",
                   label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
                   displayTemplate: row => {
@@ -384,7 +384,7 @@ class UserShiftMapping extends Component {
                       // <AlagehAutoComplete
                       //   div={{ className: "col" }}
                       //   selector={{
-                      //     name: "month",
+                      //     sort:"off",name: "month",
                       //     className: "select-fld",
                       //     value: row.month,
                       //     dataSource: {
@@ -433,7 +433,7 @@ class UserShiftMapping extends Component {
                       // <AlagehAutoComplete
                       //   div={{ className: "col" }}
                       //   selector={{
-                      //     name: "month",
+                      //     sort:"off",name: "month",
                       //     className: "select-fld",
                       //     value: row.month,
                       //     dataSource: {

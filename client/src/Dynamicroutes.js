@@ -237,10 +237,12 @@ const PageToPlot = {
   ),
   EmpShiftRost: React.lazy(() =>
     import("./Components/EmployeeShiftRostering/EmployeeShiftRostering")
-  )
+  ),
+  Wps: React.lazy(() => import("./Components/PayrollManagement/WPS/WPS"))
 };
 
 const DirectRoutes = props => {
+  debugger;
   const PlotPage = PageToPlot[props.componet];
 
   return (

@@ -70,7 +70,7 @@ export function getPatientDetails(dataValue, callback) {
         dataValue !== null && dataValue !== ""
           ? "/frontDesk/get?patient_code=" + dataValue
           : "/frontDesk/get",
-      module: "frontDesk",
+      // module: "frontDesk",
       method: "GET",
       onSuccess: response => {
         if (response.data.success === true) {

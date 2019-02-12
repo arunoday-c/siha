@@ -13,6 +13,7 @@ export default class AlgaehFileUploader extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      fileName: undefined,
       filePreview: noImage,
       oldImage: undefined,
       showCropper: false,
@@ -142,7 +143,6 @@ export default class AlgaehFileUploader extends Component {
   }
 
   dropZoneHandlerOnDrop(file) {
-    debugger;
     if (file.length === 0) {
       return;
     }
@@ -150,8 +150,6 @@ export default class AlgaehFileUploader extends Component {
 
     const _fileExtention = _file.name.split(".");
     if (_file.type.indexOf("image") > -1) {
-      //----new Compression method
-
       const reader = new FileReader();
       reader.readAsDataURL(_file);
 
@@ -177,13 +175,20 @@ export default class AlgaehFileUploader extends Component {
     } else {
       const reader = new FileReader();
       reader.readAsDataURL(_file);
-      const _result = reader.result;
+      reader.onloadend = () => {
+        const _result = reader.result;
 
-      // this.setState({
-      //   fileExtention: _fileExtention[_fileExtention.length - 1],
-      //   filePreview: _result,
-      //   croppingDone: false
-      // });
+        this.SavingImageOnServer(
+          _result,
+          _fileExtention[_fileExtention.length - 1],
+          _file.name
+        );
+      };
+
+      this.setState({
+        croppingDone: false,
+        fileName: _fileExtention
+      });
     }
   }
 
@@ -279,12 +284,11 @@ export default class AlgaehFileUploader extends Component {
     this.imager.click();
   }
 
-  SavingImageOnServer(dataToSave, fileExtention) {
+  SavingImageOnServer(dataToSave, fileExtention, fileName) {
     const that = this;
     dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;
-    //
-
+    fileName = fileName || "";
     const _pageName =
       this.props.pageName !== undefined
         ? this.props.pageName
@@ -293,6 +297,7 @@ export default class AlgaehFileUploader extends Component {
       that.props.needConvertion === undefined
         ? {}
         : { needConvertion: that.props.needConvertion };
+
     const _splitter = dataToSave.split(",");
     algaehApiCall({
       uri: "/Document/save",
@@ -316,10 +321,30 @@ export default class AlgaehFileUploader extends Component {
           );
 
           if (percentCompleted >= 100) {
-            that.setState({
-              progressPercentage: 100,
-              showProgress: false
-            });
+            that.setState(
+              {
+                progressPercentage: 100,
+                showProgress: false
+              },
+              () => {
+                if (
+                  that.props.onlyDragDrop !== undefined &&
+                  that.props.onlyDragDrop === true
+                ) {
+                  if (
+                    that.props.afterSave !== undefined &&
+                    typeof that.props.afterSave === "function"
+                  )
+                    that.props.afterSave({
+                      uniqueID: that.props.serviceParameters.uniqueID,
+                      fileType: that.props.serviceParameters.fileType,
+                      fileName: fileName,
+                      filePreview: dataToSave,
+                      componentType: that.props.componentType
+                    });
+                }
+              }
+            );
           } else {
             that.setState({
               progressPercentage: percentCompleted,
@@ -333,13 +358,13 @@ export default class AlgaehFileUploader extends Component {
         if (result.data.success) {
           swalMessage({
             croppingDone: false,
-            title: "Image Uploaded Successfully",
+            title: "File Uploaded Successfully",
             type: "success"
           });
         } else {
           swalMessage({
             croppingDone: false,
-            title: "Image Uploding failure",
+            title: "File Uploding failure",
             type: "Error"
           });
         }
@@ -499,24 +524,6 @@ export default class AlgaehFileUploader extends Component {
             </div>
             {this.implementProgressBar()}
           </Dropzone>
-          {this.implementLoader()}
-
-          {_showActions ? (
-            <div className="img-upload-actions">
-              <i
-                className="fas fa-paperclip"
-                onClick={this.showAttachmentHandler.bind(this)}
-              />
-              <i
-                className="fas fa-camera"
-                onClick={this.webCamHandler.bind(this)}
-              />
-              <i
-                className="fas fa-search-plus"
-                onClick={this.zoomHandler.bind(this)}
-              />
-            </div>
-          ) : null}
         </React.Fragment>
       );
     }

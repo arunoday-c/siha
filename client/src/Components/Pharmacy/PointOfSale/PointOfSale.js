@@ -125,7 +125,7 @@ class PointOfSale extends Component {
     return (
       <React.Fragment>
         <div>
-          <BreadCrumb
+          {/* <BreadCrumb
             title={
               <AlgaehLabel
                 label={{ forceLabel: "Point Of Sale", align: "ltr" }}
@@ -185,11 +185,11 @@ class PointOfSale extends Component {
               </div>
             }
             selectedLang={this.state.selectedLang}
-          />
+          /> */}
 
           <div
             className="row  inner-top-search"
-            style={{ marginTop: 76, paddingBottom: 10 }}
+            style={{ paddingBottom: 10 }}
           >
             {/* Patient code */}
             <div className="col-lg-8">
@@ -290,18 +290,6 @@ class PointOfSale extends Component {
                 <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Patient Code"
-                    }}
-                  />
-                  <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "-----------"}
-                  </h6>
-                </div>
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
                       forceLabel: "Patient Name"
                     }}
                   />
@@ -312,6 +300,18 @@ class PointOfSale extends Component {
                   </h6>
                 </div>
 
+                <div className="col-lg-4">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Patient Code"
+                    }}
+                  />
+                  <h6>
+                    {this.state.patient_code
+                      ? this.state.patient_code
+                      : "-----------"}
+                  </h6>
+                </div>
                 <AlagehAutoComplete
                   div={{ className: "col-lg-4" }}
                   label={{ forceLabel: "Mode of Payment" }}

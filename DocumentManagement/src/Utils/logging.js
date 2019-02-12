@@ -6,12 +6,11 @@ const rotatingDate = require("winston-daily-rotate-file");
 const tsFormat = () => {
   return moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
 }; //new Date().toLocaleTimeString();
-let logDirectory = path.join(__dirname, "../../" + keys.logpath);
-
+// let logDirectory = path.join(__dirname, "../../" + keys.logpath);
 const logger = new winston.Logger({
   transports: [
     new rotatingDate({
-      filename: `${logDirectory}/hims-app-%DATE%.log`,
+      filename: `LOGS/hims-app-%DATE%.log`,
       timestamp: tsFormat,
       datePattern: keys.logFileDatePatter,
       prepend: true,

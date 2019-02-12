@@ -70,6 +70,7 @@ export default class AbsenceManagement extends Component {
     algaehApiCall({
       uri: "/attendance/getAllAbsentEmployee",
       method: "GET",
+      module: "hrManagement",
       data: {
         year: this.state.year,
         month: this.state.month,
@@ -460,7 +461,7 @@ export default class AbsenceManagement extends Component {
                       isImp: true
                     }}
                     selector={{
-                      name: "month",
+                      sort:"off",name: "month",
                       className: "select-fld",
                       value: this.state.month,
                       dataSource: {

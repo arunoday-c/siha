@@ -606,14 +606,24 @@ class LoanRequest extends Component {
                         }
                       },
                       {
-                        fieldName: "loan_tenure",
+                        fieldName: "pending_tenure",
                         label: (
                           <AlgaehLabel
                             label={{ forceLabel: "No. of EMI Pending" }}
                           />
                         ),
                         displayTemplate: row => {
-                          return <span>{row.loan_tenure}</span>;
+                          return (
+                            <span>
+                              {row.pending_tenure !== 0 ? (
+                                row.pending_tenure
+                              ) : (
+                                <span className="badge badge-success">
+                                  Closed
+                                </span>
+                              )}
+                            </span>
+                          );
                         }
                       },
                       {
@@ -680,6 +690,28 @@ class LoanRequest extends Component {
                             </span>
                           );
                         }
+                      },
+                      {
+                        fieldName: "start_month",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Start Month" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {moment(
+                                "01-" + row.start_month + "-" + row.start_year,
+                                "DD-MM-YYYY"
+                              ).format("MMMM")}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "start_year",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Start Year" }} />
+                        )
                       },
                       {
                         fieldName: "loan_description",

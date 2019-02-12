@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-
+import "babel-polyfill";
 import "./LeaveSalaryProcess.css";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -58,7 +58,7 @@ class LeaveSalaryProcess extends Component {
         data: {
           sub_department_status: "A"
         },
-        module : "masterSettings",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SUB_DEPT_GET_DATA",
@@ -103,7 +103,7 @@ class LeaveSalaryProcess extends Component {
                   <h6>
                     {this.state.leave_salary_number
                       ? this.state.leave_salary_number
-                      : "*** NEW ***"}
+                      : "----------"}
                   </h6>
                 </div>
                 <div
@@ -243,6 +243,7 @@ class LeaveSalaryProcess extends Component {
                         label: <AlgaehLabel label={{ forceLabel: "Year" }} />
                       },
                       {
+                        // fieldsort: "off",
                         fieldName: "month",
                         label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
                         displayTemplate: row => {

@@ -433,7 +433,7 @@ class SelfPersonalDetails extends Component {
       querySelector: "data-validate='emp-idnfn-div'",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/employee/addEmployeeIdentification",
+          uri: "/selfService/addEmployeeIdentification",
           method: "POST",
           module: "hrManagement",
           data: {

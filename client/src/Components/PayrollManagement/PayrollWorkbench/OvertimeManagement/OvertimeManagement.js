@@ -113,7 +113,7 @@ class OvertimeManagement extends Component {
               isImp: true
             }}
             selector={{
-              name: "month",
+              sort:"off",name: "month",
               className: "select-fld",
               value: this.state.month,
               dataSource: {

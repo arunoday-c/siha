@@ -795,7 +795,7 @@ export default [
           },
           {
             type: "dropdown",
-            name: "month",
+            sort:"off",name: "month",
             initialLoad: true,
             dataSource: {
               textField: "name",

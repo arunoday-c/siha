@@ -36,6 +36,8 @@
     background: #fff;
     min-height: 35vh;
     border: 1px solid #d3d3d3;
+    padding: 15px;
+    border-radius:5px;
   }
 
   th,
@@ -63,7 +65,7 @@
 }
 #PointSaleGrid {
   .ReactTable {
-    max-height: 40vh !important;
+    max-height: 30vh !important;
   }
 
   @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
