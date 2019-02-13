@@ -4,7 +4,9 @@ const winston = require("winston");
 const path = require("path");
 const config = require("algaeh-keys"); //require("../keys/keys");
 require("winston-daily-rotate-file");
+const gracefulFs = require("graceful-fs");
 const fs = require("fs");
+gracefulFs.gracefulify(fs);
 exports.AlgaehUtilities = options => {
   let keys = config.default;
   return {
