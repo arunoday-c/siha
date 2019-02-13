@@ -910,11 +910,11 @@ module.exports = {
 
     if (input.yearAndMonth != undefined && input.yearAndMonth != "null") {
       const _mysql = new algaehMysql();
-      const startOfMonth = moment(input.yearAndMonth)
+      const startOfMonth = moment(new Date(input.yearAndMonth))
         .startOf("month")
         .format("YYYY-MM-DD");
 
-      const endOfMonth = moment(input.yearAndMonth)
+      const endOfMonth = moment(new Date(input.yearAndMonth))
         .endOf("month")
         .format("YYYY-MM-DD");
 
