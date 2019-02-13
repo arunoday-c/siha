@@ -1,5 +1,9 @@
 import moment from "moment";
-import { swalMessage } from "../../utils/algaehApiCall.js";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../utils/algaehApiCall.js";
 
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -224,6 +228,54 @@ const Validations = ($this, e) => {
   }
 };
 
+const countertexthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState(
+    {
+      [name]: value
+    },
+    () => {
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      algaehApiCall({
+        uri: "/userPreferences/save",
+        data: {
+          screenName: _screenName,
+          identifier: "Counter",
+          value: value
+        },
+        method: "POST"
+      });
+    }
+  );
+};
+
+const getCashiersAndShiftMAP = $this => {
+  let year = moment().format("YYYY");
+  let month = moment().format("MM");
+
+  algaehApiCall({
+    uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    method: "GET",
+    data: { year: year, month: month, for: "T" },
+    onSuccess: response => {
+      if (response.data.success) {
+        if (response.data.records.length > 0) {
+          $this.setState({ shift_id: response.data.records[0].shift_id });
+        }
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   datehandle,
@@ -233,5 +285,7 @@ export {
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,
-  Validations
+  Validations,
+  countertexthandle,
+  getCashiersAndShiftMAP
 };

@@ -10,12 +10,14 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import moment from "moment";
 
 class Shift extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      shifts: []
+      shifts: [],
+      break: "N"
     };
   }
 
@@ -31,7 +33,6 @@ class Shift extends Component {
     algaehApiCall({
       uri: "/shiftAndCounter/getShiftMaster",
       method: "GET",
-      data: {},
       onSuccess: response => {
         if (response.data.success) {
           this.setState({ shifts: response.data.records });
@@ -62,7 +63,15 @@ class Shift extends Component {
           data: {
             shift_code: this.state.shift_code,
             shift_description: this.state.shift_description,
-            arabic_name: this.state.arabic_name
+            arabic_name: this.state.arabic_name,
+            in_time1: this.state.in_time1,
+            out_time1: this.state.out_time1,
+            in_time2: this.state.in_time2,
+            out_time2: this.state.out_time2,
+            break: this.state.break,
+            break_start: this.state.break_start,
+            break_end: this.state.break_end,
+            shift_abbreviation: this.state.shift_abbreviation
           },
           onSuccess: response => {
             if (response.data.success) {
@@ -143,7 +152,15 @@ class Shift extends Component {
         shift_description: data.shift_description,
         arabic_name: data.arabic_name,
         shift_status: data.shift_status,
-        hims_d_shift_id: data.hims_d_shift_id
+        hims_d_shift_id: data.hims_d_shift_id,
+        in_time1: data.in_time1,
+        out_time1: data.out_time1,
+        in_time2: data.in_time2,
+        out_time2: data.out_time2,
+        break: data.break,
+        break_start: data.break_start,
+        break_end: data.break_end,
+        shift_abbreviation: data.shift_abbreviation
       },
       method: "PUT",
       onSuccess: response => {
@@ -169,6 +186,13 @@ class Shift extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
+  changeChecks(e) {
+    debugger;
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
   changeGridEditors(row, e) {
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -182,7 +206,7 @@ class Shift extends Component {
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col form-group" }}
               label={{
                 fieldName: "shift_code",
                 isImp: true
@@ -197,7 +221,7 @@ class Shift extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col form-group" }}
               label={{
                 fieldName: "shift_description",
                 isImp: true
@@ -212,7 +236,7 @@ class Shift extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
+              div={{ className: "col form-group" }}
               label={{
                 fieldName: "arabic_name",
                 isImp: true
@@ -227,7 +251,165 @@ class Shift extends Component {
               }}
             />
 
-            <div className="col-lg-3">
+            <AlagehFormGroup
+              div={{ className: "col form-group" }}
+              label={{
+                forceLabel: "Abbreviation",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "shift_abbreviation",
+                value: this.state.shift_abbreviation,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
+
+            <AlagehFormGroup
+              div={{ className: "col form-group" }}
+              label={{
+                forceLabel: "In Time 1",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "in_time1",
+                value: this.state.in_time1,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "time"
+                }
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col form-group" }}
+              label={{
+                forceLabel: "Out Time 1",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "out_time1",
+                value: this.state.out_time1,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "time"
+                }
+              }}
+            />
+          </div>
+          <div className="row">
+            <AlagehFormGroup
+              div={{ className: "col form-group" }}
+              label={{
+                forceLabel: "In Time 2",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "in_time2",
+                value: this.state.in_time2,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "time"
+                }
+              }}
+            />
+            <AlagehFormGroup
+              div={{ className: "col form-group" }}
+              label={{
+                forceLabel: "Out Time 2",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "out_time2",
+                value: this.state.out_time2,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
+                others: {
+                  type: "time"
+                }
+              }}
+            />
+            <div className="col-2">
+              <label>Break</label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="Y"
+                    name="break"
+                    checked={this.state.break === "Y"}
+                    onChange={this.changeChecks.bind(this)}
+                  />
+                  <span>Yes</span>
+                </label>
+
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="N"
+                    name="break"
+                    checked={this.state.break === "N"}
+                    onChange={this.changeChecks.bind(this)}
+                  />
+                  <span>No</span>
+                </label>
+              </div>
+            </div>
+
+            {this.state.break === "Y" ? (
+              <React.Fragment>
+                <AlagehFormGroup
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Break Start",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "break_start",
+                    value: this.state.break_start,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    },
+                    others: {
+                      type: "time"
+                    }
+                  }}
+                />
+                <AlagehFormGroup
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Break End",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "break_end",
+                    value: this.state.break_end,
+                    events: {
+                      onChange: this.changeTexts.bind(this)
+                    },
+                    others: {
+                      type: "time"
+                    }
+                  }}
+                />
+              </React.Fragment>
+            ) : null}
+
+            <div className="col form-group">
               <button
                 type="submit"
                 style={{ marginTop: 21 }}
@@ -248,21 +430,6 @@ class Shift extends Component {
                   fieldName: "shift_code",
                   label: <AlgaehLabel label={{ fieldName: "shift_code" }} />,
                   disabled: true
-                  // editorTemplate: row => {
-                  //   return (
-                  //     <AlagehFormGroup
-                  //       div={{ className: "col" }}
-                  //       textBox={{
-                  //         className: "txt-fld",
-                  //         name: "shift_code",
-                  //         value: row.shift_code,
-                  //         events: {
-                  //           onChange: this.changeGridEditors.bind(this, row)
-                  //         }
-                  //       }}
-                  //     />
-                  //   );
-                  // }
                 },
                 {
                   fieldName: "shift_description",
@@ -297,14 +464,277 @@ class Shift extends Component {
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         textBox={{
+                          value: row.arabic_name,
                           className: "txt-fld",
                           name: "arabic_name",
-                          value: row.arabic_name,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
                           },
                           others: {
                             errormessage: "Arabic Name - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "in_time1",
+                  label: <AlgaehLabel label={{ forceLabel: "In Time 1" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.in_time1 !== null
+                          ? moment(row.in_time1, "HH:mm:ss").format("hh:mm a")
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "in_time1",
+                          value: row.in_time1,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "In Time 1 - cannot be blank",
+                            required: true,
+                            type: "time"
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "out_time1",
+                  label: <AlgaehLabel label={{ forceLabel: "Out Time 1" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.out_time1 !== null
+                          ? moment(row.out_time1, "HH:mm:ss").format("hh:mm a")
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "out_time1",
+                          value: row.out_time1,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Out Time 1 - cannot be blank",
+                            required: true,
+                            type: "time"
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "in_time2",
+                  label: <AlgaehLabel label={{ forceLabel: "In Time 2" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.in_time2 !== null
+                          ? moment(row.in_time2, "HH:mm:ss").format("hh:mm a")
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "in_time2",
+                          value: row.in_time2,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "In Time 2 - cannot be blank",
+                            required: true,
+                            type: "time"
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "out_time2",
+                  label: <AlgaehLabel label={{ forceLabel: "Out Time 2" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.out_time2 !== null
+                          ? moment(row.out_time2, "HH:mm:ss").format("hh:mm a")
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "out_time2",
+                          value: row.out_time2,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Out Time 2 - cannot be blank",
+                            required: true,
+                            type: "time"
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "break",
+                  label: <AlgaehLabel label={{ forceLabel: "Break" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.break === "Y"
+                          ? "YES"
+                          : row.break === "N"
+                          ? "NO"
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "break",
+                          className: "select-fld",
+                          value: row.break,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.FORMAT_YESNO
+                          },
+                          others: {
+                            errormessage: "Status - cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "break_start",
+                  label: <AlgaehLabel label={{ forceLabel: "Break Start" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.break_start !== null
+                          ? moment(row.break_start, "HH:mm:ss").format(
+                              "hh:mm a"
+                            )
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "break_start",
+                          value: row.break_start,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Break Start - cannot be blank",
+                            required: true,
+                            type: "time"
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "break_end",
+                  label: <AlgaehLabel label={{ forceLabel: "Break End" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.break_end !== null
+                          ? moment(row.break_end, "HH:mm:ss").format("hh:mm a")
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "break_end",
+                          value: row.break_end,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Break End - cannot be blank",
+                            required: true,
+                            type: "time"
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "shift_abbreviation",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Shift Abbreviation" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "shift_abbreviation",
+                          value: row.shift_abbreviation,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage:
+                              "Shift Abbreviation - cannot be blank",
                             required: true
                           }
                         }}

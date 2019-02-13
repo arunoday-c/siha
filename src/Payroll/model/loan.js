@@ -205,7 +205,7 @@ let getLoanApplication = (req, res, next) => {
       req.query.to_date != null
     ) {
       range = ` and date(loan_application_date)
-between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+      between date('${req.query.from_date}') and date('${req.query.to_date}') `;
     }
 
     let auth_level = "";

@@ -9,6 +9,7 @@ import {
 } from "../middleware/authmiddleware";
 import { apiAuth, authUser } from "../model/account";
 import { encryption } from "../utils/cryptography";
+import { debugLog } from "../utils/logging";
 
 export default ({ config, db }) => {
   let api = Router();
@@ -34,10 +35,13 @@ export default ({ config, db }) => {
       if (result.length == 0) {
         next(httpStatus.generateError(httpStatus.notFound, "No record found"));
       } else {
-        if (result[0]["locked"] == "N") {
-          let rowDetails = result[0];
+        if (result[0][0]["locked"] == "N") {
+          let rowDetails = result[0][0];
+          debugLog("rowDetails: ", rowDetails);
+          let encrypDetsil = { ...result[0][0], ...result[1][0] };
 
-          let keyData = encryption(rowDetails);
+          debugLog("encrypDetsil: ", encrypDetsil);
+          let keyData = encryption(encrypDetsil);
           res.status(httpStatus.ok).json({
             success: true,
             records: {

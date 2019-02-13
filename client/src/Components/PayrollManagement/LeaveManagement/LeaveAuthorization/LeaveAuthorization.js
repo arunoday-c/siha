@@ -90,7 +90,8 @@ export default class LeaveAuthorization extends Component {
       from_session: data.from_leave_session,
       to_session: data.to_leave_session,
       from_date: data.from_date,
-      to_date: data.to_date
+      to_date: data.to_date,
+      leave_category: data.leave_category
     };
 
     //console.log("Send Data:", JSON.stringify(send_data));

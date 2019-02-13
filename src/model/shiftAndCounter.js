@@ -21,12 +21,22 @@ let addShiftMaster = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_d_shift` (shift_code,shift_description,arabic_name,created_date, created_by, updated_date, updated_by)\
+        "INSERT INTO `hims_d_shift` (shift_code,shift_description,arabic_name,\
+          in_time1, out_time1, in_time2, out_time2, break, break_start, break_end, shift_abbreviation,\
+          created_date, created_by, updated_date, updated_by)\
             VALUE(?,?,?,?,?,?,?)",
         [
           input.shift_code,
           input.shift_description,
           input.arabic_name,
+          input.in_time1,
+          input.out_time1,
+          input.in_time2,
+          input.out_time2,
+          input.break,
+          input.break_start,
+          input.break_end,
+          input.shift_abbreviation,
           new Date(),
           input.created_by,
           new Date(),
@@ -129,10 +139,11 @@ let getShiftMaster = (req, res, next) => {
     let where = whereCondition(extend(selectWhere, req.query));
     db.getConnection((error, connection) => {
       connection.query(
-        "select hims_d_shift_id, shift_code, shift_description, arabic_name, shift_status from \
+        "select hims_d_shift_id, shift_code, shift_description, arabic_name, shift_status, in_time1,\
+         out_time1, in_time2, out_time2, break, break_start, break_end, shift_abbreviation, created_date, created_by, updated_date, updated_by, record_status from \
           hims_d_shift where record_status='A' and " +
           where.condition +
-          " order by hims_d_shift_id desc",
+          "order by hims_d_shift_id desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -163,12 +174,22 @@ let updateShiftMaster = (req, res, next) => {
       }
       connection.query(
         "UPDATE `hims_d_shift` SET shift_code=?, shift_description=?, arabic_name=?, shift_status=?,\
+        in_time1=?, out_time1=?, in_time2=?, out_time2=?,\
+        break=?, break_start=?, break_end=?, shift_abbreviation=?,\
              updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_shift_id`=?;",
         [
           input.shift_code,
           input.shift_description,
           input.arabic_name,
           input.shift_status,
+          input.in_time1,
+          input.out_time1,
+          input.in_time2,
+          input.out_time2,
+          input.break,
+          input.break_start,
+          input.break_end,
+          input.shift_abbreviation,
           new Date(),
           input.updated_by,
           input.record_status,

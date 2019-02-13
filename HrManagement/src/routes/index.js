@@ -18,6 +18,8 @@ import payrollsettings from "../controllers/payrollsettings";
 import hrsettings from "../controllers/hrsettings";
 import employeeDocuments from "../controllers/employee_documents";
 import leave from "../controllers/leave";
+import loan from "../controllers/loan";
+import shift_roster from "../controllers/shift_roster";
 
 const router = express();
 router.use("/attendance", attendance());
@@ -38,5 +40,7 @@ router.use("/payrollsettings", payrollsettings());
 router.use("/hrsettings", hrsettings());
 router.use("/leave", leave());
 router.use("/selfService", SelfService());
+router.use("/loan", loan());
 router.use("/documents", employeeDocuments());
+router.use("/shift_roster", shift_roster());
 export default router;

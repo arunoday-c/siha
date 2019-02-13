@@ -1338,7 +1338,25 @@ class SelfPersonalDetails extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Dependent Name" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "dependent_name",
+                                  value: row.dependent_name,
+                                  others: {
+                                    tabIndex: "3",
+                                    type: "time"
+                                  },
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(this)
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "identity_document_name",
@@ -1616,7 +1634,7 @@ class SelfPersonalDetails extends Component {
                           }
                         },
                         {
-                          fieldName: "dependent_identity_no",
+                          fieldName: "identity_number",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "ID No." }} />
                           ),

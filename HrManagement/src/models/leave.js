@@ -2405,7 +2405,7 @@ getLeaveApllication: (req, res, next) => {
         LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
         LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
         LA.total_applied_days,LA.total_approved_days,LA.`status`\
-        ,L.leave_code,L.leave_description,L.leave_type,E.employee_code,\
+        ,L.leave_code,L.leave_description,L.leave_type,L.leave_category,E.employee_code,\
         E.full_name as employee_name,E.religion_id,SD.sub_department_code,SD.sub_department_name \
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
@@ -3178,11 +3178,11 @@ cancelLeave: (req, res, next) => {
                       salResult[0]["salary_processed"] == "N" &&
                       salResult[0]["salary_paid"] == "N")
                   ) {
-                    //YOU CAN CANCEL
+                    //YOU CAN CANCEL 
 
                     //------------------------------------------------------------------
 
-                    calc(_mysql, req.body)
+                    calc(_mysql, {...req.body,cancel:"Y"})
                       .then(deductionResult => {
                         if (deductionResult.invalid_input == true) {
                           _mysql.releaseConnection();
@@ -3264,11 +3264,15 @@ cancelLeave: (req, res, next) => {
                               }
 
                               //oooooooooooooooooooo
+                              let anualLeave="";
+                              if (input.leave_category=="A"){
+                                anualLeave= " update hims_f_employee_annual_leave set cancelled='Y' where leave_application_id="+input.hims_f_leave_application_id+"; ";
+                              }
 
                               _mysql
                                 .executeQueryWithTransaction({
                                   query:
-                                    " update hims_f_leave_application set status='CAN',cancelled_date='" +
+                                  anualLeave+" update hims_f_leave_application set status='CAN',cancelled_date='" +
                                     moment().format("YYYY-MM-DD") +
                                     "',\
                                     cancelled_by=" +
@@ -3573,7 +3577,6 @@ function getLeaveAuthFields(auth_level) {
           "authorized5=?",
           "authorized5_date=?",
           "authorized5_by=?",
-
           "authorized5_comment=?"
         ];
         break;
@@ -4019,7 +4022,7 @@ function calc(db, body) {
 
 
               //checking if he has enough eligible days
-              if (currentClosingBal >= calculatedLeaveDays) {
+              if (currentClosingBal >= calculatedLeaveDays||input.cancel=="Y") {
                 resolve({
                   leave_applied_days: leave_applied_days,
                   calculatedLeaveDays: calculatedLeaveDays,
@@ -4085,9 +4088,9 @@ function saveF  (_mysql,req,  next,  input, msg){
         input.leave_applied_from,
         input.total_applied_days,
         new Date(),
-        input.created_by,
+        req.userIdentity.algaeh_d_app_user_id,
         new Date(),
-        input.updated_by
+        req.userIdentity.algaeh_d_app_user_id
       ],
 
       printQuery: true

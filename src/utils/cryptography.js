@@ -1,7 +1,9 @@
 import cryptr from "cryptr";
 import keys from "../keys/prod";
+import { debugLog } from "../utils/logging";
 
 let encryption = data => {
+  debugLog("data", data);
   const stringData = JSON.stringify({
     ...require("../utils/cryptoData.json"),
     ...{
@@ -15,9 +17,11 @@ let encryption = data => {
       username: data["username"],
       user_type: data["user_type"],
       loan_authorize_privilege: data["loan_authorize_privilege"],
-      leave_authorize_privilege: data["leave_authorize_privilege"]
+      leave_authorize_privilege: data["leave_authorize_privilege"],
+      decimal_places: data["decimal_places"]
     }
   });
+  debugLog("stringData", stringData);
   return new cryptr(keys.SECRETKey).encrypt(stringData);
 };
 
