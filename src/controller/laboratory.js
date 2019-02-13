@@ -3,8 +3,8 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import {
-  getLabOrderedServices,
-  insertLadOrderedServices,
+  getLabOrderedServices, //Done
+  insertLadOrderedServices, //Done
   updateLabOrderServices,
   getTestAnalytes,
   updateLabSampleStatus,
