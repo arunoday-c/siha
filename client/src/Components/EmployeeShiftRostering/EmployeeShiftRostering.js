@@ -1,10 +1,8 @@
 import React, { Component } from "react";
 import "./EmployeeShiftRostering.css";
 import {
-  AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlagehFormGroup,
   AlgaehLabel
 } from "../Wrapper/algaehWrapper";
 import AlgaehSearch from "../Wrapper/globalSearch";
@@ -19,11 +17,66 @@ export default class EmployeeShiftRostering extends Component {
     super(props);
     this.state = {
       employees: [],
+      hospitals: [],
+      loading: false,
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       formatingString: this.monthFormatorString(moment().startOf("month"))
     };
     this.getSubDepartments();
+    this.getHospitals();
+  }
+
+  getEmployeesForShiftRoster() {
+    this.setState({
+      loading: true
+    });
+
+    algaehApiCall({
+      uri: "/shift_roster/getEmployeesForShiftRoster",
+      method: "GET",
+      data: {
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id,
+        sub_department_id: this.state.sub_department_id
+      },
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            employees: res.data.records,
+            loading: false
+          });
+        }
+      },
+      onFailure: err => {
+        this.setState({
+          loading: false
+        });
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getHospitals() {
+    algaehApiCall({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            hospitals: res.data.records
+          });
+        }
+      },
+
+      onFailure: err => {}
+    });
   }
 
   employeeSearch(e) {
@@ -137,6 +190,37 @@ export default class EmployeeShiftRostering extends Component {
     }
   }
 
+  plotEmployeeDates(emp_id) {
+    var Emp_Dates = [];
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+
+    var currDate = moment(yearMonth)
+      .startOf("month")
+      .format("MMM DD YYYY");
+    var lastDate = moment(yearMonth)
+      .endOf("month")
+      .format("MMM DD YYYY");
+
+    var now = moment(currDate).clone(),
+      Emp_Dates = [];
+
+    while (now.isSameOrBefore(lastDate)) {
+      Emp_Dates.push(
+        <td
+          className="time_cell"
+          // onClick={() => {
+          //   alert(emp_id + "-" + now.format("YYYY-MM-DD"));
+          // }}
+          employee_id={emp_id}
+          date={now.format("YYYY-MM-DD")}
+          //style={{ background: "lightgray", cursor: "pointer" }}
+        />
+      );
+      now.add(1, "days");
+    }
+    return Emp_Dates;
+  }
+
   getDaysOfMonth() {
     var dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
@@ -153,7 +237,7 @@ export default class EmployeeShiftRostering extends Component {
 
     while (now.isSameOrBefore(lastDate)) {
       dates.push(
-        <th>
+        <th key={now}>
           <span> {now.format("ddd")}</span>
           <br />
           <span>{now.format("DD/MMM")}</span>
@@ -217,19 +301,26 @@ export default class EmployeeShiftRostering extends Component {
               }
             }}
           />
-          {/* <AlagehAutoComplete
+          <AlagehAutoComplete
             div={{ className: "col form-group" }}
             label={{
-              forceLabel: "Rostering Group",
-              isImp: false
+              forceLabel: "Filter by Branch",
+              isImp: true
             }}
             selector={{
-              name: "",
+              name: "hospital_id",
               className: "select-fld",
-              dataSource: {},
-              others: {}
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.hospitals
+              },
+              onChange: this.dropDownHandler.bind(this)
             }}
-          /> */}
+            showLoading={true}
+          />
+
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
             label={{ forceLabel: "Select Department", isImp: true }}
@@ -282,7 +373,11 @@ export default class EmployeeShiftRostering extends Component {
           </div>
 
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-primary">
+            <button
+              onClick={this.getEmployeesForShiftRoster.bind(this)}
+              style={{ marginTop: 21 }}
+              className="btn btn-primary"
+            >
               Load
             </button>
             <button
@@ -300,7 +395,7 @@ export default class EmployeeShiftRostering extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
-                    Shift Roasting List{" "}
+                    Shift Roastering List :{" "}
                     <b style={{ color: "#33b8bc" }}>
                       {this.state.formatingString}
                     </b>
@@ -324,409 +419,48 @@ export default class EmployeeShiftRostering extends Component {
               <div className="portlet-body">
                 <div className="col-12" id="shiftRosterTable">
                   <div className="row">
-                    <table>
-                      <thead>
-                        <tr>
-                          <th>Employee Code</th>
-                          <th>Employee Name</th>
-                          {this.getDaysOfMonth()}
-                          <th>Joining Date</th>
-                          <th>Exit Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <td>Emp 34754534</td>
-                          <td>Mr. Donald Broad - Regional Managing Director</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td style={{ background: "lightgray" }}>C1</td>
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                      </tbody>
-                    </table>
+                    {this.state.employees.length === 0 ? (
+                      <div className="noTimeSheetData">
+                        <h1>Employee Shift Roster</h1>
+                        <i className="fas fa-user-clock" />
+                      </div>
+                    ) : (
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>Employee Code</th>
+                            <th>Employee Name</th>
+                            {this.getDaysOfMonth()}
+                            <th>Joining Date</th>
+                            <th>Exit Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {this.state.employees.map((row, index) => (
+                            <tr key={row.hims_d_employee_id}>
+                              <td>{row.employee_code}</td>
+                              <td>
+                                {row.employee_name}
+
+                                {/* {row.designation ? row.designation : ""} */}
+                              </td>
+
+                              {this.plotEmployeeDates(row.hims_d_employee_id)}
+                              <td>
+                                {moment(row.date_of_joining).format(
+                                  "DD-MM-YYYY"
+                                )}
+                              </td>
+                              <td>
+                                {row.exit_date
+                                  ? moment(row.exit_date).format("DD-MM-YYYY")
+                                  : "------"}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    )}
                   </div>
                 </div>
               </div>

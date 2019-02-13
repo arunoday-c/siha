@@ -34,7 +34,7 @@ module.exports = {
         const totalMonthDays = moment(yearAndMonth, "YYYY-MM").daysInMonth();
         const month_name = moment(yearAndMonth).format("MMMM");
         const month_number = moment(yearAndMonth).format("M");
-        const year = moment(yearAndMonth).format("YYYY");
+        const year = moment(new Date(yearAndMonth)).format("YYYY");
 
         let selectWhere = {
           date_of_joining: endOfMonth,
@@ -860,11 +860,11 @@ module.exports = {
 
     if (input.yearAndMonth != undefined && input.yearAndMonth != "null") {
       const _mysql = new algaehMysql();
-      const startOfMonth = moment(input.yearAndMonth)
+      const startOfMonth = moment(new Date(input.yearAndMonth))
         .startOf("month")
         .format("YYYY-MM-DD");
 
-      const endOfMonth = moment(input.yearAndMonth)
+      const endOfMonth = moment(new Date(input.yearAndMonth))
         .endOf("month")
         .format("YYYY-MM-DD");
 
