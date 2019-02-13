@@ -2,14 +2,14 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import _ from "lodash";
 import mysql from "mysql";
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   processSalary: (req, res, next) => {
     const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
     return new Promise((resolve, reject) => {
       try {
-        const utilities = new algaehUtilities();
+        // const utilities = new algaehUtilities();
         // if (req.mySQl == null) {
         //   req.mySQl = _mysql;
         // }
@@ -40,7 +40,7 @@ module.exports = {
           salary_input.push(input.sub_department_id);
         }
 
-        utilities.logger().log("input: ", input);
+        // utilities.logger().log("input: ", input);
 
         _mysql
           .executeQuery({
@@ -57,7 +57,7 @@ module.exports = {
           })
           .then(attandenceResult => {
             // let empResult = empOutput;
-            utilities.logger().log("attandenceResult: ", attandenceResult);
+            // utilities.logger().log("attandenceResult: ", attandenceResult);
             if (attandenceResult.length > 0) {
               let _allEmployees = _.map(attandenceResult, o => {
                 return o.employee_id;
@@ -72,7 +72,7 @@ module.exports = {
                   printQuery: true
                 })
                 .then(existing => {
-                  utilities.logger().log("Existing Block", existing);
+                  // utilities.logger().log("Existing Block", existing);
                   // console.log("Existing Block", existing);
 
                   let _salary_processed = _.chain(existing)
@@ -121,7 +121,7 @@ module.exports = {
                     _myemp = _allEmployees;
                   }
 
-                  utilities.logger().log("_myemp: ", _myemp);
+                  // utilities.logger().log("_myemp: ", _myemp);
 
                   if (_myemp.length > 0) {
                     _allEmployees = _myemp;
@@ -237,7 +237,7 @@ module.exports = {
                       printQuery: true
                     })
                     .then(Salaryresults => {
-                      utilities.logger().log("Salaryresults", Salaryresults[0]);
+                      // utilities.logger().log("Salaryresults", Salaryresults[0]);
 
                       let _requestCollector = [];
 
@@ -245,21 +245,21 @@ module.exports = {
                         return _.find(_myemp, d => d == n.employee_id);
                       });
 
-                      utilities.logger().log("empResult", empResult);
+                      // utilities.logger().log("empResult", empResult);
 
                       if (empResult.length > 0) {
                         for (let i = 0; i < empResult.length; i++) {
-                          utilities
-                            .logger()
-                            .log("employee_id", empResult[i]["employee_id"]);
+                          // utilities
+                          //   .logger()
+                          //   .log("employee_id", empResult[i]["employee_id"]);
 
                           const employee_exit = _.filter(_myemp, f => {
                             return f.employee_id == empResult[i]["employee_id"];
                           });
 
-                          utilities
-                            .logger()
-                            .log("employee_exit", employee_exit);
+                          // utilities
+                          //   .logger()
+                          //   .log("employee_exit", employee_exit);
                           let results = Salaryresults;
                           let salary_header_id = 0;
                           let final_earning_amount = 0;
@@ -493,33 +493,33 @@ module.exports = {
                                                           _net_salary +
                                                           total_loan_payable_amount;
 
-                                                        utilities
-                                                          .logger()
-                                                          .log(
-                                                            "_net_salary",
-                                                            _net_salary
-                                                          );
+                                                        // utilities
+                                                        //   .logger()
+                                                        //   .log(
+                                                        //     "_net_salary",
+                                                        //     _net_salary
+                                                        //   );
 
-                                                        utilities
-                                                          .logger()
-                                                          .log(
-                                                            "current_earning_amt_array",
-                                                            current_earning_amt_array
-                                                          );
+                                                        // utilities
+                                                        //   .logger()
+                                                        //   .log(
+                                                        //     "current_earning_amt_array",
+                                                        //     current_earning_amt_array
+                                                        //   );
 
-                                                        utilities
-                                                          .logger()
-                                                          .log(
-                                                            "current_deduction_amt_array",
-                                                            current_deduction_amt_array
-                                                          );
+                                                        // utilities
+                                                        //   .logger()
+                                                        //   .log(
+                                                        //     "current_deduction_amt_array",
+                                                        //     current_deduction_amt_array
+                                                        //   );
 
-                                                        utilities
-                                                          .logger()
-                                                          .log(
-                                                            "current_contribution_amt_array",
-                                                            current_contribution_amt_array
-                                                          );
+                                                        // utilities
+                                                        //   .logger()
+                                                        //   .log(
+                                                        //     "current_contribution_amt_array",
+                                                        //     current_contribution_amt_array
+                                                        //   );
                                                         _mysql
                                                           .executeQueryWithTransaction(
                                                             {
@@ -587,12 +587,12 @@ module.exports = {
                                                           )
                                                           .then(
                                                             inserted_salary => {
-                                                              utilities
-                                                                .logger()
-                                                                .log(
-                                                                  "inserted_salary",
-                                                                  inserted_salary
-                                                                );
+                                                              // utilities
+                                                              //   .logger()
+                                                              //   .log(
+                                                              //     "inserted_salary",
+                                                              //     inserted_salary
+                                                              //   );
                                                               _requestCollector.push(
                                                                 inserted_salary
                                                               );
@@ -632,12 +632,12 @@ module.exports = {
                                                                 )
                                                                 .then(
                                                                   resultEarnings => {
-                                                                    utilities
-                                                                      .logger()
-                                                                      .log(
-                                                                        "resultEarnings",
-                                                                        resultEarnings
-                                                                      );
+                                                                    // utilities
+                                                                    //   .logger()
+                                                                    //   .log(
+                                                                    //     "resultEarnings",
+                                                                    //     resultEarnings
+                                                                    //   );
                                                                     if (
                                                                       current_deduction_amt_array.length >
                                                                       0
@@ -663,24 +663,24 @@ module.exports = {
                                                                           "select 1"
                                                                       };
                                                                     }
-                                                                    utilities
-                                                                      .logger()
-                                                                      .log(
-                                                                        "execute_query",
-                                                                        execute_query
-                                                                      );
+                                                                    // utilities
+                                                                    //   .logger()
+                                                                    //   .log(
+                                                                    //     "execute_query",
+                                                                    //     execute_query
+                                                                    //   );
                                                                     _mysql
                                                                       .executeQuery(
                                                                         execute_query
                                                                       )
                                                                       .then(
                                                                         resultDeductions => {
-                                                                          utilities
-                                                                            .logger()
-                                                                            .log(
-                                                                              "resultDeductions",
-                                                                              resultDeductions
-                                                                            );
+                                                                          // utilities
+                                                                          //   .logger()
+                                                                          //   .log(
+                                                                          //     "resultDeductions",
+                                                                          //     resultDeductions
+                                                                          //   );
                                                                           if (
                                                                             current_contribution_amt_array.length >
                                                                             0
@@ -711,12 +711,12 @@ module.exports = {
                                                                             )
                                                                             .then(
                                                                               resultContribute => {
-                                                                                utilities
-                                                                                  .logger()
-                                                                                  .log(
-                                                                                    "resultContribute",
-                                                                                    resultContribute
-                                                                                  );
+                                                                                // utilities
+                                                                                //   .logger()
+                                                                                //   .log(
+                                                                                //     "resultContribute",
+                                                                                //     resultContribute
+                                                                                //   );
                                                                                 if (
                                                                                   current_loan_array.length >
                                                                                   0
@@ -749,12 +749,12 @@ module.exports = {
                                                                                   )
                                                                                   .then(
                                                                                     resultLoan => {
-                                                                                      utilities
-                                                                                        .logger()
-                                                                                        .log(
-                                                                                          "resultLoan",
-                                                                                          resultLoan
-                                                                                        );
+                                                                                      // utilities
+                                                                                      //   .logger()
+                                                                                      //   .log(
+                                                                                      //     "resultLoan",
+                                                                                      //     resultLoan
+                                                                                      //   );
                                                                                       if (
                                                                                         i ==
                                                                                         empResult.length -
