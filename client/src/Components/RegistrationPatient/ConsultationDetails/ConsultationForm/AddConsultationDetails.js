@@ -251,12 +251,14 @@ const generateBillDetails = ($this, context) => {
     }
   ];
   AlgaehLoader({ show: true });
-
+  debugger;
   algaehApiCall({
     uri: "/billing/getBillDetails",
+    module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
+      debugger;
       if (response.data.success) {
         if (context !== null) {
           context.updateState({ ...response.data.records });
