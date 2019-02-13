@@ -20,6 +20,7 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
@@ -52,6 +53,7 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
@@ -84,6 +86,7 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },
@@ -121,6 +124,7 @@ module.exports = {
         next();
       })
       .catch(e => {
+        _mysql.releaseConnection();
         next(e);
       });
   },

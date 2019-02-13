@@ -258,9 +258,6 @@ module.exports = {
                 if (curentLeave.length > 0) {
                   for (let k = 0; k < curentLeave.length; k++) {
                     if (k == 0) {
-                      utilities
-                        .logger()
-                        .log("curentLeave[k]: ", curentLeave[k]);
                       if (k == 0 && k == curentLeave.length - 1) {
                         let temp = new LINQ([leaves[m]])
                           .Where(
@@ -382,6 +379,7 @@ module.exports = {
   }
 };
 
+//created by irfan: to generate dates
 function getDaysArray(start, end) {
   const utilities = new algaehUtilities();
 
