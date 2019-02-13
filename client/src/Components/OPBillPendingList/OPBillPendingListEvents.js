@@ -5,7 +5,6 @@ import AlgaehSearch from "../Wrapper/globalSearch";
 import FrontDesk from "../../Search/FrontDesk.json";
 
 const getBillPatientList = $this => {
-  
   let inputobj = {};
 
   if ($this.state.today_date !== null) {
@@ -17,9 +16,11 @@ const getBillPatientList = $this => {
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
   }
+  debugger;
 
   $this.props.getBillPatientList({
     uri: "/opBilling/getPednigBills",
+    module: "billing",
     method: "GET",
     data: inputobj,
     redux: {
@@ -27,17 +28,13 @@ const getBillPatientList = $this => {
       mappingName: "patientlist"
     },
     afterSuccess: data => {
-      
       let patient_list = Enumerable.from(data)
         .groupBy("$.patient_id", null, (k, g) => {
           let firstRecordSet = Enumerable.from(g).firstOrDefault();
           return {
             patient_code: firstRecordSet.patient_code,
             full_name: firstRecordSet.full_name,
-            // today_date: firstRecordSet.today_date,
-            // number_of_items: g.getSource().length,
             patient_list: g.getSource()
-            // provider_id: firstRecordSet.provider_id
           };
         })
         .toArray();

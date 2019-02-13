@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
-  addPatientToRegisteration,
-  updatePatientRegistrstion,
+  addPatientToRegisteration, //Done
+  updatePatientRegistrstion, //Done
   patientSelect
 } from "../model/patientRegistration";
 import { releaseConnection } from "../utils";

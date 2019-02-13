@@ -4,7 +4,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import moment from "moment";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
-import { swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import { setLocaion } from "../../../utils/indexer";
 
 const texthandle = ($this, e) => {
@@ -104,39 +104,79 @@ const getSampleCollectionDetails = $this => {
   if ($this.state.proiorty !== null) {
     inputobj.test_type = $this.state.proiorty;
   }
-
-  $this.props.getSampleCollection({
+  debugger;
+  algaehApiCall({
     uri: "/laboratory/getLabOrderedServices",
+    module: "laboratory",
     method: "GET",
     data: inputobj,
-    redux: {
-      type: "SAMPLE_COLLECT_GET_DATA",
-      mappingName: "samplecollection"
-    },
-    afterSuccess: data => {
+    onSuccess: response => {
       debugger;
-      let sample_collection = Enumerable.from(data)
-        .groupBy("$.visit_id", null, (k, g) => {
-          let firstRecordSet = Enumerable.from(g).firstOrDefault();
-          return {
-            patient_code: firstRecordSet.patient_code,
-            full_name: firstRecordSet.full_name,
-            ordered_date: firstRecordSet.ordered_date,
-            number_of_tests: g.getSource().length,
-            test_details: g.getSource(),
-            provider_id: firstRecordSet.provider_id,
-            billed: firstRecordSet.billed,
-            visit_code: firstRecordSet.visit_code,
-            doctor_name: firstRecordSet.doctor_name,
-            status: firstRecordSet.status,
-            test_type: firstRecordSet.test_type
-          };
-        })
-        .toArray();
+      if (response.data.success) {
+        debugger;
+        let sample_collection = Enumerable.from(response.data.records)
+          .groupBy("$.visit_id", null, (k, g) => {
+            let firstRecordSet = Enumerable.from(g).firstOrDefault();
+            return {
+              patient_code: firstRecordSet.patient_code,
+              full_name: firstRecordSet.full_name,
+              ordered_date: firstRecordSet.ordered_date,
+              number_of_tests: g.getSource().length,
+              test_details: g.getSource(),
+              provider_id: firstRecordSet.provider_id,
+              billed: firstRecordSet.billed,
+              visit_code: firstRecordSet.visit_code,
+              doctor_name: firstRecordSet.doctor_name,
+              status: firstRecordSet.status,
+              test_type: firstRecordSet.test_type
+            };
+          })
+          .toArray();
 
-      $this.setState({ sample_collection: sample_collection });
+        $this.setState({ sample_collection: sample_collection });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+
+  // $this.props.getSampleCollection({
+  //   uri: "/laboratory/getLabOrderedServices",
+  //   module: "laboratory",
+  //   method: "GET",
+  //   data: inputobj,
+  //   redux: {
+  //     type: "SAMPLE_COLLECT_GET_DATA",
+  //     mappingName: "samplecollection"
+  //   },
+  //   afterSuccess: data => {
+  //     debugger;
+  //     let sample_collection = Enumerable.from(data)
+  //       .groupBy("$.visit_id", null, (k, g) => {
+  //         let firstRecordSet = Enumerable.from(g).firstOrDefault();
+  //         return {
+  //           patient_code: firstRecordSet.patient_code,
+  //           full_name: firstRecordSet.full_name,
+  //           ordered_date: firstRecordSet.ordered_date,
+  //           number_of_tests: g.getSource().length,
+  //           test_details: g.getSource(),
+  //           provider_id: firstRecordSet.provider_id,
+  //           billed: firstRecordSet.billed,
+  //           visit_code: firstRecordSet.visit_code,
+  //           doctor_name: firstRecordSet.doctor_name,
+  //           status: firstRecordSet.status,
+  //           test_type: firstRecordSet.test_type
+  //         };
+  //       })
+  //       .toArray();
+
+  //     $this.setState({ sample_collection: sample_collection });
+  //   }
+  // });
 };
 
 const Refresh = $this => {

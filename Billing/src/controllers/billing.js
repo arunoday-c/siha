@@ -3,7 +3,8 @@ import utlities from "algaeh-utilities";
 import {
   newReceiptData,
   patientAdvanceRefund,
-  billingCalculations
+  billingCalculations,
+  getBillDetails
 } from "../models/billing";
 
 export default () => {
@@ -36,6 +37,18 @@ export default () => {
   api.post(
     "/billingCalculations",
     billingCalculations,
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post(
+    "/getBillDetails",
+    getBillDetails,
 
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

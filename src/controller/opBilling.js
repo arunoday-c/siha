@@ -3,10 +3,10 @@ import { releaseConnection, generateDbConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import {
-  addOpBIlling,
-  selectBill,
-  getPednigBills,
-  getOpBillSummary
+  addOpBIlling, //Done
+  selectBill, //Done
+  getPednigBills, //Done
+  getOpBillSummary //Not Used
 } from "../model/opBilling";
 import { updateOrderedServicesBilled } from "../model/orderAndPreApproval";
 import { debugFunction, debugLog } from "../utils/logging";
