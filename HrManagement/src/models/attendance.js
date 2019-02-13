@@ -34,7 +34,7 @@ module.exports = {
         const totalMonthDays = moment(yearAndMonth, "YYYY-MM").daysInMonth();
         const month_name = moment(yearAndMonth).format("MMMM");
         const month_number = moment(yearAndMonth).format("M");
-        const year = moment(yearAndMonth).format("YYYY");
+        const year = moment(new Date(yearAndMonth)).format("YYYY");
 
         let selectWhere = {
           date_of_joining: endOfMonth,
