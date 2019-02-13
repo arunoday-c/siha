@@ -4,7 +4,8 @@ import { newReceiptData, addBillData } from "../models/billing";
 import {
   addOpBIlling,
   updateOrderedServicesBilled,
-  selectBill
+  selectBill,
+  getPednigBills
 } from "../models/opBilling";
 import { getReceiptEntry } from "../models/receiptentry";
 
@@ -49,6 +50,17 @@ export default () => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
         records: result
+      });
+    }
+  );
+  api.get(
+    "/getPednigBills",
+    getPednigBills,
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
       });
     }
   );

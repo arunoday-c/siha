@@ -2,9 +2,9 @@ import { Router } from "express";
 import {
   billingCalculations, //Done
   patientAdvanceRefund, // Done
-  getBillDetails,
-  addEpisodeEncounter,
-  addCashHandover
+  getBillDetails, //Done
+  addEpisodeEncounter, //Done
+  addCashHandover //Done
 } from "../model/billing";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";

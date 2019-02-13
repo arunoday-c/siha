@@ -15,7 +15,7 @@ import {
   addEpisodeEncounterData
 } from "../models/visit";
 
-const { newReceiptData, addBillData } = require(algaehPath(
+const { newReceiptData, addBillData, addCashHandover } = require(algaehPath(
   "algaeh-billing/src/models/billing"
 ));
 
@@ -36,6 +36,7 @@ export default () => {
     addPatientInsuranceData,
     newReceiptData,
     addBillData,
+    addCashHandover,
     addEpisodeEncounterData,
 
     (req, res, next) => {
@@ -53,6 +54,7 @@ export default () => {
     addPatientInsuranceData,
     newReceiptData,
     addBillData,
+    addCashHandover,
     addEpisodeEncounterData,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

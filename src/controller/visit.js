@@ -2,7 +2,7 @@ import { Router } from "express";
 
 import { releaseConnection } from "../utils";
 import {
-  addVisit,
+  addVisit, //Done
   checkVisitExists, //Done
   closeVisit //Done
 } from "../model/visit";

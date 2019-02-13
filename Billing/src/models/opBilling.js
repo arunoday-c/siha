@@ -162,5 +162,47 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+  getPednigBills: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let _stringData = "";
+      let inputValues = [];
+
+      if (req.query.created_date != null) {
+        _stringData += " and date(S.created_date)=?";
+        inputValues.push(req.query.created_date);
+      }
+      if (req.query.visit_id != null) {
+        _stringData += " and visit_id=?";
+        inputValues.push(req.query.visit_id);
+      }
+      if (req.query.patient_id != null) {
+        _stringData += " and patient_id=? ";
+        inputValues.push(req.query.patient_id);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT  S.patient_id, S.visit_id, S.insurance_yesno, P.patient_code,P.full_name FROM hims_f_ordered_services S,hims_f_patient P  \
+          WHERE S.record_status='A' AND S.billed='N' AND P.hims_d_patient_id=S.patient_id" +
+            _stringData,
+          values: inputValues,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };

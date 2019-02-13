@@ -206,3 +206,34 @@ let authorizeLoan = (req, res, next) => {
     next(e);
   }
 };
+
+// ;WITH CTE AS(
+//   SELECT
+//       UserID,
+//       DateTime,
+//       AccessDate = CAST(DateTime AS DATE),
+//       AccessTime = CAST(DateTime AS TIME),
+//       InOut,
+//       In_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) ASC),
+//       Out_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) DESC)
+//   FROM [Transaction] where cast(DateTime  as date)between
+//  '2018-12-01' and '2018-12-02'
+// )
+// SELECT
+//   UserID,
+//   [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
+//   InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), ''),
+//   OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), ''),
+//   Duration =  ISNULL(RIGHT('00' +
+//               CONVERT(VARCHAR(2), DATEDIFF(MINUTE,
+//                   MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END),
+//                   MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+//               )/60), 2) + ':' +
+//               RIGHT('00' +CONVERT(VARCHAR(2), DATEDIFF(MINUTE,
+//                   MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END),
+//                   MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+//               )%60), 2)
+//           ,'')
+// FROM CTE
+// GROUP BY UserID, AccessDate
+// ORDER BY  AccessDate

@@ -5,9 +5,26 @@
   font-size: 0.7em;
   border-radius: 6px; }
 
+.EmpShiftRost_Screen .time_cell {
+  background-color: "lightgray";
+  cursor: pointer; }
+
+.EmpShiftRost_Screen .time_cell:hover {
+  background-color: #58b9c0; }
+
 .EmpShiftRost_Screen #shiftRosterTable {
   overflow: auto;
   border: 1px solid #d2d2d2; }
+  .EmpShiftRost_Screen #shiftRosterTable .noTimeSheetData {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.1);
+    width: 100%; }
+    .EmpShiftRost_Screen #shiftRosterTable .noTimeSheetData h1 {
+      margin-top: 30px; }
+    .EmpShiftRost_Screen #shiftRosterTable .noTimeSheetData i {
+      font-size: 16em;
+      margin: 4vh 0 6vh;
+      color: rgba(0, 0, 0, 0.04); }
   .EmpShiftRost_Screen #shiftRosterTable table {
     width: 100%;
     box-sizing: border-box;
