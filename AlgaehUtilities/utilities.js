@@ -4,8 +4,9 @@ const winston = require("winston");
 const path = require("path");
 
 require("winston-daily-rotate-file");
+const gracefulFs = require("graceful-fs");
 const fs = require("fs");
-
+gracefulFs.gracefulify(fs);
 function algaehUtilities(options) {
   this.options = options;
   this.keys = this.keys != null ? this.keys : require("algaeh-keys").default;
