@@ -875,5 +875,9 @@
   "DOC_TYPE": [
     { "name": "Company", "value": "C" },
     { "name": "Employee", "value": "E" }
+  ],
+  "SHIFT_END": [
+    { "name": "Same Date", "value": "SD" },
+    { "name": "Next Date", "value": "ND" }
   ]
 }

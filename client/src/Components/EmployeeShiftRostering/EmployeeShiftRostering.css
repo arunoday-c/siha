@@ -9,6 +9,14 @@
   background-color: "lightgray";
   cursor: pointer; }
 
+.EmpShiftRost_Screen .week_off_cell {
+  background: #3f9c62;
+  color: white; }
+
+.EmpShiftRost_Screen .holiday_cell {
+  background: #3f789c;
+  color: white; }
+
 .EmpShiftRost_Screen .time_cell:hover {
   background-color: #58b9c0; }
 
