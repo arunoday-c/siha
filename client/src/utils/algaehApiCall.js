@@ -323,7 +323,8 @@ export function swalMessage(options) {
 }
 
 export function cancelRequest(requestId) {
-  axios.cancel(requestId);
+  if (axios !== undefined && typeof axios.cancel === "function")
+    axios.cancel(requestId);
 }
 
 export function SelectFiledData(options) {
