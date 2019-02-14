@@ -109,8 +109,6 @@ const getSampleCollectionDetails = $this => {
       mappingName: "samplecollection"
     },
     afterSuccess: data => {
-      
-
       if (data.length > 0) {
         // let sample_collection = Enumerable.from(data)
         //   .Where(w => w.status !== "O")
@@ -123,7 +121,6 @@ const getSampleCollectionDetails = $this => {
 };
 
 const AcceptandRejectSample = ($this, row, AccRej) => {
-  
   if (row.status === "O") {
     swalMessage({
       title: "Invalid Input. Please collect the sample.",
@@ -140,6 +137,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
 
       algaehApiCall({
         uri: "/laboratory/updateLabSampleStatus",
+        module: "laboratory",
         data: inputobj,
         method: "PUT",
         onSuccess: response => {
@@ -163,7 +161,6 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
         }
       });
     } else {
-      
       swalMessage({
         title: "Invalid Input. Already Accecpted/Rejected.",
         type: "warning"
