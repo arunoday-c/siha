@@ -278,80 +278,6 @@ class ApplyLeave extends Component {
     });
   }
 
-  // getAppliedDays() {
-  //   var startdateMoment = moment(this.state.from_date);
-  //   var enddateMoment = moment(this.state.to_date);
-
-  //   if (
-  //     startdateMoment.isValid() === true &&
-  //     enddateMoment.isValid() === true
-  //   ) {
-  //     var days = enddateMoment.diff(startdateMoment, "days");
-
-  //     if (
-  //       moment(this.state.from_date).format("YYYYMMDD") ===
-  //       moment(this.state.to_date).format("YYYYMMDD")
-  //     ) {
-  //       if (
-  //         this.state.from_leave_session === "FH" ||
-  //         this.state.from_leave_session === "SH" ||
-  //         this.state.to_leave_session === "FH" ||
-  //         this.state.to_leave_session === "SH"
-  //       ) {
-  //         this.setState({
-  //           total_applied_days: 0.5
-  //         });
-  //       } else if (
-  //         this.state.from_leave_session === "FD" ||
-  //         this.state.to_leave_session === "FD"
-  //       ) {
-  //         this.setState({
-  //           total_applied_days: 1
-  //         });
-  //       }
-  //       //return;
-  //     }
-
-  //     if (
-  //       moment(this.state.from_date).format("YYYYMMDD") <
-  //       moment(this.state.to_date).format("YYYYMMDD")
-  //     ) {
-  //       if (
-  //         this.state.from_leave_session === "SH" &&
-  //         this.state.to_leave_session === "FH"
-  //       ) {
-  //         this.setState({
-  //           total_applied_days: Math.abs(days)
-  //         });
-  //       } else if (
-  //         this.state.from_leave_session === "FH" ||
-  //         this.state.from_leave_session === "SH" ||
-  //         this.state.to_leave_session === "FH" ||
-  //         this.state.to_leave_session === "SH"
-  //       ) {
-  //         this.setState({
-  //           total_applied_days: Math.abs(days + 0.5)
-  //         });
-  //       } else if (
-  //         this.state.from_leave_session === "FD" &&
-  //         this.state.to_leave_session === "FD"
-  //       ) {
-  //         this.setState({
-  //           total_applied_days: Math.abs(days + 1)
-  //         });
-  //       } else {
-  //         this.setState({
-  //           total_applied_days: Math.abs(days + 1)
-  //         });
-  //       }
-  //     }
-  //   } else {
-  //     this.setState({
-  //       total_applied_days: 0
-  //     });
-  //   }
-  // }
-
   dropDownHandler(value) {
     switch (value.name) {
       case "to_leave_session":
@@ -476,7 +402,8 @@ class ApplyLeave extends Component {
             to_date: this.state.to_date,
             from_leave_session: this.state.from_leave_session,
             to_leave_session: this.state.to_leave_session,
-            total_applied_days: this.state.total_applied_days
+            total_applied_days: this.state.total_applied_days,
+            remarks: this.state.remarks
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -1035,7 +962,7 @@ class ApplyLeave extends Component {
                           }
                         },
                         {
-                          fieldName: "authorize1",
+                          fieldName: "authorized1",
 
                           label: (
                             <AlgaehLabel
@@ -1045,14 +972,14 @@ class ApplyLeave extends Component {
                           displayTemplate: row => {
                             return (
                               <span>
-                                {row.authorize1 === "Y" ? "Yes" : "No"}
+                                {row.authorized1 === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           },
                           editorTemplate: row => {
                             return (
                               <span>
-                                {row.authorize1 === "Y" ? "Yes" : "No"}
+                                {row.authorized1 === "Y" ? "Yes" : "No"}
                               </span>
                             );
                           }

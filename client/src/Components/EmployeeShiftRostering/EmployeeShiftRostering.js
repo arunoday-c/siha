@@ -247,25 +247,23 @@ export default class EmployeeShiftRostering extends Component {
             moment(w.holiday_date).format("YYYYMMDD") === now.format("YYYYMMDD")
         )
         .firstOrDefault();
-      // let leave = {};
+      let leave = null;
+      if (leaves !== undefined && leaves.length > 0) {
+        leave = Enumerable.from(leaves)
+          .where(
+            w =>
+              moment(w.leaveDate).format("YYYYMMDD") === now.format("YYYYMMDD")
+          )
+          .firstOrDefault();
+        console.log(leave);
+      }
 
-      // if (leaves !== undefined && leaves.length > 0) {
-      //   debugger;
-      //   leave = Enumerable.from(leaves)
-      //     .where(
-      //       w =>
-      //         moment(w.leaveDate).format("YYYYMMDD") === now.format("YYYYMMDD")
-      //     )
-      //     .firstOrDefault();
-      // }
       let data =
-        // leave === {} && leave === undefined ? (
-        //   <td className="leave_cell" key={now}>
-        //     Leave
-        //   </td>
-        // ) :
-
-        holiday === undefined ? (
+        leave !== undefined && leave !== null ? (
+          <td className="leave_cell" key={now}>
+            {leave.leave_description}
+          </td>
+        ) : holiday === undefined ? (
           <td
             key={now}
             className="time_cell"

@@ -665,7 +665,7 @@ let saveF = (req, db, next, connection, input, msg) => {
     }).then(numGenLeave => {
       connection.query(
         "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,application_date,sub_department_id,leave_id,leave_type,\
-    from_date,to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days, created_date, created_by, updated_date, updated_by)\
+    from_date,to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days,remarks, created_date, created_by, updated_date, updated_by)\
     VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           numGenLeave[0]["completeNumber"],
@@ -680,6 +680,7 @@ let saveF = (req, db, next, connection, input, msg) => {
           input.to_leave_session,
           input.leave_applied_from,
           input.total_applied_days,
+          input.remarks,
           new Date(),
           input.created_by,
           new Date(),
