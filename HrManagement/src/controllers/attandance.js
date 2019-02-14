@@ -7,7 +7,8 @@ import {
   getAllAbsentEmployee,
   addAttendanceRegularization,
   regularizeAttendance,
-  getEmployeeAttendReg
+  getEmployeeAttendReg,
+  proxAttendance
 } from "../models/attendance";
 export default () => {
   const api = Router();
@@ -100,6 +101,19 @@ export default () => {
   });
 
   api.get("/getEmployeeAttendReg", getEmployeeAttendReg, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  });
+  api.get("/proxAttendance", proxAttendance, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
