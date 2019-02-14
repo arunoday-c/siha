@@ -285,7 +285,7 @@ module.exports = {
 
                                               let insertPendLeave="";
                                               if (salary_processed=="Y"){
-                                                insertPendLeave=` insert into hims_f_pending_leave (employee_id, year, month,leave_header_id,updaid_leave_duration) VALUE(${input.employee_id},
+                                                insertPendLeave=` insert into hims_f_pending_leave (employee_id, year, month,leave_application_id,updaid_leave_duration) VALUE(${input.employee_id},
                                                   ${input.year},
                                                   ${month_number},
                                                   ${input.hims_f_leave_application_id},${updaid_leave_duration});`
@@ -1659,7 +1659,6 @@ getYearlyLeaveData: (req, res, next) => {
 //created by irfan: to get all leave history about employee
 getEmployeeLeaveHistory: (req, res, next) => {
   
-
 
   let status = "";
   if (req.query.status == "H") {
