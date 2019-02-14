@@ -5,10 +5,10 @@ import httpStatus from "../utils/httpStatus";
 import {
   getLabOrderedServices, //Done
   insertLadOrderedServices, //Done
-  updateLabOrderServices,
-  getTestAnalytes,
-  updateLabSampleStatus,
-  updateLabResultEntry
+  updateLabOrderServices, //Done
+  getTestAnalytes, //Done
+  updateLabSampleStatus, // Done
+  updateLabResultEntry //Done
 } from "../model/laboratory";
 
 export default ({ config, db }) => {

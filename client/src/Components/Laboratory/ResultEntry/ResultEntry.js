@@ -116,7 +116,9 @@ class ResultEntry extends Component {
     }
   }
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.setState({ test_analytes: [] }, () => {
+      this.props.onClose && this.props.onClose(e);
+    });
   };
 
   dateFormater({ value }) {

@@ -2,7 +2,10 @@ import { Router } from "express";
 import utlities from "algaeh-utilities";
 import {
   getLabOrderedServices,
-  updateLabOrderServices
+  updateLabOrderServices,
+  getTestAnalytes,
+  updateLabSampleStatus,
+  updateLabResultEntry
 } from "../models/laboratory";
 
 export default () => {
@@ -24,6 +27,27 @@ export default () => {
       });
     }
   );
+
+  api.get("/getTestAnalytes", getTestAnalytes, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateLabSampleStatus", updateLabSampleStatus, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.put("/updateLabResultEntry", updateLabResultEntry, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   return api;
 };
