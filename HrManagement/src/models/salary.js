@@ -5,6 +5,197 @@ import mysql from "mysql";
 // import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
+  newProcessSalary: (req, res, next) => {
+    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    return new Promise((resolve, reject) => {
+      try {
+        const input = req.query;
+        const month_number = input.month;
+        const year = input.year;
+        let inputValues = [input.year, input.month, input.hospital_id];
+        let _stringData = "";
+        if (input.employee_id != null) {
+          _stringData += " and A.employee_id=?";
+          inputValues.push(input.employee_id);
+        }
+        if (input.sub_department_id != null) {
+          _stringData += " and A.sub_department_id=? ";
+          inputValues.push(input.sub_department_id);
+        }
+
+        let salary_input = [month_number, year];
+        let _strSalary = "";
+        if (input.employee_id != null) {
+          _strSalary += " and A.employee_id=?";
+          salary_input.push(input.employee_id);
+        }
+
+        if (input.sub_department_id != null) {
+          _strSalary += " and sub_department_id=? ";
+          salary_input.push(input.sub_department_id);
+        }
+
+        _mysql
+          .executeQuery({
+            query:
+              "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, A.sub_department_id, \
+          A.total_days,A.present_days, A.absent_days, A.total_work_days, A.total_weekoff_days, \
+          A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,A.ot_work_hours, \
+          A.ot_weekoff_hours,A.ot_holiday_hours, E.employee_code,E.gross_salary, \
+          S.hims_f_salary_id,S.salary_processed \
+          from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
+          on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
+          left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
+          and S.employee_id = A.employee_id where \
+          A.`year`=? and A.`month`=? and A.hospital_id=1 and (S.salary_processed is null or S.salary_processed= 'N') ;",
+            values: input
+          })
+          .then(empResult => {
+            if (empResult.length == 0) {
+              _mysql.releaseConnection();
+              req.records = empResult;
+              next();
+              resolve(empResult);
+              return;
+            }
+            let _myemp = _.map(empResult, o => {
+              return o.employee_id;
+            });
+
+            if (_myemp.length == 0) {
+              _mysql.releaseConnection();
+              req.records = {};
+              next();
+              resolve({});
+              return;
+            }
+
+            const month_name = moment(input.month, "MM").format("MMMM");
+            let strQuery =
+              "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
+              month_name +
+              " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
+                  FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
+                  and ML.leave_id=LR.leave_header_id and LR.calculation_type='SL'and L.hims_d_leave_id = LR.leave_header_id and\
+                  L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
+              month_name +
+              " > 0 and (availed_till_date >= to_value   or availed_till_date >=from_value and availed_till_date <=to_value )\
+                    and  employee_id in (?) and year=? union all	";
+            strQuery +=
+              "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
+              month_name +
+              " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
+                    FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
+                    and ML.leave_id=LR.leave_header_id and LR.calculation_type='CO'and L.hims_d_leave_id = LR.leave_header_id and \
+                    L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
+              month_name +
+              " > 0 and  employee_id in (?) and year=? ;";
+
+            _mysql
+              .executeQuery({
+                query:
+                  "select hims_d_employee_earnings_id,employee_id,earnings_id,amount,EE.formula,allocate,\
+              EE.calculation_method,EE.calculation_type,ED.component_frequency,ED.overtime_applicable\
+              from hims_d_employee_earnings EE inner join hims_d_earning_deduction ED\
+              on EE.earnings_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
+              where ED.component_frequency='M' and ED.component_category='E' and EE.employee_id in (?);\
+            select hims_d_employee_deductions_id,employee_id,deductions_id,amount,EMP_D.formula,\
+              allocate,EMP_D.calculation_method,EMP_D.calculation_type,ED.component_frequency from \
+              hims_d_employee_deductions EMP_D inner join hims_d_earning_deduction ED\
+              on EMP_D.deductions_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
+              where ED.component_frequency='M'  and ED.component_category='D' and EMP_D.employee_id in(?);\
+            select  hims_d_employee_contributions_id,employee_id,contributions_id,amount,\
+              EC.formula,EC.allocate,EC.calculation_method,EC.calculation_type,ED.component_frequency\
+              from hims_d_employee_contributions EC inner join hims_d_earning_deduction ED\
+              on EC.contributions_id=ED.hims_d_earning_deduction_id and ED.record_status='A'\
+              where ED.component_frequency='M'  and ED.component_category='C' and EC.employee_id in (?);\
+            select hims_f_loan_application_id, loan_application_number, employee_id, loan_id, application_reason,\
+              loan_application_date, loan_authorized ,loan_closed, start_month,start_year,loan_skip_months,installment_amount,pending_loan\
+              from  hims_f_loan_application where loan_authorized='IS' and loan_closed='N' and pending_loan>0\
+              and ((start_year <=? and start_month<=?)||(start_year <?)) and employee_id in (?);\
+            select payment_amount, employee_id from hims_f_employee_payments where payment_type ='AD' and \
+              deducted='N'and cancel='N' and `year`=? and deduction_month=? and employee_id in (?);\
+            select employee_id,earning_deductions_id,amount,category from hims_f_miscellaneous_earning_deduction \
+              where processed = 'N' and `year`=? and month=? and employee_id in (?);\
+            select hims_f_loan_application_id, loan_application_number, employee_id, loan_id,\
+              loan_application_date, approved_amount\
+              from  hims_f_loan_application where loan_authorized='APR' and loan_dispatch_from='SAL' and employee_id in (?);\
+            select hims_d_earning_deduction_id from hims_d_earning_deduction where component_category = 'D' and component_type='AD';\
+            select hims_d_hrms_options_id,standard_working_hours,standard_break_hours from hims_d_hrms_options;\
+            select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV';\
+            select E.hims_d_employee_id as employee_id, OT.payment_type, OT.working_day_hour, OT. weekoff_day_hour, \
+              OT.holiday_hour, OT.working_day_rate, OT.weekoff_day_rate, OT.holiday_rate  \
+              from hims_d_overtime_group OT, hims_d_employee E where E.overtime_group_id=OT.hims_d_overtime_group_id and E.hims_d_employee_id in (?);" +
+                  strQuery,
+                values: [
+                  _myemp,
+                  _myemp,
+                  _myemp,
+                  year,
+                  month_number,
+                  year,
+                  _myemp,
+                  year,
+                  month_number,
+                  _myemp,
+                  year,
+                  month_number,
+                  _myemp,
+                  _myemp,
+                  _myemp,
+                  _myemp,
+                  input.year,
+                  _myemp,
+                  input.year
+                ],
+                printQuery: true
+              })
+              .then(Salaryresults => {
+                for (let i = 0; i < empResult.length; i++) {
+                  let results = Salaryresults;
+                  let salary_header_id = 0;
+                  let final_earning_amount = 0;
+                  let current_earning_amt_array = [];
+
+                  let final_deduction_amount = 0;
+                  let current_deduction_amt_array = [];
+
+                  let final_contribution_amount = 0;
+                  let current_contribution_amt_array = [];
+
+                  let total_loan_due_amount = 0;
+                  let total_loan_payable_amount = 0;
+
+                  let advance_due_amount = 0;
+                  let current_loan_array = [];
+                  //Earnigs --- satrt
+                  const _earnings = _.filter(results[0], f => {
+                    return f.employee_id == empResult[i]["employee_id"];
+                  });
+
+                  const _LeaveRule = _.filter(results[16], f => {
+                    return f.employee_id == empResult[i]["employee_id"];
+                  });
+                }
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+                reject(e);
+              });
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+            reject(error);
+          });
+      } catch (e) {
+        _mysql.releaseConnection();
+        next(e);
+        reject(e);
+      }
+    });
+  },
   processSalary: (req, res, next) => {
     const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
     return new Promise((resolve, reject) => {
