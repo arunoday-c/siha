@@ -478,7 +478,7 @@ class EOSGratuity extends Component {
 
                   <div className="col-3">
                     <label className="style_Label ">Computed Amount</label>
-                    <h6>
+                    <h6 style={{ fontSize: "2em" }}>
                       {this.state.calculated_gratutity_amount
                         ? getAmountFormart(
                             this.state.calculated_gratutity_amount

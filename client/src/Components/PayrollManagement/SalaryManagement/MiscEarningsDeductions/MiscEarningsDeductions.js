@@ -40,7 +40,7 @@ export default class MiscEarningsDeductions extends Component {
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
-      module : "masterSettings",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
           this.setState({
@@ -348,7 +348,8 @@ export default class MiscEarningsDeductions extends Component {
                 isImp: true
               }}
               selector={{
-                sort:"off",name: "month",
+                sort: "off",
+                name: "month",
                 className: "select-fld",
                 value: this.state.month,
                 dataSource: {
@@ -634,9 +635,15 @@ export default class MiscEarningsDeductions extends Component {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {row.salary_processed === "Y"
-                                        ? "Processed"
-                                        : "Not Processed"}
+                                      {row.salary_processed === "Y" ? (
+                                        <span className="badge badge-success">
+                                          Processed
+                                        </span>
+                                      ) : (
+                                        <span className="badge badge-warning">
+                                          Not Processed
+                                        </span>
+                                      )}
                                     </span>
                                   );
                                 },
