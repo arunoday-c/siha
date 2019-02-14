@@ -19,6 +19,7 @@ export default class EmployeeShiftRostering extends Component {
     this.state = {
       employees: [],
       hospitals: [],
+      shifts: [],
       loading: false,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
@@ -28,6 +29,27 @@ export default class EmployeeShiftRostering extends Component {
     };
     this.getSubDepartments();
     this.getHospitals();
+    this.getShifts();
+  }
+
+  getShifts() {
+    algaehApiCall({
+      uri: "/shiftAndCounter/getShiftMaster",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            shifts: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getEmployeesForShiftRoster() {
@@ -180,6 +202,7 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
+            this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -190,6 +213,7 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
+            this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -223,8 +247,24 @@ export default class EmployeeShiftRostering extends Component {
             moment(w.holiday_date).format("YYYYMMDD") === now.format("YYYYMMDD")
         )
         .firstOrDefault();
+      // let leave = {};
 
-      Emp_Dates.push(
+      // if (leaves !== undefined && leaves.length > 0) {
+      //   debugger;
+      //   leave = Enumerable.from(leaves)
+      //     .where(
+      //       w =>
+      //         moment(w.leaveDate).format("YYYYMMDD") === now.format("YYYYMMDD")
+      //     )
+      //     .firstOrDefault();
+      // }
+      let data =
+        // leave === {} && leave === undefined ? (
+        //   <td className="leave_cell" key={now}>
+        //     Leave
+        //   </td>
+        // ) :
+
         holiday === undefined ? (
           <td
             key={now}
@@ -240,8 +280,9 @@ export default class EmployeeShiftRostering extends Component {
           <td className="holiday_cell" key={now}>
             {holiday.holiday_description}
           </td>
-        ) : null
-      );
+        ) : null;
+
+      Emp_Dates.push(data);
       now.add(1, "days");
     }
     return Emp_Dates;
@@ -368,6 +409,27 @@ export default class EmployeeShiftRostering extends Component {
             }}
           />
 
+          <AlagehAutoComplete
+            div={{ className: "col form-group" }}
+            label={{ forceLabel: "Select Shift", isImp: true }}
+            selector={{
+              name: "shift_id",
+              value: this.state.shift_id,
+              className: "select-fld",
+              dataSource: {
+                textField: "shift_description",
+                valueField: "hims_d_shift_id",
+                data: this.state.shifts
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  shift_id: null
+                });
+              }
+            }}
+          />
+
           <div className="col-3" style={{ marginTop: 10 }}>
             <div
               className="row"
@@ -478,7 +540,7 @@ export default class EmployeeShiftRostering extends Component {
                               {this.plotEmployeeDates(
                                 row.hims_d_employee_id,
                                 row.holidays,
-                                row.leaves
+                                row.employeeLeaves
                               )}
                               <td>
                                 {moment(row.date_of_joining).format(

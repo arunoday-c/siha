@@ -454,13 +454,13 @@
     { "name": "After space", "value": "AS" }
   ],
   "THOUSAND_SEPARATOR": [
-    { "name": "Space", "value": "S" },
-    { "name": "Period", "value": "P" },
-    { "name": "Comma", "value": "C" }
+    { "name": "Space", "value": "''" },
+    { "name": "Period", "value": "." },
+    { "name": "Comma", "value": "," }
   ],
   "DECIMAL_SEPARATOR": [
-    { "name": "Period", "value": "P" },
-    { "name": "Comma", "value": "C" }
+    { "name": "Period", "value": "." },
+    { "name": "Comma", "value": "," }
   ],
   "NEGATIVE_SEPARATOR": [
     { "name": "Trailing", "value": "TR" },

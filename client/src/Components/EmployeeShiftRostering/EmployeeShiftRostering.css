@@ -17,6 +17,10 @@
   background: #3f789c;
   color: white; }
 
+.EmpShiftRost_Screen .leave_cell {
+  background: #879c3f;
+  color: white; }
+
 .EmpShiftRost_Screen .time_cell:hover {
   background-color: #58b9c0; }
 

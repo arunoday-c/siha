@@ -641,6 +641,10 @@ class Shift extends Component {
                 },
                 {
                   fieldName: "shift_end_date",
+
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Shift End Date" }} />
+                  ),
                   displayTemplate: row => {
                     return (
                       <span>
@@ -648,7 +652,7 @@ class Shift extends Component {
                           ? "Same Date"
                           : row.shift_end_date === "ND"
                           ? "Next Date"
-                          : null}
+                          : "------"}
                       </span>
                     );
                   },
