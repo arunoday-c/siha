@@ -8,3 +8,24 @@
     max-height: 15vh !important;
   }
 }
+.manualAttEmpCntr {
+  padding: 0;
+  overflow: auto;
+  max-height: 55vh;
+  #manualAttEmpList {
+    .row {
+      border-bottom: 1px solid #d6d6d6;
+      padding-bottom: 5px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+
+      h5 {
+        margin-bottom: 0;
+        margin-top: 10px;
+      }
+      &:nth-child(odd) {
+        background: #fff;
+      }
+    }
+  }
+}
