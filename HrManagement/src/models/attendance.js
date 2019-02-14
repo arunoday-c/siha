@@ -1113,5 +1113,118 @@ module.exports = {
           next(e);
         });
     }
+  },
+
+ //created by irfan:
+ proxAttendance: (req, res, next) => {
+            const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+            let yearAndMonth = req.query.yearAndMonth;
+            let leave_end_date = req.query.leave_end_date;
+            delete req.query.yearAndMonth;
+            const startOfMonth = moment(yearAndMonth)
+            .startOf("month")
+            .format("YYYY-MM-DD");
+
+            const endOfMonth =
+            leave_end_date == null
+              ? moment(yearAndMonth)
+                  .endOf("month")
+                  .format("YYYY-MM-DD")
+              : moment(leave_end_date).format("YYYY-MM-DD");
+
+
+            const totalMonthDays = moment(yearAndMonth, "YYYY-MM").daysInMonth();
+            const month_name = moment(yearAndMonth).format("MMMM");
+            const month_number = moment(yearAndMonth).format("M");
+            const year = moment(new Date(yearAndMonth)).format("YYYY");
+
+  
+            let selectWhere = {
+              date_of_joining: endOfMonth,
+              exit_date: startOfMonth,
+              date_of_joining1: endOfMonth, 
+              ...req.query
+            };
+
+            let inputValues = [
+              year,
+              month_number,
+              endOfMonth,
+              startOfMonth,
+              endOfMonth
+            ];
+
+              //---------delete old records
+              let department = "";
+              let hospital = "";
+              if (selectWhere.hospital_id != null) {
+                hospital = " and hospital_id=" + selectWhere.hospital_id;
+              }
+              if (selectWhere.sub_department_id != null) {
+                department =
+                  " and sub_department_id=" + selectWhere.sub_department_id;
+              }
+              let deleteString = ` delete from hims_f_attendance_monthly where employee_id>0 and year=${year} and
+                              month=${month_number}  ${hospital} ${department};`;
+
+  //---------delete old records
+
+
+  let _stringData = "";
+
+  if (selectWhere.hospital_id != null) {
+    _stringData += " and hospital_id=?";
+    inputValues.push(selectWhere.hospital_id);
   }
+  if (selectWhere.sub_department_id != null) {
+    _stringData += " and sub_department_id=? ";
+    inputValues.push(selectWhere.sub_department_id);
+  }
+
+  if (selectWhere.hims_d_employee_id != null) {
+    _stringData += " and hims_d_employee_id=? ";
+    inputValues.push(selectWhere.hims_d_employee_id);
+  }
+
+
+//----------------------
+        let allEmployees=[];
+        let allHolidays=[];
+        let allAbsents=[];
+        let allLeaveApplications=[];
+        let allMonthlyLeaves=[];
+        let allPendingLeaves=[];
+ //ST---pending unpaid leaves
+      let pendingYear="";
+      let pendingMonth="";
+
+      if(month_number==01){
+      pendingYear=year-1;
+      pendingMonth=12;
+      }else{
+      pendingYear=year;
+      pendingMonth=month_number;
+      }
+ //EN---pending unpaid leaves
+
+ 
+    _mysql
+      .executeQuery({
+        query: deleteString,
+        printQuery: true
+      })
+      .then(del => {
+
+
+
+      
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  }
+
+
+
 };
