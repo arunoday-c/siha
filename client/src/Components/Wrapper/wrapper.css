@@ -100,9 +100,13 @@
 .ReactTable .fa-prescription:hover,
 .ReactTable .fa-arrow-right:hover,
 .ReactTable .fa-plus:hover,
-.ReactTable .fa-thumbs-up:hover,
-.ReactTable .fa-thumbs-down:hover {
+.ReactTable .fa-thumbs-up:hover {
   background: #34b8bc;
+  color: #fff; }
+
+.ReactTable .fa-thumbs-down:hover {
+  background: lightcoral;
+  border: red;
   color: #fff; }
 
 @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {

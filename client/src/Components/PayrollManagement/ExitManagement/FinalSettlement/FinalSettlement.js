@@ -541,9 +541,28 @@ class FinalSettlement extends Component {
             </button>
             {this.state.flag !== undefined ? <h4>{this.state.flag}</h4> : null}
           </div>
+
+          <div className="col">
+            <label className="style_Label ">Employee Code</label>
+            <h6>{FsData.employee_code ? FsData.employee_code : "-------"}</h6>
+          </div>
+
+          <div className="col">
+            <label className="style_Label ">Employee Name</label>
+            <h6>{FsData.full_name ? FsData.full_name : "-------"}</h6>
+          </div>
+
+          <div className="col">
+            <label className="style_Label ">Department</label>
+            <h6>
+              {FsData.sub_department_name
+                ? FsData.sub_department_name
+                : "-------"}
+            </h6>
+          </div>
         </div>
         <div className="row">
-          <div className="col-12">
+          {/* <div className="col-12">
             <div
               className="portlet portlet-bordered margin-bottom-15"
               style={{ padding: 0 }}
@@ -551,33 +570,11 @@ class FinalSettlement extends Component {
               <div className="portlet-body">
                 <div className="col-12" style={{ marginTop: 7 }}>
                   <div className="row">
-                    <div className="col">
-                      <label className="style_Label ">Employee Code</label>
-                      <h6>
-                        {FsData.employee_code
-                          ? FsData.employee_code
-                          : "-------"}
-                      </h6>
-                    </div>
-
-                    <div className="col">
-                      <label className="style_Label ">Employee Name</label>
-                      <h6>{FsData.full_name ? FsData.full_name : "-------"}</h6>
-                    </div>
-
-                    <div className="col">
-                      <label className="style_Label ">Department</label>
-                      <h6>
-                        {FsData.sub_department_name
-                          ? FsData.sub_department_name
-                          : "-------"}
-                      </h6>
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="col-8">
             <div className="row">
@@ -1034,7 +1031,7 @@ class FinalSettlement extends Component {
                       </div>
                       <div className="col-12">
                         <label className="style_Label ">Net Amount</label>
-                        <h6>
+                        <h6 style={{ fontSize: "2em" }}>
                           {" "}
                           {getAmountFormart(this.state.net_amount)
                             ? getAmountFormart(this.state.net_amount)
