@@ -71,21 +71,9 @@ export default class ManualAttendance extends Component {
 
         <div className="row">
           <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15">
+            <div className="portlet portlet-bordered">
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col">
-                    <div className="customCheckbox">
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          value="ALL"
-                          name="hims_d_employee_id"
-                        />
-                        <span>Apply to All</span>
-                      </label>
-                    </div>
-                  </div>
                   <AlgaehDateHandler
                     div={{ className: "col" }}
                     label={{ forceLabel: "Select Date", isImp: false }}
