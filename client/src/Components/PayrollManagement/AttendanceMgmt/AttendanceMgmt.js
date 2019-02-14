@@ -3,6 +3,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import MonthlyAttendance from "./MonthlyAttendance/MonthlyAttendance";
 import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
+import ManualAttendance from "./ManualAttendance/ManualAttendance";
 import "./AttendanceMgmt.css";
 
 export default class AttendanceMgmt extends Component {
@@ -70,6 +71,19 @@ export default class AttendanceMgmt extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"ManualAttendance"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Manual Attendance"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -80,6 +94,8 @@ export default class AttendanceMgmt extends Component {
             <WeeklyAttendance />
           ) : this.state.pageDisplay === "AbsenceManagement" ? (
             <AbsenceManagement />
+          ) : this.state.pageDisplay === "ManualAttendance" ? (
+            <ManualAttendance />
           ) : null}
         </div>
       </div>
