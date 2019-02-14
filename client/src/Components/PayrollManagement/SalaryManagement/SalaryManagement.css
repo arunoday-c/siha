@@ -6,3 +6,6 @@
 
 .salary_management #Salary_Management_Cntr .ReactTable {
   max-height: 63vh !important; }
+
+#MiscEarningsDeductionsGrid_Cntr .ReactTable {
+  max-height: 42vh !important; }

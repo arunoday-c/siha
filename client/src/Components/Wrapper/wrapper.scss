@@ -124,9 +124,14 @@
   .fa-prescription:hover,
   .fa-arrow-right:hover,
   .fa-plus:hover,
-  .fa-thumbs-up:hover,
-  .fa-thumbs-down:hover {
+  .fa-thumbs-up:hover {
     background: $primary-color;
+    color: #fff;
+  }
+
+  .fa-thumbs-down:hover {
+    background: lightcoral;
+    border: red;
     color: #fff;
   }
 }

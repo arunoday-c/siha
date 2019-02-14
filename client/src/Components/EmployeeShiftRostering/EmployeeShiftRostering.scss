@@ -12,6 +12,21 @@
     cursor: pointer;
   }
 
+  .week_off_cell {
+    background: rgb(63, 156, 98);
+    color: white;
+  }
+
+  .holiday_cell {
+    background: rgb(63, 120, 156);
+    color: white;
+  }
+
+  .leave_cell {
+    background: rgb(135, 156, 63);
+    color: white;
+  }
+
   .time_cell:hover {
     background-color: rgb(88, 185, 192);
   }

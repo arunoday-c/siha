@@ -341,6 +341,34 @@ class Shift extends Component {
                 }
               }}
             />
+
+            <div className="col-2">
+              <label>Break</label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="SD"
+                    name="shift_end_date"
+                    checked={this.state.shift_end_date === "SD"}
+                    onChange={this.changeChecks.bind(this)}
+                  />
+                  <span>Same Day</span>
+                </label>
+
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="ND"
+                    name="shift_end_date"
+                    checked={this.state.shift_end_date === "ND"}
+                    onChange={this.changeChecks.bind(this)}
+                  />
+                  <span>Next Day</span>
+                </label>
+              </div>
+            </div>
+
             <div className="col-2">
               <label>Break</label>
               <div className="customRadio">
@@ -606,6 +634,46 @@ class Shift extends Component {
                             required: true,
                             type: "time"
                           }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "shift_end_date",
+
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Shift End Date" }} />
+                  ),
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.shift_end_date === "SD"
+                          ? "Same Date"
+                          : row.shift_end_date === "ND"
+                          ? "Next Date"
+                          : "------"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        selector={{
+                          name: "shift_end_date",
+                          className: "select-fld",
+                          value: row.shift_end_date,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.SHIFT_END
+                          },
+                          others: {
+                            errormessage: "Status - cannot be blank",
+                            required: true
+                          },
+                          onChange: this.changeGridEditors.bind(this, row)
                         }}
                       />
                     );
