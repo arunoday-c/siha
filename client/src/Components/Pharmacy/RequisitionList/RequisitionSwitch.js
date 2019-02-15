@@ -15,7 +15,6 @@ class RequisitionSwitch extends Component {
   }
 
   routeComponents() {
-    
     this.setState(
       {
         RQ_Screen: Window.global["RQ-STD"],
@@ -50,14 +49,14 @@ class RequisitionSwitch extends Component {
 
   render() {
     return (
-      <div className="front-desk">
+      <div className="hptl-phase1-requisition-list-form">
         <div>
           <button
             className="d-none"
             id="rq-router"
             onClick={this.routeComponents}
           />
-          <button
+          {/* <button
             style={{
               display:
                 this.state.RQ_Screen === "RequisitionList" ? "none" : "block"
@@ -72,6 +71,24 @@ class RequisitionSwitch extends Component {
             }}
           >
             Back
+          </button> */}
+
+          <button
+            style={{
+              display:
+                this.state.RQ_Screen === "RequisitionList" ? "none" : "block"
+            }}
+            className="btn btn-default bk-bn"
+            onClick={() => {
+              setGlobal({
+                "RQ-STD": "RequisitionList"
+              });
+
+              this.routeComponents();
+            }}
+          >
+            <i className="fas fa-angle-double-left fa-lg" />
+            Back to List
           </button>
 
           <div>{this.changeDisplays()}</div>

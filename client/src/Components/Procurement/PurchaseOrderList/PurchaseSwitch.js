@@ -48,19 +48,38 @@ class PurchaseSwitch extends Component {
 
   render() {
     return (
-      <div className="front-desk">
+      <div className="hptl-phase1-requisition-list-form">
         <div>
           <button
             className="d-none"
             id="rq-router"
             onClick={this.routeComponents}
           />
+
           <button
             style={{
               display:
                 this.state.RQ_Screen === "PurchaseOrderList" ? "none" : "block"
             }}
-            className="btn btn-primary bk-bn"
+            className="btn btn-default bk-bn"
+            onClick={() => {
+              setGlobal({
+                "RQ-STD": "PurchaseOrderList"
+              });
+
+              this.routeComponents();
+            }}
+          >
+            <i className="fas fa-angle-double-left fa-lg" />
+            Back to List
+          </button>
+          {/*           
+          <button
+            style={{
+              display:
+                this.state.RQ_Screen === "PurchaseOrderList" ? "none" : "block"
+            }}
+            className="btn btn-primary bck-btn"
             onClick={() => {
               setGlobal({
                 "RQ-STD": "PurchaseOrderList"
@@ -70,7 +89,7 @@ class PurchaseSwitch extends Component {
             }}
           >
             Back
-          </button>
+          </button> */}
 
           <div>{this.changeDisplays()}</div>
         </div>
