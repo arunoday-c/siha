@@ -313,6 +313,19 @@ export default class EmployeeShiftRostering extends Component {
     return dates;
   }
 
+  handleBodyScroll(e) {
+    var target = document.getElementById("shiftRosterTable");
+    let source = document.getElementById("tHdRstr");
+
+    console.log("scroll things", e);
+
+    source.scroll(function() {
+      target
+        .prop("scrollTop", this.scrollTop)
+        .prop("scrollLeft", this.scrollLeft);
+    });
+  }
+
   render() {
     let allYears = getYears();
     return (
@@ -516,7 +529,7 @@ export default class EmployeeShiftRostering extends Component {
                       </div>
                     ) : (
                       <table>
-                        <thead>
+                        <thead id="tHdRstr">
                           <tr>
                             <th>Employee Code</th>
                             <th>Employee Name</th>
@@ -525,15 +538,12 @@ export default class EmployeeShiftRostering extends Component {
                             <th>Exit Date</th>
                           </tr>
                         </thead>
+                        {/* <div className="tbodyScrollCntr"> */}
                         <tbody>
                           {this.state.employees.map((row, index) => (
                             <tr key={row.hims_d_employee_id}>
                               <td>{row.employee_code}</td>
-                              <td>
-                                {row.employee_name}
-
-                                {/* {row.designation ? row.designation : ""} */}
-                              </td>
+                              <td>{row.employee_name}</td>
 
                               {this.plotEmployeeDates(
                                 row.hims_d_employee_id,
@@ -553,6 +563,7 @@ export default class EmployeeShiftRostering extends Component {
                             </tr>
                           ))}
                         </tbody>
+                        {/* </div> */}
                       </table>
                     )}
                   </div>
