@@ -1274,7 +1274,7 @@ processAttendance: (req, res, next) => {
           allMonthlyLeaves = result[3];
           allPendingLeaves = result[4];
 
-            utilities.logger().log("allEmployees my: ", allEmployees);
+           // utilities.logger().log("allEmployees my: ", allEmployees);
           //  utilities.logger().log("allHolidays: ", allHolidays);
           //  utilities.logger().log("allAbsents: ", allAbsents);
           //  utilities.logger().log("allMonthlyLeaves: ", allMonthlyLeaves);
@@ -1422,6 +1422,8 @@ processAttendance: (req, res, next) => {
                         w.employee_id == allEmployees[i]["hims_d_employee_id"] 
                     )
                     .Sum(s => s.updaid_leave_duration);
+
+                   
                 //EN---- calculating paid_leave,unpaid_leave,week_off_include,holiday_include,pending_leaves
 
                 //ST ----------- CALCULATING WEEK OFF AND HOLIDAYS
@@ -1576,6 +1578,7 @@ processAttendance: (req, res, next) => {
                   paid_leave: allEmployees[i]["defaults"].paid_leave,
                   unpaid_leave: allEmployees[i]["defaults"].unpaid_leave,
                   total_paid_days: allEmployees[i]["defaults"].paid_days,
+                  pending_unpaid_leave: allEmployees[i]["defaults"].pending_leaves,
                   created_date: new Date(),
                   created_by: req.userIdentity.algaeh_d_app_user_id,
                   updated_date: new Date(),
@@ -1637,6 +1640,7 @@ processAttendance: (req, res, next) => {
             "paid_leave",
             "unpaid_leave",
             "total_paid_days",
+            "pending_unpaid_leave",
             "created_date",
             "created_by",
             "updated_date",
@@ -1657,7 +1661,7 @@ processAttendance: (req, res, next) => {
                 query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
                 year,month,AM.hospital_id,AM.sub_department_id,\
                 total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
-                total_leave,paid_leave,unpaid_leave,total_paid_days  from hims_f_attendance_monthly AM \
+                total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave from hims_f_attendance_monthly AM \
                 inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
                 where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
                 values: [year, month_number]
