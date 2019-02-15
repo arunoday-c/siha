@@ -16,7 +16,8 @@ import {
   Patientchange,
   SavePosEnrty,
   VisitSearch,
-  LocationchangeTexts
+  LocationchangeTexts,
+  closePopup
 } from "./PointOfSaleEvents";
 import "./PointOfSale.css";
 import "../../../styles/site.css";
@@ -45,7 +46,8 @@ class PointOfSale extends Component {
       cheque_number: "",
       cheque_date: null,
       cheque_amount: 0,
-      advance: 0
+      advance: 0,
+      popUpGenereted: false
     };
   }
 
@@ -187,10 +189,7 @@ class PointOfSale extends Component {
             selectedLang={this.state.selectedLang}
           /> */}
 
-          <div
-            className="row  inner-top-search"
-            style={{ paddingBottom: 10 }}
-          >
+          <div className="row  inner-top-search" style={{ paddingBottom: 10 }}>
             {/* Patient code */}
             <div className="col-lg-8">
               <div className="row">
@@ -393,6 +392,57 @@ class PointOfSale extends Component {
                       }}
                     />
                   </button> */}
+              </div>
+            </div>
+          </div>
+
+          {/* <div className="col-12 editFloatCntr animated slideInUp faster"> */}
+          <div
+            className={
+              "col-12 editFloatCntr animated  " +
+              (this.state.popUpGenereted ? "slideInUp" : "slideOutDown") +
+              " faster"
+            }
+          >
+            {/* <h5>Edit Basic Details</h5> */}
+            <div className="row">
+              <div className="col-3">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "POS Generated No."
+                  }}
+                />
+                <h6>{this.state.pos_number}</h6>
+              </div>
+              <div className="col-3">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "POS Generated Date."
+                  }}
+                />
+                <h6>
+                  {this.state.pos_date
+                    ? moment(this.state.pos_date).format(Options.dateFormat)
+                    : Options.dateFormat}
+                </h6>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col">
+                <button
+                  //onClick={this.updateEmployeeBasicDetails.bind(this)}
+                  type="button"
+                  className="btn btn-primary"
+                >
+                  Print Bill
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={closePopup.bind(this, this)}
+                >
+                  Close
+                </button>
               </div>
             </div>
           </div>
