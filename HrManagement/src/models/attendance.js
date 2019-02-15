@@ -1234,7 +1234,7 @@ processAttendance: (req, res, next) => {
   let allMonthlyLeaves = [];
   let allPendingLeaves = [];
   let attendanceArray = [];
-if(selectWhere.hospital_id != null){
+if(selectWhere.hospital_id >0){
   new Promise((resolve, reject) => {
     try {
       _mysql
