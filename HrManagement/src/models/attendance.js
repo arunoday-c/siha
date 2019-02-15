@@ -1234,7 +1234,7 @@ processAttendance: (req, res, next) => {
   let allMonthlyLeaves = [];
   let allPendingLeaves = [];
   let attendanceArray = [];
-
+if(selectWhere.hospital_id != null){
   new Promise((resolve, reject) => {
     try {
       _mysql
@@ -1540,6 +1540,7 @@ processAttendance: (req, res, next) => {
 
 
                 //ST---- reduce include holidays and weekoff
+              
 
                 allEmployees[i]["defaults"].total_holidays -= allEmployees[i]["defaults"].holiday_include;
                 allEmployees[i]["defaults"].total_week_off -=allEmployees[i]["defaults"].week_off_include;
@@ -1708,6 +1709,18 @@ processAttendance: (req, res, next) => {
         });
       });
   });
+}else{
+  if (req.mySQl == null) {    
+      req.records =  {
+        invalid_input: true,
+        message: "please send hospital id"
+      }
+      next();
+    
+  } else {
+    resolve("please send hospital id");
+  }
+}
 }
 
 
