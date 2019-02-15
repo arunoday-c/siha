@@ -236,9 +236,13 @@ const PageToPlot = {
     import("./Components/DoctorsWorkbench/DoctorsWorkbench-new")
   ),
   EmpShiftRost: React.lazy(() =>
-    import("./Components/EmployeeShiftRostering/EmployeeShiftRostering")
+    import("./Components/EmployeeManagement/EmployeeShiftRostering/EmployeeShiftRostering")
   ),
-  Wps: React.lazy(() => import("./Components/PayrollManagement/WPS/WPS"))
+  Wps: React.lazy(() => import("./Components/PayrollManagement/WPS/WPS")),
+
+  EmpProjRost: React.lazy(() =>
+    import("./Components/EmployeeManagement/EmployeeProjectRoster/EmployeeProjectRoster")
+  )
 };
 
 const DirectRoutes = props => {

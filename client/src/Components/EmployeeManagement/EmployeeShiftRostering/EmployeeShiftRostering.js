@@ -4,13 +4,13 @@ import {
   AlgaehDateHandler,
   AlagehAutoComplete,
   AlgaehLabel
-} from "../Wrapper/algaehWrapper";
-import AlgaehSearch from "../Wrapper/globalSearch";
-import { getYears } from "../../utils/GlobalFunctions";
-import { MONTHS } from "../../utils/GlobalVariables.json";
-import Employee from "../../Search/Employee.json";
+} from "../../Wrapper/algaehWrapper";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import { getYears } from "../../../utils/GlobalFunctions";
+import { MONTHS } from "../../../utils/GlobalVariables.json";
+import Employee from "../../../Search/Employee.json";
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
 export default class EmployeeShiftRostering extends Component {
@@ -492,6 +492,7 @@ export default class EmployeeShiftRostering extends Component {
             </button>
           </div>
         </div>
+
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -572,6 +573,7 @@ export default class EmployeeShiftRostering extends Component {
             </div>
           </div>
         </div>
+
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
