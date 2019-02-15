@@ -18,6 +18,7 @@ class ApplyLeave extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      extra: {},
       selectedLang: this.props.SelectLanguage,
       emp_leaves_data: [],
       leave_his: [],
@@ -250,9 +251,20 @@ class ApplyLeave extends Component {
       },
       onSuccess: res => {
         if (res.data.success) {
-          this.setState({
-            total_applied_days: res.data.records.calculatedLeaveDays
-          });
+          this.setState(
+            {
+              total_applied_days: res.data.records.calculatedLeaveDays,
+              extra: {
+                holiday_included: res.data.records.include_holidays,
+                holidays: res.data.records.total_holiday,
+                weekoff_included: res.data.records.include_week_offs,
+                weekoff_days: res.data.records.total_weekOff
+              }
+            },
+            () => {
+              console.log("Extra:", this.state.extra);
+            }
+          );
         } else if (!res.data.success) {
           swalMessage({
             title: res.data.records.message,
@@ -403,7 +415,8 @@ class ApplyLeave extends Component {
             from_leave_session: this.state.from_leave_session,
             to_leave_session: this.state.to_leave_session,
             total_applied_days: this.state.total_applied_days,
-            remarks: this.state.remarks
+            remarks: this.state.remarks,
+            ...this.state.extra
           },
           onSuccess: res => {
             if (res.data.success) {
