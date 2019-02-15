@@ -23,21 +23,20 @@ export default class MonthlyAttendance extends Component {
         sub_department_id: null,
         data: []
       },
-      branch: {
-        hospital_id: null,
-        loader: false,
-        data: []
-      },
+
       attandance: {
         loader: false,
         data: []
       },
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
+
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
       formatingString: this.monthFormatorString(moment().startOf("month"))
     };
+    this.getSubDepts();
+    this.getOrganization();
   }
   monthFormatorString(yearAndMonth) {
     const _start = moment(yearAndMonth)
@@ -47,11 +46,6 @@ export default class MonthlyAttendance extends Component {
       .endOf("month")
       .format("MMM DD YYYY");
     return _start + " - " + _end;
-  }
-
-  componentDidMount() {
-    this.getSubDepts();
-    this.getOrganization();
   }
 
   getSubDepts() {
@@ -116,10 +110,7 @@ export default class MonthlyAttendance extends Component {
       onSuccess: response => {
         if (response.data.success) {
           that.setState({
-            branch: {
-              loader: false,
-              data: response.data.records
-            }
+            hospitals: response.data.records
           });
         }
       },
@@ -183,6 +174,7 @@ export default class MonthlyAttendance extends Component {
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
     that.setState({ attandance: { loader: true } });
+
     algaehApiCall({
       uri: "/attendance/processAttendance",
       method: "GET",
@@ -337,6 +329,31 @@ export default class MonthlyAttendance extends Component {
           />
 
           <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Filter by Branch",
+              isImp: true
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.hospitals
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
+            }}
+            //showLoading={this.state.branch.loader}
+          />
+
+          <AlagehAutoComplete
             div={{ className: "col " }}
             label={{
               forceLabel: "Filter by Dept.",
@@ -361,40 +378,17 @@ export default class MonthlyAttendance extends Component {
             // showLoading={this.state.department.loader}
           />
 
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Filter by Branch",
-              isImp: false
-            }}
-            selector={{
-              name: "hospital_id",
-              className: "select-fld",
-              value: this.state.hospital_id,
-              dataSource: {
-                textField: "hospital_name",
-                valueField: "hims_d_hospital_id",
-                data: this.state.branch.data
-              },
-              // others: {
-              //   ref: c => {
-              //     this.ref_hospital_id = c;
-              //   },
-              //   stateof: "branch"
-              // },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  hospital_id: null
-                });
-              }
-            }}
-            showLoading={this.state.branch.loader}
-          />
-
-          <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-default">
-              Load
+          <div className="col form-group margin-top-15">
+            <button
+              onClick={this.processAttandance.bind(this)}
+              disabled={this.state.attandance.loader}
+              className="btn btn-primary"
+            >
+              {!this.state.attandance.loader ? (
+                <span>Process Attendance</span>
+              ) : (
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
           </div>
         </div>
@@ -624,6 +618,7 @@ export default class MonthlyAttendance extends Component {
             </div>
           </div>
         </div> */}
+        {/*     
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
@@ -641,6 +636,7 @@ export default class MonthlyAttendance extends Component {
             </div>
           </div>
         </div>
+     */}
       </div>
     );
   }
