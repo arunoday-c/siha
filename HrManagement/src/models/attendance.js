@@ -1541,9 +1541,13 @@ if(selectWhere.hospital_id != null){
 
                 //ST---- reduce include holidays and weekoff
               
-
+                utilities.logger().log("total_week_off: befor",      allEmployees[i]["defaults"].total_week_off );
+               
                 allEmployees[i]["defaults"].total_holidays -= allEmployees[i]["defaults"].holiday_include;
                 allEmployees[i]["defaults"].total_week_off -=allEmployees[i]["defaults"].week_off_include;
+               
+               
+                utilities.logger().log("total_week_off: afte",      allEmployees[i]["defaults"].total_week_off );
                 //EN---- reduce include holidays and weekoff
 
                 allEmployees[i]["defaults"].present_days =
