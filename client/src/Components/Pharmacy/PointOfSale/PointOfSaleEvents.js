@@ -315,7 +315,8 @@ const SavePosEnrty = $this => {
               period: response.data.records.period,
               receipt_number: response.data.records.receipt_number,
               saveEnable: true,
-              postEnable: false
+              postEnable: false,
+              popUpGenereted: true
             });
 
             swalMessage({
@@ -584,6 +585,10 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value, location_type: e.selected.location_type });
 };
 
+const closePopup = $this => {
+  $this.setState({ popUpGenereted: false });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -594,5 +599,6 @@ export {
   SavePosEnrty,
   PostPosEntry,
   VisitSearch,
-  LocationchangeTexts
+  LocationchangeTexts,
+  closePopup
 };

@@ -177,17 +177,6 @@ export default class MonthlyAttendance extends Component {
       that.state.hims_d_employee_id !== ""
         ? { hims_d_employee_id: that.state.hims_d_employee_id }
         : {};
-    const _branch =
-      that.state.branch.hospital_id !== null &&
-      that.state.branch.hospital_id !== ""
-        ? { hospital_id: that.state.branch.hospital_id }
-        : {};
-
-    const _depatment =
-      that.state.department.sub_department_id !== null &&
-      that.state.department.sub_department_id !== ""
-        ? { sub_department_id: that.state.department.sub_department_id }
-        : {};
 
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
@@ -327,7 +316,8 @@ export default class MonthlyAttendance extends Component {
             }}
             selector={{
               sort: "off",
-              sort:"off",name: "month",
+              sort: "off",
+              name: "month",
               className: "select-fld",
               value: this.state.month,
               dataSource: {
@@ -465,7 +455,7 @@ export default class MonthlyAttendance extends Component {
                     )
                   },
                   {
-                    fieldName: "pending_unpaid_leaves",
+                    fieldName: "pending_unpaid_leave",
                     label: (
                       <AlgaehLabel
                         label={{ forceLabel: "Pending Unpaid Leaves" }}
@@ -474,8 +464,8 @@ export default class MonthlyAttendance extends Component {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {row.pending_unpaid_leaves
-                            ? row.pending_unpaid_leaves
+                          {row.pending_unpaid_leave
+                            ? row.pending_unpaid_leave
                             : 0}
                         </span>
                       );
