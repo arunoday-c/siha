@@ -22,7 +22,7 @@ let addShiftMaster = (req, res, next) => {
 
       connection.query(
         "INSERT INTO `hims_d_shift` (shift_code,shift_description,arabic_name,\
-          in_time1, out_time1, in_time2, out_time2, break, break_start, break_end, shift_abbreviation,\
+          in_time1, out_time1, in_time2, out_time2,shift_end_date, break, break_start, break_end, shift_abbreviation,\
           created_date, created_by, updated_date, updated_by)\
             VALUE(?,?,?,?,?,?,?)",
         [
@@ -33,6 +33,7 @@ let addShiftMaster = (req, res, next) => {
           input.out_time1,
           input.in_time2,
           input.out_time2,
+          input.shift_end_date,
           input.break,
           input.break_start,
           input.break_end,
@@ -174,7 +175,7 @@ let updateShiftMaster = (req, res, next) => {
       }
       connection.query(
         "UPDATE `hims_d_shift` SET shift_code=?, shift_description=?, arabic_name=?, shift_status=?,\
-        in_time1=?, out_time1=?, in_time2=?, out_time2=?,\
+        in_time1=?, out_time1=?, in_time2=?, out_time2=?,shift_end_date=?,\
         break=?, break_start=?, break_end=?, shift_abbreviation=?,\
              updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and `hims_d_shift_id`=?;",
         [
@@ -186,6 +187,7 @@ let updateShiftMaster = (req, res, next) => {
           input.out_time1,
           input.in_time2,
           input.out_time2,
+          input.shift_end_date,
           input.break,
           input.break_start,
           input.break_end,

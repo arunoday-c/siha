@@ -155,6 +155,7 @@ export default class AttendanceSettings extends Component {
                   div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Salary Process Date", isImp: true }}
                   selector={{
+                    sort: "off",
                     name: "salary_process_date",
                     value: this.state.salary_process_date,
                     className: "select-fld",
@@ -200,6 +201,7 @@ export default class AttendanceSettings extends Component {
                   div={{ className: "col-2 form-group" }}
                   label={{ forceLabel: "Payroll Payment Date", isImp: false }}
                   selector={{
+                    sort: "off",
                     name: "payroll_payment_date",
                     value: this.state.payroll_payment_date,
                     className: "select-fld",
@@ -249,6 +251,7 @@ export default class AttendanceSettings extends Component {
                     div={{ className: "col-2 form-group" }}
                     label={{ forceLabel: "Days", isImp: true }}
                     selector={{
+                      sort: "off",
                       name: "salary_calendar_fixed_days",
                       value: this.state.salary_calendar_fixed_days,
                       className: "select-fld",

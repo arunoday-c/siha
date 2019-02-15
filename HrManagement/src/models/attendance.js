@@ -22,10 +22,10 @@ module.exports = {
         utilities.logger().log("leave_end_date: ", leave_end_date);
         const endOfMonth =
           leave_end_date == null
-            ? moment(yearAndMonth)
+            ? moment(new Date(yearAndMonth))
                 .endOf("month")
                 .format("YYYY-MM-DD")
-            : moment(leave_end_date).format("YYYY-MM-DD");
+            : moment(new Date(leave_end_date)).format("YYYY-MM-DD");
 
         utilities.logger().log("startOfMonth: ", startOfMonth);
 

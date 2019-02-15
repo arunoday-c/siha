@@ -11,6 +11,7 @@ import { MONTHS } from "../../utils/GlobalVariables.json";
 import Employee from "../../Search/Employee.json";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import Enumerable from "linq";
 
 export default class EmployeeShiftRostering extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ export default class EmployeeShiftRostering extends Component {
     this.state = {
       employees: [],
       hospitals: [],
+      shifts: [],
       loading: false,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
@@ -27,6 +29,27 @@ export default class EmployeeShiftRostering extends Component {
     };
     this.getSubDepartments();
     this.getHospitals();
+    this.getShifts();
+  }
+
+  getShifts() {
+    algaehApiCall({
+      uri: "/shiftAndCounter/getShiftMaster",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            shifts: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getEmployeesForShiftRoster() {
@@ -34,13 +57,24 @@ export default class EmployeeShiftRostering extends Component {
       loading: true
     });
 
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+
+    var fromDate = moment(yearMonth)
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    var toDate = moment(yearMonth)
+      .endOf("month")
+      .format("YYYY-MM-DD");
+
     algaehApiCall({
       uri: "/shift_roster/getEmployeesForShiftRoster",
       method: "GET",
       data: {
         hims_d_employee_id: this.state.hims_d_employee_id,
         hospital_id: this.state.hospital_id,
-        sub_department_id: this.state.sub_department_id
+        sub_department_id: this.state.sub_department_id,
+        fromDate: fromDate,
+        toDate: toDate
       },
       module: "hrManagement",
       onSuccess: res => {
@@ -168,6 +202,7 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
+            this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -178,6 +213,7 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
+            this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -190,7 +226,7 @@ export default class EmployeeShiftRostering extends Component {
     }
   }
 
-  plotEmployeeDates(emp_id) {
+  plotEmployeeDates(emp_id, holidays, leaves) {
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
@@ -205,17 +241,46 @@ export default class EmployeeShiftRostering extends Component {
       Emp_Dates = [];
 
     while (now.isSameOrBefore(lastDate)) {
-      Emp_Dates.push(
-        <td
-          className="time_cell"
-          // onClick={() => {
-          //   alert(emp_id + "-" + now.format("YYYY-MM-DD"));
-          // }}
-          employee_id={emp_id}
-          date={now.format("YYYY-MM-DD")}
-          //style={{ background: "lightgray", cursor: "pointer" }}
-        />
-      );
+      let holiday = Enumerable.from(holidays)
+        .where(
+          w =>
+            moment(w.holiday_date).format("YYYYMMDD") === now.format("YYYYMMDD")
+        )
+        .firstOrDefault();
+      let leave = null;
+      if (leaves !== undefined && leaves.length > 0) {
+        leave = Enumerable.from(leaves)
+          .where(
+            w =>
+              moment(w.leaveDate).format("YYYYMMDD") === now.format("YYYYMMDD")
+          )
+          .firstOrDefault();
+        console.log(leave);
+      }
+
+      let data =
+        leave !== undefined && leave !== null ? (
+          <td className="leave_cell" key={now}>
+            {leave.leave_description}
+          </td>
+        ) : holiday === undefined ? (
+          <td
+            key={now}
+            className="time_cell"
+            employee_id={emp_id}
+            date={now.format("YYYY-MM-DD")}
+          />
+        ) : holiday.weekoff === "Y" ? (
+          <td className="week_off_cell" key={now}>
+            {holiday.holiday_description}
+          </td>
+        ) : holiday.holiday === "Y" ? (
+          <td className="holiday_cell" key={now}>
+            {holiday.holiday_description}
+          </td>
+        ) : null;
+
+      Emp_Dates.push(data);
       now.add(1, "days");
     }
     return Emp_Dates;
@@ -342,6 +407,27 @@ export default class EmployeeShiftRostering extends Component {
             }}
           />
 
+          <AlagehAutoComplete
+            div={{ className: "col form-group" }}
+            label={{ forceLabel: "Select Shift", isImp: true }}
+            selector={{
+              name: "shift_id",
+              value: this.state.shift_id,
+              className: "select-fld",
+              dataSource: {
+                textField: "shift_description",
+                valueField: "hims_d_shift_id",
+                data: this.state.shifts
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  shift_id: null
+                });
+              }
+            }}
+          />
+
           <div className="col-3" style={{ marginTop: 10 }}>
             <div
               className="row"
@@ -378,7 +464,11 @@ export default class EmployeeShiftRostering extends Component {
               style={{ marginTop: 21 }}
               className="btn btn-primary"
             >
-              Load
+              {!this.state.loading ? (
+                <span>Load</span>
+              ) : (
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
             <button
               //  onClick={this.clearState.bind(this)}
@@ -445,7 +535,11 @@ export default class EmployeeShiftRostering extends Component {
                                 {/* {row.designation ? row.designation : ""} */}
                               </td>
 
-                              {this.plotEmployeeDates(row.hims_d_employee_id)}
+                              {this.plotEmployeeDates(
+                                row.hims_d_employee_id,
+                                row.holidays,
+                                row.employeeLeaves
+                              )}
                               <td>
                                 {moment(row.date_of_joining).format(
                                   "DD-MM-YYYY"

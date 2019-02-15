@@ -1347,11 +1347,10 @@ class SelfPersonalDetails extends Component {
                                   name: "dependent_name",
                                   value: row.dependent_name,
                                   others: {
-                                    tabIndex: "3",
-                                    type: "time"
+                                    tabIndex: "3"
                                   },
                                   events: {
-                                    onChange: this.changeGridEditors.bind(this)
+                                    onChange: this.changeGridEditors.bind(this,row )
                                   }
                                 }}
                               />

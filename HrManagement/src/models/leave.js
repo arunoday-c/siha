@@ -4071,8 +4071,8 @@ function saveF  (_mysql,req,  next,  input, msg){
     .executeQuery({
       query:
       "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,application_date,sub_department_id,leave_id,leave_type,\
-        from_date,to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days, created_date, created_by, updated_date, updated_by)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        from_date,to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days,remarks, created_date, created_by, updated_date, updated_by)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       values: [
         numGenLeave[0],
         input.employee_id,
@@ -4086,6 +4086,7 @@ function saveF  (_mysql,req,  next,  input, msg){
         input.to_leave_session,
         input.leave_applied_from,
         input.total_applied_days,
+        input.remarks,
         new Date(),
         req.userIdentity.algaeh_d_app_user_id,
         new Date(),

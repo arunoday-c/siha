@@ -23,7 +23,8 @@ class EarningsDeductions extends Component {
       calculation_method: "FI",
       allow_round_off: false,
       overtime_applicable: false,
-      selectCalculate: "d-none"
+      selectCalculate: "d-none",
+      calculator_values: ""
     };
     this.getEarningDeductions();
   }
@@ -318,19 +319,32 @@ class EarningsDeductions extends Component {
   }
 
   OpenCalculator(e) {
-    debugger;
     this.setState({
       selectCalculate: "d-block"
     });
   }
 
   CLoseCalculator(e) {
-    debugger;
     this.setState({
       selectCalculate: "d-none"
     });
   }
-
+  onChangeCalculatorInput(e) {
+    this.setState({
+      calculator_values: this.state.calculator_values + "" + e.target.value
+    });
+  }
+  onClearCalculatorHandler(e) {
+    this.setState({
+      calculator_values: ""
+    });
+  }
+  onApplayFormulaHandler(e) {
+    this.setState({
+      formula: this.state.calculator_values,
+      selectCalculate: "d-none"
+    });
+  }
   render() {
     let i = 10;
 
@@ -341,7 +355,11 @@ class EarningsDeductions extends Component {
           <form name="calculator">
             <div className="row">
               <div className="col-12">
-                <input type="text" name="answer" />
+                <input
+                  type="text"
+                  name="answer"
+                  value={this.state.calculator_values}
+                />
               </div>
             </div>
 
@@ -351,73 +369,73 @@ class EarningsDeductions extends Component {
                   type="button"
                   className="col-4"
                   value="1"
-                  onClick="calculator.answer.value += '1'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="2"
-                  onClick="calculator.answer.value += '2'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="3"
-                  onClick="calculator.answer.value += '3'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="4"
-                  onClick="calculator.answer.value += '4'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="5"
-                  onClick="calculator.answer.value += '5'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="6"
-                  onClick="calculator.answer.value += '6'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="7"
-                  onClick="calculator.answer.value += '7'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="8"
-                  onClick="calculator.answer.value += '8'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="9"
-                  onClick="calculator.answer.value += '9'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="C"
-                  onClick="calculator.answer.value = ''"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="0"
-                  onClick="calculator.answer.value += '0'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-4"
                   value="="
-                  onClick="calculator.answer.value = eval(calculator.answer.value)"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
               </div>
               <div className="col-4 delimeter-sec">
@@ -425,49 +443,49 @@ class EarningsDeductions extends Component {
                   type="button"
                   className="col-6"
                   value="+"
-                  onClick="calculator.answer.value += '+'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="-"
-                  onClick="calculator.answer.value += '-'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-6"
-                  value="x"
-                  onClick="calculator.answer.value += '*'"
+                  value="*"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="/"
-                  onClick="calculator.answer.value += '/'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="("
-                  onClick="calculator.answer.value += '('"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value=")"
-                  onClick="calculator.answer.value += ')'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="."
-                  onClick="calculator.answer.value += '.'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-6"
                   value="%"
-                  onClick="calculator.answer.value += '%'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
               </div>
               <div className="col-12 ComponentsFormula">
@@ -475,63 +493,70 @@ class EarningsDeductions extends Component {
                   type="button"
                   className="col-3"
                   value="Basic"
-                  onClick="calculator.answer.value += 'Basic'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-3"
-                  value="H.R.A"
-                  onClick="calculator.answer.value += 'H.R.A'"
+                  value="T.P.A"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="T.R.A"
-                  onClick="calculator.answer.value += 'T.R.A'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="E.A"
-                  onClick="calculator.answer.value += 'E.A'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="F.A"
-                  onClick="calculator.answer.value += 'F.A'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-3"
                   value="H.R.A"
-                  onClick="calculator.answer.value += 'T.A'"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-3"
-                  value="H.R.A"
-                  onClick="calculator.answer.value += 'S.P.A'"
+                  value="S.P.A"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
                 <input
                   type="button"
                   className="col-3"
-                  value="H.R.A"
-                  onClick="calculator.answer.value += 'C.L.A'"
+                  value="C.L.A"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
                 />
               </div>
               <div className="col-12 submitBtn">
+                {" "}
                 <input
                   type="button"
-                  className="col-6"
+                  className="col-4"
+                  value="Clear"
+                  onClick={this.onClearCalculatorHandler.bind(this)}
+                />
+                <input
+                  type="button"
+                  className="col-4"
                   value="Close"
                   onClick={this.CLoseCalculator.bind(this)}
                 />
                 <input
                   type="button"
-                  className="col-6"
+                  className="col-4"
                   value="Apply"
-                  onClick="calculator.answer.value += 'C.L.A'"
+                  onClick={this.onApplayFormulaHandler.bind(this)}
                 />
               </div>
             </div>

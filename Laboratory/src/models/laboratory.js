@@ -4,6 +4,8 @@ import algaehUtilities from "algaeh-utilities/utilities";
 import appsettings from "algaeh-utilities/appsettings.json";
 import pad from "node-string-pad";
 import moment from "moment";
+import mysql from "mysql";
+
 module.exports = {
   getLabOrderedServices: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -464,6 +466,271 @@ module.exports = {
         });
     } catch (e) {
       // _mysql.releaseConnection();
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  getTestAnalytes: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT *,la.description from hims_f_ord_analytes, hims_d_lab_analytes la where hims_f_ord_analytes.record_status='A' \
+          and la.hims_d_lab_analytes_id = hims_f_ord_analytes.analyte_id AND order_id=?",
+          values: [req.query.order_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  updateLabSampleStatus: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      let collected = ",";
+      if (input.status == "R") {
+        collected = ", collected='N' ,";
+      }
+      let queryBuilder =
+        "update hims_f_lab_sample set `status`=?" +
+        collected +
+        "remarks=?,updated_date=?,updated_by=? where hims_d_lab_sample_id=?;";
+
+      let inputs = [
+        input.status,
+        input.remarks,
+        new Date(),
+        input.updated_by,
+        input.hims_d_lab_sample_id
+      ];
+      _mysql
+        .executeQueryWithTransaction({
+          query: queryBuilder,
+          values: inputs,
+          printQuery: true
+        })
+        .then(results => {
+          if (input.status == "R") {
+            _mysql
+              .executeQuery({
+                query:
+                  "UPDATE `hims_f_lab_order` SET `status`='O',updated_date=?,updated_by=?  WHERE `hims_f_lab_order_id`=?;",
+                values: [new Date(), input.updated_by, input.order_id],
+                printQuery: true
+              })
+              .then(lab_order => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = lab_order;
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = results;
+              next();
+            });
+          }
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updateLabResultEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updateLabResultEntry: ");
+    try {
+      let inputParam = req.body;
+      let user_id = { ...req.body };
+
+      let status_C = new LINQ(inputParam).Where(w => w.status == "C").ToArray()
+        .length;
+      let status_V = new LINQ(inputParam).Where(w => w.status == "V").ToArray()
+        .length;
+
+      let status_N = new LINQ(inputParam).Where(w => w.status == "N").ToArray()
+        .length;
+
+      let status_E = new LINQ(inputParam).Where(w => w.status == "E").ToArray()
+        .length;
+      utilities.logger().log("runtype: ");
+      let runtype = new LINQ(inputParam)
+        .Where(w => w.run_type != null)
+        .Select(s => s.run_type)
+        .ToArray();
+
+      utilities.logger().log("runtype: ", runtype);
+
+      let ref = null;
+      let entered_by = "";
+      let confirmed_by = "";
+      let validated_by = "";
+      switch (inputParam.length - 1) {
+        case status_C:
+          //Do functionality for C here
+          ref = "CF";
+          confirmed_by = req.userIdentity.algaeh_d_app_user_id;
+          break;
+
+        case status_V:
+          //Do functionality for V here
+          ref = "V";
+          validated_by = req.userIdentity.algaeh_d_app_user_id;
+          break;
+
+        case status_N:
+          //Do functionality for CL here
+          ref = "CL";
+          break;
+
+        case status_E:
+          ref = "CL";
+          entered_by = req.userIdentity.algaeh_d_app_user_id;
+          break;
+        default:
+          ref = null;
+      }
+
+      utilities.logger().log("ref: ", ref);
+
+      let qry = "";
+
+      for (let i = 0; i < req.body.length; i++) {
+        qry += mysql.format(
+          "UPDATE `hims_f_ord_analytes` SET result=?,\
+        `status`=?,`remarks`=?,`run1`=?,`run2`=?,`run3`=?,`critical_type`=?,\
+        entered_by=?,entered_date=?,validate_by=?,validated_date=?,\
+        confirm_by=?,confirmed_date=?,amended=?,amended_date=?,\
+        updated_date=?,updated_by=? where order_id=? AND hims_f_ord_analytes_id=?;",
+          [
+            inputParam[i].result,
+            inputParam[i].status,
+            inputParam[i].remarks,
+            inputParam[i].run1,
+            inputParam[i].run2,
+            inputParam[i].run3,
+            inputParam[i].critical_type,
+            user_id.updated_by,
+            moment().format("YYYY-MM-DD HH:mm"),
+            inputParam[i].validate == "N" ? null : user_id.updated_by,
+            inputParam[i].validate == "N"
+              ? null
+              : moment().format("YYYY-MM-DD HH:mm"),
+            inputParam[i].confirm == "N" ? null : user_id.updated_by,
+            inputParam[i].confirm == "N"
+              ? null
+              : moment().format("YYYY-MM-DD HH:mm"),
+            inputParam[i].amended,
+            inputParam[i].amended === "Y"
+              ? moment().format("YYYY-MM-DD HH:mm")
+              : null,
+            moment().format("YYYY-MM-DD HH:mm"),
+            user_id.updated_by,
+            inputParam[i].order_id,
+            inputParam[i].hims_f_ord_analytes_id
+          ]
+        );
+      }
+      utilities.logger().log("qry: ", qry);
+
+      _mysql
+        .executeQuery({
+          query: qry,
+          printQuery: true
+        })
+        .then(results => {
+          utilities.logger().log("results: ", results);
+          if (results != null && ref != null) {
+            _mysql
+              .executeQuery({
+                query:
+                  "update hims_f_lab_order set `status`=?, run_type=?, entered_date= ?, entered_by= ?, \
+                  confirmed_date= ?,confirmed_by= ?, validated_date= ?, validated_by=?, updated_date= ?, updated_by=? \
+                  where hims_f_lab_order_id=? ",
+                values: [
+                  ref,
+                  runtype[0],
+                  moment().format("YYYY-MM-DD HH:mm"),
+                  user_id.updated_by,
+                  moment().format("YYYY-MM-DD HH:mm"),
+                  user_id.updated_by,
+                  moment().format("YYYY-MM-DD HH:mm"),
+                  user_id.updated_by,
+                  moment().format("YYYY-MM-DD HH:mm"),
+                  user_id.updated_by,
+                  inputParam[0].order_id
+                ],
+                printQuery: true
+              })
+              .then(update_lab_order => {
+                utilities.logger().log("update_lab_order: ", update_lab_order);
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = {
+                    results,
+                    entered_by: entered_by,
+                    confirmed_by: confirmed_by,
+                    validated_by: validated_by
+                  };
+                  next();
+                });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = {
+                results,
+                entered_by: entered_by,
+                confirmed_by: confirmed_by,
+                validated_by: validated_by
+              };
+              next();
+            });
+          }
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
       _mysql.rollBackTransaction(() => {
         next(e);
       });

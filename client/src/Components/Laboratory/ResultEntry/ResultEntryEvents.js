@@ -13,6 +13,7 @@ const texthandle = ($this, e) => {
 const UpdateLabOrder = ($this, value, status) => {
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
+    // module: "laboratory",
     data: value,
     method: "PUT",
     onSuccess: response => {
@@ -21,7 +22,7 @@ const UpdateLabOrder = ($this, value, status) => {
           type: "success",
           title: "Done successfully . ."
         });
-        
+
         for (let k = 0; k < value.length; k++) {
           if (value[k].run_type !== null && value[k].run_type !== undefined) {
             value.splice(k, 1);
@@ -42,8 +43,8 @@ const UpdateLabOrder = ($this, value, status) => {
     },
     onFailure: error => {
       swalMessage({
-        type: "success",
-        title: error.message
+        type: "error",
+        title: error.response.data.message || error.message
       });
     }
   });
@@ -84,29 +85,36 @@ const onvalidate = $this => {
 };
 
 const getAnalytes = $this => {
-  $this.props.getTestAnalytes({
+  algaehApiCall({
     uri: "/laboratory/getTestAnalytes",
+    // module: "laboratory",
     method: "GET",
     data: { order_id: $this.state.hims_f_lab_order_id },
-    redux: {
-      type: "TEST_ANALYTES_GET_DATA",
-      mappingName: "testanalytes"
-    },
-    afterSuccess: data => {
-      for (let i = 0; i < data.length; i++) {
-        data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
-        if (data[i].status === "E" || data[i].status === "N") {
-          data[i].validate = "N";
-          data[i].confirm = "N";
-        } else if (data[i].status === "C") {
-          data[i].validate = "N";
-          data[i].confirm = "Y";
-        } else if (data[i].status === "V") {
-          data[i].validate = "Y";
-          data[i].confirm = "Y";
+    onSuccess: response => {
+      debugger;
+      if (response.data.success) {
+        let data = response.data.records;
+        for (let i = 0; i < data.length; i++) {
+          data[i].hims_f_lab_order_id = $this.state.hims_f_lab_order_id;
+          if (data[i].status === "E" || data[i].status === "N") {
+            data[i].validate = "N";
+            data[i].confirm = "N";
+          } else if (data[i].status === "C") {
+            data[i].validate = "N";
+            data[i].confirm = "Y";
+          } else if (data[i].status === "V") {
+            data[i].validate = "Y";
+            data[i].confirm = "Y";
+          }
         }
+        $this.setState({ test_analytes: data });
       }
-      $this.setState({ test_analytes: data });
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -257,7 +265,7 @@ const onReRun = $this => {
   let test_analytes = $this.state.test_analytes;
   let success = true;
   let runtype = [];
-  
+
   for (let k = 0; k < test_analytes.length; k++) {
     if ($this.state.run_type === "N") {
       // test_analytes[k].run1 = test_analytes[k].result;

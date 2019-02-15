@@ -727,7 +727,7 @@ class LoanRequest extends Component {
                           />
                         ),
                         displayTemplate: row => {
-                          return <span>{row.loan_tenure.toFixed(3)}</span>;
+                          return <span>{row.loan_tenure}</span>;
                         }
                       },
                       {

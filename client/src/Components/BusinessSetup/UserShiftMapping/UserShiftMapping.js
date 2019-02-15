@@ -17,6 +17,8 @@ class UserShiftMapping extends Component {
     super(props);
     this.state = {
       shifts: [],
+      cashiers_list: [],
+      cashiers: [],
       year: moment(new Date()).format("YYYY"),
       month: moment(new Date()).format("M")
     };
@@ -77,7 +79,7 @@ class UserShiftMapping extends Component {
           this.setState({
             cashiers: response.data.records
           });
-          //console.log("Cashiers:", response.data.records);
+          // console.log("Cashiers:", response.data.records);
         }
       },
       onFailure: error => {
@@ -158,7 +160,7 @@ class UserShiftMapping extends Component {
             title: "Record updated successfully",
             type: "success"
           });
-          this.getMappedUsers();
+          // this.getMappedUsers();
         }
       },
       onFailure: error => {
@@ -266,7 +268,8 @@ class UserShiftMapping extends Component {
                 fieldName: "select_month"
               }}
               selector={{
-                sort:"off",name: "month",
+                sort: "off",
+                name: "month",
                 className: "select-fld",
                 value: this.state.month,
                 dataSource: {
@@ -349,8 +352,7 @@ class UserShiftMapping extends Component {
                   }
                 },
                 {
-                  fieldsort:"off",name: "month",
-                  label: "Month",
+                  fieldName: "month",
                   label: <AlgaehLabel label={{ forceLabel: "Month" }} />,
                   displayTemplate: row => {
                     return (

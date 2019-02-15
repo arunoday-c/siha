@@ -254,7 +254,7 @@ export default class AbsenceManagement extends Component {
               ? 0.5
               : 1;
           algaehApiCall({
-            uri: "/leave/markAbsent",
+            uri: "/attendance/markAbsent",
             method: "POST",
             module: "hrManagement",
             data: {
@@ -461,7 +461,8 @@ export default class AbsenceManagement extends Component {
                       isImp: true
                     }}
                     selector={{
-                      sort:"off",name: "month",
+                      sort: "off",
+                      name: "month",
                       className: "select-fld",
                       value: this.state.month,
                       dataSource: {

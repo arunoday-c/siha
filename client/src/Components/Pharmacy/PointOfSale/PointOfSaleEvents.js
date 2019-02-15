@@ -400,8 +400,8 @@ const VisitSearch = ($this, e) => {
           () => {
             if ($this.state.insured === "Y") {
               $this.props.getPatientInsurance({
-                // uri: "/insurance/getPatientInsurance",
-                uri: "/patientRegistration/getPatientInsurance",
+                uri: "/insurance/getPatientInsurance",
+                // uri: "/patientRegistration/getPatientInsurance",
                 // module: "frontDesk",
                 method: "GET",
                 data: {
