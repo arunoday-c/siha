@@ -9,6 +9,46 @@
   background-color: "lightgray";
   cursor: pointer; }
 
+.EmpShiftRost_Screen .editAction {
+  position: relative; }
+  .EmpShiftRost_Screen .editAction .fa-ellipsis-v {
+    display: none;
+    position: absolute;
+    top: 5px;
+    right: 1px;
+    width: 16px;
+    height: 16px;
+    color: #ccc; }
+    .EmpShiftRost_Screen .editAction .fa-ellipsis-v:hover {
+      color: #000; }
+    .EmpShiftRost_Screen .editAction .fa-ellipsis-v:hover + ul {
+      display: block; }
+  .EmpShiftRost_Screen .editAction ul {
+    display: none;
+    list-style: none;
+    border: 1px solid #ccc;
+    position: absolute;
+    width: auto;
+    min-width: 100px;
+    right: 5px;
+    top: 18px;
+    margin: 0;
+    padding: 0;
+    z-index: 9; }
+    .EmpShiftRost_Screen .editAction ul li {
+      padding: 5px 10px;
+      text-align: left;
+      background: #fff;
+      border-bottom: 1px solid #ccc; }
+      .EmpShiftRost_Screen .editAction ul li:hover {
+        background-color: #f2f2f2; }
+      .EmpShiftRost_Screen .editAction ul li::last-child {
+        border-bottom: none; }
+    .EmpShiftRost_Screen .editAction ul:hover {
+      display: block; }
+  .EmpShiftRost_Screen .editAction:hover .fa-ellipsis-v {
+    display: block; }
+
 .EmpShiftRost_Screen .week_off_cell {
   background: #3f9c62;
   color: white; }
