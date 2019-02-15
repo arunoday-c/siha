@@ -13,6 +13,10 @@
       "port": 3013,
       "url": ""
     },
+    "radiology": {
+      "port": 3012,
+      "url": ""
+    },
     "finance": {
       "port": 3007,
       "url": ""
