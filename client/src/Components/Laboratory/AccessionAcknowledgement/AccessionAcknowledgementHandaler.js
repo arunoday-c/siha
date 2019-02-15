@@ -137,7 +137,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
 
       algaehApiCall({
         uri: "/laboratory/updateLabSampleStatus",
-        module: "laboratory",
+        // module: "laboratory",
         data: inputobj,
         method: "PUT",
         onSuccess: response => {

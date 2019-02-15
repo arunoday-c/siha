@@ -107,7 +107,7 @@ const getSampleCollectionDetails = $this => {
   debugger;
   algaehApiCall({
     uri: "/laboratory/getLabOrderedServices",
-    module: "laboratory",
+    // module: "laboratory",
     method: "GET",
     data: inputobj,
     onSuccess: response => {

@@ -17,7 +17,7 @@ const CollectSample = ($this, context, row) => {
 
   algaehApiCall({
     uri: "/laboratory/updateLabOrderServices",
-    module: "laboratory",
+    // module: "laboratory",
     data: inputobj,
     method: "PUT",
     onSuccess: response => {
