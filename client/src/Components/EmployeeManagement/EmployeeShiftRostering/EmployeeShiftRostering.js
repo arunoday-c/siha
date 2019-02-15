@@ -202,7 +202,7 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForShiftRoster();
+            // this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -213,7 +213,7 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForShiftRoster();
+            //this.getEmployeesForShiftRoster();
           }
         );
         break;
