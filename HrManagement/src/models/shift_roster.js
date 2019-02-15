@@ -351,7 +351,6 @@ module.exports = {
                 }
               }
             }
-
             outputArray.push({
               ...allEmployees[i],
               employeeLeaves,

@@ -1668,11 +1668,15 @@ processAttendance: (req, res, next) => {
               })
               .then(selectData => {
               //utilities.logger().log("selectData: ", selectData);
+              if (req.mySQl == null) {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = selectData;
                 next();
               });
+            } else {
+              resolve(selectData);
+            }
             }).catch(e => {
               _mysql.rollBackTransaction(() => {
                 next(e);
