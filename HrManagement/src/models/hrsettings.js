@@ -400,12 +400,19 @@ module.exports = {
     try {
       const _mysql = new algaehMysql();
 
+      let _strQuery = "";
+      if (req.query.pjoject_status != null) {
+        _strQuery = "and pjoject_status = " + req.query.pjoject_status;
+      }
+
       _mysql
         .executeQuery({
           query:
             "select hims_d_project_id, project_code,project_desc,project_desc_arabic,\
             start_date, end_date, pjoject_status, inactive_date from hims_d_project\
-         where record_status='A'  order by hims_d_project_id desc",
+            where record_status='A'" +
+            _strQuery +
+            "order by hims_d_project_id desc",
           printQuery: true
         })
         .then(result => {
