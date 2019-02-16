@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { AlgaehDateHandler } from "../../../Wrapper/algaehWrapper";
-
+import "./ShiftAssign.css";
 class ShiftAssign extends Component {
   constructor(props) {
     super(props);
@@ -80,7 +80,7 @@ class ShiftAssign extends Component {
             <div style={{ maxHeight: "400px" }} className="row">
               <div className="col-6">
                 <h6>EMPLOYEES</h6>
-                <ul>
+                <ul className="shiftEmployeeList">
                   {this.state.employees.map((data, index) => (
                     <li key={index}>
                       <input
@@ -101,7 +101,7 @@ class ShiftAssign extends Component {
               </div>
               <div className="col-6">
                 <h6>SHIFTS</h6>
-                <ul>
+                <ul className="shiftList">
                   {this.state.shifts.map((data, index) => (
                     <li key={index}>
                       <input
