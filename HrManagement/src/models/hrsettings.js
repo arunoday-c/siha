@@ -395,5 +395,101 @@ module.exports = {
     } catch (e) {
       next(e);
     }
+  },
+  getProjects: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_project_id, project_code,project_desc,project_desc_arabic,\
+            start_date, end_date, pjoject_status, inactive_date from hims_d_project\
+         where record_status='A'  order by hims_d_project_id desc",
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  addProject: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT  INTO hims_d_project(project_code,project_desc,project_desc_arabic,start_date,end_date,\
+            created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?)",
+          values: [
+            input.project_code,
+            input.project_desc,
+            input.project_desc_arabic,
+            input.start_date,
+            input.end_date,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+  updateProjects: (req, res, next) => {
+    try {
+      const _mysql = new algaehMysql();
+      let input = { ...req.body };
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_project SET project_code = ?,project_desc = ?, project_desc_arabic = ?, \
+            start_date = ?, end_date = ?, pjoject_status = ?, record_status=?\
+          ,updated_date=?, updated_by=?  WHERE hims_d_project_id = ?",
+          values: [
+            input.project_code,
+            input.project_desc,
+            input.project_desc_arabic,
+            input.start_date,
+            input.end_date,
+            input.pjoject_status,
+            input.record_status,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_project_id
+          ]
+        })
+        .then(update_project => {
+          _mysql.releaseConnection();
+          req.records = update_project;
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
   }
 };
