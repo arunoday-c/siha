@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { searchData } from "../model/globalSearch";
+import { searchData, newSearch } from "../model/globalSearch";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 export default () => {
@@ -17,6 +17,26 @@ export default () => {
       res.status(httpStatus.ok).json({
         success: true,
         records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  api.post(
+    "/newSearch",
+    newSearch,
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: {
+          totalPages: req.records[1][0].total_pages,
+          data: req.records[0].map((item, index) => {
+            return {
+              title: String(index),
+              ...item
+            };
+          })
+        }
       });
       next();
     },

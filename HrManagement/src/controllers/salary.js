@@ -6,13 +6,15 @@ import {
   getSalaryProcessToPay,
   finalizedSalaryProcess,
   SaveSalaryPayment,
-  getWpsEmployees
+  getWpsEmployees,
+  newProcessSalary
 } from "../models/salary";
 export default () => {
   const api = Router();
   api.get(
     "/processSalary",
     processSalary,
+    //newProcessSalary,
     getSalaryProcess,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -53,7 +55,6 @@ export default () => {
       result: req.records
     });
   });
-
 
   api.get("/getWpsEmployees", getWpsEmployees, (req, res, next) => {
     if (req.records.invalid_input == true) {
