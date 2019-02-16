@@ -315,7 +315,8 @@ const SavePosEnrty = $this => {
               period: response.data.records.period,
               receipt_number: response.data.records.receipt_number,
               saveEnable: true,
-              postEnable: false
+              postEnable: false,
+              popUpGenereted: true
             });
 
             swalMessage({
@@ -400,8 +401,8 @@ const VisitSearch = ($this, e) => {
           () => {
             if ($this.state.insured === "Y") {
               $this.props.getPatientInsurance({
-                // uri: "/insurance/getPatientInsurance",
-                uri: "/patientRegistration/getPatientInsurance",
+                uri: "/insurance/getPatientInsurance",
+                // uri: "/patientRegistration/getPatientInsurance",
                 // module: "frontDesk",
                 method: "GET",
                 data: {
@@ -584,6 +585,10 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value, location_type: e.selected.location_type });
 };
 
+const closePopup = $this => {
+  $this.setState({ popUpGenereted: false });
+};
+
 export {
   changeTexts,
   getCtrlCode,
@@ -594,5 +599,6 @@ export {
   SavePosEnrty,
   PostPosEntry,
   VisitSearch,
-  LocationchangeTexts
+  LocationchangeTexts,
+  closePopup
 };

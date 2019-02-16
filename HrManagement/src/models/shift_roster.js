@@ -173,10 +173,9 @@ module.exports = {
          and (weekoff='Y' or holiday='Y') and hospital_id=?;\         
          select hims_f_leave_application_id,employee_id,leave_id,leave_description,L.leave_type,from_date,to_date,\
          from_leave_session,to_leave_session,status\
-      FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
-        where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
-       (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)) group by leave_id 
-         `,
+          FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
+          where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
+        (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?))`,
           values: [
             req.query.hospital_id,
             fromDate,
@@ -352,7 +351,6 @@ module.exports = {
                 }
               }
             }
-
             outputArray.push({
               ...allEmployees[i],
               employeeLeaves,

@@ -4,14 +4,15 @@ import {
   AlgaehDateHandler,
   AlagehAutoComplete,
   AlgaehLabel
-} from "../Wrapper/algaehWrapper";
-import AlgaehSearch from "../Wrapper/globalSearch";
-import { getYears } from "../../utils/GlobalFunctions";
-import { MONTHS } from "../../utils/GlobalVariables.json";
-import Employee from "../../Search/Employee.json";
+} from "../../Wrapper/algaehWrapper";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import { getYears } from "../../../utils/GlobalFunctions";
+import { MONTHS } from "../../../utils/GlobalVariables.json";
+import Employee from "../../../Search/Employee.json";
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
+import ShiftAssign from "./ShiftAssign/ShiftAssign";
 
 export default class EmployeeShiftRostering extends Component {
   constructor(props) {
@@ -19,6 +20,7 @@ export default class EmployeeShiftRostering extends Component {
     this.state = {
       employees: [],
       hospitals: [],
+      openShiftAssign: false,
       shifts: [],
       loading: false,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
@@ -30,6 +32,12 @@ export default class EmployeeShiftRostering extends Component {
     this.getSubDepartments();
     this.getHospitals();
     this.getShifts();
+  }
+
+  showModal(e) {
+    this.setState({
+      openShiftAssign: true
+    });
   }
 
   getShifts() {
@@ -202,7 +210,7 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForShiftRoster();
+            // this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -213,7 +221,7 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForShiftRoster();
+            //this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -265,11 +273,20 @@ export default class EmployeeShiftRostering extends Component {
           </td>
         ) : holiday === undefined ? (
           <td
+            onClick={this.showModal.bind(this)}
             key={now}
-            className="time_cell"
+            className="time_cell editAction"
             employee_id={emp_id}
             date={now.format("YYYY-MM-DD")}
-          />
+          >
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li>Cut</li>
+              <li>Copy</li>
+              <li>Paste</li>
+              <li>Clear</li>
+            </ul>
+          </td>
         ) : holiday.weekoff === "Y" ? (
           <td className="week_off_cell" key={now}>
             {holiday.holiday_description}
@@ -313,10 +330,27 @@ export default class EmployeeShiftRostering extends Component {
     return dates;
   }
 
+  closeShiftAssign() {
+    this.setState({
+      openShiftAssign: false
+    });
+  }
+
   render() {
     let allYears = getYears();
     return (
       <div className="EmpShiftRost_Screen">
+        <ShiftAssign
+          data={{
+            from_date: "2019-02-01",
+            to_date: "2019-02-28",
+            shifts: this.state.shifts,
+            employees: this.state.employees
+          }}
+          open={this.state.openShiftAssign}
+          onClose={this.closeShiftAssign.bind(this)}
+        />
+
         <div className="row  inner-top-search">
           <AlagehAutoComplete
             div={{ className: "col" }}
@@ -479,6 +513,7 @@ export default class EmployeeShiftRostering extends Component {
             </button>
           </div>
         </div>
+
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -516,7 +551,7 @@ export default class EmployeeShiftRostering extends Component {
                       </div>
                     ) : (
                       <table>
-                        <thead>
+                        <thead id="tHdRstr">
                           <tr>
                             <th>Employee Code</th>
                             <th>Employee Name</th>
@@ -525,15 +560,12 @@ export default class EmployeeShiftRostering extends Component {
                             <th>Exit Date</th>
                           </tr>
                         </thead>
+                        {/* <div className="tbodyScrollCntr"> */}
                         <tbody>
                           {this.state.employees.map((row, index) => (
                             <tr key={row.hims_d_employee_id}>
                               <td>{row.employee_code}</td>
-                              <td>
-                                {row.employee_name}
-
-                                {/* {row.designation ? row.designation : ""} */}
-                              </td>
+                              <td>{row.employee_name}</td>
 
                               {this.plotEmployeeDates(
                                 row.hims_d_employee_id,
@@ -553,6 +585,7 @@ export default class EmployeeShiftRostering extends Component {
                             </tr>
                           ))}
                         </tbody>
+                        {/* </div> */}
                       </table>
                     )}
                   </div>
@@ -561,6 +594,7 @@ export default class EmployeeShiftRostering extends Component {
             </div>
           </div>
         </div>
+
         <div className="row">
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">

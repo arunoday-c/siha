@@ -240,7 +240,7 @@ const generateBillDetails = ($this, context) => {
 
             algaehApiCall({
               uri: "/billing/billingCalculations",
-              module: "billing",
+              // module: "billing",
               method: "POST",
               data: response.data.records,
               onSuccess: response => {

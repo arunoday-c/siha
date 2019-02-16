@@ -308,6 +308,7 @@ const AddItems = ($this, context) => {
   } else {
     let ItemInput = [
       {
+        discount_percentage: $this.state.discount_percentage,
         insured: $this.state.insured,
         conversion_factor: $this.state.conversion_factor,
         vat_applicable: "Y",
@@ -505,6 +506,9 @@ const deletePosDetail = ($this, context, row) => {
         net_tax: 0,
         credit_amount: 0,
         receiveable_amount: 0,
+        patient_responsibility: 0,
+        company_responsibility: 0,
+        sec_company_responsibility: 0,
 
         cash_amount: 0,
         card_number: "",
@@ -520,7 +524,49 @@ const deletePosDetail = ($this, context, row) => {
       });
     }
   } else {
-    PosheaderCalculation($this, context);
+    // PosheaderCalculation($this, context);
+    // calculateAmount($this, context, row, e);
+    algaehApiCall({
+      uri: "/billing/billingCalculations",
+      method: "POST",
+      data: { billdetails: pharmacy_stock_detail },
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+
+          data.patient_payable_h =
+            data.patient_payable || $this.state.patient_payable;
+          data.sub_total = data.sub_total_amount || $this.state.sub_total;
+          data.patient_responsibility =
+            data.patient_res || $this.state.patient_responsibility;
+          data.company_responsibility =
+            data.company_res || $this.state.company_responsibility;
+
+          data.company_payable =
+            data.company_payble || $this.state.company_payable;
+          data.sec_company_responsibility =
+            data.sec_company_res || $this.state.sec_company_responsibility;
+          data.sec_company_payable =
+            data.sec_company_paybale || $this.state.sec_company_payable;
+
+          data.copay_amount = data.copay_amount || $this.state.copay_amount;
+          data.sec_copay_amount =
+            data.sec_copay_amount || $this.state.sec_copay_amount;
+          data.addItemButton = false;
+          data.saveEnable = false;
+
+          if (context !== null) {
+            context.updateState({ ...data });
+          }
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
     if (context !== undefined) {
       context.updateState({
         pharmacy_stock_detail: pharmacy_stock_detail
@@ -576,8 +622,9 @@ const updatePosDetail = ($this, context) => {
 };
 
 //Calculate Row Detail
-const calculateAmount = ($this, row, ctrl, e) => {
+const calculateAmount = ($this, context, row, ctrl, e) => {
   //
+
   e = e || ctrl;
   if (e.target.value !== e.target.oldvalue) {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
@@ -591,7 +638,10 @@ const calculateAmount = ($this, row, ctrl, e) => {
         pharmacy_item: "Y",
         quantity: row.quantity,
         discount_amout:
-          e.target.name === "discount_percentage" ? 0 : row.discount_amount,
+          e.target.name === "discount_percentage" ||
+          e.target.name === "quantity"
+            ? 0
+            : row.discount_amount,
         discount_percentage:
           e.target.name === "discount_amount" ? 0 : row.discount_percentage,
 
@@ -631,10 +681,55 @@ const calculateAmount = ($this, row, ctrl, e) => {
           pharmacy_stock_detail[row.rowIdx] = row;
 
           $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+          algaehApiCall({
+            uri: "/billing/billingCalculations",
+            method: "POST",
+            data: { billdetails: pharmacy_stock_detail },
+            onSuccess: response => {
+              if (response.data.success) {
+                let data = response.data.records;
+
+                data.patient_payable_h =
+                  data.patient_payable || $this.state.patient_payable;
+                data.sub_total = data.sub_total_amount || $this.state.sub_total;
+                data.patient_responsibility =
+                  data.patient_res || $this.state.patient_responsibility;
+                data.company_responsibility =
+                  data.company_res || $this.state.company_responsibility;
+
+                data.company_payable =
+                  data.company_payble || $this.state.company_payable;
+                data.sec_company_responsibility =
+                  data.sec_company_res ||
+                  $this.state.sec_company_responsibility;
+                data.sec_company_payable =
+                  data.sec_company_paybale || $this.state.sec_company_payable;
+
+                data.copay_amount =
+                  data.copay_amount || $this.state.copay_amount;
+                data.sec_copay_amount =
+                  data.sec_copay_amount || $this.state.sec_copay_amount;
+                data.addItemButton = false;
+                data.saveEnable = false;
+                if (context !== null) {
+                  context.updateState({
+                    ...data,
+                    pharmacy_stock_detail: pharmacy_stock_detail
+                  });
+                }
+              }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message,
+                type: "error"
+              });
+            }
+          });
         }
       },
       onFailure: error => {
-        AlgaehLoader({ show: false });
         swalMessage({
           title: error.message,
           type: "error"
@@ -755,7 +850,7 @@ const ShowItemBatch = ($this, e) => {
   });
 };
 
-const CloseItemBatch = ($this, e) => {
+const CloseItemBatch = ($this, context, e) => {
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
@@ -766,9 +861,20 @@ const CloseItemBatch = ($this, e) => {
     grn_no: e.selected === true ? e.grnno : $this.state.grn_no,
     qtyhand: e.selected === true ? e.qtyhand : $this.state.qtyhand
   });
+
+  if (context !== null) {
+    context.updateState({
+      batchno: e.selected === true ? e.batchno : $this.state.batchno,
+      expiry_date:
+        e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date,
+
+      grn_no: e.selected === true ? e.grnno : $this.state.grn_no,
+      qtyhand: e.selected === true ? e.qtyhand : $this.state.qtyhand
+    });
+  }
 };
 
-const onchangegridcol = ($this, row, e) => {
+const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value <= 0) {
@@ -778,12 +884,12 @@ const onchangegridcol = ($this, row, e) => {
     });
   } else {
     row[name] = value;
-    row.update();
-    calculateAmount($this, row, e);
+    // row.update();
+    calculateAmount($this, context, row, e);
   }
 };
 
-const qtyonchangegridcol = ($this, row, e) => {
+const qtyonchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value <= 0) {
@@ -798,8 +904,8 @@ const qtyonchangegridcol = ($this, row, e) => {
     });
   } else {
     row[name] = value;
-    row.update();
-    calculateAmount($this, row, e);
+    // row.update();
+    calculateAmount($this, context, row, e);
   }
 };
 

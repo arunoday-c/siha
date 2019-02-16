@@ -5,35 +5,99 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   getRadOrderedServices: (req, res, next) => {
-    return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
-      try {
-        _mysql
-          .executeQuery({
-            query: "",
-            values: [],
-            printQuery: true
-          })
-          .then(result => {
-            _mysql.releaseConnection();
-            req.records = result;
-            resolve(result);
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            reject(error);
-            next(error);
-          });
-      } catch (e) {
-        _mysql.releaseConnection();
-        next(e);
+    const _mysql = new algaehMysql();
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("getRadOrderedServices: ");
+      let inputValues = [];
+      let _stringData = "";
+
+      if (req.query.from_date != null) {
+        _stringData +=
+          "date(ordered_date) between date('" +
+          req.query.from_date +
+          "') AND date('" +
+          req.query.to_date +
+          "')";
+      } else {
+        _stringData += "date(ordered_date) <= date(now())";
       }
-    }).catch(e => {
+
+      if (req.query.patient_id != null) {
+        _stringData += " and SA.patient_id=?";
+        inputValues.push(req.query.patient_id);
+      }
+
+      if (req.query.status != null) {
+        _stringData += " and SA.status=?";
+        inputValues.push(req.query.status);
+      }
+
+      if (req.query.test_type != null) {
+        _stringData += " and SA.test_type=?";
+        inputValues.push(req.query.test_type);
+      }
+
+      utilities.logger().log("_stringData: ", _stringData);
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, template_id, billed, service_id,SR.service_code,SR.service_name,\
+          status, cancelled, ordered_by, ordered_date, test_type, technician_id, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
+          validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
+          PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
+          from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
+          hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE " +
+            _stringData +
+            " order by hims_f_rad_order_id desc",
+          values: inputValues,
+          printQuery: true
+        })
+        .then(result => {
+          utilities.logger().log("result: ", result);
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
       _mysql.releaseConnection();
       next(e);
-    });
+    }
   },
+  // getRadOrderedServices: (req, res, next) => {
+  //   return new Promise((resolve, reject) => {
+  //     const _mysql = new algaehMysql();
+  //     try {
+  //       _mysql
+  //         .executeQuery({
+  //           query: "",
+  //           values: [],
+  //           printQuery: true
+  //         })
+  //         .then(result => {
+  //           _mysql.releaseConnection();
+  //           req.records = result;
+  //           resolve(result);
+  //           next();
+  //         })
+  //         .catch(error => {
+  //           _mysql.releaseConnection();
+  //           reject(error);
+  //           next(error);
+  //         });
+  //     } catch (e) {
+  //       _mysql.releaseConnection();
+  //       next(e);
+  //     }
+  //   }).catch(e => {
+  //     _mysql.releaseConnection();
+  //     next(e);
+  //   });
+  // },
 
   insertRadOrderedServices: (req, res, next) => {
     const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
@@ -119,6 +183,103 @@ module.exports = {
       _mysql.rollBackTransaction(() => {
         next(e);
       });
+    }
+  },
+
+  updateRadOrderedServices: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("updateRadOrderedServices ");
+      let inputParam = { ...req.body };
+      if (inputParam.scheduled_by == null && inputParam.status == "S") {
+        inputParam.scheduled_by = req.userIdentity.algaeh_d_app_user_id;
+      }
+      if (inputParam.validate_by == null && inputParam.status == "RA") {
+        inputParam.validate_by = req.userIdentity.algaeh_d_app_user_id;
+      }
+      if (
+        inputParam.attended_by == null &&
+        inputParam.status == "V" &&
+        inputParam.report_type == "AD"
+      ) {
+        inputParam.attended_by = req.userIdentity.algaeh_d_app_user_id;
+      }
+      if (inputParam.status == "UP") {
+        inputParam.technician_id = req.userIdentity.algaeh_d_app_user_id;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_f_rad_order` \
+          SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,\
+          `validate_by`=?, `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, \
+          `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,`technician_id`=?, `template_id`=?\
+          WHERE `hims_f_rad_order_id`=?",
+          values: [
+            inputParam.status,
+            inputParam.cancelled,
+            inputParam.scheduled_date_time,
+            inputParam.scheduled_by,
+            inputParam.arrived_date,
+            inputParam.arrived,
+            inputParam.validate_by,
+            inputParam.validate_date_time,
+            inputParam.attended_by,
+            inputParam.attended_date_time,
+            inputParam.exam_start_date_time,
+            inputParam.exam_end_date_time,
+            inputParam.exam_status,
+            inputParam.report_type,
+            inputParam.technician_id,
+            inputParam.template_id,
+            inputParam.hims_f_rad_order_id
+          ],
+          printQuery: true
+        })
+        .then(update_rad_order => {
+          _mysql.releaseConnection();
+          req.records = update_rad_order;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getRadTemplateList: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("getRadTemplateList: ");
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT distinct TD.template_name, TD.template_html, IT.hims_d_investigation_test_id,TD.hims_d_rad_template_detail_id \
+          FROM hims_d_investigation_test IT, \
+         hims_d_rad_template_detail TD  WHERE IT.hims_d_investigation_test_id = TD.test_id AND services_id=?",
+          values: [req.query.services_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
     }
   }
 };

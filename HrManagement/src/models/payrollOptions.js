@@ -189,6 +189,7 @@ module.exports = {
         next(e);
       });
   },
+
   //created by irfan: to
   updateEosOptions: (req, res, next) => {
     const _mysql = new algaehMysql();

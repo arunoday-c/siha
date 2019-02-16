@@ -244,7 +244,7 @@ class RegistrationPatient extends PureComponent {
             delete patientdata.cities;
             algaehApiCall({
               uri: "/frontDesk/add",
-              module: "frontDesk",
+              // module: "frontDesk",
               data: patientdata,
               method: "POST",
               onSuccess: response => {
@@ -276,7 +276,7 @@ class RegistrationPatient extends PureComponent {
           } else {
             algaehApiCall({
               uri: "/frontDesk/update",
-              module: "frontDesk",
+              // module: "frontDesk",
               data: $this.state,
               method: "POST",
               onSuccess: response => {
@@ -335,7 +335,7 @@ class RegistrationPatient extends PureComponent {
 
     algaehApiCall({
       uri: "/frontDesk/get",
-      module: "frontDesk",
+      // module: "frontDesk",
       method: "GET",
       data: { patient_code: patcode },
       onSuccess: response => {
@@ -381,8 +381,8 @@ class RegistrationPatient extends PureComponent {
           });
 
           $this.props.getPatientInsurance({
-            // uri: "/insurance/getPatientInsurance",
-            uri: "/patientRegistration/getPatientInsurance",
+            uri: "/insurance/getPatientInsurance",
+            // uri: "/patientRegistration/getPatientInsurance",
             // module: "frontDesk",
             method: "GET",
             data: {

@@ -1707,11 +1707,11 @@ module.exports = {
       _mysql
         .executeQuery({
           query: `select hims_f_salary_id,salary_number,employee_id,month,year,salary_date, E.employee_code,\
-        E.full_name as employee_name ,E.company_bank_id,E.employee_bank_namem,E.employee_bank_ifsc_code,\
-        E.employee_account_number S.salary_paid ,S.total_work_days ,S.net_salary ,S.total_deductions,S.total_hours,\
-        S.total_working_hours,S.ot_work_hours,S.ot_weekoff_hours,S.shortage_hours,S.ot_holiday_hoursfrom hims_f_salary S \
-        inner join hims_d_employee E on S.employee_id=E.hims_d_employee_id where  S.salary_paid='Y'\
-        and E.mode_of_payment='WPS' and  S.year=? and S.month=? `,
+        E.full_name as employee_name ,E.company_bank_id,E.employee_bank_name,E.employee_bank_ifsc_code,\
+        E.employee_account_number, S.salary_paid ,S.total_work_days ,S.net_salary ,S.total_deductions,S.total_hours,\
+        S.total_working_hours,S.ot_work_hours,S.ot_weekoff_hours,S.shortage_hours,S.ot_holiday_hours  from hims_f_salary S \
+        inner join hims_d_employee E on S.employee_id=E.hims_d_employee_id where S.salary_paid='Y'\
+        and E.mode_of_payment='WPS' and  S.year=? and S.month=?`,
           values: [req.query.year, req.query.month],
           printQuery: true
         })
@@ -1729,7 +1729,6 @@ module.exports = {
         invalid_input: true,
         message: "Please Provide valid input "
       };
-
       next();
       return;
     }

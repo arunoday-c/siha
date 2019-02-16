@@ -4,6 +4,7 @@ import EarningsDeductions from "./EarningsDeductions/EarningsDeductions";
 import LoanMaster from "./LoanMaster/LoanMaster";
 import HolidayMaster from "./HolidayMaster/HolidayMaster";
 import LeaveMasterIndex from "./LeaveMasterIndex/LeaveMasterIndex";
+import OvertimeGroups from "./OvertimeGroups/OvertimeGroups";
 
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
@@ -85,6 +86,19 @@ class PayrollSettings extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"OvertimeGroups"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Overtime Groups"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -97,6 +111,8 @@ class PayrollSettings extends Component {
             <LeaveMasterIndex />
           ) : this.state.pageDisplay === "HolidayMaster" ? (
             <HolidayMaster />
+          ) : this.state.pageDisplay === "OvertimeGroups" ? (
+            <OvertimeGroups />
           ) : null}
         </div>
       </div>
