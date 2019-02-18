@@ -2,19 +2,128 @@ import React, { Component } from "react";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { AlgaehDateHandler } from "../../../Wrapper/algaehWrapper";
 import "./ShiftAssign.css";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import moment from "moment";
 class ShiftAssign extends Component {
   constructor(props) {
     super(props);
     this.state = {
       employees: [],
-      shifts: []
+      shifts: [],
+      shiftEmp: []
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    if (nextProps.open === true) {
+      let myArray = this.state.shiftEmp;
+      myArray.push(nextProps.sendId);
+      this.setState({
+        ...nextProps.data,
+        shiftEmp: myArray
+      });
+    } else {
+      this.setState({
+        shiftEmp: []
+      });
+    }
+  }
+
+  shiftHandler(data, e) {
     this.setState({
-      ...nextProps.data
+      shift_id: data.hims_d_shift_id,
+      shift_end_day: data.shift_end_day,
+      shift_start_time: data.in_time1,
+      shift_end_time: data.out_time1,
+      shift_time: data.shift_time
     });
+  }
+
+  addEmployees(id) {
+    let myArray = this.state.shiftEmp;
+
+    if (myArray.includes(id)) {
+      myArray.pop(id);
+    } else {
+      myArray.push(id);
+    }
+
+    this.setState(
+      {
+        shiftEmp: myArray
+      },
+      () => {
+        // console.log("Data:", this.state.shiftEmp);
+      }
+    );
+  }
+
+  processAssignment() {
+    if (this.state.shift_id === undefined || this.state.shift_id === null) {
+      swalMessage({
+        title: "Please Select a shift to assign",
+        type: "warning"
+      });
+    } else if (
+      this.state.shiftEmp.length === 0 ||
+      this.state.shiftEmp === undefined
+    ) {
+      swalMessage({
+        title: "Please select atleast one employee to asssign shift",
+        type: "warning"
+      });
+    } else if (
+      moment(this.state.from_date).format("YYYYMMDD") >
+      moment(this.state.to_date).format("YYYYMMDD")
+    ) {
+      swalMessage({
+        title: "Please select a proper Date Range",
+        type: "warning"
+      });
+    } else {
+      let x = moment.duration(
+        moment(this.state.shift_end_time, "HH:mm:ss").diff(
+          moment(this.state.shift_start_time, "HH:mm:ss")
+        )
+      );
+
+      let hours = x._data.hours;
+      let mins = x._data.minutes;
+
+      let sendData = {
+        from_date: moment(this.state.from_date).format("YYYY-MM-DD"),
+        to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
+        shift_id: this.state.shift_id,
+        employees: this.state.shiftEmp,
+        shift_end_day: this.state.shift_end_day,
+        shift_start_time: this.state.shift_start_time,
+        shift_end_time: this.state.shift_end_time,
+        shift_time: hours + "." + mins
+      };
+
+      algaehApiCall({
+        uri: "/shift_roster/addShiftRoster",
+        method: "POST",
+        data: sendData,
+        module: "hrManagement",
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Record Added Successfully",
+              type: "success"
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+
+      // console.log("SEND DATA:", sendData);
+    }
   }
 
   render() {
@@ -39,7 +148,7 @@ class ShiftAssign extends Component {
                   className: "txt-fld",
                   name: "from_date",
                   others: {
-                    tabIndex: "6"
+                    tabIndex: "1"
                   }
                 }}
                 events={{
@@ -62,7 +171,7 @@ class ShiftAssign extends Component {
                   className: "txt-fld",
                   name: "to_date",
                   others: {
-                    tabIndex: "6"
+                    tabIndex: "2"
                   }
                 }}
                 events={{
@@ -73,7 +182,6 @@ class ShiftAssign extends Component {
                   }
                 }}
                 minDate={this.state.from_date}
-                maxDate={new Date()}
                 value={this.state.to_date}
               />
             </div>
@@ -84,17 +192,25 @@ class ShiftAssign extends Component {
                   {this.state.employees.map((data, index) => (
                     <li key={index}>
                       <input
-                        row={JSON.stringify(data)}
-                        //onChange={this.checkHandle.bind(this)}
+                        id={data.employee_code}
+                        value={JSON.stringify(data)}
                         type="checkbox"
+                        checked={this.state.shiftEmp.includes(
+                          parseInt(data.hims_d_employee_id, 10)
+                        )}
+                        onChange={this.addEmployees.bind(
+                          this,
+                          data.hims_d_employee_id
+                        )}
                       />
-                      <span
+                      <label
+                        htmlFor={data.employee_code}
                         style={{
                           width: "80%"
                         }}
                       >
                         {data.employee_name}
-                      </span>
+                      </label>
                     </li>
                   ))}
                 </ul>
@@ -105,17 +221,23 @@ class ShiftAssign extends Component {
                   {this.state.shifts.map((data, index) => (
                     <li key={index}>
                       <input
-                        row={JSON.stringify(data)}
-                        // onChange={this.checkHandle.bind(this)}
-                        type="checkbox"
+                        id={data.hims_d_shift_id}
+                        name="shift_id"
+                        value={data}
+                        onChange={this.shiftHandler.bind(this, data)}
+                        type="radio"
                       />
-                      <span
+                      <label
+                        htmlFor={data.hims_d_shift_id}
                         style={{
                           width: "80%"
                         }}
                       >
-                        {data.shift_description}
-                      </span>
+                        {data.shift_description +
+                          " (" +
+                          data.shift_abbreviation +
+                          ")"}
+                      </label>
                     </li>
                   ))}
                 </ul>
@@ -130,7 +252,7 @@ class ShiftAssign extends Component {
 
               <div className="col-lg-8">
                 <button
-                  // onClick={this.saveMaster.bind(this)}
+                  onClick={this.processAssignment.bind(this)}
                   type="button"
                   className="btn btn-primary"
                 >

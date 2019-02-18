@@ -160,7 +160,8 @@ class Shift extends Component {
         break: data.break,
         break_start: data.break_start,
         break_end: data.break_end,
-        shift_abbreviation: data.shift_abbreviation
+        shift_abbreviation: data.shift_abbreviation,
+        shift_end_day: data.shift_end_day
       },
       method: "PUT",
       onSuccess: response => {
@@ -349,8 +350,8 @@ class Shift extends Component {
                   <input
                     type="radio"
                     value="SD"
-                    name="shift_end_date"
-                    checked={this.state.shift_end_date === "SD"}
+                    name="shift_end_day"
+                    checked={this.state.shift_end_day === "SD"}
                     onChange={this.changeChecks.bind(this)}
                   />
                   <span>Same Day</span>
@@ -360,8 +361,8 @@ class Shift extends Component {
                   <input
                     type="radio"
                     value="ND"
-                    name="shift_end_date"
-                    checked={this.state.shift_end_date === "ND"}
+                    name="shift_end_day"
+                    checked={this.state.shift_end_day === "ND"}
                     onChange={this.changeChecks.bind(this)}
                   />
                   <span>Next Day</span>
@@ -640,7 +641,7 @@ class Shift extends Component {
                   }
                 },
                 {
-                  fieldName: "shift_end_date",
+                  fieldName: "shift_end_day",
 
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Shift End Date" }} />
@@ -648,9 +649,9 @@ class Shift extends Component {
                   displayTemplate: row => {
                     return (
                       <span>
-                        {row.shift_end_date === "SD"
+                        {row.shift_end_day === "SD"
                           ? "Same Date"
-                          : row.shift_end_date === "ND"
+                          : row.shift_end_day === "ND"
                           ? "Next Date"
                           : "------"}
                       </span>
@@ -661,9 +662,9 @@ class Shift extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col" }}
                         selector={{
-                          name: "shift_end_date",
+                          name: "shift_end_day",
                           className: "select-fld",
-                          value: row.shift_end_date,
+                          value: row.shift_end_day,
                           dataSource: {
                             textField: "name",
                             valueField: "value",

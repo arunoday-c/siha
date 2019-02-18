@@ -17,7 +17,7 @@
     input[type="checkbox"] {
       margin-right: 10px;
     }
-    span {
+    label {
       padding: 7px;
       border-left: 1px solid #ccc;
     }
@@ -49,10 +49,10 @@
     text-align: left;
     background: #fff;
     border-bottom: 1px solid #ccc;
-    input[type="checkbox"] {
+    input[type="radio"] {
       margin-right: 10px;
     }
-    span {
+    label {
       padding: 7px;
       border-left: 1px solid #ccc;
     }
