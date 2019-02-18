@@ -20,6 +20,7 @@ export default class EmployeeShiftRostering extends Component {
     this.state = {
       employees: [],
       hospitals: [],
+      sendId: null,
       openShiftAssign: false,
       shifts: [],
       loading: false,
@@ -34,10 +35,13 @@ export default class EmployeeShiftRostering extends Component {
     this.getShifts();
   }
 
-  showModal(e) {
-    this.setState({
-      openShiftAssign: true
-    });
+  showModal(id, e) {
+    if (e.target.tagName === "TD") {
+      this.setState({
+        sendId: id,
+        openShiftAssign: true
+      });
+    } else return;
   }
 
   getShifts() {
@@ -210,7 +214,6 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            // this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -221,7 +224,6 @@ export default class EmployeeShiftRostering extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            //this.getEmployeesForShiftRoster();
           }
         );
         break;
@@ -234,7 +236,7 @@ export default class EmployeeShiftRostering extends Component {
     }
   }
 
-  plotEmployeeDates(emp_id, holidays, leaves) {
+  plotEmployeeDates(id, holidays, leaves, shifts) {
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
@@ -255,6 +257,7 @@ export default class EmployeeShiftRostering extends Component {
             moment(w.holiday_date).format("YYYYMMDD") === now.format("YYYYMMDD")
         )
         .firstOrDefault();
+
       let leave = null;
       if (leaves !== undefined && leaves.length > 0) {
         leave = Enumerable.from(leaves)
@@ -263,7 +266,17 @@ export default class EmployeeShiftRostering extends Component {
               moment(w.leaveDate).format("YYYYMMDD") === now.format("YYYYMMDD")
           )
           .firstOrDefault();
-        console.log(leave);
+      }
+
+      let shift = null;
+
+      if (shifts.length > 0) {
+        shift = Enumerable.from(shifts)
+          .where(
+            w =>
+              moment(w.shift_date).format("YYYYMMDD") === now.format("YYYYMMDD")
+          )
+          .firstOrDefault();
       }
 
       let data =
@@ -271,31 +284,84 @@ export default class EmployeeShiftRostering extends Component {
           <td className="leave_cell" key={now}>
             {leave.leave_description}
           </td>
-        ) : holiday === undefined ? (
+        ) : holiday !== undefined && holiday.weekoff === "Y" ? (
+          <td className="week_off_cell" key={now}>
+            {holiday.holiday_description}
+          </td>
+        ) : holiday !== undefined && holiday.holiday === "Y" ? (
+          <td className="holiday_cell" key={now}>
+            {holiday.holiday_description}
+          </td>
+        ) : shift !== null && shift !== undefined ? (
           <td
-            onClick={this.showModal.bind(this)}
+            onClick={this.showModal.bind(this, id)}
             key={now}
             className="time_cell editAction"
-            employee_id={emp_id}
+            employee_id={id}
+            date={now.format("YYYY-MM-DD")}
+          >
+            <span>{shift.shift_abbreviation}</span>
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li
+                onClick={e => {
+                  e.preventDefault();
+                  alert("CCP");
+                }}
+              >
+                Copy
+              </li>
+              <li
+                onClick={() => {
+                  alert("CCP");
+                }}
+              >
+                Paste
+              </li>
+              <li
+                onClick={() => {
+                  alert("CCP");
+                }}
+              >
+                Delete Shift
+              </li>
+            </ul>
+          </td>
+        ) : (
+          <td
+            onClick={this.showModal.bind(this, id)}
+            key={now}
+            className="time_cell editAction"
+            employee_id={id}
             date={now.format("YYYY-MM-DD")}
           >
             <i className="fas fa-ellipsis-v" />
             <ul>
-              <li>Cut</li>
-              <li>Copy</li>
-              <li>Paste</li>
-              <li>Clear</li>
+              <li
+                onClick={e => {
+                  e.preventDefault();
+                  alert("CCP");
+                }}
+              >
+                Copy
+              </li>
+              <li
+                onClick={() => {
+                  alert("CCP");
+                }}
+              >
+                Paste
+              </li>
+              <li
+                onClick={() => {
+                  alert("CCP");
+                }}
+              >
+                Clear
+              </li>
             </ul>
           </td>
-        ) : holiday.weekoff === "Y" ? (
-          <td className="week_off_cell" key={now}>
-            {holiday.holiday_description}
-          </td>
-        ) : holiday.holiday === "Y" ? (
-          <td className="holiday_cell" key={now}>
-            {holiday.holiday_description}
-          </td>
-        ) : null;
+        );
 
       Emp_Dates.push(data);
       now.add(1, "days");
@@ -334,6 +400,7 @@ export default class EmployeeShiftRostering extends Component {
     this.setState({
       openShiftAssign: false
     });
+    this.getEmployeesForShiftRoster();
   }
 
   render() {
@@ -342,11 +409,14 @@ export default class EmployeeShiftRostering extends Component {
       <div className="EmpShiftRost_Screen">
         <ShiftAssign
           data={{
-            from_date: "2019-02-01",
-            to_date: "2019-02-28",
+            from_date: this.state.year + "-" + this.state.month + "-01",
+            to_date: moment(this.state.year + "-" + this.state.month + "-01")
+              .endOf("month")
+              .format("YYYY-MM-DD"),
             shifts: this.state.shifts,
             employees: this.state.employees
           }}
+          sendId={this.state.sendId}
           open={this.state.openShiftAssign}
           onClose={this.closeShiftAssign.bind(this)}
         />
@@ -440,7 +510,7 @@ export default class EmployeeShiftRostering extends Component {
               }
             }}
           />
-
+          {/* 
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
             label={{ forceLabel: "Select Shift", isImp: true }}
@@ -460,7 +530,7 @@ export default class EmployeeShiftRostering extends Component {
                 });
               }
             }}
-          />
+          /> */}
 
           <div className="col-3" style={{ marginTop: 10 }}>
             <div
@@ -520,7 +590,7 @@ export default class EmployeeShiftRostering extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
-                    Shift Roastering List :{" "}
+                    Shift Rostering List :{" "}
                     <b style={{ color: "#33b8bc" }}>
                       {this.state.formatingString}
                     </b>
@@ -560,7 +630,6 @@ export default class EmployeeShiftRostering extends Component {
                             <th>Exit Date</th>
                           </tr>
                         </thead>
-                        {/* <div className="tbodyScrollCntr"> */}
                         <tbody>
                           {this.state.employees.map((row, index) => (
                             <tr key={row.hims_d_employee_id}>
@@ -570,7 +639,8 @@ export default class EmployeeShiftRostering extends Component {
                               {this.plotEmployeeDates(
                                 row.hims_d_employee_id,
                                 row.holidays,
-                                row.employeeLeaves
+                                row.employeeLeaves,
+                                row.empShift
                               )}
                               <td>
                                 {moment(row.date_of_joining).format(
