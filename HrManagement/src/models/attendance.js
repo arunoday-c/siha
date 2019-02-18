@@ -885,7 +885,7 @@ module.exports = {
           } else {
             req.records = {
               invalid_input: true,
-              message: "please provide valid absent id"
+              message: "Please provide valid absent id"
             };
             next();
           }
@@ -897,7 +897,7 @@ module.exports = {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "Please provide valid input"
       };
 
       next();
@@ -942,7 +942,7 @@ module.exports = {
       _mysql.releaseConnection();
       req.records = {
         invalid_input: true,
-        message: "please provide valid year and month"
+        message: "Please provide valid year and month"
       };
 
       next();
@@ -1031,7 +1031,7 @@ module.exports = {
           } else {
             req.records = {
               invalid_input: true,
-              message: "please provide valid input"
+              message: "Please provide valid input"
             };
             next();
           }
@@ -1043,7 +1043,7 @@ module.exports = {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "Please provide valid input"
       };
 
       next();
@@ -1080,7 +1080,7 @@ module.exports = {
     if (dateRange == "" && employee == "") {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "Please provide valid input"
       };
       next();
       return;
@@ -1295,7 +1295,7 @@ if(selectWhere.hospital_id >0){
             if (noYearlyLeave.length > 0) {
               req.records = {
                 invalid_input: true,
-                message: " please proces yearly leave for ",
+                message: " Please proces yearly leave for ",
                 employees: noYearlyLeave
               };
               next();
@@ -1717,12 +1717,12 @@ if(selectWhere.hospital_id >0){
   if (req.mySQl == null) {    
       req.records =  {
         invalid_input: true,
-        message: "please send hospital id"
+        message: "Please select a branch"
       }
       next();
     
   } else {
-    resolve("please send hospital id");
+    resolve("Please select a branch");
   }
 }
 }

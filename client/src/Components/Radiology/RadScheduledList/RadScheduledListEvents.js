@@ -102,6 +102,7 @@ const getRadTestList = $this => {
 
   $this.props.getRadiologyTestList({
     uri: "/radiology/getRadOrderedServices",
+    // module: "radiology",
     method: "GET",
     data: inputobj,
     redux: {
@@ -115,6 +116,7 @@ const openResultEntry = ($this, row) => {
   if (row.billed === "Y") {
     $this.props.getTemplateList({
       uri: "/radiology/getRadTemplateList",
+      // module: "radiology",
       method: "GET",
       data: { services_id: row.service_id },
       redux: {
@@ -122,7 +124,6 @@ const openResultEntry = ($this, row) => {
         mappingName: "templatelist"
       },
       afterSuccess: data => {
-        
         let Template = row;
         Template.Templatelist = data;
         $this.setState({

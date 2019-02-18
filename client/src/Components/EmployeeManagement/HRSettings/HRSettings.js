@@ -3,9 +3,9 @@ import "./hr_settings.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import EmployeeGroups from "./EmployeeGroups/EmployeeGroups";
 import EmployeeDesignations from "./EmployeeDesignations/EmployeeDesignations";
-import OvertimeGroups from "./OvertimeGroups/OvertimeGroups";
 import AuthorizationSetup from "./AuthorizationSetup/AuthorizationSetup";
 import DocumentMaster from "./DocumentMaster/DocumentMaster";
+import ProjectMaster from "./ProjectMaster/ProjectMaster";
 
 class HRSettings extends Component {
   constructor(props) {
@@ -60,19 +60,6 @@ class HRSettings extends Component {
                 }
               </li>
               <li
-                algaehtabs={"OvertimeGroups"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Overtime Groups"
-                    }}
-                  />
-                }
-              </li>
-              <li
                 algaehtabs={"DocMaster"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -98,6 +85,20 @@ class HRSettings extends Component {
                   />
                 }
               </li>
+
+              <li
+                algaehtabs={"ProjectMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Project Master"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -106,12 +107,12 @@ class HRSettings extends Component {
             <EmployeeGroups />
           ) : this.state.pageDisplay === "EmployeeDesignations" ? (
             <EmployeeDesignations />
-          ) : this.state.pageDisplay === "OvertimeGroups" ? (
-            <OvertimeGroups />
           ) : this.state.pageDisplay === "AuthorizationSetup" ? (
             <AuthorizationSetup />
           ) : this.state.pageDisplay === "DocMaster" ? (
             <DocumentMaster />
+          ) : this.state.pageDisplay === "ProjectMaster" ? (
+            <ProjectMaster />
           ) : null}
         </div>
       </div>

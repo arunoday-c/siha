@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./ManualAttendance.css";
 import {
   AlagehAutoComplete,
@@ -7,61 +11,167 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
-export default class ManualAttendance extends Component {
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { getYears } from "../../../../utils/GlobalFunctions";
+import { AlgaehActions } from "../../../../actions/algaehActions";
+import ManualAttendanceEvents from "./ManualAttendanceEvents.js";
+import moment from "moment";
+
+class ManualAttendance extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedLang: this.props.SelectLanguage,
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
+      sub_department_id: null,
+      employee_group_id: null,
+      project_id: null,
+
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id
+    };
+  }
+
+  componentDidMount() {
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
+
+    if (
+      this.props.emp_groups === undefined ||
+      this.props.emp_groups.length === 0
+    ) {
+      this.props.getEmpGroups({
+        uri: "/hrsettings/getEmployeeGroups",
+        module: "hrManagement",
+        method: "GET",
+        data: { record_status: "A" },
+        redux: {
+          type: "EMP_GROUP_GET",
+          mappingName: "emp_groups"
+        }
+      });
+    }
+
+    if (
+      this.props.subdepartment === undefined ||
+      this.props.subdepartment.length === 0
+    ) {
+      this.props.getSubDepartment({
+        uri: "/department/get/subdepartment",
+        module: "masterSettings",
+        data: {
+          sub_department_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "SUB_DEPT_GET_DATA",
+          mappingName: "subdepartment"
+        }
+      });
+    }
+
+    if (this.props.projects === undefined || this.props.projects.length === 0) {
+      this.props.getProjects({
+        uri: "/hrsettings/getProjects",
+        module: "hrManagement",
+        method: "GET",
+        date: { pjoject_status: "A" },
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "projects"
+        }
+      });
+    }
+  }
+
+  eventHandaler(e) {
+    ManualAttendanceEvents().texthandle(this, e);
+  }
+
   render() {
+    let allYears = getYears();
     return (
       <div id="ManualAttendanceScreen">
         <div className="row inner-top-search">
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Year", isImp: true }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Branch.",
+              isImp: true
             }}
-          />{" "}
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Month", isImp: true }}
             selector={{
-              name: "",
+              name: "hospital_id",
               className: "select-fld",
-              dataSource: {},
-              others: {}
-            }}
-          />
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Branch", isImp: false }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
-            }}
-          />{" "}
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Dept.", isImp: false }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
-            }}
-          />{" "}
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Project", isImp: false }}
-            selector={{
-              name: "",
-              className: "select-fld",
-              dataSource: {},
-              others: {}
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.props.organizations
+              },
+              onChange: this.eventHandaler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
             }}
           />
+
+          <AlagehAutoComplete
+            div={{ className: "col form-group" }}
+            label={{
+              forceLabel: "Select Project",
+              isImp: true
+            }}
+            selector={{
+              name: "project_id",
+              className: "select-fld",
+              value: this.state.project_id,
+              dataSource: {
+                textField: "project_desc",
+                valueField: "hims_d_project_id",
+                data: this.props.projects
+              },
+              onChange: this.eventHandaler.bind(this),
+              onClear: () => {
+                this.setState({
+                  project_id: null
+                });
+              }
+            }}
+          />
+
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select Employee Group",
+              isImp: true
+            }}
+            selector={{
+              name: "employee_group_id",
+              className: "select-fld",
+              value: this.state.employee_group_id,
+              dataSource: {
+                textField: "group_description",
+                valueField: "hims_d_employee_group_id",
+                data: this.props.emp_groups
+              },
+              onChange: this.eventHandaler.bind(this)
+            }}
+          />
+
           <div className="col form-group">
             <button style={{ marginTop: 21 }} className="btn btn-default">
               Load
@@ -222,3 +332,31 @@ export default class ManualAttendance extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    subdepartment: state.subdepartment,
+    organizations: state.organizations,
+    projects: state.projects,
+    emp_groups: state.emp_groups
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getSubDepartment: AlgaehActions,
+      getOrganizations: AlgaehActions,
+      getProjects: AlgaehActions,
+      getEmpGroups: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ManualAttendance)
+);

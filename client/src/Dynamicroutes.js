@@ -240,8 +240,8 @@ const PageToPlot = {
   ),
   Wps: React.lazy(() => import("./Components/PayrollManagement/WPS/WPS")),
 
-  EmpProjRost: React.lazy(() =>
-    import("./Components/EmployeeManagement/EmployeeProjectRoster/EmployeeProjectRoster")
+  ProjJobCst: React.lazy(() =>
+    import("./Components/EmployeeManagement/ProjectJobCost/ProjectJobCost")
   )
 };
 

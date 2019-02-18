@@ -3,10 +3,10 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import {
-  getRadOrderedServices,
-  insertRadOrderedServices,
-  updateRadOrderedServices,
-  getRadTemplateList
+  getRadOrderedServices, //Done
+  insertRadOrderedServices, //Done
+  updateRadOrderedServices, //Done
+  getRadTemplateList //Done
 } from "../model/radiology";
 
 export default ({ config, db }) => {

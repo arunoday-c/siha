@@ -4,7 +4,8 @@ import "react-table/react-table.css";
 import { algaehApiCall, swalMessage } from "../utils/algaehApiCall";
 import AlgaehReport from "./Wrapper/printReports";
 import _ from "lodash";
-
+import FrontDesk from "../Search/FrontDesk.json";
+import AlgaehAutoSearch from "./Wrapper/autoSearch";
 const services = [
   { service_name: "Consultation", sl_no: 1 },
   { service_name: "Procedure", sl_no: 2 }
@@ -112,6 +113,19 @@ class Experiment extends Component {
         <div>
           The Above component has a bug so this is how our wrapper handles We
           can still use the other elements apart from the crashed element
+        </div>
+        <div className="col">
+          <AlgaehAutoSearch
+            title="Testing Title"
+            id="patient_code_search"
+            template={result => {
+              return <div className="description">{result.full_name}</div>;
+            }}
+            columns={FrontDesk}
+            displayField="full_name"
+            //extraParameters={{}}
+            searchName="patients"
+          />
         </div>
       </div>
     );
