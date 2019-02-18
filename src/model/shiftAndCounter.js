@@ -24,7 +24,7 @@ let addShiftMaster = (req, res, next) => {
         "INSERT INTO `hims_d_shift` (shift_code,shift_description,arabic_name,\
           in_time1, out_time1, in_time2, out_time2,shift_end_day, break, break_start, break_end, shift_abbreviation,\
           created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?)",
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.shift_code,
           input.shift_description,
