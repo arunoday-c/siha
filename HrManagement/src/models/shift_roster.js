@@ -689,6 +689,47 @@ module.exports = {
       };
       next();
     }
+  },
+  //created by irfan:
+  pasteRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_shift_roster` (??) VALUES ? ON DUPLICATE KEY UPDATE shift_id=values(shift_id),shift_end_date=values(shift_end_date),\
+          shift_start_time=values(shift_start_time),shift_end_time=values(shift_end_time),shift_time=values(shift_time),\
+          weekoff=values(weekoff),holiday=values(holiday)",
+        values: [
+          input.hims_f_shift_roster_id,
+          input.employee_id,
+          input.shift_date,
+          input.shift_id,
+          input.shift_end_date,
+          input.shift_start_time,
+          input.shift_end_time,
+          input.shift_time,
+          input.weekoff,
+          input.holiday,
+          input.shift_id,
+          input.shift_end_date,
+          input.shift_start_time,
+          input.shift_end_time,
+          input.shift_time,
+          input.weekoff,
+          input.holiday
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 

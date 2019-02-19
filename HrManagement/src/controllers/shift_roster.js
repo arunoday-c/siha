@@ -3,7 +3,8 @@ import utlities from "algaeh-utilities";
 import {
   getEmployeesForShiftRoster,
   addShiftRoster,
-  deleteShiftRoster
+  deleteShiftRoster,
+  pasteRoster
 } from "../models/shift_roster";
 export default () => {
   const api = Router();
@@ -39,6 +40,19 @@ export default () => {
     }
   });
   api.delete("/deleteShiftRoster", deleteShiftRoster, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.post("/pasteRoster", pasteRoster, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
