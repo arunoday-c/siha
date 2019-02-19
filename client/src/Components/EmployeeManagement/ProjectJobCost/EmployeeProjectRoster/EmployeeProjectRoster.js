@@ -55,7 +55,7 @@ class EmployeeProjectRoster extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForShiftRoster();
+            this.getEmployeesForProjectRoster();
           }
         );
         break;
@@ -66,7 +66,7 @@ class EmployeeProjectRoster extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForShiftRoster();
+            this.getEmployeesForProjectRoster();
           }
         );
         break;
@@ -77,6 +77,106 @@ class EmployeeProjectRoster extends Component {
         });
         break;
     }
+  }
+
+  plotEmployeeDates(row, holidays, leaves) {
+    var Emp_Dates = [];
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+
+    var currDate = moment(yearMonth)
+      .startOf("month")
+      .format("MMM DD YYYY");
+    var lastDate = moment(yearMonth)
+      .endOf("month")
+      .format("MMM DD YYYY");
+
+    var now = moment(currDate).clone(),
+      Emp_Dates = [];
+
+    while (now.isSameOrBefore(lastDate)) {
+      let holiday = Enumerable.from(holidays)
+        .where(
+          w =>
+            moment(w.holiday_date).format("YYYYMMDD") === now.format("YYYYMMDD")
+        )
+        .firstOrDefault();
+
+      let leave = null;
+      if (leaves !== undefined && leaves.length > 0) {
+        leave = Enumerable.from(leaves)
+          .where(
+            w =>
+              moment(w.leaveDate).format("YYYYMMDD") === now.format("YYYYMMDD")
+          )
+          .firstOrDefault();
+      }
+
+      let data =
+        leave !== undefined && leave !== null ? (
+          <td className="leave_cell" key={now}>
+            {leave.leave_description}
+          </td>
+        ) : holiday !== undefined && holiday.weekoff === "Y" ? (
+          <td className="week_off_cell" key={now}>
+            {holiday.holiday_description}
+          </td>
+        ) : holiday !== undefined && holiday.holiday === "Y" ? (
+          <td className="holiday_cell" key={now}>
+            {holiday.holiday_description}
+          </td>
+        ) : (
+          <td
+            // onClick={this.showModal.bind(this, row)}
+            key={now}
+            className="time_cell editAction"
+            employee_id={row.hims_d_employee_id}
+            date={now.format("YYYY-MM-DD")}
+          >
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li
+              // onClick={this.pasteShift.bind(this, {
+              //   id: row.hims_d_employee_id,
+              //   date: now.format("YYYY-MM-DD")
+              // })}
+              >
+                Paste
+              </li>
+            </ul>
+          </td>
+        );
+
+      Emp_Dates.push(data);
+      now.add(1, "days");
+    }
+    return Emp_Dates;
+  }
+
+  getDaysOfMonth() {
+    var dates = [];
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+
+    var currDate = moment(yearMonth)
+      .startOf("month")
+      .format("MMM DD YYYY");
+    var lastDate = moment(yearMonth)
+      .endOf("month")
+      .format("MMM DD YYYY");
+
+    var now = moment(currDate).clone(),
+      dates = [];
+
+    while (now.isSameOrBefore(lastDate)) {
+      dates.push(
+        <th key={now}>
+          <span> {now.format("ddd")}</span>
+          <br />
+          <span>{now.format("DD/MMM")}</span>
+        </th>
+      );
+      now.add(1, "days");
+    }
+    return dates;
   }
 
   employeeSearch(e) {

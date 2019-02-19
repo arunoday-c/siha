@@ -39,7 +39,6 @@ export default class EmployeeShiftRostering extends Component {
 
   showModal(row, e) {
     if (e.target.tagName === "TD") {
-      debugger;
       this.setState({
         sendRow: row,
         openShiftAssign: true
@@ -386,24 +385,16 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   copyShift(data) {
-    debugger;
-
-    this.setState(
-      {
-        copyData: data
-      },
-      () => {
-        swalMessage({
-          title: "Copied Successfully",
-          type: "success"
-        });
-      }
-    );
+    this.setState({
+      copyData: data
+    });
+    swalMessage({
+      title: "Shift Copied.",
+      type: "success"
+    });
   }
 
   pasteShift(data) {
-    debugger;
-
     console.log("SEND DATA:", { ...this.state.copyData, data });
 
     this.state.copyData === null
@@ -411,9 +402,36 @@ export default class EmployeeShiftRostering extends Component {
           title: "Please copy the shift first",
           type: "warning"
         })
-      : swalMessage({
-          title: "Pasted",
-          type: "success"
+      : algaehApiCall({
+          uri: "/shift_roster/pasteRoster",
+          method: "POST",
+          module: "hrManagement",
+          data: {
+            employee_id: data.id,
+            shift_date: data.date,
+            shift_id: this.state.copyData.hims_d_shift_id,
+            shift_end_date: this.state.copyData.shift_end_date,
+            shift_start_time: this.state.copyData.shift_start_time,
+            shift_end_time: this.state.copyData.shift_end_time,
+            shift_time: this.state.copyData.shift_time,
+            weekoff: this.state.copyData.weekoff,
+            holiday: this.state.copyData.holiday
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Pasted Successfully . . ",
+                type: "success"
+              });
+              this.getEmployeesForShiftRoster();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
   }
 

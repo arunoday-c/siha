@@ -1,13 +1,7 @@
 import algaehMysql from "algaeh-mysql";
-//import _ from "lodash";
-//import extend from "extend";
 import moment from "moment";
 import { LINQ } from "node-linq";
-//import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
-//import { getMaxAuth } from "../../../src/utils";
-// import Sync from "sync";
 
 module.exports = {
   //created by irfan: to
@@ -395,8 +389,8 @@ module.exports = {
                   break_end: s.break_end,
                   shift_abbreviation: s.shift_abbreviation,
                   shift_end_day: s.shift_end_day,
-                  weekoff: weekoff,
-                  holiday: holiday
+                  weekoff: s.weekoff,
+                  holiday: s.holiday
                 };
               })
               .ToArray();
@@ -698,11 +692,11 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_f_shift_roster` (??) VALUES ? ON DUPLICATE KEY UPDATE shift_id=values(shift_id),shift_end_date=values(shift_end_date),\
-          shift_start_time=values(shift_start_time),shift_end_time=values(shift_end_time),shift_time=values(shift_time),\
-          weekoff=values(weekoff),holiday=values(holiday)",
+          "INSERT INTO `hims_f_shift_roster` (employee_id,shift_date,shift_id,shift_end_date,\
+          shift_start_time,shift_end_time,shift_time,weekoff,holiday) values(?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE shift_id=?,shift_end_date=?,\
+          shift_start_time=?,shift_end_time=?,shift_time=?,\
+          weekoff=?,holiday=?",
         values: [
-          input.hims_f_shift_roster_id,
           input.employee_id,
           input.shift_date,
           input.shift_id,
@@ -712,6 +706,7 @@ module.exports = {
           input.shift_time,
           input.weekoff,
           input.holiday,
+
           input.shift_id,
           input.shift_end_date,
           input.shift_start_time,
@@ -719,7 +714,8 @@ module.exports = {
           input.shift_time,
           input.weekoff,
           input.holiday
-        ]
+        ],
+        printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();

@@ -146,7 +146,8 @@ module.exports = {
             toDate,
             fromDate,
             toDate
-          ]
+          ],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -336,3 +337,20 @@ module.exports = {
     }
   }
 };
+
+//created by irfan: to generate dates leave
+function getDaysArray(start, end) {
+  const utilities = new algaehUtilities();
+
+  try {
+    for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+      const dat = new Date(dt);
+
+      arr.push({ leaveDate: dat });
+    }
+
+    return arr;
+  } catch (e) {
+    utilities.logger().log("error rr: ", e);
+  }
+}
