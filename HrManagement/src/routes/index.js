@@ -20,6 +20,7 @@ import employeeDocuments from "../controllers/employee_documents";
 import leave from "../controllers/leave";
 import loan from "../controllers/loan";
 import shift_roster from "../controllers/shift_roster";
+import excelFile from "../controllers/excel_file";
 
 const router = express();
 router.use("/attendance", attendance());
@@ -43,4 +44,6 @@ router.use("/selfService", SelfService());
 router.use("/loan", loan());
 router.use("/documents", employeeDocuments());
 router.use("/shift_roster", shift_roster());
+router.use("/excel", excelFile());
+
 export default router;

@@ -127,6 +127,34 @@ class Experiment extends Component {
             searchName="patients"
           />
         </div>
+        <div className="col">
+          <button
+            onClick={() => {
+              algaehApiCall({
+                uri: "/excel/create",
+                method: "POST",
+                headers: {
+                  Accept: "blob"
+                },
+                others: { responseType: "blob" },
+                module: "hrManagement",
+                onSuccess: response => {
+                  debugger;
+                  let reader = new FileReader();
+                  reader.onloadend = () => {
+                    var anchor = document.createElement("a");
+                    anchor.setAttribute("href", encodeURI(reader.result));
+                    anchor.setAttribute("download", "DailyTimeSheet");
+                    anchor.click();
+                  };
+                  reader.readAsDataURL(response.data);
+                }
+              });
+            }}
+          >
+            Generate Excel File
+          </button>
+        </div>
       </div>
     );
   }
