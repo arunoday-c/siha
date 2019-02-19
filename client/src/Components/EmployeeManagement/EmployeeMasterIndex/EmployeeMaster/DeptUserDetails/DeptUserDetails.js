@@ -751,46 +751,46 @@ class DeptUserDetails extends Component {
                           );
                         }
                       },
-                      {
-                        fieldName: "user_id",
-                        label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
-                        displayTemplate: row => {
-                          let display =
-                            this.props.userdrtails === undefined
-                              ? []
-                              : this.props.userdrtails.filter(
-                                  f => f.algaeh_d_app_user_id === row.user_id
-                                );
+                      // {
+                      //   fieldName: "user_id",
+                      //   label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
+                      //   displayTemplate: row => {
+                      //     let display =
+                      //       this.props.userdrtails === undefined
+                      //         ? []
+                      //         : this.props.userdrtails.filter(
+                      //             f => f.algaeh_d_app_user_id === row.user_id
+                      //           );
 
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].username
-                                  : display[0].arabic_service_type
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: row => {
-                          let display =
-                            this.props.userdrtails === undefined
-                              ? []
-                              : this.props.userdrtails.filter(
-                                  f => f.algaeh_d_app_user_id === row.user_id
-                                );
+                      //     return (
+                      //       <span>
+                      //         {display !== undefined && display.length !== 0
+                      //           ? this.state.selectedLang === "en"
+                      //             ? display[0].username
+                      //             : display[0].arabic_service_type
+                      //           : ""}
+                      //       </span>
+                      //     );
+                      //   },
+                      //   editorTemplate: row => {
+                      //     let display =
+                      //       this.props.userdrtails === undefined
+                      //         ? []
+                      //         : this.props.userdrtails.filter(
+                      //             f => f.algaeh_d_app_user_id === row.user_id
+                      //           );
 
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].username
-                                  : display[0].arabic_service_type
-                                : ""}
-                            </span>
-                          );
-                        }
-                      },
+                      //     return (
+                      //       <span>
+                      //         {display !== undefined && display.length !== 0
+                      //           ? this.state.selectedLang === "en"
+                      //             ? display[0].username
+                      //             : display[0].arabic_service_type
+                      //           : ""}
+                      //       </span>
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "employee_designation_id",
                         label: (
