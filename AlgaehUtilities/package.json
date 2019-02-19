@@ -12,6 +12,7 @@
   "dependencies": {
     "bluebird": "^3.5.3",
     "cryptr": "^4.0.0",
+    "exceljs": "^1.7.0",
     "graceful-fs": "^4.1.15",
     "jsonwebtoken": "^8.4.0",
     "moment": "^2.23.0",
