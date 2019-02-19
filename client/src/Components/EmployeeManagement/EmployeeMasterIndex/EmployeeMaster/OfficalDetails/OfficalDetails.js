@@ -126,6 +126,30 @@ class OfficalDetails extends Component {
                     }
                   }}
                 />
+
+                <AlagehAutoComplete
+                  div={{ className: "col mandatory" }}
+                  label={{
+                    fieldName: "sub_department_id",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "sub_department_id",
+                    className: "select-fld",
+                    value: this.state.sub_department_id,
+
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "sub_department_name"
+                          : "arabic_sub_department_name",
+                      valueField: "hims_d_sub_department_id",
+                      data: this.props.subdepartment
+                    },
+
+                    onChange: texthandle.bind(this, this)
+                  }}
+                />
               </div>
 
               <h5>
@@ -381,7 +405,8 @@ class OfficalDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    banks: state.banks
+    banks: state.banks,
+    subdepartment: state.subdepartment
   };
 }
 

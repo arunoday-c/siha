@@ -99,8 +99,8 @@ module.exports = {
             permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
             date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_resignation,\
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
-            accomodation_provided,hospital_id,created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            accomodation_provided,hospital_id,sub_department_id,created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -140,6 +140,7 @@ module.exports = {
               input.mode_of_payment,
               input.accomodation_provided,
               input.hospital_id,
+              input.sub_department_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -151,6 +152,32 @@ module.exports = {
             req.records = result;
             next();
             resolve(result);
+            // req.body.insertdeptDetails = req.body.insertdeptDetails.map(
+            //   (dept_data, index) => {
+            //     return {
+            //       ...dept_data,
+            //       ...{
+            //         employee_id: result.insertId
+            //       }
+            //     };
+            //   }
+            // );
+            // let _InsertEmployeeDept = InsertEmployeeDepartment({
+            //   req: req,
+            //   _mysql: _mysql
+            // });
+
+            // Promise.all([_InsertEmployeeDept])
+            //   .then(result => {
+            //     _mysql.releaseConnection();
+            //     req.records = result;
+            //     next();
+            //     resolve(result);
+            //   })
+            //   .catch(e => {
+            //     next(e);
+            //     reject(e);
+            //   });
           })
           .catch(e => {
             next(e);
@@ -382,12 +409,17 @@ module.exports = {
               _InsertEmpDependents,
               _UpdateEmpDependents,
               _DeleteEmpDependents
-            ]).then(result => {
-              _mysql.releaseConnection();
-              req.records = result;
-              next();
-              resolve(result);
-            });
+            ])
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+                resolve(result);
+              })
+              .catch(e => {
+                next(e);
+                reject(e);
+              });
           })
           .catch(e => {
             next(e);
