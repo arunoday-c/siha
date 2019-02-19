@@ -398,7 +398,7 @@ let getMSDb = (req, res, next) => {
   }
 };
 //created by irfan:
-let getTimeSheet = (req, res, next) => {
+let getTimeSheetOLD = (req, res, next) => {
   try {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
@@ -969,6 +969,409 @@ let postTimeSheet = (req, res, next) => {
           }
         }
       );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+
+//created by irfan:
+let getTimeSheet = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+        let timeSheetArray = [];
+        let actual_hours = "";
+
+        let year = moment(req.query.from_date).format("YYYY");
+        const syscCall = async function(attDate, religion_id) {
+          debugLog("am in synchronous");
+          return await new Promise((resolve, reject) => {
+            try {
+              //St-----if Absent, 2 queries---1 for if he is on leave ----2 for is that day is holiday or weekoff
+              connection.query(
+                " select hims_f_leave_application_id ,L.leave_type from hims_f_leave_application LA,hims_d_leave L \
+                where employee_id=?     and `status`='APR'  and date(?) \
+                between date(from_date) and date(to_date) and LA.leave_id=L.hims_d_leave_id;\
+                select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday\
+                from hims_d_holiday where (((date(holiday_date)= date(?) and weekoff='Y') or \
+                (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RE') or\
+                (date(holiday_date)=date(?) and holiday='Y' and holiday_type='RS' and religion_id=?))); ",
+                [2, attDate, attDate, attDate, attDate, religion_id],
+                (error, leaveHoliday) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  resolve(leaveHoliday);
+                }
+              );
+            } catch (e) {
+              reject(e);
+            }
+          });
+        };
+
+        //St----- fetch biometric device info to connect
+        connection.query(
+          "select hims_d_hrms_options_id,salary_process_date,salary_pay_before_end_date,\
+        payroll_payment_date,salary_calendar,salary_calendar_fixed_days,attendance_type,\
+        fetch_punch_data_reporting,gratuity_in_final_settle,leave_level,loan_level,leave_encash_level,\
+        review_auth_level,yearly_working_days,biometric_port_no,advance_deduction,overtime_payment,\
+        overtime_calculation,overtime_hourly_calculation,standard_intime,standard_outime,\
+        standard_working_hours,standard_break_hours,biometric_database,biometric_server_name,\
+        biometric_database_name,biometric_database_login,biometric_database_password,\
+        biometric_swipe_id from hims_d_hrms_options",
+          (error, result) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            actual_hours = result[0]["standard_working_hours"];
+            if (
+              result.length > 0 &&
+              result[0]["biometric_database"] == "MSACCESS"
+            ) {
+              var sql = require("mssql");
+
+              // config for your database
+              var config = {
+                user: result[0]["biometric_database_login"],
+                password: result[0]["biometric_database_password"],
+
+                server:
+                  result[0]["biometric_server_name"] +
+                  ":" +
+                  result[0]["biometric_port_no"],
+                database: result[0]["biometric_database_name"]
+              };
+
+              // connect to your database
+              sql.connect(
+                config,
+                function(err) {
+                  if (err) {
+                    debugLog("connection error");
+                    next(err);
+                  }
+                  // create Request object
+                  var request = new sql.Request();
+                  let from_date = moment(req.query.from_date).format(
+                    "YYYY-MM-DD"
+                  );
+                  let to_date = moment(req.query.to_date).format("YYYY-MM-DD");
+
+                  let biometric_id =
+                    req.query.biometric_id > 0 ? req.query.biometric_id : [106];
+                  let bio_ids = "";
+
+                  if (req.query.biometric_id > 0) {
+                    bio_ids = ` and TS.biometric_id=${req.query.biometric_id} `;
+                  }
+                  debugLog("from_date:", from_date);
+                  debugLog("to_date:", to_date);
+                  // query to the biometric database and get the records
+                  request.query(
+                    ` select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
+            Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
+            PDate<='${to_date}'`,
+                    function(err, attResult) {
+                      if (err) {
+                        debugLog("query error");
+                        next(err);
+                      }
+
+                      debugLog("attResult:", attResult);
+
+                      timeSheetArray = attResult["recordset"];
+                      sql.close();
+
+                      if (timeSheetArray.length > 0) {
+                        let _myPromises = [];
+                        try {
+                          for (let i = 0; i < timeSheetArray.length; i++) {
+                            debugLog("value of i", i);
+
+                            //--ST------IF HE PRESENT
+                            if (
+                              timeSheetArray[i]["in_time"] != null &&
+                              timeSheetArray[i]["out_time"] != null
+                            ) {
+                              let startTime = moment(
+                                timeSheetArray[i]["in_time"],
+                                "hh:mm:ss"
+                              );
+                              let endTime = moment(
+                                timeSheetArray[i]["out_time"],
+                                "hh:mm:ss"
+                              );
+                              let workMinutes = endTime.diff(
+                                startTime,
+                                "minutes"
+                              );
+
+                              debugLog("workMinutes:", workMinutes);
+
+                              let hours = parseInt(
+                                parseFloat(workMinutes) / parseFloat(60)
+                              );
+                              hours = hours > 0 ? hours : "0";
+                              debugLog("hours:", hours);
+
+                              let minutes =
+                                parseFloat(workMinutes) % parseFloat(60);
+                              debugLog("minutes:", minutes);
+
+                              // let worked_hours = hours + "." + minutes;
+
+                              let worked_hours = "";
+                              if (minutes < 10) {
+                                worked_hours = hours + ".0" + minutes;
+                              } else {
+                                worked_hours = hours + "." + minutes;
+                              }
+                              debugLog("worked_hours:", worked_hours);
+
+                              timeSheetArray[i] = {
+                                ...timeSheetArray[i],
+                                hours: hours,
+                                minutes: minutes,
+                                worked_hours: worked_hours,
+                                status: "PR"
+                              };
+                            }
+                            //---------EN--IF HE PRESENT
+                            //----------------------------ST--IF HE IS ABSENT
+                            else if (
+                              timeSheetArray[i]["in_time"] == null &&
+                              timeSheetArray[i]["out_time"] == null
+                            ) {
+                              //check leave
+                              debugLog("he did not come");
+
+                              //--------------START OF WEEK HOLIDAY
+                              let _timePass = syscCall(
+                                timeSheetArray[i]["attendance_date"],
+                                1
+                              );
+
+                              _myPromises.push(_timePass);
+                              _timePass
+                                .then(leaveHoliday => {
+                                  debugLog("am in result absent or holiday");
+                                  if (leaveHoliday[0].length > 0) {
+                                    //its a leave
+                                    if (
+                                      leaveHoliday[0][0]["leave_type"] == "U"
+                                    ) {
+                                      timeSheetArray[i] = {
+                                        ...timeSheetArray[i],
+                                        hours: null,
+                                        minutes: null,
+                                        worked_hours: null,
+                                        status: "UL"
+                                      };
+                                    } else if (
+                                      leaveHoliday[0][0]["leave_type"] == "P"
+                                    ) {
+                                      timeSheetArray[i] = {
+                                        ...timeSheetArray[i],
+                                        hours: null,
+                                        minutes: null,
+                                        worked_hours: null,
+                                        status: "PL"
+                                      };
+                                    }
+                                  } else if (leaveHoliday[1].length > 0) {
+                                    if (leaveHoliday[1][0]["weekoff"] == "Y") {
+                                      // its a week off
+                                      debugLog("week off");
+                                      timeSheetArray[i] = {
+                                        ...timeSheetArray[i],
+                                        hours: null,
+                                        minutes: null,
+                                        worked_hours: null,
+                                        status: "WO"
+                                      };
+                                    } else if (
+                                      leaveHoliday[1][0]["holiday"] == "Y"
+                                    ) {
+                                      // its a holiday
+                                      debugLog("holiday");
+                                      timeSheetArray[i] = {
+                                        ...timeSheetArray[i],
+                                        hours: null,
+                                        minutes: null,
+                                        worked_hours: null,
+                                        status: "HO"
+                                      };
+                                    }
+                                  } else {
+                                    //its Absent
+                                    debugLog("absent:", timeSheetArray);
+                                    timeSheetArray[i] = {
+                                      ...timeSheetArray[i],
+                                      hours: null,
+                                      minutes: null,
+                                      worked_hours: null,
+                                      status: "AB"
+                                    };
+                                  }
+                                })
+                                .catch(e => {});
+                              //---------END OF HOLIDAY WEEK OFF
+                            }
+
+                            //---------END--IF HE IS ABSENT
+
+                            //-------------------------------START OF--EXCEPTION
+                            else if (
+                              (timeSheetArray[i]["in_time"] == null &&
+                                timeSheetArray[i]["out_time"] != null) ||
+                              (timeSheetArray[i]["in_time"] != null &&
+                                timeSheetArray[i]["out_time"] == null)
+                            ) {
+                              timeSheetArray[i] = {
+                                ...timeSheetArray[i],
+                                hours: null,
+                                minutes: null,
+                                worked_hours: null,
+                                status: "EX"
+                              };
+
+                              debugLog("exwcption:", timeSheetArray);
+                            }
+
+                            // if (i == timeSheetArray.length - 1) {
+                            //   debugLog("am resolving");
+                            //   resolve(timeSheetArray);
+                            // }
+                          }
+
+                          // resolve(timeSheetArray);
+
+                          debugLog("timeSheetArray:", timeSheetArray);
+
+                          Promise.all(_myPromises)
+                            .then(calcResult => {
+                              debugLog("calcResult:", timeSheetArray);
+
+                              const insurtColumns = [
+                                "biometric_id",
+                                "attendance_date",
+                                "in_time",
+                                "out_date",
+                                "out_time",
+                                "status",
+                                "hours",
+                                "minutes",
+                                "worked_hours"
+                              ];
+
+                              connection.query(
+                                "INSERT IGNORE  INTO hims_f_daily_time_sheet(" +
+                                  insurtColumns.join(",") +
+                                  ",actual_hours,year) VALUES ?",
+                                [
+                                  jsonArrayToObject({
+                                    sampleInputObject: insurtColumns,
+                                    arrayObj: timeSheetArray,
+                                    newFieldToInsert: [actual_hours, year]
+                                  })
+                                ],
+                                (error, insertResult) => {
+                                  if (error) {
+                                    connection.rollback(() => {
+                                      releaseDBConnection(db, connection);
+                                      next(error);
+                                    });
+                                  }
+
+                                  connection.query(
+                                    " select hims_f_daily_time_sheet_id, employee_id,TS.biometric_id, attendance_date, \
+                                    in_time, out_date, out_time, year, month, status,\
+                                     posted, hours, minutes, actual_hours, actual_minutes, worked_hours,\
+                                     expected_out_date, expected_out_time ,hims_d_employee_id,employee_code,full_name as employee_name\
+                                     from  hims_f_daily_time_sheet TS \
+                                    left join hims_d_employee E on TS.biometric_id=E.biometric_id\
+                                    where attendance_date between (?) and (?)" +
+                                      bio_ids,
+                                    [req.query.from_date, req.query.to_date],
+                                    (error, retResult) => {
+                                      if (error) {
+                                        connection.rollback(() => {
+                                          releaseDBConnection(db, connection);
+                                          next(error);
+                                        });
+                                      }
+
+                                      connection.commit(error => {
+                                        if (error) {
+                                          connection.rollback(() => {
+                                            releaseDBConnection(db, connection);
+                                            next(error);
+                                          });
+                                        }
+
+                                        debugLog("commit");
+                                        releaseDBConnection(db, connection);
+                                        req.records = retResult;
+                                        next();
+                                      });
+                                    }
+                                  );
+                                }
+                              );
+                            })
+                            .catch(e => {
+                              debugLog("e:", e);
+                            });
+                        } catch (e) {}
+                      } else {
+                        req.records = {
+                          invalid_data: true,
+                          message: "no punches exist"
+                        };
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next();
+                        });
+                      }
+                    }
+                  );
+                }
+              );
+            } else {
+              //no matchimg data
+              req.records = {
+                invalid_data: true,
+                message: "biometric database not found"
+              };
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next();
+              });
+            }
+          }
+        );
+      });
     });
   } catch (e) {
     next(e);

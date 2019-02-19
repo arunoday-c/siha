@@ -292,7 +292,7 @@ module.exports = {
           FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
           where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
         (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?));           
-        select hims_f_shift_roster_id,employee_id,shift_date,shift_id,shift_end_date,
+        select hims_f_shift_roster_id,employee_id,shift_date,shift_id,shift_end_date, weekoff,holiday,
         shift_start_time,shift_end_time,shift_time,
         hims_d_shift_id,shift_code,shift_description,arabic_name,shift_status,in_time1,out_time1,
         in_time2,out_time2,break,break_start,break_end,shift_abbreviation,shift_end_day
@@ -394,7 +394,9 @@ module.exports = {
                   break_start: s.break_start,
                   break_end: s.break_end,
                   shift_abbreviation: s.shift_abbreviation,
-                  shift_end_day: s.shift_end_day
+                  shift_end_day: s.shift_end_day,
+                  weekoff: weekoff,
+                  holiday: holiday
                 };
               })
               .ToArray();
@@ -635,7 +637,10 @@ module.exports = {
         utilities.logger().log("insertArray: ", insertArray);
         _mysql
           .executeQuery({
-            query: "INSERT INTO `hims_f_shift_roster` (??) VALUES ?",
+            query:
+              "INSERT INTO `hims_f_shift_roster` (??) VALUES ? ON DUPLICATE KEY UPDATE shift_id=values(shift_id),shift_end_date=values(shift_end_date),\
+            shift_start_time=values(shift_start_time),shift_end_time=values(shift_end_time),shift_time=values(shift_time),\
+            weekoff=values(weekoff),holiday=values(holiday) ",
             values: insertArray,
             bulkInsertOrUpdate: true
           })
