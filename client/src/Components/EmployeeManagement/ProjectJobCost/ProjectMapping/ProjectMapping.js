@@ -1,45 +1,136 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./ProjectMapping.css";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-export default class ProjectMapping extends Component {
+
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import ProjectMappingEvents from "./ProjectMappingEvents";
+import Options from "../../../../Options.json";
+import moment from "moment";
+
+class ProjectMapping extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      division_project: [],
+      division_id: "",
+      project_id: ""
+    };
+
+    ProjectMappingEvents().getDivisionProjectFunction(this);
+  }
+
+  componentDidMount() {
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
+    }
+
+    if (this.props.projects === undefined || this.props.projects.length === 0) {
+      this.props.getProjects({
+        uri: "/hrsettings/getProjects",
+        module: "hrManagement",
+        method: "GET",
+        date: { pjoject_status: "A" },
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "projects"
+        }
+      });
+    }
+  }
+
+  eventHandaler(e) {
+    ProjectMappingEvents().texthandle(this, e);
+  }
+
+  addDivisionProject() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        ProjectMappingEvents().addDivisionProjectEvent(this);
+      }
+    });
+  }
+  deleteDivisionProject(data) {
+    ProjectMappingEvents().deleteDivisionProjectEvent(this, data);
+  }
+
   render() {
     return (
       <div className="ProjectMappingScreen">
         <div className="row  inner-top-search">
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select a Division", isImp: false }}
+            label={{
+              forceLabel: "Select a Branch.",
+              isImp: true
+            }}
             selector={{
-              name: "",
+              name: "division_id",
               className: "select-fld",
-              dataSource: {},
-              options: {}
+              value: this.state.division_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.props.organizations
+              },
+              onChange: this.eventHandaler.bind(this),
+              onClear: () => {
+                this.setState({
+                  division_id: null
+                });
+              }
             }}
           />
           <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Project", isImp: false }}
+            label={{
+              forceLabel: "Select Project",
+              isImp: true
+            }}
             selector={{
-              name: "",
+              name: "project_id",
               className: "select-fld",
-              dataSource: {},
-              options: {}
+              value: this.state.project_id,
+              dataSource: {
+                textField: "project_desc",
+                valueField: "hims_d_project_id",
+                data: this.props.projects
+              },
+              onChange: this.eventHandaler.bind(this),
+              onClear: () => {
+                this.setState({
+                  project_id: null
+                });
+              }
             }}
           />
 
           <div className="col form-group">
             <button
-              // onClick={this.getEmployeesForShiftRoster.bind(this)}
+              onClick={this.addDivisionProject.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"
             >
               <span>Add</span>
-
-              {/* <i className="fas fa-spinner fa-spin" /> */}
             </button>
           </div>
         </div>
@@ -50,11 +141,6 @@ export default class ProjectMapping extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">Project Mapping List</h3>
                 </div>
-                {/* <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
               </div>
               <div className="portlet-body">
                 <div className="row">
@@ -64,40 +150,117 @@ export default class ProjectMapping extends Component {
                       datavalidate="projectMappingGrid"
                       columns={[
                         {
-                          fieldName: "DivisionName",
+                          fieldName: "actions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Action" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span
+                                onClick={this.deleteDivisionProject.bind(
+                                  this,
+                                  row
+                                )}
+                              >
+                                <i className="fas fa-trash-alt" />
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "division_id",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Division Name" }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.organizations === undefined
+                                ? []
+                                : this.props.organizations.filter(
+                                    f =>
+                                      f.hims_d_hospital_id === row.division_id
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].hospital_name
+                                  : ""}
+                              </span>
+                            );
+                          }
                         },
                         {
-                          fieldName: "ProjectName",
+                          fieldName: "project_id",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Project Name" }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.projects === undefined
+                                ? []
+                                : this.props.projects.filter(
+                                    f => f.hims_d_project_id === row.project_id
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].project_desc
+                                  : ""}
+                              </span>
+                            );
+                          }
                         },
                         {
-                          fieldName: "StartDate",
+                          fieldName: "start_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Start Date" }} />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.start_date).format(
+                                  Options.dateFormat
+                                )}
+                              </span>
+                            );
+                          }
                         },
                         {
-                          fieldName: "EndDate",
+                          fieldName: "end_date",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "End Date" }} />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.end_date).format(
+                                  Options.dateFormat
+                                )}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "d_p_status",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return row.d_p_status === "A"
+                              ? "Active"
+                              : "Inactive";
+                          }
                         }
                       ]}
-                      keyId=""
-                      dataSource={{ data: [] }}
-                      isEditable={true}
+                      keyId="hims_m_division_project_id"
+                      dataSource={{ data: this.state.division_project }}
                       paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{}}
-                      others={{}}
                     />
                   </div>
                 </div>
@@ -109,3 +272,27 @@ export default class ProjectMapping extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    projects: state.projects,
+    organizations: state.organizations
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getProjects: AlgaehActions,
+      getOrganizations: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(ProjectMapping)
+);

@@ -284,7 +284,7 @@ module.exports = {
                                       
 
                                               let insertPendLeave="";
-                                              if (salary_processed=="Y"){
+                                              if (salary_processed=="Y"&&input.leave_type=="U"){
                                                 insertPendLeave=` insert into hims_f_pending_leave (employee_id, year, month,leave_application_id,updaid_leave_duration) VALUE(${input.employee_id},
                                                   ${input.year},
                                                   ${month_number},
