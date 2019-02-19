@@ -1,7 +1,7 @@
-import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import Options from "../../../../Options.json";
 import swal from "sweetalert2";
+import Enumerable from "linq";
+
 export default function ProjectMappingEvents() {
   return {
     texthandle: ($this, e) => {
@@ -15,7 +15,21 @@ export default function ProjectMappingEvents() {
 
     addDivisionProjectEvent: $this => {
       debugger;
-      //   let projects = $this.state.projects;
+      const data_exit = Enumerable.from($this.state.division_project)
+        .where(
+          w =>
+            w.division_id === $this.state.division_id &&
+            w.project_id === $this.state.project_id
+        )
+        .toArray();
+
+      if (data_exit.length > 0) {
+        swalMessage({
+          title: "Already assinged selected project to selected division",
+          type: "warning"
+        });
+        return;
+      }
       algaehApiCall({
         uri: "/projectjobcosting/addDivisionProject",
         module: "hrManagement",

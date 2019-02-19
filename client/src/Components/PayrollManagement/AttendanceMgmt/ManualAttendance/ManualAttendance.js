@@ -11,26 +11,33 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getYears } from "../../../../utils/GlobalFunctions";
+
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import ManualAttendanceEvents from "./ManualAttendanceEvents.js";
 import moment from "moment";
+import Options from "../../../../Options.json";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 class ManualAttendance extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedLang: this.props.SelectLanguage,
-      year: moment().year(),
-      month: moment(new Date()).format("M"),
-      sub_department_id: null,
       employee_group_id: null,
       project_id: null,
 
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id
+        .hims_d_hospital_id,
+      projects: [],
+      employee_details: [],
+      worked_hours: null,
+      in_time: null,
+      out_time: null,
+      process_attend: true,
+      apply_all: true
     };
+
+    ManualAttendanceEvents().getProjects(this);
   }
 
   componentDidMount() {
@@ -81,30 +88,66 @@ class ManualAttendance extends Component {
         }
       });
     }
-
-    if (this.props.projects === undefined || this.props.projects.length === 0) {
-      this.props.getProjects({
-        uri: "/hrsettings/getProjects",
-        module: "hrManagement",
-        method: "GET",
-        date: { pjoject_status: "A" },
-        redux: {
-          type: "ORGS_GET_DATA",
-          mappingName: "projects"
-        }
-      });
-    }
   }
 
   eventHandaler(e) {
     ManualAttendanceEvents().texthandle(this, e);
   }
 
+  LoadData() {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      querySelector: "data-validate='loadEmployee'",
+      onSuccess: () => {
+        ManualAttendanceEvents().LoadEmployee(this);
+      }
+    });
+  }
+
+  datehandle(ctrl, e) {
+    debugger;
+    ManualAttendanceEvents().datehandle(this, ctrl, e);
+  }
+
+  timetexthandle(e) {
+    ManualAttendanceEvents().timehandle(this, e);
+  }
+
+  gridtimehandle(row, e) {
+    debugger;
+    ManualAttendanceEvents().gdtimehandle(this, row, e);
+  }
+
+  AddToAll() {
+    ManualAttendanceEvents().AddtoList(this);
+  }
+
+  ProcessAttendance() {
+    ManualAttendanceEvents().ProcessAttendanceEvent(this);
+  }
+
+  clearState() {
+    this.setState({
+      selectedLang: this.props.SelectLanguage,
+      employee_group_id: null,
+      project_id: null,
+
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id,
+      projects: [],
+      employee_details: [],
+      worked_hours: null,
+      in_time: null,
+      out_time: null,
+      process_attend: true,
+      apply_all: true
+    });
+  }
+
   render() {
-    let allYears = getYears();
     return (
       <div id="ManualAttendanceScreen">
-        <div className="row inner-top-search">
+        <div className="row inner-top-search" data-validate="loadEmployee">
           <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
@@ -142,7 +185,7 @@ class ManualAttendance extends Component {
               dataSource: {
                 textField: "project_desc",
                 valueField: "hims_d_project_id",
-                data: this.props.projects
+                data: this.state.projects
               },
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
@@ -171,40 +214,47 @@ class ManualAttendance extends Component {
               onChange: this.eventHandaler.bind(this)
             }}
           />
+          <AlgaehDateHandler
+            div={{ className: "col" }}
+            label={{ forceLabel: "Select Date", isImp: true }}
+            textBox={{
+              className: "txt-fld",
+              name: "attendance_date"
+            }}
+            maxDate={new Date()}
+            events={{
+              onChange: this.datehandle.bind(this)
+            }}
+            value={this.state.attendance_date}
+          />
 
           <div className="col form-group">
-            <button style={{ marginTop: 21 }} className="btn btn-default">
+            <button
+              style={{ marginTop: 21 }}
+              className="btn btn-default"
+              onClick={this.LoadData.bind(this)}
+            >
               Load
             </button>
           </div>
         </div>
 
         <div className="row">
-          <div className="col-12">
+          <div className="col-12" data-validate="loadEmployee">
             <div className="portlet portlet-bordered">
               <div className="portlet-body">
                 <div className="row">
-                  <AlgaehDateHandler
-                    div={{ className: "col" }}
-                    label={{ forceLabel: "Select Date", isImp: false }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: ""
-                    }}
-                    maxDate={new Date()}
-                    events={{}}
-                  />
                   <AlagehFormGroup
                     div={{ className: "col" }}
                     label={{
                       forceLabel: "Start Time",
-                      isImp: false
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
+                      name: "in_time",
+                      value: this.state.in_time,
+                      events: { onChange: this.timetexthandle.bind(this) },
                       others: {
                         type: "time"
                       }
@@ -214,39 +264,40 @@ class ManualAttendance extends Component {
                     div={{ className: "col" }}
                     label={{
                       forceLabel: "End Time",
-                      isImp: false
+                      isImp: true
                     }}
                     textBox={{
                       className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
+                      name: "out_time",
+                      value: this.state.out_time,
+
+                      events: { onChange: this.timetexthandle.bind(this) },
+
                       others: {
                         type: "time"
                       }
                     }}
                   />
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      forceLabel: "Total Hours",
-                      isImp: false
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "",
-                      value: "",
-                      events: {},
-                      others: {
-                        type: "time",
-                        disabled: "disabled"
-                      }
-                    }}
-                  />{" "}
+
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Total  Hours"
+                      }}
+                    />
+                    <h6>
+                      {this.state.worked_hours === null
+                        ? "0 Hours"
+                        : this.state.worked_hours + " Hours"}
+                    </h6>
+                  </div>
+
                   <div className="col">
                     <button
                       style={{ marginTop: 21 }}
                       className="btn btn-default"
+                      onClick={this.AddToAll.bind(this)}
+                      disabled={this.state.apply_all}
                     >
                       Add to all
                     </button>
@@ -266,7 +317,7 @@ class ManualAttendance extends Component {
                       datavalidate="EnterGridIdHere"
                       columns={[
                         {
-                          fieldName: "empName",
+                          fieldName: "full_name",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Name" }}
@@ -274,7 +325,7 @@ class ManualAttendance extends Component {
                           )
                         },
                         {
-                          fieldName: "empCode",
+                          fieldName: "employee_code",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Code" }}
@@ -282,38 +333,85 @@ class ManualAttendance extends Component {
                           )
                         },
                         {
-                          fieldName: "date",
+                          fieldName: "attendance_date",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Selected Date" }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {moment(row.attendance_date).format(
+                                  Options.dateFormat
+                                )}
+                              </span>
+                            );
+                          }
                         },
                         {
-                          fieldName: "startTime",
+                          fieldName: "in_time",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Start Time" }} />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "in_time",
+                                  value: row.in_time,
+                                  events: {
+                                    onChange: this.gridtimehandle.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    type: "time"
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
-                          fieldName: "endTime",
+                          fieldName: "out_time",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "End Time" }} />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "out_time",
+                                  value: row.out_time,
+                                  events: {
+                                    onChange: this.gridtimehandle.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    type: "time"
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
-                          fieldName: "totalHr",
+                          fieldName: "worked_hours",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Total Hour" }} />
                           )
                         }
                       ]}
-                      keyId=""
-                      dataSource={{ data: [] }}
+                      keyId="hims_f_daily_time_sheet_id"
+                      dataSource={{ data: this.state.employee_details }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{}}
-                      others={{}}
                     />
                   </div>
                 </div>
@@ -324,7 +422,20 @@ class ManualAttendance extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button className="btn btn-primary">Process Attendance</button>
+              <button
+                className="btn btn-primary"
+                onClick={this.ProcessAttendance.bind(this)}
+                disabled={this.state.process_attend}
+              >
+                Process Attendance
+              </button>
+              <button
+                onClick={this.clearState.bind(this)}
+                // style={{ marginTop: 21, marginLeft: 5 }}
+                className="btn btn-default"
+              >
+                CLEAR
+              </button>
             </div>
           </div>
         </div>
@@ -337,7 +448,6 @@ function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
     organizations: state.organizations,
-    projects: state.projects,
     emp_groups: state.emp_groups
   };
 }
@@ -347,7 +457,6 @@ function mapDispatchToProps(dispatch) {
     {
       getSubDepartment: AlgaehActions,
       getOrganizations: AlgaehActions,
-      getProjects: AlgaehActions,
       getEmpGroups: AlgaehActions
     },
     dispatch
