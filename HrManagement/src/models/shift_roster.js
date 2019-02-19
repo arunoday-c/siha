@@ -564,7 +564,6 @@ module.exports = {
             input.employees[emp],
             holidayResult
           );
-          utilities.logger().log("empHoliday: ", empHoliday);
 
           for (let i = 0; i < dateRange.length; i++) {
             if (
@@ -572,14 +571,12 @@ module.exports = {
               (input.employees[emp]["exit_date"] == null ||
                 input.employees[emp]["exit_date"] < dateRange[i])
             ) {
-              // let WO_HO = {};
-              // utilities.logger().log("dateRange: ", dateRange[i]);
               let week_off_Data = new LINQ(empHoliday)
                 .Where(w => w.holiday_date == dateRange[i])
                 .Select(s => {
                   return {
-                    holiday: s.holiday,
-                    weekoff: s.weekoff
+                    weekoff: s.weekoff,
+                    holiday: s.holiday
                   };
                 })
                 .FirstOrDefault({
@@ -587,7 +584,7 @@ module.exports = {
                   holiday: "N"
                 });
 
-              if (week_off_Data.weekoff == "Y") {
+              if (week_off_Data.weekoff === "Y") {
                 week_off_Data = {
                   ...week_off_Data,
                   shift_id: 100,
@@ -595,7 +592,7 @@ module.exports = {
                   shift_end_time: 0,
                   shift_time: 0
                 };
-              } else if (week_off_Data.holiday == "Y") {
+              } else if (week_off_Data.holiday === "Y") {
                 week_off_Data = {
                   ...week_off_Data,
                   shift_id: 101,
@@ -613,10 +610,6 @@ module.exports = {
                   shift_time: input.shift_time
                 };
               }
-
-              // utilities
-              //   .logger()
-              //   .log("holiday : ", empHoliday[i]["holiday_date"]);
 
               if (input.shift_end_day == "SD") {
                 insertArray.push({
@@ -644,7 +637,6 @@ module.exports = {
           .executeQuery({
             query: "INSERT INTO `hims_f_shift_roster` (??) VALUES ?",
             values: insertArray,
-
             bulkInsertOrUpdate: true
           })
           .then(result => {
