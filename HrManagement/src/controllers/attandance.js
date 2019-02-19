@@ -8,7 +8,9 @@ import {
   addAttendanceRegularization,
   regularizeAttendance,
   getEmployeeAttendReg,
-  processAttendance
+  processAttendance,
+  getEmployeeToManualTimeSheet,
+  addToDailyTimeSheet
 } from "../models/attendance";
 export default () => {
   const api = Router();
@@ -125,6 +127,24 @@ export default () => {
         result: req.records
       });
     }
+  });
+
+  api.get(
+    "/getEmployeeToManualTimeSheet",
+    getEmployeeToManualTimeSheet,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.post("/addToDailyTimeSheet", addToDailyTimeSheet, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
   });
 
   return api;

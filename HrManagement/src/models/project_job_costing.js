@@ -6,12 +6,19 @@ module.exports = {
     try {
       const _mysql = new algaehMysql();
 
+      let _strQuery = "";
+      if (req.query.division_id != null) {
+        _strQuery = "and division_id = " + req.query.division_id;
+      }
+
       _mysql
         .executeQuery({
           query:
             "select hims_m_division_project_id, division_id, project_id, d_p_status, DP.inactive_date, \
-            P.start_date, P.end_date from hims_m_division_project DP, hims_d_project P where \
-            DP.project_id=P.hims_d_project_id order by hims_m_division_project_id desc;",
+            P.start_date, P.end_date, P.project_desc,P.hims_d_project_id from hims_m_division_project DP, \
+            hims_d_project P where DP.project_id=P.hims_d_project_id " +
+            _strQuery +
+            " order by hims_m_division_project_id desc;",
           printQuery: true
         })
         .then(result => {

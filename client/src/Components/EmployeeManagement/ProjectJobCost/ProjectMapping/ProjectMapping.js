@@ -10,7 +10,7 @@ import {
   AlgaehLabel,
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
+
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import ProjectMappingEvents from "./ProjectMappingEvents";
 import Options from "../../../../Options.json";
