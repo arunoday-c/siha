@@ -183,7 +183,10 @@ export default class MonthlyAttendance extends Component {
         yearAndMonth: yearMonth,
         ..._empdtl,
         hospital_id: this.state.hospital_id,
-        sub_department_id: this.state.sub_department_id
+        sub_department_id:
+          this.state.sub_department_id !== null
+            ? this.state.sub_department_id
+            : undefined
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -421,7 +424,6 @@ export default class MonthlyAttendance extends Component {
                   },
                   {
                     fieldName: "employee_code",
-
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
                     )
@@ -429,6 +431,12 @@ export default class MonthlyAttendance extends Component {
                   {
                     fieldName: "total_days",
                     label: <AlgaehLabel label={{ forceLabel: "Total Days" }} />
+                  },
+                  {
+                    fieldName: "total_work_days",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Total Work Days" }} />
+                    )
                   },
                   {
                     fieldName: "present_days",

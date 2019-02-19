@@ -148,7 +148,8 @@ module.exports = {
                   input.year,
                   _myemp,
                   input.year
-                ]
+                ],
+                printQuery : true
               })
               .then(Salaryresults => {
                 let _headerQuery = "";

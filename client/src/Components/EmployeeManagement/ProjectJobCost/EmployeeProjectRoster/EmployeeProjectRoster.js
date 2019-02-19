@@ -159,6 +159,43 @@ class EmployeeProjectRoster extends Component {
     });
   }
 
+  getEmployeesForProjectRoster() {
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+
+    var fromDate = moment(yearMonth)
+      .startOf("month")
+      .format("YYYY-MM-DD");
+    var toDate = moment(yearMonth)
+      .endOf("month")
+      .format("YYYY-MM-DD");
+
+    algaehApiCall({
+      uri: "/projectjobcosting/getEmployeesForProjectRoster",
+      method: "GET",
+      module: "hrManagement",
+      data: {
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id,
+        sub_department_id: this.state.sub_department_id,
+        fromDate: fromDate,
+        toDate: toDate
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            employees: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   render() {
     let allYears = getYears();
     return (
@@ -306,7 +343,7 @@ class EmployeeProjectRoster extends Component {
 
           <div className="col form-group">
             <button
-              // onClick={this.getEmployeesForShiftRoster.bind(this)}
+              onClick={this.getEmployeesForProjectRoster.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"
             >

@@ -655,6 +655,35 @@ module.exports = {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //created by irfan:
+  deleteShiftRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (input.hims_f_shift_roster_id > 0) {
+      _mysql
+        .executeQuery({
+          query:
+            "delete from hims_f_shift_roster where hims_f_shift_roster_id = ?",
+          values: [input.hims_f_shift_roster_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+    }
   }
 };
 

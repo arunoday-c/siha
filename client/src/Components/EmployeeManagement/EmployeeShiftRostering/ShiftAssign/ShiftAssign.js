@@ -16,8 +16,9 @@ class ShiftAssign extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.open === true) {
+      debugger;
       let myArray = this.state.shiftEmp;
-      myArray.push(nextProps.sendId);
+      myArray.push(nextProps.sendRow);
       this.setState({
         ...nextProps.data,
         shiftEmp: myArray
@@ -39,13 +40,13 @@ class ShiftAssign extends Component {
     });
   }
 
-  addEmployees(id) {
+  addEmployees(row) {
     let myArray = this.state.shiftEmp;
 
-    if (myArray.includes(id)) {
-      myArray.pop(id);
+    if (myArray.includes(row)) {
+      myArray.pop(row);
     } else {
-      myArray.push(id);
+      myArray.push(row);
     }
 
     this.setState(
@@ -53,7 +54,7 @@ class ShiftAssign extends Component {
         shiftEmp: myArray
       },
       () => {
-        // console.log("Data:", this.state.shiftEmp);
+        //console.log("Data:", this.state.shiftEmp);
       }
     );
   }
@@ -98,7 +99,8 @@ class ShiftAssign extends Component {
         shift_end_day: this.state.shift_end_day,
         shift_start_time: this.state.shift_start_time,
         shift_end_time: this.state.shift_end_time,
-        shift_time: hours + "." + mins
+        shift_time: hours + "." + mins,
+        hospital_id: this.state.hospital_id
       };
 
       algaehApiCall({
@@ -122,7 +124,7 @@ class ShiftAssign extends Component {
         }
       });
 
-      // console.log("SEND DATA:", sendData);
+      console.log("SEND DATA:", JSON.stringify(sendData));
     }
   }
 
@@ -195,13 +197,8 @@ class ShiftAssign extends Component {
                         id={data.employee_code}
                         value={JSON.stringify(data)}
                         type="checkbox"
-                        checked={this.state.shiftEmp.includes(
-                          parseInt(data.hims_d_employee_id, 10)
-                        )}
-                        onChange={this.addEmployees.bind(
-                          this,
-                          data.hims_d_employee_id
-                        )}
+                        checked={this.state.shiftEmp.includes(data)}
+                        onChange={this.addEmployees.bind(this, data)}
                       />
                       <label
                         htmlFor={data.employee_code}
