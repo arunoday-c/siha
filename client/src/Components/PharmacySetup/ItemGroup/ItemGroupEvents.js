@@ -25,6 +25,7 @@ const updateItemGroup = ($this, data) => {
 
   algaehApiCall({
     uri: "/pharmacy/updateItemGroup",
+    // module: "pharmacy",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -59,6 +60,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/pharmacy/updateItemGroup",
+        // module: "pharmacy",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -92,6 +94,7 @@ const insertItemGroup = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/pharmacy/addItemGroup",
+        // module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {

@@ -2,34 +2,34 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addItemMaster,
-  addItemCategory,
-  addItemGeneric,
-  addItemGroup,
-  addPharmacyUom,
-  getPharmacyUom,
-  addPharmacyLocation,
-  addItemForm,
-  addItemStorage,
-  addLocationPermission,
-  getItemMaster,
-  getItemCategory,
-  getItemGeneric,
-  getItemGroup,
+  addItemMaster, //Done
+  addItemCategory, //Done
+  addItemGeneric, //Done
+  addItemGroup, //Done
+  addPharmacyUom, //Done
+  addPharmacyLocation, //Done
+  addItemForm, //Done
+  addItemStorage, //Done
+  addLocationPermission, //Done
+  getPharmacyUom, //Done
+  getItemMaster, //Done
+  getItemCategory, //Done
+  getItemGeneric, //Done
+  getItemGroup, //Done
   getPharmacyLocation,
-  getItemStorage,
-  getItemForm,
-  getLocationPermission,
-  updateItemCategory,
-  updateItemGroup,
-  updateItemGeneric,
-  updatePharmacyUom,
-  updatePharmacyLocation,
-  updateItemForm,
-  updateItemStorage,
-  getItemMasterAndItemUom,
-  updateItemMasterAndUom,
-  updateLocationPermission
+  getItemStorage, //Done
+  getItemForm, //Done
+  getLocationPermission, //Done
+  updateItemCategory, //Done
+  updateItemGroup, //Done
+  updateItemGeneric, //Done
+  updatePharmacyUom, //Done
+  updatePharmacyLocation, //Done
+  updateItemForm, //Done
+  updateItemStorage, //Done
+  getItemMasterAndItemUom, //Done
+  updateItemMasterAndUom, //Done
+  updateLocationPermission //Done
 } from "../model/pharmacy";
 
 // import { addServices } from "../../model/serviceTypes/addServices";

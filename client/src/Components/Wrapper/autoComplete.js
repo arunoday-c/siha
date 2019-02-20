@@ -1,11 +1,11 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import Label from "./label";
 // import "../Wrapper/autoComplete.css";
 // import Enumarable from "linq";
 import _ from "lodash";
 import { checkSecurity } from "../../utils/GlobalFunctions";
 import { Dropdown } from "semantic-ui-react";
-class AutoComplete extends PureComponent {
+class AutoComplete extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -19,49 +19,52 @@ class AutoComplete extends PureComponent {
   componentWillReceiveProps(props) {
     if (this.state.hasSecurity) return;
 
-    if (!_.isEqual(props.selector, this.props.selector)) {
-      if (
-        !_.isEqual(
-          props.selector.dataSource.data,
-          this.props.selector.dataSource
-        )
-      ) {
-        const _estData =
-          props.selector.dataSource.data === undefined
-            ? []
-            : props.selector.dataSource.data;
+    if (
+      !_.isEqual(props.selector, this.props.selector) ||
+      !_.isEqual(props.selector.dataSource.data, this.props.selector.dataSource)
+    ) {
+      // if (
+      //   !_.isEqual(
+      //     props.selector.dataSource.data,
+      //     this.props.selector.dataSource
+      //   )
+      //) {
+      const _estData =
+        props.selector.dataSource.data === undefined
+          ? []
+          : props.selector.dataSource.data;
 
-        const _data =
-          this.props.selector.sort === null ||
-          this.props.selector.sort === undefined
-            ? _estData
-                .sort((a, b) => {
-                  return (
-                    "" + a[this.props.selector.dataSource.textField]
-                  ).localeCompare(b[this.props.selector.dataSource.textField]);
-                })
-                .map((item, index) => {
-                  return {
-                    key: index,
-                    value: item[this.props.selector.dataSource.valueField],
-                    text: item[this.props.selector.dataSource.textField],
-                    ...item
-                  };
-                })
-            : _estData.map((item, index) => {
+      const _data =
+        this.props.selector.sort === null ||
+        this.props.selector.sort === undefined
+          ? _estData
+              .sort((a, b) => {
+                return (
+                  "" + a[this.props.selector.dataSource.textField]
+                ).localeCompare(b[this.props.selector.dataSource.textField]);
+              })
+              .map((item, index) => {
                 return {
                   key: index,
                   value: item[this.props.selector.dataSource.valueField],
                   text: item[this.props.selector.dataSource.textField],
                   ...item
                 };
-              });
+              })
+          : _estData.map((item, index) => {
+              return {
+                key: index,
+                value: item[this.props.selector.dataSource.valueField],
+                text: item[this.props.selector.dataSource.textField],
+                ...item
+              };
+            });
 
-        this.setState({
-          data: _data,
-          loader: false
-        });
-      }
+      this.setState({
+        data: _data,
+        loader: false
+      });
+      //}
       if (props.selector.value !== this.props.selector.value) {
         this.setState({
           value: props.selector.value,
