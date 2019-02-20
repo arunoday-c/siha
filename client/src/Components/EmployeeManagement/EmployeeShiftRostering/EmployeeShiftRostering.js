@@ -212,27 +212,30 @@ export default class EmployeeShiftRostering extends Component {
       case "month":
         this.setState(
           {
-            [value.name]: value.value
-          },
-          () => {
-            this.getStartandMonthEnd();
+            [value.name]: value.value,
+            employees: []
           }
+          // () => {
+          //   this.getStartandMonthEnd();
+          // }
         );
         break;
       case "year":
         this.setState(
           {
-            [value.name]: value.value
-          },
-          () => {
-            this.getStartandMonthEnd();
+            [value.name]: value.value,
+            employees: []
           }
+          // () => {
+          //   this.getStartandMonthEnd();
+          // }
         );
         break;
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
+          employees: []
         });
         break;
     }
