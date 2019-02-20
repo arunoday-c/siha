@@ -22,6 +22,7 @@ export default class EmployeeShiftRostering extends Component {
       employees: [],
       hospitals: [],
       copyData: null,
+      sendDate: null,
       sendRow: null,
       openShiftAssign: false,
       shifts: [],
@@ -41,7 +42,8 @@ export default class EmployeeShiftRostering extends Component {
     if (e.target.tagName === "TD") {
       this.setState({
         sendRow: row,
-        openShiftAssign: true
+        openShiftAssign: true,
+        sendDate: e.currentTarget.getAttribute("date")
       });
     } else return;
   }
@@ -214,10 +216,10 @@ export default class EmployeeShiftRostering extends Component {
           {
             [value.name]: value.value,
             employees: []
+          },
+          () => {
+            this.getStartandMonthEnd();
           }
-          // () => {
-          //   this.getStartandMonthEnd();
-          // }
         );
         break;
       case "year":
@@ -225,10 +227,10 @@ export default class EmployeeShiftRostering extends Component {
           {
             [value.name]: value.value,
             employees: []
+          },
+          () => {
+            this.getStartandMonthEnd();
           }
-          // () => {
-          //   this.getStartandMonthEnd();
-          // }
         );
         break;
 
@@ -289,15 +291,41 @@ export default class EmployeeShiftRostering extends Component {
           <td className="leave_cell" key={now}>
             {leave.leave_description}
           </td>
-        ) : holiday !== undefined && holiday.weekoff === "Y" ? (
-          <td className="week_off_cell" key={now}>
-            {holiday.holiday_description}
+        ) : shift !== null && shift !== undefined && holiday !== undefined ? (
+          <td
+            className={
+              shift.weekoff === "Y"
+                ? "week_off_cell editAction"
+                : shift.holiday === "Y"
+                ? "holiday_cell editAction"
+                : "time_cell editAction"
+            }
+            key={now}
+          >
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
+                Copy
+              </li>
+              <li
+                onClick={this.pasteShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD")
+                })}
+              >
+                Paste
+              </li>
+            </ul>
+            <span>
+              {shift.shift_id === 100 || shift.shift_id === 101
+                ? holiday.holiday_description
+                : shift.shift_abbreviation}
+            </span>
           </td>
-        ) : holiday !== undefined && holiday.holiday === "Y" ? (
-          <td className="holiday_cell" key={now}>
-            {holiday.holiday_description}
-          </td>
-        ) : shift !== null && shift !== undefined ? (
+        ) : shift !== null &&
+          shift !== undefined &&
+          shift.holiday === "N" &&
+          shift.weekoff === "N" ? (
           <td
             onClick={this.showModal.bind(this, row)}
             key={now}
@@ -324,6 +352,56 @@ export default class EmployeeShiftRostering extends Component {
                 Delete Shift
               </li>
             </ul>
+          </td>
+        ) : shift !== null &&
+          shift !== undefined &&
+          (shift.holiday === "Y" || shift.weekoff === "Y") ? (
+          <td
+            onClick={this.showModal.bind(this, row)}
+            key={now}
+            className="week_off_cell editAction"
+            employee_id={row.hims_d_employee_id}
+            date={now.format("YYYY-MM-DD")}
+          >
+            <span>
+              {" "}
+              {shift.shift_id === 100
+                ? "Week Off"
+                : shift.shift_id === 101
+                ? "Holiday"
+                : shift.shift_abbreviation}
+            </span>
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
+                Copy
+              </li>
+              <li
+                shift={shift}
+                onClick={this.pasteShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD")
+                })}
+              >
+                Paste
+              </li>
+              <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
+                Delete Shift
+              </li>
+            </ul>
+          </td>
+        ) : holiday !== undefined ? (
+          <td
+            className={
+              holiday.weekoff === "Y"
+                ? "week_off_cell"
+                : holiday.holiday === "Y"
+                ? "holiday_cell"
+                : null
+            }
+            key={now}
+          >
+            <span>{holiday.holiday_description}</span>
           </td>
         ) : (
           <td
@@ -398,8 +476,6 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   pasteShift(data) {
-    // console.log("SEND DATA:", { ...this.state.copyData, data });
-
     this.state.copyData === null
       ? swalMessage({
           title: "Please copy the shift first",
@@ -492,10 +568,8 @@ export default class EmployeeShiftRostering extends Component {
       <div className="EmpShiftRost_Screen">
         <ShiftAssign
           data={{
-            from_date: this.state.year + "-" + this.state.month + "-01",
-            to_date: moment(this.state.year + "-" + this.state.month + "-01")
-              .endOf("month")
-              .format("YYYY-MM-DD"),
+            from_date: this.state.sendDate,
+            to_date: this.state.sendDate,
             shifts: this.state.shifts,
             employees: this.state.employees,
             hospital_id: this.state.hospital_id
@@ -594,27 +668,6 @@ export default class EmployeeShiftRostering extends Component {
               }
             }}
           />
-          {/* 
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Shift", isImp: true }}
-            selector={{
-              name: "shift_id",
-              value: this.state.shift_id,
-              className: "select-fld",
-              dataSource: {
-                textField: "shift_description",
-                valueField: "hims_d_shift_id",
-                data: this.state.shifts
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  shift_id: null
-                });
-              }
-            }}
-          /> */}
 
           <div className="col-3" style={{ marginTop: 10 }}>
             <div

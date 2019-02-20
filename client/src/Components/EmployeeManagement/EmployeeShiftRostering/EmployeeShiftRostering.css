@@ -50,8 +50,9 @@
     display: block; }
 
 .EmpShiftRost_Screen .week_off_cell {
-  background: #3f9c62;
-  color: white; }
+  background: #3f9c62; }
+  .EmpShiftRost_Screen .week_off_cell span {
+    color: white; }
 
 .EmpShiftRost_Screen .holiday_cell {
   background: #3f789c;

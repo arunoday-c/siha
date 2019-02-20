@@ -18,19 +18,10 @@ export default class MonthlyAttendance extends Component {
       year: moment().year(),
       month: moment(new Date()).format("M"),
       sub_departments: [],
-      department: {
-        loader: false,
-        sub_department_id: null,
-        data: []
-      },
-
-      attandance: {
-        loader: false,
-        data: []
-      },
+      loader: false,
+      data: [],
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
-
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
       formatingString: this.monthFormatorString(moment().startOf("month"))
@@ -38,6 +29,7 @@ export default class MonthlyAttendance extends Component {
     this.getSubDepts();
     this.getOrganization();
   }
+
   monthFormatorString(yearAndMonth) {
     const _start = moment(yearAndMonth)
       .startOf("month")
@@ -49,15 +41,13 @@ export default class MonthlyAttendance extends Component {
   }
 
   getSubDepts() {
-    const that = this;
-
     algaehApiCall({
       uri: "/department/get/subdepartment",
       method: "GET",
       module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
-          that.setState({
+          this.setState({
             sub_departments: response.data.records
           });
         }
@@ -71,51 +61,19 @@ export default class MonthlyAttendance extends Component {
     });
   }
 
-  // getDepartment() {
-  //   const that = this;
-  //   that.setState({ department: { loader: true } });
-  //   algaehApiCall({
-  //     uri: "/department/get",
-  //     method: "GET",
-  //     onSuccess: response => {
-  //       if (response.data.success) {
-  //         that.setState({
-  //           department: {
-  //             loader: false,
-  //             data: response.data.records
-  //           }
-  //         });
-  //       }
-  //     },
-  //     onFailure: error => {
-  //       that.setState({
-  //         department: {
-  //           loader: false
-  //         }
-  //       });
-  //       swalMessage({
-  //         title: error.message,
-  //         type: "error"
-  //       });
-  //     }
-  //   });
-  // }
-
   getOrganization() {
-    const that = this;
-    that.setState({ branch: { loader: true } });
     algaehApiCall({
       uri: "/organization/getOrganization",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          that.setState({
+          this.setState({
             hospitals: response.data.records
           });
         }
       },
       onFailure: error => {
-        that.setState({
+        this.setState({
           branch: {
             loader: false
           }
@@ -146,23 +104,6 @@ export default class MonthlyAttendance extends Component {
     });
   }
 
-  // dropDownHandle(e) {
-  //   const _stateOf = this["ref_" + e.name];
-  //   const _getType = _stateOf.getAttribute("stateof");
-
-  //   this.setState({
-  //     [_getType]: {
-  //       [e.name]: e.value,
-  //       ...this.state[_getType]
-  //     }
-  //   });
-  // }
-  // dropDownHandle(value) {
-
-  //   this.setState({
-  //   [ value.name] : value.value
-  //   });
-  // }
   processAttandance() {
     const that = this;
     const _empdtl =
@@ -173,7 +114,7 @@ export default class MonthlyAttendance extends Component {
 
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
-    that.setState({ attandance: { loader: true } });
+    that.setState({ loader: true });
 
     algaehApiCall({
       uri: "/attendance/processAttendance",
@@ -191,10 +132,8 @@ export default class MonthlyAttendance extends Component {
       onSuccess: response => {
         if (response.data.success) {
           that.setState({
-            attandance: {
-              loader: false,
-              data: response.data.result
-            }
+            loader: false,
+            data: response.data.result
           });
         } else if (!response.data.success) {
           swalMessage({
@@ -202,15 +141,13 @@ export default class MonthlyAttendance extends Component {
             type: "error"
           });
           that.setState({
-            attandance: { loader: false }
+            loader: false
           });
         }
       },
       onFailure: error => {
         that.setState({
-          attandance: {
-            loader: false
-          }
+          loader: false
         });
         swalMessage({
           title: error.message,
@@ -384,10 +321,10 @@ export default class MonthlyAttendance extends Component {
           <div className="col form-group margin-top-15">
             <button
               onClick={this.processAttandance.bind(this)}
-              disabled={this.state.attandance.loader}
+              disabled={this.state.loader}
               className="btn btn-primary"
             >
-              {!this.state.attandance.loader ? (
+              {!this.state.loader ? (
                 <span>Process Attendance</span>
               ) : (
                 <i className="fas fa-spinner fa-spin" />
@@ -553,98 +490,15 @@ export default class MonthlyAttendance extends Component {
                   }
                 ]}
                 dataSource={{
-                  data: this.state.attandance.data
+                  data: this.state.data
                 }}
                 filter={true}
                 paging={{ page: 0, rowsPerPage: 20 }}
-                loading={this.state.attandance.loader}
+                loading={this.state.loader}
               />
             </div>
           </div>
         </div>
-        {/* <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">
-                Selected Employee Leave Balance
-              </h3>
-            </div>
-          </div>
-          <div className="portlet-body">
-            <div id="EmployeeLeaveBalance_Cntr">
-              <AlgaehDataGrid
-                data-validate="EmployeeLeaveBalance_Cntr"
-                columns={[
-                  {
-                    fieldName: "earning_deduction_code",
-                    label: <AlgaehLabel label={{ forceLabel: "Leave Code" }} />
-                  },
-                  {
-                    fieldName: "earning_deduction_description",
-                    label: <AlgaehLabel label={{ forceLabel: "Description" }} />
-                  },
-                  {
-                    fieldName: "short_desc",
-                    label: <AlgaehLabel label={{ forceLabel: "Available" }} />
-                  },
-                  {
-                    fieldName: "component_category",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Present Days" }} />
-                    )
-                  },
-                  {
-                    fieldName: "calculation_method",
-                    label: <AlgaehLabel label={{ forceLabel: "Absent Days" }} />
-                  },
-                  {
-                    fieldName: "component_frequency",
-                    label: <AlgaehLabel label={{ forceLabel: "Paid Leaves" }} />
-                  },
-                  {
-                    fieldName: "calculation_type",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Unpaid Leaves" }} />
-                    )
-                  },
-                  {
-                    fieldName: "component_type",
-                    label: (
-                      <AlgaehLabel
-                        label={{ forceLabel: "Pending Unpaid Leaves" }}
-                      />
-                    )
-                  }
-                ]}
-                keyId="hims_d_employee_group_id"
-                dataSource={{
-                  data: this.state.earning_deductions
-                }}
-                isEditable={false}
-                paging={{ page: 0, rowsPerPage: 10 }}
-              />
-            </div>
-          </div>
-        </div> */}
-        {/*     
-        <div className="hptl-phase1-footer">
-          <div className="row">
-            <div className="col-lg-12">
-              <button
-                onClick={this.processAttandance.bind(this)}
-                disabled={this.state.attandance.loader}
-                className="btn btn-primary"
-              >
-                {!this.state.attandance.loader ? (
-                  <span>Process Attendance</span>
-                ) : (
-                  <i className="fas fa-spinner fa-spin" />
-                )}
-              </button>
-            </div>
-          </div>
-        </div>
-     */}
       </div>
     );
   }

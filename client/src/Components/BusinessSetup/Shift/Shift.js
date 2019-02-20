@@ -17,7 +17,8 @@ class Shift extends Component {
     super(props);
     this.state = {
       shifts: [],
-      break: "N"
+      break: "N",
+      shift_end_day: "SD"
     };
   }
 
@@ -25,7 +26,15 @@ class Shift extends Component {
     this.setState({
       shift_code: "",
       shift_description: "",
-      arabic_name: ""
+      arabic_name: "",
+      in_time1: null,
+      in_time2: null,
+      out_time1: null,
+      out_time2: null,
+      shift_abbreviation: "",
+      shift_end_day: "SD",
+      break_start: null,
+      break_end: null
     });
   }
 

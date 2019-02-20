@@ -463,7 +463,6 @@ class EmployeeProjectRoster extends Component {
               )}
             </button>
             <button
-              //  onClick={this.clearState.bind(this)}
               style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >
