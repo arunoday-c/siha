@@ -23,6 +23,7 @@ const onchangegridcol = ($this, row, e) => {
 const updateItemForm = ($this, data) => {
   algaehApiCall({
     uri: "/pharmacy/updateItemForm",
+    // module: "pharmacy",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -56,6 +57,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/pharmacy/updateItemForm",
+        // module: "pharmacy",
         data: data,
         method: "PUT",
         onSuccess: response => {
