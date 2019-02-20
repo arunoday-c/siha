@@ -71,7 +71,8 @@ class Shift extends Component {
             break: this.state.break,
             break_start: this.state.break_start,
             break_end: this.state.break_end,
-            shift_abbreviation: this.state.shift_abbreviation
+            shift_abbreviation: this.state.shift_abbreviation,
+            shift_end_day: this.state.shift_end_day
           },
           onSuccess: response => {
             if (response.data.success) {
@@ -114,7 +115,8 @@ class Shift extends Component {
             shift_description: data.shift_description,
             arabic_name: data.arabic_name,
             shift_status: data.shift_status,
-            hims_d_shift_id: data.hims_d_shift_id
+            hims_d_shift_id: data.hims_d_shift_id,
+            shift_end_day: data.shift_end_day
           },
           method: "PUT",
           onSuccess: response => {

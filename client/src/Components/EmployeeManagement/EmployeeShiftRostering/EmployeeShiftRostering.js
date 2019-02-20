@@ -395,7 +395,7 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   pasteShift(data) {
-    console.log("SEND DATA:", { ...this.state.copyData, data });
+    // console.log("SEND DATA:", { ...this.state.copyData, data });
 
     this.state.copyData === null
       ? swalMessage({
