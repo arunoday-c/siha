@@ -5,6 +5,8 @@ import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
 import ManualAttendance from "./ManualAttendance/ManualAttendance";
 import "./AttendanceMgmt.css";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 
 export default class AttendanceMgmt extends Component {
   constructor(props) {
@@ -12,6 +14,31 @@ export default class AttendanceMgmt extends Component {
     this.state = {
       pageDisplay: "MonthlyAttendance"
     };
+    this.getOptions();
+  }
+
+  getOptions() {
+    algaehApiCall({
+      uri: "/payrollOptions/getHrmsOptions",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        debugger;
+        if (res.data.success) {
+          sessionStorage.removeItem("hrOptions");
+          sessionStorage.setItem(
+            "hrOptions",
+            AlgaehCloseContainer(JSON.stringify(res.data.result[0]))
+          );
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   openTab(e) {

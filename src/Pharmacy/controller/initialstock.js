@@ -2,9 +2,9 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addPharmacyInitialStock,
-  getPharmacyInitialStock,
-  updatePharmacyInitialStock
+  addPharmacyInitialStock, //Done
+  getPharmacyInitialStock, //Done
+  updatePharmacyInitialStock //Done
 } from "../model/initialstock";
 
 export default ({ config, db }) => {
