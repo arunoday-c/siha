@@ -8,7 +8,9 @@ class ShiftAssign extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      employeeList: [],
       employees: [],
+      shiftList: [],
       shifts: [],
       shiftEmp: []
     };
@@ -16,7 +18,6 @@ class ShiftAssign extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.open === true) {
-      debugger;
       let myArray = this.state.shiftEmp;
       myArray.push(nextProps.sendRow);
       this.setState({
@@ -38,6 +39,34 @@ class ShiftAssign extends Component {
       shift_end_time: data.out_time1,
       shift_time: data.shift_time
     });
+  }
+
+  SearchHandler(e) {
+    switch (e.target.name) {
+      case "searchEmployees":
+        let search = e.target.value.toLowerCase(),
+          employees = this.state.employees.filter(el => {
+            let searchValue = el.employee_name.toLowerCase();
+            return searchValue.indexOf(search) !== -1;
+          });
+
+        this.setState({
+          employeeList: employees
+        });
+        break;
+
+      default:
+        let ShiftSearch = e.target.value.toLowerCase(),
+          shifts = this.state.shifts.filter(el => {
+            let searchValue = el.shift_description.toLowerCase();
+            return searchValue.indexOf(ShiftSearch) !== -1;
+          });
+
+        this.setState({
+          shiftList: shifts
+        });
+        break;
+    }
   }
 
   addEmployees(row) {
@@ -114,6 +143,7 @@ class ShiftAssign extends Component {
               title: "Record Added Successfully",
               type: "success"
             });
+            document.getElementById("clsSftAsgn").click();
           }
         },
         onFailure: err => {
@@ -124,18 +154,28 @@ class ShiftAssign extends Component {
         }
       });
 
-      console.log("SEND DATA:", JSON.stringify(sendData));
+      // console.log("SEND DATA:", JSON.stringify(sendData));
     }
   }
 
   render() {
+    const _employeeList =
+      this.state.employeeList.length === 0
+        ? this.state.employees
+        : this.state.employeeList;
+
+    const _shiftList =
+      this.state.shiftList.length === 0
+        ? this.state.shifts
+        : this.state.shiftList;
+
     return (
       <AlgaehModalPopUp
         openPopup={this.props.open}
         events={{
           onClose: this.props.onClose
         }}
-        className="col-lg-12"
+        className="col-lg-12 ShiftAssign"
       >
         <div className="popupInner" data-validate="LvEdtGrd">
           <div className="col-12">
@@ -190,8 +230,17 @@ class ShiftAssign extends Component {
             <div style={{ maxHeight: "400px" }} className="row">
               <div className="col-6">
                 <h6>EMPLOYEES</h6>
+                <input
+                  type="text"
+                  autoComplete="off"
+                  name="searchEmployees"
+                  className="rosterSrch"
+                  placeholder="Search Employees"
+                  value={this.state.searchEmployees}
+                  onChange={this.SearchHandler.bind(this)}
+                />
                 <ul className="shiftEmployeeList">
-                  {this.state.employees.map((data, index) => (
+                  {_employeeList.map((data, index) => (
                     <li key={index}>
                       <input
                         id={data.employee_code}
@@ -214,26 +263,55 @@ class ShiftAssign extends Component {
               </div>
               <div className="col-6">
                 <h6>SHIFTS</h6>
+                <input
+                  type="text"
+                  autoComplete="off"
+                  name="searchShifts"
+                  className="rosterSrch"
+                  placeholder="Search Shifts"
+                  value={this.state.searchShifts}
+                  onChange={this.SearchHandler.bind(this)}
+                />
                 <ul className="shiftList">
-                  {this.state.shifts.map((data, index) => (
+                  {_shiftList.map((data, index) => (
                     <li key={index}>
                       <input
-                        id={data.hims_d_shift_id}
+                        id={data.shift_code}
                         name="shift_id"
                         value={data}
                         onChange={this.shiftHandler.bind(this, data)}
                         type="radio"
                       />
                       <label
-                        htmlFor={data.hims_d_shift_id}
+                        htmlFor={data.shift_code}
                         style={{
                           width: "80%"
                         }}
                       >
-                        {data.shift_description +
-                          " (" +
-                          data.shift_abbreviation +
-                          ")"}
+                        <span>
+                          {data.shift_description +
+                            " (" +
+                            data.shift_abbreviation +
+                            ") "}
+                        </span>
+                        In time:
+                        <span>
+                          {" "}
+                          {moment(data.in_time1, "HH:mm:ss").isValid()
+                            ? moment(data.in_time1, "HH:mm:ss").format(
+                                "hh:mm a"
+                              )
+                            : "----"}
+                        </span>{" "}
+                        Out Time:
+                        <span>
+                          {" "}
+                          {moment(data.out_time1, "HH:mm:ss").isValid()
+                            ? moment(data.out_time1, "HH:mm:ss").format(
+                                "hh:mm a"
+                              )
+                            : "----"}
+                        </span>
                       </label>
                     </li>
                   ))}

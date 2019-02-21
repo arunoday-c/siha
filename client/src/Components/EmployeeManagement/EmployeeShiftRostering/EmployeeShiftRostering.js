@@ -317,8 +317,10 @@ export default class EmployeeShiftRostering extends Component {
               </li>
             </ul>
             <span>
-              {shift.shift_id === 100 || shift.shift_id === 101
-                ? holiday.holiday_description
+              {shift.shift_id === 100
+                ? "WO"
+                : shift.shift_id === 101
+                ? "HO"
                 : shift.shift_abbreviation}
             </span>
           </td>
@@ -366,9 +368,9 @@ export default class EmployeeShiftRostering extends Component {
             <span>
               {" "}
               {shift.shift_id === 100
-                ? "Week Off"
+                ? "WO"
                 : shift.shift_id === 101
-                ? "Holiday"
+                ? "HO"
                 : shift.shift_abbreviation}
             </span>
             <i className="fas fa-ellipsis-v" />
@@ -401,7 +403,13 @@ export default class EmployeeShiftRostering extends Component {
             }
             key={now}
           >
-            <span>{holiday.holiday_description}</span>
+            <span>
+              {holiday.weekoff === "Y"
+                ? "WO"
+                : holiday.holiday === "Y"
+                ? "HO"
+                : holiday.holiday_description}
+            </span>
           </td>
         ) : (
           <td
@@ -578,6 +586,11 @@ export default class EmployeeShiftRostering extends Component {
           open={this.state.openShiftAssign}
           onClose={this.closeShiftAssign.bind(this)}
         />
+        <button
+          id="clsSftAsgn"
+          style={{ display: "none" }}
+          onClick={this.closeShiftAssign.bind(this)}
+        />
 
         <div className="row  inner-top-search">
           <AlagehAutoComplete
@@ -738,7 +751,7 @@ export default class EmployeeShiftRostering extends Component {
                     Weekly Off (WO)
                   </span>
                   <span style={{ background: "#3f789c" }} className="legends">
-                    Holiday (H)
+                    Holiday (HO)
                   </span>
                   <span style={{ background: "#879c3f" }} className="legends">
                     Leave Authorized (LV)
@@ -760,7 +773,7 @@ export default class EmployeeShiftRostering extends Component {
                       <table>
                         <thead id="tHdRstr">
                           <tr>
-                            <th>Employee Code</th>
+                            {/* <th>Employee Code</th> */}
                             <th>Employee Name</th>
                             {this.getDaysOfMonth()}
                             <th>Joining Date</th>
@@ -770,7 +783,7 @@ export default class EmployeeShiftRostering extends Component {
                         <tbody>
                           {this.state.employees.map((row, index) => (
                             <tr key={row.hims_d_employee_id}>
-                              <td>{row.employee_code}</td>
+                              {/* <td>{row.employee_code}</td> */}
                               <td>{row.employee_name}</td>
 
                               {this.plotEmployeeDates(

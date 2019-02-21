@@ -861,6 +861,7 @@ class Shift extends Component {
                 data: this.state.shifts
               }}
               isEditable={true}
+              filter={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},
