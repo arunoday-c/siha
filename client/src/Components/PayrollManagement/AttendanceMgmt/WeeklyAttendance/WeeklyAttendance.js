@@ -493,9 +493,11 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
                     </div>
+                    <div className="col-1">{data.employee_name}</div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
+
                     <div className="col-9 dayTypeCntr">
                       <div className="tooltipDetails">
                         <span className="checkIn animated bounceIn faster">
