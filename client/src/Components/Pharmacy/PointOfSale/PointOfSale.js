@@ -77,6 +77,7 @@ class PointOfSale extends Component {
     ) {
       this.props.getLocation({
         uri: "/pharmacyGlobal/getUserLocationPermission",
+        // module: "pharmacy",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",

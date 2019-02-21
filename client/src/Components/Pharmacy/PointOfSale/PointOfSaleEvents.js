@@ -445,6 +445,7 @@ const getMedicationList = $this => {
 
   $this.props.getMedicationList({
     uri: "/pharmacyGlobal/getVisitPrescriptionDetails",
+    moduel: "pharmacy",
     method: "GET",
     data: inputobj,
     redux: {

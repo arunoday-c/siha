@@ -128,7 +128,7 @@ class Label extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if (nextProps !== undefined) {
       if (this.currentPageCanRender()) {
-        if (this.props.label !== undefined) {
+        if (nextProps.label !== undefined) {
           // if (
           //   this.props.label.forceLabel === undefined &&
           //   this.props.label.fieldName !== undefined
@@ -139,17 +139,18 @@ class Label extends PureComponent {
           // } else {
           //   this.setState({ languageBind: this.props.label.forceLabel });
           // }
-          this.getTargetLanguage(this.props.label.fieldName, data => {
+          this.getTargetLanguage(nextProps.label.fieldName, data => {
             const _bindTo =
               data !== undefined && data !== null && data !== ""
                 ? data
-                : this.props.label.forceLabel !== undefined
-                ? this.props.label.forceLabel
+                : nextProps.label.forceLabel !== undefined
+                ? nextProps.label.forceLabel
                 : data;
             this.setState({ languageBind: _bindTo });
           });
         }
       }
+
       this.setState({ Language: getCookie("Language") });
     }
   }
