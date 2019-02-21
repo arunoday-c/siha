@@ -1,14 +1,14 @@
 import { Router } from "express";
 import {
-  getDesignations,
+  getDesignations, //Done
   getEmpSpeciality,
   getEmpCategory,
-  addDesignation,
-  deleteDesignation,
-  getOvertimeGroups,
-  addOvertimeGroups,
-  deleteOvertimeGroups,
-  updateOvertimeGroups
+  addDesignation, //Done
+  deleteDesignation, //Done
+  getOvertimeGroups, //Done
+  addOvertimeGroups, //Done
+  deleteOvertimeGroups, //Done
+  updateOvertimeGroups //Done
 } from "../model/employeesetups";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";

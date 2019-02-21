@@ -157,6 +157,18 @@ class DeptUserDetails extends Component {
         }
       });
     }
+
+    if (this.props.overTime === undefined || this.props.overTime.length === 0) {
+      this.props.getEmpSpeciality({
+        uri: "/hrsettings/getOvertimeGroups",
+        module: "hrManagement",
+        method: "GET",
+        redux: {
+          type: "OVER_TIME_GET_DATA",
+          mappingName: "overTime"
+        }
+      });
+    }
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -287,31 +299,25 @@ class DeptUserDetails extends Component {
                     }
                   }}
                 />
-                {/*  TODO : incomplete
-                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+
+                <AlagehAutoComplete
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Overtime Group",
                     isImp: true
                   }}
                   selector={{
-                    name: "title_id",
+                    name: "overtime_group_id",
                     className: "select-fld",
-                    value: this.state.title_id,
+                    value: this.state.overtime_group_id,
                     dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "title"
-                          : "arabic_title",
-                      valueField: "his_d_title_id",
-                      data: this.props.titles
+                      textField: "overtime_group_description",
+                      valueField: "hims_d_overtime_group_id",
+                      data: this.props.overTime
                     },
-                    onChange: null,
-                    others: {
-                      tabIndex: "2"
-                    }
+                    onChange: texthandle.bind(this, this)
                   }}
-                /> */}
+                />
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
@@ -953,7 +959,8 @@ function mapStateToProps(state) {
     specimapcategorylist: state.specimapcategorylist,
     all_employees: state.all_employees,
     emp_groups: state.emp_groups,
-    organizations: state.organizations
+    organizations: state.organizations,
+    overTime: state.overTime
   };
 }
 

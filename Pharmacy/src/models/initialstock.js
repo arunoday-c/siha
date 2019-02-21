@@ -70,6 +70,13 @@ module.exports = {
           let month = moment().format("MM");
 
           let period = month;
+
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+
           _mysql
             .executeQuery({
               query:

@@ -2,10 +2,10 @@ import { Router } from "express";
 import { releaseConnection, generateDbConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addPosEntry,
-  getPosEntry,
-  updatePosEntry,
-  getPrescriptionPOS
+  addPosEntry, //Done
+  getPosEntry, //Done
+  updatePosEntry, //Done
+  getPrescriptionPOS //Done
 } from "../model/posEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
 import { pharmacyReceiptInsert } from "../model/pharmacyGlobal";
