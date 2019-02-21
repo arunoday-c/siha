@@ -227,6 +227,7 @@ const POSSearch = ($this, e) => {
 const getPOSEntry = $this => {
   algaehApiCall({
     uri: "/posEntry/getPosEntry",
+    module: "pharmacy",
     method: "GET",
     data: { pos_number: $this.state.pos_number },
     onSuccess: response => {

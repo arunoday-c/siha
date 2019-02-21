@@ -2,6 +2,7 @@
 
 import { LINQ } from "node-linq";
 import algaehMysql from "algaeh-mysql";
+import algaehUtilities from "algaeh-utilities/utilities";
 
 const createXmlString = Jobject => {
   if (Jobject != null) {
@@ -18,10 +19,14 @@ const createXmlString = Jobject => {
 };
 
 let updateIntoItemLocation = (req, res, next) => {
-  const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+  // const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+  const _options = req.connection == null ? {} : req.connection;
+  const _mysql = new algaehMysql(_options);
   try {
     let inputParam = req.body;
     let xmlQuery = "";
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updateIntoItemLocation: ");
 
     new LINQ(inputParam.pharmacy_stock_detail)
       .Select(s => {
@@ -80,6 +85,7 @@ let updateIntoItemLocation = (req, res, next) => {
         printQuery: true
       })
       .then(result => {
+        utilities.logger().log("result: ", result);
         if (Array.isArray(result)) {
           if (result[0][0].Error != null) {
             const error = new Error();
@@ -101,6 +107,7 @@ let updateIntoItemLocation = (req, res, next) => {
         }
       })
       .catch(e => {
+        utilities.logger().log("error: ", e);
         _mysql.rollBackTransaction(() => {
           next(e);
         });
