@@ -744,7 +744,8 @@
   ],
   "LEAVE_CALC_TYPE": [
     { "name": "Component", "value": "CO" },
-    { "name": "Slab", "value": "SL" }
+    { "name": "Slab", "value": "SL" },
+    { "name": "None", "value": "NO" }
   ],
   "LEAVE_PAY_TYPE": [
     { "name": "None", "value": "NO" },
