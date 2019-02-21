@@ -1055,7 +1055,6 @@ let getTimeSheet = (req, res, next) => {
               var config = {
                 user: result[0]["biometric_database_login"],
                 password: result[0]["biometric_database_password"],
-
                 server:
                   result[0]["biometric_server_name"] +
                   ":" +
@@ -1090,8 +1089,8 @@ let getTimeSheet = (req, res, next) => {
                   // query to the biometric database and get the records
                   request.query(
                     ` select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
-            Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
-            PDate<='${to_date}'`,
+                      Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
+                      PDate<='${to_date}'`,
                     function(err, attResult) {
                       if (err) {
                         debugLog("query error");
