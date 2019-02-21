@@ -1883,7 +1883,7 @@ module.exports = {
         let attendcResult = [];
         let actual_hours = "";
         let biometricData=[];
-  
+        let singleEmployee="N";
       
         let from_date = moment(input.from_date).format("YYYY-MM-DD");
         let to_date = moment(input.to_date).format("YYYY-MM-DD");
@@ -1945,8 +1945,7 @@ module.exports = {
             utilities.logger().log("AllEmployees: ", AllEmployees);
   
             if ( AllEmployees.length > 0 &&
-              options.length > 0 &&
-             
+              options.length > 0 &&             
               options[0]["biometric_database"] == "SQL"
             ) {
               actual_hours = options[0]["standard_working_hours"];
@@ -1973,7 +1972,7 @@ module.exports = {
                posted, hours, minutes, actual_hours, actual_minutes, worked_hours,\
                expected_out_date, expected_out_time ,hims_d_employee_id,employee_code,full_name as employee_name\
                from  hims_f_daily_time_sheet TS \
-              left join hims_d_employee E on TS.biometric_id=E.biometric_id\
+              inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
               where attendance_date between ('${from_date}') and ('${to_date}') and employee_id in (${employee_ids})`;
              
              
@@ -2023,8 +2022,8 @@ module.exports = {
                   SELECT
                     UserID,  
                     [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
-                    InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), ''),
-                    OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), ''),
+                    InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), null),
+                    OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), null),
                     Duration =  ISNULL(RIGHT('00' +             
                                 CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
                                     MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
@@ -2034,7 +2033,7 @@ module.exports = {
                                     MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
                                     MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
                                 )%60), 2)
-                            ,0)
+                            ,0.0)
                   FROM CTE
                   GROUP BY UserID, AccessDate
                   ORDER BY  AccessDate `,
@@ -2050,7 +2049,7 @@ module.exports = {
                     attendcResult = attResult["recordset"];
                     sql.close();
   
-                    if (attendcResult.length > 0 && from_date==to_date) {
+                    if ( attendcResult.length > 0 && from_date==to_date) {
 
 
                       for(let i=0;i<AllEmployees.length;i++){
@@ -2075,6 +2074,7 @@ module.exports = {
                         }).FirstOrDefault({
                           biometric_id:null,
                           attendance_date:from_date,                         
+                          out_date:from_date,                         
                           in_time:null,
                           out_time:null,
                           worked_hours:0,
@@ -2087,8 +2087,7 @@ module.exports = {
                           minutes:0
                         }));                   
 
-   // "hours",
-    // "minutes",
+  
 
                       }
                       utilities.logger().log("biometricData", biometricData);
@@ -2096,12 +2095,70 @@ module.exports = {
                       insertTimeSheet(returnQry,
                         biometricData,
                         AllLeaves,
-                        allHolidays,from_date,to_date,_mysql,req, res, next
+                        allHolidays,from_date,to_date,_mysql,req, res, next,singleEmployee
                       );
 
 
 
-                    } else {
+                    } 
+                    else if(input.hims_d_employee_id>0 && attendcResult.length > 0 && from_date<to_date){
+                      singleEmployee="Y"
+
+                      utilities.logger().log("date_range:","date_range" );
+
+                     let date_range= getDays(new Date(from_date),new Date(to_date));
+                     utilities.logger().log("date_range:",date_range );
+
+
+                     for(let i=0;i<date_range.length;i++){
+
+                      utilities.logger().log("i ", date_range[i]);
+                     
+
+                      biometricData.push(new LINQ(attendcResult).Where(w=>(moment(w.Date, "MM-DD-YYYY").format("YYYY-MM-DD")==date_range[i]))
+                      .Select(s =>{
+                        return{
+                          biometric_id:s.UserID,
+                          attendance_date:date_range[i],
+                          out_date:date_range[i],
+                          in_time:s.InTime,
+                          out_time:s.OutTime,
+                          worked_hours:s.Duration,
+                          employee_id:AllEmployees[0]["hims_d_employee_id"],
+                          religion_id:AllEmployees[0]["religion_id"],
+                          date_of_joining:AllEmployees[0]["date_of_joining"],
+                          exit_date:AllEmployees[0]["exit_date"],
+                          actual_hours:actual_hours,
+                          hours:s.Duration.split(".")[0],
+                          minutes:s.Duration.split(".")[1]
+                        }
+                      }).FirstOrDefault({
+                        biometric_id:null,
+                        attendance_date:date_range[i],  
+                        out_date:null,                       
+                        in_time:null,
+                        out_time:null,
+                        worked_hours:0,
+                        employee_id:AllEmployees[0]["hims_d_employee_id"],
+                        religion_id:AllEmployees[0]["religion_id"],
+                        date_of_joining:AllEmployees[0]["date_of_joining"],
+                        exit_date:AllEmployees[0]["exit_date"],
+                        actual_hours:actual_hours,
+                        hours:0,
+                        minutes:0
+                      }));              
+
+
+                   
+                   }
+                   utilities.logger().log("biometricData single emp", biometricData);
+                   insertTimeSheet(returnQry,
+                    biometricData,
+                    AllLeaves,
+                    allHolidays,from_date,to_date,_mysql,req, res, next,singleEmployee
+                  );
+
+                    }else {
                       req.records = {
                         invalid_data: true,
                         message: "no punches exist"
@@ -2135,7 +2192,7 @@ module.exports = {
 
         req.records = {
           invalid_input: true,
-          message: "Please select a branch"
+          message: "Please select a branch and  date"
         };
         next();
 
@@ -2157,12 +2214,13 @@ function insertTimeSheet(returnQry,
   AllLeaves,
   allHolidays,
   from_date,
-  to_date,_mysql,req, res, next
+  to_date,_mysql,req, res, next,singleEmployee
 ) {
   const utilities = new algaehUtilities();
 
   let insertArray = [];
   try {
+    if(singleEmployee=="N"){
     for (let i = 0; i < biometricData.length; i++) {
     
       if (
@@ -2207,12 +2265,25 @@ function insertTimeSheet(returnQry,
           })
           .ToArray();
 
-        let holidayweekoff = getEmployeeWeekOffsHolidays(
+        let empHolidayweekoff = getEmployeeWeekOffsHolidays(
           from_date,
           to_date,
           biometricData[i],
           allHolidays
         );
+
+        let holidayweekoff = new LINQ(empHolidayweekoff)
+        .Where(
+          w =>
+            w.holiday_date == from_date
+        )
+        .Select(s => {
+          return {
+            holiday: s.holiday,
+            weekoff: s.weekoff
+          };
+        })
+        .ToArray();
 
         if (leave.length > 0) {
           //check leave
@@ -2220,12 +2291,12 @@ function insertTimeSheet(returnQry,
 
           insertArray.push({ ...biometricData[i], status: leave[0]["leave_type"]+"L" });
 
-        } else if (holidayweekoff[0].weekoff == "Y") {
+        } else if (holidayweekoff.length>0 && holidayweekoff[0].weekoff == "Y") {
           //check weekoff
 
 
           insertArray.push({ ...biometricData[i], status: "WO" });
-        } else if (holidayweekoff[0].holiday == "Y") {
+        } else if (holidayweekoff.length>0 &&  holidayweekoff[0].holiday == "Y") {
           //check holiday
 
           insertArray.push({ ...biometricData[i], status: "HO" });
@@ -2238,6 +2309,105 @@ function insertTimeSheet(returnQry,
   
 
     }
+  }else{
+
+    let empHolidayweekoff = getEmployeeWeekOffsHolidays(
+      from_date,
+          to_date,
+      biometricData[0],
+      allHolidays
+    );
+
+    utilities.logger().log("empHolidayweekoff: ", empHolidayweekoff);
+    for (let i = 0; i < biometricData.length; i++) {
+    
+      if (
+        biometricData[i]["biometric_id"] != null &&
+        biometricData[i]["in_time"] != null &&
+        biometricData[i]["out_time"] != null
+      ) {
+        //present
+        insertArray.push({ ...biometricData[i], status: "PR" });
+      
+      } else if (
+        (biometricData[i]["in_time"] != null &&
+          biometricData[i]["out_time"] == null) ||
+        (biometricData[i]["in_time"] == null &&
+          biometricData[i]["out_time"] != null)
+      ) {
+        //Exception
+        insertArray.push({ ...biometricData[i], status: "EX" });
+    
+      } else if (biometricData[i]["biometric_id"] == null) {
+       
+        let leave = new LINQ(AllLeaves)
+          .Where(
+            w =>
+              w.employee_id == biometricData[i]["hims_d_employee_id"] &&
+              w.from_date <= biometricData[i]["attendance_date"] &&
+              w.from_date >= biometricData[i]["attendance_date"]
+          )
+          .Select(s => {
+            return {
+              hims_f_leave_application_id: s.hims_f_leave_application_id,
+              employee_id: s.employee_id,
+              leave_id: s.leave_id,
+              leave_description: s.leave_description,
+              leave_type: s.leave_type,
+              from_date: s.from_date,
+              to_date: s.to_date,
+              from_leave_session: s.from_leave_session,
+              to_leave_session: s.to_leave_session,
+              status: s.status
+            };
+          })
+          .ToArray();
+
+        let holidayweekoff = new LINQ(empHolidayweekoff)
+        .Where(
+          w =>
+            w.holiday_date == biometricData[i]["attendance_date"]
+        )
+        .Select(s => {
+          return {
+            holiday: s.holiday,
+            weekoff: s.weekoff
+          };
+        })
+        .ToArray();
+
+
+        
+
+        utilities.logger().log("holidayweekoff: ", holidayweekoff);
+        if (leave.length > 0) {
+          //check leave
+          utilities.logger().log("apple: ", "APPLE");
+
+          insertArray.push({ ...biometricData[i], status: leave[0]["leave_type"]+"L" });
+
+        } else if (holidayweekoff.length>0 && holidayweekoff[0].weekoff == "Y") {
+
+          utilities.logger().log("BALL: ", "BAAL");
+                   //check weekoff
+          insertArray.push({ ...biometricData[i], status: "WO" });
+        } else if (holidayweekoff.length>0 && holidayweekoff[0].holiday == "Y") {
+          //check holiday
+
+          utilities.logger().log("CAT: ", "CAT");
+          insertArray.push({ ...biometricData[i], status: "HO" });
+        } else {
+          utilities.logger().log("DOG: ", "DOG");
+          //else mark absent
+          insertArray.push({ ...biometricData[i], status: "AB" });
+        }
+      }
+  
+
+    }
+  }
+
+
 
     utilities.logger().log("insertArray: ", insertArray);
 
