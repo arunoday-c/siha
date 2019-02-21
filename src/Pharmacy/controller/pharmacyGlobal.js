@@ -2,12 +2,12 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  getUomLocationStock,
-  getVisitPrescriptionDetails,
-  getItemMoment,
-  getItemLocationStock,
-  getUserLocationPermission,
-  getItemandLocationStock
+  getUomLocationStock, //Done
+  getVisitPrescriptionDetails, //Done
+  getItemMoment, //Done
+  getItemLocationStock, //Done
+  getUserLocationPermission, //Done
+  getItemandLocationStock //Done
 } from "../model/pharmacyGlobal";
 
 export default ({ config, db }) => {

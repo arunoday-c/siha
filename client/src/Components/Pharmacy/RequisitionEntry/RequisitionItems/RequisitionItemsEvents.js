@@ -294,6 +294,7 @@ const onchangegridcol = ($this, context, row, e) => {
 const getItemLocationStock = ($this, context, value) => {
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemLocationStock",
+    // module: "pharmacy",
     method: "GET",
     data: {
       location_id: value.location_id,

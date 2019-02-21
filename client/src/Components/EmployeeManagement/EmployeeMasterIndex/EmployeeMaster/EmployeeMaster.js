@@ -207,7 +207,7 @@ class EmployeeMaster extends Component {
                   this.updateEmployeeTabs({
                     countrystates: states,
                     precountrystates: states,
-                    present_cities: cities.cities,
+                    // present_cities: cities.cities,
                     present_state_id: this.state.personalDetails
                       .present_state_id
                   });
@@ -224,7 +224,6 @@ class EmployeeMaster extends Component {
     }
   }
   updateEmployeeTabs(options) {
-    debugger;
     this.setState({
       personalDetails: {
         ...this.state.personalDetails,

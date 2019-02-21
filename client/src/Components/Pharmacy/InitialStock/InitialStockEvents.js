@@ -160,7 +160,7 @@ const getCtrlCode = ($this, docNumber) => {
     AlgaehLoader({ show: true });
     $this.props.getInitialStock({
       uri: "/initialstock/getPharmacyInitialStock",
-      module: "pharmacy",
+      // module: "pharmacy",
       method: "GET",
       printInput: true,
       data: { document_number: docNumber },
@@ -188,7 +188,7 @@ const getCtrlCode = ($this, docNumber) => {
 const SaveInitialStock = $this => {
   algaehApiCall({
     uri: "/initialstock/addPharmacyInitialStock",
-    module: "pharmacy",
+    // module: "pharmacy",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
@@ -260,7 +260,7 @@ const PostInitialStock = $this => {
   debugger;
   algaehApiCall({
     uri: "/initialstock/updatePharmacyInitialStock",
-    module: "pharmacy",
+    // module: "pharmacy",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {

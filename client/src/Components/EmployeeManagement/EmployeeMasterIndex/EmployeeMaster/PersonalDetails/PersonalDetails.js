@@ -93,7 +93,6 @@ class PersonalDetails extends Component {
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         {/* <MyContext.Consumer>
@@ -612,6 +611,9 @@ class PersonalDetails extends Component {
                             destinationName: this.state.employee_code,
                             fileType: "Employees"
                           }}
+                          showActions={
+                            this.state.employee_status === "I" ? false : true
+                          }
                         />
                       </div>
                     </div>
