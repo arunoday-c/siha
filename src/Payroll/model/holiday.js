@@ -848,8 +848,12 @@ let postTimeSheet = (req, res, next) => {
     db.getConnection((error, connection) => {
       let from_date = moment(req.query.from_date).format("YYYY-MM-DD");
       let to_date = moment(req.query.to_date).format("YYYY-MM-DD");
-      // let from_date = "2017-05-01";
-      // let to_date = "2017-05-31";
+      let employee_id= "";
+
+      if (req.query.hims_d_employee_id >0) {
+        employee_id = "AND TS.employee_id="+ req.query.hims_d_employee_id
+      };
+
 
       const month_number = moment(from_date).format("M");
       const year = moment(from_date).format("YYYY");
@@ -860,7 +864,7 @@ let postTimeSheet = (req, res, next) => {
         out_time,year,month,status,posted,hours,minutes,actual_hours,actual_minutes,worked_hours,\
         expected_out_date,expected_out_time ,hims_d_employee_id,hospital_id,sub_department_id \
         from hims_f_daily_time_sheet TS ,hims_d_employee E where  date(attendance_date) between\
-                date(?) and date(?) and TS.biometric_id=E.biometric_id",
+                date(?) and date(?) and TS.employee_id=E.hims_d_employee_id "+ employee_id ,
         [from_date, to_date],
         (error, result) => {
           if (error) {
