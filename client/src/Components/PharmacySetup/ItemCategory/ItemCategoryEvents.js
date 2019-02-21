@@ -23,6 +23,7 @@ const onchangegridcol = ($this, row, e) => {
 const updateItemCategory = ($this, data) => {
   algaehApiCall({
     uri: "/pharmacy/updateItemCategory",
+    // module: "pharmacy",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -57,6 +58,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/pharmacy/updateItemCategory",
+        // module: "pharmacy",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -90,6 +92,7 @@ const insertItemCategory = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/pharmacy/addItemCategory",
+        // module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {

@@ -4,7 +4,8 @@ import Employee from "../../../../Search/Employee.json";
 import "./WeeklyAttendance.css";
 import {
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
+  AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -16,6 +17,7 @@ export default class WeeklyAttendance extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      attendance_type: "D",
       year: moment().year(),
       month: moment(new Date()).format("M"),
       week: 0,
@@ -60,12 +62,18 @@ export default class WeeklyAttendance extends Component {
   }
 
   getDailyTimeSheet() {
-    let _fromDate = moment(this.state.year + "-" + this.state.month)
-      .startOf("month")
-      .format("YYYY-MM-DD");
-    let _toDate = moment(this.state.year + "-" + this.state.month)
-      .endOf("month")
-      .format("YYYY-MM-DD");
+    let _fromDate =
+      this.state.attendance_type === "M"
+        ? moment(this.state.year + "-" + this.state.month)
+            .startOf("month")
+            .format("YYYY-MM-DD")
+        : this.state.from_date;
+    let _toDate =
+      this.state.attendance_type === "M"
+        ? moment(this.state.year + "-" + this.state.month)
+            .endOf("month")
+            .format("YYYY-MM-DD")
+        : this.state.to_date;
 
     algaehApiCall({
       // uri: "/holiday/getTimeSheet",
@@ -217,21 +225,134 @@ export default class WeeklyAttendance extends Component {
     return (
       <div className="hrTimeSheet">
         <div className="row inner-top-search">
-          <div className="col">
-            <label>View by All Employees</label>
-            <div className="customCheckbox">
-              <label className="checkbox inline">
+          <div className="col-2">
+            <label />
+            <div className="customRadio">
+              <label className="radio inline">
                 <input
-                  type="checkbox"
-                  value="ALL"
-                  name="hims_d_employee_id"
-                  checked={this.state.hims_d_employee_id === "ALL"}
-                  onChange={this.changeChecks.bind(this)}
+                  type="radio"
+                  value="D"
+                  name="attendance_type"
+                  checked={this.state.attendance_type === "D"}
+                  onChange={this.textHandler.bind(this)}
                 />
-                <span>Yes</span>
+                <span>Date Range</span>
+              </label>
+
+              <label className="radio inline">
+                <input
+                  type="radio"
+                  value="M"
+                  name="attendance_type"
+                  checked={this.state.attendance_type === "M"}
+                  onChange={this.textHandler.bind(this)}
+                />
+                <span>Monthly</span>
               </label>
             </div>
           </div>
+
+          {this.state.attendance_type === "M" ? (
+            <React.Fragment>
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Select a Year.",
+                  isImp: true
+                }}
+                selector={{
+                  name: "year",
+                  className: "select-fld",
+                  value: this.state.year,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: allYears
+                  },
+                  onChange: this.dropDownHandler.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      year: null
+                    });
+                  }
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Select a Month.",
+                  isImp: true
+                }}
+                selector={{
+                  sort: "off",
+                  name: "month",
+                  className: "select-fld",
+                  value: this.state.month,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.MONTHS
+                  },
+                  onChange: this.dropDownHandler.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      month: null
+                    });
+                  }
+                }}
+              />
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <AlgaehDateHandler
+                div={{ className: "col margin-bottom-15" }}
+                label={{
+                  forceLabel: "From Date",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "from_date",
+                  others: {
+                    tabIndex: "1"
+                  }
+                }}
+                events={{
+                  onChange: selDate => {
+                    this.setState({
+                      from_date: selDate
+                    });
+                  }
+                }}
+                maxDate={new Date()}
+                value={this.state.from_date}
+              />
+              <AlgaehDateHandler
+                div={{ className: "col margin-bottom-15" }}
+                label={{
+                  forceLabel: "To Date",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "to_date",
+                  others: {
+                    tabIndex: "2"
+                  }
+                }}
+                events={{
+                  onChange: selDate => {
+                    this.setState({
+                      to_date: selDate
+                    });
+                  }
+                }}
+                minDate={this.state.from_date}
+                value={this.state.to_date}
+              />
+            </React.Fragment>
+          )}
 
           <div className="col" style={{ marginTop: 10 }}>
             <div
@@ -266,54 +387,6 @@ export default class WeeklyAttendance extends Component {
               </div>
             </div>
           </div>
-
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Select a Year.",
-              isImp: true
-            }}
-            selector={{
-              name: "year",
-              className: "select-fld",
-              value: this.state.year,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: allYears
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  year: null
-                });
-              }
-            }}
-          />
-
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Select a Month.",
-              isImp: true
-            }}
-            selector={{
-              sort:"off",name: "month",
-              className: "select-fld",
-              value: this.state.month,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.MONTHS
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  month: null
-                });
-              }
-            }}
-          />
 
           <div className="col form-group">
             <button

@@ -65,7 +65,9 @@
 
   .week_off_cell {
     background: rgb(63, 156, 98);
-    color: white;
+    span {
+      color: white;
+    }
   }
 
   .holiday_cell {
@@ -115,11 +117,11 @@
           color: #000 !important;
           background: #dff6f6 !important;
           width: 75px;
+          // &:nth-child(1) {
+          //   text-align: center;
+          //   width: 120px;
+          // }
           &:nth-child(1) {
-            text-align: center;
-            width: 120px;
-          }
-          &:nth-child(2) {
             text-align: left;
             width: 200px;
           }
@@ -143,11 +145,11 @@
             border-right: 1px solid #ececec;
             border-top: 1px solid #ececec;
             width: 75px;
+            // &:nth-child(1) {
+            //   text-align: center;
+            //   width: 120px;
+            // }
             &:nth-child(1) {
-              text-align: center;
-              width: 120px;
-            }
-            &:nth-child(2) {
               text-align: left;
               width: 200px;
             }

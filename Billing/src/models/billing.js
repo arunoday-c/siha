@@ -43,8 +43,6 @@ module.exports = {
               "expiry_date",
               "pay_type",
               "amount",
-              "created_by",
-              "updated_by",
               "card_type"
             ];
 
@@ -54,7 +52,11 @@ module.exports = {
                 values: inputParam.receiptdetails,
                 includeValues: receptSample,
                 extraValues: {
-                  hims_f_receipt_header_id: headerRcptResult.insertId
+                  hims_f_receipt_header_id: headerRcptResult.insertId,
+                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                  created_date: new Date(),
+                  updated_by: req.userIdentity.algaeh_d_app_user_id,
+                  updated_date: new Date()
                 },
                 bulkInsertOrUpdate: true,
                 printQuery: true
@@ -960,6 +962,13 @@ module.exports = {
       _mysql.rollBackTransaction(() => {
         next(error);
       });
+    }
+  },
+  getBillDetailsFunction: (req, res, next, resolve) => {
+    try {
+      getBillDetailsFunctionality(req, res, next, resolve);
+    } catch (e) {
+      next(e);
     }
   }
 };

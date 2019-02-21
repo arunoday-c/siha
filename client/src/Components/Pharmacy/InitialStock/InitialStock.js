@@ -66,6 +66,7 @@ class InitialStock extends Component {
     ) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
+        // module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
@@ -79,6 +80,7 @@ class InitialStock extends Component {
     ) {
       this.props.getLocation({
         uri: "/pharmacy/getPharmacyLocation",
+        // module: "pharmacy",
         method: "GET",
         redux: {
           type: "LOCATIONS_GET_DATA",
@@ -92,6 +94,7 @@ class InitialStock extends Component {
     ) {
       this.props.getItemCategory({
         uri: "/pharmacy/getItemCategory",
+        // module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
@@ -105,6 +108,7 @@ class InitialStock extends Component {
     ) {
       this.props.getItemGroup({
         uri: "/pharmacy/getItemGroup",
+        // module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GROUP_GET_DATA",
@@ -118,6 +122,7 @@ class InitialStock extends Component {
     ) {
       this.props.getItemUOM({
         uri: "/pharmacy/getPharmacyUom",
+        // module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",

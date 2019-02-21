@@ -16,6 +16,7 @@ class EmployeeProjectRoster extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loading: false,
       employees: [],
       hospitals: [],
       projects: [],
@@ -260,6 +261,10 @@ class EmployeeProjectRoster extends Component {
   }
 
   getEmployeesForProjectRoster() {
+    this.setState({
+      loading: true
+    });
+
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
     var fromDate = moment(yearMonth)
@@ -283,7 +288,8 @@ class EmployeeProjectRoster extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            employees: res.data.records
+            employees: res.data.records,
+            loading: false
           });
         }
       },
@@ -291,6 +297,9 @@ class EmployeeProjectRoster extends Component {
         swalMessage({
           title: err.message,
           type: "error"
+        });
+        this.setState({
+          loading: false
         });
       }
     });
@@ -454,7 +463,6 @@ class EmployeeProjectRoster extends Component {
               )}
             </button>
             <button
-              //  onClick={this.clearState.bind(this)}
               style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >

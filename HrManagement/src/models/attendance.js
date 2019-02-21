@@ -1750,21 +1750,45 @@ module.exports = {
     try {
       const input = req.query;
       let _strDate = "";
-      let intValues = [input.project_id, input.branch_id];
+      let intValues = [input.branch_id];
+      let strQuery = "";
 
-      if (input.attendance_date != null) {
-        _strDate = "and attendance_date=?";
-        intValues.push(input.attendance_date);
-      }
-      _mysql
-        .executeQuery({
+      if (input.manual_timesheet_entry == "D") {
+        if (input.sub_department_id != null) {
+          _strDate += "and E.sub_department_id=?";
+          intValues.push(input.sub_department_id);
+        }
+
+        strQuery = {
           query:
             "select PR.employee_id, E.employee_code,E.full_name,PR.attendance_date from hims_f_project_roster PR , \
-              hims_d_employee E where E.hims_d_employee_id=PR.employee_id and project_id=? and E.hospital_id=? " +
+          hims_d_employee E where E.hims_d_employee_id=PR.employee_id and E.hospital_id=? " +
             _strDate,
           values: intValues,
           printQuery: true
-        })
+        };
+      } else if (input.manual_timesheet_entry == "P") {
+        if (input.attendance_date != null) {
+          _strDate += "and attendance_date=?";
+          intValues.push(input.attendance_date);
+        }
+
+        if (input.project_id != null) {
+          _strDate += "and project_id=?";
+          intValues.push(input.project_id);
+        }
+
+        strQuery = {
+          query:
+            "select PR.employee_id, E.employee_code,E.full_name,PR.attendance_date from hims_f_project_roster PR , \
+            hims_d_employee E where E.hims_d_employee_id=PR.employee_id and E.hospital_id=? " +
+            _strDate,
+          values: intValues,
+          printQuery: true
+        };
+      }
+      _mysql
+        .executeQuery(strQuery)
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;

@@ -433,6 +433,11 @@ const AddItems = ($this, context) => {
                   if (context !== null) {
                     context.updateState({ ...data });
                   }
+                } else {
+                  swalMessage({
+                    title: response.data.message,
+                    type: "error"
+                  });
                 }
                 AlgaehLoader({ show: false });
               },
