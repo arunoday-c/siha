@@ -130,6 +130,23 @@ function getEmployeeWeekOffsHolidays(
     utilities.logger().log("error rr 5: ", e);
   }
 }
+
+//created by irfan: to generate dates for shift roster
+function getDays(start, end) {
+  const utilities = new algaehUtilities();
+  console.log("am here");
+  try {
+    for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+      const dat = new Date(dt);
+
+      arr.push(moment(dat).format("YYYY-MM-DD"));
+    }
+
+    return arr;
+  } catch (e) {
+    utilities.logger().log("error rr: ", e);
+  }
+}
 module.exports = {
   //created by irfan: to
   getEmployeesForShiftRosterbackup18_feb: (req, res, next) => {
@@ -854,7 +871,8 @@ module.exports = {
         next(e);
       });
   },
-  getEmployeeWeekOffsHolidays
+  getEmployeeWeekOffsHolidays,
+  getDays
 };
 
 //created by irfan: to generate dates leave
@@ -866,22 +884,6 @@ function getDaysArray(start, end) {
       const dat = new Date(dt);
 
       arr.push({ leaveDate: dat });
-    }
-
-    return arr;
-  } catch (e) {
-    utilities.logger().log("error rr: ", e);
-  }
-}
-//created by irfan: to generate dates for shift roster
-function getDays(start, end) {
-  const utilities = new algaehUtilities();
-
-  try {
-    for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
-      const dat = new Date(dt);
-
-      arr.push(moment(dat).format("YYYY-MM-DD"));
     }
 
     return arr;
