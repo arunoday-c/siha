@@ -392,7 +392,9 @@ class ManualAttendance extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "in_time",
-                                  value: row.in_time,
+                                  value: ManualAttendanceEvents().validateDateTime(
+                                    row.in_time
+                                  ),
                                   events: {
                                     onChange: this.gridtimehandle.bind(
                                       this,
@@ -418,7 +420,9 @@ class ManualAttendance extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "out_time",
-                                  value: row.out_time,
+                                  value: ManualAttendanceEvents().validateDateTime(
+                                    row.out_time
+                                  ),
                                   events: {
                                     onChange: this.gridtimehandle.bind(
                                       this,
@@ -444,6 +448,22 @@ class ManualAttendance extends Component {
                       dataSource={{ data: this.state.employee_details }}
                       isEditable={false}
                       paging={{ page: 0, rowsPerPage: 10 }}
+                      tool={{
+                        fileName: "Daily Time Sheet",
+                        extraColumns: [],
+                        formulazone: (worksheet, callBack) => {
+                          ManualAttendanceEvents().formulazone(
+                            this.state.employee_details.length,
+                            worksheet,
+                            callBack
+                          );
+                        },
+                        updateRecords: data => {
+                          this.setState({
+                            employee_details: data
+                          });
+                        }
+                      }}
                     />
                   </div>
                 </div>

@@ -42,6 +42,7 @@ const getPatientDetails = $this => {
 
   algaehApiCall({
     uri: "/POSCreditSettlement/getPatientPOSCriedt",
+    // module: "pharmacy",
     method: "GET",
     data: { patient_id: $this.state.patient_id },
     onSuccess: response => {
@@ -200,6 +201,7 @@ const getCtrlCode = ($this, billcode) => {
 
   algaehApiCall({
     uri: "/POSCreditSettlement/getPOSCreidtSettlement",
+    // module: "pharmacy",
     method: "GET",
     data: { pos_credit_number: billcode },
     onSuccess: response => {
@@ -316,6 +318,7 @@ const SavePosCreidt = $this => {
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/POSCreditSettlement/addPOSCreidtSettlement",
+          // module: "pharmacy",
           data: Inputobj,
           method: "POST",
           onSuccess: response => {

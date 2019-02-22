@@ -5,9 +5,11 @@ import "react-table/react-table.css";
 import Enumerable from "linq";
 import moment from "moment";
 import { AlgaehDateHandler, AlagehFormGroup } from "../Wrapper/algaehWrapper";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import "../Wrapper/wrapper.css";
+const CreateCsv = React.lazy(() => import("./csvGenerator"));
+
 let ReactTableFixedColumns = withFixedColumns(ReactTable);
 class DataGrid extends Component {
   constructor(props) {
@@ -857,6 +859,22 @@ class DataGrid extends Component {
       return { className: "" };
     }
   };
+
+  CsvFileHandler() {
+    if (this.props.tool === undefined) {
+      return null;
+    }
+    const { tool, columns } = this.props;
+    return (
+      <CreateCsv
+        fileName={tool.fileName}
+        columns={columns}
+        rows={this.state.data}
+        tool={tool}
+      />
+    );
+  }
+
   render() {
     const _data = this.state.data;
     const _filter =
@@ -914,6 +932,7 @@ class DataGrid extends Component {
     if (this.state.columns !== undefined && this.state.columns.length > 0) {
       return (
         <React.Fragment>
+          <div className="row">{this.CsvFileHandler()}</div>
           <div id={this.props.id}>
             <ReactTableFixedColumns
               id={this.props.id}

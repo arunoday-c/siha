@@ -670,7 +670,7 @@ module.exports = {
     } else {
       req.records = {
         invalid_input: true,
-        message: "Select Branch and Department"
+        message: "Please Select Branch and Department"
       };
       next();
       return;

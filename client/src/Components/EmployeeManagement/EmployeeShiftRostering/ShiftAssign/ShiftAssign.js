@@ -26,7 +26,9 @@ class ShiftAssign extends Component {
       });
     } else {
       this.setState({
-        shiftEmp: []
+        shiftEmp: [],
+        employeeList: this.state.employees,
+        shiftList: this.state.shifts
       });
     }
   }

@@ -1,247 +1,364 @@
 import React from "react";
 
+import { retry } from "./utils/GlobalFunctions";
 const PageToPlot = {
-  Dashboard: React.lazy(() => import("./Components/Dashboard/Dashboard")),
+  Dashboard: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/Dashboard"))
+  ),
   FrontDesk: React.lazy(() =>
-    import("./Components/RegistrationPatient/RegistrationPatient")
+    retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
   ),
   BusinessSetup: React.lazy(() =>
-    import("./Components/BusinessSetup/BusinessSetup")
+    retry(() => import("./Components/BusinessSetup/BusinessSetup"))
   ),
-  CommonSetup: React.lazy(() => import("./Components/CommonSetup/CommonSetup")),
-  OPBilling: React.lazy(() => import("./Components/OPBilling/OPBilling")),
-  BillDetails: React.lazy(() => import("./Components/BillDetails/BillDetails")),
+  CommonSetup: React.lazy(() =>
+    retry(() => import("./Components/CommonSetup/CommonSetup"))
+  ),
+  OPBilling: React.lazy(() =>
+    retry(() => import("./Components/OPBilling/OPBilling"))
+  ),
+  BillDetails: React.lazy(() =>
+    retry(() => import("./Components/BillDetails/BillDetails"))
+  ),
   InsuranceSetup: React.lazy(() =>
-    import("./Components/InsuranceSetup/InsuranceSetup")
+    retry(() => import("./Components/InsuranceSetup/InsuranceSetup"))
   ),
   SampleCollection: React.lazy(() =>
-    import("./Components/Laboratory/SampleCollection/SampleCollection")
+    retry(() =>
+      import("./Components/Laboratory/SampleCollection/SampleCollection")
+    )
   ),
   DoctorsWorkbench: React.lazy(() =>
-    import("./Components/Workbench/Workbench")
+    retry(() => import("./Components/Workbench/Workbench"))
   ),
-  NurseWorkbench: React.lazy(() => import("./Components/Workbench/Workbench")),
+  NurseWorkbench: React.lazy(() =>
+    retry(() => import("./Components/Workbench/Workbench"))
+  ),
   MedicalWorkbenchSetup: React.lazy(() =>
-    import("./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup")
+    retry(() =>
+      import("./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup")
+    )
   ),
   AccessionAcknowledgement: React.lazy(() =>
-    import("./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement")
+    retry(() =>
+      import("./Components/Laboratory/AccessionAcknowledgement/AccessionAcknowledgement")
+    )
   ),
-  PreApproval: React.lazy(() => import("./Components/PreApproval/PreApproval")),
-  LabSetup: React.lazy(() => import("./Components/LabSetup/LabSetup")),
+  PreApproval: React.lazy(() =>
+    retry(() => import("./Components/PreApproval/PreApproval"))
+  ),
+  LabSetup: React.lazy(() =>
+    retry(() => import("./Components/LabSetup/LabSetup"))
+  ),
   InvestigationSetup: React.lazy(() =>
-    import("./Components/InvestigationSetup/InvestigationSetup")
+    retry(() => import("./Components/InvestigationSetup/InvestigationSetup"))
   ),
   RadOrderedList: React.lazy(() =>
-    import("./Components/Radiology/RadOrderedList/RadOrderedList")
+    retry(() => import("./Components/Radiology/RadOrderedList/RadOrderedList"))
   ),
   RadScheduledList: React.lazy(() =>
-    import("./Components/Radiology/RadScheduledList/RadScheduledList")
+    retry(() =>
+      import("./Components/Radiology/RadScheduledList/RadScheduledList")
+    )
   ),
   ResultEntryList: React.lazy(() =>
-    import("./Components/Laboratory/ResultEntryList/ResultEntryList")
+    retry(() =>
+      import("./Components/Laboratory/ResultEntryList/ResultEntryList")
+    )
   ),
   InitialStock: React.lazy(() =>
-    import("./Components/Pharmacy/InitialStock/InitialStock")
+    retry(() => import("./Components/Pharmacy/InitialStock/InitialStock"))
   ),
   PrescriptionList: React.lazy(() =>
-    import("./Components/Pharmacy/PrescriptionList/PrescriptionList")
+    retry(() =>
+      import("./Components/Pharmacy/PrescriptionList/PrescriptionList")
+    )
   ),
-  Appointment: React.lazy(() => import("./Components/FrontDesk/FrontDesk")),
+  Appointment: React.lazy(() =>
+    retry(() => import("./Components/FrontDesk/FrontDesk"))
+  ),
   AppointmentAr: React.lazy(() =>
-    import("./Components/AppointmentAr/AppointmentAr")
+    retry(() => import("./Components/AppointmentAr/AppointmentAr"))
   ),
   PharmacySetup: React.lazy(() =>
-    import("./Components/PharmacySetup/PharmacySetup")
+    retry(() => import("./Components/PharmacySetup/PharmacySetup"))
   ),
   StockEnquiry: React.lazy(() =>
-    import("./Components/Pharmacy/StockEnquiry/StockEnquiry")
+    retry(() => import("./Components/Pharmacy/StockEnquiry/StockEnquiry"))
   ),
   ItemMomentEnquiry: React.lazy(() =>
-    import("./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry")
+    retry(() =>
+      import("./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry")
+    )
   ),
   AppointmentSetup: React.lazy(() =>
-    import("./Components/AppointmentSetup/AppointmentSetup")
+    retry(() => import("./Components/AppointmentSetup/AppointmentSetup"))
   ),
-  ItemSetup: React.lazy(() => import("./Components/ItemSetup/ItemSetup")),
+  ItemSetup: React.lazy(() =>
+    retry(() => import("./Components/ItemSetup/ItemSetup"))
+  ),
   EmployeeMasterIndex: React.lazy(() =>
-    import("./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex")
+    retry(() =>
+      import("./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex")
+    )
   ),
   PhysicianScheduleSetup: React.lazy(() =>
-    import("./Components/PhysicianScheduleSetup/PhySchSetup")
+    retry(() => import("./Components/PhysicianScheduleSetup/PhySchSetup"))
   ),
   FrontDeskAr: React.lazy(() =>
-    import("./Components/RegistrationPatientAr/RegistrationPatientAr")
+    retry(() =>
+      import("./Components/RegistrationPatientAr/RegistrationPatientAr")
+    )
   ),
-  OPBillingAr: React.lazy(() => import("./Components/OPBillingAr/OPBillingAr")),
+  OPBillingAr: React.lazy(() =>
+    retry(() => import("./Components/OPBillingAr/OPBillingAr"))
+  ),
   DoctorCommission: React.lazy(() =>
-    import("./Components/DoctorCommission/DoctorCommission")
+    retry(() => import("./Components/DoctorCommission/DoctorCommission"))
   ),
   HospitalServiceSetup: React.lazy(() =>
-    import("./Components/HospitalServiceSetup/HospitalServiceSetup")
+    retry(() =>
+      import("./Components/HospitalServiceSetup/HospitalServiceSetup")
+    )
   ),
   PointOfSale: React.lazy(() =>
-    import("./Components/Pharmacy/PointOfSale/PointOfSale")
+    retry(() => import("./Components/Pharmacy/PointOfSale/PointOfSale"))
   ),
   OPBillPendingList: React.lazy(() =>
-    import("./Components/OPBillPendingList/OPBillPendingList")
+    retry(() => import("./Components/OPBillPendingList/OPBillPendingList"))
   ),
-  MRDList: React.lazy(() => import("./Components/MRD/MRD")),
+  MRDList: React.lazy(() => retry(() => import("./Components/MRD/MRD"))),
   SalesReturn: React.lazy(() =>
-    import("./Components/Pharmacy/SalesReturn/SalesReturn")
+    retry(() => import("./Components/Pharmacy/SalesReturn/SalesReturn"))
   ),
   RequisitionEntry: React.lazy(() =>
-    import("./Components/Pharmacy/RequisitionEntry/RequisitionEntry")
+    retry(() =>
+      import("./Components/Pharmacy/RequisitionEntry/RequisitionEntry")
+    )
   ),
   ProcedureSetup: React.lazy(() =>
-    import("./Components/ProcedureSetup/ProcedureSetup")
+    retry(() => import("./Components/ProcedureSetup/ProcedureSetup"))
   ),
   TransferEntry: React.lazy(() =>
-    import("./Components/Pharmacy/TransferEntry/TransferEntry")
+    retry(() => import("./Components/Pharmacy/TransferEntry/TransferEntry"))
   ),
   RequisitionList: React.lazy(() =>
-    import("./Components/Pharmacy/RequisitionList/RequisitionSwitch")
+    retry(() =>
+      import("./Components/Pharmacy/RequisitionList/RequisitionSwitch")
+    )
   ),
-  ReportsList: React.lazy(() => import("./Components/Reports/Reports")),
+  ReportsList: React.lazy(() =>
+    retry(() => import("./Components/Reports/Reports"))
+  ),
   WorkListGeneration: React.lazy(() =>
-    import("./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration")
+    retry(() =>
+      import("./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration")
+    )
   ),
   RCMWorkbench: React.lazy(() =>
-    import("./Components/InsuranceClaims/RCMWorkbench/RCMWorkbench")
+    retry(() =>
+      import("./Components/InsuranceClaims/RCMWorkbench/RCMWorkbench")
+    )
   ),
   StaffCashCollection: React.lazy(() =>
-    import("./Components/StaffCashCollection/StaffCashCollection")
+    retry(() => import("./Components/StaffCashCollection/StaffCashCollection"))
   ),
   InvoiceGeneration: React.lazy(() =>
-    import("./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration")
+    retry(() =>
+      import("./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration")
+    )
   ),
   InventorySetup: React.lazy(() =>
-    import("./Components/InventorySetup/InventorySetup")
+    retry(() => import("./Components/InventorySetup/InventorySetup"))
   ),
   InventoryItemMaster: React.lazy(() =>
-    import("./Components/InventoryItemMaster/InventoryItemMaster")
+    retry(() => import("./Components/InventoryItemMaster/InventoryItemMaster"))
   ),
   InvInitialStock: React.lazy(() =>
-    import("./Components/Inventory/InvInitialStock/InvInitialStock")
+    retry(() =>
+      import("./Components/Inventory/InvInitialStock/InvInitialStock")
+    )
   ),
   InvStockEnquiry: React.lazy(() =>
-    import("./Components/Inventory/InvStockEnquiry/InvStockEnquiry")
+    retry(() =>
+      import("./Components/Inventory/InvStockEnquiry/InvStockEnquiry")
+    )
   ),
   InvItemMomentEnquiry: React.lazy(() =>
-    import("./Components/Inventory/InvItemMomentEnquiry/InvItemMomentEnquiry")
+    retry(() =>
+      import("./Components/Inventory/InvItemMomentEnquiry/InvItemMomentEnquiry")
+    )
   ),
   InvRequisitionEntry: React.lazy(() =>
-    import("./Components/Inventory/InvRequisitionEntry/InvRequisitionEntry")
+    retry(() =>
+      import("./Components/Inventory/InvRequisitionEntry/InvRequisitionEntry")
+    )
   ),
   InvRequisitionList: React.lazy(() =>
-    import("./Components/Inventory/InvRequisitionList/InvRequisitionSwitch")
+    retry(() =>
+      import("./Components/Inventory/InvRequisitionList/InvRequisitionSwitch")
+    )
   ),
   InvTransferEntry: React.lazy(() =>
-    import("./Components/Inventory/InvTransferEntry/InvTransferEntry")
+    retry(() =>
+      import("./Components/Inventory/InvTransferEntry/InvTransferEntry")
+    )
   ),
-  VendorSetup: React.lazy(() => import("./Components/VendorSetup/VendorSetup")),
+  VendorSetup: React.lazy(() =>
+    retry(() => import("./Components/VendorSetup/VendorSetup"))
+  ),
   DayEndProcess: React.lazy(() =>
-    import("./Components/Finance/DayEndProcess/DayEndProcess")
+    retry(() => import("./Components/Finance/DayEndProcess/DayEndProcess"))
   ),
   FinanceMapping: React.lazy(() =>
-    import("./Components/Finance/FinanceMapping/FinanceMapping")
+    retry(() => import("./Components/Finance/FinanceMapping/FinanceMapping"))
   ),
   DeliveryNoteEntry: React.lazy(() =>
-    import("./Components/Procurement/DeliveryNoteEntry/DeliveryNoteEntry")
+    retry(() =>
+      import("./Components/Procurement/DeliveryNoteEntry/DeliveryNoteEntry")
+    )
   ),
   PurchaseOrderEntry: React.lazy(() =>
-    import("./Components/Procurement/PurchaseOrderEntry/PurchaseOrderEntry")
+    retry(() =>
+      import("./Components/Procurement/PurchaseOrderEntry/PurchaseOrderEntry")
+    )
   ),
   ReceiptEntry: React.lazy(() =>
-    import("./Components/Procurement/ReceiptEntry/ReceiptEntry")
+    retry(() => import("./Components/Procurement/ReceiptEntry/ReceiptEntry"))
   ),
   ShipmentEntry: React.lazy(() =>
-    import("./Components/Procurement/ShipmentEntry/ShipmentEntry")
+    retry(() => import("./Components/Procurement/ShipmentEntry/ShipmentEntry"))
   ),
   AcquisitionEntry: React.lazy(() =>
-    import("./Components/AssetManagement/AcquisitionEntry/AcquisitionEntry")
+    retry(() =>
+      import("./Components/AssetManagement/AcquisitionEntry/AcquisitionEntry")
+    )
   ),
   DepreciationEntry: React.lazy(() =>
-    import("./Components/AssetManagement/DepreciationEntry/DepreciationEntry")
+    retry(() =>
+      import("./Components/AssetManagement/DepreciationEntry/DepreciationEntry")
+    )
   ),
   DepreciationReversal: React.lazy(() =>
-    import("./Components/AssetManagement/DepreciationReversal/DepreciationReversal")
+    retry(() =>
+      import("./Components/AssetManagement/DepreciationReversal/DepreciationReversal")
+    )
   ),
   Disposal: React.lazy(() =>
-    import("./Components/AssetManagement/Disposal/Disposal")
+    retry(() => import("./Components/AssetManagement/Disposal/Disposal"))
   ),
   PurchaseOrderList: React.lazy(() =>
-    import("./Components/Procurement/PurchaseOrderList/PurchaseSwitch")
+    retry(() =>
+      import("./Components/Procurement/PurchaseOrderList/PurchaseSwitch")
+    )
   ),
   PatientRecall: React.lazy(() =>
-    import("./Components/PatientRecall/PatientRecall")
+    retry(() => import("./Components/PatientRecall/PatientRecall"))
   ),
   AdministrationSetup: React.lazy(() =>
-    import("./Components/AdministrationSetup/AdminSetup")
+    retry(() => import("./Components/AdministrationSetup/AdminSetup"))
   ),
   OPBillCancellation: React.lazy(() =>
-    import("./Components/OPBillCancellation/OPBillCancellation")
+    retry(() => import("./Components/OPBillCancellation/OPBillCancellation"))
   ),
   OPCreditSettlement: React.lazy(() =>
-    import("./Components/OPCreditSettlement/OPCreditSettlement")
+    retry(() => import("./Components/OPCreditSettlement/OPCreditSettlement"))
   ),
   POSCreditSettlement: React.lazy(() =>
-    import("./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement")
+    retry(() =>
+      import("./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement")
+    )
   ),
-  VisitClose: React.lazy(() => import("./Components/VisitClose/VisitClose")),
-  AlgaehModules: React.lazy(() => import("./Components/Algaeh/Algaeh")),
+  VisitClose: React.lazy(() =>
+    retry(() => import("./Components/VisitClose/VisitClose"))
+  ),
+  AlgaehModules: React.lazy(() =>
+    retry(() => import("./Components/Algaeh/Algaeh"))
+  ),
   SelfService: React.lazy(() =>
-    import("./Components/EmployeeManagement/SelfService/SelfService")
+    retry(() =>
+      import("./Components/EmployeeManagement/SelfService/SelfService")
+    )
   ),
   AttendanceRegularization: React.lazy(() =>
-    import("./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization")
+    retry(() =>
+      import("./Components/EmployeeManagement/AttendanceRegularization/AttendanceRegularization")
+    )
   ),
   PayrollSettings: React.lazy(() =>
-    import("./Components/PayrollManagement/PayrollSettings/PayrollSettings")
+    retry(() =>
+      import("./Components/PayrollManagement/PayrollSettings/PayrollSettings")
+    )
   ),
   SalaryManagement: React.lazy(() =>
-    import("./Components/PayrollManagement/SalaryManagement/SalaryManagement")
+    retry(() =>
+      import("./Components/PayrollManagement/SalaryManagement/SalaryManagement")
+    )
   ),
   HolidayMgmnt: React.lazy(() =>
-    import("./Components/PayrollManagement/HolidayManagement/HolidayMgmnt")
+    retry(() =>
+      import("./Components/PayrollManagement/HolidayManagement/HolidayMgmnt")
+    )
   ),
   HRSettings: React.lazy(() =>
-    import("./Components/EmployeeManagement/HRSettings/HRSettings")
+    retry(() => import("./Components/EmployeeManagement/HRSettings/HRSettings"))
   ),
   LeaveManagement: React.lazy(() =>
-    import("./Components/PayrollManagement/LeaveManagement/LeaveManagement")
+    retry(() =>
+      import("./Components/PayrollManagement/LeaveManagement/LeaveManagement")
+    )
   ),
   AttendanceManagement: React.lazy(() =>
-    import("./Components/PayrollManagement/AttendanceMgmt/AttendanceMgmt")
+    retry(() =>
+      import("./Components/PayrollManagement/AttendanceMgmt/AttendanceMgmt")
+    )
   ),
   ExitManagement: React.lazy(() =>
-    import("./Components/PayrollManagement/ExitManagement/ExitManagement")
+    retry(() =>
+      import("./Components/PayrollManagement/ExitManagement/ExitManagement")
+    )
   ),
   LoanManagement: React.lazy(() =>
-    import("./Components/PayrollManagement/LoanManagement/LoanManagement")
+    retry(() =>
+      import("./Components/PayrollManagement/LoanManagement/LoanManagement")
+    )
   ),
   PayrollWorkBench: React.lazy(() =>
-    import("./Components/PayrollManagement/PayrollWorkbench/PayrollWorkbench")
+    retry(() =>
+      import("./Components/PayrollManagement/PayrollWorkbench/PayrollWorkbench")
+    )
   ),
   PerformanceManagement: React.lazy(() =>
-    import("./Components/PayrollManagement/PerformanceManagement/PerformanceManagement")
+    retry(() =>
+      import("./Components/PayrollManagement/PerformanceManagement/PerformanceManagement")
+    )
   ),
   EmployeeDocuments: React.lazy(() =>
-    import("./Components/EmployeeManagement/EmployeeDocuments/EmployeeDocuments")
+    retry(() =>
+      import("./Components/EmployeeManagement/EmployeeDocuments/EmployeeDocuments")
+    )
   ),
   PayrollOptions: React.lazy(() =>
-    import("./Components/PayrollManagement/PayrollOptions/PayrollOptions")
+    retry(() =>
+      import("./Components/PayrollManagement/PayrollOptions/PayrollOptions")
+    )
   ),
   ClinicalDeskNew: React.lazy(() =>
-    import("./Components/DoctorsWorkbench/DoctorsWorkbench-new")
+    retry(() => import("./Components/DoctorsWorkbench/DoctorsWorkbench-new"))
   ),
   EmpShiftRost: React.lazy(() =>
-    import("./Components/EmployeeManagement/EmployeeShiftRostering/EmployeeShiftRostering")
+    retry(() =>
+      import("./Components/EmployeeManagement/EmployeeShiftRostering/EmployeeShiftRostering")
+    )
   ),
-  Wps: React.lazy(() => import("./Components/PayrollManagement/WPS/WPS")),
+  Wps: React.lazy(() =>
+    retry(() => import("./Components/PayrollManagement/WPS/WPS"))
+  ),
 
   ProjJobCst: React.lazy(() =>
-    import("./Components/EmployeeManagement/ProjectJobCost/ProjectJobCost")
+    retry(() =>
+      import("./Components/EmployeeManagement/ProjectJobCost/ProjectJobCost")
+    )
   )
 };
 
