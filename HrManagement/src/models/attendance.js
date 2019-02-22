@@ -2244,7 +2244,7 @@ module.exports = {
           stringData += " and sub_department_id=" + input.sub_department_id;
         }
         if (input.hims_d_employee_id > 0) {
-          stringData += " and hims_d_employee_id=" + input.hims_d_employee_id;
+          stringData += " and employee_id=" + input.hims_d_employee_id;
         }
         let insertArray = [];
   
