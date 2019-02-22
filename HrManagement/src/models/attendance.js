@@ -1686,7 +1686,8 @@ module.exports = {
                       query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
                 year,month,AM.hospital_id,AM.sub_department_id,\
                 total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
-                total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave from hims_f_attendance_monthly AM \
+                total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
+                shortage_hours,ot_work_hours,ot_weekoff_hours from hims_f_attendance_monthly AM \
                 inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
                 where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
                       values: [year, month_number]
@@ -2394,7 +2395,8 @@ module.exports = {
           query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
           year,month,AM.hospital_id,AM.sub_department_id,\
           total_days,present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,\
-          total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave from hims_f_attendance_monthly AM \
+          total_leave,paid_leave,unpaid_leave,total_paid_days ,pending_unpaid_leave,total_hours,total_working_hours,\
+          shortage_hours,ot_work_hours,ot_weekoff_hours from hims_f_attendance_monthly AM \
           inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
           where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
                 values: [year, month_number],
