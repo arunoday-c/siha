@@ -71,6 +71,7 @@ class TransferEntry extends Component {
     ) {
       this.props.getUserLocationPermission({
         uri: "/pharmacyGlobal/getUserLocationPermission",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",

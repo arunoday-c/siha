@@ -86,6 +86,7 @@ let updateIntoItemLocation = (req, res, next) => {
       })
       .then(result => {
         utilities.logger().log("result: ", result);
+        utilities.logger().log("req.flag: ", req.flag);
         if (Array.isArray(result)) {
           if (result[0][0].Error != null) {
             const error = new Error();
@@ -94,16 +95,50 @@ let updateIntoItemLocation = (req, res, next) => {
               next(error);
             });
           } else {
+            if (req.flag == 1) {
+              utilities.logger().log("req.flag: ");
+              for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
+                req.body.pharmacy_stock_detail[i].location_id =
+                  req.body.to_location_id;
+                req.body.pharmacy_stock_detail[i].location_type =
+                  req.body.to_location_type;
+
+                req.body.pharmacy_stock_detail[i].sales_uom =
+                  req.body.pharmacy_stock_detail[i].uom_transferred_id;
+
+                req.body.pharmacy_stock_detail[i].operation = "+";
+              }
+              req.flag = 0;
+              next();
+            } else {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                next();
+              });
+            }
+          }
+        } else {
+          if (req.flag == 1) {
+            utilities.logger().log("req.flag: ");
+            for (let i = 0; i < req.body.pharmacy_stock_detail.length; i++) {
+              req.body.pharmacy_stock_detail[i].location_id =
+                req.body.to_location_id;
+              req.body.pharmacy_stock_detail[i].location_type =
+                req.body.to_location_type;
+
+              req.body.pharmacy_stock_detail[i].sales_uom =
+                req.body.pharmacy_stock_detail[i].uom_transferred_id;
+
+              req.body.pharmacy_stock_detail[i].operation = "+";
+            }
+            req.flag = 0;
+            next();
+          } else {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               next();
             });
           }
-        } else {
-          _mysql.commitTransaction(() => {
-            _mysql.releaseConnection();
-            next();
-          });
         }
       })
       .catch(e => {
