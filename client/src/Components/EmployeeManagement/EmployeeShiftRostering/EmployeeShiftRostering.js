@@ -68,6 +68,17 @@ export default class EmployeeShiftRostering extends Component {
     });
   }
 
+  clearData() {
+    this.setState({
+      employees: [],
+      sub_department_id: null,
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id,
+      year: moment().year(),
+      month: moment(new Date()).format("M")
+    });
+  }
+
   getEmployeesForShiftRoster() {
     this.setState({
       loading: true
@@ -434,6 +445,9 @@ export default class EmployeeShiftRostering extends Component {
                   id: row.hims_d_employee_id,
                   date: now.format("YYYY-MM-DD")
                 })}
+                style={{
+                  zIndex: 9999
+                }}
               >
                 Paste
               </li>
@@ -619,7 +633,8 @@ export default class EmployeeShiftRostering extends Component {
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  year: null
+                  year: null,
+                  employees: []
                 });
               }
             }}
@@ -644,7 +659,8 @@ export default class EmployeeShiftRostering extends Component {
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  month: null
+                  month: null,
+                  employees: []
                 });
               }
             }}
@@ -739,6 +755,7 @@ export default class EmployeeShiftRostering extends Component {
               )}
             </button>
             <button
+              onClick={this.clearData.bind(this)}
               style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >
