@@ -137,45 +137,26 @@ const itemchangeText = ($this, context, e) => {
     if (e.selected.service_id !== null) {
       let value = e.value || e.target.value;
 
-      $this.props.getSelectedItemDetais({
+      algaehApiCall({
         uri: "/pharmacyGlobal/getUomLocationStock",
+        // module: "pharmacy",
         method: "GET",
         data: {
           location_id: $this.state.location_id,
           item_id: value
         },
-        redux: {
-          type: "ITEMS_UOM_DETAILS_GET_DATA",
-          mappingName: "itemdetaillist"
-        },
-        afterSuccess: data => {
-          if (data.locationResult.length > 0) {
-            getUnitCost($this, context, e.selected.service_id);
-            $this.setState({
-              [name]: value,
-              item_category: e.selected.category_id,
-              uom_id: e.selected.sales_uom_id,
-              service_id: e.selected.service_id,
-              item_group_id: e.selected.group_id,
-              quantity: 1,
-              expiry_date: data.locationResult[0].expirydt,
-              batchno: data.locationResult[0].batchno,
-              grn_no: data.locationResult[0].grnno,
-              qtyhand: data.locationResult[0].qtyhand,
-              ItemUOM: data.uomResult,
-              Batch_Items: data.locationResult,
-              addItemButton: false
-            });
-
-            if (context !== undefined) {
-              context.updateState({
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
+            if (data.locationResult.length > 0) {
+              getUnitCost($this, context, e.selected.service_id);
+              $this.setState({
                 [name]: value,
                 item_category: e.selected.category_id,
                 uom_id: e.selected.sales_uom_id,
                 service_id: e.selected.service_id,
                 item_group_id: e.selected.group_id,
                 quantity: 1,
-
                 expiry_date: data.locationResult[0].expirydt,
                 batchno: data.locationResult[0].batchno,
                 grn_no: data.locationResult[0].grnno,
@@ -184,15 +165,105 @@ const itemchangeText = ($this, context, e) => {
                 Batch_Items: data.locationResult,
                 addItemButton: false
               });
+
+              if (context !== undefined) {
+                context.updateState({
+                  [name]: value,
+                  item_category: e.selected.category_id,
+                  uom_id: e.selected.sales_uom_id,
+                  service_id: e.selected.service_id,
+                  item_group_id: e.selected.group_id,
+                  quantity: 1,
+
+                  expiry_date: data.locationResult[0].expirydt,
+                  batchno: data.locationResult[0].batchno,
+                  grn_no: data.locationResult[0].grnno,
+                  qtyhand: data.locationResult[0].qtyhand,
+                  ItemUOM: data.uomResult,
+                  Batch_Items: data.locationResult,
+                  addItemButton: false
+                });
+              }
+            } else {
+              swalMessage({
+                title: "No stock available for selected Item.",
+                type: "warning"
+              });
             }
           } else {
             swalMessage({
-              title: "No stock available for selected Item.",
-              type: "warning"
+              title: response.data.message,
+              type: "error"
             });
           }
+          AlgaehLoader({ show: false });
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
       });
+
+      // $this.props.getSelectedItemDetais({
+      //   uri: "/pharmacyGlobal/getUomLocationStock",
+
+      //   method: "GET",
+      //   data: {
+      //     location_id: $this.state.location_id,
+      //     item_id: value
+      //   },
+      //   redux: {
+      //     type: "ITEMS_UOM_DETAILS_GET_DATA",
+      //     mappingName: "itemdetaillist"
+      //   },
+      //   afterSuccess: data => {
+      //     if (data.locationResult.length > 0) {
+      //       getUnitCost($this, context, e.selected.service_id);
+      //       $this.setState({
+      //         [name]: value,
+      //         item_category: e.selected.category_id,
+      //         uom_id: e.selected.sales_uom_id,
+      //         service_id: e.selected.service_id,
+      //         item_group_id: e.selected.group_id,
+      //         quantity: 1,
+      //         expiry_date: data.locationResult[0].expirydt,
+      //         batchno: data.locationResult[0].batchno,
+      //         grn_no: data.locationResult[0].grnno,
+      //         qtyhand: data.locationResult[0].qtyhand,
+      //         ItemUOM: data.uomResult,
+      //         Batch_Items: data.locationResult,
+      //         addItemButton: false
+      //       });
+
+      //       if (context !== undefined) {
+      //         context.updateState({
+      //           [name]: value,
+      //           item_category: e.selected.category_id,
+      //           uom_id: e.selected.sales_uom_id,
+      //           service_id: e.selected.service_id,
+      //           item_group_id: e.selected.group_id,
+      //           quantity: 1,
+
+      //           expiry_date: data.locationResult[0].expirydt,
+      //           batchno: data.locationResult[0].batchno,
+      //           grn_no: data.locationResult[0].grnno,
+      //           qtyhand: data.locationResult[0].qtyhand,
+      //           ItemUOM: data.uomResult,
+      //           Batch_Items: data.locationResult,
+      //           addItemButton: false
+      //         });
+      //       }
+      //     } else {
+      //       swalMessage({
+      //         title: "No stock available for selected Item.",
+      //         type: "warning"
+      //       });
+      //     }
+      //   }
+      // });
     } else {
       $this.setState(
         {

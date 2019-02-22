@@ -100,7 +100,8 @@ module.exports = {
   // },
 
   insertRadOrderedServices: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
       utilities.logger().log("Rad Bill: ");

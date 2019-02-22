@@ -542,7 +542,7 @@ class DeptUserDetails extends Component {
                             <span>
                               {row.from_date === null ||
                               row.from_date === undefined
-                                ? "DD/MM/YYYY"
+                                ? ""
                                 : dateFormater(this, row.from_date)}
                             </span>
                           );
@@ -552,7 +552,7 @@ class DeptUserDetails extends Component {
                             <span>
                               {row.from_date === null ||
                               row.from_date === undefined
-                                ? "DD/MM/YYYY"
+                                ? ""
                                 : dateFormater(this, row.from_date)}
                             </span>
                           );
@@ -567,7 +567,7 @@ class DeptUserDetails extends Component {
                           return (
                             <span>
                               {row.to_date === null || row.to_date === undefined
-                                ? "DD/MM/YYYY"
+                                ? ""
                                 : dateFormater(this, row.to_date)}
                             </span>
                           );
@@ -576,7 +576,7 @@ class DeptUserDetails extends Component {
                           return (
                             <span>
                               {row.to_date === null || row.to_date === undefined
-                                ? "DD/MM/YYYY"
+                                ? ""
                                 : dateFormater(this, row.to_date)}
                             </span>
                           );

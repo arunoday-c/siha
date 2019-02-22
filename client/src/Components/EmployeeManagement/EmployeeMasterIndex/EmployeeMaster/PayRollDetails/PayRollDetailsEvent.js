@@ -57,13 +57,13 @@ const AddEarnComponent = ($this, e) => {
     onSuccess: () => {
       let earningComponents = $this.state.earningComponents;
       let insertearnComp = $this.state.insertearnComp;
-
+      debugger;
       const _earnComponent = Enumerable.from(earningComponents)
         .where(w => w.earnings_id === $this.state.earning_id)
         .any();
       if (_earnComponent) {
         swalMessage({
-          title: "Seleted component already exists.",
+          title: "Selected component already exists.",
           type: "warning"
         });
         return;
@@ -119,7 +119,7 @@ const AddDeductionComponent = ($this, e) => {
         .any();
       if (_dedComponent) {
         swalMessage({
-          title: "Seleted component already exists.",
+          title: "Selected component already exists.",
           type: "warning"
         });
         return;
@@ -175,7 +175,7 @@ const AddContributionComponent = ($this, e) => {
         .any();
       if (_contComponent) {
         swalMessage({
-          title: "Seleted component already exists.",
+          title: "Selected component already exists.",
           type: "warning"
         });
         return;
@@ -273,6 +273,7 @@ const deleteEarningComponent = ($this, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
+      debugger;
       let deleteearnComp = $this.state.deleteearnComp;
       let insertearnComp = $this.state.insertearnComp;
       let earningComponents = $this.state.earningComponents;
@@ -317,10 +318,12 @@ const updateEarningComponent = ($this, row) => {
   let updateearnComp = $this.state.updateearnComp;
   let insertearnComp = $this.state.insertearnComp;
   let earningComponents = $this.state.earningComponents;
-
+  let Updateobj = {};
+  debugger;
   if (row.hims_d_employee_earnings_id !== undefined) {
-    let Updateobj = {
+    Updateobj = {
       hims_d_employee_earnings_id: row.hims_d_employee_earnings_id,
+      employee_id: $this.state.hims_d_employee_id,
       earnings_id: row.earnings_id,
       amount: row.amount,
       allocate: row.allocate,
@@ -330,12 +333,18 @@ const updateEarningComponent = ($this, row) => {
     earningComponents[row.rowIdx] = Updateobj;
   } else {
     {
-      let Updateobj = {
+      Updateobj = {
+        employee_id: $this.state.hims_d_employee_id,
         earnings_id: row.earnings_id,
         amount: row.amount,
         allocate: row.allocate
       };
-      insertearnComp[row.rowIdx] = Updateobj;
+      for (let x = 0; x < insertearnComp.length; x++) {
+        if (insertearnComp[x].earnings_id === row.earnings_id) {
+          insertearnComp[x] = Updateobj;
+        }
+      }
+      // insertearnComp[row.rowIdx] = Updateobj;
       earningComponents[row.rowIdx] = Updateobj;
     }
   }
@@ -367,6 +376,7 @@ const deleteDeductionComponent = ($this, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
+      debugger;
       let insertDeductionComp = $this.state.insertDeductionComp;
       let deductioncomponents = $this.state.deductioncomponents;
       let deleteDeductionComp = $this.state.deleteDeductionComp;
@@ -411,10 +421,11 @@ const updateDeductionComponent = ($this, row) => {
   let updateDeductionComp = $this.state.updateDeductionComp;
   let insertDeductionComp = $this.state.insertDeductionComp;
   let deductioncomponents = $this.state.deductioncomponents;
-
+  let Updateobj = {};
   if (row.hims_d_employee_deductions_id !== undefined) {
-    let Updateobj = {
+    Updateobj = {
       hims_d_employee_deductions_id: row.hims_d_employee_deductions_id,
+      employee_id: $this.state.hims_d_employee_id,
       deductions_id: row.deductions_id,
       amount: row.amount,
       allocate: row.allocate,
@@ -424,12 +435,18 @@ const updateDeductionComponent = ($this, row) => {
     deductioncomponents[row.rowIdx] = Updateobj;
   } else {
     {
-      let Updateobj = {
+      Updateobj = {
+        employee_id: $this.state.hims_d_employee_id,
         deductions_id: row.deductions_id,
         amount: row.amount,
         allocate: row.allocate
       };
-      insertDeductionComp[row.rowIdx] = Updateobj;
+      for (let x = 0; x < insertDeductionComp.length; x++) {
+        if (insertDeductionComp[x].deductions_id === row.deductions_id) {
+          insertDeductionComp[x] = Updateobj;
+        }
+      }
+      // insertDeductionComp[row.rowIdx] = Updateobj;
       deductioncomponents[row.rowIdx] = Updateobj;
     }
   }
@@ -505,10 +522,11 @@ const updateContibuteComponent = ($this, row) => {
   let contributioncomponents = $this.state.contributioncomponents;
   let insertContributeComp = $this.state.insertContributeComp;
   let updateContributeComp = $this.state.updateContributeComp;
-
+  let Updateobj = {};
   if (row.hims_d_employee_contributions_id !== undefined) {
-    let Updateobj = {
+    Updateobj = {
       hims_d_employee_contributions_id: row.hims_d_employee_contributions_id,
+      employee_id: $this.state.hims_d_employee_id,
       contributions_id: row.contributions_id,
       amount: row.amount,
       allocate: row.allocate,
@@ -518,12 +536,18 @@ const updateContibuteComponent = ($this, row) => {
     contributioncomponents[row.rowIdx] = Updateobj;
   } else {
     {
-      let Updateobj = {
+      Updateobj = {
+        employee_id: $this.state.hims_d_employee_id,
         contributions_id: row.contributions_id,
         amount: row.amount,
         allocate: row.allocate
       };
-      insertContributeComp[row.rowIdx] = Updateobj;
+      for (let x = 0; x < insertContributeComp.length; x++) {
+        if (insertContributeComp[x].contributions_id === row.contributions_id) {
+          insertContributeComp[x] = Updateobj;
+        }
+      }
+      // insertContributeComp[row.rowIdx] = Updateobj;
       contributioncomponents[row.rowIdx] = Updateobj;
     }
   }

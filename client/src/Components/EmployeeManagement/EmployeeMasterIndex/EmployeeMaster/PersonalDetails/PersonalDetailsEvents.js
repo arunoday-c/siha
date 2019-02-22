@@ -272,10 +272,12 @@ const isDoctorChange = ($this, e) => {
   let name = e.target.name;
   let _value = e.target.checked ? "Y" : "N";
   $this.setState({
-    [name]: _value
+    [name]: _value,
+    license_number: null
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [name]: _value
+    [name]: _value,
+    license_number: null
   });
 };
 
