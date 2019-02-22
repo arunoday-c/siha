@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
+import _ from "lodash";
 export default function ManualAttendanceEvents() {
   return {
     texthandle: ($this, e) => {
@@ -209,6 +210,25 @@ export default function ManualAttendanceEvents() {
           });
         }
       });
+    },
+    validateDateTime: dateTime => {
+      if (new Date(dateTime).toString() !== "Invalid Date") {
+        return moment(dateTime).format("HH:mm:ss");
+      } else {
+        return dateTime;
+      }
+    },
+    formulazone: (rowsLength, ws, callBack) => {
+      debugger;
+      ws["!cols"] = [];
+      ws["!cols"][6] = { hidden: true };
+
+      for (let i = 2; i <= rowsLength + 1; i++) {
+        const _cells = "E" + i + "-D" + i;
+        ws["F" + i] = { ...ws["F" + i], f: "TEXT(" + _cells + ',"HH.MM")' };
+        //  ws["G" + i] = { ...ws["G" + i],  hidden: true  };
+      }
+      callBack();
     }
   };
 }
