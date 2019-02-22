@@ -19,6 +19,7 @@ export default class MonthlyAttendance extends Component {
       month: moment(new Date()).format("M"),
       sub_departments: [],
       loader: false,
+      displayLoader: false,
       data: [],
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
@@ -28,6 +29,45 @@ export default class MonthlyAttendance extends Component {
     };
     this.getSubDepts();
     this.getOrganization();
+  }
+
+  loadAttendance() {
+    this.setState({
+      displayLoader: true
+    });
+
+    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+    algaehApiCall({
+      uri: "/attendance/loadAttendance",
+      method: "GET",
+      data: {
+        yearAndMonth: yearMonth,
+        hospital_id: this.state.hospital_id,
+        sub_department_id:
+          this.state.sub_department_id !== null
+            ? this.state.sub_department_id
+            : undefined
+      },
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            data: res.data.result,
+            displayLoader: false
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+
+        this.setState({
+          displayLoader: true
+        });
+      }
+    });
   }
 
   monthFormatorString(yearAndMonth) {
@@ -290,7 +330,6 @@ export default class MonthlyAttendance extends Component {
                 });
               }
             }}
-            //showLoading={this.state.branch.loader}
           />
 
           <AlagehAutoComplete
@@ -315,20 +354,15 @@ export default class MonthlyAttendance extends Component {
                 });
               }
             }}
-            // showLoading={this.state.department.loader}
           />
 
           <div className="col form-group margin-top-15">
             <button
-              onClick={this.processAttandance.bind(this)}
-              disabled={this.state.loader}
+              onClick={this.loadAttendance.bind(this)}
               className="btn btn-primary"
+              disabled={this.state.displayLoader}
             >
-              {!this.state.loader ? (
-                <span>Process Attendance</span>
-              ) : (
-                <i className="fas fa-spinner fa-spin" />
-              )}
+              LOAD
             </button>
           </div>
         </div>
@@ -433,6 +467,40 @@ export default class MonthlyAttendance extends Component {
                     )
                   },
                   {
+                    fieldName: "total_working_hours",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Total Working Hours" }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.total_working_hours
+                            ? row.total_working_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "total_hours",
+                    label: (
+                      <AlgaehLabel
+                        label={{ forceLabel: "Total Worked Hours" }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.total_hours
+                            ? row.total_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
                     fieldName: "ot_work_hours",
                     label: <AlgaehLabel label={{ forceLabel: "OT Hours" }} />,
                     displayTemplate: row => {
@@ -494,8 +562,25 @@ export default class MonthlyAttendance extends Component {
                 }}
                 filter={true}
                 paging={{ page: 0, rowsPerPage: 20 }}
-                loading={this.state.loader}
+                loading={this.state.loader || this.state.displayLoader}
               />
+            </div>
+          </div>
+        </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                onClick={this.processAttandance.bind(this)}
+                disabled={this.state.loader}
+                className="btn btn-primary"
+              >
+                {!this.state.loader ? (
+                  <span>Process Attendance</span>
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
             </div>
           </div>
         </div>

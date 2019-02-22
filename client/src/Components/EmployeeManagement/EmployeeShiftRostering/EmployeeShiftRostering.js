@@ -99,6 +99,14 @@ export default class EmployeeShiftRostering extends Component {
             employees: res.data.records,
             loading: false
           });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning"
+          });
+          this.setState({
+            loading: false
+          });
         }
       },
       onFailure: err => {
@@ -143,20 +151,16 @@ export default class EmployeeShiftRostering extends Component {
         searchGrid: {
           columns: Employee
         },
-        searchName: "users",
+        searchName: "employee",
         uri: "/gloabelSearch/get",
-        inputs: " E.sub_department_id=" + this.state.sub_department_id,
+        inputs: "sub_department_id=" + this.state.sub_department_id,
         onContainsChange: (text, serchBy, callBack) => {
           callBack(text);
         },
         onRowSelect: row => {
-          let arr = this.state.employees;
-          arr.push(row);
-
           this.setState({
             hims_d_employee_id: row.hims_d_employee_id,
-            emp_name: row.full_name,
-            employees: arr
+            emp_name: row.full_name
           });
         }
       });
@@ -277,7 +281,7 @@ export default class EmployeeShiftRostering extends Component {
 
       let shift = null;
 
-      if (shifts.length > 0) {
+      if (Array.isArray(shifts) && shifts.length > 0) {
         shift = Enumerable.from(shifts)
           .where(
             w =>
@@ -361,7 +365,11 @@ export default class EmployeeShiftRostering extends Component {
           <td
             onClick={this.showModal.bind(this, row)}
             key={now}
-            className="week_off_cell editAction"
+            className={
+              shift.weekoff === "Y"
+                ? "week_off_cell editAction"
+                : "holiday_cell editAction"
+            }
             employee_id={row.hims_d_employee_id}
             date={now.format("YYYY-MM-DD")}
           >
@@ -656,7 +664,12 @@ export default class EmployeeShiftRostering extends Component {
                 valueField: "hims_d_hospital_id",
                 data: this.state.hospitals
               },
-              onChange: this.dropDownHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
             }}
             showLoading={true}
           />
@@ -676,7 +689,7 @@ export default class EmployeeShiftRostering extends Component {
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  hims_d_sub_department_id: null
+                  sub_department_id: null
                 });
               }
             }}
@@ -717,6 +730,7 @@ export default class EmployeeShiftRostering extends Component {
               onClick={this.getEmployeesForShiftRoster.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"
+              disabled={this.state.loading}
             >
               {!this.state.loading ? (
                 <span>Load</span>
@@ -725,7 +739,6 @@ export default class EmployeeShiftRostering extends Component {
               )}
             </button>
             <button
-              //  onClick={this.clearState.bind(this)}
               style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >

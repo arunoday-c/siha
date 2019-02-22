@@ -8,7 +8,7 @@ import {
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
-// import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import _ from "lodash";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
@@ -17,7 +17,7 @@ export default class WeeklyAttendance extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      attendance_type: "DW",
+      attendance_type: "MW",
       year: moment().year(),
       month: moment(new Date()).format("M"),
       week: 0,
@@ -103,6 +103,43 @@ export default class WeeklyAttendance extends Component {
           swalMessage({
             title: res.data.message,
             type: "warning"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  processBiometricAttendance() {
+    let _fromDate =
+      this.state.attendance_type === "DW"
+        ? this.state.attendance_date
+        : this.state.from_date;
+    let _toDate =
+      this.state.attendance_type === "DW"
+        ? this.state.attendance_date
+        : this.state.to_date;
+    algaehApiCall({
+      uri: "/attendance/processBiometricAttendance",
+      module: "hrManagement",
+      method: "GET",
+      data: {
+        from_date: _fromDate,
+        to_date: _toDate,
+        hospital_id: this.state.hospital_id,
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        sub_department_id: this.state.sub_department_id
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Verified Successfully",
+            type: "success"
           });
         }
       },
@@ -328,12 +365,12 @@ export default class WeeklyAttendance extends Component {
               <label className="radio inline">
                 <input
                   type="radio"
-                  value="DW"
+                  value="MW"
                   name="attendance_type"
-                  checked={this.state.attendance_type === "DW"}
+                  checked={this.state.attendance_type === "MW"}
                   onChange={this.textHandler.bind(this)}
                 />
-                <span>Date Wise</span>
+                <span>Month Wise</span>
               </label>
 
               <label className="radio inline">
@@ -349,9 +386,9 @@ export default class WeeklyAttendance extends Component {
             </div>
           </div>
 
-          {this.state.attendance_type === "DW" ? (
+          {this.state.attendance_type === "MW" ? (
             <React.Fragment>
-              {/* <AlagehAutoComplete
+              <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Select a Year.",
@@ -373,9 +410,9 @@ export default class WeeklyAttendance extends Component {
                     });
                   }
                 }}
-              /> */}
+              />
 
-              {/* <AlagehAutoComplete
+              <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Select a Month.",
@@ -398,9 +435,9 @@ export default class WeeklyAttendance extends Component {
                     });
                   }
                 }}
-              /> */}
+              />
 
-              <AlgaehDateHandler
+              {/* <AlgaehDateHandler
                 div={{ className: "col margin-bottom-15" }}
                 label={{
                   forceLabel: "Date",
@@ -422,7 +459,7 @@ export default class WeeklyAttendance extends Component {
                 }}
                 maxDate={moment(new Date()).subtract("days", 1)}
                 value={this.state.attendance_date}
-              />
+              /> */}
             </React.Fragment>
           ) : (
             <React.Fragment>
@@ -1076,7 +1113,11 @@ export default class WeeklyAttendance extends Component {
                 />
               </button>
 
-              <button type="button" className="btn btn-primary">
+              <button
+                onClick={this.processBiometricAttendance.bind(this)}
+                type="button"
+                className="btn btn-primary"
+              >
                 <AlgaehLabel
                   label={{ forceLabel: "Verify", returnText: true }}
                 />
