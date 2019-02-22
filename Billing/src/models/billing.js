@@ -5,7 +5,8 @@ import math from "mathjs";
 import extend from "extend";
 module.exports = {
   newReceiptData: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       let inputParam = { ...req.body };
 
@@ -66,11 +67,11 @@ module.exports = {
                   .logger()
                   .log("RcptDetailsRecords: ", RcptDetailsRecords);
                 if (req.mySQl == null) {
-                  _mysql.commitTransaction(() => {
-                    _mysql.releaseConnection();
-                    req.records = headerRcptResult;
-                    next();
-                  });
+                  // _mysql.commitTransaction(() => {
+                  //   _mysql.releaseConnection();
+                  req.records = headerRcptResult;
+                  next();
+                  // });
                 } else {
                   next();
                 }
@@ -95,7 +96,8 @@ module.exports = {
   },
 
   addBillData: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       let inputParam = { ...req.body };
       if (
@@ -317,11 +319,11 @@ module.exports = {
             .then(detailsRecords => {
               utilities.logger().log("detailsRecords Bill: ", detailsRecords);
               if (req.mySQl == null) {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = headerResult;
-                  next();
-                });
+                // _mysql.commitTransaction(() => {
+                //   _mysql.releaseConnection();
+                req.records = headerResult;
+                next();
+                // });
               } else {
                 next();
               }
@@ -742,7 +744,8 @@ module.exports = {
 
   addCashHandover: (req, res, next) => {
     console.log("addCashHandover");
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     const utilities = new algaehUtilities();
     utilities.logger().log("addCashHandover ");
 

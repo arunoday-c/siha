@@ -3,7 +3,8 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   getReceiptEntry: (req, res, next) => {
-    const _mysql = new algaehMysql();
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       let hims_f_receipt_header_id =
         req.records.hims_f_receipt_header_id ||

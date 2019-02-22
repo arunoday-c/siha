@@ -75,7 +75,8 @@ module.exports = {
   },
 
   insertLadOrderedServices: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
       utilities.logger().log("Services Bill: ");
@@ -266,11 +267,11 @@ module.exports = {
                           })
                           .then(ord_analytes => {
                             if (req.mySQl == null) {
-                              _mysql.commitTransaction(() => {
-                                _mysql.releaseConnection();
-                                req.records = ord_analytes;
-                                next();
-                              });
+                              // _mysql.commitTransaction(() => {
+                              //   _mysql.releaseConnection();
+                              req.records = ord_analytes;
+                              next();
+                              // });
                             } else {
                               next();
                             }

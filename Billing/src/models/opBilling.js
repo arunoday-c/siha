@@ -15,6 +15,11 @@ module.exports = {
           modules: ["PAT_BILL"]
         })
         .then(generatedNumbers => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
           req.body.bill_number = generatedNumbers[0];
 
           //Receipt
@@ -45,7 +50,8 @@ module.exports = {
   },
 
   updateOrderedServicesBilled: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
       utilities.logger().log("updateOrderedServicesBilled: ");
@@ -83,11 +89,11 @@ module.exports = {
           })
           .then(updateOrder => {
             if (req.mySQl == null) {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = updateOrder;
-                next();
-              });
+              // _mysql.commitTransaction(() => {
+              // _mysql.releaseConnection();
+              req.records = updateOrder;
+              next();
+              // });
             } else {
               next();
             }
@@ -124,6 +130,11 @@ module.exports = {
           printQuery: true
         })
         .then(headerResult => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
           if (headerResult.length != 0) {
             _mysql
               .executeQuery({
@@ -133,7 +144,7 @@ module.exports = {
                 printQuery: true
               })
               .then(billdetails => {
-                _mysql.releaseConnection();
+                // _mysql.releaseConnection();
 
                 req.records = {
                   ...headerResult[0],
