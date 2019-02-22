@@ -16,28 +16,65 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import ManualAttendanceEvents from "./ManualAttendanceEvents.js";
 import moment from "moment";
 import Options from "../../../../Options.json";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
+import { swalMessage } from "../../../../utils/algaehApiCall";
 
 class ManualAttendance extends Component {
   constructor(props) {
+    debugger;
     super(props);
     this.state = {
       selectedLang: this.props.SelectLanguage,
       employee_group_id: null,
       project_id: null,
+      sub_department_id: null,
 
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
       projects: [],
       employee_details: [],
+      subdepartment: [],
       worked_hours: null,
       in_time: null,
       out_time: null,
       process_attend: true,
-      apply_all: true
+      apply_all: true,
+      manual_timesheet_entry: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).manual_timesheet_entry
+      // JSON.parse(sessionStorage.getItem("hrOptions"))
+      //   .manual_timesheet_entry
     };
-
+    ManualAttendanceEvents().getSubDepartment(this);
     ManualAttendanceEvents().getProjects(this);
+    this.getOptions();
+  }
+
+  getOptions() {
+    debugger;
+    ManualAttendanceEvents()
+      .getOptions(this)
+      .then(res => {
+        if (res.data.success) {
+          this.setState({
+            manual_timesheet_entry: res.data.result[0].manual_timesheet_entry
+          });
+        } else {
+          swalMessage({
+            title: res.data.message,
+            type: "error"
+          });
+        }
+      })
+      .catch(error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      });
   }
 
   componentDidMount() {
@@ -51,40 +88,6 @@ class ManualAttendance extends Component {
         redux: {
           type: "ORGS_GET_DATA",
           mappingName: "organizations"
-        }
-      });
-    }
-
-    if (
-      this.props.emp_groups === undefined ||
-      this.props.emp_groups.length === 0
-    ) {
-      this.props.getEmpGroups({
-        uri: "/hrsettings/getEmployeeGroups",
-        module: "hrManagement",
-        method: "GET",
-        data: { record_status: "A" },
-        redux: {
-          type: "EMP_GROUP_GET",
-          mappingName: "emp_groups"
-        }
-      });
-    }
-
-    if (
-      this.props.subdepartment === undefined ||
-      this.props.subdepartment.length === 0
-    ) {
-      this.props.getSubDepartment({
-        uri: "/department/get/subdepartment",
-        module: "masterSettings",
-        data: {
-          sub_department_status: "A"
-        },
-        method: "GET",
-        redux: {
-          type: "SUB_DEPT_GET_DATA",
-          mappingName: "subdepartment"
         }
       });
     }
@@ -145,6 +148,29 @@ class ManualAttendance extends Component {
   }
 
   render() {
+    debugger;
+    const timesheet_entry =
+      this.state.manual_timesheet_entry === "D"
+        ? "sub_department_id"
+        : "project_id";
+    const _dropDownDataSource =
+      this.state.manual_timesheet_entry === "D"
+        ? {
+            textField: "sub_department_name",
+            valueField: "hims_d_sub_department_id",
+            data: this.state.subdepartment
+          }
+        : {
+            textField: "project_desc",
+            valueField: "hims_d_project_id",
+            data: this.state.projects
+          };
+
+    const drop_Down_Label =
+      this.state.manual_timesheet_entry === "D"
+        ? "Select a Dept."
+        : "Select Project";
+
     return (
       <div id="ManualAttendanceScreen">
         <div className="row inner-top-search" data-validate="loadEmployee">
@@ -173,30 +199,35 @@ class ManualAttendance extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col" }}
             label={{
-              forceLabel: "Select Project",
+              forceLabel: drop_Down_Label,
               isImp: true
             }}
             selector={{
-              name: "project_id",
+              name: timesheet_entry,
               className: "select-fld",
-              value: this.state.project_id,
-              dataSource: {
-                textField: "project_desc",
-                valueField: "hims_d_project_id",
-                data: this.state.projects
-              },
+              value:
+                this.state.manual_timesheet_entry === "D"
+                  ? this.state.sub_department_id
+                  : this.state.project_id,
+              dataSource: _dropDownDataSource,
               onChange: this.eventHandaler.bind(this),
               onClear: () => {
-                this.setState({
-                  project_id: null
-                });
+                {
+                  this.state.manual_timesheet_entry === "D"
+                    ? this.setState({
+                        sub_department_id: null
+                      })
+                    : this.setState({
+                        project_id: null
+                      });
+                }
               }
             }}
           />
 
-          <AlagehAutoComplete
+          {/* <AlagehAutoComplete
             div={{ className: "col" }}
             label={{
               forceLabel: "Select Employee Group",
@@ -213,7 +244,8 @@ class ManualAttendance extends Component {
               },
               onChange: this.eventHandaler.bind(this)
             }}
-          />
+          /> */}
+
           <AlgaehDateHandler
             div={{ className: "col" }}
             label={{ forceLabel: "Select Date", isImp: true }}
@@ -467,8 +499,8 @@ class ManualAttendance extends Component {
 function mapStateToProps(state) {
   return {
     subdepartment: state.subdepartment,
-    organizations: state.organizations,
-    emp_groups: state.emp_groups
+    organizations: state.organizations
+    // emp_groups: state.emp_groups
   };
 }
 
@@ -476,8 +508,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getSubDepartment: AlgaehActions,
-      getOrganizations: AlgaehActions,
-      getEmpGroups: AlgaehActions
+      getOrganizations: AlgaehActions
+      // getEmpGroups: AlgaehActions
     },
     dispatch
   );

@@ -21,6 +21,55 @@ export default function ManualAttendanceEvents() {
       getDivisionProject($this, { division_id: $this.state.hospital_id });
     },
 
+    getOptions: $this => {
+      return new Promise((resolve, reject) => {
+        algaehApiCall({
+          uri: "/payrollOptions/getHrmsOptions",
+          method: "GET",
+          module: "hrManagement",
+          onSuccess: res => {
+            debugger;
+            resolve(res);
+            // if (res.data.success) {
+            //   debugger;
+            //   resolve(res);
+            //   // $this.setState({
+            //   //   manual_timesheet_entry:
+            //   //     res.data.result[0].manual_timesheet_entry
+            //   // });
+            // }
+          },
+          onFailure: err => {
+            reject(err);
+          }
+        });
+      });
+    },
+    getSubDepartment: $this => {
+      algaehApiCall({
+        uri: "/department/get/subdepartment",
+        module: "masterSettings",
+        data: {
+          sub_department_status: "A"
+        },
+        method: "GET",
+        onSuccess: res => {
+          if (res.data.success) {
+            debugger;
+            $this.setState({
+              subdepartment: res.data.records
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    },
+
     LoadEmployee: $this => {
       debugger;
       algaehApiCall({
@@ -32,7 +81,8 @@ export default function ManualAttendanceEvents() {
           project_id: $this.state.project_id,
           attendance_date: moment($this.state.attendance_date).format(
             "YYYY-MM-DD"
-          )
+          ),
+          manual_timesheet_entry: $this.state.manual_timesheet_entry
         },
         onSuccess: res => {
           if (res.data.success) {

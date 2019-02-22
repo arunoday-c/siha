@@ -13,6 +13,7 @@ import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import ShiftAssign from "./ShiftAssign/ShiftAssign";
+import swal from "sweetalert2";
 
 export default class EmployeeShiftRostering extends Component {
   constructor(props) {
@@ -20,7 +21,9 @@ export default class EmployeeShiftRostering extends Component {
     this.state = {
       employees: [],
       hospitals: [],
-      sendId: null,
+      copyData: null,
+      sendDate: null,
+      sendRow: null,
       openShiftAssign: false,
       shifts: [],
       loading: false,
@@ -35,11 +38,12 @@ export default class EmployeeShiftRostering extends Component {
     this.getShifts();
   }
 
-  showModal(id, e) {
+  showModal(row, e) {
     if (e.target.tagName === "TD") {
       this.setState({
-        sendId: id,
-        openShiftAssign: true
+        sendRow: row,
+        openShiftAssign: true,
+        sendDate: e.currentTarget.getAttribute("date")
       });
     } else return;
   }
@@ -61,6 +65,17 @@ export default class EmployeeShiftRostering extends Component {
           type: "error"
         });
       }
+    });
+  }
+
+  clearData() {
+    this.setState({
+      employees: [],
+      sub_department_id: null,
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id,
+      year: moment().year(),
+      month: moment(new Date()).format("M")
     });
   }
 
@@ -93,6 +108,14 @@ export default class EmployeeShiftRostering extends Component {
         if (res.data.success) {
           this.setState({
             employees: res.data.records,
+            loading: false
+          });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.records.message,
+            type: "warning"
+          });
+          this.setState({
             loading: false
           });
         }
@@ -139,20 +162,16 @@ export default class EmployeeShiftRostering extends Component {
         searchGrid: {
           columns: Employee
         },
-        searchName: "users",
+        searchName: "employee",
         uri: "/gloabelSearch/get",
-        inputs: " E.sub_department_id=" + this.state.sub_department_id,
+        inputs: "sub_department_id=" + this.state.sub_department_id,
         onContainsChange: (text, serchBy, callBack) => {
           callBack(text);
         },
         onRowSelect: row => {
-          let arr = this.state.employees;
-          arr.push(row);
-
           this.setState({
             hims_d_employee_id: row.hims_d_employee_id,
-            emp_name: row.full_name,
-            employees: arr
+            emp_name: row.full_name
           });
         }
       });
@@ -210,7 +229,8 @@ export default class EmployeeShiftRostering extends Component {
       case "month":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
+            employees: []
           },
           () => {
             this.getStartandMonthEnd();
@@ -220,7 +240,8 @@ export default class EmployeeShiftRostering extends Component {
       case "year":
         this.setState(
           {
-            [value.name]: value.value
+            [value.name]: value.value,
+            employees: []
           },
           () => {
             this.getStartandMonthEnd();
@@ -230,13 +251,14 @@ export default class EmployeeShiftRostering extends Component {
 
       default:
         this.setState({
-          [value.name]: value.value
+          [value.name]: value.value,
+          employees: []
         });
         break;
     }
   }
 
-  plotEmployeeDates(id, holidays, leaves, shifts) {
+  plotEmployeeDates(row, holidays, leaves, shifts) {
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
@@ -270,7 +292,7 @@ export default class EmployeeShiftRostering extends Component {
 
       let shift = null;
 
-      if (shifts.length > 0) {
+      if (Array.isArray(shifts) && shifts.length > 0) {
         shift = Enumerable.from(shifts)
           .where(
             w =>
@@ -284,80 +306,150 @@ export default class EmployeeShiftRostering extends Component {
           <td className="leave_cell" key={now}>
             {leave.leave_description}
           </td>
-        ) : holiday !== undefined && holiday.weekoff === "Y" ? (
-          <td className="week_off_cell" key={now}>
-            {holiday.holiday_description}
-          </td>
-        ) : holiday !== undefined && holiday.holiday === "Y" ? (
-          <td className="holiday_cell" key={now}>
-            {holiday.holiday_description}
-          </td>
-        ) : shift !== null && shift !== undefined ? (
+        ) : shift !== null && shift !== undefined && holiday !== undefined ? (
           <td
-            onClick={this.showModal.bind(this, id)}
+            className={
+              shift.weekoff === "Y"
+                ? "week_off_cell editAction"
+                : shift.holiday === "Y"
+                ? "holiday_cell editAction"
+                : "time_cell editAction"
+            }
+            key={now}
+          >
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
+                Copy
+              </li>
+              <li
+                onClick={this.pasteShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD")
+                })}
+              >
+                Paste
+              </li>
+            </ul>
+            <span>
+              {shift.shift_id === 100
+                ? "WO"
+                : shift.shift_id === 101
+                ? "HO"
+                : shift.shift_abbreviation}
+            </span>
+          </td>
+        ) : shift !== null &&
+          shift !== undefined &&
+          shift.holiday === "N" &&
+          shift.weekoff === "N" ? (
+          <td
+            onClick={this.showModal.bind(this, row)}
             key={now}
             className="time_cell editAction"
-            employee_id={id}
+            employee_id={row.hims_d_employee_id}
             date={now.format("YYYY-MM-DD")}
           >
             <span>{shift.shift_abbreviation}</span>
             <i className="fas fa-ellipsis-v" />
             <ul>
-              <li
-                onClick={e => {
-                  e.preventDefault();
-                  alert("CCP");
-                }}
-              >
+              <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
                 Copy
               </li>
               <li
-                onClick={() => {
-                  alert("CCP");
-                }}
+                shift={shift}
+                onClick={this.pasteShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD")
+                })}
               >
                 Paste
               </li>
-              <li
-                onClick={() => {
-                  alert("CCP");
-                }}
-              >
+              <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
                 Delete Shift
               </li>
             </ul>
           </td>
+        ) : shift !== null &&
+          shift !== undefined &&
+          (shift.holiday === "Y" || shift.weekoff === "Y") ? (
+          <td
+            onClick={this.showModal.bind(this, row)}
+            key={now}
+            className={
+              shift.weekoff === "Y"
+                ? "week_off_cell editAction"
+                : "holiday_cell editAction"
+            }
+            employee_id={row.hims_d_employee_id}
+            date={now.format("YYYY-MM-DD")}
+          >
+            <span>
+              {" "}
+              {shift.shift_id === 100
+                ? "WO"
+                : shift.shift_id === 101
+                ? "HO"
+                : shift.shift_abbreviation}
+            </span>
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
+                Copy
+              </li>
+              <li
+                shift={shift}
+                onClick={this.pasteShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD")
+                })}
+              >
+                Paste
+              </li>
+              <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
+                Delete Shift
+              </li>
+            </ul>
+          </td>
+        ) : holiday !== undefined ? (
+          <td
+            className={
+              holiday.weekoff === "Y"
+                ? "week_off_cell"
+                : holiday.holiday === "Y"
+                ? "holiday_cell"
+                : null
+            }
+            key={now}
+          >
+            <span>
+              {holiday.weekoff === "Y"
+                ? "WO"
+                : holiday.holiday === "Y"
+                ? "HO"
+                : holiday.holiday_description}
+            </span>
+          </td>
         ) : (
           <td
-            onClick={this.showModal.bind(this, id)}
+            onClick={this.showModal.bind(this, row)}
             key={now}
             className="time_cell editAction"
-            employee_id={id}
+            employee_id={row.hims_d_employee_id}
             date={now.format("YYYY-MM-DD")}
           >
             <i className="fas fa-ellipsis-v" />
             <ul>
               <li
-                onClick={e => {
-                  e.preventDefault();
-                  alert("CCP");
-                }}
-              >
-                Copy
-              </li>
-              <li
-                onClick={() => {
-                  alert("CCP");
+                onClick={this.pasteShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD")
+                })}
+                style={{
+                  zIndex: 9999
                 }}
               >
                 Paste
-              </li>
-              <li
-                onClick={() => {
-                  alert("CCP");
-                }}
-              >
-                Clear
               </li>
             </ul>
           </td>
@@ -403,22 +495,123 @@ export default class EmployeeShiftRostering extends Component {
     this.getEmployeesForShiftRoster();
   }
 
+  copyShift(data) {
+    this.setState({
+      copyData: data
+    });
+    swalMessage({
+      title: "Shift Copied.",
+      type: "success"
+    });
+  }
+
+  pasteShift(data) {
+    this.state.copyData === null
+      ? swalMessage({
+          title: "Please copy the shift first",
+          type: "warning"
+        })
+      : algaehApiCall({
+          uri: "/shift_roster/pasteRoster",
+          method: "POST",
+          module: "hrManagement",
+          data: {
+            employee_id: data.id,
+            shift_date: data.date,
+            shift_id: this.state.copyData.hims_d_shift_id,
+            shift_end_date: this.state.copyData.shift_end_date,
+            shift_start_time: this.state.copyData.shift_start_time,
+            shift_end_time: this.state.copyData.shift_end_time,
+            shift_time: this.state.copyData.shift_time,
+            weekoff: this.state.copyData.weekoff,
+            holiday: this.state.copyData.holiday
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Pasted Successfully . . ",
+                type: "success"
+              });
+              this.getEmployeesForShiftRoster();
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+  }
+
+  deleteShift(data) {
+    swal({
+      title: "Delete the shift assigned?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/shift_roster/deleteShiftRoster",
+          method: "DELETE",
+          module: "hrManagement",
+          data: {
+            hims_f_shift_roster_id: data.hims_f_shift_roster_id
+          },
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Record Deleted Successfully . .",
+                type: "success"
+              });
+              this.getEmployeesForShiftRoster();
+            } else if (!res.data.success) {
+              swalMessage({
+                title: res.data.records.message,
+                type: "warning"
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
   render() {
     let allYears = getYears();
     return (
       <div className="EmpShiftRost_Screen">
         <ShiftAssign
           data={{
-            from_date: this.state.year + "-" + this.state.month + "-01",
-            to_date: moment(this.state.year + "-" + this.state.month + "-01")
-              .endOf("month")
-              .format("YYYY-MM-DD"),
+            from_date: this.state.sendDate,
+            to_date: this.state.sendDate,
             shifts: this.state.shifts,
-            employees: this.state.employees
+            employees: this.state.employees,
+            hospital_id: this.state.hospital_id
           }}
-          sendId={this.state.sendId}
+          sendRow={this.state.sendRow}
           open={this.state.openShiftAssign}
           onClose={this.closeShiftAssign.bind(this)}
+        />
+        <button
+          id="clsSftAsgn"
+          style={{ display: "none" }}
+          onClick={this.closeShiftAssign.bind(this)}
         />
 
         <div className="row  inner-top-search">
@@ -440,7 +633,8 @@ export default class EmployeeShiftRostering extends Component {
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  year: null
+                  year: null,
+                  employees: []
                 });
               }
             }}
@@ -465,7 +659,8 @@ export default class EmployeeShiftRostering extends Component {
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  month: null
+                  month: null,
+                  employees: []
                 });
               }
             }}
@@ -485,7 +680,12 @@ export default class EmployeeShiftRostering extends Component {
                 valueField: "hims_d_hospital_id",
                 data: this.state.hospitals
               },
-              onChange: this.dropDownHandler.bind(this)
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
             }}
             showLoading={true}
           />
@@ -505,32 +705,11 @@ export default class EmployeeShiftRostering extends Component {
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  hims_d_sub_department_id: null
+                  sub_department_id: null
                 });
               }
             }}
           />
-          {/* 
-          <AlagehAutoComplete
-            div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Shift", isImp: true }}
-            selector={{
-              name: "shift_id",
-              value: this.state.shift_id,
-              className: "select-fld",
-              dataSource: {
-                textField: "shift_description",
-                valueField: "hims_d_shift_id",
-                data: this.state.shifts
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  shift_id: null
-                });
-              }
-            }}
-          /> */}
 
           <div className="col-3" style={{ marginTop: 10 }}>
             <div
@@ -567,6 +746,7 @@ export default class EmployeeShiftRostering extends Component {
               onClick={this.getEmployeesForShiftRoster.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"
+              disabled={this.state.loading}
             >
               {!this.state.loading ? (
                 <span>Load</span>
@@ -575,7 +755,7 @@ export default class EmployeeShiftRostering extends Component {
               )}
             </button>
             <button
-              //  onClick={this.clearState.bind(this)}
+              onClick={this.clearData.bind(this)}
               style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >
@@ -601,7 +781,7 @@ export default class EmployeeShiftRostering extends Component {
                     Weekly Off (WO)
                   </span>
                   <span style={{ background: "#3f789c" }} className="legends">
-                    Holiday (H)
+                    Holiday (HO)
                   </span>
                   <span style={{ background: "#879c3f" }} className="legends">
                     Leave Authorized (LV)
@@ -623,7 +803,7 @@ export default class EmployeeShiftRostering extends Component {
                       <table>
                         <thead id="tHdRstr">
                           <tr>
-                            <th>Employee Code</th>
+                            {/* <th>Employee Code</th> */}
                             <th>Employee Name</th>
                             {this.getDaysOfMonth()}
                             <th>Joining Date</th>
@@ -633,11 +813,11 @@ export default class EmployeeShiftRostering extends Component {
                         <tbody>
                           {this.state.employees.map((row, index) => (
                             <tr key={row.hims_d_employee_id}>
-                              <td>{row.employee_code}</td>
+                              {/* <td>{row.employee_code}</td> */}
                               <td>{row.employee_name}</td>
 
                               {this.plotEmployeeDates(
-                                row.hims_d_employee_id,
+                                row,
                                 row.holidays,
                                 row.employeeLeaves,
                                 row.empShift

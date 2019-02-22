@@ -35,6 +35,9 @@ export default {
       emergancy_contact_person: null,
       emergancy_contact_no: 0,
       blood_group: null,
+      sub_department_id: null,
+      religion_id: null,
+      overtime_group_id: null,
 
       appointment_type: null,
       employee_type: null,

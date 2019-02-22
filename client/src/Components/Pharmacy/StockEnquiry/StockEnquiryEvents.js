@@ -2,7 +2,6 @@ import moment from "moment";
 import Options from "../../../Options.json";
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   if (e.value === undefined) {
     $this.setState({ [e]: null }, () => {
@@ -37,6 +36,7 @@ const getItemLocationStock = $this => {
 
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemandLocationStock",
+    // module: "pharmacy",
     method: "GET",
     data: inputObj,
     redux: {

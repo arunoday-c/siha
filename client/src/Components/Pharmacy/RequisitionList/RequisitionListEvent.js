@@ -3,7 +3,6 @@ import moment from "moment";
 import Options from "../../../Options.json";
 
 const LocationchangeTexts = ($this, location, ctrl, e) => {
-  
   e = ctrl || e;
 
   if (e.value === undefined) {
@@ -46,7 +45,6 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
 };
 
 const getRequisitionList = $this => {
-  
   let inpObj = {};
   if ($this.state.from_location_id !== null) {
     inpObj.from_location_id = $this.state.from_location_id;
@@ -67,6 +65,7 @@ const getRequisitionList = $this => {
   // inpObj.authorie2 = "N";
   $this.props.getRequisitionList({
     uri: "/requisitionEntry/getAuthrequisitionList",
+    // module: "pharmacy",
     method: "GET",
     data: inpObj,
     redux: {

@@ -94,7 +94,8 @@ module.exports = {
     }
   },
   insertPatientVisitData: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       const inputParam = { ...req.body };
       const utilities = new algaehUtilities();
@@ -356,7 +357,8 @@ module.exports = {
     }
   },
   addEpisodeEncounterData: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       const input = { ...req.body };
       const utilities = new algaehUtilities();
@@ -435,7 +437,8 @@ module.exports = {
   },
 
   addPatientInsuranceData: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     try {
       let input = { ...req.body };
 

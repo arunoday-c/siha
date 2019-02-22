@@ -157,6 +157,18 @@ class DeptUserDetails extends Component {
         }
       });
     }
+
+    if (this.props.overTime === undefined || this.props.overTime.length === 0) {
+      this.props.getEmpSpeciality({
+        uri: "/hrsettings/getOvertimeGroups",
+        module: "hrManagement",
+        method: "GET",
+        redux: {
+          type: "OVER_TIME_GET_DATA",
+          mappingName: "overTime"
+        }
+      });
+    }
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -287,31 +299,25 @@ class DeptUserDetails extends Component {
                     }
                   }}
                 />
-                {/*  TODO : incomplete
-                 <AlagehAutoComplete
-                  div={{ className: "col" }}
+
+                <AlagehAutoComplete
+                  div={{ className: "col mandatory" }}
                   label={{
                     forceLabel: "Overtime Group",
                     isImp: true
                   }}
                   selector={{
-                    name: "title_id",
+                    name: "overtime_group_id",
                     className: "select-fld",
-                    value: this.state.title_id,
+                    value: this.state.overtime_group_id,
                     dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "title"
-                          : "arabic_title",
-                      valueField: "his_d_title_id",
-                      data: this.props.titles
+                      textField: "overtime_group_description",
+                      valueField: "hims_d_overtime_group_id",
+                      data: this.props.overTime
                     },
-                    onChange: null,
-                    others: {
-                      tabIndex: "2"
-                    }
+                    onChange: texthandle.bind(this, this)
                   }}
-                /> */}
+                />
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
@@ -536,7 +542,7 @@ class DeptUserDetails extends Component {
                             <span>
                               {row.from_date === null ||
                               row.from_date === undefined
-                                ? "DD/MM/YYYY"
+                                ? ""
                                 : dateFormater(this, row.from_date)}
                             </span>
                           );
@@ -546,7 +552,7 @@ class DeptUserDetails extends Component {
                             <span>
                               {row.from_date === null ||
                               row.from_date === undefined
-                                ? "DD/MM/YYYY"
+                                ? ""
                                 : dateFormater(this, row.from_date)}
                             </span>
                           );
@@ -561,7 +567,7 @@ class DeptUserDetails extends Component {
                           return (
                             <span>
                               {row.to_date === null || row.to_date === undefined
-                                ? "DD/MM/YYYY"
+                                ? ""
                                 : dateFormater(this, row.to_date)}
                             </span>
                           );
@@ -570,7 +576,7 @@ class DeptUserDetails extends Component {
                           return (
                             <span>
                               {row.to_date === null || row.to_date === undefined
-                                ? "DD/MM/YYYY"
+                                ? ""
                                 : dateFormater(this, row.to_date)}
                             </span>
                           );
@@ -751,46 +757,46 @@ class DeptUserDetails extends Component {
                           );
                         }
                       },
-                      {
-                        fieldName: "user_id",
-                        label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
-                        displayTemplate: row => {
-                          let display =
-                            this.props.userdrtails === undefined
-                              ? []
-                              : this.props.userdrtails.filter(
-                                  f => f.algaeh_d_app_user_id === row.user_id
-                                );
+                      // {
+                      //   fieldName: "user_id",
+                      //   label: <AlgaehLabel label={{ fieldName: "user_id" }} />,
+                      //   displayTemplate: row => {
+                      //     let display =
+                      //       this.props.userdrtails === undefined
+                      //         ? []
+                      //         : this.props.userdrtails.filter(
+                      //             f => f.algaeh_d_app_user_id === row.user_id
+                      //           );
 
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].username
-                                  : display[0].arabic_service_type
-                                : ""}
-                            </span>
-                          );
-                        },
-                        editorTemplate: row => {
-                          let display =
-                            this.props.userdrtails === undefined
-                              ? []
-                              : this.props.userdrtails.filter(
-                                  f => f.algaeh_d_app_user_id === row.user_id
-                                );
+                      //     return (
+                      //       <span>
+                      //         {display !== undefined && display.length !== 0
+                      //           ? this.state.selectedLang === "en"
+                      //             ? display[0].username
+                      //             : display[0].arabic_service_type
+                      //           : ""}
+                      //       </span>
+                      //     );
+                      //   },
+                      //   editorTemplate: row => {
+                      //     let display =
+                      //       this.props.userdrtails === undefined
+                      //         ? []
+                      //         : this.props.userdrtails.filter(
+                      //             f => f.algaeh_d_app_user_id === row.user_id
+                      //           );
 
-                          return (
-                            <span>
-                              {display !== undefined && display.length !== 0
-                                ? this.state.selectedLang === "en"
-                                  ? display[0].username
-                                  : display[0].arabic_service_type
-                                : ""}
-                            </span>
-                          );
-                        }
-                      },
+                      //     return (
+                      //       <span>
+                      //         {display !== undefined && display.length !== 0
+                      //           ? this.state.selectedLang === "en"
+                      //             ? display[0].username
+                      //             : display[0].arabic_service_type
+                      //           : ""}
+                      //       </span>
+                      //     );
+                      //   }
+                      // },
                       {
                         fieldName: "employee_designation_id",
                         label: (
@@ -953,7 +959,8 @@ function mapStateToProps(state) {
     specimapcategorylist: state.specimapcategorylist,
     all_employees: state.all_employees,
     emp_groups: state.emp_groups,
-    organizations: state.organizations
+    organizations: state.organizations,
+    overTime: state.overTime
   };
 }
 

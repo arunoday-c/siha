@@ -2,7 +2,7 @@ import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import _ from "lodash";
 import mysql from "mysql";
-// import algaehUtilities from "algaeh-utilities/utilities";
+import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   newProcessSalary: (req, res, next) => {
@@ -148,7 +148,8 @@ module.exports = {
                   input.year,
                   _myemp,
                   input.year
-                ]
+                ],
+                printQuery: true
               })
               .then(Salaryresults => {
                 let _headerQuery = "";
@@ -477,20 +478,51 @@ module.exports = {
                     }
                   }
 
+                  const utilities = new algaehUtilities();
+                  utilities.logger().log("input.month: ", input.month);
+                  let avail_till_date = "";
+                  if (input.month != 1) {
+                    let months = "";
+                    avail_till_date = "COALESCE(january, 0)";
+                    for (let k = 2; k <= input.month; k++) {
+                      months = moment(k, "MM").format("MMMM");
+                      avail_till_date += "+" + "COALESCE(" + months + ", 0)";
+                    }
+                  } else {
+                    utilities.logger().log("else: ");
+                    avail_till_date = moment(input.month, "MM").format("MMMM");
+                    utilities
+                      .logger()
+                      .log("avail_till_date: ", avail_till_date);
+                    avail_till_date = "COALESCE(" + avail_till_date + ", 0)";
+                  }
+
+                  utilities.logger().log("avail_till_date: ", avail_till_date);
+
                   const month_name = moment(input.month, "MM").format("MMMM");
 
                   let strQuery =
                     "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
+                    avail_till_date +
+                    "as avail_till_date," +
                     month_name +
                     " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
                   FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
                   and ML.leave_id=LR.leave_header_id and LR.calculation_type='SL'and L.hims_d_leave_id = LR.leave_header_id and\
                   L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
                     month_name +
-                    " > 0 and (availed_till_date >= to_value   or availed_till_date >=from_value and availed_till_date <=to_value )\
+                    " > 0 and (" +
+                    avail_till_date +
+                    " >= to_value   or " +
+                    avail_till_date +
+                    " >=from_value and " +
+                    avail_till_date +
+                    " <=to_value )\
                     and  employee_id in (?) and year=? union all	";
                   strQuery +=
                     "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
+                    avail_till_date +
+                    "as avail_till_date," +
                     month_name +
                     " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
                     FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
@@ -499,6 +531,7 @@ module.exports = {
                     month_name +
                     " > 0 and  employee_id in (?) and year=? ;";
 
+                  utilities.logger().log("strQuery: ", strQuery);
                   _salaryHeader_id =
                     _salaryHeader_id.length == 0 ? null : _salaryHeader_id;
                   _mysql
@@ -2017,6 +2050,8 @@ function getEarningComponents(options) {
 
       let total_days = empResult["total_days"];
 
+      const utilities = new algaehUtilities();
+
       if (_earnings.length == 0) {
         resolve({ current_earning_amt_array, final_earning_amount });
       }
@@ -2050,6 +2085,7 @@ function getEarningComponents(options) {
             per_day_salary: current_earning_per_day_salary
           });
         } else if (obj["calculation_type"] == "V") {
+          utilities.logger().log("leave_salary: ", leave_salary);
           if (leave_salary == null || leave_salary == undefined) {
             current_earning_per_day_salary = parseFloat(
               obj["amount"] / parseFloat(empResult["total_days"])
@@ -2076,87 +2112,215 @@ function getEarningComponents(options) {
           //Apply Leave Rule
 
           if (leave_salary != "Y") {
+            utilities.logger().log("total_days: ", total_days);
             let perday_salary = current_earning_amt / total_days;
+            utilities.logger().log("perday_salary: ", perday_salary);
 
             let balance_days = 0;
-            let previous_leaves = 0;
-            if (_LeaveRule.length > 0) {
-              for (let i = 0; i < _LeaveRule.length; i++) {
-                let leaves_till_date = _LeaveRule[i].availed_till_date;
-                let current_leave = _LeaveRule[i].present_month;
+            let x = 0,
+              y = 0;
 
+            if (_LeaveRule.length > 0) {
+              let leaves_till_date = _LeaveRule[0].avail_till_date;
+              let previous_leave = 0;
+              for (let i = 0; i < _LeaveRule.length; i++) {
+                let current_leave = _LeaveRule[i].present_month;
                 let paytype = _LeaveRule[i].paytype;
+
                 //Component
                 if (_LeaveRule[i].calculation_type == "CO") {
                 }
 
                 //Slab
+                utilities.logger().log("leaves_till_date: ", leaves_till_date);
+                utilities.logger().log("current_leave: ", current_leave);
                 if (_LeaveRule[i].calculation_type == "SL") {
                   if (_LeaveRule[i].value_type == "RA") {
                     let leave_rule_days = _LeaveRule[i].total_days;
 
-                    if (balance_days > 0) {
-                      if (previous_leaves == current_leave) {
-                        previous_leaves =
-                          leaves_till_date - current_leave - leave_rule_days;
-                        previous_leaves = leave_rule_days - previous_leaves;
+                    utilities.logger().log("previous_leave: ", current_leave);
+                    utilities
+                      .logger()
+                      .log("leave_rule_days: ", leave_rule_days);
+
+                    if (leaves_till_date < leave_rule_days) {
+                      balance_days = leaves_till_date;
+                      leaves_till_date = 0;
+                    } else {
+                      x =
+                        previous_leave > 0
+                          ? leaves_till_date - leave_rule_days - previous_leave
+                          : leaves_till_date - leave_rule_days;
+                      y =
+                        previous_leave > 0
+                          ? leaves_till_date - previous_leave
+                          : leaves_till_date;
+
+                      // x=previous_leave<0?
+
+                      utilities.logger().log("x: ", x);
+                      if (leave_rule_days > 0) {
+                        utilities
+                          .logger()
+                          .log("leave_rule_days: ", leave_rule_days);
+                        balance_days = leave_rule_days;
                       } else {
-                        previous_leaves = current_leave - previous_leaves;
+                        utilities.logger().log("else: ", x);
+                        balance_days = x;
                       }
-
-                      balance_days = current_leave - previous_leaves;
-
-                      if (previous_leaves == balance_days) {
+                      leaves_till_date = x;
+                      utilities
+                        .logger()
+                        .log("leaves_till_date: ", leaves_till_date);
+                      if (leaves_till_date > current_leave) {
+                        utilities.logger().log("if: ");
                         balance_days = 0;
                       } else {
-                        balance_days = balance_days;
-                      }
-                    } else {
-                      previous_leaves = leaves_till_date - current_leave;
-                      if (previous_leaves === 0) {
-                        balance_days = current_leave - leave_rule_days;
-                        previous_leaves = current_leave - balance_days;
-                      } else {
-                        previous_leaves = leave_rule_days - previous_leaves;
-                        previous_leaves =
-                          previous_leaves < 0 ? 0 : previous_leaves;
-                        balance_days = current_leave - previous_leaves;
+                        utilities.logger().log("else: ", y);
+                        if (y > current_leave) {
+                          y = y - current_leave;
+                          balance_days = balance_days - y;
+                          utilities
+                            .logger()
+                            .log("balance_days: ", balance_days);
+                        }
                       }
                     }
 
-                    if (
-                      previous_leaves != 0 &&
-                      previous_leaves <= leave_rule_days
-                    ) {
-                      let remaining_days = total_days - previous_leaves;
+                    utilities
+                      .logger()
+                      .log("leaves_till_date: ", leaves_till_date);
+
+                    if (balance_days > 0) {
+                      utilities
+                        .logger()
+                        .log("current_earning_amt: ", current_earning_amt);
                       let split_sal = 0;
-                      let remaining_sal = 0;
+
+                      utilities.logger().log("paytype: ", paytype);
                       if (paytype == "NO") {
                       } else if (paytype == "FD") {
                         current_earning_amt = current_earning_amt;
                       } else if (paytype == "HD") {
                         split_sal = perday_salary / 2;
-                        split_sal = split_sal * previous_leaves;
+                        split_sal = split_sal * balance_days;
 
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "UN") {
-                        split_sal = perday_salary * previous_leaves;
+                        split_sal = perday_salary * balance_days;
 
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "QD") {
                         split_sal = (perday_salary * 3) / 4;
-                        split_sal = split_sal * previous_leaves;
+                        split_sal = split_sal * balance_days;
 
                         current_earning_amt = current_earning_amt - split_sal;
                       } else if (paytype == "TQ") {
                         split_sal = perday_salary / 4;
-                        split_sal = split_sal * previous_leaves;
+                        split_sal = split_sal * balance_days;
 
                         current_earning_amt = current_earning_amt - split_sal;
                       }
-                    } else {
-                      previous_leaves = balance_days;
                     }
+                    previous_leave = leaves_till_date - current_leave;
+                    previous_leave = previous_leave - leave_rule_days;
+                    // leaves_till_date = leaves_till_date - leave_rule_days;
+                    // if (balance_days > 0) {
+                    //   utilities
+                    //     .logger()
+                    //     .log("current_leave: ", current_leave);
+
+                    //   utilities
+                    //     .logger()
+                    //     .log("leaves_till_date: ", leaves_till_date);
+
+                    //   utilities
+                    //     .logger()
+                    //     .log("leave_rule_days: ", leave_rule_days);
+
+                    //   if (previous_leaves == current_leave) {
+                    //     previous_leaves =
+                    //       leaves_till_date - current_leave - leave_rule_days;
+                    //     previous_leaves = leave_rule_days - previous_leaves;
+
+                    //     // previous_leaves = current_leave - previous_leaves;
+                    //   } else {
+                    //     previous_leaves = current_leave - previous_leaves;
+                    //   }
+
+                    //   utilities
+                    //     .logger()
+                    //     .log("if previous_leaves: ", previous_leaves);
+
+                    //   balance_days = current_leave - previous_leaves;
+
+                    //   utilities
+                    //     .logger()
+                    //     .log("if balance_days: ", balance_days);
+
+                    //   if (previous_leaves == balance_days) {
+                    //     balance_days = 0;
+                    //   } else {
+                    //     balance_days = balance_days;
+                    //   }
+                    // } else {
+                    //   previous_leaves = leaves_till_date - leave_rule_days;
+
+                    //   if (previous_leaves === 0) {
+                    //     balance_days = current_leave - leave_rule_days;
+                    //     previous_leaves = current_leave - balance_days;
+                    //   } else {
+                    //     previous_leaves = leave_rule_days - previous_leaves;
+
+                    //     previous_leaves =
+                    //       previous_leaves < 0 ? 0 : previous_leaves;
+
+                    //     balance_days =
+                    //       previous_leaves < 0
+                    //         ? 0
+                    //         : current_leave - previous_leaves;
+                    //   }
+                    // }
+
+                    // if (
+                    //   previous_leaves != 0 &&
+                    //   previous_leaves <= leave_rule_days
+                    // ) {
+                    //   let remaining_days = current_leave - previous_leaves;
+                    //   let split_sal = 0;
+
+                    //   utilities.logger().log("paytype: ", paytype);
+                    //   if (paytype == "NO") {
+                    //   } else if (paytype == "FD") {
+                    //     current_earning_amt = current_earning_amt;
+                    //   } else if (paytype == "HD") {
+                    //     split_sal = perday_salary / 2;
+                    //     split_sal = split_sal * previous_leaves;
+
+                    //     current_earning_amt = current_earning_amt - split_sal;
+                    //   } else if (paytype == "UN") {
+                    //     split_sal = perday_salary * previous_leaves;
+
+                    //     current_earning_amt = current_earning_amt - split_sal;
+                    //   } else if (paytype == "QD") {
+                    //     split_sal = (perday_salary * 3) / 4;
+                    //     split_sal = split_sal * previous_leaves;
+
+                    //     current_earning_amt = current_earning_amt - split_sal;
+                    //   } else if (paytype == "TQ") {
+                    //     split_sal = perday_salary / 4;
+                    //     split_sal = split_sal * previous_leaves;
+
+                    //     current_earning_amt = current_earning_amt - split_sal;
+                    //   }
+                    // } else {
+                    //   utilities.logger().log("else: ");
+                    //   previous_leaves = balance_days;
+                    // }
+
+                    utilities
+                      .logger()
+                      .log("current_earning_amt: ", current_earning_amt);
                   }
                 }
               }

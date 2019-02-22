@@ -50,8 +50,9 @@
     display: block; }
 
 .EmpShiftRost_Screen .week_off_cell {
-  background: #3f9c62;
-  color: white; }
+  background: #3f9c62; }
+  .EmpShiftRost_Screen .week_off_cell span {
+    color: white; }
 
 .EmpShiftRost_Screen .holiday_cell {
   background: #3f789c;
@@ -90,11 +91,8 @@
       border-bottom: 1px solid #d2d2d2;
       color: #000 !important;
       background: #dff6f6 !important;
-      width: 75px; }
+      width: 55px; }
       .EmpShiftRost_Screen #shiftRosterTable table thead th:nth-child(1) {
-        text-align: center;
-        width: 120px; }
-      .EmpShiftRost_Screen #shiftRosterTable table thead th:nth-child(2) {
         text-align: left;
         width: 200px; }
       .EmpShiftRost_Screen #shiftRosterTable table thead th:last-child, .EmpShiftRost_Screen #shiftRosterTable table thead th:nth-last-child(2) {
@@ -110,9 +108,6 @@
         border-top: 1px solid #ececec;
         width: 75px; }
         .EmpShiftRost_Screen #shiftRosterTable table tbody tr td:nth-child(1) {
-          text-align: center;
-          width: 120px; }
-        .EmpShiftRost_Screen #shiftRosterTable table tbody tr td:nth-child(2) {
           text-align: left;
           width: 200px; }
         .EmpShiftRost_Screen #shiftRosterTable table tbody tr td:last-child, .EmpShiftRost_Screen #shiftRosterTable table tbody tr td:nth-last-child(2) {

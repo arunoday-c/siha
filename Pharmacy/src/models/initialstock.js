@@ -1,33 +1,209 @@
 import algaehMysql from "algaeh-mysql";
+import moment from "moment";
 module.exports = {
-  addPharmacyInitialStock: (req, res, next) => {
-    return new Promise((resolve, reject) => {
-      const _mysql = new algaehMysql();
-      try {
-        _mysql
-          .executeQuery({
-            query: "",
-            values: [],
-            printQuery: true
-          })
-          .then(result => {
+  getPharmacyInitialStock: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_f_pharmacy_stock_header_id, document_number, docdate, year,\
+          period, description, posted  from  hims_f_pharmacy_stock_header\
+          where record_status='A' AND document_number=?",
+          values: [req.query.document_number],
+          printQuery: true
+        })
+        .then(headerResult => {
+          if (headerResult.length != 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select * from hims_f_pharmacy_stock_detail where pharmacy_stock_header_id=? and record_status='A'",
+                values: [headerResult[0].hims_f_pharmacy_stock_header_id],
+                printQuery: true
+              })
+              .then(pharmacy_stock_detail => {
+                _mysql.releaseConnection();
+                req.records = {
+                  ...headerResult[0],
+                  ...{ pharmacy_stock_detail }
+                };
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
             _mysql.releaseConnection();
-            req.records = result;
-            resolve(result);
+            req.records = headerResult;
             next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            reject(error);
-            next(error);
-          });
-      } catch (e) {
-        _mysql.releaseConnection();
-        next(e);
-      }
-    }).catch(e => {
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
       _mysql.releaseConnection();
       next(e);
-    });
+    }
+  },
+
+  addPharmacyInitialStock: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = { ...req.body };
+      let document_number = "";
+
+      _mysql
+        .generateRunningNumber({
+          modules: ["STK_DOC"]
+        })
+        .then(generatedNumbers => {
+          document_number = generatedNumbers[0];
+
+          let year = moment().format("YYYY");
+
+          let today = moment().format("YYYY-MM-DD");
+
+          let month = moment().format("MM");
+
+          let period = month;
+
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
+
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO `hims_f_pharmacy_stock_header` (document_number,docdate,`year`,period,description,posted,created_date,created_by,updated_date,updated_by) \
+                VALUE(?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                document_number,
+                today,
+                year,
+                period,
+                input.description,
+                input.posted,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id
+              ],
+              printQuery: true
+            })
+            .then(headerResult => {
+              let IncludeValues = [
+                "item_id",
+                "location_type",
+                "location_id",
+                "item_category_id",
+                "item_group_id",
+                "uom_id",
+                "barcode",
+                "batchno",
+                "sales_uom",
+                "expiry_date",
+                "grn_number",
+                "quantity",
+                "conversion_fact",
+                "unit_cost",
+                "extended_cost",
+                "comment",
+                "created_by",
+                "updated_by"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT INTO hims_f_pharmacy_stock_detail(??) VALUES ?",
+                  values: input.pharmacy_stock_detail,
+                  includeValues: IncludeValues,
+                  extraValues: {
+                    pharmacy_stock_header_id: headerResult.insertId,
+                    created_by: req.userIdentity.algaeh_d_app_user_id,
+                    created_date: new Date(),
+                    updated_by: req.userIdentity.algaeh_d_app_user_id,
+                    updated_date: new Date()
+                  },
+                  bulkInsertOrUpdate: true,
+                  printQuery: true
+                })
+                .then(leave_detail => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      document_number: document_number,
+                      hims_f_pharmacy_stock_header_id: headerResult.insertId,
+                      year: year,
+                      period: period
+                    };
+                    next();
+                  });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  updatePharmacyInitialStock: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      req.mySQl = _mysql;
+      let inputParam = { ...req.body };
+
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "UPDATE `hims_f_pharmacy_stock_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+            WHERE `record_status`='A' and `hims_f_pharmacy_stock_header_id`=?",
+          values: [
+            inputParam.posted,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputParam.hims_f_pharmacy_stock_header_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          // _mysql.releaseConnection();
+          // req.records = headerResult;
+          next();
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
   }
 };

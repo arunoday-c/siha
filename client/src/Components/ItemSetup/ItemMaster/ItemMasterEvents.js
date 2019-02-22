@@ -80,6 +80,7 @@ const InsertUpdateItems = $this => {
 
           algaehApiCall({
             uri: "/pharmacy/addItemMaster",
+            // module: "pharmacy",
             data: $this.state,
             onSuccess: response => {
               if (response.data.success === true) {
@@ -95,6 +96,7 @@ const InsertUpdateItems = $this => {
           $this.state.record_status = "A";
           algaehApiCall({
             uri: "/pharmacy/updateItemMasterAndUom",
+            // module: "pharmacy",
             data: $this.state,
             method: "PUT",
             onSuccess: response => {

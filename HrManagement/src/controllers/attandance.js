@@ -10,7 +10,10 @@ import {
   getEmployeeAttendReg,
   processAttendance,
   getEmployeeToManualTimeSheet,
-  addToDailyTimeSheet
+  addToDailyTimeSheet,
+  getDailyTimeSheet,
+  processBiometricAttendance,
+  loadAttendance
 } from "../models/attendance";
 export default () => {
   const api = Router();
@@ -145,6 +148,50 @@ export default () => {
       success: true,
       records: req.records
     });
+  });
+
+  api.get("/getDailyTimeSheet", getDailyTimeSheet, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  });
+  api.get(
+    "/processBiometricAttendance",
+    processBiometricAttendance,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
+    }
+  );
+  api.get("/loadAttendance", loadAttendance, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
   });
 
   return api;

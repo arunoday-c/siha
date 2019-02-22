@@ -2,10 +2,10 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addrequisitionEntry,
-  getrequisitionEntry,
-  updaterequisitionEntry,
-  getAuthrequisitionList
+  addrequisitionEntry, //Done
+  getrequisitionEntry, //Done
+  updaterequisitionEntry, //Done
+  getAuthrequisitionList //Done
 } from "../model/requisitionEntry";
 
 export default ({ config, db }) => {

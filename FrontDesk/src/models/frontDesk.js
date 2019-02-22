@@ -89,6 +89,11 @@ module.exports = {
           modules: ["PAT_REGS"]
         })
         .then(generatedNumbers => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
           req.body.patient_code = generatedNumbers[0];
 
           //Visit
@@ -156,6 +161,11 @@ module.exports = {
           modules: ["PAT_VISIT"]
         })
         .then(generatedNumbers => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
           req.body.visit_code = generatedNumbers[0];
 
           //Bill

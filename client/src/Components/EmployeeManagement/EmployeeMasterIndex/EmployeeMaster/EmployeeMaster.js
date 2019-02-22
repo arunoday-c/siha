@@ -155,6 +155,7 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    debugger;
     if (newProps.editEmployee) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
@@ -164,6 +165,7 @@ class EmployeeMaster extends Component {
           personalDetails: { ...this.state.personalDetails, ...IOputs }
         },
         () => {
+          debugger;
           if (this.state.personalDetails.present_country_id === null) return;
           if (
             this.state.personalDetails.present_country_id !==
@@ -196,6 +198,7 @@ class EmployeeMaster extends Component {
                     cities: cities.cities,
                     precountrystates: states,
                     precities: cities.cities,
+                    present_cities: cities.cities,
                     present_state_id: this.state.personalDetails
                       .present_state_id,
                     present_city_id: this.state.personalDetails.present_city_id
@@ -204,6 +207,7 @@ class EmployeeMaster extends Component {
                   this.updateEmployeeTabs({
                     countrystates: states,
                     precountrystates: states,
+                    // present_cities: cities.cities,
                     present_state_id: this.state.personalDetails
                       .present_state_id
                   });
@@ -378,7 +382,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Offical Details"
+                              forceLabel: "Official Details"
                             }}
                           />
                         }

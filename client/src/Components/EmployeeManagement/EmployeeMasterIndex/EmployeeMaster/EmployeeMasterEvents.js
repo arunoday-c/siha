@@ -15,6 +15,16 @@ const Validations = $this => {
     });
 
     return isError;
+  }
+
+  if ($this.state.personalDetails.religion_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Religion. Cannot be blank."
+    });
+
+    return isError;
   } else if (
     ($this.state.personalDetails.employee_status === "R" ||
       $this.state.personalDetails.employee_status === "T") &&
@@ -91,6 +101,14 @@ const Validations = $this => {
     });
 
     return isError;
+  } else if ($this.state.personalDetails.sub_department_id === null) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Department. Cannot be blank."
+    });
+
+    return isError;
   } else if ($this.state.personalDetails.deptDetails !== 0) {
     const activeDept = Enumerable.from($this.state.personalDetails.deptDetails)
       .where(w => w.dep_status === "A")
@@ -118,6 +136,14 @@ const Validations = $this => {
       swalMessage({
         type: "warning",
         title: "Hospital. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.overtime_group_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Overtime Group. Cannot be blank."
       });
 
       return isError;
@@ -252,6 +278,12 @@ const InsertUpdateEmployee = $this => {
                   title: "Saved Successfully..."
                 });
               }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.response.data.message || error.message,
+                type: "error"
+              });
             }
           });
         } else {
@@ -297,6 +329,12 @@ const InsertUpdateEmployee = $this => {
                   title: "Updated Successfully..."
                 });
               }
+            },
+            onFailure: error => {
+              swalMessage({
+                title: error.message || error.response.data.message,
+                type: "error"
+              });
             }
           });
         }

@@ -1,3 +1,5 @@
+import Enumerable from "linq";
+
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -13,7 +15,7 @@ const texthandle = ($this, e) => {
 const countryStatehandle = ($this, e) => {
   let name = e.name;
   let value = e.value;
-  
+
   if (e.name !== undefined) {
     if (e.name === "present_country_id") {
       name = e.name;
@@ -33,11 +35,11 @@ const countryStatehandle = ($this, e) => {
       value = e.value;
       $this.setState({
         present_city_id: null,
-        precities: e.selected.cities
+        present_cities: e.selected.cities
       });
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         present_city_id: null,
-        precities: e.selected.cities
+        present_cities: e.selected.cities
       });
     }
 
@@ -204,6 +206,52 @@ const sameAsPresent = ($this, e) => {
     permanent_state_id = "";
     permanent_city_id = "";
   }
+
+  debugger;
+  // if (this.state.personalDetails.present_country_id === null) return;
+  // if (
+  //   this.state.personalDetails.present_country_id !==
+  //   this.state.present_country_id
+  // ) {
+  //   let country = Enumerable.from(this.props.countries)
+  //     .where(
+  //       w =>
+  //         w.hims_d_country_id === this.state.personalDetails.present_country_id
+  //     )
+  //     .firstOrDefault();
+
+  //   let states = country !== undefined ? country.states : [];
+  //   if (this.props.countries !== undefined && states.length !== 0) {
+  //     if (
+  //       this.state.present_state_id !==
+  //       this.state.personalDetails.present_state_id
+  //     ) {
+  //       let cities = Enumerable.from(states)
+  //         .where(
+  //           w =>
+  //             w.hims_d_state_id === this.state.personalDetails.present_state_id
+  //         )
+  //         .firstOrDefault();
+  //       if (cities !== undefined) {
+  //         this.updateEmployeeTabs({
+  //           countrystates: states,
+  //           cities: cities.cities,
+  //           precountrystates: states,
+  //           precities: cities.cities,
+  //           present_state_id: this.state.personalDetails.present_state_id,
+  //           present_city_id: this.state.personalDetails.present_city_id
+  //         });
+  //       } else {
+  //         this.updateEmployeeTabs({
+  //           countrystates: states,
+  //           precountrystates: states,
+  //           present_state_id: this.state.personalDetails.present_state_id
+  //         });
+  //       }
+  //     }
+  //   }
+  // }
+
   $this.setState({
     [name]: _value,
     permanent_address: permanent_address,
@@ -224,10 +272,12 @@ const isDoctorChange = ($this, e) => {
   let name = e.target.name;
   let _value = e.target.checked ? "Y" : "N";
   $this.setState({
-    [name]: _value
+    [name]: _value,
+    license_number: null
   });
   $this.props.EmpMasterIOputs.updateEmployeeTabs({
-    [name]: _value
+    [name]: _value,
+    license_number: null
   });
 };
 

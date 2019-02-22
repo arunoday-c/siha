@@ -1,14 +1,152 @@
 import algaehMysql from "algaeh-mysql";
-//import _ from "lodash";
-//import extend from "extend";
 import moment from "moment";
 import { LINQ } from "node-linq";
-//import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from "constants";
-//import { getMaxAuth } from "../../../src/utils";
-// import Sync from "sync";
 
+//created by irfan: to getEmployeeWeekOffsHolidays
+function getEmployeeWeekOffsHolidays(
+  from_date,
+  to_date,
+  employee,
+  allHolidays
+) {
+  const utilities = new algaehUtilities();
+
+  try {
+    //ST ----------- CALCULATING WEEK OFF AND HOLIDAYS
+    let emp_holidays = 0;
+
+    if (
+      employee["date_of_joining"] > from_date &&
+      employee["exit_date"] == null
+    ) {
+      emp_holidays = new LINQ(allHolidays)
+        .Where(
+          w =>
+            ((w.holiday == "Y" && w.holiday_type == "RE") ||
+              (w.holiday == "Y" &&
+                w.holiday_type == "RS" &&
+                w.religion_id == employee["religion_id"]) ||
+              w.weekoff === "Y") &&
+            w.holiday_date > employee["date_of_joining"]
+        )
+        .Select(s => {
+          return {
+            hims_d_holiday_id: s.hims_d_holiday_id,
+            holiday_date: s.holiday_date,
+            holiday_description: s.holiday_description,
+            holiday: s.holiday,
+            weekoff: s.weekoff,
+            holiday_type: s.holiday_type,
+            religion_id: s.religion_id
+          };
+        })
+        .ToArray();
+    } else if (
+      employee["exit_date"] < to_date &&
+      employee["date_of_joining"] < from_date
+    ) {
+      //---------------
+
+      emp_holidays = new LINQ(allHolidays)
+        .Where(
+          w =>
+            ((w.holiday == "Y" && w.holiday_type == "RE") ||
+              (w.holiday == "Y" &&
+                w.holiday_type == "RS" &&
+                w.religion_id == employee["religion_id"]) ||
+              w.weekoff === "Y") &&
+            w.holiday_date < employee["exit_date"]
+        )
+        .Select(s => {
+          return {
+            hims_d_holiday_id: s.hims_d_holiday_id,
+            holiday_date: s.holiday_date,
+            holiday_description: s.holiday_description,
+            holiday: s.holiday,
+            weekoff: s.weekoff,
+            holiday_type: s.holiday_type,
+            religion_id: s.religion_id
+          };
+        })
+        .ToArray();
+    } else if (
+      employee["date_of_joining"] > from_date &&
+      employee["exit_date"] < to_date
+    ) {
+      //---------------
+
+      emp_holidays = new LINQ(allHolidays)
+        .Where(
+          w =>
+            ((w.holiday == "Y" && w.holiday_type == "RE") ||
+              (w.holiday == "Y" &&
+                w.holiday_type == "RS" &&
+                w.religion_id == employee["religion_id"]) ||
+              w.weekoff === "Y") &&
+            (w.holiday_date > employee["date_of_joining"] &&
+              w.holiday_date < employee["exit_date"])
+        )
+        .Select(s => {
+          return {
+            hims_d_holiday_id: s.hims_d_holiday_id,
+            holiday_date: s.holiday_date,
+            holiday_description: s.holiday_description,
+            holiday: s.holiday,
+            weekoff: s.weekoff,
+            holiday_type: s.holiday_type,
+            religion_id: s.religion_id
+          };
+        })
+        .ToArray();
+    } else {
+      emp_holidays = new LINQ(allHolidays)
+        .Where(
+          w =>
+            (w.holiday == "Y" && w.holiday_type == "RE") ||
+            ((w.holiday == "Y" &&
+              w.holiday_type == "RS" &&
+              w.religion_id == employee["religion_id"]) ||
+              w.weekoff === "Y")
+        )
+        .Select(s => {
+          return {
+            hims_d_holiday_id: s.hims_d_holiday_id,
+            holiday_date: s.holiday_date,
+            holiday_description: s.holiday_description,
+            holiday: s.holiday,
+            weekoff: s.weekoff,
+            holiday_type: s.holiday_type,
+            religion_id: s.religion_id
+          };
+        })
+        .ToArray();
+    }
+
+    //EN --------- CALCULATING WEEK OFF AND HOLIDAYS
+
+    return emp_holidays;
+  } catch (e) {
+    utilities.logger().log("error rr 5: ", e);
+  }
+}
+
+//created by irfan: to generate dates for shift roster
+function getDays(start, end) {
+  const utilities = new algaehUtilities();
+  console.log("am here");
+  try {
+    for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
+      const dat = new Date(dt);
+
+      arr.push(moment(dat).format("YYYY-MM-DD"));
+    }
+
+    return arr;
+  } catch (e) {
+    utilities.logger().log("error rr: ", e);
+  }
+}
 module.exports = {
   //created by irfan: to
   getEmployeesForShiftRosterbackup18_feb: (req, res, next) => {
@@ -272,6 +410,7 @@ module.exports = {
 
     if (
       req.query.hospital_id > 0 &&
+      req.query.sub_department_id > 0 &&
       req.query.fromDate != null &&
       req.query.toDate != null
     ) {
@@ -292,7 +431,7 @@ module.exports = {
           FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
           where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
         (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?));           
-        select hims_f_shift_roster_id,employee_id,shift_date,shift_id,shift_end_date,
+        select hims_f_shift_roster_id,employee_id,shift_date,shift_id,shift_end_date, weekoff,holiday,
         shift_start_time,shift_end_time,shift_time,
         hims_d_shift_id,shift_code,shift_description,arabic_name,shift_status,in_time1,out_time1,
         in_time2,out_time2,break,break_start,break_end,shift_abbreviation,shift_end_day
@@ -394,7 +533,9 @@ module.exports = {
                   break_start: s.break_start,
                   break_end: s.break_end,
                   shift_abbreviation: s.shift_abbreviation,
-                  shift_end_day: s.shift_end_day
+                  shift_end_day: s.shift_end_day,
+                  weekoff: s.weekoff,
+                  holiday: s.holiday
                 };
               })
               .ToArray();
@@ -529,7 +670,7 @@ module.exports = {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "Please Select Branch and Department"
       };
       next();
       return;
@@ -601,6 +742,24 @@ module.exports = {
                   shift_end_time: 0,
                   shift_time: 0
                 };
+              } else if (input.shift_id == 100) {
+                week_off_Data = {
+                  weekoff: "Y",
+                  holiday: "N",
+                  shift_id: input.shift_id,
+                  shift_start_time: 0,
+                  shift_end_time: 0,
+                  shift_time: 0
+                };
+              } else if (input.shift_id == 101) {
+                week_off_Data = {
+                  weekoff: "N",
+                  holiday: "Y",
+                  shift_id: input.shift_id,
+                  shift_start_time: 0,
+                  shift_end_time: 0,
+                  shift_time: 0
+                };
               } else {
                 week_off_Data = {
                   ...week_off_Data,
@@ -635,7 +794,10 @@ module.exports = {
         utilities.logger().log("insertArray: ", insertArray);
         _mysql
           .executeQuery({
-            query: "INSERT INTO `hims_f_shift_roster` (??) VALUES ?",
+            query:
+              "INSERT INTO `hims_f_shift_roster` (??) VALUES ? ON DUPLICATE KEY UPDATE shift_id=values(shift_id),shift_end_date=values(shift_end_date),\
+            shift_start_time=values(shift_start_time),shift_end_time=values(shift_end_time),shift_time=values(shift_time),\
+            weekoff=values(weekoff),holiday=values(holiday) ",
             values: insertArray,
             bulkInsertOrUpdate: true
           })
@@ -655,7 +817,81 @@ module.exports = {
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
+
+  //created by irfan:
+  deleteShiftRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (input.hims_f_shift_roster_id > 0) {
+      _mysql
+        .executeQuery({
+          query:
+            "delete from hims_f_shift_roster where hims_f_shift_roster_id = ?",
+          values: [input.hims_f_shift_roster_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+    }
+  },
+  //created by irfan:
+  pasteRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_shift_roster` (employee_id,shift_date,shift_id,shift_end_date,\
+          shift_start_time,shift_end_time,shift_time,weekoff,holiday) values(?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE shift_id=?,shift_end_date=?,\
+          shift_start_time=?,shift_end_time=?,shift_time=?,\
+          weekoff=?,holiday=?",
+        values: [
+          input.employee_id,
+          input.shift_date,
+          input.shift_id,
+          input.shift_end_date,
+          input.shift_start_time,
+          input.shift_end_time,
+          input.shift_time,
+          input.weekoff,
+          input.holiday,
+
+          input.shift_id,
+          input.shift_end_date,
+          input.shift_start_time,
+          input.shift_end_time,
+          input.shift_time,
+          input.weekoff,
+          input.holiday
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  getEmployeeWeekOffsHolidays,
+  getDays
 };
 
 //created by irfan: to generate dates leave
@@ -670,149 +906,6 @@ function getDaysArray(start, end) {
     }
 
     return arr;
-  } catch (e) {
-    utilities.logger().log("error rr: ", e);
-  }
-}
-//created by irfan: to generate dates for shift roster
-function getDays(start, end) {
-  const utilities = new algaehUtilities();
-
-  try {
-    for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
-      const dat = new Date(dt);
-
-      arr.push(moment(dat).format("YYYY-MM-DD"));
-    }
-
-    return arr;
-  } catch (e) {
-    utilities.logger().log("error rr: ", e);
-  }
-}
-//created by irfan: to getEmployeeWeekOffsHolidays
-function getEmployeeWeekOffsHolidays(
-  from_date,
-  to_date,
-  employee,
-  allHolidays
-) {
-  const utilities = new algaehUtilities();
-
-  try {
-    //ST ----------- CALCULATING WEEK OFF AND HOLIDAYS
-    let emp_holidays = 0;
-
-    if (
-      employee["date_of_joining"] > from_date &&
-      employee["exit_date"] == null
-    ) {
-      emp_holidays = new LINQ(allHolidays)
-        .Where(
-          w =>
-            ((w.holiday == "Y" && w.holiday_type == "RE") ||
-              (w.holiday == "Y" &&
-                w.holiday_type == "RS" &&
-                w.religion_id == employee["religion_id"]) ||
-              w.weekoff === "Y") &&
-            w.holiday_date > employee["date_of_joining"]
-        )
-        .Select(s => {
-          return {
-            hims_d_holiday_id: s.hims_d_holiday_id,
-            holiday_date: s.holiday_date,
-            holiday_description: s.holiday_description,
-            holiday: s.holiday,
-            weekoff: s.weekoff,
-            holiday_type: s.holiday_type,
-            religion_id: s.religion_id
-          };
-        })
-        .ToArray();
-    } else if (
-      employee["exit_date"] < to_date &&
-      employee["date_of_joining"] < from_date
-    ) {
-      //---------------
-
-      emp_holidays = new LINQ(allHolidays)
-        .Where(
-          w =>
-            ((w.holiday == "Y" && w.holiday_type == "RE") ||
-              (w.holiday == "Y" &&
-                w.holiday_type == "RS" &&
-                w.religion_id == employee["religion_id"]) ||
-              w.weekoff === "Y") &&
-            w.holiday_date < employee["exit_date"]
-        )
-        .Select(s => {
-          return {
-            hims_d_holiday_id: s.hims_d_holiday_id,
-            holiday_date: s.holiday_date,
-            holiday_description: s.holiday_description,
-            holiday: s.holiday,
-            weekoff: s.weekoff,
-            holiday_type: s.holiday_type,
-            religion_id: s.religion_id
-          };
-        })
-        .ToArray();
-    } else if (
-      employee["date_of_joining"] > from_date &&
-      employee["exit_date"] < to_date
-    ) {
-      //---------------
-
-      emp_holidays = new LINQ(allHolidays)
-        .Where(
-          w =>
-            ((w.holiday == "Y" && w.holiday_type == "RE") ||
-              (w.holiday == "Y" &&
-                w.holiday_type == "RS" &&
-                w.religion_id == employee["religion_id"]) ||
-              w.weekoff === "Y") &&
-            (w.holiday_date > employee["date_of_joining"] &&
-              w.holiday_date < employee["exit_date"])
-        )
-        .Select(s => {
-          return {
-            hims_d_holiday_id: s.hims_d_holiday_id,
-            holiday_date: s.holiday_date,
-            holiday_description: s.holiday_description,
-            holiday: s.holiday,
-            weekoff: s.weekoff,
-            holiday_type: s.holiday_type,
-            religion_id: s.religion_id
-          };
-        })
-        .ToArray();
-    } else {
-      emp_holidays = new LINQ(allHolidays)
-        .Where(
-          w =>
-            (w.holiday == "Y" && w.holiday_type == "RE") ||
-            ((w.holiday == "Y" &&
-              w.holiday_type == "RS" &&
-              w.religion_id == employee["religion_id"]) ||
-              w.weekoff === "Y")
-        )
-        .Select(s => {
-          return {
-            hims_d_holiday_id: s.hims_d_holiday_id,
-            holiday_date: s.holiday_date,
-            holiday_description: s.holiday_description,
-            holiday: s.holiday,
-            weekoff: s.weekoff,
-            holiday_type: s.holiday_type,
-            religion_id: s.religion_id
-          };
-        })
-        .ToArray();
-    }
-
-    //EN --------- CALCULATING WEEK OFF AND HOLIDAYS
-
-    return emp_holidays;
   } catch (e) {
     utilities.logger().log("error rr: ", e);
   }

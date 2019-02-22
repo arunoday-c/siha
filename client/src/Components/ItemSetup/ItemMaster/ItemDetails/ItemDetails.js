@@ -47,7 +47,9 @@ class ItemDetails extends Component {
 
   componentWillReceiveProps(newProps) {
     let InputOutput = newProps.itemPop;
-    this.setState({ ...this.state, ...InputOutput }, () => {});
+    this.setState({ ...this.state, ...InputOutput }, () => {
+      debugger;
+    });
   }
 
   render() {
@@ -56,10 +58,7 @@ class ItemDetails extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-item-master-form">
-              <div
-                className="col-lg-12 card"
-                style={{ paddingBottom: "10px" }}
-              >
+              <div className="col-lg-12 card" style={{ paddingBottom: "10px" }}>
                 <div className="row">
                   {/* Patient code */}
 
@@ -160,6 +159,7 @@ class ItemDetails extends Component {
                         data: this.state.detail_item_uom
                       }
                     }}
+                    //forceUpdate={true}
                   />
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}

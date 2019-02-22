@@ -1,5 +1,5 @@
 {
-  "name": "pharmacy",
+  "name": "algaeh-pharmacy",
   "version": "1.0.0",
   "description": "Algaeh Pharmacy Module",
   "main": "dist",
@@ -13,7 +13,7 @@
     "start": "cross-env PORT=3009 NODE_ENV=production pm2 start  -i 1 pharmacy_server.js"
   },
   "dependencies": {
-    "algaeh-mysql": "^1.1.13",
+    "algaeh-mysql": "^1.2.0",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",
@@ -21,7 +21,8 @@
     "cross-env": "^5.1.4",
     "express": "^4.16.3",
     "winston": "^2.4.2",
-    "winston-daily-rotate-file": "^3.1.4"
+    "winston-daily-rotate-file": "^3.1.4",
+    "node-linq": "0.0.5"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

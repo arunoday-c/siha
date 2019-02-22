@@ -3,8 +3,10 @@ import utlities from "algaeh-utilities";
 import {
   getDivisionProject,
   addDivisionProject,
-  deleteDivisionProject
+  deleteDivisionProject,
+  getEmployeesForProjectRoster
 } from "../models/project_job_costing";
+
 export default () => {
   const api = Router();
   api.get("/getDivisionProject", getDivisionProject, (req, res, next) => {
@@ -29,6 +31,24 @@ export default () => {
         success: true,
         records: req.records
       });
+    }
+  );
+
+  api.get(
+    "/getEmployeesForProjectRoster",
+    getEmployeesForProjectRoster,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
     }
   );
 

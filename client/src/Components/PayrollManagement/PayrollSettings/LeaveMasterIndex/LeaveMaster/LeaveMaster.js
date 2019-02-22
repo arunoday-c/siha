@@ -110,7 +110,10 @@ class LeaveMaster extends Component {
         title: "Please Add at least one Leave Detail",
         type: "warning"
       });
-    } else if (this.state.leaveRules.length === 0) {
+    } else if (
+      this.state.calculation_type !== "NO" &&
+      this.state.leaveRules.length === 0
+    ) {
       swalMessage({
         title: "Please Add at least one Leave Rule",
         type: "warning"
@@ -480,19 +483,21 @@ class LeaveMaster extends Component {
                     />
                   }
                 </li>
-                <li
-                  leavetabs={"LeaveRules"}
-                  className={"nav-item tab-button"}
-                  onClick={this.openTab.bind(this)}
-                >
-                  {
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Leave Rules"
-                      }}
-                    />
-                  }
-                </li>
+                {this.state.calculation_type !== "NO" ? (
+                  <li
+                    leavetabs={"LeaveRules"}
+                    className={"nav-item tab-button"}
+                    onClick={this.openTab.bind(this)}
+                  >
+                    {
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Leave Rules"
+                        }}
+                      />
+                    }
+                  </li>
+                ) : null}
               </ul>
             </div>
 

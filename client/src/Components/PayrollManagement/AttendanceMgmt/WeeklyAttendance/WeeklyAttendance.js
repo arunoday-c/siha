@@ -4,7 +4,8 @@ import Employee from "../../../../Search/Employee.json";
 import "./WeeklyAttendance.css";
 import {
   AlagehAutoComplete,
-  AlgaehLabel
+  AlgaehLabel,
+  AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -16,13 +17,17 @@ export default class WeeklyAttendance extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      attendance_type: "MW",
       year: moment().year(),
       month: moment(new Date()).format("M"),
       week: 0,
       weeks: [],
+      sub_depts: [],
       time_sheet: [],
-      weekly_time_sheet: [],
-      hims_d_employee_id: "ALL",
+      loader: false,
+      hims_d_employee_id: null,
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id,
       from_date: moment(new Date())
         .subtract(1, "days")
         .format("YYYY-MM-DD"),
@@ -30,6 +35,57 @@ export default class WeeklyAttendance extends Component {
         .subtract(1, "days")
         .format("YYYY-MM-DD")
     };
+    this.getSubDepts();
+    this.getOrganization();
+  }
+
+  getOrganization() {
+    algaehApiCall({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            hospitals: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        this.setState({
+          branch: {
+            loader: false
+          }
+        });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getSubDepts() {
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      module: "masterSettings",
+      data: {
+        sub_department_status: "A"
+      },
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            sub_depts: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   componentDidMount() {
@@ -59,28 +115,31 @@ export default class WeeklyAttendance extends Component {
     });
   }
 
-  getDailyTimeSheet() {
-    let _fromDate = moment(this.state.year + "-" + this.state.month)
-      .startOf("month")
-      .format("YYYY-MM-DD");
-    let _toDate = moment(this.state.year + "-" + this.state.month)
-      .endOf("month")
-      .format("YYYY-MM-DD");
-
+  processBiometricAttendance() {
+    let _fromDate =
+      this.state.attendance_type === "DW"
+        ? this.state.attendance_date
+        : this.state.from_date;
+    let _toDate =
+      this.state.attendance_type === "DW"
+        ? this.state.attendance_date
+        : this.state.to_date;
     algaehApiCall({
-      // uri: "/holiday/getTimeSheet",
-      uri: "/holiday/getDailyTimeSheet",
+      uri: "/attendance/processBiometricAttendance",
+      module: "hrManagement",
       method: "GET",
       data: {
         from_date: _fromDate,
         to_date: _toDate,
-        biometric_id: this.state.biometric_id
+        hospital_id: this.state.hospital_id,
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        sub_department_id: this.state.sub_department_id
       },
       onSuccess: res => {
         if (res.data.success) {
-          this.setState({
-            time_sheet: res.data.records,
-            weekly_time_sheet: _.chunk(res.data.records, 7)
+          swalMessage({
+            title: "Verified Successfully",
+            type: "success"
           });
         }
       },
@@ -93,10 +152,89 @@ export default class WeeklyAttendance extends Component {
     });
   }
 
+  getDailyTimeSheet() {
+    if (
+      this.state.attendance_type === "DR" &&
+      (this.state.hims_d_employee_id === null ||
+        this.state.hims_d_employee_id === undefined)
+    ) {
+      swalMessage({
+        title: "Please select an Employee to view ",
+        type: "warning"
+      });
+    } else {
+      this.setState({
+        loader: true
+      });
+
+      let _fromDate =
+        this.state.attendance_type === "DW"
+          ? this.state.attendance_date
+          : this.state.from_date;
+      let _toDate =
+        this.state.attendance_type === "DW"
+          ? this.state.attendance_date
+          : this.state.to_date;
+
+      algaehApiCall({
+        uri: "/attendance/getDailyTimeSheet",
+        method: "GET",
+        module: "hrManagement",
+        data: {
+          from_date: _fromDate,
+          to_date: _toDate,
+          hospital_id: this.state.hospital_id,
+          hims_d_employee_id: this.state.hims_d_employee_id,
+          sub_department_id: this.state.sub_department_id
+        },
+        onSuccess: res => {
+          if (res.data.success) {
+            this.setState({
+              time_sheet: Array.isArray(res.data.result) ? res.data.result : [],
+              loader: false
+            });
+          } else if (!res.data.success) {
+            swalMessage({
+              title: res.data.result.message,
+              type: "warning"
+            });
+            this.setState({
+              loader: false
+            });
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+          this.setState({
+            loader: false
+          });
+        }
+      });
+    }
+  }
+
   postTimeSheet() {
+    let _fromDate =
+      this.state.attendance_type === "DW"
+        ? this.state.attendance_date
+        : this.state.from_date;
+    let _toDate =
+      this.state.attendance_type === "DW"
+        ? this.state.attendance_date
+        : this.state.to_date;
+
     algaehApiCall({
       uri: "/holiday/postTimeSheet",
       method: "GET",
+      data: {
+        from_date: _fromDate,
+        to_date: _toDate,
+        // hospital_id: this.state.hospital_id,
+        hims_d_employee_id: this.state.hims_d_employee_id
+      },
       onSuccess: res => {
         if (res.data.success) {
           swalMessage({
@@ -117,13 +255,13 @@ export default class WeeklyAttendance extends Component {
   clearState() {
     this.setState(
       {
-        hims_d_employee_id: "ALL",
+        hims_d_employee_id: null,
         employee_name: null,
         biometric_id: null,
-        year: moment().year(),
-        month: moment(new Date()).format("M"),
+        attendance_date: null,
         weeks: [],
-        week: 0
+        week: 0,
+        time_sheet: []
       },
       () => {
         this.getWeeks();
@@ -156,6 +294,10 @@ export default class WeeklyAttendance extends Component {
       searchGrid: {
         columns: Employee
       },
+      inputs:
+        this.state.sub_department_id !== null
+          ? "sub_department_id = " + this.state.sub_department_id
+          : "1=1",
       searchName: "employee",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
@@ -217,21 +359,207 @@ export default class WeeklyAttendance extends Component {
     return (
       <div className="hrTimeSheet">
         <div className="row inner-top-search">
-          <div className="col">
-            <label>View by All Employees</label>
-            <div className="customCheckbox">
-              <label className="checkbox inline">
+          <div className="col-2">
+            <label />
+            <div className="customRadio">
+              <label className="radio inline">
                 <input
-                  type="checkbox"
-                  value="ALL"
-                  name="hims_d_employee_id"
-                  checked={this.state.hims_d_employee_id === "ALL"}
-                  onChange={this.changeChecks.bind(this)}
+                  type="radio"
+                  value="MW"
+                  name="attendance_type"
+                  checked={this.state.attendance_type === "MW"}
+                  onChange={this.textHandler.bind(this)}
                 />
-                <span>Yes</span>
+                <span>Month Wise</span>
+              </label>
+
+              <label className="radio inline">
+                <input
+                  type="radio"
+                  value="DR"
+                  name="attendance_type"
+                  checked={this.state.attendance_type === "DR"}
+                  onChange={this.textHandler.bind(this)}
+                />
+                <span>Date Range</span>
               </label>
             </div>
           </div>
+
+          {this.state.attendance_type === "MW" ? (
+            <React.Fragment>
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Select a Year.",
+                  isImp: true
+                }}
+                selector={{
+                  name: "year",
+                  className: "select-fld",
+                  value: this.state.year,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: allYears
+                  },
+                  onChange: this.dropDownHandler.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      year: null
+                    });
+                  }
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Select a Month.",
+                  isImp: true
+                }}
+                selector={{
+                  sort: "off",
+                  name: "month",
+                  className: "select-fld",
+                  value: this.state.month,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.MONTHS
+                  },
+                  onChange: this.dropDownHandler.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      month: null
+                    });
+                  }
+                }}
+              />
+
+              {/* <AlgaehDateHandler
+                div={{ className: "col margin-bottom-15" }}
+                label={{
+                  forceLabel: "Date",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "attendance_date",
+                  others: {
+                    tabIndex: "1"
+                  }
+                }}
+                events={{
+                  onChange: selDate => {
+                    this.setState({
+                      attendance_date: selDate
+                    });
+                  }
+                }}
+                maxDate={moment(new Date()).subtract("days", 1)}
+                value={this.state.attendance_date}
+              /> */}
+            </React.Fragment>
+          ) : (
+            <React.Fragment>
+              <AlgaehDateHandler
+                div={{ className: "col margin-bottom-15" }}
+                label={{
+                  forceLabel: "From Date",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "from_date",
+                  others: {
+                    tabIndex: "1"
+                  }
+                }}
+                events={{
+                  onChange: selDate => {
+                    this.setState({
+                      from_date: selDate
+                    });
+                  }
+                }}
+                maxDate={new Date()}
+                value={this.state.from_date}
+              />
+              <AlgaehDateHandler
+                div={{ className: "col margin-bottom-15" }}
+                label={{
+                  forceLabel: "To Date",
+                  isImp: true
+                }}
+                textBox={{
+                  className: "txt-fld",
+                  name: "to_date",
+                  others: {
+                    tabIndex: "2"
+                  }
+                }}
+                events={{
+                  onChange: selDate => {
+                    this.setState({
+                      to_date: selDate
+                    });
+                  }
+                }}
+                minDate={this.state.from_date}
+                value={this.state.to_date}
+              />
+            </React.Fragment>
+          )}
+
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Filter by Branch",
+              isImp: true
+            }}
+            selector={{
+              name: "hospital_id",
+              className: "select-fld",
+              value: this.state.hospital_id,
+              dataSource: {
+                textField: "hospital_name",
+                valueField: "hims_d_hospital_id",
+                data: this.state.hospitals
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  hospital_id: null
+                });
+              }
+            }}
+            //showLoading={this.state.branch.loader}
+          />
+
+          <AlagehAutoComplete
+            div={{ className: "col" }}
+            label={{
+              forceLabel: "Select a Dept..",
+              isImp: false
+            }}
+            selector={{
+              name: "sub_department_id",
+              className: "select-fld",
+              value: this.state.sub_department_id,
+              dataSource: {
+                textField: "sub_department_name",
+                valueField: "hims_d_sub_department_id",
+                data: this.state.sub_depts
+              },
+              onChange: this.dropDownHandler.bind(this),
+              onClear: () => {
+                this.setState({
+                  sub_department_id: null
+                });
+              }
+            }}
+          />
 
           <div className="col" style={{ marginTop: 10 }}>
             <div
@@ -267,61 +595,17 @@ export default class WeeklyAttendance extends Component {
             </div>
           </div>
 
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Select a Year.",
-              isImp: true
-            }}
-            selector={{
-              name: "year",
-              className: "select-fld",
-              value: this.state.year,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: allYears
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  year: null
-                });
-              }
-            }}
-          />
-
-          <AlagehAutoComplete
-            div={{ className: "col" }}
-            label={{
-              forceLabel: "Select a Month.",
-              isImp: true
-            }}
-            selector={{
-              sort:"off",name: "month",
-              className: "select-fld",
-              value: this.state.month,
-              dataSource: {
-                textField: "name",
-                valueField: "value",
-                data: GlobalVariables.MONTHS
-              },
-              onChange: this.dropDownHandler.bind(this),
-              onClear: () => {
-                this.setState({
-                  month: null
-                });
-              }
-            }}
-          />
-
           <div className="col form-group">
             <button
               onClick={this.getDailyTimeSheet.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"
             >
-              Load
+              {!this.state.loader ? (
+                <span>Load</span>
+              ) : (
+                <i className="fas fa-spinner fa-spin" />
+              )}
             </button>
 
             <button
@@ -354,7 +638,7 @@ export default class WeeklyAttendance extends Component {
                 <i className="fas fa-arrow-circle-right" />
               </div>
            */}
-              <AlagehAutoComplete
+              {/* <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Select Week",
@@ -376,7 +660,7 @@ export default class WeeklyAttendance extends Component {
                     });
                   }
                 }}
-              />
+              /> */}
             </div>
           </div>
           <div className="portlet-body WeeklyTimeProgress">
@@ -394,6 +678,9 @@ export default class WeeklyAttendance extends Component {
                   >
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
@@ -421,8 +708,12 @@ export default class WeeklyAttendance extends Component {
                       {moment(data.attendance_date).format("ddd, Do")}
                     </div>
                     <div className="col-1">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
+
                     <div className="col-9 dayTypeCntr">
                       <div className="tooltipDetails">
                         <span className="checkIn animated bounceIn faster">
@@ -497,6 +788,9 @@ export default class WeeklyAttendance extends Component {
                       {moment(data.attendance_date).format("ddd, Do")}
                     </div>
                     <div className="col-1">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col-9 dayTypeCntr">
@@ -517,6 +811,9 @@ export default class WeeklyAttendance extends Component {
                   >
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
@@ -541,6 +838,9 @@ export default class WeeklyAttendance extends Component {
                       {moment(data.attendance_date).format("ddd, Do")}
                     </div>
                     <div className="col-1">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col-9 dayTypeCntr">
@@ -561,6 +861,9 @@ export default class WeeklyAttendance extends Component {
                   >
                     <div className="col-1">
                       {moment(data.attendance_date).format("ddd, Do")}
+                    </div>
+                    <div className="col-1">
+                      {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
@@ -631,6 +934,9 @@ export default class WeeklyAttendance extends Component {
                       {moment(data.attendance_date).format("ddd, Do")}
                     </div>
                     <div className="col-1">
+                      {data.employee_name ? data.employee_name : "------"}
+                    </div>
+                    <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
                     <div className="col-9 dayTypeCntr">
@@ -647,8 +953,13 @@ export default class WeeklyAttendance extends Component {
               )
             )}
           </div>
-          <div className="row">
-            <div className="col-2" />
+          <div
+            className="row"
+            style={{
+              padding: "15px"
+            }}
+          >
+            <div className="col-3" />
             <div className="col-9">
               <div className="ruler">
                 <div className="cm">
@@ -802,7 +1113,11 @@ export default class WeeklyAttendance extends Component {
                 />
               </button>
 
-              <button type="button" className="btn btn-primary">
+              <button
+                onClick={this.processBiometricAttendance.bind(this)}
+                type="button"
+                className="btn btn-primary"
+              >
                 <AlgaehLabel
                   label={{ forceLabel: "Verify", returnText: true }}
                 />

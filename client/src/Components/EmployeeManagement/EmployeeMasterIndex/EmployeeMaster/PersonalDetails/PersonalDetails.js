@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import "./PersonalDetails.css";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
@@ -22,7 +22,7 @@ import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
-class PersonalDetails extends PureComponent {
+class PersonalDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -89,7 +89,7 @@ class PersonalDetails extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState(nextProps.EmpMasterIOputs.state.personalDetails);
+    this.setState(nextProps.EmpMasterIOputs.state.personalDetails, () => {});
   }
 
   render() {
@@ -279,7 +279,7 @@ class PersonalDetails extends PureComponent {
                       }}
                     />
                     <AlagehAutoComplete
-                      div={{ className: "col-4" }}
+                      div={{ className: "col-4 mandatory" }}
                       label={{
                         forceLabel: "Religion",
                         isImp: false
@@ -440,7 +440,7 @@ class PersonalDetails extends PureComponent {
                                   ? "city_name"
                                   : "city_arabic_name",
                               valueField: "hims_d_city_id",
-                              data: this.state.precities
+                              data: this.state.present_cities
                             },
                             onChange: texthandle.bind(this, this),
                             others: {
@@ -546,7 +546,7 @@ class PersonalDetails extends PureComponent {
                               valueField: "hims_d_state_id",
                               data:
                                 this.state.samechecked === "Y"
-                                  ? this.props.present_countrystates
+                                  ? this.state.countrystates
                                   : this.state.precountrystates
                             },
                             onChange: countryStatehandle.bind(this, this),
@@ -576,7 +576,7 @@ class PersonalDetails extends PureComponent {
                               valueField: "hims_d_city_id",
                               data:
                                 this.state.samechecked === "Y"
-                                  ? this.props.present_cities
+                                  ? this.state.present_cities
                                   : this.state.precities
                             },
                             onChange: texthandle.bind(this, this),
@@ -611,6 +611,9 @@ class PersonalDetails extends PureComponent {
                             destinationName: this.state.employee_code,
                             fileType: "Employees"
                           }}
+                          showActions={
+                            this.state.employee_status === "I" ? false : true
+                          }
                         />
                       </div>
                     </div>

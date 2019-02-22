@@ -304,9 +304,10 @@ const SavePosEnrty = $this => {
 
       algaehApiCall({
         uri: "/posEntry/addPosEntry",
+        // module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
-          if (response.data.success === true) {
+          if (response.data.success) {
             $this.setState({
               pos_number: response.data.records.pos_number,
               hims_f_pharmacy_pos_header_id:
@@ -323,7 +324,14 @@ const SavePosEnrty = $this => {
               type: "success",
               title: "Saved successfully . ."
             });
+          } else {
           }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
       });
     });
@@ -437,6 +445,7 @@ const getMedicationList = $this => {
 
   $this.props.getMedicationList({
     uri: "/pharmacyGlobal/getVisitPrescriptionDetails",
+    moduel: "pharmacy",
     method: "GET",
     data: inputobj,
     redux: {
@@ -479,6 +488,7 @@ const AddItems = ($this, ItemInput) => {
 
     algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
+      // module: "pharmacy",
       method: "POST",
       data: inputArray,
       onSuccess: response => {
