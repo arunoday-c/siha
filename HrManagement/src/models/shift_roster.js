@@ -741,6 +741,24 @@ module.exports = {
                   shift_end_time: 0,
                   shift_time: 0
                 };
+              } else if (input.shift_id == 100) {
+                week_off_Data = {
+                  weekoff: "Y",
+                  holiday: "N",
+                  shift_id: input.shift_id,
+                  shift_start_time: 0,
+                  shift_end_time: 0,
+                  shift_time: 0
+                };
+              } else if (input.shift_id == 101) {
+                week_off_Data = {
+                  weekoff: "N",
+                  holiday: "Y",
+                  shift_id: input.shift_id,
+                  shift_start_time: 0,
+                  shift_end_time: 0,
+                  shift_time: 0
+                };
               } else {
                 week_off_Data = {
                   ...week_off_Data,
