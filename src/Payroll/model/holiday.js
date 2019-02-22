@@ -878,7 +878,6 @@ let postTimeSheet = (req, res, next) => {
                 year: year,
                 month: month_number,
                 attendance_date: result[i]["attendance_date"],
-
                 total_days: 1,
                 present_days: result[i]["status"] == "PR" ? 1 : 0,
                 absent_days: result[i]["status"] == "AB" ? 1 : 0,
