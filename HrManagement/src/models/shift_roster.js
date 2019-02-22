@@ -410,6 +410,7 @@ module.exports = {
 
     if (
       req.query.hospital_id > 0 &&
+      req.query.sub_department_id > 0 &&
       req.query.fromDate != null &&
       req.query.toDate != null
     ) {
@@ -669,7 +670,7 @@ module.exports = {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "Select Branch and Department"
       };
       next();
       return;
