@@ -17,15 +17,6 @@ const Validations = $this => {
     return isError;
   }
 
-  if ($this.state.personalDetails.overtime_group_id === null) {
-    isError = true;
-    swalMessage({
-      type: "warning",
-      title: "Overtime Group. Cannot be blank."
-    });
-
-    return isError;
-  }
   if ($this.state.personalDetails.religion_id === null) {
     isError = true;
     swalMessage({
@@ -145,6 +136,14 @@ const Validations = $this => {
       swalMessage({
         type: "warning",
         title: "Hospital. Cannot be blank."
+      });
+
+      return isError;
+    } else if ($this.state.personalDetails.overtime_group_id === null) {
+      isError = true;
+      swalMessage({
+        type: "warning",
+        title: "Overtime Group. Cannot be blank."
       });
 
       return isError;
