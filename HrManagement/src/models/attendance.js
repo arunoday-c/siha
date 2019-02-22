@@ -1150,6 +1150,8 @@ module.exports = {
       year,
       month_number,
       year,
+      year,
+      month_number,
       endOfMonth,
       startOfMonth,
       endOfMonth
@@ -1170,12 +1172,11 @@ module.exports = {
         " and AM.sub_department_id=" + selectWhere.sub_department_id;
     }
     if (selectWhere.hims_d_employee_id != null) {
-      employee_ = " and employee_id=" + selectWhere.hims_d_employee_id;
+     
       selectData += " and AM.employee_id=" + selectWhere.hims_d_employee_id;
     }
 
-    let deleteString = ` delete from hims_f_attendance_monthly  where employee_id>0 and year=${year} and
-                              month=${month_number}  ${hospital} ${department} ${employee_};`;
+    let deleteString = "";
 
     //EN---------delete old records
 
@@ -1236,18 +1237,30 @@ module.exports = {
     let attendanceArray = [];
     if (selectWhere.hospital_id > 0) {
       new Promise((resolve, reject) => {
+
+
+        // select hims_d_employee_id, employee_code,full_name  as employee_name,    
+        // employee_status,date_of_joining ,date_of_resignation ,religion_id,sub_department_id,hospital_id,     
+        // exit_date ,hims_f_employee_yearly_leave_id from hims_d_employee E left join hims_f_employee_annual_leave A on
+        // E.hims_d_employee_id=A.employee_id
+        //   and  A.year='2019' and A.month='3' and A.cancelled='N' left join hims_f_employee_yearly_leave YL on
+        //   E.hims_d_employee_id=YL.employee_id and  YL.year='2019'              
+        //   where employee_status <>'I' and (( date(date_of_joining) <= date('2019-03-31') and date(exit_date) >= date('2019-03-01'))
+        //   or(date(date_of_joining) <= date('2019-03-31') and exit_date is null)) and 
+        //   E.record_status='A' and E.hospital_id='1' and E.sub_department_id='38'  and hims_f_employee_annual_leave_id is null ; 
         try {
           _mysql
             .executeQuery({
               query:
                 "select hims_d_employee_id, employee_code,full_name  as employee_name,\
-              employee_status,date_of_joining ,date_of_resignation ,religion_id,sub_department_id,hospital_id,\
+              employee_status,date_of_joining ,date_of_resignation ,religion_id,E.sub_department_id,hospital_id,\
               exit_date ,hims_f_employee_yearly_leave_id from hims_d_employee E left join hims_f_employee_annual_leave A on E.hims_d_employee_id=A.employee_id \
               and  A.year=? and A.month=? and A.cancelled='N' left join hims_f_employee_yearly_leave YL on E.hims_d_employee_id=YL.employee_id and  YL.year=?\
-                where employee_status <>'I' and (( date(date_of_joining) <= date(?) and date(exit_date) >= date(?)) or \
+              left join hims_f_salary S on E.hims_d_employee_id=S.employee_id and S.year= ? and S.month=?\
+              where employee_status <>'I' and (( date(date_of_joining) <= date(?) and date(exit_date) >= date(?)) or \
               (date(date_of_joining) <= date(?) and exit_date is null)) and  E.record_status='A'" +
                 _stringData +
-                " and hims_f_employee_annual_leave_id is null ;\
+                " and hims_f_employee_annual_leave_id is null and (S.salary_processed is null or  S.salary_processed='N');\
               select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
                religion_id from hims_d_holiday where record_status='A' and date(holiday_date) between date(?) and date(?) and hospital_id=?;\
                select hims_f_absent_id, employee_id, absent_date, from_session, to_session,cancel ,absent_duration from hims_f_absent where\
@@ -1264,7 +1277,7 @@ module.exports = {
                 adjusted_year,adjusted_month,updaid_leave_duration,status from hims_f_pending_leave PL \
                 inner join hims_f_leave_application LA on  PL.leave_application_id=LA.hims_f_leave_application_id\
                   where LA.status='APR' and  year=? and month=?",
-              values: inputValues
+              values: inputValues        
             })
             .then(result => {
               allEmployees = result[0];
@@ -1273,6 +1286,7 @@ module.exports = {
               allMonthlyLeaves = result[3];
               allPendingLeaves = result[4];
 
+              // utilities.logger().log("result: ", result);
               // utilities.logger().log("allEmployees my: ", allEmployees);
               //  utilities.logger().log("allHolidays: ", allHolidays);
               //  utilities.logger().log("allAbsents: ", allAbsents);
@@ -1280,6 +1294,27 @@ module.exports = {
               //  utilities.logger().log("allPendingLeaves: ", allPendingLeaves);
 
               if (allEmployees.length > 0) {
+
+                employee_= new LINQ(allEmployees)              
+                .Select(s => s.hims_d_employee_id).ToArray();
+
+                utilities
+                      .logger()
+                      .log(
+                        "employee_",
+                        employee_
+                      );
+
+                 deleteString = ` delete from hims_f_attendance_monthly  where employee_id>0 and year=${year} and
+                month=${month_number}  ${hospital} ${department}  and employee_id in (${employee_});`;
+
+                utilities
+                .logger()
+                .log(
+                  "deleteString",
+                  deleteString
+                );
+
                 //ST-----checking if yearly leaves not proccessed for any employee
                 let noYearlyLeave = new LINQ(allEmployees)
                   .Where(w => w.hims_f_employee_yearly_leave_id == null)
@@ -1643,8 +1678,7 @@ module.exports = {
       }).then(attendanceResult => {
         _mysql
           .executeQueryWithTransaction({
-            query: deleteString,
-            printQuery: true
+            query: deleteString      
           })
           .then(del => {
             if (attendanceArray.length > 0) {
@@ -1727,6 +1761,12 @@ module.exports = {
             }
           })
           .catch(e => {
+            utilities
+                      .logger()
+                      .log(
+                        "e",
+                       e
+                      );
             _mysql.rollBackTransaction(() => {
               next(e);
             });
