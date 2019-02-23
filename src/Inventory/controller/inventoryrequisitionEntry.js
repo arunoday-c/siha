@@ -2,10 +2,10 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addinventoryrequisitionEntry,
-  getinventoryrequisitionEntry,
-  updateinventoryrequisitionEntry,
-  getinventoryAuthrequisitionList
+  addinventoryrequisitionEntry, //Done
+  getinventoryrequisitionEntry, //Done
+  updateinventoryrequisitionEntry, //Done
+  getinventoryAuthrequisitionList //Done
 } from "../model/inventoryrequisitionEntry";
 
 export default ({ config, db }) => {

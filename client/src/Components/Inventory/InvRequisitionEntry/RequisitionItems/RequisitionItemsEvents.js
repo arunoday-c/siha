@@ -39,7 +39,7 @@ const itemchangeText = ($this, context, e) => {
 
       $this.props.getSelectedItemDetais({
         uri: "/inventoryGlobal/getUomLocationStock",
-        module: "inventory",
+        // module: "inventory",
         method: "GET",
         data: {
           location_id: $this.state.to_location_id,
@@ -101,7 +101,7 @@ const itemchangeText = ($this, context, e) => {
 
       $this.props.getSelectedItemDetais({
         uri: "/inventoryGlobal/getUomLocationStock",
-        module: "inventory",
+        // module: "inventory",
         method: "GET",
         data: {
           location_id: $this.state.to_location_id,
@@ -301,7 +301,7 @@ const onchangegridcol = ($this, context, row, e) => {
 const getItemLocationStock = ($this, context, value) => {
   $this.props.getItemLocationStock({
     uri: "/inventoryGlobal/getItemLocationStock",
-    module: "inventory",
+    // module: "inventory",
     method: "GET",
     data: {
       location_id: value.location_id,

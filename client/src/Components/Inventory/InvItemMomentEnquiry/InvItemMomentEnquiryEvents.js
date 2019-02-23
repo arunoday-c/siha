@@ -29,7 +29,7 @@ const ProcessItemMoment = $this => {
       AlgaehLoader({ show: true });
       $this.props.getItemMoment({
         uri: "/inventoryGlobal/getItemMoment",
-        module: "inventory",
+        // module: "inventory",
         method: "GET",
         printInput: true,
         data: {

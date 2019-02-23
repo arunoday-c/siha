@@ -70,7 +70,7 @@ class InvRequisitionEntry extends Component {
     ) {
       this.props.getUserLocationPermission({
         uri: "/inventoryGlobal/getUserLocationPermission",
-        module: "inventory",
+        // module: "inventory",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
