@@ -2,25 +2,25 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addItemMaster,
-  addItemCategory,
-  addItemGroup,
-  addInventoryUom,
-  addInventoryLocation,
-  addLocationPermission,
-  getItemMaster,
-  getItemCategory,
-  getItemGroup,
-  getInventoryUom,
-  getInventoryLocation,
-  getLocationPermission,
-  updateItemCategory,
-  updateItemGroup,
-  updateInventoryUom,
-  updateInventoryLocation,
-  getItemMasterAndItemUom,
-  updateItemMasterAndUom,
-  updateLocationPermission
+  addItemMaster, //Done
+  addItemCategory, //Done
+  addItemGroup, //Done
+  addInventoryUom, //Done
+  addInventoryLocation, //Done
+  addLocationPermission, //Done
+  getItemMaster, //Done
+  getItemCategory, //Done
+  getItemGroup, //Done
+  getInventoryUom, //Done
+  getInventoryLocation, //Done
+  getLocationPermission, //Done
+  updateItemCategory, //Done
+  updateItemGroup, //Done
+  updateInventoryUom, //Done
+  updateInventoryLocation, //Done
+  getItemMasterAndItemUom, //Done
+  updateItemMasterAndUom, //Done
+  updateLocationPermission //Done
 } from "../model/inventory";
 
 // import { addServices } from "../../model/serviceTypes/addServices";

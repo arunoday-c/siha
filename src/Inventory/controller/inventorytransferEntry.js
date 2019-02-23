@@ -2,10 +2,10 @@ import { Router } from "express";
 import { releaseConnection, generateDbConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addtransferEntry,
-  gettransferEntry,
-  updatetransferEntry,
-  getrequisitionEntryTransfer
+  addtransferEntry, //Done
+  gettransferEntry, //Done
+  updatetransferEntry, //Done
+  getrequisitionEntryTransfer //Done
 } from "../model/inventorytransferEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
 import { updateinvreqEntryOnceTranfer } from "../model/inventoryrequisitionEntry";

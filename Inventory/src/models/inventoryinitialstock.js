@@ -1,14 +1,14 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 module.exports = {
-  getPharmacyInitialStock: (req, res, next) => {
+  getInventoryInitialStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_f_pharmacy_stock_header_id, document_number, docdate, year,\
-          period, description, posted  from  hims_f_pharmacy_stock_header\
+            "SELECT hims_f_inventory_stock_header_id, document_number, docdate, year,\
+          period, description, posted  from  hims_f_inventory_stock_header\
           where record_status='A' AND document_number=?",
           values: [req.query.document_number],
           printQuery: true
@@ -18,15 +18,15 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_pharmacy_stock_detail where pharmacy_stock_header_id=? and record_status='A'",
-                values: [headerResult[0].hims_f_pharmacy_stock_header_id],
+                  "select * from hims_f_inventory_stock_detail where inventory_stock_header_id=? and record_status='A'",
+                values: [headerResult[0].hims_f_inventory_stock_header_id],
                 printQuery: true
               })
-              .then(pharmacy_stock_detail => {
+              .then(inventory_stock_detail => {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ pharmacy_stock_detail }
+                  ...{ inventory_stock_detail }
                 };
                 next();
               })
@@ -50,7 +50,7 @@ module.exports = {
     }
   },
 
-  addPharmacyInitialStock: (req, res, next) => {
+  addInventoryInitialStock: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let input = { ...req.body };
@@ -58,7 +58,7 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["STK_DOC"]
+          modules: ["INV_STK_DOC"]
         })
         .then(generatedNumbers => {
           document_number = generatedNumbers[0];
@@ -74,8 +74,8 @@ module.exports = {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `hims_f_pharmacy_stock_header` (document_number,docdate,`year`,period,description,posted,created_date,created_by,updated_date,updated_by) \
-                VALUE(?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO `hims_f_inventory_stock_header` (document_number,docdate,`year`,period,description,posted,created_date,created_by,updated_date,updated_by) \
+              VALUE(?,?,?,?,?,?,?,?,?,?)",
               values: [
                 document_number,
                 today,
@@ -107,19 +107,17 @@ module.exports = {
                 "conversion_fact",
                 "unit_cost",
                 "extended_cost",
-                "comment",
-                "created_by",
-                "updated_by"
+                "comment"
               ];
 
               _mysql
                 .executeQuery({
                   query:
-                    "INSERT INTO hims_f_pharmacy_stock_detail(??) VALUES ?",
-                  values: input.pharmacy_stock_detail,
+                    "INSERT INTO hims_f_inventory_stock_detail(??) VALUES ?",
+                  values: input.inventory_stock_detail,
                   includeValues: IncludeValues,
                   extraValues: {
-                    pharmacy_stock_header_id: headerResult.insertId,
+                    inventory_stock_header_id: headerResult.insertId,
                     created_by: req.userIdentity.algaeh_d_app_user_id,
                     created_date: new Date(),
                     updated_by: req.userIdentity.algaeh_d_app_user_id,
@@ -128,12 +126,12 @@ module.exports = {
                   bulkInsertOrUpdate: true,
                   printQuery: true
                 })
-                .then(leave_detail => {
+                .then(detailResult => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = {
                       document_number: document_number,
-                      hims_f_pharmacy_stock_header_id: headerResult.insertId,
+                      hims_f_inventory_stock_header_id: headerResult.insertId,
                       year: year,
                       period: period
                     };
@@ -164,7 +162,7 @@ module.exports = {
     }
   },
 
-  updatePharmacyInitialStock: (req, res, next) => {
+  updateInventoryInitialStock: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     try {
@@ -174,13 +172,13 @@ module.exports = {
       _mysql
         .executeQueryWithTransaction({
           query:
-            "UPDATE `hims_f_pharmacy_stock_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
-            WHERE `record_status`='A' and `hims_f_pharmacy_stock_header_id`=?",
+            "UPDATE `hims_f_inventory_stock_header` SET `posted`=?, `updated_by`=?, `updated_date`=? \
+            WHERE `record_status`='A' and `hims_f_inventory_stock_header_id`=?",
           values: [
             inputParam.posted,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_f_pharmacy_stock_header_id
+            inputParam.hims_f_inventory_stock_header_id
           ],
           printQuery: true
         })

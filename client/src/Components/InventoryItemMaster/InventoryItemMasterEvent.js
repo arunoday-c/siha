@@ -1,22 +1,46 @@
-const getItems = $this => {
-  $this.props.getItemMaster({
-    uri: "/inventory/getItemMasterAndItemUom",
-    method: "GET",
-    redux: {
-      type: "ITEMS_GET_DATA",
-      mappingName: "inventoryitemlist"
+// const getItems = $this => {
+//   $this.props.getItemMaster({
+//     uri: "/inventory/getItemMasterAndItemUom",
+//     module: "inventory",
+//     method: "GET",
+//     redux: {
+//       type: "ITEMS_GET_DATA",
+//       mappingName: "inventoryitemlist"
+//     }
+//   });
+// };
+
+// const EditItemMaster = ($this, row) => {
+//   row.addNew = false;
+//   $this.setState({
+//     isOpen: !$this.state.isOpen,
+//     itemPop: row,
+//     addNew: false
+//   });
+// };
+
+// export { getItems, EditItemMaster };
+
+export default function InvItemSetupEvent() {
+  return {
+    getItems: $this => {
+      $this.props.getItemMaster({
+        uri: "/inventory/getItemMasterAndItemUom",
+        // module: "inventory",
+        method: "GET",
+        redux: {
+          type: "ITEMS_GET_DATA",
+          mappingName: "inventoryitemlist"
+        }
+      });
+    },
+    EditItemMaster: ($this, row) => {
+      row.addNew = false;
+      $this.setState({
+        isOpen: !$this.state.isOpen,
+        itemPop: row,
+        addNew: false
+      });
     }
-  });
-};
-
-const EditItemMaster = ($this, row) => {
-  
-  row.addNew = false;
-  $this.setState({
-    isOpen: !$this.state.isOpen,
-    itemPop: row,
-    addNew: false
-  });
-};
-
-export { getItems, EditItemMaster };
+  };
+}

@@ -70,6 +70,7 @@ class InvRequisitionEntry extends Component {
     ) {
       this.props.getUserLocationPermission({
         uri: "/inventoryGlobal/getUserLocationPermission",
+        // module: "inventory",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
@@ -277,63 +278,61 @@ class InvRequisitionEntry extends Component {
             </MyContext.Provider>
 
             <div className="hptl-phase1-footer">
-              
-                <div className="row">
-                  <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={SaveRequisitionEntry.bind(this, this)}
+                    disabled={this.state.saveEnable}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Save", returnText: true }}
+                    />
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={ClearData.bind(this, this)}
+                    disabled={this.state.ClearDisable}
+                  >
+                    <AlgaehLabel
+                      label={{ forceLabel: "Clear", returnText: true }}
+                    />
+                  </button>
+
+                  {this.props.requisition_auth === true ? (
                     <button
                       type="button"
-                      className="btn btn-primary"
-                      onClick={SaveRequisitionEntry.bind(this, this)}
-                      disabled={this.state.saveEnable}
+                      className="btn btn-other"
+                      disabled={
+                        this.state.authorize1 === "Y" &&
+                        this.state.authorie2 === "Y"
+                          ? true
+                          : false
+                      }
+                      onClick={AuthorizeRequisitionEntry.bind(
+                        this,
+                        this,
+                        this.state.authorize1 === "N"
+                          ? "authorize1"
+                          : "authorize2"
+                      )}
                     >
                       <AlgaehLabel
-                        label={{ forceLabel: "Save", returnText: true }}
+                        label={{
+                          forceLabel:
+                            this.state.authorize1 === "N"
+                              ? "Authorize1"
+                              : "Authorize2",
+                          returnText: true
+                        }}
                       />
                     </button>
-
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={ClearData.bind(this, this)}
-                      disabled={this.state.ClearDisable}
-                    >
-                      <AlgaehLabel
-                        label={{ forceLabel: "Clear", returnText: true }}
-                      />
-                    </button>
-
-                    {this.props.requisition_auth === true ? (
-                      <button
-                        type="button"
-                        className="btn btn-other"
-                        disabled={
-                          this.state.authorize1 === "Y" &&
-                          this.state.authorie2 === "Y"
-                            ? true
-                            : false
-                        }
-                        onClick={AuthorizeRequisitionEntry.bind(
-                          this,
-                          this,
-                          this.state.authorize1 === "N"
-                            ? "authorize1"
-                            : "authorize2"
-                        )}
-                      >
-                        <AlgaehLabel
-                          label={{
-                            forceLabel:
-                              this.state.authorize1 === "N"
-                                ? "Authorize1"
-                                : "Authorize2",
-                            returnText: true
-                          }}
-                        />
-                      </button>
-                    ) : null}
-                  </div>
+                  ) : null}
                 </div>
-              
+              </div>
             </div>
           </div>
         </div>
