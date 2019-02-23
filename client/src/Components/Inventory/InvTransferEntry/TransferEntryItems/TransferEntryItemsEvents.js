@@ -43,6 +43,7 @@ const itemchangeText = ($this, e) => {
 
     $this.props.getSelectedItemDetais({
       uri: "/inventoryGlobal/getUomLocationStock",
+      module: "inventory",
       method: "GET",
       data: {
         location_id: $this.state.from_location_id,
@@ -320,6 +321,7 @@ const dateFormater = ($this, value) => {
 const getItemLocationStock = ($this, value) => {
   $this.props.getItemLocationStock({
     uri: "/inventoryGlobal/getItemLocationStock",
+    module: "inventory",
     method: "GET",
     data: {
       location_id: $this.state.from_location_id,
