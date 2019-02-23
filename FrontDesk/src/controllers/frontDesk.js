@@ -15,10 +15,13 @@ import {
   addEpisodeEncounterData
 } from "../models/visit";
 
-const { newReceiptData, addBillData, addCashHandover } = require(algaehPath(
-  "algaeh-billing/src/models/billing"
-));
+// const { newReceiptData, addBillData, addCashHandover } = require(algaehPath(
+//   "algaeh-billing/src/models/billing"
+// ));
 
+const { newReceiptData, addBillData, addCashHandover } = algaehPath(
+  "algaeh-billing/src/models/billing"
+);
 export default () => {
   const api = Router();
   api.get("/get", selectFrontDesk, (req, res, next) => {

@@ -13,8 +13,13 @@ add flags in 3 tables Manually
 2. algaeh_d_app_group;-->Field:group_type(AD,SU)
 3. algaeh_d_app_roles;-->Field:role_type(AD,SU)
 
+#default Linking
+
+1. algaeh key ===> sudo npm link
+2. algaeh utilities ===> sudo npm link ===> npm link algaeh-keys
+
 # Link the modules
 
-1. billing module --> sudo npm link Use in front desk and pharmacy
-2. Laboratory module --> sudo npm link Use in billing
-3. Radiology module --> sudo npm link Use in billing
+1. billing module ===> sudo npm link Use in front desk and pharmacy
+2. Laboratory module ===> sudo npm link Use in billing
+3. Radiology module ===> sudo npm link Use in billing
