@@ -66,6 +66,7 @@ class InvInitialStock extends Component {
     ) {
       this.props.getItems({
         uri: "/inventory/getItemMaster",
+        // module: "inventory",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",

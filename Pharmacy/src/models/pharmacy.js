@@ -839,7 +839,7 @@ module.exports = {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
-            input.hims_d_item_generic_id
+            input.hims_d_pharmacy_uom_id
           ],
           printQuery: true
         })
@@ -1110,10 +1110,10 @@ module.exports = {
                       query: qry,
                       printQuery: true
                     })
-                    .then(insertUomMapResult => {
+                    .then(updateUomMapResult => {
                       _mysql.commitTransaction(() => {
                         _mysql.releaseConnection();
-                        req.records = insertUomMapResult;
+                        req.records = updateUomMapResult;
                         next();
                       });
                     })
