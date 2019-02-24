@@ -104,6 +104,7 @@ module.exports = {
     let allEmployees = [];
     let allHolidays = [];
     let allLeaves = [];
+    let allProjects = [];
 
     let outputArray = [];
     if (req.query.sub_department_id > 0) {
@@ -115,6 +116,7 @@ module.exports = {
 
     if (
       req.query.hospital_id > 0 &&
+      req.query.sub_department_id > 0 &&
       req.query.fromDate != null &&
       req.query.toDate != null
     ) {
@@ -134,12 +136,18 @@ module.exports = {
            from_leave_session,to_leave_session,status\
             FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
             where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
-          (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)); `,
+          (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)); 
+          select hims_f_project_roster_id,employee_id,attendance_date,project_id , project_desc,project_code,start_date,end_date
+        from hims_f_project_roster PR inner join hims_d_project P
+        on PR.project_id = P.hims_d_project_id and P.record_status='A'
+        where date(attendance_date) between date(?) and date(?)`,
           values: [
             req.query.hospital_id,
             fromDate,
             toDate,
             req.query.hospital_id,
+            fromDate,
+            toDate,
             fromDate,
             toDate,
             fromDate,
@@ -154,8 +162,9 @@ module.exports = {
           allEmployees = result[0];
           allHolidays = result[1];
           allLeaves = result[2];
+          allProjects = result[3];
 
-          //utilities.logger().log("allLeaves: ", allLeaves);
+          utilities.logger().log("allProjects: ", allProjects);
 
           for (let i = 0; i < allEmployees.length; i++) {
             let holidays = new LINQ(allHolidays)
@@ -201,11 +210,30 @@ module.exports = {
               })
               .ToArray();
 
-            //------------for each leave
+            let empProject = new LINQ(allProjects)
+              .Where(
+                w => w.employee_id == allEmployees[i]["hims_d_employee_id"]
+              )
+              .Select(s => {
+                return {
+                  hims_f_project_roster_id: s.hims_f_project_roster_id,
+                  employee_id: s.employee_id,
+                  attendance_date: s.attendance_date,
+                  project_id: s.project_id,
+                  project_desc: s.project_desc,
+                  project_code: s.project_code,
+                  start_date: s.start_date,
+                  end_date: s.end_date
+                };
+              })
+              .ToArray();
 
+            // utilities.logger().log("Projects: ", empProject);
+
+            //------------for each leave
             let employeeLeaves = [];
 
-            utilities.logger().log("leaves: ", leaves);
+            // utilities.logger().log("leaves: ", leaves);
 
             if (leaves.length > 0) {
               for (let m = 0; m < leaves.length; m++) {
@@ -315,7 +343,8 @@ module.exports = {
             outputArray.push({
               ...allEmployees[i],
               employeeLeaves,
-              holidays
+              holidays,
+              empProject
             });
           }
 
@@ -330,10 +359,38 @@ module.exports = {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "Please Select Branch and Department"
       };
       next();
       return;
+    }
+  },
+  //created by irfan:
+  deleteProjectRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (input.hims_f_project_roster_id > 0) {
+      _mysql
+        .executeQuery({
+          query:
+            "delete from hims_f_project_roster where hims_f_project_roster_id = ?",
+          values: [input.hims_f_project_roster_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
     }
   }
 };
