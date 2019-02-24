@@ -16,6 +16,8 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 export default class WeeklyAttendance extends Component {
   constructor(props) {
     super(props);
+    const _yearAndMonth = moment(new Date()).format("YYYY-MM") + "01";
+    let _fromDate = moment(_yearAndMonth, "YYYY-MM-DD").format("YYYY-MM-DD");
     this.state = {
       attendance_type: "MW",
       year: moment().year(),
@@ -28,9 +30,9 @@ export default class WeeklyAttendance extends Component {
       hims_d_employee_id: null,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
-      from_date: moment(new Date())
-        .subtract(1, "days")
-        .format("YYYY-MM-DD"),
+      from_date: _fromDate, //moment(new Date())
+      // .subtract(1, "days")
+      // .format("YYYY-MM-DD"),
       to_date: moment(new Date())
         .subtract(1, "days")
         .format("YYYY-MM-DD")

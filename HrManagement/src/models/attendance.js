@@ -1975,6 +1975,7 @@ module.exports = {
                 user: options[0]["biometric_database_login"],
                 password: options[0]["biometric_database_password"],
                 server: options[0]["biometric_server_name"],
+                port: options[0]["biometric_port_no"],
                 database: options[0]["biometric_database_name"]
               };
 
@@ -2023,38 +2024,39 @@ module.exports = {
                 // select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
                 // Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
                 // PDate<='${to_date}'
-
+                const _query = `;WITH CTE AS(
+  SELECT
+      UserID,
+      DateTime,
+      AccessDate = CAST(DateTime AS DATE),
+      AccessTime = CAST(DateTime AS TIME),       
+      InOut,
+      In_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) ASC),
+      Out_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) DESC)
+  FROM [FTDP].[dbo].[Transaction] where cast(DateTime  as date)between 
+  '${from_date}' and '${to_date}' and UserId in (${biometric_ids})
+)
+SELECT
+  UserID,  
+  [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
+  InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), null),
+  OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), null),
+  Duration =  ISNULL(RIGHT('00' +             
+              CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
+                  MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
+                  MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+              )/60), 2) + '.' +
+              RIGHT('00' +CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
+                  MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
+                  MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+              )%60), 2)
+          ,0.0)
+FROM CTE
+GROUP BY UserID, AccessDate
+ORDER BY  AccessDate `;
+                console.log("MSSSQL Query : ", _query);
                 request.query(
-                  `;WITH CTE AS(
-                      SELECT
-                          UserID,
-                          DateTime,
-                          AccessDate = CAST(DateTime AS DATE),
-                          AccessTime = CAST(DateTime AS TIME),       
-                          InOut,
-                          In_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) ASC),
-                          Out_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) DESC)
-                      FROM [FTDP].[dbo].[Transaction] where cast(DateTime  as date)between 
-                      '${from_date}' and '${to_date}' and UserId in (${biometric_ids})
-                    )
-                    SELECT
-                      UserID,  
-                      [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
-                      InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), null),
-                      OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), null),
-                      Duration =  ISNULL(RIGHT('00' +             
-                                  CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
-                                      MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
-                                      MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
-                                  )/60), 2) + '.' +
-                                  RIGHT('00' +CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
-                                      MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
-                                      MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
-                                  )%60), 2)
-                              ,0.0)
-                    FROM CTE
-                    GROUP BY UserID, AccessDate
-                    ORDER BY  AccessDate `,
+                  _query,
 
                   function(err, attResult) {
                     if (err) {
