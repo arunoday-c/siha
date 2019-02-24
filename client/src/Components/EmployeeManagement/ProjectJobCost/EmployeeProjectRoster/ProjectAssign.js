@@ -1,46 +1,55 @@
 import React, { Component } from "react";
-import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import { AlgaehDateHandler } from "../../../Wrapper/algaehWrapper";
-import "./ShiftAssign.css";
+import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
+import "./project_assign.css";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-class ShiftAssign extends Component {
+
+class ProjectAssign extends Component {
   constructor(props) {
     super(props);
     this.state = {
       employeeList: [],
       employees: [],
-      shiftList: [],
-      shifts: [],
-      shiftEmp: []
+      projectList: [],
+      projects: [],
+      projEmp: []
     };
+  }
+
+  projectHandler(data, e) {
+    this.setState(data);
+  }
+
+  addEmployees(row) {
+    let myArray = this.state.projEmp;
+
+    if (myArray.includes(row)) {
+      myArray.pop(row);
+    } else {
+      myArray.push(row);
+    }
+
+    this.setState({
+      projEmp: myArray
+    });
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.open === true) {
-      let myArray = this.state.shiftEmp;
+      let myArray = this.state.projEmp;
       myArray.push(nextProps.sendRow);
       this.setState({
         ...nextProps.data,
-        shiftEmp: myArray
+        projEmp: myArray
       });
     } else {
       this.setState({
-        shiftEmp: [],
+        projEmp: [],
         employeeList: this.state.employees,
-        shiftList: this.state.shifts
+        projectList: this.state.projects
       });
     }
-  }
-
-  shiftHandler(data, e) {
-    this.setState({
-      shift_id: data.hims_d_shift_id,
-      shift_end_day: data.shift_end_day,
-      shift_start_time: data.in_time1,
-      shift_end_time: data.out_time1,
-      shift_time: data.shift_time
-    });
   }
 
   SearchHandler(e) {
@@ -58,50 +67,31 @@ class ShiftAssign extends Component {
         break;
 
       default:
-        let ShiftSearch = e.target.value.toLowerCase(),
-          shifts = this.state.shifts.filter(el => {
-            let searchValue = el.shift_description.toLowerCase();
-            return searchValue.indexOf(ShiftSearch) !== -1;
+        let ProjectSearch = e.target.value.toLowerCase(),
+          projects = this.state.projects.filter(el => {
+            let searchValue = el.project_desc.toLowerCase();
+            return searchValue.indexOf(ProjectSearch) !== -1;
           });
 
         this.setState({
-          shiftList: shifts
+          projectList: projects
         });
         break;
     }
   }
 
-  addEmployees(row) {
-    let myArray = this.state.shiftEmp;
-
-    if (myArray.includes(row)) {
-      myArray.pop(row);
-    } else {
-      myArray.push(row);
-    }
-
-    this.setState(
-      {
-        shiftEmp: myArray
-      },
-      () => {
-        //console.log("Data:", this.state.shiftEmp);
-      }
-    );
-  }
-
   processAssignment() {
-    if (this.state.shift_id === undefined || this.state.shift_id === null) {
+    if (this.state.project_id === undefined || this.state.project_id === null) {
       swalMessage({
-        title: "Please Select a shift to assign",
+        title: "Please Select a project to assign",
         type: "warning"
       });
     } else if (
-      this.state.shiftEmp.length === 0 ||
-      this.state.shiftEmp === undefined
+      this.state.projEmp.length === 0 ||
+      this.state.projEmp === undefined
     ) {
       swalMessage({
-        title: "Please select atleast one employee to asssign shift",
+        title: "Please select atleast one employee to asssign project",
         type: "warning"
       });
     } else if (
@@ -113,24 +103,11 @@ class ShiftAssign extends Component {
         type: "warning"
       });
     } else {
-      let x = moment.duration(
-        moment(this.state.shift_end_time, "HH:mm:ss").diff(
-          moment(this.state.shift_start_time, "HH:mm:ss")
-        )
-      );
-
-      let hours = x._data.hours;
-      let mins = x._data.minutes;
-
       let sendData = {
         from_date: moment(this.state.from_date).format("YYYY-MM-DD"),
         to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
-        shift_id: this.state.shift_id,
-        employees: this.state.shiftEmp,
-        shift_end_day: this.state.shift_end_day,
-        shift_start_time: this.state.shift_start_time,
-        shift_end_time: this.state.shift_end_time,
-        shift_time: hours + "." + mins,
+        project_id: this.state.project_id,
+        employees: this.state.projEmp,
         hospital_id: this.state.hospital_id
       };
 
@@ -166,10 +143,10 @@ class ShiftAssign extends Component {
         ? this.state.employees
         : this.state.employeeList;
 
-    const _shiftList =
-      this.state.shiftList.length === 0
-        ? this.state.shifts
-        : this.state.shiftList;
+    const _projectList =
+      this.state.projectList.length === 0
+        ? this.state.projects
+        : this.state.projectList;
 
     return (
       <AlgaehModalPopUp
@@ -241,14 +218,13 @@ class ShiftAssign extends Component {
                   value={this.state.searchEmployees}
                   onChange={this.SearchHandler.bind(this)}
                 />
-                <ul className="shiftEmployeeList">
+                <ul className="projEmployeeList">
                   {_employeeList.map((data, index) => (
                     <li key={index}>
                       <input
                         id={data.employee_code}
-                        value={JSON.stringify(data)}
                         type="checkbox"
-                        checked={this.state.shiftEmp.includes(data)}
+                        checked={this.state.projEmp.includes(data)}
                         onChange={this.addEmployees.bind(this, data)}
                       />
                       <label
@@ -264,55 +240,34 @@ class ShiftAssign extends Component {
                 </ul>
               </div>
               <div className="col-6">
-                <h6>SHIFTS</h6>
+                <h6>PROJECTS</h6>
                 <input
                   type="text"
                   autoComplete="off"
-                  name="searchShifts"
+                  name="searchprojects"
                   className="rosterSrch"
-                  placeholder="Search Shifts"
-                  value={this.state.searchShifts}
+                  placeholder="Search projects"
+                  value={this.state.searchprojects}
                   onChange={this.SearchHandler.bind(this)}
                 />
-                <ul className="shiftList">
-                  {_shiftList.map((data, index) => (
+                <ul className="projectList">
+                  {_projectList.map((data, index) => (
                     <li key={index}>
                       <input
-                        id={data.shift_code}
+                        id={data.project_code}
                         name="shift_id"
                         value={data}
-                        onChange={this.shiftHandler.bind(this, data)}
+                        onChange={this.projectHandler.bind(this, data)}
                         type="radio"
                       />
                       <label
-                        htmlFor={data.shift_code}
+                        htmlFor={data.project_code}
                         style={{
                           width: "80%"
                         }}
                       >
                         <span>
-                          {data.shift_description +
-                            " (" +
-                            data.shift_abbreviation +
-                            ") "}
-                        </span>
-                        In time:
-                        <span>
-                          {" "}
-                          {moment(data.in_time1, "HH:mm:ss").isValid()
-                            ? moment(data.in_time1, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )
-                            : "----"}
-                        </span>{" "}
-                        Out Time:
-                        <span>
-                          {" "}
-                          {moment(data.out_time1, "HH:mm:ss").isValid()
-                            ? moment(data.out_time1, "HH:mm:ss").format(
-                                "hh:mm a"
-                              )
-                            : "----"}
+                          {data.project_desc + " (" + data.project_code + ") "}
                         </span>
                       </label>
                     </li>
@@ -330,7 +285,7 @@ class ShiftAssign extends Component {
 
               <div className="col-lg-8">
                 <button
-                  onClick={this.processAssignment.bind(this)}
+                  // onClick={this.processAssignment.bind(this)}
                   type="button"
                   className="btn btn-primary"
                 >
@@ -353,4 +308,4 @@ class ShiftAssign extends Component {
   }
 }
 
-export default ShiftAssign;
+export default ProjectAssign;

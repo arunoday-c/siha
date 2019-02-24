@@ -110,7 +110,6 @@
       max-height: 55vh;
       thead {
         th {
-          //			display: table-cell;
           padding: 3px;
           text-align: center;
           border-right: 1px solid rgb(199, 224, 224);
@@ -118,9 +117,7 @@
           color: #000 !important;
           background: #dff6f6 !important;
           width: 55px; // changed from 75px to 55px to make it compact
-          // &:nth-child(1) {
-          //   text-align: center;
-          //   width: 120px;
+
           // }
           &:nth-child(1) {
             text-align: left;
@@ -133,23 +130,17 @@
         }
       }
       tbody {
-        //	display: block;
         overflow: auto;
         min-height: 60vh;
         max-height: 60vh;
         tr {
-          //	display: table-cell;
           td {
-            //	display: block;
             padding: 3px;
             text-align: center;
             border-right: 1px solid #ececec;
             border-top: 1px solid #ececec;
             width: 75px;
-            // &:nth-child(1) {
-            //   text-align: center;
-            //   width: 120px;
-            // }
+
             &:nth-child(1) {
               text-align: left;
               width: 200px;
