@@ -1,24 +1,24 @@
 import {
-  selectSection,
-  insertSection,
-  updateSection,
-  deleteSection,
-  selectContainer,
-  insertContainer,
-  updateContainer,
-  deleteContainer,
-  selectSpecimen,
-  insertSpecimen,
-  updateSpecimen,
-  deleteSpecimen,
-  selectAnalytes,
-  insertAnalytes,
-  updateAnalytes,
-  deleteAnalytes,
-  selectTestCategory,
-  insertTestCategory,
-  updateTestCategory,
-  deleteTestCategory
+  selectSection, //Done
+  insertSection, //Done
+  updateSection, //Done
+  deleteSection, //Done
+  selectContainer, //Done
+  insertContainer, //Done
+  updateContainer, //Done
+  deleteContainer, //Done
+  selectSpecimen, //Done
+  insertSpecimen, //Done
+  updateSpecimen, //Done
+  deleteSpecimen, //Done
+  selectAnalytes, //Done
+  insertAnalytes, //Done
+  updateAnalytes, //Done
+  deleteAnalytes, //Done
+  selectTestCategory, //Done
+  insertTestCategory, //Done
+  updateTestCategory, //Done
+  deleteTestCategory //Done
 } from "../model/labmasters";
 import { Router } from "express";
 import { releaseConnection, bulkMasters } from "../utils";
