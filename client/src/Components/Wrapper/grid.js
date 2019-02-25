@@ -932,7 +932,9 @@ class DataGrid extends Component {
     if (this.state.columns !== undefined && this.state.columns.length > 0) {
       return (
         <React.Fragment>
-          <div className="row">{this.CsvFileHandler()}</div>
+          <div className="row">
+            <div className="col gridToolSec">{this.CsvFileHandler()}</div>
+          </div>
           <div id={this.props.id}>
             <ReactTableFixedColumns
               id={this.props.id}

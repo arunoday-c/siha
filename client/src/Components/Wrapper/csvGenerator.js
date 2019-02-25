@@ -101,7 +101,12 @@ export default class CreateCsv extends Component {
     return (
       <React.Fragment>
         {this.state.showImport ? (
-          <button onClick={this.StartDownloadCsv.bind(this)}> Export </button>
+          <button
+            onClick={this.StartDownloadCsv.bind(this)}
+            className="btn btn-default"
+          >
+            Download Template
+          </button>
         ) : null}
         {this.state.showExport ? this.UploadCsvHandler() : null}
       </React.Fragment>
