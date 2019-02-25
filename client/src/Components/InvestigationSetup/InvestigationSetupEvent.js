@@ -34,6 +34,7 @@ const getInvestigations = $this => {
 
   $this.props.getInvestigationDetails({
     uri: "/investigation/getInvestigTestList",
+    // module: "laboratory",
     method: "GET",
     data: Obj,
     redux: {

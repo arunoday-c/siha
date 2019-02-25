@@ -23,7 +23,7 @@ const updateLabSection = ($this, data) => {
 
   algaehApiCall({
     uri: "/labmasters/updateSection",
-    module: "laboratory",
+    // module: "laboratory",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -34,7 +34,7 @@ const updateLabSection = ($this, data) => {
         });
         $this.props.getLabsection({
           uri: "/labmasters/selectSection",
-          module: "laboratory",
+          // module: "laboratory",
           method: "GET",
           redux: {
             type: "SECTION_GET_DATA",
@@ -61,7 +61,7 @@ const showconfirmDialog = ($this, id) => {
       let data = { hims_d_lab_section_id: id };
       algaehApiCall({
         uri: "/labmasters/deleteSection",
-        module: "laboratory",
+        // module: "laboratory",
         data: data,
         method: "DELETE",
         onSuccess: response => {
@@ -72,7 +72,7 @@ const showconfirmDialog = ($this, id) => {
             });
             $this.props.getLabsection({
               uri: "/labmasters/selectSection",
-              module: "laboratory",
+              // module: "laboratory",
               method: "GET",
               redux: {
                 type: "SECTION_GET_DATA",
@@ -104,7 +104,7 @@ const insertLabSection = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/labmasters/insertSection",
-        module: "laboratory",
+        // module: "laboratory",
         data: $this.state,
         onSuccess: response => {
           resetState($this);
@@ -112,7 +112,7 @@ const insertLabSection = ($this, e) => {
             //Handle Successful Add here
             $this.props.getLabsection({
               uri: "/labmasters/selectSection",
-              module: "laboratory",
+              // module: "laboratory",
               method: "GET",
               redux: {
                 type: "SECTION_GET_DATA",
