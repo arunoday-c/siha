@@ -8,14 +8,14 @@ import {
 } from "../models/ReceiptEntry";
 
 // import { x } from "algaeh-inventory/src/models/commonFunction";
-import algaehPath from "algaeh-utilities/algaeh-path-format";
-const { updateIntoItemLocation } = require(algaehPath(
+import algaehPath from "algaeh-module-bridge";
+const { updateIntoItemLocation } = algaehPath(
   "algaeh-pharmacy/src/models/commonFunction"
-));
+);
 
-const { updateIntoInvItemLocation } = require(algaehPath(
+const { updateIntoInvItemLocation } = algaehPath(
   "algaeh-inventory/src/models/commonFunction"
-));
+);
 import algaehUtilities from "algaeh-utilities/utilities";
 
 export default () => {

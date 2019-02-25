@@ -1,0 +1,62 @@
+.projEmployeeList {
+  list-style: none;
+  border: 1px solid #ccc;
+  width: auto;
+  min-width: 100px;
+  margin: 0;
+  padding: 0;
+  max-height: 45vh;
+  margin-bottom: 20px;
+  overflow-y: auto;
+  overflow-x: none; }
+  .projEmployeeList li {
+    padding: 5px 10px;
+    text-align: left;
+    background: #fff;
+    border-bottom: 1px solid #ccc; }
+    .projEmployeeList li input[type="checkbox"] {
+      margin-right: 10px; }
+    .projEmployeeList li label {
+      padding: 7px;
+      border-left: 1px solid #ccc; }
+    .projEmployeeList li:hover {
+      background-color: #f2f2f2; }
+    .projEmployeeList li:last-child {
+      border-bottom: none; }
+    .projEmployeeList li:nth-child(even) {
+      background-color: #f7f7f7; }
+
+.projectList {
+  list-style: none;
+  border: 1px solid #ccc;
+  width: auto;
+  min-width: 100px;
+  margin: 0;
+  padding: 0;
+  max-height: 45vh;
+  margin-bottom: 20px;
+  overflow-y: auto;
+  overflow-x: hidden; }
+  .projectList li {
+    padding: 5px 10px;
+    text-align: left;
+    background: #fff;
+    border-bottom: 1px solid #ccc; }
+    .projectList li input[type="radio"] {
+      margin-right: 10px; }
+    .projectList li label {
+      padding: 7px;
+      border-left: 1px solid #ccc; }
+    .projectList li:hover {
+      background-color: #f2f2f2; }
+    .projectList li:last-child {
+      border-bottom: none; }
+    .projectList li:nth-child(even) {
+      background-color: #f7f7f7; }
+
+.rosterSrch {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 20px 12px 40px;
+  border: 1px solid #ddd;
+  margin-bottom: 12px; }

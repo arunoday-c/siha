@@ -38,7 +38,7 @@ const DisplayDateFormat = ($this, date) => {
 const getVisitDetails = $this => {
   algaehApiCall({
     uri: "/frontDesk/get",
-    // module: "frontDesk",
+    module: "frontDesk",
     method: "GET",
     data: { patient_code: $this.state.patient_code },
     onSuccess: response => {
@@ -87,7 +87,7 @@ const CloseVisits = $this => {
     .toArray();
   algaehApiCall({
     uri: "/visit/closeVisit",
-    // module: "frontDesk",
+    module: "frontDesk",
     method: "POST",
     data: inputObj,
     onSuccess: response => {

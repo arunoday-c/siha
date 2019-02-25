@@ -85,7 +85,7 @@ class StaffCashCollection extends Component {
 
         algaehApiCall({
           uri: "/frontDesk/updateCashHandoverDetails",
-          // module: "frontDesk",
+          module: "frontDesk",
           method: "PUT",
           data: send_data,
           onSuccess: response => {
@@ -223,7 +223,7 @@ class StaffCashCollection extends Component {
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/frontDesk/getCashHandoverDetails",
-          // module: "frontDesk",
+          module: "frontDesk",
           method: "GET",
           data: {
             shift_id: this.state.hims_d_shift_id,

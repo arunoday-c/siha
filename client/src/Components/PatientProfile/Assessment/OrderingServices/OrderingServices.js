@@ -121,9 +121,9 @@ class OrderingServices extends Component {
     }
 
     this.props.getPatientInsurance({
-      uri: "/insurance/getPatientInsurance",
-      // uri: "/patientRegistration/getPatientInsurance",
-      // module: "frontDesk",
+      // uri: "/insurance/getPatientInsurance",
+      uri: "/patientRegistration/getPatientInsurance",
+      module: "frontDesk",
       method: "GET",
       data: {
         patient_id: this.state.patient_id,

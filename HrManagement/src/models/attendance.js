@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 import { LINQ } from "node-linq";
 import algaehUtilities from "algaeh-utilities/utilities";
-import {getEmployeeWeekOffsHolidays,getDays} from "./shift_roster";
+import { getEmployeeWeekOffsHolidays, getDays } from "./shift_roster";
 module.exports = {
   //created by irfan: to
   processAttendanceOLD: (req, res, next) => {
@@ -1172,7 +1172,6 @@ module.exports = {
         " and AM.sub_department_id=" + selectWhere.sub_department_id;
     }
     if (selectWhere.hims_d_employee_id != null) {
-     
       selectData += " and AM.employee_id=" + selectWhere.hims_d_employee_id;
     }
 
@@ -1237,17 +1236,15 @@ module.exports = {
     let attendanceArray = [];
     if (selectWhere.hospital_id > 0) {
       new Promise((resolve, reject) => {
-
-
-        // select hims_d_employee_id, employee_code,full_name  as employee_name,    
-        // employee_status,date_of_joining ,date_of_resignation ,religion_id,sub_department_id,hospital_id,     
+        // select hims_d_employee_id, employee_code,full_name  as employee_name,
+        // employee_status,date_of_joining ,date_of_resignation ,religion_id,sub_department_id,hospital_id,
         // exit_date ,hims_f_employee_yearly_leave_id from hims_d_employee E left join hims_f_employee_annual_leave A on
         // E.hims_d_employee_id=A.employee_id
         //   and  A.year='2019' and A.month='3' and A.cancelled='N' left join hims_f_employee_yearly_leave YL on
-        //   E.hims_d_employee_id=YL.employee_id and  YL.year='2019'              
+        //   E.hims_d_employee_id=YL.employee_id and  YL.year='2019'
         //   where employee_status <>'I' and (( date(date_of_joining) <= date('2019-03-31') and date(exit_date) >= date('2019-03-01'))
-        //   or(date(date_of_joining) <= date('2019-03-31') and exit_date is null)) and 
-        //   E.record_status='A' and E.hospital_id='1' and E.sub_department_id='38'  and hims_f_employee_annual_leave_id is null ; 
+        //   or(date(date_of_joining) <= date('2019-03-31') and exit_date is null)) and
+        //   E.record_status='A' and E.hospital_id='1' and E.sub_department_id='38'  and hims_f_employee_annual_leave_id is null ;
         try {
           _mysql
             .executeQuery({
@@ -1277,7 +1274,7 @@ module.exports = {
                 adjusted_year,adjusted_month,updaid_leave_duration,status from hims_f_pending_leave PL \
                 inner join hims_f_leave_application LA on  PL.leave_application_id=LA.hims_f_leave_application_id\
                   where LA.status='APR' and  year=? and month=?",
-              values: inputValues        
+              values: inputValues
             })
             .then(result => {
               allEmployees = result[0];
@@ -1294,26 +1291,16 @@ module.exports = {
               //  utilities.logger().log("allPendingLeaves: ", allPendingLeaves);
 
               if (allEmployees.length > 0) {
+                employee_ = new LINQ(allEmployees)
+                  .Select(s => s.hims_d_employee_id)
+                  .ToArray();
 
-                employee_= new LINQ(allEmployees)              
-                .Select(s => s.hims_d_employee_id).ToArray();
+                utilities.logger().log("employee_", employee_);
 
-                utilities
-                      .logger()
-                      .log(
-                        "employee_",
-                        employee_
-                      );
-
-                 deleteString = ` delete from hims_f_attendance_monthly  where employee_id>0 and year=${year} and
+                deleteString = ` delete from hims_f_attendance_monthly  where employee_id>0 and year=${year} and
                 month=${month_number}  ${hospital} ${department}  and employee_id in (${employee_});`;
 
-                utilities
-                .logger()
-                .log(
-                  "deleteString",
-                  deleteString
-                );
+                utilities.logger().log("deleteString", deleteString);
 
                 //ST-----checking if yearly leaves not proccessed for any employee
                 let noYearlyLeave = new LINQ(allEmployees)
@@ -1678,7 +1665,7 @@ module.exports = {
       }).then(attendanceResult => {
         _mysql
           .executeQueryWithTransaction({
-            query: deleteString      
+            query: deleteString
           })
           .then(del => {
             if (attendanceArray.length > 0) {
@@ -1761,12 +1748,7 @@ module.exports = {
             }
           })
           .catch(e => {
-            utilities
-                      .logger()
-                      .log(
-                        "e",
-                       e
-                      );
+            utilities.logger().log("e", e);
             _mysql.rollBackTransaction(() => {
               next(e);
             });
@@ -1903,17 +1885,17 @@ module.exports = {
   },
   getDailyTimeSheet: (req, res, next) => {
     const _mysql = new algaehMysql();
-  
+
     const utilities = new algaehUtilities();
-  
+
     let options = [];
     let allHolidays = [];
     let AllLeaves = [];
     let AllEmployees = [];
     let biometric_ids = [];
-  
+
     utilities.logger().log("yearAndMonth: ", "yearAndMonth");
-  
+
     let input = req.query;
     try {
       if (
@@ -1925,10 +1907,10 @@ module.exports = {
         let actual_hours = "";
         let biometricData = [];
         let singleEmployee = "N";
-  
+
         let from_date = moment(input.from_date).format("YYYY-MM-DD");
         let to_date = moment(input.to_date).format("YYYY-MM-DD");
-  
+
         let stringData = "";
         if (input.sub_department_id > 0) {
           stringData += " and sub_department_id=" + input.sub_department_id;
@@ -1936,11 +1918,11 @@ module.exports = {
         if (input.hims_d_employee_id > 0) {
           stringData += " and hims_d_employee_id=" + input.hims_d_employee_id;
         }
-  
+
         _mysql
           .executeQuery({
             query:
-              "SELECT * FROM hims_test_db.hims_d_hrms_options;\
+              "SELECT * FROM hims_d_hrms_options;\
                 select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
                 religion_id from hims_d_holiday where record_status='A' and date(holiday_date) between date(?) and date(?) and hospital_id=?;\
                 select hims_f_leave_application_id,leave_application_code,employee_id,application_date,sub_department_id,\
@@ -1973,37 +1955,38 @@ module.exports = {
             allHolidays = result[1];
             AllLeaves = result[2];
             AllEmployees = result[3];
-  
+
             utilities.logger().log("options: ", options);
             utilities.logger().log("allHolidays: ", allHolidays);
             utilities.logger().log("AllLeaves: ", AllLeaves);
             utilities.logger().log("AllEmployees: ", AllEmployees);
-  
+
             if (
               AllEmployees.length > 0 &&
               options.length > 0 &&
               options[0]["biometric_database"] == "SQL"
             ) {
               actual_hours = options[0]["standard_working_hours"];
-  
+
               var sql = require("mssql");
-  
+
               // config for your database
               var config = {
                 user: options[0]["biometric_database_login"],
                 password: options[0]["biometric_database_password"],
                 server: options[0]["biometric_server_name"],
+                port: options[0]["biometric_port_no"],
                 database: options[0]["biometric_database_name"]
               };
-  
+
               biometric_ids = new LINQ(AllEmployees)
                 .Select(s => s.biometric_id)
                 .ToArray();
-  
+
               let employee_ids = new LINQ(AllEmployees)
                 .Select(s => s.hims_d_employee_id)
                 .ToArray();
-  
+
               let returnQry = `  select hims_f_daily_time_sheet_id, employee_id,TS.biometric_id, attendance_date, \
                 in_time, out_date, out_time, year, month, status,\
                  posted, hours, minutes, actual_hours, actual_minutes, worked_hours,\
@@ -2011,77 +1994,80 @@ module.exports = {
                  from  hims_f_daily_time_sheet TS \
                 inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                 where attendance_date between ('${from_date}') and ('${to_date}') and employee_id in (${employee_ids})`;
-  
+
               utilities.logger().log("biometric_ids : ", biometric_ids);
               //---------------------------------------------------
               // connect to your database
               sql.close();
               sql.connect(config, function(err) {
                 if (err) {
-                  utilities.logger().log("connection eror: ", "connection eror");
+                  utilities
+                    .logger()
+                    .log("connection eror: ", "connection eror");
                   next(err);
                 }
                 // create Request object
                 var request = new sql.Request();
-  
+
                 // let biometric_id =
                 //   req.query.biometric_id > 0 ? req.query.biometric_id : [106];
                 // let bio_ids = "";
-  
+
                 // if (req.query.biometric_id > 0) {
                 //   bio_ids = ` and TS.biometric_id=${req.query.biometric_id} `;
                 // }
-  
+
                 utilities.logger().log("from_date ", from_date);
                 utilities.logger().log("to_date ", to_date);
                 // query to the biometric database and get the records
-  
+
                 // select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
                 // Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
                 // PDate<='${to_date}'
-  
+                const _query = `;WITH CTE AS(
+  SELECT
+      UserID,
+      DateTime,
+      AccessDate = CAST(DateTime AS DATE),
+      AccessTime = CAST(DateTime AS TIME),       
+      InOut,
+      In_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) ASC),
+      Out_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) DESC)
+  FROM [FTDP].[dbo].[Transaction] where cast(DateTime  as date)between 
+  '${from_date}' and '${to_date}' and UserId in (${biometric_ids})
+)
+SELECT
+  UserID,  
+  [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
+  InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), null),
+  OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), null),
+  Duration =  ISNULL(RIGHT('00' +             
+              CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
+                  MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
+                  MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+              )/60), 2) + '.' +
+              RIGHT('00' +CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
+                  MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
+                  MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+              )%60), 2)
+          ,0.0)
+FROM CTE
+GROUP BY UserID, AccessDate
+ORDER BY  AccessDate `;
+                console.log("MSSSQL Query : ", _query);
                 request.query(
-                  `;WITH CTE AS(
-                      SELECT
-                          UserID,
-                          DateTime,
-                          AccessDate = CAST(DateTime AS DATE),
-                          AccessTime = CAST(DateTime AS TIME),       
-                          InOut,
-                          In_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) ASC),
-                          Out_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) DESC)
-                      FROM [FTDP].[dbo].[Transaction] where cast(DateTime  as date)between 
-                      '${from_date}' and '${to_date}' and UserId in (${biometric_ids})
-                    )
-                    SELECT
-                      UserID,  
-                      [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
-                      InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), null),
-                      OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), null),
-                      Duration =  ISNULL(RIGHT('00' +             
-                                  CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
-                                      MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
-                                      MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
-                                  )/60), 2) + '.' +
-                                  RIGHT('00' +CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
-                                      MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
-                                      MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
-                                  )%60), 2)
-                              ,0.0)
-                    FROM CTE
-                    GROUP BY UserID, AccessDate
-                    ORDER BY  AccessDate `,
-  
+                  _query,
+
                   function(err, attResult) {
                     if (err) {
                       utilities.logger().log("qry error ", err);
                       next(err);
                     }
-  
+
                     utilities.logger().log("attResult", attResult["recordset"]);
                     attendcResult = attResult["recordset"];
                     sql.close();
-  
+
                     if (attendcResult.length > 0 && from_date == to_date) {
                       for (let i = 0; i < AllEmployees.length; i++) {
                         biometricData.push(
@@ -2120,9 +2106,11 @@ module.exports = {
                               in_time: null,
                               out_time: null,
                               worked_hours: 0,
-                              employee_id: AllEmployees[i]["hims_d_employee_id"],
+                              employee_id:
+                                AllEmployees[i]["hims_d_employee_id"],
                               religion_id: AllEmployees[i]["religion_id"],
-                              date_of_joining: AllEmployees[i]["date_of_joining"],
+                              date_of_joining:
+                                AllEmployees[i]["date_of_joining"],
                               exit_date: AllEmployees[i]["exit_date"],
                               actual_hours: actual_hours,
                               hours: 0,
@@ -2131,7 +2119,7 @@ module.exports = {
                         );
                       }
                       utilities.logger().log("biometricData", biometricData);
-  
+
                       insertTimeSheet(
                         returnQry,
                         biometricData,
@@ -2151,18 +2139,18 @@ module.exports = {
                       from_date < to_date
                     ) {
                       singleEmployee = "Y";
-  
+
                       utilities.logger().log("date_range:", "date_range");
-  
+
                       let date_range = getDays(
                         new Date(from_date),
                         new Date(to_date)
                       );
                       utilities.logger().log("date_range:", date_range);
-  
+
                       for (let i = 0; i < date_range.length; i++) {
                         utilities.logger().log("i ", date_range[i]);
-  
+
                         biometricData.push(
                           new LINQ(attendcResult)
                             .Where(
@@ -2197,9 +2185,11 @@ module.exports = {
                               in_time: null,
                               out_time: null,
                               worked_hours: 0,
-                              employee_id: AllEmployees[0]["hims_d_employee_id"],
+                              employee_id:
+                                AllEmployees[0]["hims_d_employee_id"],
                               religion_id: AllEmployees[0]["religion_id"],
-                              date_of_joining: AllEmployees[0]["date_of_joining"],
+                              date_of_joining:
+                                AllEmployees[0]["date_of_joining"],
                               exit_date: AllEmployees[0]["exit_date"],
                               actual_hours: actual_hours,
                               hours: 0,
@@ -2229,7 +2219,7 @@ module.exports = {
                         message: "no punches exist"
                       };
                       _mysql.releaseConnection();
-  
+
                       next();
                     }
                   }
@@ -2243,7 +2233,7 @@ module.exports = {
                 message: "biometric database or Employees not found "
               };
               _mysql.releaseConnection();
-  
+
               next();
             }
           })
@@ -2263,15 +2253,15 @@ module.exports = {
       next(e);
     }
   },
-  
+
   processBiometricAttendance: (req, res, next) => {
     const _mysql = new algaehMysql();
-  
+
     try {
       const utilities = new algaehUtilities();
       const input = req.query;
       utilities.logger().log("input: ", input);
-  
+
       if (
         input.from_date != null &&
         input.to_date != null &&
@@ -2279,7 +2269,7 @@ module.exports = {
       ) {
         let month = moment(input.from_date).format("M");
         let year = moment(input.from_date).format("YYYY");
-  
+
         let stringData = "";
         if (input.sub_department_id > 0) {
           stringData += " and sub_department_id=" + input.sub_department_id;
@@ -2288,7 +2278,7 @@ module.exports = {
           stringData += " and employee_id=" + input.hims_d_employee_id;
         }
         let insertArray = [];
-  
+
         _mysql
           .executeQuery({
             query:
@@ -2305,7 +2295,7 @@ module.exports = {
           })
           .then(result => {
             utilities.logger().log("result: ", result);
-  
+
             for (let i = 0; i < result.length; i++) {
               insertArray.push({
                 ...result[i],
@@ -2314,7 +2304,8 @@ module.exports = {
                   result[i]["paid_leave"] +
                   result[i]["total_weekoff_days"] +
                   result[i]["total_holidays"],
-                total_leave: result[i]["paid_leave"] + result[i]["unpaid_leave"],
+                total_leave:
+                  result[i]["paid_leave"] + result[i]["unpaid_leave"],
                 total_hours: result[i]["total_hours"],
                 total_working_hours: result[i]["total_working_hours"],
                 shortage_hours:
@@ -2333,9 +2324,9 @@ module.exports = {
                     : 0
               });
             }
-  
+
             utilities.logger().log("insertArray: ", insertArray);
-  
+
             const insurtColumns = [
               "employee_id",
               "year",
@@ -2357,7 +2348,7 @@ module.exports = {
               "shortage_hours",
               "ot_work_hours"
             ];
-  
+
             _mysql
               .executeQuery({
                 query:
@@ -2409,27 +2400,24 @@ module.exports = {
     const _mysql = new algaehMysql();
 
     try {
-
-
       const month_number = moment(req.query.yearAndMonth).format("M");
       const year = moment(new Date(req.query.yearAndMonth)).format("YYYY");
 
-      let selectWhere = {        
+      let selectWhere = {
         ...req.query
       };
       let selectData = "";
-    if (selectWhere.hospital_id != null) {  
-      selectData += " and AM.hospital_id=" + selectWhere.hospital_id;
-    }
-    if (selectWhere.sub_department_id != null) {    
-      selectData +=
-        " and AM.sub_department_id=" + selectWhere.sub_department_id;
-    }
-    if (selectWhere.hims_d_employee_id != null) { 
-      selectData += " and AM.employee_id=" + selectWhere.hims_d_employee_id;
-    }
+      if (selectWhere.hospital_id != null) {
+        selectData += " and AM.hospital_id=" + selectWhere.hospital_id;
+      }
+      if (selectWhere.sub_department_id != null) {
+        selectData +=
+          " and AM.sub_department_id=" + selectWhere.sub_department_id;
+      }
+      if (selectWhere.hims_d_employee_id != null) {
+        selectData += " and AM.employee_id=" + selectWhere.hims_d_employee_id;
+      }
 
-       
       _mysql
         .executeQuery({
           query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\
@@ -2439,9 +2427,9 @@ module.exports = {
           shortage_hours,ot_work_hours,ot_weekoff_hours from hims_f_attendance_monthly AM \
           inner join hims_d_employee E on AM.employee_id=E.hims_d_employee_id \
           where AM.record_status='A' and AM.year= ? and AM.month=? ${selectData} `,
-                values: [year, month_number],
-              printQuery:true}
-        )
+          values: [year, month_number],
+          printQuery: true
+        })
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
@@ -2455,8 +2443,6 @@ module.exports = {
       next(e);
     }
   }
-  
-  
 };
 
 //created by irfan: to insert timesheet

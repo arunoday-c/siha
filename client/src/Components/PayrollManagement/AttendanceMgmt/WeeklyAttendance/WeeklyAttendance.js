@@ -16,6 +16,8 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 export default class WeeklyAttendance extends Component {
   constructor(props) {
     super(props);
+    const _yearAndMonth = moment(new Date()).format("YYYY-MM") + "01";
+    let _fromDate = moment(_yearAndMonth, "YYYY-MM-DD").format("YYYY-MM-DD");
     this.state = {
       attendance_type: "MW",
       year: moment().year(),
@@ -28,9 +30,9 @@ export default class WeeklyAttendance extends Component {
       hims_d_employee_id: null,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
-      from_date: moment(new Date())
-        .subtract(1, "days")
-        .format("YYYY-MM-DD"),
+      from_date: _fromDate, //moment(new Date())
+      // .subtract(1, "days")
+      // .format("YYYY-MM-DD"),
       to_date: moment(new Date())
         .subtract(1, "days")
         .format("YYYY-MM-DD")
@@ -167,14 +169,19 @@ export default class WeeklyAttendance extends Component {
         loader: true
       });
 
-      let _fromDate =
-        this.state.attendance_type === "DW"
-          ? this.state.attendance_date
-          : this.state.from_date;
-      let _toDate =
-        this.state.attendance_type === "DW"
-          ? this.state.attendance_date
-          : this.state.to_date;
+      let _fromDate = this.state.from_date;
+      let _toDate = this.state.to_date;
+
+      if (this.state.attendance_type === "MW") {
+        let date = this.state.year + "-" + this.state.month + "-01";
+
+        _fromDate = moment(date)
+          .startOf("month")
+          .format("YYYY-MM-DD");
+        _toDate = moment(date)
+          .endOf("month")
+          .format("YYYY-MM-DD");
+      }
 
       algaehApiCall({
         uri: "/attendance/getDailyTimeSheet",
@@ -189,10 +196,18 @@ export default class WeeklyAttendance extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            this.setState({
-              time_sheet: Array.isArray(res.data.result) ? res.data.result : [],
-              loader: false
-            });
+            if (Array.isArray(res.data.result)) {
+              this.setState({
+                time_sheet: res.data.result,
+                loader: false
+              });
+            } else {
+              swalMessage({
+                title: res.data.result.message,
+                type: "warning"
+              });
+              this.setState({ loader: false });
+            }
           } else if (!res.data.success) {
             swalMessage({
               title: res.data.result.message,
@@ -232,7 +247,6 @@ export default class WeeklyAttendance extends Component {
       data: {
         from_date: _fromDate,
         to_date: _toDate,
-        // hospital_id: this.state.hospital_id,
         hims_d_employee_id: this.state.hims_d_employee_id
       },
       onSuccess: res => {

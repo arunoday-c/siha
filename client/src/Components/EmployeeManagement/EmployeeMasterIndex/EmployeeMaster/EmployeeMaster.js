@@ -283,7 +283,7 @@ class EmployeeMaster extends Component {
                         {
                           <AlgaehLabel
                             label={{
-                              forceLabel: "Offical Details"
+                              forceLabel: "Official Details"
                             }}
                           />
                         }

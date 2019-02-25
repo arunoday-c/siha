@@ -4,7 +4,8 @@ import {
   getDivisionProject,
   addDivisionProject,
   deleteDivisionProject,
-  getEmployeesForProjectRoster
+  getEmployeesForProjectRoster,
+  deleteProjectRoster
 } from "../models/project_job_costing";
 
 export default () => {
@@ -33,6 +34,13 @@ export default () => {
       });
     }
   );
+
+  api.delete("/deleteProjectRoster", deleteProjectRoster, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
 
   api.get(
     "/getEmployeesForProjectRoster",
