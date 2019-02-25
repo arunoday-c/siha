@@ -133,18 +133,17 @@ function getEmployeeWeekOffsHolidays(
 
 //created by irfan: to generate dates for shift roster
 function getDays(start, end) {
-  const utilities = new algaehUtilities();
-  console.log("am here");
+  // const utilities = new algaehUtilities();
   try {
     for (var arr = [], dt = start; dt <= end; dt.setDate(dt.getDate() + 1)) {
       const dat = new Date(dt);
 
       arr.push(moment(dat).format("YYYY-MM-DD"));
     }
-
     return arr;
   } catch (e) {
-    utilities.logger().log("error rr: ", e);
+    throw e;
+    // utilities.logger().log("error rr: ", e);
   }
 }
 module.exports = {
