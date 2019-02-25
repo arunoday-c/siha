@@ -2,11 +2,11 @@ import { Router } from "express";
 import { releaseConnection, generateDbConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addDeliveryNoteEntry,
-  getDeliveryNoteEntry,
-  updateDeliveryNoteEntry,
-  getAuthPurchaseList,
-  updatePOEntry
+  addDeliveryNoteEntry, //Done
+  getDeliveryNoteEntry, //Done
+  updateDeliveryNoteEntry, //Done
+  getAuthPurchaseList, //Never Used
+  updatePOEntry //Done
 } from "../model/DeliveryNoteEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
 export default ({ config, db }) => {

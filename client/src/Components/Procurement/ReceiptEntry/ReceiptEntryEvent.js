@@ -175,6 +175,7 @@ const DeliverySearch = ($this, e) => {
       onRowSelect: row => {
         algaehApiCall({
           uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
+          module: "procurement",
           method: "GET",
           data: { delivery_note_number: row.delivery_note_number },
           onSuccess: response => {
@@ -247,6 +248,7 @@ const SaveReceiptEnrty = $this => {
   if (batchExpiryDate.length === 0) {
     algaehApiCall({
       uri: "/ReceiptEntry/addReceiptEntry",
+      module: "procurement",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success === true) {
@@ -279,6 +281,7 @@ const getCtrlCode = ($this, docNumber) => {
 
   algaehApiCall({
     uri: "/ReceiptEntry/getReceiptEntry",
+    module: "procurement",
     method: "GET",
     data: { grn_number: docNumber },
     onSuccess: response => {
@@ -416,6 +419,7 @@ const getData = $this => {
 };
 
 const PostReceiptEntry = $this => {
+  debugger;
   $this.state.posted = "Y";
   $this.state.transaction_type = "REC";
   $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;
@@ -486,6 +490,7 @@ const PostReceiptEntry = $this => {
 
   algaehApiCall({
     uri: "/ReceiptEntry/updateReceiptEntry",
+    module: "procurement",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {

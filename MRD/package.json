@@ -1,5 +1,5 @@
 {
-  "name": "MRD",
+  "name": "algaeh-mrd",
   "version": "1.0.0",
   "description": "Medical Record List",
   "main": "dist",
@@ -33,6 +33,7 @@
     "compression": "^1.7.3",
     "cors": "^2.8.4",
     "cross-env": "^5.1.4",
+    "cryptr": "^4.0.0",
     "express": "^4.16.3",
     "moment": "^2.22.1",
     "node-linq": "0.0.5",

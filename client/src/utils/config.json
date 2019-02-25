@@ -49,6 +49,10 @@
     "billing": {
       "port": 3014,
       "url": ""
+    },
+    "procurement": {
+      "port": 3017,
+      "url": ""
     }
   },
   "apiAuth": {
