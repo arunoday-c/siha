@@ -47,6 +47,7 @@ class LabSection extends Component {
     ) {
       this.props.getLabsection({
         uri: "/labmasters/selectSection",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "SECTION_GET_DATA",
