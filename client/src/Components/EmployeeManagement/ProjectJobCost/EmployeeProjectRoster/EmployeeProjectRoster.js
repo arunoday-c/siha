@@ -509,7 +509,7 @@ class EmployeeProjectRoster extends Component {
           onClose={this.closeProjectAssign.bind(this)}
         />
         <button
-          id="clsPjtAsgn"
+          id="clsProjAsgn"
           style={{ display: "none" }}
           onClick={this.closeProjectAssign.bind(this)}
         />
