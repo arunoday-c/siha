@@ -467,7 +467,7 @@ module.exports = {
                 ) {
                   const _leave = _.find(employee["employeeLeaves"], l => {
                     return (
-                      moment(l["leave_date"]).format("YYYYMMDD") ==
+                      moment(l["leaveDate"]).format("YYYYMMDD") ==
                       moment(date).format("YYYYMMDD")
                     );
                   });
