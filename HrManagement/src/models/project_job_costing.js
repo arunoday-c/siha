@@ -436,7 +436,6 @@ module.exports = {
               moment(input.to_date)._d
             );
           }
-          console.log("_days", _days);
           let insertData = "";
           const _employees = input.employees.map((employee, index) => {
             let empHoliday = getEmployeeWeekOffsHolidays(
