@@ -365,7 +365,7 @@ module.exports = {
       return;
     }
   },
-  //created by irfan:
+  //created by Adnan:
   deleteProjectRoster: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;

@@ -263,9 +263,9 @@ class Dental extends Component {
 
   addToBill(row) {
     algaehApiCall({
-      uri: "/insurance/getPatientInsurance",
-      // uri: "/patientRegistration/getPatientInsurance",
-      // module: "frontDesk",
+      // uri: "/insurance/getPatientInsurance",
+      uri: "/patientRegistration/getPatientInsurance",
+      module: "frontDesk",
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],

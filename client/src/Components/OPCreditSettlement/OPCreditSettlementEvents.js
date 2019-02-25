@@ -42,6 +42,7 @@ const getPatientDetails = $this => {
 
   algaehApiCall({
     uri: "/opCreditSettlement/getPatientwiseBill",
+    module: "billing",
     method: "GET",
     data: { patient_id: $this.state.patient_id },
     onSuccess: response => {
@@ -200,6 +201,7 @@ const getCtrlCode = ($this, billcode) => {
 
   algaehApiCall({
     uri: "/opCreditSettlement/getCreidtSettlement",
+    module: "billing",
     method: "GET",
     data: { credit_number: billcode },
     onSuccess: response => {
@@ -316,6 +318,7 @@ const SaveOPCreidt = $this => {
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/opCreditSettlement/addCreidtSettlement",
+          module: "billing",
           data: Inputobj,
           method: "POST",
           onSuccess: response => {
@@ -337,7 +340,7 @@ const SaveOPCreidt = $this => {
           onFailure: error => {
             AlgaehLoader({ show: false });
             swalMessage({
-              title: error.response.data.message || error.message,
+              title: error.message || error.response.data.message,
               type: "error"
             });
           }

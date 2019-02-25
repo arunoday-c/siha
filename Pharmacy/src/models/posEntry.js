@@ -1,12 +1,12 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
-import algaehPath from "algaeh-utilities/algaeh-path-format";
+import algaehPath from "algaeh-module-bridge";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
 
-const { getBillDetailsFunction } = require(algaehPath(
+const { getBillDetailsFunction } = algaehPath(
   "algaeh-billing/src/models/billing"
-));
+);
 module.exports = {
   getPosEntry: (req, res, next) => {
     const _mysql = new algaehMysql();

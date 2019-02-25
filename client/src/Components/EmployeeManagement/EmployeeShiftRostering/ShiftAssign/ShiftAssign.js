@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
-import { AlgaehDateHandler } from "../../../Wrapper/algaehWrapper";
+import {
+  AlgaehDateHandler,
+  AlgaehDataGrid,
+  AlgaehLabel
+} from "../../../Wrapper/algaehWrapper";
 import "./ShiftAssign.css";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
@@ -10,7 +14,7 @@ class ShiftAssign extends Component {
     this.state = {
       employeeList: [],
       employees: [],
-      shiftList: [],
+      // shiftList: [],
       shifts: [],
       shiftEmp: []
     };
@@ -27,13 +31,14 @@ class ShiftAssign extends Component {
     } else {
       this.setState({
         shiftEmp: [],
-        employeeList: this.state.employees,
-        shiftList: this.state.shifts
+        employeeList: this.state.employees
+        // shiftList: this.state.shifts
       });
     }
   }
 
   shiftHandler(data, e) {
+    debugger;
     this.setState({
       shift_id: data.hims_d_shift_id,
       shift_end_day: data.shift_end_day,
@@ -166,10 +171,10 @@ class ShiftAssign extends Component {
         ? this.state.employees
         : this.state.employeeList;
 
-    const _shiftList =
-      this.state.shiftList.length === 0
-        ? this.state.shifts
-        : this.state.shiftList;
+    // const _shiftList =
+    //   this.state.shiftList.length === 0
+    //     ? this.state.shifts
+    //     : this.state.shiftList;
 
     return (
       <AlgaehModalPopUp
@@ -230,42 +235,9 @@ class ShiftAssign extends Component {
               />
             </div>
             <div style={{ maxHeight: "400px" }} className="row">
-              <div className="col-6">
-                <h6>EMPLOYEES</h6>
-                <input
-                  type="text"
-                  autoComplete="off"
-                  name="searchEmployees"
-                  className="rosterSrch"
-                  placeholder="Search Employees"
-                  value={this.state.searchEmployees}
-                  onChange={this.SearchHandler.bind(this)}
-                />
-                <ul className="shiftEmployeeList">
-                  {_employeeList.map((data, index) => (
-                    <li key={index}>
-                      <input
-                        id={data.employee_code}
-                        value={JSON.stringify(data)}
-                        type="checkbox"
-                        checked={this.state.shiftEmp.includes(data)}
-                        onChange={this.addEmployees.bind(this, data)}
-                      />
-                      <label
-                        htmlFor={data.employee_code}
-                        style={{
-                          width: "80%"
-                        }}
-                      >
-                        {data.employee_name}
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="col-6">
+              <div className="col-8">
                 <h6>SHIFTS</h6>
-                <input
+                {/* <input
                   type="text"
                   autoComplete="off"
                   name="searchShifts"
@@ -273,8 +245,8 @@ class ShiftAssign extends Component {
                   placeholder="Search Shifts"
                   value={this.state.searchShifts}
                   onChange={this.SearchHandler.bind(this)}
-                />
-                <ul className="shiftList">
+                /> */}
+                {/* <ul className="shiftList">
                   {_shiftList.map((data, index) => (
                     <li key={index}>
                       <input
@@ -317,8 +289,112 @@ class ShiftAssign extends Component {
                       </label>
                     </li>
                   ))}
-                </ul>
+                </ul> */}
+                <AlgaehDataGrid
+                  id="shftMstrList_grid"
+                  columns={[
+                    {
+                      fieldName: "actions",
+                      label: <AlgaehLabel label={{ forceLabel: "Actions" }} />,
+                      displayTemplate: row => {
+                        return (
+                          <input
+                            id={row.shift_code}
+                            value={row}
+                            onChange={this.shiftHandler.bind(this, row)}
+                            type="radio"
+                            checked={
+                              row.hims_d_shift_id === this.state.shift_id
+                            }
+                          />
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "shift_code",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Shift Code" }} />
+                      )
+                    },
+                    {
+                      fieldName: "shift_description",
+                      label: (
+                        <AlgaehLabel
+                          label={{ forceLabel: "Shift Description" }}
+                        />
+                      )
+                    },
+                    {
+                      fieldName: "shift_abbreviation",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Shift Abbr." }} />
+                      )
+                    },
+                    {
+                      fieldName: "in_time1",
+                      label: <AlgaehLabel label={{ forceLabel: "In Time" }} />,
+                      displayTemplate: row => {
+                        return moment(row.in_time1, "HH:mm:ss").isValid()
+                          ? moment(row.in_time1, "HH:mm:ss").format("hh:mm a")
+                          : "----";
+                      }
+                    },
+                    {
+                      fieldName: "out_time1",
+                      label: <AlgaehLabel label={{ forceLabel: "Out Time" }} />,
+                      displayTemplate: row => {
+                        return moment(row.out_time1, "HH:mm:ss").isValid()
+                          ? moment(row.out_time1, "HH:mm:ss").format("hh:mm a")
+                          : "----";
+                      }
+                    }
+                  ]}
+                  keyId="hims_d_shift_id"
+                  dataSource={{
+                    data: this.state.shifts
+                  }}
+                  filter={true}
+                  paging={{ page: 0, rowsPerPage: 10 }}
+                  events={{
+                    onEdit: () => {}
+                    // onDelete: this.deleteLoanMaster.bind(this),
+                    // onDone: this.updateLoanMater.bind(this)
+                  }}
+                />
               </div>
+              <div className="col-4">
+                <h6>EMPLOYEES</h6>
+                <input
+                  type="text"
+                  autoComplete="off"
+                  name="searchEmployees"
+                  className="rosterSrch"
+                  placeholder="Search Employees"
+                  value={this.state.searchEmployees}
+                  onChange={this.SearchHandler.bind(this)}
+                />
+                <ul className="shiftEmployeeList">
+                  {_employeeList.map((data, index) => (
+                    <li key={index}>
+                      <input
+                        id={data.employee_code}
+                        value={JSON.stringify(data)}
+                        type="checkbox"
+                        checked={this.state.shiftEmp.includes(data)}
+                        onChange={this.addEmployees.bind(this, data)}
+                      />
+                      <label
+                        htmlFor={data.employee_code}
+                        style={{
+                          width: "80%"
+                        }}
+                      >
+                        {data.employee_name}
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </div>{" "}
             </div>
           </div>
         </div>

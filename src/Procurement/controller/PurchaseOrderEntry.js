@@ -2,14 +2,14 @@ import { Router } from "express";
 import { releaseConnection, generateDbConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  addPurchaseOrderEntry,
-  getPurchaseOrderEntry,
-  updatePurchaseOrderEntry,
-  getAuthPurchaseList,
-  getInvRequisitionEntryPO,
-  getPharRequisitionEntryPO,
-  updatePharReqEntry,
-  updateInvReqEntry
+  addPurchaseOrderEntry, //Done
+  getPurchaseOrderEntry, //Done
+  updatePurchaseOrderEntry, //Done
+  getAuthPurchaseList, //Done
+  getInvRequisitionEntryPO, //Done
+  getPharRequisitionEntryPO, //Done
+  updatePharReqEntry, //Done
+  updateInvReqEntry //Done
 } from "../model/PurchaseOrderEntry";
 import { debugFunction, debugLog } from "../../utils/logging";
 export default ({ config, db }) => {

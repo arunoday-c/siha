@@ -18,6 +18,7 @@ class ProjectAssign extends Component {
   }
 
   projectHandler(data, e) {
+    debugger;
     this.setState(data);
   }
 
@@ -81,7 +82,10 @@ class ProjectAssign extends Component {
   }
 
   processAssignment() {
-    if (this.state.project_id === undefined || this.state.project_id === null) {
+    if (
+      this.state.hims_d_project_id === undefined ||
+      this.state.hims_d_project_id === null
+    ) {
       swalMessage({
         title: "Please Select a project to assign",
         type: "warning"
@@ -106,13 +110,15 @@ class ProjectAssign extends Component {
       let sendData = {
         from_date: moment(this.state.from_date).format("YYYY-MM-DD"),
         to_date: moment(this.state.to_date).format("YYYY-MM-DD"),
-        project_id: this.state.project_id,
+        project_id: this.state.hims_d_project_id,
         employees: this.state.projEmp,
         hospital_id: this.state.hospital_id
       };
 
+      console.log(JSON.stringify(sendData));
+
       algaehApiCall({
-        uri: "/shift_roster/addShiftRoster",
+        uri: "/projectjobcosting/addProjectRoster",
         method: "POST",
         data: sendData,
         module: "hrManagement",
@@ -122,7 +128,7 @@ class ProjectAssign extends Component {
               title: "Record Added Successfully",
               type: "success"
             });
-            document.getElementById("clsSftAsgn").click();
+            document.getElementById("clsProjAsgn").click();
           }
         },
         onFailure: err => {
@@ -208,6 +214,47 @@ class ProjectAssign extends Component {
             </div>
             <div style={{ maxHeight: "400px" }} className="row">
               <div className="col-6">
+                <h6>PROJECTS</h6>
+                <input
+                  type="text"
+                  autoComplete="off"
+                  name="searchprojects"
+                  className="rosterSrch"
+                  placeholder="Search projects"
+                  value={this.state.searchprojects}
+                  onChange={this.SearchHandler.bind(this)}
+                  tabIndex="4"
+                />
+                <ul className="projectList">
+                  {_projectList.map((data, index) => {
+                    return (
+                      <li key={index}>
+                        <input
+                          id={data.project_code}
+                          name="hims_d_project_id"
+                          value={data}
+                          onChange={this.projectHandler.bind(this, data)}
+                          type="radio"
+                        />
+                        <label
+                          htmlFor={data.project_code}
+                          style={{
+                            width: "80%"
+                          }}
+                        >
+                          <span>
+                            {data.project_desc +
+                              " (" +
+                              data.project_code +
+                              ") "}
+                          </span>
+                        </label>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div className="col-6">
                 <h6>EMPLOYEES</h6>
                 <input
                   type="text"
@@ -217,6 +264,7 @@ class ProjectAssign extends Component {
                   placeholder="Search Employees"
                   value={this.state.searchEmployees}
                   onChange={this.SearchHandler.bind(this)}
+                  tabIndex="3"
                 />
                 <ul className="projEmployeeList">
                   {_employeeList.map((data, index) => (
@@ -238,42 +286,7 @@ class ProjectAssign extends Component {
                     </li>
                   ))}
                 </ul>
-              </div>
-              <div className="col-6">
-                <h6>PROJECTS</h6>
-                <input
-                  type="text"
-                  autoComplete="off"
-                  name="searchprojects"
-                  className="rosterSrch"
-                  placeholder="Search projects"
-                  value={this.state.searchprojects}
-                  onChange={this.SearchHandler.bind(this)}
-                />
-                <ul className="projectList">
-                  {_projectList.map((data, index) => (
-                    <li key={index}>
-                      <input
-                        id={data.project_code}
-                        name="shift_id"
-                        value={data}
-                        onChange={this.projectHandler.bind(this, data)}
-                        type="radio"
-                      />
-                      <label
-                        htmlFor={data.project_code}
-                        style={{
-                          width: "80%"
-                        }}
-                      >
-                        <span>
-                          {data.project_desc + " (" + data.project_code + ") "}
-                        </span>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              </div>{" "}
             </div>
           </div>
         </div>
@@ -285,7 +298,7 @@ class ProjectAssign extends Component {
 
               <div className="col-lg-8">
                 <button
-                  // onClick={this.processAssignment.bind(this)}
+                  onClick={this.processAssignment.bind(this)}
                   type="button"
                   className="btn btn-primary"
                 >

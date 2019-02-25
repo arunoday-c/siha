@@ -118,6 +118,8 @@ module.exports = {
         "ordered_date",
         "test_type"
       ];
+
+      utilities.logger().log("labServices: ", labServices.length);
       if (labServices.length > 0) {
         _mysql
           .executeQuery({

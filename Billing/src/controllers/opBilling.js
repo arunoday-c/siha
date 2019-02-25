@@ -9,13 +9,13 @@ import {
 } from "../models/opBilling";
 import { getReceiptEntry } from "../models/receiptentry";
 
-import algaehPath from "algaeh-utilities/algaeh-path-format";
-const { insertLadOrderedServices } = require(algaehPath(
+import algaehPath from "algaeh-module-bridge";
+const { insertLadOrderedServices } = algaehPath(
   "algaeh-laboratory/src/models/laboratory"
-));
-const { insertRadOrderedServices } = require(algaehPath(
+);
+const { insertRadOrderedServices } = algaehPath(
   "algaeh-radiology/src/models/radiology"
-));
+);
 
 export default () => {
   const api = Router();

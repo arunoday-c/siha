@@ -429,7 +429,7 @@ module.exports = {
          select hims_f_leave_application_id,employee_id,leave_id,leave_description,L.leave_type,from_date,to_date,\
          from_leave_session,to_leave_session,status\
           FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
-          where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
+          where (status= 'APR' or status= 'PEN' ) AND   ((from_date>= ? and from_date <= ?) or\
         (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?));           
         select hims_f_shift_roster_id,employee_id,shift_date,shift_id,shift_end_date, weekoff,holiday,
         shift_start_time,shift_end_time,shift_time,
@@ -451,7 +451,8 @@ module.exports = {
             toDate,
             fromDate,
             toDate
-          ]
+          ],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
