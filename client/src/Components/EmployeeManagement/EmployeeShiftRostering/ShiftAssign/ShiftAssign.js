@@ -171,10 +171,10 @@ class ShiftAssign extends Component {
         ? this.state.employees
         : this.state.employeeList;
 
-    const _shiftList =
-      this.state.shiftList.length === 0
-        ? this.state.shifts
-        : this.state.shiftList;
+    // const _shiftList =
+    //   this.state.shiftList.length === 0
+    //     ? this.state.shifts
+    //     : this.state.shiftList;
 
     return (
       <AlgaehModalPopUp
