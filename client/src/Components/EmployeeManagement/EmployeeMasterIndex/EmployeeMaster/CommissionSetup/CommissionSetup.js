@@ -96,7 +96,7 @@ class CommissionSetup extends Component {
                 </h6>
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col " }}
                     label={{
                       fieldName: "service_type_id",
                       isImp: true
@@ -319,7 +319,7 @@ class CommissionSetup extends Component {
                 </h6>
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col mandatory" }}
+                    div={{ className: "col " }}
                     label={{
                       fieldName: "service_type_id",
                       isImp: true
@@ -342,7 +342,7 @@ class CommissionSetup extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-5 mandatory" }}
+                    div={{ className: "col-5 " }}
                     label={{
                       forceLabel: "Select Service Type",
                       isImp: true
