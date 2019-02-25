@@ -2447,23 +2447,51 @@ ORDER BY  AccessDate `;
     const _mysql = new algaehMysql();
     try {
       const input = req.body;
+      let _values = [input.from_date, input.to_date];
+      let _QueryDtl =
+        "select employee_id,attendance_date,\
+      'PEN' as regularize_status,attendance_date as login_date,\
+      out_date as logout_date,in_time as punch_in_time,\
+      out_time as punch_out_time from hims_f_daily_time_sheet where  \
+      and date(attendance_date)>=date(?) and date(out_date) <=date(?) and status='EX' ";
+
+      if (input.employee_id != null) {
+        _QueryDtl += " and employee_id=?;";
+        _values.push(input.employee_id);
+      } else {
+        _QueryDtl += ";";
+      }
+
       _mysql
         .executeQuery({
-          query:
-            "select employee_id,attendance_date,\
-         'PEN' as regularize_status,attendance_date as login_date,\
-         out_date as logout_date,in_time as punch_in_time,\
-         out_time as punch_out_time from hims_f_daily_time_sheet where hospital_id=? \
-         and date(attendance_date)>=date(?) and date(out_date) <=date(?) and status='EX'; ",
-          values: [input.hospital_id, input.from_date, input.to_date]
+          query: _QueryDtl,
+          values: _values
         })
         .then(result => {
           if (result.length > 0) {
+            let _query = "";
+            for (let i = 0; i < result.length; i++) {
+              _query += _mysql.mysqlQueryFormat(
+                "insert into hims_f_attendance_regularize(`employee_id`,`attendance_date`,\
+              `regularize_status`,`login_date`,`logout_date`,`punch_in_time`,`punch_out_time`)values(?,?,?,?,?,?,?)\
+              ON DUPLICATE KEY UPDATE `punch_in_time`=?,`punch_out_time`=?;",
+                values[
+                  (result[i]["employee_id"],
+                  result[i]["attendance_date"],
+                  result[i]["regularize_status"],
+                  result[i]["login_date"],
+                  result[i]["logout_date"],
+                  result[i]["punch_in_time"],
+                  result[i]["punch_out_time"],
+                  result[i]["punch_in_time"],
+                  result[i]["punch_out_time"])
+                ]
+              );
+            }
+
             _mysql
               .executeQuery({
-                query: "insert into hims_f_attendance_regularize(??) values ?",
-                values: result,
-                bulkInsertOrUpdate: true,
+                query: _query,
                 printQuery: true
               })
               .then(attandance => {
