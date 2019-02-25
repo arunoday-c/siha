@@ -11,6 +11,32 @@
 
 .EmpShiftRost_Screen .editAction {
   position: relative; }
+  .EmpShiftRost_Screen .editAction span {
+    display: block;
+    width: 80%; }
+    .EmpShiftRost_Screen .editAction span:hover .shiftMoreInfo {
+      display: block; }
+  .EmpShiftRost_Screen .editAction .shiftMoreInfo {
+    font-size: 0.7rem;
+    width: 150px;
+    padding: 2px 5px;
+    position: absolute;
+    z-index: 9;
+    top: 15px;
+    right: 30px;
+    font-weight: normal;
+    display: none;
+    background: rgba(255, 255, 255, 0.95);
+    text-align: left;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); }
+    .EmpShiftRost_Screen .editAction .shiftMoreInfo span {
+      width: 100%;
+      color: #000; }
+      .EmpShiftRost_Screen .editAction .shiftMoreInfo span b {
+        text-align: right;
+        float: right; }
   .EmpShiftRost_Screen .editAction .fa-ellipsis-v {
     display: none;
     position: absolute;
