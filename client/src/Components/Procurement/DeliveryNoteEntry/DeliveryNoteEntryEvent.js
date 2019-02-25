@@ -175,7 +175,7 @@ const PurchaseOrderSearch = ($this, e) => {
       onRowSelect: row => {
         algaehApiCall({
           uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-          module: "procurement",
+          // module: "procurement",
           method: "GET",
           data: {
             purchase_number: row.purchase_number
@@ -252,7 +252,7 @@ const SaveDNEnrty = $this => {
   if (dnQuantity.length === 0) {
     algaehApiCall({
       uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
-      module: "procurement",
+      // module: "procurement",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success === true) {
@@ -283,7 +283,7 @@ const getCtrlCode = ($this, docNumber) => {
 
   algaehApiCall({
     uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
-    module: "procurement",
+    // module: "procurement",
     method: "GET",
     data: { delivery_note_number: docNumber },
     onSuccess: response => {
