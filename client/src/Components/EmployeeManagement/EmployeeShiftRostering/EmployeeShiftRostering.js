@@ -259,6 +259,7 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   plotEmployeeDates(row, holidays, leaves, shifts) {
+    debugger;
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
@@ -303,8 +304,29 @@ export default class EmployeeShiftRostering extends Component {
 
       let data =
         leave !== undefined && leave !== null ? (
-          <td className="leave_cell" key={now}>
-            {leave.leave_description}
+          <td
+            className={
+              leave.status === "APR" ? "leave_cell_auth" : "leave_cell_unauth"
+            }
+            key={now}
+          >
+            <span className="leaveAction">
+              {/* Shift MoreInfo Tooltip start*/}
+              {leave.status === "APR" ? "LV" : "LA"}
+              <p className="leaveInfo animated fadeInDown faster">
+                <span>
+                  Leave:
+                  <b>{leave.leave_description}</b>
+                </span>
+                <span>
+                  Status :
+                  <b>
+                    {leave.status === "APR" ? "Approved" : "Pending Approval"}
+                  </b>
+                </span>
+              </p>
+              {/* Shift MoreInfo Tooltip end */}
+            </span>
           </td>
         ) : shift !== null && shift !== undefined && holiday !== undefined ? (
           <td
@@ -343,10 +365,22 @@ export default class EmployeeShiftRostering extends Component {
                   {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
                 </span>
                 <span>
-                  Shift Start at: <b>{shift.in_time1}</b>
+                  Shift Start at:{" "}
+                  <b>
+                    {" "}
+                    {moment(shift.in_time1, "HH:mm:ss").isValid()
+                      ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
+                      : "----"}
+                  </b>
                 </span>
                 <span>
-                  Shift End at: <b>{shift.out_time1}</b>
+                  Shift End at:{" "}
+                  <b>
+                    {" "}
+                    {moment(shift.out_time1, "HH:mm:ss").isValid()
+                      ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
+                      : "----"}
+                  </b>
                 </span>
               </p>
               {/* Shift MoreInfo Tooltip end */}
@@ -363,7 +397,34 @@ export default class EmployeeShiftRostering extends Component {
             employee_id={row.hims_d_employee_id}
             date={now.format("YYYY-MM-DD")}
           >
-            <span>{shift.shift_abbreviation}</span>
+            <span>
+              {shift.shift_abbreviation}
+              {/* Shift MoreInfo Tooltip start*/}
+              <p className="shiftMoreInfo animated fadeInDown faster">
+                <span>
+                  {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
+                </span>
+                <span>
+                  Shift Start at:{" "}
+                  <b>
+                    {" "}
+                    {moment(shift.in_time1, "HH:mm:ss").isValid()
+                      ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
+                      : "----"}
+                  </b>
+                </span>
+                <span>
+                  Shift End at:{" "}
+                  <b>
+                    {" "}
+                    {moment(shift.out_time1, "HH:mm:ss").isValid()
+                      ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
+                      : "----"}
+                  </b>
+                </span>
+              </p>
+              {/* Shift MoreInfo Tooltip end */}
+            </span>
             <i className="fas fa-ellipsis-v" />
             <ul>
               <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
@@ -404,7 +465,33 @@ export default class EmployeeShiftRostering extends Component {
                 : shift.shift_id === 101
                 ? "HO"
                 : shift.shift_abbreviation}
+              {/* Shift MoreInfo Tooltip start*/}
+              <p className="shiftMoreInfo animated fadeInDown faster">
+                <span>
+                  {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
+                </span>
+                <span>
+                  Shift Start at:{" "}
+                  <b>
+                    {" "}
+                    {moment(shift.in_time1, "HH:mm:ss").isValid()
+                      ? moment(shift.in_time1, "HH:mm:ss").format("hh:mm a")
+                      : "----"}
+                  </b>
+                </span>
+                <span>
+                  Shift End at:{" "}
+                  <b>
+                    {" "}
+                    {moment(shift.out_time1, "HH:mm:ss").isValid()
+                      ? moment(shift.out_time1, "HH:mm:ss").format("hh:mm a")
+                      : "----"}
+                  </b>
+                </span>
+              </p>
+              {/* Shift MoreInfo Tooltip end */}
             </span>
+
             <i className="fas fa-ellipsis-v" />
             <ul>
               <li shift={shift} onClick={this.copyShift.bind(this, shift)}>
