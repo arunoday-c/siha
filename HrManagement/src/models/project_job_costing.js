@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 import { LINQ } from "node-linq";
 import algaehUtilities from "algaeh-utilities/utilities";
-import { getEmployeeWeekOffsHolidays } from "./shift_roster";
+import { getEmployeeWeekOffsHolidays, getDays } from "./shift_roster";
 module.exports = {
   getDivisionProject: (req, res, next) => {
     try {
@@ -398,7 +398,7 @@ module.exports = {
     const utilities = new algaehUtilities();
     try {
       let input = req.body;
-      if (!moment(input.fromDate).isValid) {
+      if (!moment(input.from_date).isValid) {
         next(
           utilities
             .httpStatus()
@@ -409,7 +409,7 @@ module.exports = {
         );
         return;
       }
-      if (!moment(input.toDate).isValid) {
+      if (!moment(input.to_date).isValid) {
         next(
           utilities
             .httpStatus()
@@ -420,6 +420,7 @@ module.exports = {
         );
         return;
       }
+
       _mysql
         .executeQuery({
           query:
@@ -430,14 +431,12 @@ module.exports = {
         .then(holidayResult => {
           let _days = [];
           if (input.employees.length > 0) {
-            const start = moment(input.fromDate);
-            const end = moment(input.toDate);
-            let day = start;
-            while (day <= end) {
-              _days.push(day.toDate());
-              day = day.clone().add(1, "d");
-            }
+            _days = getDays(
+              moment(input.from_date)._d,
+              moment(input.to_date)._d
+            );
           }
+          console.log("_days", _days);
           let insertData = "";
           const _employees = input.employees.map((employee, index) => {
             let empHoliday = getEmployeeWeekOffsHolidays(
