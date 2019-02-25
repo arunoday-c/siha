@@ -115,7 +115,7 @@ class ProjectAssign extends Component {
         hospital_id: this.state.hospital_id
       };
 
-      console.log(JSON.stringify(sendData));
+      // console.log(JSON.stringify(sendData));
 
       algaehApiCall({
         uri: "/projectjobcosting/addProjectRoster",

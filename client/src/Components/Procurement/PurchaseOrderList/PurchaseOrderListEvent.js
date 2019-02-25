@@ -44,7 +44,7 @@ const getPurchaseOrderList = $this => {
   // inpObj.authorie2 = "N";
   $this.props.getPurchaseOrderList({
     uri: "/PurchaseOrderEntry/getAuthPurchaseList",
-    module: "procurement",
+    // module: "procurement",
     method: "GET",
     data: inpObj,
     redux: {

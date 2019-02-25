@@ -1,4 +1,14 @@
 @import "../../styles/algaehCssVariables.scss";
+.gridToolSec {
+  margin-bottom: 10px;
+  text-align: right;
+  button {
+    margin-left: 10px !important;
+  }
+  div {
+    display: inline;
+  }
+}
 .ReactTable {
   .rt-thead {
     .rt-th {

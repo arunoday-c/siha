@@ -1,3 +1,11 @@
+.gridToolSec {
+  margin-bottom: 10px;
+  text-align: right; }
+  .gridToolSec button {
+    margin-left: 10px !important; }
+  .gridToolSec div {
+    display: inline; }
+
 .ReactTable .rt-thead .rt-th {
   color: #000 !important;
   background: #dff6f6 !important; }

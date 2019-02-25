@@ -343,10 +343,10 @@ class ManualAttendance extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-12" id="EnterGridIdHere_Cntr">
+                  <div className="col-12" id="ManualAttendanceGrid_Cntr">
                     <AlgaehDataGrid
-                      id="EnterGridIdHere"
-                      datavalidate="EnterGridIdHere"
+                      id="ManualAttendanceGrid"
+                      datavalidate="ManualAttendanceGrid"
                       columns={[
                         {
                           fieldName: "full_name",

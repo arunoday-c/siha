@@ -90,7 +90,7 @@ export default class UploadCsv extends Component {
           style={{ border: "none", height: "auto", width: "auto" }}
           onDrop={this.onChangeFileUploader.bind(this)}
         >
-          <button>Import</button>
+          <button className="btn btn-primary">Upload Template</button>
         </Dropzone>
       </React.Fragment>
     );

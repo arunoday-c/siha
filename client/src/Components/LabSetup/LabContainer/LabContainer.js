@@ -47,7 +47,7 @@ class LabContainer extends Component {
     ) {
       this.props.getLabContainer({
         uri: "/labmasters/selectContainer",
-        module: "laboratory",
+        // module: "laboratory",
         method: "GET",
         redux: {
           type: "CONTAINER_GET_DATA",
