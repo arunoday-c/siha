@@ -337,6 +337,19 @@ export default class EmployeeShiftRostering extends Component {
                 : shift.shift_id === 101
                 ? "HO"
                 : shift.shift_abbreviation}
+              {/* Shift MoreInfo Tooltip start*/}
+              <p className="shiftMoreInfo animated fadeInDown faster">
+                <span>
+                  {shift.shift_abbreviation}: <b>{shift.shift_description}</b>
+                </span>
+                <span>
+                  Shift Start at: <b>{shift.in_time1}</b>
+                </span>
+                <span>
+                  Shift End at: <b>{shift.out_time1}</b>
+                </span>
+              </p>
+              {/* Shift MoreInfo Tooltip end */}
             </span>
           </td>
         ) : shift !== null &&
