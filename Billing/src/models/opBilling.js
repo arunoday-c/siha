@@ -117,6 +117,8 @@ module.exports = {
   selectBill: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("selectBill: ");
       _mysql
         .executeQuery({
           query:
@@ -130,6 +132,7 @@ module.exports = {
           printQuery: true
         })
         .then(headerResult => {
+          utilities.logger().log("headerResult: ", headerResult);
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
@@ -144,8 +147,6 @@ module.exports = {
                 printQuery: true
               })
               .then(billdetails => {
-                // _mysql.releaseConnection();
-
                 req.records = {
                   ...headerResult[0],
                   ...{ billdetails },

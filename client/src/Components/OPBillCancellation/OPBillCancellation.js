@@ -177,6 +177,7 @@ class OPBillCancellation extends Component {
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/opBillCancellation/addOpBillCancellation",
+          module: "billing",
           data: Inputobj,
           method: "POST",
           onSuccess: response => {

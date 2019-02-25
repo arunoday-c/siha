@@ -141,6 +141,7 @@ const getBillDetails = $this => {
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/opBilling/get",
+    module: "billing",
     method: "GET",
     data: { bill_number: $this.state.bill_number },
     onSuccess: response => {
@@ -184,6 +185,7 @@ const getCtrlCode = ($this, billcode) => {
 
   algaehApiCall({
     uri: "/opBillCancellation/getBillCancellation",
+    module: "billing",
     method: "GET",
     data: { bill_cancel_number: billcode },
     onSuccess: response => {
