@@ -13,7 +13,8 @@ import {
   addToDailyTimeSheet,
   getDailyTimeSheet,
   processBiometricAttendance,
-  loadAttendance
+  loadAttendance,
+  notifyException
 } from "../models/attendance";
 export default () => {
   const api = Router();
@@ -190,6 +191,20 @@ export default () => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
         result: req.records
+      });
+    }
+  });
+
+  api.post("/notifyException", notifyException, (req, res, next) => {
+    if (typeof req.records === "string") {
+      res.status(utlities.AlgaehUtilities().httpStatus().badRequest).json({
+        success: false,
+        message: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        message: req.records
       });
     }
   });

@@ -282,21 +282,24 @@ export function AlgaehValidation(options) {
     "[algaeh_required='true']"
   );
   for (let i = 0; i < _Validateerror.length; i++) {
-    let _checkVal = _Validateerror[i].getAttribute("checkvalidation");
+    let _element = _Validateerror[i];
+    if (_Validateerror[i].tagName === "DIV") {
+      _element = _Validateerror[i].children[0];
+    }
+    let _checkVal = _element.getAttribute("checkvalidation");
     if (_checkVal !== null) {
-      const _val =
-        _Validateerror[i].value === "" ? "''" : _Validateerror[i].value;
+      const _val = _element.value === "" ? "''" : _element.value;
       _checkVal = _checkVal.replace(/\$value/g, _val);
     }
-    const _role = _Validateerror[i].getAttribute("data_role");
+    const _role = _element.getAttribute("data_role");
     let _evalConditions = null;
     if (_checkVal === null) {
       if (_role === null) {
-        if (_Validateerror[i].value === "") {
+        if (_element.value === "") {
           _evalConditions = true;
         } else _evalConditions = false;
       } else {
-        const _reVal = _Validateerror[i].getAttribute("referencevalue");
+        const _reVal = _element.getAttribute("referencevalue");
         if (_reVal === null || _reVal === "") {
           _evalConditions = true;
         } else _evalConditions = false;
@@ -306,19 +309,24 @@ export function AlgaehValidation(options) {
     }
 
     if (eval(_evalConditions)) {
-      let _title = _Validateerror[i].getAttribute("errormessage");
-
+      let _title = _element.getAttribute("errormessage");
+      if (_Validateerror[i].tagName === "DIV") {
+        _title = _Validateerror[i].getAttribute("errormessage");
+      }
       const _langua = getCookie("Language");
 
       if (_title === null) {
         let _lable = null;
 
         if (_role === "datepicker") {
-          _lable = _Validateerror[i].offsetParent.offsetParent.innerText;
+          _lable = _element.offsetParent.offsetParent.innerText;
         } else if (_role === "dropdownlist") {
-          _lable = _Validateerror[i].offsetParent.previousSibling.innerText;
+          _lable = _element.offsetParent.previousSibling.innerText;
         } else {
-          _lable = _Validateerror[i].offsetParent.innerText;
+          _lable = _element.offsetParent.innerText;
+          if (_Validateerror[i].tagName === "DIV") {
+            _lable = _Validateerror[i].offsetParent.innerText;
+          }
         }
 
         _title =
@@ -335,9 +343,8 @@ export function AlgaehValidation(options) {
         title: _title,
         type: settings.alertTypeIcon
       });
-      _Validateerror[i].focus();
-      if (settings.onCatch !== undefined)
-        settings.onCatch(_Validateerror[i].value);
+      _element.focus();
+      if (settings.onCatch !== undefined) settings.onCatch(_element.value);
       if (!settings.multivalidate) {
         isError = true;
         break;

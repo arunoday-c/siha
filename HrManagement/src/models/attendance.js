@@ -2442,6 +2442,57 @@ ORDER BY  AccessDate `;
     } catch (e) {
       next(e);
     }
+  },
+  notifyException: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const input = req.body;
+      _mysql
+        .executeQuery({
+          query:
+            "select employee_id,attendance_date,\
+         'PEN' as regularize_status,attendance_date as login_date,\
+         out_date as logout_date,in_time as punch_in_time,\
+         out_time as punch_out_time from hims_f_daily_time_sheet where hospital_id=? \
+         and date(attendance_date)>=date(?) and date(out_date) <=date(?) and status='EX'; ",
+          values: [input.hospital_id, input.from_date, input.to_date]
+        })
+        .then(result => {
+          if (result.length > 0) {
+            _mysql
+              .executeQuery({
+                query: "insert into hims_f_attendance_regularize(??) values ?",
+                values: result,
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(attandance => {
+                _mysql.releaseConnection();
+                req.records = attandance;
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            req.records =
+              "No exception records found for the date range '" +
+              input.from_date +
+              " - '" +
+              input.to_date +
+              "'";
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
 
