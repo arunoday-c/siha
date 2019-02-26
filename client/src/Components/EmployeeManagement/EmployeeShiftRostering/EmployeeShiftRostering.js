@@ -303,6 +303,7 @@ export default class EmployeeShiftRostering extends Component {
       }
 
       let data =
+        //LEAVE CELL
         leave !== undefined && leave !== null ? (
           <td
             className={
@@ -328,7 +329,8 @@ export default class EmployeeShiftRostering extends Component {
               {/* Shift MoreInfo Tooltip end */}
             </span>
           </td>
-        ) : shift !== null && shift !== undefined && holiday !== undefined ? (
+        ) : //SHIFT AND A HOLIDAY AT SAME DAY
+        shift !== null && shift !== undefined && holiday !== undefined ? (
           <td
             className={
               shift.weekoff === "Y"
@@ -347,7 +349,8 @@ export default class EmployeeShiftRostering extends Component {
               <li
                 onClick={this.pasteShift.bind(this, {
                   id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
+                  date: now.format("YYYY-MM-DD"),
+                  sub_id: row.sub_department_id
                 })}
               >
                 Paste
@@ -386,7 +389,8 @@ export default class EmployeeShiftRostering extends Component {
               {/* Shift MoreInfo Tooltip end */}
             </span>
           </td>
-        ) : shift !== null &&
+        ) : // SHIFT ON A NORMAL DAY
+        shift !== null &&
           shift !== undefined &&
           shift.holiday === "N" &&
           shift.weekoff === "N" ? (
@@ -434,7 +438,8 @@ export default class EmployeeShiftRostering extends Component {
                 shift={shift}
                 onClick={this.pasteShift.bind(this, {
                   id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
+                  date: now.format("YYYY-MM-DD"),
+                  sub_id: row.sub_department_id
                 })}
               >
                 Paste
@@ -444,7 +449,8 @@ export default class EmployeeShiftRostering extends Component {
               </li>
             </ul>
           </td>
-        ) : shift !== null &&
+        ) : //SHIFT ON A HOLIDAY / WEEKOFF
+        shift !== null &&
           shift !== undefined &&
           (shift.holiday === "Y" || shift.weekoff === "Y") ? (
           <td
@@ -501,7 +507,8 @@ export default class EmployeeShiftRostering extends Component {
                 shift={shift}
                 onClick={this.pasteShift.bind(this, {
                   id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
+                  date: now.format("YYYY-MM-DD"),
+                  sub_id: row.sub_department_id
                 })}
               >
                 Paste
@@ -511,13 +518,14 @@ export default class EmployeeShiftRostering extends Component {
               </li>
             </ul>
           </td>
-        ) : holiday !== undefined ? (
+        ) : // HOLIDAY / WEEKOFF FROM MASTER
+        holiday !== undefined ? (
           <td
             className={
               holiday.weekoff === "Y"
-                ? "week_off_cell"
+                ? "editAction week_off_cell"
                 : holiday.holiday === "Y"
-                ? "holiday_cell"
+                ? "editAction holiday_cell"
                 : null
             }
             key={now}
@@ -535,7 +543,9 @@ export default class EmployeeShiftRostering extends Component {
               <li
                 onClick={this.pasteShift.bind(this, {
                   id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
+                  date: now.format("YYYY-MM-DD"),
+                  sub_id: row.sub_department_id,
+                  type: holiday.weekoff === "Y" ? "WO" : "HO"
                 })}
                 style={{
                   zIndex: 9999
@@ -546,6 +556,7 @@ export default class EmployeeShiftRostering extends Component {
             </ul>
           </td>
         ) : (
+          //EMPTY CELL
           <td
             onClick={this.showModal.bind(this, row)}
             key={now}
@@ -558,7 +569,8 @@ export default class EmployeeShiftRostering extends Component {
               <li
                 onClick={this.pasteShift.bind(this, {
                   id: row.hims_d_employee_id,
-                  date: now.format("YYYY-MM-DD")
+                  date: now.format("YYYY-MM-DD"),
+                  sub_id: row.sub_department_id
                 })}
                 style={{
                   zIndex: 9999
@@ -621,42 +633,63 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   pasteShift(data) {
-    this.state.copyData === null
-      ? swalMessage({
-          title: "Please copy the shift first",
-          type: "warning"
-        })
-      : algaehApiCall({
-          uri: "/shift_roster/pasteRoster",
-          method: "POST",
-          module: "hrManagement",
-          data: {
+    if (this.state.copyData === null) {
+      swalMessage({
+        title: "Please copy the shift first",
+        type: "warning"
+      });
+    } else {
+      let sendData = {};
+
+      data.type !== undefined
+        ? (sendData = {
             employee_id: data.id,
             shift_date: data.date,
-            shift_id: this.state.copyData.hims_d_shift_id,
+            shift_id: this.state.copyData.shift_id,
             shift_end_date: this.state.copyData.shift_end_date,
             shift_start_time: this.state.copyData.shift_start_time,
             shift_end_time: this.state.copyData.shift_end_time,
             shift_time: this.state.copyData.shift_time,
             weekoff: this.state.copyData.weekoff,
+            holiday: this.state.copyData.holiday,
+            sub_department_id: data.sub_id
+          })
+        : (sendData = {
+            employee_id: data.id,
+            shift_date: data.date,
+            shift_id: this.state.copyData.shift_id,
+            shift_end_date: this.state.copyData.shift_end_date,
+            shift_start_time: this.state.copyData.shift_start_time,
+            shift_end_time: this.state.copyData.shift_end_time,
+            shift_time: this.state.copyData.shift_time,
+            sub_department_id: data.sub_id,
+            weekoff: this.state.copyData.weekoff,
             holiday: this.state.copyData.holiday
-          },
-          onSuccess: res => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Pasted Successfully . . ",
-                type: "success"
-              });
-              this.getEmployeesForShiftRoster();
-            }
-          },
-          onFailure: err => {
+          });
+      debugger;
+
+      algaehApiCall({
+        uri: "/shift_roster/pasteRoster",
+        method: "POST",
+        module: "hrManagement",
+        data: sendData,
+        onSuccess: res => {
+          if (res.data.success) {
             swalMessage({
-              title: err.message,
-              type: "error"
+              title: "Pasted Successfully . . ",
+              type: "success"
             });
+            this.getEmployeesForShiftRoster();
           }
-        });
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    }
   }
 
   deleteShift(data) {
