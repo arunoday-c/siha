@@ -4,6 +4,8 @@ import moment from "moment";
 import { LINQ } from "node-linq";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { getEmployeeWeekOffsHolidays, getDays } from "./shift_roster";
+import mysql from "mysql";
+
 module.exports = {
   //created by irfan: to
   processAttendanceOLD: (req, res, next) => {
@@ -1770,56 +1772,95 @@ module.exports = {
   getEmployeeToManualTimeSheet: (req, res, next) => {
     const _mysql = new algaehMysql();
 
+    const utilities = new algaehUtilities();
+
+    utilities.logger().log("getEmployeeToManualTimeSheet: ");
+
     try {
       const input = req.query;
-      let _strDate = "";
-      let intValues = [input.branch_id];
-      let strQuery = "";
+
+      utilities
+        .logger()
+        .log("manual_timesheet_entry: ", input.manual_timesheet_entry);
 
       if (input.manual_timesheet_entry == "D") {
-        if (input.sub_department_id != null) {
-          _strDate += "and E.sub_department_id=?";
-          intValues.push(input.sub_department_id);
-        }
-
-        strQuery = {
-          query:
-            "select PR.employee_id, E.employee_code,E.full_name,PR.attendance_date from hims_f_project_roster PR , \
-          hims_d_employee E where E.hims_d_employee_id=PR.employee_id and E.hospital_id=? " +
-            _strDate,
-          values: intValues,
-          printQuery: true
-        };
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,\
+              E.full_name FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
+              TS.employee_id=E.hims_d_employee_id and (TS.status = 'AB' or TS.status = 'EX') and\
+              TS.attendance_date=? and E.sub_department_id=? and E.hospital_id=?;",
+            values: [
+              input.attendance_date,
+              input.sub_department_id,
+              input.branch_id
+            ],
+            printQuery: true
+          })
+          .then(time_sheet => {
+            _mysql.releaseConnection();
+            req.records = { result: time_sheet, dataExist: true };
+            next();
+          })
+          .catch(e => {
+            next(e);
+          });
       } else if (input.manual_timesheet_entry == "P") {
-        if (input.attendance_date != null) {
-          _strDate += "and attendance_date=?";
-          intValues.push(input.attendance_date);
-        }
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,E.full_name FROM \
+              algaeh_hims_db.hims_f_daily_time_sheet TS, algaeh_hims_db.hims_d_employee E, hims_f_project_roster PR where \
+              TS.employee_id=E.hims_d_employee_id and PR.employee_id = TS.employee_id and\
+              TS.attendance_date=? and E.hospital_id=? and PR.project_id=?;",
+            values: [input.attendance_date, input.branch_id, input.project_id],
+            printQuery: true
+          })
+          .then(time_sheet => {
+            if (time_sheet.length > 0) {
+              _mysql.releaseConnection();
+              req.records = { result: time_sheet, dataExist: true };
+              next();
+            } else {
+              let _strDate = "";
+              let intValues = [input.branch_id];
+              let strQuery = "";
+              if (input.attendance_date != null) {
+                _strDate += "and attendance_date=?";
+                intValues.push(input.attendance_date);
+              }
 
-        if (input.project_id != null) {
-          _strDate += "and project_id=?";
-          intValues.push(input.project_id);
-        }
+              if (input.project_id != null) {
+                _strDate += "and project_id=?";
+                intValues.push(input.project_id);
+              }
 
-        strQuery = {
-          query:
-            "select PR.employee_id, E.employee_code,E.full_name,PR.attendance_date from hims_f_project_roster PR , \
-            hims_d_employee E where E.hims_d_employee_id=PR.employee_id and E.hospital_id=? " +
-            _strDate,
-          values: intValues,
-          printQuery: true
-        };
+              strQuery = {
+                query:
+                  "select PR.employee_id, E.employee_code,E.full_name,PR.attendance_date from hims_f_project_roster PR , \
+                hims_d_employee E where E.hims_d_employee_id=PR.employee_id and E.hospital_id=? " +
+                  _strDate,
+                values: intValues,
+                printQuery: true
+              };
+
+              _mysql
+                .executeQuery(strQuery)
+                .then(result => {
+                  _mysql.releaseConnection();
+                  req.records = { result, dataExist: false };
+                  next();
+                })
+                .catch(e => {
+                  next(e);
+                });
+            }
+          })
+          .catch(e => {
+            next(e);
+          });
       }
-      _mysql
-        .executeQuery(strQuery)
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch(e => {
-          next(e);
-        });
     } catch (e) {
       next(e);
     }
@@ -1875,6 +1916,47 @@ module.exports = {
             .catch(e => {
               next(e);
             });
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      next(e);
+    }
+  },
+  updateToDailyTimeSheet: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const utilities = new algaehUtilities();
+      const input = req.body;
+      utilities.logger().log("input: ", input);
+
+      let qry = "";
+
+      for (let i = 0; i < input.length; i++) {
+        qry += mysql.format(
+          "UPDATE `hims_f_daily_time_sheet` SET status='PR', in_time=?,\
+        `out_time`=?,`hours`=?,`minutes`=?,`worked_hours`=? where hims_f_daily_time_sheet_id=?;",
+          [
+            input[i].in_time,
+            input[i].out_time,
+            input[i].hours,
+            input[i].minutes,
+            input[i].worked_hours,
+            input[i].hims_f_daily_time_sheet_id
+          ]
+        );
+      }
+
+      _mysql
+        .executeQuery({
+          query: qry
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
         })
         .catch(e => {
           next(e);
@@ -2455,9 +2537,9 @@ ORDER BY  AccessDate `;
       out_time as punch_out_time from hims_f_daily_time_sheet where  \
        date(attendance_date)>=date(?) and date(out_date) <=date(?) and status='EX' ";
 
-      if (input.employee_id != null) {
+      if (input.hims_d_employee_id != null) {
         _QueryDtl += " and employee_id=?;";
-        _values.push(input.employee_id);
+        _values.push(input.hims_d_employee_id);
       } else {
         _QueryDtl += ";";
       }
@@ -2465,7 +2547,8 @@ ORDER BY  AccessDate `;
       _mysql
         .executeQuery({
           query: _QueryDtl,
-          values: _values
+          values: _values,
+          printQuery: true
         })
         .then(result => {
           if (result.length > 0) {
@@ -2475,7 +2558,7 @@ ORDER BY  AccessDate `;
                 "insert into hims_f_attendance_regularize(`employee_id`,`attendance_date`,\
               `regularize_status`,`login_date`,`logout_date`,`punch_in_time`,`punch_out_time`)values(?,?,?,?,?,?,?)\
               ON DUPLICATE KEY UPDATE `punch_in_time`=?,`punch_out_time`=?;",
-               [
+                [
                   result[i]["employee_id"],
                   result[i]["attendance_date"],
                   result[i]["regularize_status"],

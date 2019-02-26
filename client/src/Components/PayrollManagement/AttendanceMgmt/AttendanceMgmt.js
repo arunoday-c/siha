@@ -80,7 +80,7 @@ export default class AttendanceMgmt extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Weekly Attendance"
+                      forceLabel: "Employee Timesheet"
                     }}
                   />
                 }
@@ -106,7 +106,7 @@ export default class AttendanceMgmt extends Component {
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Manual Attendance"
+                      forceLabel: "Manual Timesheet"
                     }}
                   />
                 }

@@ -8,7 +8,10 @@ import {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 
 export default class MonthlyAttendance extends Component {
   constructor(props) {
@@ -25,7 +28,10 @@ export default class MonthlyAttendance extends Component {
         .hims_d_hospital_id,
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
-      formatingString: this.monthFormatorString(moment().startOf("month"))
+      formatingString: this.monthFormatorString(moment().startOf("month")),
+      attendance_type: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).attendance_type
     };
     this.getSubDepts();
     this.getOrganization();
@@ -356,15 +362,31 @@ export default class MonthlyAttendance extends Component {
             }}
           />
 
-          <div className="col form-group margin-top-15">
-            <button
-              onClick={this.loadAttendance.bind(this)}
-              className="btn btn-primary"
-              disabled={this.state.displayLoader}
-            >
-              LOAD
-            </button>
-          </div>
+          {this.state.attendance_type === "M" ? (
+            <div className="col form-group margin-top-15">
+              <button
+                onClick={this.processAttandance.bind(this)}
+                disabled={this.state.loader}
+                className="btn btn-primary"
+              >
+                {!this.state.loader ? (
+                  <span>Process Attendance</span>
+                ) : (
+                  <i className="fas fa-spinner fa-spin" />
+                )}
+              </button>
+            </div>
+          ) : (
+            <div className="col form-group margin-top-15">
+              <button
+                onClick={this.loadAttendance.bind(this)}
+                className="btn btn-primary"
+                disabled={this.state.displayLoader}
+              >
+                LOAD
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
@@ -567,7 +589,7 @@ export default class MonthlyAttendance extends Component {
             </div>
           </div>
         </div>
-        <div className="hptl-phase1-footer">
+        {/* <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
               <button
@@ -583,7 +605,7 @@ export default class MonthlyAttendance extends Component {
               </button>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

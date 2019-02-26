@@ -1,6 +1,8 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import _ from "lodash";
+import Enumerable from "linq";
+
 export default function ManualAttendanceEvents() {
   return {
     texthandle: ($this, e) => {
@@ -72,22 +74,29 @@ export default function ManualAttendanceEvents() {
 
     LoadEmployee: $this => {
       debugger;
+      let InputObj = {
+        branch_id: $this.state.hospital_id,
+        attendance_date: moment($this.state.attendance_date).format(
+          "YYYY-MM-DD"
+        ),
+        manual_timesheet_entry: $this.state.manual_timesheet_entry
+      };
+      if ($this.state.manual_timesheet_entry === "D") {
+        InputObj.sub_department_id = $this.state.sub_department_id;
+      } else {
+        InputObj.project_id = $this.state.project_id;
+      }
+      debugger;
       algaehApiCall({
         uri: "/attendance/getEmployeeToManualTimeSheet",
         module: "hrManagement",
         method: "GET",
-        data: {
-          branch_id: $this.state.hospital_id,
-          project_id: $this.state.project_id,
-          attendance_date: moment($this.state.attendance_date).format(
-            "YYYY-MM-DD"
-          ),
-          manual_timesheet_entry: $this.state.manual_timesheet_entry
-        },
+        data: InputObj,
         onSuccess: res => {
           if (res.data.success) {
             $this.setState({
-              employee_details: res.data.records,
+              employee_details: res.data.records.result,
+              dataExist: res.data.records.dataExist,
               apply_all: false,
               process_attend: false
             });
@@ -240,26 +249,63 @@ export default function ManualAttendanceEvents() {
       });
     },
     ProcessAttendanceEvent: $this => {
-      algaehApiCall({
-        uri: "/attendance/addToDailyTimeSheet",
-        module: "hrManagement",
-        method: "POST",
-        data: $this.state.employee_details,
-        onSuccess: res => {
-          if (res.data.success) {
-            swalMessage({
-              title: "Processed Succesfully...",
-              type: "success"
-            });
-          }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
+      debugger;
+      // const notEntered = _.
+
+      const notEntered = Enumerable.from($this.state.employee_details)
+        .where(w => w.in_time === null || w.out_time === null)
+        .toArray();
+
+      if (notEntered.length === 0) {
+        if ($this.state.dataExist === true) {
+          algaehApiCall({
+            uri: "/attendance/updateToDailyTimeSheet",
+            module: "hrManagement",
+            method: "PUT",
+            data: $this.state.employee_details,
+            onSuccess: res => {
+              if (res.data.success) {
+                swalMessage({
+                  title: "Processed Succesfully...",
+                  type: "success"
+                });
+              }
+            },
+            onFailure: err => {
+              swalMessage({
+                title: err.message,
+                type: "error"
+              });
+            }
+          });
+        } else {
+          algaehApiCall({
+            uri: "/attendance/addToDailyTimeSheet",
+            module: "hrManagement",
+            method: "POST",
+            data: $this.state.employee_details,
+            onSuccess: res => {
+              if (res.data.success) {
+                swalMessage({
+                  title: "Processed Succesfully...",
+                  type: "success"
+                });
+              }
+            },
+            onFailure: err => {
+              swalMessage({
+                title: err.message,
+                type: "error"
+              });
+            }
           });
         }
-      });
+      } else {
+        swalMessage({
+          title: "Please enter In-time and Out-time to all employees.",
+          type: "warning"
+        });
+      }
     },
     validateDateTime: dateTime => {
       if (new Date(dateTime).toString() !== "Invalid Date") {

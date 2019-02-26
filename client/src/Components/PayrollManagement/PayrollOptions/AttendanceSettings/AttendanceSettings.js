@@ -18,7 +18,8 @@ import {
   OT_HOUR_CALC,
   OT_CALC,
   BIOMETRIC_DBS,
-  SWIPE_CARD_TYPE
+  SWIPE_CARD_TYPE,
+  MANUAL_TIME_TYPE
 } from "../../../../utils/GlobalVariables.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
@@ -490,7 +491,7 @@ export default class AttendanceSettings extends Component {
                       }}
                     />
 
-                    <div className="col-8">
+                    <div className="col-4">
                       <label>Fetch machine data for reporting purpose</label>
                       <div className="customRadio">
                         <label className="radio inline">
@@ -519,6 +520,30 @@ export default class AttendanceSettings extends Component {
                         </label>
                       </div>
                     </div>
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-4 form-group" }}
+                      label={{
+                        forceLabel: "Manual Timesheet Entry",
+                        isImp: false
+                      }}
+                      selector={{
+                        name: "manual_timesheet_entry",
+                        value: this.state.manual_timesheet_entry,
+                        className: "select-fld",
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: MANUAL_TIME_TYPE
+                        },
+                        onChange: this.dropDownHandler.bind(this),
+                        onClear: () => {
+                          this.setState({
+                            manual_timesheet_entry: null
+                          });
+                        }
+                      }}
+                    />
 
                     <AlagehAutoComplete
                       div={{ className: "col-3 form-group" }}
