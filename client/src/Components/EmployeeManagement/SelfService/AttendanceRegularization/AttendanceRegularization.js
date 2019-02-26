@@ -274,6 +274,7 @@ class AttendanceRegularization extends Component {
             </div>
           </div>
         </div>
+
         <div className="col-9">
           <div className="portlet portlet-bordered margin-bottom-15">
             <div className="portlet-title">
