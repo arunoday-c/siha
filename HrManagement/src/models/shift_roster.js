@@ -393,6 +393,7 @@ module.exports = {
     const utilities = new algaehUtilities();
     let subdept = "";
     let employee = "";
+    let shiftRange = "";
     let fromDate = moment(req.query.fromDate).format("YYYY-MM-DD");
     let toDate = moment(req.query.toDate).format("YYYY-MM-DD");
     let allEmployees = [];
@@ -403,9 +404,11 @@ module.exports = {
     let outputArray = [];
     if (req.query.sub_department_id > 0) {
       subdept = ` and E.sub_department_id=${req.query.sub_department_id} `;
+      shiftRange += ` and sub_department_id=${req.query.sub_department_id} `;
     }
     if (req.query.hims_d_employee_id > 0) {
       employee = ` and E.hims_d_employee_id=${req.query.hims_d_employee_id} `;
+      shiftRange += ` and employee_id=${req.query.hims_d_employee_id} `;
     }
 
     if (
@@ -433,11 +436,11 @@ module.exports = {
         (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?));           
         select hims_f_shift_roster_id,employee_id,shift_date,shift_id,shift_end_date, weekoff,holiday,
         shift_start_time,shift_end_time,shift_time,
-        hims_d_shift_id,shift_code,shift_description,arabic_name,shift_status,in_time1,out_time1,
+        shift_code,shift_description,arabic_name,shift_status,in_time1,out_time1,
         in_time2,out_time2,break,break_start,break_end,shift_abbreviation,shift_end_day
         from hims_f_shift_roster SR inner join hims_d_shift S
         on SR.shift_id=S.hims_d_shift_id and S.record_status='A'
-        where date(shift_date) between date(?) and date(?) `,
+        where date(shift_date) between date(?) and date(?) ${shiftRange}`,
           values: [
             req.query.hospital_id,
             fromDate,
@@ -451,7 +454,8 @@ module.exports = {
             toDate,
             fromDate,
             toDate
-          ]
+          ],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -775,6 +779,7 @@ module.exports = {
                   shift_date: dateRange[i],
                   shift_end_date: dateRange[i],
                   employee_id: input.employees[emp]["hims_d_employee_id"],
+                  sub_department_id: input.employees[emp]["sub_department_id"],
                   ...week_off_Data
                 });
               } else if (input.shift_end_day == "ND") {
@@ -784,6 +789,7 @@ module.exports = {
                     .add(1, "days")
                     .format("YYYY-MM-DD"),
                   employee_id: input.employees[emp]["hims_d_employee_id"],
+                  sub_department_id: input.employees[emp]["sub_department_id"],
                   ...week_off_Data
                 });
               }
@@ -855,12 +861,13 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_f_shift_roster` (employee_id,shift_date,shift_id,shift_end_date,\
-          shift_start_time,shift_end_time,shift_time,weekoff,holiday) values(?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE shift_id=?,shift_end_date=?,\
+          "INSERT INTO `hims_f_shift_roster` (employee_id,sub_department_id,shift_date,shift_id,shift_end_date,\
+          shift_start_time,shift_end_time,shift_time,weekoff,holiday) values(?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE shift_id=?,shift_end_date=?,\
           shift_start_time=?,shift_end_time=?,shift_time=?,\
           weekoff=?,holiday=?",
         values: [
           input.employee_id,
+          input.sub_department_id,
           input.shift_date,
           input.shift_id,
           input.shift_end_date,
