@@ -832,20 +832,29 @@ export default class WeeklyAttendance extends Component {
                             <React.Fragment>
                               Shortage Time:
                               <b className="lateTime">
-                                {Math.abs(
+                                {/* {Math.abs(
+                                  data.actual_hours - data.hours
+                                ).toFixed(2)}{" "} */}
+
+                                {Math.floor(
                                   data.actual_hours - data.worked_hours
-                                ).toFixed(2)}{" "}
-                                Hrs
+                                ) + " Hrs"}
+                                {60 - data.minutes + " Mins"}
                               </b>
                             </React.Fragment>
                           ) : (
                             <React.Fragment>
                               Excess Time
                               <b className="OverTime">
-                                {Math.abs(
+                                {/* {Math.abs(
                                   data.actual_hours - data.worked_hours
-                                ).toFixed(2)}{" "}
-                                Hrs
+                                ).toFixed(2)}{" "} */}
+                                {Math.abs(
+                                  parseInt(
+                                    data.actual_hours - data.worked_hours
+                                  )
+                                ) + " Hrs"}
+                                {data.minutes + " Mins"}
                               </b>
                             </React.Fragment>
                           )}
