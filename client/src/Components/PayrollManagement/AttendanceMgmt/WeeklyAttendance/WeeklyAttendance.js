@@ -771,7 +771,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress weekOffCntr"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("ddd, Do")}
+                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
                     <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
@@ -799,7 +799,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("ddd, Do")}
+                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
                     <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
@@ -887,7 +887,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("ddd, Do")}
+                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
                     <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
@@ -912,7 +912,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress "
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("ddd, Do")}
+                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
                     <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
@@ -937,7 +937,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("ddd, Do")}
+                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
                     <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
@@ -962,7 +962,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("ddd, Do")}
+                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
                     <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
@@ -1033,7 +1033,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("ddd, Do")}
+                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
                     <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}

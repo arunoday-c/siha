@@ -2235,10 +2235,11 @@ addLeaveMaster: (req, res, next) => {
         input.leave_code,
         input.leave_description,
         input.leave_category,
+        input.calculation_type,
         input.include_weekoff,
         input.include_holiday,
         input.leave_mode,
-        input.calculation_type,
+      
         input.leave_accrual,
         input.leave_encash,
         input.leave_type,
