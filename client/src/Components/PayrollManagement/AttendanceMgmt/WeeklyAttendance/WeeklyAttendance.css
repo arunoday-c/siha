@@ -28,6 +28,60 @@
     background-color: #e7ecef !important; }
   .hrTimeSheet .bg-shortage {
     background-color: #e6d926 !important; }
+  .hrTimeSheet .timeCheckCntr {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    /* Hide the browser's default checkbox */
+    /* Create a custom checkbox */
+    /* On mouse-over, add a grey background color */
+    /* When the checkbox is checked, add a blue background */
+    /* Create the checkmark/indicator (hidden when not checked) */
+    /* Show the checkmark when checked */
+    /* Style the checkmark/indicator */ }
+    .hrTimeSheet .timeCheckCntr input {
+      position: absolute;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0; }
+    .hrTimeSheet .timeCheckCntr .checkmark {
+      border-radius: 5px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 25px !important;
+      width: 25px !important;
+      background-color: #eee;
+      top: 2px;
+      border: 1px solid #dcdcdc; }
+    .hrTimeSheet .timeCheckCntr:hover input ~ .checkmark {
+      background-color: #ccc; }
+    .hrTimeSheet .timeCheckCntr input:checked ~ .checkmark {
+      background-color: #2196f3; }
+    .hrTimeSheet .timeCheckCntr .checkmark:after {
+      content: "";
+      position: absolute;
+      display: none; }
+    .hrTimeSheet .timeCheckCntr input:checked ~ .checkmark:after {
+      display: block; }
+    .hrTimeSheet .timeCheckCntr .checkmark:after {
+      left: 9px;
+      top: 5px;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 3px 3px 0;
+      -webkit-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      transform: rotate(45deg); }
   .hrTimeSheet .WeeklyTimeProgress {
     max-height: 53vh;
     overflow-x: hidden;
@@ -41,57 +95,6 @@
       .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr {
         height: 0.3rem;
         padding-right: 0; }
-        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr {
-          display: block;
-          position: relative;
-          padding-left: 35px;
-          margin-bottom: 12px;
-          cursor: pointer;
-          font-size: 22px;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-          user-select: none;
-          /* Hide the browser's default checkbox */
-          /* Create a custom checkbox */
-          /* On mouse-over, add a grey background color */
-          /* When the checkbox is checked, add a blue background */
-          /* Create the checkmark/indicator (hidden when not checked) */
-          /* Show the checkmark when checked */
-          /* Style the checkmark/indicator */ }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-            height: 0;
-            width: 0; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr .checkmark {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 25px;
-            width: 25px;
-            background-color: #eee; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr:hover input ~ .checkmark {
-            background-color: #ccc; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr input:checked ~ .checkmark {
-            background-color: #2196f3; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr .checkmark:after {
-            content: "";
-            position: absolute;
-            display: none; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr input:checked ~ .checkmark:after {
-            display: block; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr .checkmark:after {
-            left: 9px;
-            top: 5px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 3px 3px 0;
-            -webkit-transform: rotate(45deg);
-            -ms-transform: rotate(45deg);
-            transform: rotate(45deg); }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress {
           height: 0.5rem;
           margin-top: 0.6rem; }
@@ -156,27 +159,27 @@
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.absentCntr {
           background: rgba(255, 0, 0, 0.2);
           border: 1px solid rgba(255, 0, 0, 0.5);
-          left: 35vw;
+          left: 25vw;
           top: 2px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.paidLeaveCntr {
           background: rgba(0, 186, 190, 0.2);
           border: 1px solid rgba(0, 186, 190, 0.5);
-          left: 34.8vw;
+          left: 24.8vw;
           top: 2px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.unPaidLeaveCntr {
           background: rgba(255, 0, 0, 0.2);
           border: 1px solid rgba(255, 0, 0, 0.5);
-          left: 34.3vw;
+          left: 24.3vw;
           top: 2px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.holidayCntr {
           background: rgba(0, 17, 255, 0.2);
           border: 1px solid rgba(0, 17, 255, 0.5);
-          left: 35.3vw;
+          left: 25.3vw;
           top: 2px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.weekOffCntr {
           background: rgba(0, 0, 0, 0.2);
           border: 1px solid rgba(0, 0, 0, 0.5);
-          left: 34.9vw;
+          left: 24.9vw;
           top: 2px; }
   .hrTimeSheet .ruler {
     position: relative;
