@@ -2304,29 +2304,29 @@ ORDER BY  AccessDate `;
           })
           .then(hrms_options => {
             options = hrms_options;
-            // if (input.attendance_type == "MW") {
-            if (
-              options[0]["salary_pay_before_end_date"] == "Y" &&
-              options[0]["payroll_payment_date"] != null
-            ) {
-              const _endDate =
-                moment(input.from_date)
+            if (input.attendance_type == "MW") {
+              if (
+                options[0]["salary_pay_before_end_date"] == "Y" &&
+                options[0]["payroll_payment_date"] != null
+              ) {
+                const _endDate =
+                  moment(input.from_date)
+                    .clone()
+                    .format("YYYY-MM-") + options[0]["payroll_payment_date"];
+                const _prevDays = options[0]["payroll_payment_date"] + 1;
+                const _prevMonthYear = moment(input.from_date)
                   .clone()
-                  .format("YYYY-MM-") + options[0]["payroll_payment_date"];
-              const _prevDays = options[0]["payroll_payment_date"] + 1;
-              const _prevMonthYear = moment(input.from_date)
-                .clone()
-                .add(-1, "months");
-              _lastDayInPreMonth = moment(_prevMonthYear).endOf("month");
-              from_date =
-                moment(_prevMonthYear)
-                  .clone()
-                  .format("YYYY-MM") +
-                "-" +
-                _prevDays;
-              to_date = _endDate;
+                  .add(-1, "months");
+                _lastDayInPreMonth = moment(_prevMonthYear).endOf("month");
+                from_date =
+                  moment(_prevMonthYear)
+                    .clone()
+                    .format("YYYY-MM") +
+                  "-" +
+                  _prevDays;
+                to_date = _endDate;
+              }
             }
-            //}
 
             _mysql
               .executeQuery({
