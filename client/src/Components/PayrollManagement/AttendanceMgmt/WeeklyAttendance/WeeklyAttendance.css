@@ -9,12 +9,25 @@
       font-size: 16em;
       margin: 4vh 0 6vh;
       color: rgba(0, 0, 0, 0.04); }
+  .hrTimeSheet .legendValue {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    display: inline-block;
+    padding: 2px 5px;
+    font-size: 0.7em;
+    margin-top: 0px;
+    border-radius: 3px; }
+    .hrTimeSheet .legendValue b {
+      display: block; }
   .hrTimeSheet .weekdaysDiv i {
     cursor: pointer; }
     .hrTimeSheet .weekdaysDiv i:hover {
       color: #34b8bc; }
   .hrTimeSheet .weekdaysDiv span {
     margin: 0 10px; }
+  .hrTimeSheet .bg-default {
+    background-color: #e7ecef !important; }
+  .hrTimeSheet .bg-shortage {
+    background-color: #e6d926 !important; }
   .hrTimeSheet .WeeklyTimeProgress {
     max-height: 53vh;
     overflow-x: hidden;
@@ -28,14 +41,63 @@
       .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr {
         height: 0.3rem;
         padding-right: 0; }
+        .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr {
+          display: block;
+          position: relative;
+          padding-left: 35px;
+          margin-bottom: 12px;
+          cursor: pointer;
+          font-size: 22px;
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          /* Hide the browser's default checkbox */
+          /* Create a custom checkbox */
+          /* On mouse-over, add a grey background color */
+          /* When the checkbox is checked, add a blue background */
+          /* Create the checkmark/indicator (hidden when not checked) */
+          /* Show the checkmark when checked */
+          /* Style the checkmark/indicator */ }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 25px;
+            width: 25px;
+            background-color: #eee; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr:hover input ~ .checkmark {
+            background-color: #ccc; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr input:checked ~ .checkmark {
+            background-color: #2196f3; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr input:checked ~ .checkmark:after {
+            display: block; }
+          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .timeCheckCntr .checkmark:after {
+            left: 9px;
+            top: 5px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 3px 3px 0;
+            -webkit-transform: rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: rotate(45deg); }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress {
           height: 0.5rem;
           margin-top: 0.6rem; }
           .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress .progress-bar {
             position: relative;
             background-color: #e8e8e8; }
-          .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress .bg-default {
-            background-color: #e7ecef !important; }
           .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress:last-child {
             border-bottom: none; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span {
@@ -60,7 +122,7 @@
             text-align: center;
             margin-left: 2px; }
           .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span .lateTime {
-            color: #ff5c40; }
+            color: #e6d926; }
           .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span .OverTime {
             color: #17d217; }
           .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails span::after {
@@ -74,7 +136,7 @@
             border-style: solid;
             border-color: transparent transparent rgba(0, 0, 0, 0.7) transparent; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails .checkIn {
-          left: 15px; }
+          left: 40px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails .totalHr {
           left: 42.5%; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .tooltipDetails .checkOut {
@@ -94,23 +156,28 @@
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.absentCntr {
           background: rgba(255, 0, 0, 0.2);
           border: 1px solid rgba(255, 0, 0, 0.5);
-          left: 35vw; }
+          left: 35vw;
+          top: 2px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.paidLeaveCntr {
           background: rgba(0, 186, 190, 0.2);
           border: 1px solid rgba(0, 186, 190, 0.5);
-          left: 34.8vw; }
+          left: 34.8vw;
+          top: 2px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.unPaidLeaveCntr {
           background: rgba(255, 0, 0, 0.2);
           border: 1px solid rgba(255, 0, 0, 0.5);
-          left: 34.3vw; }
+          left: 34.3vw;
+          top: 2px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.holidayCntr {
           background: rgba(0, 17, 255, 0.2);
           border: 1px solid rgba(0, 17, 255, 0.5);
-          left: 35.3vw; }
+          left: 35.3vw;
+          top: 2px; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress span.weekOffCntr {
           background: rgba(0, 0, 0, 0.2);
           border: 1px solid rgba(0, 0, 0, 0.5);
-          left: 34.9vw; }
+          left: 34.9vw;
+          top: 2px; }
   .hrTimeSheet .ruler {
     position: relative;
     width: 100%;
