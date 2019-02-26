@@ -789,6 +789,7 @@ module.exports = {
                     .format("YYYY-MM-DD"),
                   employee_id: input.employees[emp]["hims_d_employee_id"],
                   sub_department_id: input.employees[emp]["sub_department_id"],
+                  sub_department_id: input.employees[emp]["sub_department_id"],
                   ...week_off_Data
                 });
               }
@@ -861,9 +862,9 @@ module.exports = {
       .executeQuery({
         query:
           "INSERT INTO `hims_f_shift_roster` (employee_id,sub_department_id,shift_date,shift_id,shift_end_date,\
-          shift_start_time,shift_end_time,shift_time,weekoff,holiday) values(?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE shift_id=?,shift_end_date=?,\
-          shift_start_time=?,shift_end_time=?,shift_time=?,\
-          weekoff=?,holiday=?",
+          shift_start_time,shift_end_time,shift_time,weekoff,holiday) values(?,?,?,?,?,?,?,?,?,?)\
+           ON DUPLICATE KEY UPDATE shift_id=?, sub_department_id=?,shift_end_date=?,\
+          shift_start_time=?,shift_end_time=?,shift_time=?",
         values: [
           input.employee_id,
           input.sub_department_id,
@@ -877,12 +878,13 @@ module.exports = {
           input.holiday,
 
           input.shift_id,
+          input.sub_department_id,
           input.shift_end_date,
           input.shift_start_time,
           input.shift_end_time,
-          input.shift_time,
-          input.weekoff,
-          input.holiday
+          input.shift_time
+          // input.weekoff,
+          // input.holiday
         ],
         printQuery: true
       })

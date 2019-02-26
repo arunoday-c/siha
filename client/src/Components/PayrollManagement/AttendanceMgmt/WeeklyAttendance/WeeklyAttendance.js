@@ -257,7 +257,8 @@ export default class WeeklyAttendance extends Component {
           to_date: _toDate,
           hospital_id: this.state.hospital_id,
           hims_d_employee_id: this.state.hims_d_employee_id,
-          sub_department_id: this.state.sub_department_id
+          sub_department_id: this.state.sub_department_id,
+          attendance_type: this.state.attendance_type
         },
         onSuccess: res => {
           if (res.data.success) {
