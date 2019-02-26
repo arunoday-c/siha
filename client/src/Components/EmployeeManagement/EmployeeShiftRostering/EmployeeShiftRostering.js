@@ -529,6 +529,21 @@ export default class EmployeeShiftRostering extends Component {
                 ? "HO"
                 : holiday.holiday_description}
             </span>
+
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li
+                onClick={this.pasteShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD")
+                })}
+                style={{
+                  zIndex: 9999
+                }}
+              >
+                Paste
+              </li>
+            </ul>
           </td>
         ) : (
           <td

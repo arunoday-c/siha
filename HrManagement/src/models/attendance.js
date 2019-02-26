@@ -2453,7 +2453,7 @@ ORDER BY  AccessDate `;
       'PEN' as regularize_status,attendance_date as login_date,\
       out_date as logout_date,in_time as punch_in_time,\
       out_time as punch_out_time from hims_f_daily_time_sheet where  \
-      and date(attendance_date)>=date(?) and date(out_date) <=date(?) and status='EX' ";
+       date(attendance_date)>=date(?) and date(out_date) <=date(?) and status='EX' ";
 
       if (input.employee_id != null) {
         _QueryDtl += " and employee_id=?;";
@@ -2475,8 +2475,8 @@ ORDER BY  AccessDate `;
                 "insert into hims_f_attendance_regularize(`employee_id`,`attendance_date`,\
               `regularize_status`,`login_date`,`logout_date`,`punch_in_time`,`punch_out_time`)values(?,?,?,?,?,?,?)\
               ON DUPLICATE KEY UPDATE `punch_in_time`=?,`punch_out_time`=?;",
-                values[
-                  (result[i]["employee_id"],
+               [
+                  result[i]["employee_id"],
                   result[i]["attendance_date"],
                   result[i]["regularize_status"],
                   result[i]["login_date"],
@@ -2484,7 +2484,7 @@ ORDER BY  AccessDate `;
                   result[i]["punch_in_time"],
                   result[i]["punch_out_time"],
                   result[i]["punch_in_time"],
-                  result[i]["punch_out_time"])
+                  result[i]["punch_out_time"]
                 ]
               );
             }
