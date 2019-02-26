@@ -118,7 +118,10 @@ class LeaveMaster extends Component {
         title: "Please Add at least one Leave Rule",
         type: "warning"
       });
-    } else if (this.state.leaveEncash.length === 0) {
+    } else if (
+      this.state.leave_encash === true &&
+      this.state.leaveEncash.length === 0
+    ) {
       swalMessage({
         title: "Please Add at least one Leave Encashment",
         type: "warning"

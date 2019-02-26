@@ -2216,7 +2216,7 @@ ORDER BY  AccessDate `;
                     } else {
                       req.records = {
                         invalid_data: true,
-                        message: "no punches exist"
+                        message: "Biometric Data Not Available"
                       };
                       _mysql.releaseConnection();
 
@@ -2703,7 +2703,7 @@ if(punchIn.in_time!=null&&punchOut.out_time!=null){
                     } else {
                       req.records = {
                         invalid_data: true,
-                        message: "no punches exist"
+                        message: "Biometric Data Not Available"
                       };
                       _mysql.releaseConnection();
   

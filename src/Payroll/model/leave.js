@@ -914,10 +914,10 @@ let addLeaveMaster = (req, res, next) => {
             input.leave_code,
             input.leave_description,
             input.leave_category,
+            input.calculation_type,
             input.include_weekoff,
             input.include_holiday,
             input.leave_mode,
-            input.calculation_type,
             input.leave_accrual,
             input.leave_encash,
             input.leave_type,
@@ -1149,7 +1149,7 @@ let addLeaveMaster = (req, res, next) => {
                 releaseDBConnection(db, connection);
                 req.records = {
                   invalid_data: true,
-                  message: "please send correct data"
+                  message: "Please Send Correct Data"
                 };
                 next();
                 return;
