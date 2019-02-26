@@ -9,40 +9,49 @@
       "port": 3001,
       "url": ""
     },
-    "pharmacy": {
-      "port": 3009,
-      "url": ""
-    },
-    "laboratory": {
-      "port": 3013,
-      "url": ""
-    },
-    "radiology": {
-      "port": 3012,
-      "url": ""
-    },
-    "finance": {
-      "port": 3007,
-      "url": ""
-    },
-    "documentManagement": {
-      "port": 3006,
+    "masterSettings": {
+      "port": 3003,
       "url": ""
     },
     "hrManagement": {
       "port": 3004,
       "url": ""
     },
+    "documentManagement": {
+      "port": 3006,
+      "url": ""
+    },
+    "finance": {
+      "port": 3007,
+      "url": ""
+    },
+    "inventory": {
+      "port": 3008,
+      "url": ""
+    },
+    "pharmacy": {
+      "port": 3009,
+      "url": ""
+    },
+
     "clicnicalDesk": {
       "port": 3011,
       "url": ""
     },
-    "masterSettings": {
-      "port": 3003,
+    "radiology": {
+      "port": 3012,
+      "url": ""
+    },
+    "laboratory": {
+      "port": 3013,
       "url": ""
     },
     "billing": {
       "port": 3014,
+      "url": ""
+    },
+    "procurement": {
+      "port": 3017,
       "url": ""
     }
   },

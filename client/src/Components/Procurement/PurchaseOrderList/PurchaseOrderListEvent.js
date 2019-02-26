@@ -31,6 +31,7 @@ const LocationchangeTexts = ($this, ctrl, e) => {
 };
 
 const getPurchaseOrderList = $this => {
+  debugger;
   let inpObj = {};
 
   if ($this.state.po_from === "PHR") {
@@ -43,6 +44,7 @@ const getPurchaseOrderList = $this => {
   // inpObj.authorie2 = "N";
   $this.props.getPurchaseOrderList({
     uri: "/PurchaseOrderEntry/getAuthPurchaseList",
+    // module: "procurement",
     method: "GET",
     data: inpObj,
     redux: {

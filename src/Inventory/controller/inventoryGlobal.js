@@ -2,11 +2,11 @@ import { Router } from "express";
 import { releaseConnection } from "../../utils";
 import httpStatus from "../../utils/httpStatus";
 import {
-  getUomLocationStock,
-  getItemMoment,
-  getItemLocationStock,
-  getUserLocationPermission,
-  getItemandLocationStock
+  getUomLocationStock, //Done
+  getItemMoment, //Done
+  getItemLocationStock, //Done
+  getUserLocationPermission, //Done
+  getItemandLocationStock //Done
 } from "../model/inventoryGlobal";
 
 export default ({ config, db }) => {

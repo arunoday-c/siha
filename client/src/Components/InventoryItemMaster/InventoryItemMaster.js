@@ -10,7 +10,8 @@ import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 
 import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { getItems, EditItemMaster } from "./InventoryItemMasterEvent";
+// import { getItems, EditItemMaster } from "./InventoryItemMasterEvent";
+import InvItemSetupEvent from "./InventoryItemMasterEvent";
 
 class InventoryItemMaster extends Component {
   constructor(props) {
@@ -81,7 +82,7 @@ class InventoryItemMaster extends Component {
       this.props.inventoryitemlist === undefined ||
       this.props.inventoryitemlist.length === 0
     ) {
-      getItems(this, this);
+      InvItemSetupEvent().getItems(this, this);
     }
   }
 
@@ -102,7 +103,7 @@ class InventoryItemMaster extends Component {
       },
       () => {
         if (e === true) {
-          getItems(this, this);
+          InvItemSetupEvent().getItems(this, this);
         }
       }
     );
@@ -179,7 +180,11 @@ class InventoryItemMaster extends Component {
                           <span>
                             <i
                               className="fas fa-pen"
-                              onClick={EditItemMaster.bind(this, this, row)}
+                              onClick={InvItemSetupEvent().EditItemMaster.bind(
+                                this,
+                                this,
+                                row
+                              )}
                             />
                           </span>
                         );

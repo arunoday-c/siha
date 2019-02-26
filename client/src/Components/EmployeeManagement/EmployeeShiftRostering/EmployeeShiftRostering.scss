@@ -7,13 +7,128 @@
     border-radius: 6px;
   }
 
+  .leave_cell_auth {
+    background: rgb(135, 156, 63);
+    color: white;
+    position: relative;
+    span {
+      display: block;
+      width: 80%;
+      position: relative;
+      &:hover {
+        .leaveInfo {
+          display: block;
+        }
+      }
+    }
+
+    .leaveInfo {
+      font-size: 0.7rem;
+      width: 150px;
+      padding: 2px 5px;
+      position: absolute;
+      z-index: 9;
+      top: 15px;
+      right: 30px;
+      font-weight: normal;
+      display: none;
+      background: rgba(255, 255, 255, 0.95);
+      text-align: left;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+      span {
+        width: 100%;
+        color: #000;
+        b {
+          text-align: right;
+          float: right;
+        }
+      }
+    }
+  }
+  .leave_cell_unauth {
+    background: rgb(156, 125, 63);
+    color: white;
+    position: relative;
+    span {
+      display: block;
+      width: 80%;
+      position: relative;
+      &:hover {
+        .leaveInfo {
+          display: block;
+        }
+      }
+    }
+
+    .leaveInfo {
+      font-size: 0.7rem;
+      width: 150px;
+      padding: 2px 5px;
+      position: absolute;
+      z-index: 9;
+      top: 15px;
+      right: 30px;
+      font-weight: normal;
+      display: none;
+      background: rgba(255, 255, 255, 0.95);
+      text-align: left;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+      span {
+        width: 100%;
+        color: #000;
+        b {
+          text-align: right;
+          float: right;
+        }
+      }
+    }
+  }
+
   .time_cell {
     background-color: "lightgray";
     cursor: pointer;
   }
+
   .editAction {
     position: relative;
     //z-index: 9999;
+    span {
+      display: block;
+      width: 80%;
+      &:hover {
+        .shiftMoreInfo {
+          display: block;
+        }
+      }
+    }
+    .shiftMoreInfo {
+      font-size: 0.7rem;
+      width: 150px;
+      padding: 2px 5px;
+      position: absolute;
+      z-index: 9;
+      top: 15px;
+      right: 30px;
+      font-weight: normal;
+      display: none;
+      background: rgba(255, 255, 255, 0.95);
+      text-align: left;
+      border-radius: 4px;
+      border: 1px solid rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+      span {
+        width: 100%;
+        color: #000;
+        b {
+          text-align: right;
+          float: right;
+        }
+      }
+    }
     .fa-ellipsis-v {
       display: none;
       position: absolute;
@@ -76,16 +191,12 @@
     color: white;
   }
 
-  .leave_cell {
-    background: rgb(135, 156, 63);
-    color: white;
-  }
-
   .time_cell:hover {
     background-color: rgb(88, 185, 192);
   }
 
   #shiftRosterTable {
+    min-height: 54vh;
     .noTimeSheetData {
       text-align: center;
       color: rgba(0, 0, 0, 0.1);
@@ -107,49 +218,42 @@
       box-sizing: border-box;
       table-layout: fixed;
       min-height: 20vh;
-      max-height: 55vh;
+      max-height: 52vh;
       thead {
         th {
-          //			display: table-cell;
           padding: 3px;
           text-align: center;
           border-right: 1px solid rgb(199, 224, 224);
           border-bottom: 1px solid #d2d2d2;
           color: #000 !important;
           background: #dff6f6 !important;
-          width: 55px; // changed from 75px to 55px to make it compact
-          // &:nth-child(1) {
-          //   text-align: center;
-          //   width: 120px;
+          width: 45px; // changed from 75px to 55px to make it compact
+          font-size: 0.7em;
           // }
           &:nth-child(1) {
             text-align: left;
             width: 200px;
+            font-size: 1em;
           }
           &:last-child,
           &:nth-last-child(2) {
             width: 100px;
+            font-size: 1em;
           }
         }
       }
       tbody {
-        //	display: block;
         overflow: auto;
         min-height: 60vh;
         max-height: 60vh;
         tr {
-          //	display: table-cell;
           td {
-            //	display: block;
             padding: 3px;
             text-align: center;
             border-right: 1px solid #ececec;
             border-top: 1px solid #ececec;
-            width: 75px;
-            // &:nth-child(1) {
-            //   text-align: center;
-            //   width: 120px;
-            // }
+            width: 45px;
+            font-size: 0.8em;
             &:nth-child(1) {
               text-align: left;
               width: 200px;

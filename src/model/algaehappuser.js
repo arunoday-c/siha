@@ -264,7 +264,6 @@ let createUserLogin = (req, res, next) => {
                 next(error);
               });
             }
-
             connection.query(
               "INSERT INTO `algaeh_d_app_user` (username,user_display_name,user_type,effective_start_date, created_date, created_by, updated_date, updated_by)\
           VALUE(?,?,?,?,?,?,?,?)",

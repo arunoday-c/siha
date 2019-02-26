@@ -68,6 +68,8 @@ module.exports = {
                 _mysql.releaseConnection();
                 next(e);
               });
+          } else {
+            next(new Error("Selected patient does not exists"));
           }
         })
         .catch(e => {

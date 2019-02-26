@@ -25,6 +25,7 @@ const updateLabSpecimen = ($this, data) => {
 
   algaehApiCall({
     uri: "/labmasters/updateSpecimen",
+    // module: "laboratory",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -35,6 +36,7 @@ const updateLabSpecimen = ($this, data) => {
         });
         $this.props.getLabSpecimen({
           uri: "/labmasters/selectSpecimen",
+          // module: "laboratory",
           method: "GET",
           redux: {
             type: "SPECIMEN_GET_DATA",
@@ -64,6 +66,7 @@ const showconfirmDialog = ($this, id) => {
       };
       algaehApiCall({
         uri: "/labmasters/deleteSpecimen",
+        // module: "laboratory",
         data: data,
         method: "DELETE",
         onSuccess: response => {
@@ -74,6 +77,7 @@ const showconfirmDialog = ($this, id) => {
             });
             $this.props.getLabSpecimen({
               uri: "/labmasters/selectSpecimen",
+              // module: "laboratory",
               method: "GET",
               redux: {
                 type: "SPECIMEN_GET_DATA",
@@ -105,6 +109,7 @@ const insertLabSpecimen = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/labmasters/insertSpecimen",
+        // module: "laboratory",
         data: $this.state,
         onSuccess: response => {
           resetState($this);
@@ -112,6 +117,7 @@ const insertLabSpecimen = ($this, e) => {
             //Handle Successful Add here
             $this.props.getLabSpecimen({
               uri: "/labmasters/selectSpecimen",
+              // module: "laboratory",
               method: "GET",
               redux: {
                 type: "SPECIMEN_GET_DATA",

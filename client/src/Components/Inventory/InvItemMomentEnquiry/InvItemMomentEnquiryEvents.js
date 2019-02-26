@@ -4,7 +4,6 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
-  
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -30,6 +29,7 @@ const ProcessItemMoment = $this => {
       AlgaehLoader({ show: true });
       $this.props.getItemMoment({
         uri: "/inventoryGlobal/getItemMoment",
+        // module: "inventory",
         method: "GET",
         printInput: true,
         data: {

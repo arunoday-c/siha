@@ -3,10 +3,10 @@ import { releaseConnection, generateDbConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import {
-  addCreidtSettlement,
-  getCreidtSettlement,
-  updateOPBilling,
-  getPatientwiseBill
+  addCreidtSettlement, //Done
+  getCreidtSettlement, //Done
+  updateOPBilling, //Done
+  getPatientwiseBill //Done
 } from "../model/opCreditSettlement";
 
 import { debugFunction, debugLog } from "../utils/logging";

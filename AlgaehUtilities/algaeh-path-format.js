@@ -1,7 +1,8 @@
-export default function algaehPath(path) {
+function algaehPath(path) {
+  let _path = path;
   if (process.env.NODE_ENV == "production") {
-    return path.replace("/src/", "/");
-  } else {
-    return path;
+    _path = path.replace("/src/", "/");
   }
+  return require(_path);
 }
+module.exports = algaehPath;

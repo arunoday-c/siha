@@ -2,9 +2,9 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import {
-  addInvestigationTest,
-  getInvestigTestList,
-  updateInvestigationTest
+  addInvestigationTest, //Done
+  getInvestigTestList, //Done
+  updateInvestigationTest //Done
 } from "../model/investigation";
 export default ({ config, db }) => {
   let api = Router();

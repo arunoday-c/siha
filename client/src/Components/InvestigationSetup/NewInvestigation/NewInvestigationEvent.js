@@ -30,50 +30,61 @@ const Validations = $this => {
     });
     document.querySelector("[name='services_id']").focus();
     return isError;
-  } else if ($this.state.lab_section_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Invalid Input. Lab Section Cannot be blank."
-    });
-    document.querySelector("[name='lab_section_id']").focus();
-    return isError;
-  } else if ($this.state.specimen_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Invalid Input. Specimen Cannot be blank."
-    });
-    document.querySelector("[name='specimen_id']").focus();
-    return isError;
-  } else if ($this.state.container_id === null) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Invalid Input. Container Cannot be blank."
-    });
-    document.querySelector("[name='container_id']").focus();
-    return isError;
-  } else if (
-    $this.state.investigation_type === "L" &&
-    $this.state.analytes.length === 0
-  ) {
-    isError = true;
-    swalMessage({
-      type: "error",
-      title: "Invalid Input. Atleast One Analytes to be add."
-    });
+  } else if ($this.state.investigation_type === "L") {
+    if ($this.state.specimen_id === null) {
+      isError = true;
+      swalMessage({
+        type: "error",
+        title: "Invalid Input. Specimen Cannot be blank."
+      });
+      document.querySelector("[name='specimen_id']").focus();
+      return isError;
+    } else if ($this.state.lab_section_id === null) {
+      isError = true;
+      swalMessage({
+        type: "error",
+        title: "Invalid Input. Lab Section Cannot be blank."
+      });
+      document.querySelector("[name='lab_section_id']").focus();
+      return isError;
+    } else if ($this.state.container_id === null) {
+      isError = true;
+      swalMessage({
+        type: "error",
+        title: "Invalid Input. Container Cannot be blank."
+      });
+      document.querySelector("[name='container_id']").focus();
+      return isError;
+    } else if ($this.state.analytes.length === 0) {
+      isError = true;
+      swalMessage({
+        type: "error",
+        title: "Invalid Input. Atleast One Analytes to be add."
+      });
 
-    return isError;
+      return isError;
+    }
+  } else if ($this.state.investigation_type === "R") {
+    if ($this.state.category_id === null) {
+      isError = true;
+      swalMessage({
+        type: "error",
+        title: "Invalid Input. Category Cannot be blank."
+      });
+      document.querySelector("[name='category_id']").focus();
+      return isError;
+    }
   }
 };
 const InsertLabTest = ($this, e) => {
+  debugger;
   const err = Validations($this);
 
   if (!err) {
     if ($this.state.hims_d_investigation_test_id === null) {
       algaehApiCall({
         uri: "/investigation/addInvestigationTest",
+        // module: "laboratory",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -88,6 +99,7 @@ const InsertLabTest = ($this, e) => {
     } else {
       algaehApiCall({
         uri: "/investigation/updateInvestigationTest",
+        // module: "laboratory",
         data: $this.state,
         method: "PUT",
         onSuccess: response => {

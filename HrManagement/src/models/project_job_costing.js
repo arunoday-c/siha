@@ -3,7 +3,7 @@ import _ from "lodash";
 import moment from "moment";
 import { LINQ } from "node-linq";
 import algaehUtilities from "algaeh-utilities/utilities";
-
+import { getEmployeeWeekOffsHolidays, getDays } from "./shift_roster";
 module.exports = {
   getDivisionProject: (req, res, next) => {
     try {
@@ -104,6 +104,7 @@ module.exports = {
     let allEmployees = [];
     let allHolidays = [];
     let allLeaves = [];
+    let allProjects = [];
 
     let outputArray = [];
     if (req.query.sub_department_id > 0) {
@@ -115,6 +116,7 @@ module.exports = {
 
     if (
       req.query.hospital_id > 0 &&
+      req.query.sub_department_id > 0 &&
       req.query.fromDate != null &&
       req.query.toDate != null
     ) {
@@ -134,12 +136,18 @@ module.exports = {
            from_leave_session,to_leave_session,status\
             FROM hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
             where (status= 'APR' or status= 'PEN' )AND   ((from_date>= ? and from_date <= ?) or\
-          (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)); `,
+          (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)); 
+          select hims_f_project_roster_id,employee_id,attendance_date,project_id , project_desc,project_code,start_date,end_date
+        from hims_f_project_roster PR inner join hims_d_project P
+        on PR.project_id = P.hims_d_project_id and P.record_status='A'
+        where date(attendance_date) between date(?) and date(?)`,
           values: [
             req.query.hospital_id,
             fromDate,
             toDate,
             req.query.hospital_id,
+            fromDate,
+            toDate,
             fromDate,
             toDate,
             fromDate,
@@ -154,8 +162,9 @@ module.exports = {
           allEmployees = result[0];
           allHolidays = result[1];
           allLeaves = result[2];
+          allProjects = result[3];
 
-          //utilities.logger().log("allLeaves: ", allLeaves);
+          utilities.logger().log("allProjects: ", allProjects);
 
           for (let i = 0; i < allEmployees.length; i++) {
             let holidays = new LINQ(allHolidays)
@@ -201,11 +210,30 @@ module.exports = {
               })
               .ToArray();
 
-            //------------for each leave
+            let empProject = new LINQ(allProjects)
+              .Where(
+                w => w.employee_id == allEmployees[i]["hims_d_employee_id"]
+              )
+              .Select(s => {
+                return {
+                  hims_f_project_roster_id: s.hims_f_project_roster_id,
+                  employee_id: s.employee_id,
+                  attendance_date: s.attendance_date,
+                  project_id: s.project_id,
+                  project_desc: s.project_desc,
+                  project_code: s.project_code,
+                  start_date: s.start_date,
+                  end_date: s.end_date
+                };
+              })
+              .ToArray();
 
+            // utilities.logger().log("Projects: ", empProject);
+
+            //------------for each leave
             let employeeLeaves = [];
 
-            utilities.logger().log("leaves: ", leaves);
+            // utilities.logger().log("leaves: ", leaves);
 
             if (leaves.length > 0) {
               for (let m = 0; m < leaves.length; m++) {
@@ -315,7 +343,8 @@ module.exports = {
             outputArray.push({
               ...allEmployees[i],
               employeeLeaves,
-              holidays
+              holidays,
+              empProject
             });
           }
 
@@ -330,10 +359,157 @@ module.exports = {
     } else {
       req.records = {
         invalid_input: true,
-        message: "please provide valid input"
+        message: "Please Select Branch and Department"
       };
       next();
       return;
+    }
+  },
+  //created by Adnan:
+  deleteProjectRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (input.hims_f_project_roster_id > 0) {
+      _mysql
+        .executeQuery({
+          query:
+            "delete from hims_f_project_roster where hims_f_project_roster_id = ?",
+          values: [input.hims_f_project_roster_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+    }
+  },
+  addProjectRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    try {
+      let input = req.body;
+      if (!moment(input.from_date).isValid) {
+        next(
+          utilities
+            .httpStatus()
+            .generateError(
+              utilities.httpStatus().badRequest,
+              "Date range is invalid"
+            )
+        );
+        return;
+      }
+      if (!moment(input.to_date).isValid) {
+        next(
+          utilities
+            .httpStatus()
+            .generateError(
+              utilities.httpStatus().badRequest,
+              "Date range is invalid"
+            )
+        );
+        return;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
+        religion_id from hims_d_holiday where record_status='A' and date(holiday_date) between date(?) and date(?) and hospital_id=?",
+          values: [input.from_date, input.to_date, input.hospital_id]
+        })
+        .then(holidayResult => {
+          let _days = [];
+          if (input.employees.length > 0) {
+            _days = getDays(
+              moment(input.from_date)._d,
+              moment(input.to_date)._d
+            );
+          }
+          let insertData = "";
+          const _employees = input.employees.map((employee, index) => {
+            let empHoliday = getEmployeeWeekOffsHolidays(
+              input.from_date,
+              input.to_date,
+              employee,
+              holidayResult
+            );
+            _days.map(date => {
+              if (
+                moment(date).format("YYYYMMDD") >=
+                  moment(employee["date_of_joining"]).format("YYYYMMDD") &&
+                (employee["exit_date"] == null ||
+                  moment(employee["exit_date"]).format("YYYYMMDD") <
+                    moment(date).format("YYYYMMDD"))
+              ) {
+                const week_off_Data = _.find(empHoliday, f => {
+                  return (
+                    moment(f.holiday_date).format("YYYYMMDD") ==
+                    moment(date).format("YYYYMMDD")
+                  );
+                });
+                if (
+                  week_off_Data == null ||
+                  week_off_Data.weekoff == "N" ||
+                  week_off_Data.holiday == "N"
+                ) {
+                  const _leave = _.find(employee["employeeLeaves"], l => {
+                    return (
+                      moment(l["leaveDate"]).format("YYYYMMDD") ==
+                      moment(date).format("YYYYMMDD")
+                    );
+                  });
+                  insertData += _mysql.mysqlQueryFormat(
+                    "insert into hims_f_project_roster(`employee_id`,\
+                  `attendance_date`,`project_id`,`hims_f_leave_application_id`) \
+                  values(?,?,?,?);",
+                    [
+                      employee["hims_d_employee_id"],
+                      moment(date)._d,
+                      input.project_id,
+                      _leave != null ? _leave.hims_f_leave_application_id : null
+                    ]
+                  );
+                }
+              }
+            });
+          });
+          if (insertData != "") {
+            _mysql
+              .executeQuery({
+                query: insertData
+              })
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            req.records = {};
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
     }
   }
 };

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import algaehPath from "algaeh-utilities/algaeh-path-format";
+import algaehPath from "algaeh-module-bridge";
 
 import {
   addsalesReturn,
@@ -10,9 +10,9 @@ import {
 } from "../models/salesReturn";
 
 import { updateIntoItemLocation } from "../models/commonFunction";
-const { addReceiptEntry, getReceiptEntry } = require(algaehPath(
+const { addReceiptEntry, getReceiptEntry } = algaehPath(
   "algaeh-billing/src/models/receiptentry"
-));
+);
 
 export default () => {
   const api = Router();

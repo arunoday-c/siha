@@ -73,6 +73,7 @@ const InsertUpdateItems = $this => {
 
           algaehApiCall({
             uri: "/inventory/addItemMaster",
+            // module: "inventory",
             data: $this.state,
             onSuccess: response => {
               if (response.data.success === true) {
@@ -88,6 +89,7 @@ const InsertUpdateItems = $this => {
           $this.state.record_status = "A";
           algaehApiCall({
             uri: "/inventory/updateItemMasterAndUom",
+            // module: "inventory",
             data: $this.state,
             method: "PUT",
             onSuccess: response => {

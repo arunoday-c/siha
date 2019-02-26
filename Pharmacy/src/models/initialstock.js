@@ -71,12 +71,6 @@ module.exports = {
 
           let period = month;
 
-          req.connection = {
-            connection: _mysql.connection,
-            isTransactionConnection: _mysql.isTransactionConnection,
-            pool: _mysql.pool
-          };
-
           _mysql
             .executeQuery({
               query:
@@ -191,6 +185,11 @@ module.exports = {
           printQuery: true
         })
         .then(headerResult => {
+          req.connection = {
+            connection: _mysql.connection,
+            isTransactionConnection: _mysql.isTransactionConnection,
+            pool: _mysql.pool
+          };
           // _mysql.releaseConnection();
           // req.records = headerResult;
           next();

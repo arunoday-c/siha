@@ -27,7 +27,7 @@ const VisitSearch = ($this, e) => {
         () => {
           algaehApiCall({
             uri: "/patientRegistration/getPatientInsurance",
-            // module: "frontDesk",
+            module: "frontDesk",
             method: "GET",
             data: {
               patient_id: $this.state.patient_id,

@@ -90,11 +90,8 @@
       border-bottom: 1px solid #d2d2d2;
       color: #000 !important;
       background: #dff6f6 !important;
-      width: 75px; }
+      width: 55px; }
       .EmployeeProjectRoster #projectRosterTable table thead th:nth-child(1) {
-        text-align: center;
-        width: 120px; }
-      .EmployeeProjectRoster #projectRosterTable table thead th:nth-child(2) {
         text-align: left;
         width: 200px; }
       .EmployeeProjectRoster #projectRosterTable table thead th:last-child, .EmployeeProjectRoster #projectRosterTable table thead th:nth-last-child(2) {
@@ -110,9 +107,6 @@
         border-top: 1px solid #ececec;
         width: 75px; }
         .EmployeeProjectRoster #projectRosterTable table tbody tr td:nth-child(1) {
-          text-align: center;
-          width: 120px; }
-        .EmployeeProjectRoster #projectRosterTable table tbody tr td:nth-child(2) {
           text-align: left;
           width: 200px; }
         .EmployeeProjectRoster #projectRosterTable table tbody tr td:last-child, .EmployeeProjectRoster #projectRosterTable table tbody tr td:nth-last-child(2) {

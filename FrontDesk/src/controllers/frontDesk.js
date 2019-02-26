@@ -8,17 +8,16 @@ import {
   updateCashHandoverDetails
 } from "../models/frontDesk";
 import { insertPatientData } from "../models/patientRegistration";
-import algaehPath from "algaeh-utilities/algaeh-path-format";
+import algaehPath from "algaeh-module-bridge";
 import {
   insertPatientVisitData,
   addPatientInsuranceData,
   addEpisodeEncounterData
 } from "../models/visit";
 
-const { newReceiptData, addBillData, addCashHandover } = require(algaehPath(
+const { newReceiptData, addBillData, addCashHandover } = algaehPath(
   "algaeh-billing/src/models/billing"
-));
-
+);
 export default () => {
   const api = Router();
   api.get("/get", selectFrontDesk, (req, res, next) => {

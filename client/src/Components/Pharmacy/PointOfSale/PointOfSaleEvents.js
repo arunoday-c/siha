@@ -91,7 +91,7 @@ const getPatientDetails = ($this, output) => {
   AlgaehLoader({ show: true });
   $this.props.getPatientDetails({
     uri: "/frontDesk/get",
-    // module: "frontDesk",
+    module: "frontDesk",
     method: "GET",
     printInput: true,
     data: { patient_code: $this.state.patient_code || output.patient_code },
@@ -409,9 +409,9 @@ const VisitSearch = ($this, e) => {
           () => {
             if ($this.state.insured === "Y") {
               $this.props.getPatientInsurance({
-                uri: "/insurance/getPatientInsurance",
-                // uri: "/patientRegistration/getPatientInsurance",
-                // module: "frontDesk",
+                // uri: "/insurance/getPatientInsurance",
+                uri: "/patientRegistration/getPatientInsurance",
+                module: "frontDesk",
                 method: "GET",
                 data: {
                   patient_id: $this.state.patient_id,

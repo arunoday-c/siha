@@ -139,6 +139,7 @@ module.exports = {
         })
         .ToArray();
 
+      utilities.logger().log("radServices: ", radServices.length);
       if (radServices.length > 0) {
         _mysql
           .executeQuery({
@@ -153,6 +154,7 @@ module.exports = {
             printQuery: true
           })
           .then(insert_rad_order => {
+            utilities.logger().log("insert_rad_order: ");
             let result = {
               receipt_number: inputParam.receipt_number,
               bill_number: inputParam.bill_number

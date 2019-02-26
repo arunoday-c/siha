@@ -174,6 +174,7 @@ const RequisitionSearch = ($this, e) => {
             $this.state.po_from === "PHR"
               ? "/PurchaseOrderEntry/getPharRequisitionEntryPO"
               : "/PurchaseOrderEntry/getInvRequisitionEntryPO",
+          // module: "procurement",
           method: "GET",
           data: {
             material_requisition_number: row.material_requisition_number,
@@ -195,6 +196,7 @@ const RequisitionSearch = ($this, e) => {
 
               for (let i = 0; i < data.po_entry_detail.length; i++) {
                 let purchase_cost = data.po_entry_detail[i].purchase_cost;
+                debugger;
                 if ($this.state.po_from === "PHR") {
                   data.po_entry_detail[i].pharmacy_requisition_id =
                     data.po_entry_detail[i].hims_f_pharmacy_material_detail_id;
@@ -205,6 +207,9 @@ const RequisitionSearch = ($this, e) => {
                     data.po_entry_detail[i].item_group_id;
                   data.po_entry_detail[i].phar_item_id =
                     data.po_entry_detail[i].item_id;
+
+                  data.po_entry_detail[i].pharmacy_uom_id =
+                    data.po_entry_detail[i].purchase_uom_id;
                 } else {
                   data.po_entry_detail[i].inventory_requisition_id =
                     data.po_entry_detail[i].hims_f_inventory_material_detail_id;
@@ -215,6 +220,9 @@ const RequisitionSearch = ($this, e) => {
                     data.po_entry_detail[i].item_group_id;
                   data.po_entry_detail[i].inv_item_id =
                     data.po_entry_detail[i].item_id;
+
+                  data.po_entry_detail[i].inventory_uom_id =
+                    data.po_entry_detail[i].purchase_uom_id;
                 }
 
                 data.po_entry_detail[i].order_quantity =
@@ -320,6 +328,7 @@ const SavePOEnrty = $this => {
 
   algaehApiCall({
     uri: "/PurchaseOrderEntry/addPurchaseOrderEntry",
+    // module: "procurement",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
@@ -343,6 +352,7 @@ const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   $this.props.getPurchaseOrderEntry({
     uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
+    // module: "procurement",
     method: "GET",
     printInput: true,
     data: { purchase_number: docNumber },
@@ -494,6 +504,7 @@ const AuthorizePOEntry = $this => {
     $this.state.authorize1 = "Y";
     algaehApiCall({
       uri: "/PurchaseOrderEntry/updatePurchaseOrderEntry",
+      // module: "procurement",
       data: $this.state,
       method: "PUT",
       onSuccess: response => {

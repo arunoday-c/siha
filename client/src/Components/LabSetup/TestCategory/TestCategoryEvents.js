@@ -25,6 +25,7 @@ const updateTestCategory = ($this, data) => {
 
   algaehApiCall({
     uri: "/labmasters/updateTestCategory",
+    // module: "laboratory",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -35,6 +36,7 @@ const updateTestCategory = ($this, data) => {
         });
         $this.props.getTestCategory({
           uri: "/labmasters/selectTestCategory",
+          // module: "laboratory",
           method: "GET",
           redux: {
             type: "TESTCATEGORY_GET_DATA",
@@ -63,6 +65,7 @@ const showconfirmDialog = ($this, id) => {
       };
       algaehApiCall({
         uri: "/labmasters/deleteTestCategory",
+        // module: "laboratory",
         data: data,
         method: "DELETE",
         onSuccess: response => {
@@ -73,6 +76,7 @@ const showconfirmDialog = ($this, id) => {
             });
             $this.props.getTestCategory({
               uri: "/labmasters/selectTestCategory",
+              // module: "laboratory",
               method: "GET",
               redux: {
                 type: "TESTCATEGORY_GET_DATA",
@@ -104,12 +108,14 @@ const insertTestCategory = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/labmasters/insertTestCategory",
+        // module: "laboratory",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
             resetState($this);
             $this.props.getTestCategory({
               uri: "/labmasters/selectTestCategory",
+              // module: "laboratory",
               method: "GET",
               redux: {
                 type: "TESTCATEGORY_GET_DATA",

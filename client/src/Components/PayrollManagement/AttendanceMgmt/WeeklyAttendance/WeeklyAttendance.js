@@ -16,11 +16,14 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 export default class WeeklyAttendance extends Component {
   constructor(props) {
     super(props);
+    const _yearAndMonth = moment(new Date()).format("YYYY-MM") + "01";
+    let _fromDate = moment(_yearAndMonth, "YYYY-MM-DD").format("YYYY-MM-DD");
     this.state = {
       attendance_type: "MW",
       year: moment().year(),
       month: moment(new Date()).format("M"),
       week: 0,
+      disableNotify: false,
       weeks: [],
       sub_depts: [],
       time_sheet: [],
@@ -28,9 +31,9 @@ export default class WeeklyAttendance extends Component {
       hims_d_employee_id: null,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
-      from_date: moment(new Date())
-        .subtract(1, "days")
-        .format("YYYY-MM-DD"),
+      from_date: _fromDate, //moment(new Date())
+      // .subtract(1, "days")
+      // .format("YYYY-MM-DD"),
       to_date: moment(new Date())
         .subtract(1, "days")
         .format("YYYY-MM-DD")
@@ -90,6 +93,52 @@ export default class WeeklyAttendance extends Component {
 
   componentDidMount() {
     this.getWeeks();
+  }
+
+  notifyExceptions() {
+    let _fromDate = this.state.from_date;
+    let _toDate = this.state.to_date;
+
+    if (this.state.attendance_type === "MW") {
+      let date = this.state.year + "-" + this.state.month + "-01";
+
+      _fromDate = moment(date)
+        .startOf("month")
+        .format("YYYY-MM-DD");
+      _toDate = moment(date)
+        .endOf("month")
+        .format("YYYY-MM-DD");
+    }
+
+    algaehApiCall({
+      uri: "/attendance/notifyException",
+      method: "POST",
+      data: {
+        from_date: _fromDate,
+        to_date: _toDate,
+        hospital_id: this.state.hospital_id,
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        sub_department_id: this.state.sub_department_id
+      },
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Notified Successfully . .",
+            type: "success"
+          });
+          this.setState({
+            disableNotify: true
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getTimeSheet() {
@@ -154,7 +203,25 @@ export default class WeeklyAttendance extends Component {
 
   getDailyTimeSheet() {
     if (
-      this.state.attendance_type === "DR" &&
+      this.state.attendance_type === "MW" &&
+      (this.state.hims_d_employee_id === null ||
+        this.state.hims_d_employee_id === undefined)
+    ) {
+      swalMessage({
+        title: "Please select an Employee to view ",
+        type: "warning"
+      });
+    } else if (
+      moment(this.state.from_date).format("YYYYMMDD") >
+      moment(this.state.to_date).format("YYYYMMDD")
+    ) {
+      swalMessage({
+        title: "Please set a proper date range",
+        type: "warning"
+      });
+    } else if (
+      moment(this.state.to_date).format("YYYYMMDD") >
+        moment(this.state.from_date).format("YYYYMMDD") &&
       (this.state.hims_d_employee_id === null ||
         this.state.hims_d_employee_id === undefined)
     ) {
@@ -167,14 +234,19 @@ export default class WeeklyAttendance extends Component {
         loader: true
       });
 
-      let _fromDate =
-        this.state.attendance_type === "DW"
-          ? this.state.attendance_date
-          : this.state.from_date;
-      let _toDate =
-        this.state.attendance_type === "DW"
-          ? this.state.attendance_date
-          : this.state.to_date;
+      let _fromDate = this.state.from_date;
+      let _toDate = this.state.to_date;
+
+      if (this.state.attendance_type === "MW") {
+        let date = this.state.year + "-" + this.state.month + "-01";
+
+        _fromDate = moment(date)
+          .startOf("month")
+          .format("YYYY-MM-DD");
+        _toDate = moment(date)
+          .endOf("month")
+          .format("YYYY-MM-DD");
+      }
 
       algaehApiCall({
         uri: "/attendance/getDailyTimeSheet",
@@ -189,10 +261,18 @@ export default class WeeklyAttendance extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            this.setState({
-              time_sheet: Array.isArray(res.data.result) ? res.data.result : [],
-              loader: false
-            });
+            if (Array.isArray(res.data.result)) {
+              this.setState({
+                time_sheet: res.data.result,
+                loader: false
+              });
+            } else {
+              swalMessage({
+                title: res.data.result.message,
+                type: "warning"
+              });
+              this.setState({ loader: false });
+            }
           } else if (!res.data.success) {
             swalMessage({
               title: res.data.result.message,
@@ -232,7 +312,6 @@ export default class WeeklyAttendance extends Component {
       data: {
         from_date: _fromDate,
         to_date: _toDate,
-        // hospital_id: this.state.hospital_id,
         hims_d_employee_id: this.state.hims_d_employee_id
       },
       onSuccess: res => {
@@ -261,7 +340,8 @@ export default class WeeklyAttendance extends Component {
         attendance_date: null,
         weeks: [],
         week: 0,
-        time_sheet: []
+        time_sheet: [],
+        disableNotify: false
       },
       () => {
         this.getWeeks();
@@ -295,9 +375,10 @@ export default class WeeklyAttendance extends Component {
         columns: Employee
       },
       inputs:
-        this.state.sub_department_id !== null
+        this.state.sub_department_id !== null &&
+        this.state.sub_department_id !== undefined
           ? "sub_department_id = " + this.state.sub_department_id
-          : "1=1",
+          : "sub_department_id > 1",
       searchName: "employee",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
@@ -1104,6 +1185,7 @@ export default class WeeklyAttendance extends Component {
           <div className="row">
             <div className="col-lg-12">
               <button
+                disabled={this.state.time_sheet.length === 0}
                 type="button"
                 className="btn btn-primary"
                 onClick={this.postTimeSheet.bind(this)}
@@ -1114,12 +1196,26 @@ export default class WeeklyAttendance extends Component {
               </button>
 
               <button
+                disabled={this.state.time_sheet.length === 0}
                 onClick={this.processBiometricAttendance.bind(this)}
                 type="button"
                 className="btn btn-primary"
               >
                 <AlgaehLabel
                   label={{ forceLabel: "Verify", returnText: true }}
+                />
+              </button>
+
+              <button
+                disabled={
+                  this.state.disableNotify || this.state.time_sheet.length === 0
+                }
+                onClick={this.notifyExceptions.bind(this)}
+                type="button"
+                className="btn btn-danger"
+              >
+                <AlgaehLabel
+                  label={{ forceLabel: "Notify Exceptions", returnText: true }}
                 />
               </button>
             </div>

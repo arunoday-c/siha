@@ -35,10 +35,12 @@ class RadInvestigation extends Component {
   }
 
   componentWillMount() {
+    debugger;
     let InputOutput = this.props.InvestigationIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
   componentDidMount() {
+    debugger;
     if (
       this.props.testcategory === undefined ||
       this.props.testcategory.length === 0
@@ -55,6 +57,7 @@ class RadInvestigation extends Component {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
-import algaehPath from "algaeh-utilities/algaeh-path-format";
+import algaehPath from "algaeh-module-bridge";
 
 import {
   addPOSCreidtSettlement,
@@ -9,9 +9,9 @@ import {
   getPatientPOSCriedt
 } from "../models/POSCreditSettlement";
 
-const { addReceiptEntry, getReceiptEntry } = require(algaehPath(
+const { addReceiptEntry, getReceiptEntry } = algaehPath(
   "algaeh-billing/src/models/receiptentry"
-));
+);
 
 export default () => {
   const api = Router();

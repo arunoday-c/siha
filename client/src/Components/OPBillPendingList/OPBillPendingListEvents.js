@@ -20,7 +20,7 @@ const getBillPatientList = $this => {
 
   $this.props.getBillPatientList({
     uri: "/opBilling/getPednigBills",
-    // module: "billing",
+    module: "billing",
     method: "GET",
     data: inputobj,
     redux: {

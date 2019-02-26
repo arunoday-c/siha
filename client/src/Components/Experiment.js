@@ -6,6 +6,7 @@ import AlgaehReport from "./Wrapper/printReports";
 import _ from "lodash";
 import FrontDesk from "../Search/FrontDesk.json";
 import AlgaehAutoSearch from "./Wrapper/autoSearch";
+import moment from "moment";
 const services = [
   { service_name: "Consultation", sl_no: 1 },
   { service_name: "Procedure", sl_no: 2 }
