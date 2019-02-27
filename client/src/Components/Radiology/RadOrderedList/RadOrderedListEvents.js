@@ -49,7 +49,7 @@ const datehandle = ($this, ctrl, e) => {
     if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
       intFailure = true;
       swalMessage({
-        title: "Invalid Input. From Date cannot be grater than To Date.",
+        title: "From Date cannot be grater than To Date.",
         type: "warning"
       });
     }
@@ -57,7 +57,7 @@ const datehandle = ($this, ctrl, e) => {
     if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.from_date)) {
       intFailure = true;
       swalMessage({
-        title: "Invalid Input. To Date cannot be less than From Date.",
+        title: "To Date cannot be less than From Date.",
         type: "warning"
       });
     }
@@ -177,13 +177,13 @@ const UpdateRadOrder = ($this, row) => {
     });
   } else {
     swalMessage({
-      title: "Invalid Input. Payment is not done",
+      title: "Payment is not done",
       type: "warning"
     });
   }
   // } else {
   //   swalMessage({
-  //     title: "Invalid Input. Please make the payment.",
+  //     title: "Please make the payment.",
   //     type: "warning"
   //   });
   // }

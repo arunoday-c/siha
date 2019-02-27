@@ -24,7 +24,7 @@ const texthandle = ($this, e) => {
 const addFollowUp = $this => {
   if ($this.state.followup_days === 0) {
     successfulMessage({
-      message: "Invalid Input. Please Enter Next visit After",
+      message: "Please Enter Next visit After",
       title: "Warning",
       icon: "warning"
     });

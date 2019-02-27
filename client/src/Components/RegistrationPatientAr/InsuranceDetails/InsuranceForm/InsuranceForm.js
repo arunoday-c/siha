@@ -12,7 +12,8 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  Tooltip
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
@@ -58,7 +59,7 @@ class AddInsuranceForm extends Component {
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="row primary-box-container">
-                      <div className="col-lg-2" style={{ paddingLeft: 0 }}>
+                      <div className="col-lg-2" style={{ paddingRight: 0 }}>
                         <label>Insurance</label>
                         <br />
 
@@ -277,7 +278,7 @@ class AddInsuranceForm extends Component {
                             name="image"
                           >
                             <img
-                              alt="Attach back desk"
+                              alt="Attach front side"
                               src={this.state.frontSide}
                               style={{ width: "100%", height: "101px" }}
                             />
@@ -305,7 +306,7 @@ class AddInsuranceForm extends Component {
                             name="image"
                           >
                             <img
-                              alt="Attach front side"
+                              alt="Attach back side"
                               src={this.state.backSide}
                               style={{ width: "100%", height: "101px" }}
                             />

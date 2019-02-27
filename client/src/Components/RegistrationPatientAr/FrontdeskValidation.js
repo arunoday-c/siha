@@ -6,7 +6,7 @@ export function Validations(state) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Name Cannot be blank."
+      title: "Name Cannot be blank."
     });
 
     document.querySelector("[name='full_name']").focus();
@@ -16,7 +16,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Arabic Name Cannot be blank."
+      title: "Arabic Name Cannot be blank."
     });
 
     document.querySelector("[name='arabic_name']").focus();
@@ -26,7 +26,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Title Cannot be blank."
+      title: "Title Cannot be blank."
     });
 
     return isError;
@@ -35,7 +35,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Select the gender."
+      title: "Select the gender."
     });
 
     return isError;
@@ -44,7 +44,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Select Primary ID."
+      title: "Select Primary ID."
     });
 
     return isError;
@@ -53,7 +53,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Primary ID No. Cannot be blank."
+      title: "Primary ID No. Cannot be blank."
     });
 
     document.querySelector("[name='primary_id_no']").focus();
@@ -63,7 +63,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Nationality Cannot be blank."
+      title: "Nationality Cannot be blank."
     });
     return isError;
   } else if (state.state.country_id <= 0) {
@@ -71,7 +71,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Country Cannot be blank."
+      title: "Country Cannot be blank."
     });
 
     return isError;
@@ -80,12 +80,94 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Mobile No. Cannot be blank."
+      title: "Mobile No. Cannot be blank."
     });
 
     document.querySelector("[name='contact_number']").focus();
     return isError;
-  } else if (state.state.card_amount > 0) {
+  } else if (
+    state.state.insured === "Y" &&
+    (state.state.primary_insurance_provider_id === null ||
+      state.state.primary_network_office_id === null ||
+      state.state.primary_network_id === null ||
+      state.state.primary_card_number === null ||
+      state.state.primary_effective_start_date === null ||
+      state.state.primary_effective_end_date === null)
+  ) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Please select the primary insurance details properly."
+    });
+
+    return isError;
+  } else if (
+    state.state.sec_insured === "Y" &&
+    (state.state.secondary_insurance_provider_id === null ||
+      state.state.secondary_network_office_id === null ||
+      state.state.secondary_network_id === null)
+  ) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Please select the secondary insurance details properly."
+    });
+
+    return isError;
+  } else if (
+    state.state.patient_type === null ||
+    state.state.patient_type === ""
+  ) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Please select the Patient Type."
+    });
+    return isError;
+  } else if (state.state.unbalanced_amount > 0) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Total receipt amount should be equal to reciveable amount."
+    });
+
+    return isError;
+  } else if (state.state.shift_id === null) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Shift is Mandatory."
+    });
+
+    return isError;
+  } else if (state.state.counter_id === null) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Counter is Mandatory."
+    });
+
+    return isError;
+  } else if (
+    state.state.existing_plan === "Y" &&
+    state.state.treatment_plan_id === null
+  ) {
+    isError = true;
+
+    swalMessage({
+      type: "warning",
+      title: "Treatment Plan is Mandatory."
+    });
+
+    return isError;
+  }
+  if (state.state.card_amount > 0) {
     if (state.state.card_number === null || state.state.card_number === "") {
       isError = true;
 
@@ -109,7 +191,8 @@ export function Validations(state) {
       document.querySelector("[name='card_date']").focus();
       return isError;
     }
-  } else if (state.state.cheque_amount > 0) {
+  }
+  if (state.state.cheque_amount > 0) {
     if (
       state.state.cheque_number === null ||
       state.state.cheque_number === ""
@@ -118,7 +201,7 @@ export function Validations(state) {
 
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Check Number cannot be blank."
+        title: "Check Number cannot be blank."
       });
 
       document.querySelector("[name='cheque_number']").focus();
@@ -130,83 +213,11 @@ export function Validations(state) {
 
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Cheque Date Cannot be blank."
+        title: "Cheque Date Cannot be blank."
       });
 
       document.querySelector("[name='cheque_date']").focus();
       return isError;
     }
-  } else if (
-    state.state.insured === "Y" &&
-    (state.state.primary_insurance_provider_id === null ||
-      state.state.primary_network_office_id === null ||
-      state.state.primary_network_id === null ||
-      state.state.primary_card_number === null ||
-      state.state.primary_effective_start_date === null ||
-      state.state.primary_effective_end_date === null)
-  ) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title:
-        "Invalid Input. Please select the primary insurance details properly."
-    });
-
-    return isError;
-  } else if (
-    state.state.sec_insured === "Y" &&
-    (state.state.secondary_insurance_provider_id === null ||
-      state.state.secondary_network_office_id === null ||
-      state.state.secondary_network_id === null)
-  ) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title:
-        "Invalid Input. Please select the secondary insurance details properly."
-    });
-
-    return isError;
-  } else if (
-    state.state.patient_type === null ||
-    state.state.patient_type === ""
-  ) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title: "Invalid Input. Please select the Patient Type."
-    });
-    return isError;
-  } else if (state.state.unbalanced_amount > 0) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title:
-        "Invalid Input. Total receipt amount should be equal to reciveable amount."
-    });
-
-    return isError;
-  } else if (state.state.shift_id === null) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title: "Invalid Input. Shift is Mandatory."
-    });
-
-    return isError;
-  } else if (state.state.counter_id === null) {
-    isError = true;
-
-    swalMessage({
-      type: "warning",
-      title: "Invalid Input. Counter is Mandatory."
-    });
-
-    return isError;
   }
 }

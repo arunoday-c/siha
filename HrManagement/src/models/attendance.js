@@ -1009,11 +1009,12 @@ module.exports = {
   //created by irfan:
   regularizeAttendance: (req, res, next) => {
     let input = req.body;
-
+    const utilities = new algaehUtilities();
+    utilities.logger().log("regularizeAttendance: ");
     if (input.regularize_status == "REJ" || input.regularize_status == "APR") {
       const _mysql = new algaehMysql();
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
             "UPDATE hims_f_attendance_regularize SET regularize_status = ?,\
              updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
@@ -1025,12 +1026,49 @@ module.exports = {
           ]
         })
         .then(result => {
-          _mysql.releaseConnection();
-
           if (result.affectedRows > 0) {
-            req.records = result;
-            next();
+            utilities
+              .logger()
+              .log("result.affectedRows: ", result.affectedRows);
+            utilities
+              .logger()
+              .log("regularize_status: ", input.regularize_status);
+            if (input.regularize_status == "APR") {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_daily_time_sheet` SET status='PR', in_time=?,\
+                  `out_time`=?,`hours`=?,`minutes`=?,`worked_hours`=? \
+                  where employee_id=? and attendance_date=?;",
+                  values: [
+                    input.in_time,
+                    input.out_time,
+                    input.hours,
+                    input.minutes,
+                    input.worked_hours,
+                    input.employee_id,
+                    input.attendance_date
+                  ],
+                  printQuery: true
+                })
+                .then(result => {
+                  utilities.logger().log("result: ", result);
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            } else {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            }
           } else {
+            _mysql.releaseConnection();
             req.records = {
               invalid_input: true,
               message: "Please provide valid input"
@@ -1039,8 +1077,9 @@ module.exports = {
           }
         })
         .catch(e => {
-          _mysql.releaseConnection();
-          next(e);
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
     } else {
       req.records = {
@@ -1097,7 +1136,7 @@ module.exports = {
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
           from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
-           AR.employee_id=E.hims_d_employee_id and record_status='A' where" +
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where requested='Y' and " +
             employee +
             "" +
             dateRange +

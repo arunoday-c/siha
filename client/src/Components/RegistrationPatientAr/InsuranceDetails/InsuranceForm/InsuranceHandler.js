@@ -25,8 +25,7 @@ const texthandle = ($this, context, e) => {
 const insurancehandle = ($this, context, e) => {
   if (e.selected.network_id === $this.state.secondary_network_id) {
     swalMessage({
-      title:
-        "Invalid Input. Primary and Secondary Insurance Plan cannot be same.",
+      title: "Primary and Secondary Insurance Plan cannot be same.",
       type: "warning"
     });
   } else {
@@ -130,8 +129,7 @@ const InsuranceDetails = ($this, context, e) => {
         $this.state.secondary_network_id === row.hims_d_insurance_network_id
       ) {
         swalMessage({
-          title:
-            "Invalid Input. Primary and Secondary Insurance Plan cannot be same.",
+          title: "Primary and Secondary Insurance Plan cannot be same.",
           type: "warning"
         });
       } else {
@@ -345,7 +343,7 @@ const radioChange = ($this, context, e) => {
     }
   } else {
     swalMessage({
-      title: "Invalid Input. Please select the consultant doctor.",
+      title: "Please select the consultant doctor.",
       type: "warning"
     });
   }

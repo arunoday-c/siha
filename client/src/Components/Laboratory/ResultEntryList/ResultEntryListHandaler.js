@@ -50,7 +50,7 @@ const datehandle = ($this, ctrl, e) => {
     if (Date.parse($this.state.to_date) < Date.parse(moment(ctrl)._d)) {
       intFailure = true;
       swalMessage({
-        title: "Invalid Input. From Date cannot be grater than To Date.",
+        title: "From Date cannot be grater than To Date.",
         type: "warning"
       });
     }
@@ -58,7 +58,7 @@ const datehandle = ($this, ctrl, e) => {
     if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.from_date)) {
       intFailure = true;
       swalMessage({
-        title: "Invalid Input. To Date cannot be less than From Date.",
+        title: "To Date cannot be less than From Date.",
         type: "warning"
       });
     }
@@ -124,23 +124,21 @@ const getSampleCollectionDetails = $this => {
       //   })
       //   .toArray();
 
-      
       $this.setState({ sample_collection: data });
     }
   });
 };
 
 const ResultEntryModel = ($this, row) => {
-  
   if (row.status === "O") {
     swalMessage({
-      title: "Invalid Input. Please collect the sample.",
+      title: "Please collect the sample.",
       type: "warning"
     });
   } else {
     if (row.sample_status === "N") {
       swalMessage({
-        title: "Invalid Input. Please accept the sample.",
+        title: "Please accept the sample.",
         type: "warning"
       });
     } else {

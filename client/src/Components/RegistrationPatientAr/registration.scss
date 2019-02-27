@@ -1,13 +1,12 @@
 .arabicVersionFrontDesk {
   direction: rtl;
   text-align: right;
-
   .primary-details {
     border-right: none;
     border-left: 1px dashed #d3d3d3;
   }
   label {
-    
+    font-size: 1rem;
   }
   .toggle-section {
     .nav {
@@ -34,7 +33,6 @@
       left: 0;
     }
   }
-
   .htpl-phase1-radio-btn {
     margin-left: 5px;
   }
@@ -42,17 +40,14 @@
     margin-right: 10px;
     margin-left: 0px;
   }
-
   .breadCrumb-Data {
     .hdg_bredcrump {
       background: url("./../../assets/images/breadcrump_border_Ar.webp")
         no-repeat top left #fff;
     }
-
     .spotlightSearchBox {
       margin-right: 0;
     }
-
     .spotlightSearchIconBox {
       border-right: 1px solid rgb(206, 212, 216);
       border-left: none;
@@ -75,14 +70,12 @@
     margin-bottom: 0px;
     background-color: #ffff;
   }
-
   .text_field {
     width: 100% !important;
     background-color: #fbfbfb;
     //font-size: $fontSize;
     margin-right: "5px";
   }
-
   .Paper {
     background: #fff;
     background-color: #292929 !important;
@@ -90,7 +83,6 @@
     width: 250px;
   }
 }
-
 .spacing-push {
   // margin-top: 6em;
 }

@@ -266,13 +266,13 @@ const ProcessService = ($this, e) => {
       });
     } else {
       swalMessage({
-        title: "Invalid Input. Please select service and service type.",
+        title: "Please select service and service type.",
         type: "warning"
       });
     }
   } else {
     swalMessage({
-      title: "Invalid Input. Selected Service already ordered.",
+      title: "Selected Service already ordered.",
       type: "warning"
     });
   }

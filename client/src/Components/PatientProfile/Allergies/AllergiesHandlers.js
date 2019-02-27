@@ -41,12 +41,12 @@ const getPatientAllergies = $this => {
               k === "F"
                 ? "Food"
                 : k === "A"
-                  ? "Airborne"
-                  : k === "AI"
-                    ? "Animal  &  Insect"
-                    : k === "C"
-                      ? "Chemical & Others"
-                      : "",
+                ? "Airborne"
+                : k === "AI"
+                ? "Animal  &  Insect"
+                : k === "C"
+                ? "Chemical & Others"
+                : "",
             allergyList: g.getSource()
           };
         })
@@ -61,11 +61,9 @@ const getPatientAllergies = $this => {
 
 //Date Handaler Change
 const datehandle = ($this, ctrl, e) => {
-  
-
   if (Date.parse(new Date()) < Date.parse(moment(ctrl)._d)) {
     swalMessage({
-      title: "Invalid Input. Cannot be grater than Today's Date.",
+      title: "Cannot be grater than Today's Date.",
       type: "warning"
     });
     return;

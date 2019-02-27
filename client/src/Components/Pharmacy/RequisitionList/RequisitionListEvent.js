@@ -13,7 +13,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
     if (location === "From") {
       if ($this.state.to_location_id === value) {
         swalMessage({
-          title: "Invalid Input.From Location and To Location Cannot be Same ",
+          title: "From Location and To Location Cannot be Same ",
           type: "error"
         });
         $this.setState({ [name]: null });
@@ -25,13 +25,13 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
     } else if (location === "To") {
       if ($this.state.from_location_id === value) {
         swalMessage({
-          title: "Invalid Input.From Location and To Location Cannot be Same ",
+          title: "From Location and To Location Cannot be Same ",
           type: "error"
         });
         $this.setState({ [name]: null });
       } else if ($this.state.from_location_id === null) {
         swalMessage({
-          title: "Invalid Input.From Location cannot be blank. ",
+          title: "From Location cannot be blank. ",
           type: "error"
         });
         $this.setState({ [name]: null });

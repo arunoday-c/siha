@@ -377,7 +377,7 @@ module.exports = {
 
               if (_mess != null) {
                 _message =
-                  "Invalid Input. Some Items not avilable in selected location, Please check Prescription and stock enquiry for more details.";
+                  "Some Items not avilable in selected location, Please check Prescription and stock enquiry for more details.";
               }
             }
             resolve(result);
@@ -416,7 +416,7 @@ module.exports = {
             });
           } else {
             const message =
-              "Invalid Input. Items not avilable in selected location, for this Prescription Please check Prescription List or stock enquiry for more details.";
+              "Items not avilable in selected location, for this Prescription Please check Prescription List or stock enquiry for more details.";
             let obj = {
               result: result,
               message: message

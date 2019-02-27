@@ -113,6 +113,7 @@ class OtherInfo extends Component {
 
                     others: {
                       disabled: this.state.existingPatient,
+                      placeholder: "Enter Email Address",
                       type: "email"
                     }
                   }}
@@ -145,7 +146,8 @@ class OtherInfo extends Component {
                     value: this.state.address2,
 
                     others: {
-                      disabled: this.state.existingPatient
+                      disabled: this.state.existingPatient,
+                      placeholder: "Enter Full Address 2"
                     }
                   }}
                 />

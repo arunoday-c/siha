@@ -21,13 +21,12 @@ const texthandle = ($this, context, e) => {
 };
 
 const numtexthandle = ($this, context, ctrl, e) => {
-  
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (value < 0) {
     swalMessage({
-      title: "Invalid Input. Cannot be greater than zero.",
+      title: "Cannot be greater than zero.",
       type: "warning"
     });
   } else {

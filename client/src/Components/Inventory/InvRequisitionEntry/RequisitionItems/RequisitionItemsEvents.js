@@ -18,7 +18,7 @@ const numberchangeTexts = ($this, context, e) => {
   let value = e.value || e.target.value === "" ? 0 : e.target.value;
   if (value < 0) {
     swalMessage({
-      title: "Invalid Input. cannot be less than zero.",
+      title: "Cannot be less than zero.",
       type: "warning"
     });
   } else {
@@ -89,7 +89,7 @@ const itemchangeText = ($this, context, e) => {
         },
         () => {
           swalMessage({
-            title: "Invalid Input. Please select Location.",
+            title: "Please select Location.",
             type: "warning"
           });
         }
@@ -151,7 +151,7 @@ const itemchangeText = ($this, context, e) => {
             }
           } else {
             swalMessage({
-              title: "Invalid Input. No Stock Avaiable for selected Item.",
+              title: "No Stock Avaiable for selected Item.",
               type: "warning"
             });
           }
@@ -164,7 +164,7 @@ const itemchangeText = ($this, context, e) => {
         },
         () => {
           swalMessage({
-            title: "Invalid Input. Please select Location.",
+            title: "Please select Location.",
             type: "warning"
           });
         }
@@ -176,12 +176,12 @@ const itemchangeText = ($this, context, e) => {
 const AddItems = ($this, context) => {
   if ($this.state.item_id === null) {
     swalMessage({
-      title: "Invalid Input. Select Item.",
+      title: "Select Item.",
       type: "warning"
     });
   } else if ($this.state.quantity_required === 0) {
     swalMessage({
-      title: "Invalid Input. Please enter Quantity Required .",
+      title: "Please enter Quantity Required .",
       type: "warning"
     });
   } else {
@@ -274,7 +274,7 @@ const onchangegridcol = ($this, context, row, e) => {
   let value = e.value || e.target.value;
   if (value > row.quantity_required) {
     swalMessage({
-      title: "Invalid Input. Cannot be greater than Requested Quantity.",
+      title: "Cannot be greater than Requested Quantity.",
       type: "warning"
     });
     row[name] = $this.state.quantity_transferred;

@@ -4,6 +4,8 @@
   .hptl-phase1-add-advance-form mark {
     background: none;
     color: red; }
+  .hptl-phase1-add-advance-form label {
+    font-size: 1rem; }
   .hptl-phase1-add-advance-form .form-details {
     padding-bottom: 0px; }
   .hptl-phase1-add-advance-form .button {
