@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import AlgaehModalPopUp from "../../../Wrapper/modulePopUp";
 import {
   AlgaehDateHandler,
@@ -8,37 +8,35 @@ import {
 import "./ShiftAssign.css";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-class ShiftAssign extends Component {
+class ShiftAssign extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       employeeList: [],
       employees: [],
-      // shiftList: [],
       shifts: [],
       shiftEmp: []
     };
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     if (nextProps.open === true) {
       let myArray = this.state.shiftEmp;
       myArray.push(nextProps.sendRow);
       this.setState({
-        ...nextProps.data,
-        shiftEmp: myArray
+        shiftEmp: myArray,
+        ...nextProps.data
       });
     } else {
       this.setState({
         shiftEmp: [],
         employeeList: this.state.employees
-        // shiftList: this.state.shifts
       });
     }
   }
 
   shiftHandler(data, e) {
-    debugger;
     this.setState({
       shift_id: data.hims_d_shift_id,
       shift_end_day: data.shift_end_day,

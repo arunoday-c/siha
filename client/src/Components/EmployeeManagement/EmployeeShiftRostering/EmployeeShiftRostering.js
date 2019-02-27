@@ -259,7 +259,7 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   plotEmployeeDates(row, holidays, leaves, shifts) {
-    debugger;
+    //debugger;
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
@@ -353,8 +353,11 @@ export default class EmployeeShiftRostering extends Component {
                   sub_id: row.sub_department_id
                 })}
               >
-                Paste
+                Paste Normal
               </li>
+              {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                <li>Paste as Holiday / WeekOff</li>
+              ) : null}
             </ul>
             <span>
               {shift.shift_id === 100
@@ -444,6 +447,11 @@ export default class EmployeeShiftRostering extends Component {
               >
                 Paste
               </li>
+
+              {/* {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                <li>Paste as Holiday / WeekOff</li>
+              ) : null} */}
+
               <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
                 Delete Shift
               </li>
@@ -513,6 +521,20 @@ export default class EmployeeShiftRostering extends Component {
               >
                 Paste
               </li>
+              {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                <li
+                  onClick={this.pasteWeekoffShift.bind(this, {
+                    id: row.hims_d_employee_id,
+                    date: now.format("YYYY-MM-DD"),
+                    sub_id: row.sub_department_id,
+                    holiday: shift.shift_id === 101 ? "Y" : "N",
+                    weekoff: shift.shift_id === 100 ? "Y" : "N"
+                  })}
+                >
+                  Paste as Holiday / WeekOff
+                </li>
+              ) : null}
+
               <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
                 Delete Shift
               </li>

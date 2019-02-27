@@ -188,7 +188,9 @@
 
   .holiday_cell {
     background: rgb(63, 120, 156);
-    color: white;
+    span {
+      color: white;
+    }
   }
 
   .time_cell:hover {
