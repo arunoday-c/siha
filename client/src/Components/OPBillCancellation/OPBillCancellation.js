@@ -115,7 +115,7 @@ class OPBillCancellation extends Component {
       this.state.Checkchecked === false
     ) {
       successfulMessage({
-        message: "Invalid Input. Please select receipt type.",
+        message: "Please select receipt type.",
         title: "Error",
         icon: "error"
       });

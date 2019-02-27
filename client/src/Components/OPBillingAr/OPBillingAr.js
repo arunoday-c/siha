@@ -243,7 +243,7 @@ class OPBillingAr extends Component {
       this.state.Checkchecked === false
     ) {
       successfulMessage({
-        message: "Invalid Input. Please select receipt type.",
+        message: "Please select receipt type.",
         title: "Error",
         icon: "error"
       });
@@ -334,7 +334,7 @@ class OPBillingAr extends Component {
         });
       } else {
         successfulMessage({
-          message: "Invalid Input. Please recive the amount.",
+          message: "Please recive the amount.",
           title: "Error",
           icon: "error"
         });

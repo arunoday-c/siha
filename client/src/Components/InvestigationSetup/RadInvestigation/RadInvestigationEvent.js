@@ -145,7 +145,7 @@ const deleteRadInvestigation = ($this, context, row, rowId) => {
 
 const updateRadInvestigation = $this => {
   successfulMessage({
-    message: "Invalid Input. No Option to edit.",
+    message: "No Option to edit.",
     title: "Warning",
     icon: "warning"
   });

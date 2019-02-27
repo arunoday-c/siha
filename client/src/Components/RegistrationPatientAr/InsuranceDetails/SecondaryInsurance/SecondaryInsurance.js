@@ -13,7 +13,8 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  Tooltip
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
@@ -64,8 +65,7 @@ class AddSecInsuranceForm extends Component {
       }
     } else {
       successfulMessage({
-        message:
-          "Invalid Input. With out primary insurance cannot select secondary insurance",
+        message: "With out primary insurance cannot select secondary insurance",
         title: "Warning",
         icon: "error"
       });
@@ -82,7 +82,7 @@ class AddSecInsuranceForm extends Component {
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="row primary-box-container">
-                      <div className="col-lg-2" style={{ paddingLeft: 0 }}>
+                      <div className="col-lg-2" style={{ paddingRight: 0 }}>
                         <label>Insurance</label>
                         <br />
                         <div className="customRadio">
@@ -294,6 +294,14 @@ class AddSecInsuranceForm extends Component {
                         value={this.state.secondary_effective_end_date}
                         disabled={this.state.sec_insuranceYes}
                       />
+
+                      {/* <div className="col-lg-1">
+                        <Tooltip id="tooltip-icon" title="Process">
+                          <IconButton className="go-button" color="primary">
+                            <PlayCircleFilled />
+                          </IconButton>
+                        </Tooltip>
+                      </div> */}
                     </div>
                   </div>
 

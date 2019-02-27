@@ -118,7 +118,7 @@ class AddOPBillingForm extends Component {
               if (data.billdetails[0].pre_approval === "Y") {
                 successfulMessage({
                   message:
-                    "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+                    "Selected Service is Pre-Approval required, you don't have rights to bill.",
                   title: "Warning",
                   icon: "warning"
                 });
@@ -176,14 +176,14 @@ class AddOPBillingForm extends Component {
         });
       } else {
         successfulMessage({
-          message: "Invalid Input. Please select the Service and Service Type.",
+          message: "Please select the Service and Service Type.",
           title: "Warning",
           icon: "warning"
         });
       }
     } else {
       successfulMessage({
-        message: "Invalid Input. Please select the patient and visit.",
+        message: "Please select the patient and visit.",
         title: "Warning",
         icon: "warning"
       });

@@ -6,7 +6,7 @@ export function Validations(state) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Name Cannot be blank."
+      title: "Name Cannot be blank."
     });
 
     document.querySelector("[name='full_name']").focus();
@@ -16,7 +16,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Arabic Name Cannot be blank."
+      title: "Arabic Name Cannot be blank."
     });
 
     document.querySelector("[name='arabic_name']").focus();
@@ -26,7 +26,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Title Cannot be blank."
+      title: "Title Cannot be blank."
     });
 
     return isError;
@@ -35,7 +35,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Select the gender."
+      title: "Select the gender."
     });
 
     return isError;
@@ -44,7 +44,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Select Primary ID."
+      title: "Select Primary ID."
     });
 
     return isError;
@@ -53,7 +53,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Primary ID No. Cannot be blank."
+      title: "Primary ID No. Cannot be blank."
     });
 
     document.querySelector("[name='primary_id_no']").focus();
@@ -63,7 +63,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Nationality Cannot be blank."
+      title: "Nationality Cannot be blank."
     });
     return isError;
   } else if (state.state.country_id <= 0) {
@@ -71,7 +71,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Country Cannot be blank."
+      title: "Country Cannot be blank."
     });
 
     return isError;
@@ -80,7 +80,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Mobile No. Cannot be blank."
+      title: "Mobile No. Cannot be blank."
     });
 
     document.querySelector("[name='contact_number']").focus();
@@ -98,8 +98,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title:
-        "Invalid Input. Please select the primary insurance details properly."
+      title: "Please select the primary insurance details properly."
     });
 
     return isError;
@@ -113,8 +112,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title:
-        "Invalid Input. Please select the secondary insurance details properly."
+      title: "Please select the secondary insurance details properly."
     });
 
     return isError;
@@ -126,7 +124,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Please select the Patient Type."
+      title: "Please select the Patient Type."
     });
     return isError;
   } else if (state.state.unbalanced_amount > 0) {
@@ -134,8 +132,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title:
-        "Invalid Input. Total receipt amount should be equal to reciveable amount."
+      title: "Total receipt amount should be equal to reciveable amount."
     });
 
     return isError;
@@ -144,7 +141,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Shift is Mandatory."
+      title: "Shift is Mandatory."
     });
 
     return isError;
@@ -153,7 +150,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Counter is Mandatory."
+      title: "Counter is Mandatory."
     });
 
     return isError;
@@ -165,7 +162,7 @@ export function Validations(state) {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Treatment Plan is Mandatory."
+      title: "Treatment Plan is Mandatory."
     });
 
     return isError;
@@ -204,7 +201,7 @@ export function Validations(state) {
 
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Check Number cannot be blank."
+        title: "Check Number cannot be blank."
       });
 
       document.querySelector("[name='cheque_number']").focus();
@@ -216,7 +213,7 @@ export function Validations(state) {
 
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Cheque Date Cannot be blank."
+        title: "Cheque Date Cannot be blank."
       });
 
       document.querySelector("[name='cheque_date']").focus();

@@ -98,8 +98,7 @@ class RegistrationPatientAr extends PureComponent {
           consultation: "Y",
           appointment_patient: "Y",
           billdetail: false,
-          hims_f_patient_appointment_id: this.state
-            .hims_f_patient_appointment_id
+          appointment_id: this.state.hims_f_patient_appointment_id
         },
         () => {
           if (this.props.fromAppoinment === true) {
@@ -171,7 +170,7 @@ class RegistrationPatientAr extends PureComponent {
       this.state.Checkchecked === false
     ) {
       swalMessage({
-        title: "Invalid Input. Please select receipt type.",
+        title: "Please select receipt type.",
         type: "error"
       });
     } else {
@@ -240,8 +239,12 @@ class RegistrationPatientAr extends PureComponent {
             } else {
               patientdata = $this.state;
             }
+
+            delete patientdata.countrystates;
+            delete patientdata.cities;
             algaehApiCall({
               uri: "/frontDesk/add",
+              module: "frontDesk",
               data: patientdata,
               method: "POST",
               onSuccess: response => {
@@ -273,6 +276,7 @@ class RegistrationPatientAr extends PureComponent {
           } else {
             algaehApiCall({
               uri: "/frontDesk/update",
+              module: "frontDesk",
               data: $this.state,
               method: "POST",
               onSuccess: response => {
@@ -301,7 +305,7 @@ class RegistrationPatientAr extends PureComponent {
         });
       } else {
         swalMessage({
-          title: "Invalid Input. Please recive the amount.",
+          title: "Please recive the amount.",
           type: "error"
         });
       }
@@ -324,9 +328,8 @@ class RegistrationPatientAr extends PureComponent {
         : this.props.fromAppoinment;
 
     let department_id = this.props.department_id || null;
-    let hims_f_patient_appointment_id =
-      this.props.hims_f_patient_appointment_id || null;
-    let title_id = this.props.title_id || null;
+    let appointment_id = this.props.hims_f_patient_appointment_id || null;
+    let title_id = Window.global["appt-title-id"] || null;
 
     AlgaehLoader({ show: true });
 
@@ -336,6 +339,7 @@ class RegistrationPatientAr extends PureComponent {
       method: "GET",
       data: { patient_code: patcode },
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           let data = response.data.records;
 
@@ -358,13 +362,18 @@ class RegistrationPatientAr extends PureComponent {
             data.patientRegistration.billdetail = false;
             data.patientRegistration.consultation = "Y";
             data.patientRegistration.appointment_patient = "Y";
-            data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
+            data.patientRegistration.appointment_id = appointment_id;
             data.patientRegistration.title_id = title_id;
           }
           //Appoinment End
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
-          data.patientRegistration.arabic_name = "No Name";
+          data.patientRegistration.arabic_name =
+            data.patientRegistration.arabic_name || "No Name";
+
+          data.patientRegistration.date_of_birth = moment(
+            data.patientRegistration.date_of_birth
+          )._d;
           $this.setState(data.patientRegistration, () => {
             if (fromAppoinment === true) {
               generateBillDetails(this, this);
@@ -395,117 +404,6 @@ class RegistrationPatientAr extends PureComponent {
         });
       }
     });
-    // this.props.getPatientDetails({
-    //   uri: "/frontDesk/get",
-    //   method: "GET",
-    //   printInput: true,
-    //   data: { patient_code: patcode },
-    //   redux: {
-    //     type: "PAT_GET_DATA",
-    //     mappingName: "patients"
-    //   },
-    //   afterSuccess: data => {
-    //     if (data.response === undefined) {
-    //       data.patientRegistration.visitDetails = data.visitDetails;
-    //       data.patientRegistration.patient_id =
-    //         data.patientRegistration.hims_d_patient_id;
-    //       data.patientRegistration.existingPatient = true;
-
-    //       //Appoinment Start
-
-    //       if (fromAppoinment === true) {
-    //         data.patientRegistration.provider_id = provider_id;
-    //         data.patientRegistration.doctor_id = provider_id;
-    //         data.patientRegistration.sub_department_id = sub_department_id;
-
-    //         data.patientRegistration.visit_type = visit_type;
-    //         data.patientRegistration.saveEnable = false;
-    //         data.patientRegistration.clearEnable = true;
-    //         data.patientRegistration.hims_d_services_id = hims_d_services_id;
-    //         data.patientRegistration.department_id = department_id;
-    //         data.patientRegistration.billdetail = false;
-    //         data.patientRegistration.consultation = "Y";
-    //         data.patientRegistration.appointment_patient = "Y";
-    //         data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
-
-    //         // data.patientRegistration.title_id = title_id;
-    //       }
-    //       //Appoinment End
-    //       data.patientRegistration.filePreview =
-    //         "data:image/png;base64, " + data.patient_Image;
-    //       $this.setState(data.patientRegistration, () => {
-    //         if (fromAppoinment === true) {
-    //           generateBillDetails(this, this);
-    //         }
-    //       });
-
-    //       $this.props.getPatientInsurance({
-    //         uri: "/insurance/getPatientInsurance",
-    //         method: "GET",
-    //         data: { patient_id: data.patientRegistration.hims_d_patient_id },
-    //         redux: {
-    //           type: "EXIT_INSURANCE_GET_DATA",
-    //           mappingName: "existinsurance"
-    //         }
-    //       });
-    //     } else {
-    //       if (data.response.data.success === true) {
-    //         data.patientRegistration.visitDetails = data.visitDetails;
-    //         data.patientRegistration.patient_id =
-    //           data.patientRegistration.hims_d_patient_id;
-    //         data.patientRegistration.existingPatient = true;
-
-    //         //Appoinment Start
-    //         if (fromAppoinment === true) {
-    //           data.patientRegistration.provider_id = provider_id;
-    //           data.patientRegistration.doctor_id = provider_id;
-    //           data.patientRegistration.sub_department_id = sub_department_id;
-
-    //           data.patientRegistration.visit_type = visit_type;
-    //           data.patientRegistration.saveEnable = false;
-    //           data.patientRegistration.clearEnable = true;
-    //           data.patientRegistration.hims_d_services_id = hims_d_services_id;
-    //           data.patientRegistration.department_id = department_id;
-    //           data.patientRegistration.billdetail = false;
-    //           data.patientRegistration.consultation = "Y";
-    //           data.patientRegistration.appointment_patient = "Y";
-    //           data.patientRegistration.hims_f_patient_appointment_id = hims_f_patient_appointment_id;
-    //           data.patientRegistration.title_id = title_id;
-    //         }
-    //         //Appoinment End
-    //         data.patientRegistration.filePreview =
-    //           "data:image/png;base64, " + data.patient_Image;
-    //         data.patientRegistration.arabic_name = "No Name";
-    //         $this.setState(data.patientRegistration, () => {
-    //           if (fromAppoinment === true) {
-    //             generateBillDetails(this, this);
-    //           }
-    //         });
-
-    //         $this.props.getPatientInsurance({
-    //           uri: "/insurance/getPatientInsurance",
-    //           method: "GET",
-    //           data: {
-    //             patient_id: data.patientRegistration.hims_d_patient_id
-    //           },
-    //           redux: {
-    //             type: "EXIT_INSURANCE_GET_DATA",
-    //             mappingName: "existinsurance"
-    //           }
-    //         });
-    //       } else {
-    //         swalMessage({
-    //           title: data.response.data.message,
-    //           type: "error"
-    //         });
-
-    //         let IOputs = emptyObject;
-    //         this.setState(IOputs);
-    //       }
-    //     }
-    //     AlgaehLoader({ show: false });
-    //   }
-    // });
   }
 
   //Render Page Start Here

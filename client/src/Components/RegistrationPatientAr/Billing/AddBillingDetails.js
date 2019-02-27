@@ -39,6 +39,7 @@ const calculateRecipt = ($this, context) => {
 
   algaehApiCall({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
@@ -69,7 +70,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     swalMessage({
-      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      title: "Sum of all amount to be equal to Receivable.",
       type: "warning"
     });
 
@@ -102,7 +103,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     swalMessage({
-      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      title: "Sum of all amount to be equal to Receivable.",
       type: "warning"
     });
     $this.setState(
@@ -135,7 +136,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     swalMessage({
-      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      title: "Sum of all amount to be equal to Receivable.",
       type: "warning"
     });
     $this.setState(
@@ -163,8 +164,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
   if (e.target.value > $this.state.advance_amount) {
     swalMessage({
-      title:
-        "Invalid Input. Adjusted amount cannot be greater than Advance amount",
+      title: "Adjusted amount cannot be greater than Advance amount",
       type: "warning"
     });
   } else {
@@ -197,7 +197,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
   if (sheet_discount_percentage > 100) {
     swalMessage({
-      title: "Invalid Input. Discount % cannot be greater than 100.",
+      title: "Discount % cannot be greater than 100.",
       type: "Warning"
     });
     $this.setState({
@@ -211,8 +211,7 @@ const discounthandle = ($this, context, ctrl, e) => {
     }
   } else if (sheet_discount_amount > $this.state.patient_payable) {
     swalMessage({
-      title:
-        "Invalid Input. Discount Amount cannot be greater than Patient Share.",
+      title: "Discount Amount cannot be greater than Patient Share.",
       type: "Warning"
     });
     $this.setState({
@@ -264,6 +263,7 @@ const billheaderCalculation = ($this, context) => {
 
   algaehApiCall({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
@@ -304,8 +304,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       $this.state.primary_network_id == null)
   ) {
     swalMessage({
-      title:
-        "Invalid Input. Please select the primary insurance details properly.",
+      title: "Please select the primary insurance details properly.",
       type: "error"
     });
   } else if (
@@ -315,8 +314,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       $this.state.secondary_network_id == null)
   ) {
     swalMessage({
-      title:
-        "Invalid Input. Please select the secondary insurance details properly.",
+      title: "Please select the secondary insurance details properly.",
       type: "error"
     });
   } else {
@@ -343,18 +341,23 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       data: serviceInput,
       onSuccess: response => {
         if (response.data.success) {
+          // response.data.records.billdetails[0].insured =
+          //   response.data.records.billdetails[0].insurance_yesno;
+          $this.setState({ ...response.data.records });
           if (context !== null) {
             context.updateState({ ...response.data.records });
           }
 
           algaehApiCall({
             uri: "/billing/billingCalculations",
+            module: "billing",
             method: "POST",
             data: response.data.records,
             onSuccess: response => {
               if (response.data.success) {
                 response.data.records.saveEnable = false;
                 response.data.records.ProcessInsure = true;
+                $this.setState({ ...response.data.records });
                 if (context !== null) {
                   context.updateState({ ...response.data.records });
                 }
@@ -409,7 +412,7 @@ const checkcardhandaler = ($this, context, e) => {
       Cardchecked: Cardchecked,
       card_amount: 0,
       card_check_number: null,
-      expiry_date: null
+      card_date: null
     },
     () => {
       calculateRecipt($this, context);
@@ -419,7 +422,7 @@ const checkcardhandaler = ($this, context, e) => {
     context.updateState({
       card_amount: 0,
       card_check_number: null,
-      expiry_date: null,
+      card_date: null,
       Cardchecked: Cardchecked
     });
   }
@@ -453,7 +456,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
   if (e.target.value > $this.state.net_amount) {
     swalMessage({
-      title: "Invalid Input. Criedt amount cannot be greater than Net amount",
+      title: "Criedt amount cannot be greater than Net amount",
       type: "warning"
     });
     $this.setState({

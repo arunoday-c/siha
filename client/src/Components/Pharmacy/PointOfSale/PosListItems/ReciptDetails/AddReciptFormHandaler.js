@@ -90,7 +90,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     swalMessage({
-      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      title: "Sum of all amount to be equal to Receivable.",
       type: "warning"
     });
     $this.setState(
@@ -127,7 +127,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     swalMessage({
-      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      title: "Sum of all amount to be equal to Receivable.",
       type: "warning"
     });
     $this.setState(
@@ -165,7 +165,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 
   if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
     swalMessage({
-      title: "Invalid Input. Sum of all amount to be equal to Receivable.",
+      title: "Sum of all amount to be equal to Receivable.",
       type: "warning"
     });
     $this.setState(

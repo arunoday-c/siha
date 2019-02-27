@@ -145,8 +145,7 @@ const onchangegridcol = ($this, row, e) => {
   let value = e.value || e.target.value;
   if ($this.state.previous_balance > value) {
     swalMessage({
-      title:
-        "Invalid Input. Receipt Amount cannot be greater than Previous Balance",
+      title: "Receipt Amount cannot be greater than Previous Balance",
       type: "error"
     });
   } else {

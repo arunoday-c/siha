@@ -83,7 +83,7 @@ const GenerateReciept = ($this, callBack) => {
     $this.state.Checkchecked === false
   ) {
     swalMessage({
-      title: "Invalid Input. Please select receipt type.",
+      title: "Please select receipt type.",
       type: "error"
     });
   } else {

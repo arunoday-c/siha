@@ -174,8 +174,7 @@ const onchangegridcol = ($this, row, e) => {
   let value = e.value || e.target.value;
   if (parseFloat(value) > row.dn_quantity) {
     swalMessage({
-      title:
-        "Invalid Input. Authorize Quantity cannot be greater than Ordered Quantity.",
+      title: "Authorize Quantity cannot be greater than Ordered Quantity.",
       type: "warning"
     });
   } else {
@@ -204,8 +203,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 
     if (value > row.authorize_quantity) {
       swalMessage({
-        title:
-          "Invalid Input.  DN Quantity cannot be greater than PO Quantity.",
+        title: "DN Quantity cannot be greater than PO Quantity.",
         type: "warning"
       });
     } else {
@@ -299,7 +297,7 @@ const GridAssignData = ($this, row, e) => {
     e.preventDefault();
     row["recieved_quantity"] = 0;
     swalMessage({
-      title: "Invalid Input. Recieved Quantity cannot be Zero.",
+      title: "Recieved Quantity cannot be Zero.",
       type: "warning"
     });
     row.update();

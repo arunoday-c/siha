@@ -170,7 +170,7 @@ class RegistrationPatient extends PureComponent {
       this.state.Checkchecked === false
     ) {
       swalMessage({
-        title: "Invalid Input. Please select receipt type.",
+        title: "Please select receipt type.",
         type: "error"
       });
     } else {
@@ -305,7 +305,7 @@ class RegistrationPatient extends PureComponent {
         });
       } else {
         swalMessage({
-          title: "Invalid Input. Please recive the amount.",
+          title: "Please recive the amount.",
           type: "error"
         });
       }
@@ -409,6 +409,7 @@ class RegistrationPatient extends PureComponent {
   //Render Page Start Here
 
   render() {
+    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}

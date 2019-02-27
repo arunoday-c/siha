@@ -17,7 +17,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Test Name Cannot be blank."
+      title: "Test Name Cannot be blank."
     });
 
     document.querySelector("[name='description']").focus();
@@ -26,7 +26,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Service Cannot be blank."
+      title: "Service Cannot be blank."
     });
     document.querySelector("[name='services_id']").focus();
     return isError;
@@ -35,7 +35,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Invalid Input. Specimen Cannot be blank."
+        title: "Specimen Cannot be blank."
       });
       document.querySelector("[name='specimen_id']").focus();
       return isError;
@@ -43,7 +43,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Invalid Input. Lab Section Cannot be blank."
+        title: "Lab Section Cannot be blank."
       });
       document.querySelector("[name='lab_section_id']").focus();
       return isError;
@@ -51,7 +51,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Invalid Input. Container Cannot be blank."
+        title: "Container Cannot be blank."
       });
       document.querySelector("[name='container_id']").focus();
       return isError;
@@ -59,7 +59,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Invalid Input. Atleast One Analytes to be add."
+        title: "Atleast One Analytes to be add."
       });
 
       return isError;
@@ -69,7 +69,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "error",
-        title: "Invalid Input. Category Cannot be blank."
+        title: "Category Cannot be blank."
       });
       document.querySelector("[name='category_id']").focus();
       return isError;

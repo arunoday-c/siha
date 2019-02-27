@@ -97,7 +97,7 @@ const AddAnalytes = ($this, context) => {
     }
   } else {
     successfulMessage({
-      message: "Invalid Input. Please select analyte to add.",
+      message: "Please select analyte to add.",
       title: "Warning",
       icon: "warning"
     });
