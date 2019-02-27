@@ -23,7 +23,6 @@ export default class AttendanceMgmt extends Component {
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
-        debugger;
         if (res.data.success) {
           sessionStorage.removeItem("hrOptions");
           sessionStorage.setItem(

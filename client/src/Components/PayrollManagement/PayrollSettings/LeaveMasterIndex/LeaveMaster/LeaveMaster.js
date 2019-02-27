@@ -165,7 +165,7 @@ class LeaveMaster extends Component {
               title: "Leave Added Successfully",
               type: "success"
             });
-
+            this.clearState();
             document.getElementById("lmi-btn").click();
           }
         },

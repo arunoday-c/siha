@@ -16,7 +16,7 @@ import httpStatus from "./utils/httpStatus";
 import { logger, requestTracking } from "./utils/logging";
 import jwtDecode from "jwt-decode";
 import { decryption } from "./utils/cryptography";
-
+import moment from "moment";
 let app = express();
 const _port = keys.port;
 
@@ -81,6 +81,12 @@ if (process.env.NODE_ENV == "production") {
   app.set("view cache", true);
 }
 app.use((req, res, next) => {
+  // const _mydate = "20190330";
+  // if (parseInt(moment().format("YYYYMMDD")) > parseInt(_mydate)) {
+  //   res.status(500).json({ success: false, message: "Demo version expired" });
+  //   return;
+  // }
+
   let reqH = req.headers;
 
   let reqUser = "";

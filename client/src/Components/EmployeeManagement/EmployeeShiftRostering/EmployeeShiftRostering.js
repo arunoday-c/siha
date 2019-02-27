@@ -259,7 +259,7 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   plotEmployeeDates(row, holidays, leaves, shifts) {
-    debugger;
+    //debugger;
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
@@ -353,8 +353,11 @@ export default class EmployeeShiftRostering extends Component {
                   sub_id: row.sub_department_id
                 })}
               >
-                Paste
+                Paste Normal
               </li>
+              {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                <li>Paste as Holiday / WeekOff</li>
+              ) : null}
             </ul>
             <span>
               {shift.shift_id === 100
@@ -444,6 +447,11 @@ export default class EmployeeShiftRostering extends Component {
               >
                 Paste
               </li>
+
+              {/* {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                <li>Paste as Holiday / WeekOff</li>
+              ) : null} */}
+
               <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
                 Delete Shift
               </li>
@@ -513,6 +521,20 @@ export default class EmployeeShiftRostering extends Component {
               >
                 Paste
               </li>
+              {shift.shift_id === 100 || shift.shift_id === 101 ? (
+                <li
+                  onClick={this.pasteWeekoffShift.bind(this, {
+                    id: row.hims_d_employee_id,
+                    date: now.format("YYYY-MM-DD"),
+                    sub_id: row.sub_department_id,
+                    holiday: shift.shift_id === 101 ? "Y" : "N",
+                    weekoff: shift.shift_id === 100 ? "Y" : "N"
+                  })}
+                >
+                  Paste as Holiday / WeekOff
+                </li>
+              ) : null}
+
               <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
                 Delete Shift
               </li>
@@ -541,17 +563,30 @@ export default class EmployeeShiftRostering extends Component {
             <i className="fas fa-ellipsis-v" />
             <ul>
               <li
-                onClick={this.pasteShift.bind(this, {
+                onClick={this.pasteWeekoffShift.bind(this, {
                   id: row.hims_d_employee_id,
                   date: now.format("YYYY-MM-DD"),
                   sub_id: row.sub_department_id,
-                  type: holiday.weekoff === "Y" ? "WO" : "HO"
+                  holiday: holiday.holiday,
+                  weekoff: holiday.weekoff
                 })}
                 style={{
                   zIndex: 9999
                 }}
               >
-                Paste
+                Paste As Week Off
+              </li>
+              <li
+                onClick={this.pasteShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD"),
+                  sub_id: row.sub_department_id
+                })}
+                style={{
+                  zIndex: 9999
+                }}
+              >
+                Paste As Normal
               </li>
             </ul>
           </td>
@@ -632,6 +667,50 @@ export default class EmployeeShiftRostering extends Component {
     });
   }
 
+  pasteWeekoffShift(data) {
+    if (this.state.copyData === null) {
+      swalMessage({
+        title: "Please copy the shift first",
+        type: "warning"
+      });
+    } else {
+      let sendData = {
+        employee_id: data.id,
+        shift_date: data.date,
+        shift_id: this.state.copyData.shift_id,
+        shift_end_date: this.state.copyData.shift_end_date,
+        shift_start_time: this.state.copyData.shift_start_time,
+        shift_end_time: this.state.copyData.shift_end_time,
+        shift_time: this.state.copyData.shift_time,
+        sub_department_id: data.sub_id,
+        weekoff: data.weekoff,
+        holiday: data.holiday
+      };
+
+      algaehApiCall({
+        uri: "/shift_roster/pasteRoster",
+        method: "POST",
+        module: "hrManagement",
+        data: sendData,
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Pasted Successfully . . ",
+              type: "success"
+            });
+            this.getEmployeesForShiftRoster();
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    }
+  }
+
   pasteShift(data) {
     if (this.state.copyData === null) {
       swalMessage({
@@ -639,34 +718,18 @@ export default class EmployeeShiftRostering extends Component {
         type: "warning"
       });
     } else {
-      let sendData = {};
-
-      data.type !== undefined
-        ? (sendData = {
-            employee_id: data.id,
-            shift_date: data.date,
-            shift_id: this.state.copyData.shift_id,
-            shift_end_date: this.state.copyData.shift_end_date,
-            shift_start_time: this.state.copyData.shift_start_time,
-            shift_end_time: this.state.copyData.shift_end_time,
-            shift_time: this.state.copyData.shift_time,
-            weekoff: this.state.copyData.weekoff,
-            holiday: this.state.copyData.holiday,
-            sub_department_id: data.sub_id
-          })
-        : (sendData = {
-            employee_id: data.id,
-            shift_date: data.date,
-            shift_id: this.state.copyData.shift_id,
-            shift_end_date: this.state.copyData.shift_end_date,
-            shift_start_time: this.state.copyData.shift_start_time,
-            shift_end_time: this.state.copyData.shift_end_time,
-            shift_time: this.state.copyData.shift_time,
-            sub_department_id: data.sub_id,
-            weekoff: this.state.copyData.weekoff,
-            holiday: this.state.copyData.holiday
-          });
-      debugger;
+      let sendData = {
+        employee_id: data.id,
+        shift_date: data.date,
+        shift_id: this.state.copyData.shift_id,
+        shift_end_date: this.state.copyData.shift_end_date,
+        shift_start_time: this.state.copyData.shift_start_time,
+        shift_end_time: this.state.copyData.shift_end_time,
+        shift_time: this.state.copyData.shift_time,
+        sub_department_id: data.sub_id,
+        weekoff: this.state.copyData.weekoff,
+        holiday: this.state.copyData.holiday
+      };
 
       algaehApiCall({
         uri: "/shift_roster/pasteRoster",
