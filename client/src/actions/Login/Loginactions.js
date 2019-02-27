@@ -42,7 +42,7 @@ export function getTokenDetals(that) {
       .catch(err => {
         console.error("Error : ", err.message);
         successfulMessage({
-          message: err.message,
+          message: err.response.data.message,
           title: "Error",
           icon: "error"
         });

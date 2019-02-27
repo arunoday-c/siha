@@ -28,13 +28,18 @@ export default class MonthlyAttendance extends Component {
         .hims_d_hospital_id,
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
-      formatingString: this.monthFormatorString(moment().startOf("month")),
-      attendance_type: JSON.parse(
-        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).attendance_type
+      formatingString: this.monthFormatorString(moment().startOf("month"))
     };
     this.getSubDepts();
     this.getOrganization();
+  }
+
+  componentDidMount() {
+    this.setState({
+      attendance_type: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).attendance_type
+    });
   }
 
   loadAttendance() {
