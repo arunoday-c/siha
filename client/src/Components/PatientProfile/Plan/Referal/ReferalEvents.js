@@ -17,10 +17,9 @@ const DeptselectedHandeler = ($this, e) => {
 };
 
 const addReferal = $this => {
-  
   if ($this.state.sub_department_id === null) {
     successfulMessage({
-      message: "Invalid Input. Please select Department",
+      message: "Please select Department",
       title: "Warning",
       icon: "warning"
     });
@@ -29,7 +28,7 @@ const addReferal = $this => {
     $this.state.doctor_id === null
   ) {
     successfulMessage({
-      message: "Invalid Input. Please select Doctor",
+      message: "Please select Doctor",
       title: "Warning",
       icon: "warning"
     });
@@ -77,7 +76,6 @@ const addReferal = $this => {
 };
 
 const doctorselectedHandeler = ($this, e) => {
-  
   $this.setState({
     doctor_id: e.value,
     departments: e.selected.departments
@@ -85,7 +83,6 @@ const doctorselectedHandeler = ($this, e) => {
 };
 
 const radioChange = ($this, e) => {
-  
   let radioInternal = true;
   let radioExternal = false;
   if (e.target.value === "I") {

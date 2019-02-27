@@ -31,7 +31,7 @@ const discounthandle = ($this, context, ctrl, e) => {
       [e.target.name]: 0
     });
     swalMessage({
-      title: "Invalid Input. Please Enter Quantity",
+      title: "Please Enter Quantity",
       type: "warning"
     });
   } else {
@@ -60,7 +60,7 @@ const discounthandle = ($this, context, ctrl, e) => {
     }
     if (sub_discount_percentage > 100) {
       swalMessage({
-        title: "Invalid Input. Discount % cannot be greater than 100.",
+        title: "Discount % cannot be greater than 100.",
         type: "warning"
       });
       $this.setState({
@@ -114,7 +114,7 @@ const numberchangeTexts = ($this, context, e) => {
 
   if (value < 0) {
     swalMessage({
-      title: "Invalid Input. Cannot be less than Zero",
+      title: "Cannot be less than Zero",
       type: "warning"
     });
   } else {
@@ -159,7 +159,7 @@ const unitpricenumberchangeTexts = ($this, context, e) => {
 
   if (value < 0) {
     swalMessage({
-      title: "Invalid Input. Cannot be less than Zero",
+      title: "Cannot be less than Zero",
       type: "warning"
     });
   } else {
@@ -274,7 +274,7 @@ const itemchangeText = ($this, context, e) => {
         },
         () => {
           swalMessage({
-            title: "Invalid Input. Please select Vendor.",
+            title: "Please select Vendor.",
             type: "warning"
           });
         }
@@ -287,7 +287,7 @@ const itemchangeText = ($this, context, e) => {
       },
       () => {
         swalMessage({
-          title: "Invalid Input. Please select Location.",
+          title: "Please select Location.",
           type: "warning"
         });
       }
@@ -298,12 +298,12 @@ const itemchangeText = ($this, context, e) => {
 const AddItems = ($this, context) => {
   if ($this.state.order_quantity === 0) {
     swalMessage({
-      title: "Invalid Input. Please enter Quantity Required .",
+      title: "Please enter Quantity Required .",
       type: "warning"
     });
   } else if ($this.state.unit_price === 0) {
     swalMessage({
-      title: "Invalid Input. Please enter Unit Price .",
+      title: "Please enter Unit Price .",
       type: "warning"
     });
   } else {
@@ -626,8 +626,7 @@ const onchangegridcol = ($this, row, e) => {
   let value = e.value || e.target.value;
   if (value > row.total_quantity) {
     swalMessage({
-      title:
-        "Invalid Input. Authorize Quantity cannot be greater than Ordered Quantity.",
+      title: "Authorize Quantity cannot be greater than Ordered Quantity.",
       type: "warning"
     });
   } else {
@@ -666,7 +665,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   }
   if (sub_discount_percentage > 100) {
     swalMessage({
-      title: "Invalid Input. Discount % cannot be greater than 100.",
+      title: "Discount % cannot be greater than 100.",
       type: "warning"
     });
   } else {

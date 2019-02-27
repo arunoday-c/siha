@@ -8,7 +8,7 @@
 
 .ReactTable .rt-thead .rt-th {
   color: #000 !important;
-  background: #dff6f6 !important; }
+  background: #d2faf4 !important; }
   .ReactTable .rt-thead .rt-th .style_Label {
     font-weight: bold !important;
     white-space: pre-line !important;
@@ -29,16 +29,16 @@
     overflow: inherit !important;
     white-space: inherit !important; }
   .ReactTable .rt-tbody .rowHighliter .rt-td {
-    background: #cbf0f1 !important; }
+    background: #8ef2e4 !important; }
     .ReactTable .rt-tbody .rowHighliter .rt-td:hover {
-      background: #cbf0f1 !important; }
+      background: #8ef2e4 !important; }
   .ReactTable .rt-tbody .textCapitalize {
     text-transform: capitalize; }
     .ReactTable .rt-tbody .textCapitalize input {
       text-transform: capitalize; }
 
 .ReactTable .-btn {
-  background: #34b8bc !important;
+  background: #12a28d !important;
   color: #fff !important;
   font-size: 0.8em; }
 
@@ -79,7 +79,7 @@
 .ReactTable .fa-thumbs-up,
 .ReactTable .fa-thumbs-down {
   cursor: pointer;
-  border: 1px solid #53ccd0;
+  border: 1px solid #17d0b5;
   height: 28px;
   border-radius: 100%;
   width: 28px;
@@ -109,7 +109,7 @@
 .ReactTable .fa-arrow-right:hover,
 .ReactTable .fa-plus:hover,
 .ReactTable .fa-thumbs-up:hover {
-  background: #34b8bc;
+  background: #12a28d;
   color: #fff; }
 
 .ReactTable .fa-thumbs-down:hover {

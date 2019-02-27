@@ -20,7 +20,9 @@ import {
 import {
   DeptselectedHandeler,
   selectedHandeler,
-  doctorselectedHandeler
+  doctorselectedHandeler,
+  radioChange,
+  texthandle
 } from "./AddConsultationDetails";
 
 const MATERNITY_PATIENT = [
@@ -42,6 +44,7 @@ class AddConsultationForm extends Component {
     let InputOutput;
 
     InputOutput = this.props.PatRegIOputs;
+
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -241,37 +244,119 @@ class AddConsultationForm extends Component {
                     />
                   </div>
                   <div className="row">
-                    <div className="col-lg-8">
+                    <div className="col-lg-4" style={{ paddingRight: 0 }}>
                       <AlgaehLabel
                         label={{
                           fieldName: "maternity_patient"
                         }}
                       />
                       <br />
-                      <div className="row moveRadioButtons">
-                        {MATERNITY_PATIENT.map((data, idx) => {
-                          return (
-                            <div className="col-lg-6" key={"index_value" + idx}>
-                              <input
-                                type="radio"
-                                id={"mat_pat_" + idx}
-                                name="maternity_patient"
-                                className="htpl-phase1-radio-btn"
-                                value={data.value}
-                                defaultChecked={
-                                  data.value === "N" ? true : false
-                                }
-                              />
-                              <label
-                                className="radio-design"
-                                htmlFor={"mat_pat_" + idx}
-                              >
-                                {data.label}
+
+                      <div className="customRadio">
+                        <label className="radio inline">
+                          <input
+                            type="radio"
+                            name="maternity_patient"
+                            value="Y"
+                            checked={
+                              this.state.maternity_patient === "Y"
+                                ? true
+                                : false
+                            }
+                            onChange={radioChange.bind(this, this, context)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                        <label className="radio inline">
+                          <input
+                            type="radio"
+                            name="maternity_patient"
+                            value="N"
+                            checked={
+                              this.state.maternity_patient === "N"
+                                ? true
+                                : false
+                            }
+                            onChange={radioChange.bind(this, this, context)}
+                          />
+                          <span>No</span>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="col-lg-8">
+                      {this.state.department_type === "D" ? (
+                        <div className="row">
+                          <div className="col-lg-4" style={{ paddingRight: 0 }}>
+                            <label>Existing Plan</label>
+                            <br />
+
+                            <div className="customRadio">
+                              <label className="radio inline">
+                                <input
+                                  type="radio"
+                                  name="existing_plan"
+                                  value="Y"
+                                  checked={
+                                    this.state.existing_plan === "Y"
+                                      ? true
+                                      : false
+                                  }
+                                  onChange={radioChange.bind(
+                                    this,
+                                    this,
+                                    context
+                                  )}
+                                />
+                                <span>Yes</span>
+                              </label>
+                              <label className="radio inline">
+                                <input
+                                  type="radio"
+                                  name="existing_plan"
+                                  value="N"
+                                  checked={
+                                    this.state.existing_plan === "N"
+                                      ? true
+                                      : false
+                                  }
+                                  onChange={radioChange.bind(
+                                    this,
+                                    this,
+                                    context
+                                  )}
+                                />
+                                <span>No</span>
                               </label>
                             </div>
-                          );
-                        })}
-                      </div>
+                          </div>
+
+                          <AlagehAutoComplete
+                            div={{ className: "col-lg-8" }}
+                            label={{
+                              fieldName: "treatment_plan_id",
+                              isImp: true
+                            }}
+                            selector={{
+                              name: "treatment_plan_id",
+                              className: "select-fld",
+                              value: this.state.treatment_plan_id,
+                              dataSource: {
+                                textField: "plan_name",
+                                valueField: "hims_f_treatment_plan_id",
+                                data: this.props.dentalplans
+                              },
+                              others: {
+                                disabled:
+                                  this.state.existing_plan === "Y"
+                                    ? false
+                                    : true
+                              },
+                              onChange: texthandle.bind(this, this, context)
+                            }}
+                          />
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                 </div>
@@ -403,7 +488,8 @@ function mapStateToProps(state) {
     visittypes: state.visittypes,
     frontproviders: state.frontproviders,
     deptanddoctors: state.deptanddoctors,
-    viewsubdept: state.viewsubdept
+    viewsubdept: state.viewsubdept,
+    dentalplans: state.dentalplans
   };
 }
 
@@ -413,7 +499,8 @@ function mapDispatchToProps(dispatch) {
       getVisittypes: AlgaehActions,
       getProviderDetails: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
-      getSubDepartment: AlgaehActions
+      getSubDepartment: AlgaehActions,
+      getTreatmentPlan: AlgaehActions
     },
     dispatch
   );

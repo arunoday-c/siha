@@ -156,7 +156,7 @@ const GenerateReciept = ($this, callBack) => {
     $this.state.Checkchecked === false
   ) {
     swalMessage({
-      title: "Invalid Input. Please select receipt type.",
+      title: "Please select receipt type.",
       type: "error"
     });
   } else {
@@ -246,7 +246,7 @@ const Validations = $this => {
 
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Check Number cannot be blank."
+        title: "Check Number cannot be blank."
       });
 
       document.querySelector("[name='cheque_number']").focus();
@@ -258,7 +258,7 @@ const Validations = $this => {
 
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Cheque Date Cannot be blank."
+        title: "Cheque Date Cannot be blank."
       });
 
       document.querySelector("[name='cheque_date']").focus();
@@ -269,7 +269,7 @@ const Validations = $this => {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Unbanalced Amount should nullify."
+      title: "Unbanalced Amount should nullify."
     });
 
     return isError;
@@ -434,7 +434,7 @@ const VisitSearch = ($this, e) => {
     });
   } else {
     swalMessage({
-      title: "Invalid Input. Please select Location.",
+      title: "Please select Location.",
       type: "warning"
     });
   }

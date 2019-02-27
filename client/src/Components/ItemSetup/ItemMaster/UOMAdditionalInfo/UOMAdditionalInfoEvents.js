@@ -50,7 +50,7 @@ const AddUom = ($this, context) => {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Select UOM."
+      title: "Please Select UOM."
     });
 
     return isError;
@@ -59,7 +59,7 @@ const AddUom = ($this, context) => {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Define Conversion Factor."
+      title: "Define Conversion Factor."
     });
     return isError;
   } else if ($this.state.stocking_uom === null) {
@@ -67,7 +67,7 @@ const AddUom = ($this, context) => {
 
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Enter Stocking Uom."
+      title: "Enter Stocking Uom."
     });
 
     return isError;
@@ -148,7 +148,7 @@ const AddUom = ($this, context) => {
         isError = true;
         swalMessage({
           type: "warning",
-          title: "Invalid Input. Only one should be stocking UOM"
+          title: "Only one should be stocking UOM"
         });
 
         return isError;
@@ -157,7 +157,7 @@ const AddUom = ($this, context) => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Selected UOM Already exists"
+        title: "Selected UOM Already exists"
       });
 
       return isError;

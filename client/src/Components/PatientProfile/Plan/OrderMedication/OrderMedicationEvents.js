@@ -25,7 +25,7 @@ const numberhandle = ($this, ctrl, e) => {
   let value = e.value || e.target.value;
   if (value < 0) {
     swalMessage({
-      title: "Invalid Input. Cannot be lessthan Zero.",
+      title: "Cannot be lessthan Zero.",
       type: "warning"
     });
   } else {
@@ -65,7 +65,7 @@ const SaveMedication = ($this, e) => {
     });
   } else {
     swalMessage({
-      title: "Invalid Input. Please enter the items",
+      title: "Please enter the items",
       type: "success"
     });
   }
@@ -103,7 +103,7 @@ const itemhandle = ($this, ctrl, e) => {
     let value = e.value || e.target.value;
     if (e.selected.service_id === null) {
       swalMessage({
-        title: "Invalid Input. Service not setup to the selected Item.",
+        title: "Service not setup to the selected Item.",
         type: "error"
       });
       $this.setState({
@@ -183,7 +183,7 @@ const AddItems = $this => {
     });
   } else {
     swalMessage({
-      title: "Invalid Input. Please enter all detils of prescription",
+      title: "Please enter all detils of prescription",
       type: "error"
     });
   }

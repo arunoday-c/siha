@@ -1,7 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const UpdateOrders = ($this, row) => {
-  
   let dataSend = [];
 
   if (row.apprv_status === "AP" || row.apprv_status === "RJ") {
@@ -41,7 +40,7 @@ const UpdateOrders = ($this, row) => {
     });
   } else {
     swalMessage({
-      title: "Invalid Input. If Approved or Reject only can be processed",
+      title: "If Approved or Reject only can be processed",
       type: "warning"
     });
   }

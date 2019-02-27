@@ -76,6 +76,33 @@ export default class AttendanceRegularization extends Component {
   }
 
   regularizeAttendance(data, type) {
+    debugger;
+
+    const diff_hour = moment(data.regularize_out_time, "HH").diff(
+      moment(data.regularize_in_time, "HH"),
+      "hours"
+    );
+    const diff_munite = moment
+      .utc(
+        moment(data.regularize_out_time, "HH:mm:ss").diff(
+          moment(data.regularize_in_time, "HH:mm:ss")
+        )
+      )
+      .format("mm");
+
+    const worked_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
+
+    const IntputObj = {
+      regularize_status: type,
+      hims_f_attendance_regularize_id: data.hims_f_attendance_regularize_id,
+      in_time: data.regularize_in_time,
+      out_time: data.regularize_out_time,
+      hours: diff_hour,
+      minutes: diff_munite,
+      worked_hours: worked_hours,
+      employee_id: data.employee_id,
+      attendance_date: data.attendance_date
+    };
     swal({
       title:
         type === "APR"
@@ -92,11 +119,7 @@ export default class AttendanceRegularization extends Component {
         algaehApiCall({
           uri: "/attendance/regularizeAttendance",
           method: "PUT",
-          data: {
-            regularize_status: type,
-            hims_f_attendance_regularize_id:
-              data.hims_f_attendance_regularize_id
-          },
+          data: IntputObj,
           module: "hrManagement",
           onSuccess: res => {
             if (res.data.success) {

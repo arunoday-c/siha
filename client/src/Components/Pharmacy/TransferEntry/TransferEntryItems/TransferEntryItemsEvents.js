@@ -71,7 +71,7 @@ const itemchangeText = ($this, e) => {
           });
         } else {
           swalMessage({
-            title: "Invalid Input. No Stock Avaiable for selected Item.",
+            title: "No Stock Avaiable for selected Item.",
             type: "warning"
           });
         }
@@ -84,7 +84,7 @@ const itemchangeText = ($this, e) => {
       },
       () => {
         swalMessage({
-          title: "Invalid Input. Please select Location.",
+          title: "Please select Location.",
           type: "warning"
         });
       }
@@ -95,7 +95,7 @@ const itemchangeText = ($this, e) => {
 const AddItems = ($this, context) => {
   if ($this.state.item_id === null) {
     swalMessage({
-      title: "Invalid Input. Select Item.",
+      title: "Select Item.",
       type: "warning"
     });
   } else {
@@ -126,7 +126,7 @@ const AddItems = ($this, context) => {
         if (data.billdetails[0].pre_approval === "Y") {
           swalMessage({
             title:
-              "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+              "Selected Service is Pre-Approval required, you don't have rights to bill.",
             type: "warning"
           });
         } else {
@@ -272,7 +272,7 @@ const onchangegridcol = ($this, context, row, e) => {
   let transfer_to_date = row.transfer_to_date + parseFloat(value);
   if (transfer_to_date > row.quantity_authorized) {
     swalMessage({
-      title: "Invalid Input. Cannot be greater than Authorized Quantity.",
+      title: "Cannot be greater than Authorized Quantity.",
       type: "warning"
     });
     row[name] = $this.state.quantity_transferred;

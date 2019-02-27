@@ -48,7 +48,6 @@ const showconfirmDialog = ($this, row) => {
           }
         },
         onFailure: error => {
-          
           swalMessage({
             title: error.response.data.message,
             type: "error"
@@ -69,7 +68,6 @@ const deleteNetWorkPlan = ($this, row) => {
 };
 
 const UpdateNetworkPlan = ($this, row) => {
-  
   let updateobj = {
     hims_d_insurance_network_id: row.hims_d_insurance_network_id,
     network_type: row.network_type,
@@ -148,7 +146,7 @@ const onchangegridnumber = ($this, row, e) => {
     row.update();
   } else {
     swalMessage({
-      title: "Invalid Input. Cannot be less than zero.",
+      title: "Cannot be less than zero.",
       type: "warning"
     });
   }

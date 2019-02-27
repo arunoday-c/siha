@@ -50,7 +50,7 @@ const Validations = $this => {
   ) {
     isError = true;
     swalMessage({
-      title: "Invalid Input. Vat Percentage is mandatory , if Vat Applicable",
+      title: "Vat Percentage is mandatory , if Vat Applicable",
       type: "warning"
     });
   }

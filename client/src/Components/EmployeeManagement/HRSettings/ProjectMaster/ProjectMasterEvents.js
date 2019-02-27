@@ -18,7 +18,7 @@ export default function ProjectMasterEvents() {
         if (Date.parse($this.state.end_date) < Date.parse(moment(ctrl)._d)) {
           intFailure = true;
           swalMessage({
-            title: "Invalid Input. Start Date cannot be grater than End Date.",
+            title: "Start Date cannot be grater than End Date.",
             type: "warning"
           });
         }
@@ -26,7 +26,7 @@ export default function ProjectMasterEvents() {
         if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.start_date)) {
           intFailure = true;
           swalMessage({
-            title: "Invalid Input. End Date cannot be less than Start Date.",
+            title: "End Date cannot be less than Start Date.",
             type: "warning"
           });
         }
@@ -78,7 +78,7 @@ export default function ProjectMasterEvents() {
         if (Date.parse(row.end_date) < Date.parse(moment(ctrl)._d)) {
           intFailure = true;
           swalMessage({
-            title: "Invalid Input. Start Date cannot be grater than End Date.",
+            title: "Start Date cannot be grater than End Date.",
             type: "warning"
           });
         }
@@ -86,7 +86,7 @@ export default function ProjectMasterEvents() {
         if (Date.parse(moment(ctrl)._d) < Date.parse(row.start_date)) {
           intFailure = true;
           swalMessage({
-            title: "Invalid Input. End Date cannot be less than Start Date.",
+            title: "End Date cannot be less than Start Date.",
             type: "warning"
           });
         }

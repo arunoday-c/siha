@@ -8,6 +8,7 @@ import {
 } from "../../utils/algaehApiCall.js";
 import extend from "extend";
 import moment from "moment";
+import { setGlobal } from "../../utils/GlobalFunctions";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -43,6 +44,7 @@ const generateBillDetails = $this => {
 
         algaehApiCall({
           uri: "/billing/billingCalculations",
+          module: "billing",
           method: "POST",
           data: response.data.records,
           onSuccess: response => {
@@ -98,6 +100,10 @@ const ClearData = ($this, e) => {
   IOputs.age = 0;
   IOputs.AGEMM = 0;
   IOputs.AGEDD = 0;
+
+  // let prevLang = getCookie("Language");
+
+  IOputs.selectedLang = getCookie("Language");
 
   let _screenName = getCookie("ScreenName").replace("/", "");
   algaehApiCall({
@@ -203,8 +209,8 @@ const ShowAdvanceScreen = ($this, e) => {
     });
   } else {
     swalMessage({
-      title: "Select Patient",
-      type: "error"
+      title: "Please select a patient to add advance for",
+      type: "warning"
     });
   }
 };

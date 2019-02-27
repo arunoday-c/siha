@@ -79,7 +79,7 @@ const insertInitialICDS = ($this, row) => {
       .firstOrDefault();
     if (_initalId !== undefined) {
       swalMessage({
-        title: "Invalid Input. Selected diagnosis already exists.",
+        title: "Selected diagnosis already exists.",
         type: "warning"
       });
       return;
@@ -144,7 +144,7 @@ const onchangegridcol = ($this, row, from, e) => {
   if (from === "Intial" && row.final_daignosis === "Y") {
     swalMessage({
       title:
-        "Invalid Input. Already selected as final diagnosis. If changes required change in final diagnosis",
+        "Already selected as final diagnosis. If changes required change in final diagnosis",
       type: "error"
     });
   } else {
@@ -256,7 +256,7 @@ const deleteDiagnosis = ($this, row, from) => {
   if (row.final_daignosis === "Y") {
     swalMessage({
       title:
-        "Invalid Input. Already selected as Final diagnosis. Cannot delete from Intial diagnosis",
+        "Already selected as Final diagnosis. Cannot delete from Intial diagnosis",
       type: "error"
     });
   } else {

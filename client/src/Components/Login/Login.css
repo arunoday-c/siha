@@ -5,7 +5,7 @@
   .login .LoginCntrHdg {
     margin-top: 0.7em;
     text-align: center;
-    color: #34b8bc;
+    color: #12a28d;
     font-size: 2em; }
   .login .form-group {
     margin-bottom: 0.7em; }
@@ -44,19 +44,19 @@
     margin-bottom: 0; }
   .login .btn-primary {
     color: #fff;
-    background-color: #34b8bc;
-    border-color: #299194; }
+    background-color: #12a28d;
+    border-color: #0d7465; }
     .login .btn-primary:hover {
-      background-color: #299194;
-      border-color: #53ccd0; }
+      background-color: #0d7465;
+      border-color: #17d0b5; }
     .login .btn-primary:focus {
-      background-color: #34b8bc;
-      border-color: #34b8bc; }
+      background-color: #12a28d;
+      border-color: #12a28d; }
     .login .btn-primary.disabled, .login .btn-primary:disabled {
       opacity: 0.3;
       color: #fff;
-      background-color: #34b8bc;
-      border-color: #299194;
+      background-color: #12a28d;
+      border-color: #0d7465;
       cursor: not-allowed; }
     .login .btn-primary:active {
       background-color: #fff;

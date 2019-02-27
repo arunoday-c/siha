@@ -72,7 +72,7 @@ const cashtexthandle = ($this, context, ctrl, e) => {
 
     if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
       successfulMessage({
-        message: "Invalid Input. Sum of all amount to be equal to Receivable.",
+        message: "Sum of all amount to be equal to Receivable.",
         title: "Warning",
         icon: "warning"
       });
@@ -112,7 +112,7 @@ const cardtexthandle = ($this, context, ctrl, e) => {
 
     if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
       successfulMessage({
-        message: "Invalid Input. Sum of all amount to be equal to Receivable.",
+        message: "Sum of all amount to be equal to Receivable.",
         title: "Warning",
         icon: "warning"
       });
@@ -153,7 +153,7 @@ const chequetexthandle = ($this, context, ctrl, e) => {
 
     if (cash_amount + card_amount + cheque_amount > receiveable_amount) {
       successfulMessage({
-        message: "Invalid Input. Sum of all amount to be equal to Receivable.",
+        message: "Sum of all amount to be equal to Receivable.",
         title: "Warning",
         icon: "warning"
       });

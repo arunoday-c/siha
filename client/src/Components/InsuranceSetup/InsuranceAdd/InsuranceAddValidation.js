@@ -17,7 +17,6 @@ const Validations = ($this, e) => {
 
   //Sub Insurance
   else if ($this.state.screenName === "SubInsurance") {
-    
     let obj = {};
     let previous = $this.state.sub_insurance || [];
     const x = document.querySelectorAll("[data-subdata = 'true']");
@@ -30,14 +29,14 @@ const Validations = ($this, e) => {
     if ($this.state.sub_insurance.length === 0) {
       isError = true;
       swalMessage({
-        title: "Invalid Input. Atleast one Sub Insurance to be added.",
+        title: "Atleast one Sub Insurance to be added.",
         type: "warning"
       });
       return isError;
       // if (obj.insurance_sub_code === "") {
       //   isError = true;
       //   swalMessage({
-      //     title: "Invalid Input. Sub Insurance code cannot be blank.",
+      //     title: "Sub Insurance code cannot be blank.",
       //     type: "warning"
       //   });
 
@@ -45,7 +44,7 @@ const Validations = ($this, e) => {
       // } else if (obj.insurance_sub_name === "") {
       //   isError = true;
       //   swalMessage({
-      //     title: "Invalid Input. Sub Insurance name cannot be blank.",
+      //     title: "Sub Insurance name cannot be blank.",
       //     type: "warning"
       //   });
 
@@ -53,7 +52,7 @@ const Validations = ($this, e) => {
       // } else if (obj.effective_start_date === "") {
       //   isError = true;
       //   swalMessage({
-      //     title: "Invalid Input. Active From cannot be blank.",
+      //     title: "Active From cannot be blank.",
       //     type: "warning"
       //   });
 
@@ -61,7 +60,7 @@ const Validations = ($this, e) => {
       // } else if (obj.effective_end_date === "") {
       //   isError = true;
       //   swalMessage({
-      //     title: "Invalid Input. Valid Upto cannot be blank.",
+      //     title: "Valid Upto cannot be blank.",
       //     type: "warning"
       //   });
 
@@ -93,7 +92,7 @@ const Validations = ($this, e) => {
     if ($this.state.network_plan.length === 0) {
       isError = true;
       swalMessage({
-        title: "Invalid Input. Atleast one Plan to be added.",
+        title: "Atleast one Plan to be added.",
         type: "warning"
       });
       return isError;

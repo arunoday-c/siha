@@ -24,7 +24,6 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const numberhandle = ($this, ctrl, e) => {
-  
   e = e || ctrl;
 
   let name = e.name || e.target.name;
@@ -32,7 +31,7 @@ const numberhandle = ($this, ctrl, e) => {
 
   if (value < 0 || value > 100) {
     swalMessage({
-      title: "Invalid Input. Cannot be less than zero.",
+      title: "Cannot be less than zero.",
       type: "warning"
     });
   } else {
@@ -50,7 +49,7 @@ const prenumberhandle = ($this, ctrl, e) => {
 
   if (value < 0) {
     swalMessage({
-      title: "Invalid Input. Cannot be less than zero.",
+      title: "Cannot be less than zero.",
       type: "warning"
     });
   } else {
@@ -61,7 +60,6 @@ const prenumberhandle = ($this, ctrl, e) => {
 };
 
 const saveNetworkPlan = ($this, context) => {
-  
   const err = Validations($this);
 
   let newdata = [];

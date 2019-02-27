@@ -1009,11 +1009,12 @@ module.exports = {
   //created by irfan:
   regularizeAttendance: (req, res, next) => {
     let input = req.body;
-
+    const utilities = new algaehUtilities();
+    utilities.logger().log("regularizeAttendance: ");
     if (input.regularize_status == "REJ" || input.regularize_status == "APR") {
       const _mysql = new algaehMysql();
       _mysql
-        .executeQuery({
+        .executeQueryWithTransaction({
           query:
             "UPDATE hims_f_attendance_regularize SET regularize_status = ?,\
              updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
@@ -1025,12 +1026,49 @@ module.exports = {
           ]
         })
         .then(result => {
-          _mysql.releaseConnection();
-
           if (result.affectedRows > 0) {
-            req.records = result;
-            next();
+            utilities
+              .logger()
+              .log("result.affectedRows: ", result.affectedRows);
+            utilities
+              .logger()
+              .log("regularize_status: ", input.regularize_status);
+            if (input.regularize_status == "APR") {
+              _mysql
+                .executeQuery({
+                  query:
+                    "UPDATE `hims_f_daily_time_sheet` SET status='PR', in_time=?,\
+                  `out_time`=?,`hours`=?,`minutes`=?,`worked_hours`=? \
+                  where employee_id=? and attendance_date=?;",
+                  values: [
+                    input.in_time,
+                    input.out_time,
+                    input.hours,
+                    input.minutes,
+                    input.worked_hours,
+                    input.employee_id,
+                    input.attendance_date
+                  ],
+                  printQuery: true
+                })
+                .then(result => {
+                  utilities.logger().log("result: ", result);
+                  _mysql.releaseConnection();
+                  req.records = result;
+                  next();
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            } else {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            }
           } else {
+            _mysql.releaseConnection();
             req.records = {
               invalid_input: true,
               message: "Please provide valid input"
@@ -1039,8 +1077,9 @@ module.exports = {
           }
         })
         .catch(e => {
-          _mysql.releaseConnection();
-          next(e);
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
     } else {
       req.records = {
@@ -1097,7 +1136,7 @@ module.exports = {
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
           from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
-           AR.employee_id=E.hims_d_employee_id and record_status='A' where" +
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where requested='Y' and " +
             employee +
             "" +
             dateRange +
@@ -1248,6 +1287,9 @@ module.exports = {
         //   or(date(date_of_joining) <= date('2019-03-31') and exit_date is null)) and
         //   E.record_status='A' and E.hospital_id='1' and E.sub_department_id='38'  and hims_f_employee_annual_leave_id is null ;
         try {
+
+          
+
           _mysql
             .executeQuery({
               query:
@@ -2347,8 +2389,6 @@ ORDER BY  AccessDate `;
     let AllShifts = [];
     let biometric_ids = [];
 
-    utilities.logger().log("yearAndMonth: ", "yearAndMonth");
-
     let input = req.query;
     try {
       if (
@@ -2554,16 +2594,17 @@ ORDER BY  AccessDate `;
                     ORDER BY  AccessDate `,
 
                       function(err, attResult) {
+                        sql.close();
                         if (err) {
-                          utilities.logger().log("qry error ", err);
+                          _mysql.releaseConnection();
                           next(err);
+                          return;
                         }
 
-                        utilities
-                          .logger()
-                          .log("attResult", attResult["recordset"]);
+                        // utilities
+                        //   .logger()
+                        //   .log("attResult", attResult["recordset"]);
                         attendcResult = attResult["recordset"];
-                        sql.close();
 
                         if (attendcResult.length > 0 && from_date == to_date) {
                           for (let i = 0; i < AllEmployees.length; i++) {
@@ -2587,7 +2628,7 @@ ORDER BY  AccessDate `;
                                 shift_end_date: null
                               });
 
-                            utilities.logger().log("shiftData", shiftData);
+                            // utilities.logger().log("shiftData", shiftData);
 
                             //---------------------------------begin logic
 
@@ -2618,7 +2659,7 @@ ORDER BY  AccessDate `;
                                   in_time: null
                                 });
 
-                              utilities.logger().log("punchIn", punchIn);
+                              // utilities.logger().log("punchIn", punchIn);
                               //--EN--punchin
 
                               //--ST--punchout
@@ -2647,7 +2688,7 @@ ORDER BY  AccessDate `;
                                   out_time: null
                                 });
 
-                              utilities.logger().log("punchOut", punchOut);
+                              // utilities.logger().log("punchOut", punchOut);
                               //--EN--punchout
                               if (
                                 punchIn.in_time != null &&
@@ -2726,9 +2767,9 @@ ORDER BY  AccessDate `;
                           }
 
                           ///----end logic
-                          utilities
-                            .logger()
-                            .log("biometricData", biometricData);
+                          // utilities
+                          //   .logger()
+                          //   .log("biometricData", biometricData);
 
                           insertTimeSheet(
                             returnQry,
@@ -2750,13 +2791,13 @@ ORDER BY  AccessDate `;
                         ) {
                           singleEmployee = "Y";
 
-                          utilities.logger().log("date_range:", "date_range");
+                          // utilities.logger().log("date_range:", "date_range");
 
                           let date_range = getDays(
                             new Date(from_date),
                             new Date(to_date)
                           );
-                          utilities.logger().log("date_range:", date_range);
+                          // utilities.logger().log("date_range:", date_range);
 
                           for (let i = 0; i < date_range.length; i++) {
                             utilities.logger().log("i ", date_range[i]);
@@ -2807,9 +2848,9 @@ ORDER BY  AccessDate `;
                                 })
                             );
                           }
-                          utilities
-                            .logger()
-                            .log("biometricData single emp", biometricData);
+                          // utilities
+                          //   .logger()
+                          //   .log("biometricData single emp", biometricData);
                           insertTimeSheet(
                             returnQry,
                             biometricData,
@@ -2848,7 +2889,7 @@ ORDER BY  AccessDate `;
                 }
               })
               .catch(e => {
-                utilities.logger().log("error: ", e);
+                // utilities.logger().log("error: ", e);
                 _mysql.releaseConnection();
                 next(e);
               });
