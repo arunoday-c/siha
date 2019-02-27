@@ -356,7 +356,17 @@ export default class EmployeeShiftRostering extends Component {
                 Paste Normal
               </li>
               {shift.shift_id === 100 || shift.shift_id === 101 ? (
-                <li>Paste as Holiday / WeekOff</li>
+                <li
+                  onClick={this.pasteWeekoffShift.bind(this, {
+                    id: row.hims_d_employee_id,
+                    date: now.format("YYYY-MM-DD"),
+                    sub_id: row.sub_department_id,
+                    holiday: shift.shift_id === 101 ? "Y" : "N",
+                    weekoff: shift.shift_id === 100 ? "Y" : "N"
+                  })}
+                >
+                  Paste as Holiday / WeekOff
+                </li>
               ) : null}
             </ul>
             <span>
