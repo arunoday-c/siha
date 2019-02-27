@@ -1246,6 +1246,9 @@ module.exports = {
         //   or(date(date_of_joining) <= date('2019-03-31') and exit_date is null)) and
         //   E.record_status='A' and E.hospital_id='1' and E.sub_department_id='38'  and hims_f_employee_annual_leave_id is null ;
         try {
+
+          
+
           _mysql
             .executeQuery({
               query:
@@ -2265,8 +2268,6 @@ ORDER BY  AccessDate `;
     let AllShifts = [];
     let biometric_ids = [];
 
-    utilities.logger().log("yearAndMonth: ", "yearAndMonth");
-
     let input = req.query;
     try {
       if (
@@ -2472,16 +2473,17 @@ ORDER BY  AccessDate `;
                     ORDER BY  AccessDate `,
 
                       function(err, attResult) {
+                        sql.close();
                         if (err) {
-                          utilities.logger().log("qry error ", err);
+                          _mysql.releaseConnection();
                           next(err);
+                          return;
                         }
 
-                        utilities
-                          .logger()
-                          .log("attResult", attResult["recordset"]);
+                        // utilities
+                        //   .logger()
+                        //   .log("attResult", attResult["recordset"]);
                         attendcResult = attResult["recordset"];
-                        sql.close();
 
                         if (attendcResult.length > 0 && from_date == to_date) {
                           for (let i = 0; i < AllEmployees.length; i++) {
@@ -2505,7 +2507,7 @@ ORDER BY  AccessDate `;
                                 shift_end_date: null
                               });
 
-                            utilities.logger().log("shiftData", shiftData);
+                            // utilities.logger().log("shiftData", shiftData);
 
                             //---------------------------------begin logic
 
@@ -2536,7 +2538,7 @@ ORDER BY  AccessDate `;
                                   in_time: null
                                 });
 
-                              utilities.logger().log("punchIn", punchIn);
+                              // utilities.logger().log("punchIn", punchIn);
                               //--EN--punchin
 
                               //--ST--punchout
@@ -2565,7 +2567,7 @@ ORDER BY  AccessDate `;
                                   out_time: null
                                 });
 
-                              utilities.logger().log("punchOut", punchOut);
+                              // utilities.logger().log("punchOut", punchOut);
                               //--EN--punchout
                               if (
                                 punchIn.in_time != null &&
@@ -2644,9 +2646,9 @@ ORDER BY  AccessDate `;
                           }
 
                           ///----end logic
-                          utilities
-                            .logger()
-                            .log("biometricData", biometricData);
+                          // utilities
+                          //   .logger()
+                          //   .log("biometricData", biometricData);
 
                           insertTimeSheet(
                             returnQry,
@@ -2668,13 +2670,13 @@ ORDER BY  AccessDate `;
                         ) {
                           singleEmployee = "Y";
 
-                          utilities.logger().log("date_range:", "date_range");
+                          // utilities.logger().log("date_range:", "date_range");
 
                           let date_range = getDays(
                             new Date(from_date),
                             new Date(to_date)
                           );
-                          utilities.logger().log("date_range:", date_range);
+                          // utilities.logger().log("date_range:", date_range);
 
                           for (let i = 0; i < date_range.length; i++) {
                             utilities.logger().log("i ", date_range[i]);
@@ -2725,9 +2727,9 @@ ORDER BY  AccessDate `;
                                 })
                             );
                           }
-                          utilities
-                            .logger()
-                            .log("biometricData single emp", biometricData);
+                          // utilities
+                          //   .logger()
+                          //   .log("biometricData single emp", biometricData);
                           insertTimeSheet(
                             returnQry,
                             biometricData,
@@ -2766,7 +2768,7 @@ ORDER BY  AccessDate `;
                 }
               })
               .catch(e => {
-                utilities.logger().log("error: ", e);
+                // utilities.logger().log("error: ", e);
                 _mysql.releaseConnection();
                 next(e);
               });
