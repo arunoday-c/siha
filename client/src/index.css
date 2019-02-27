@@ -105,7 +105,7 @@
     :global .print-body .tableForData {
       width: 100%;
       border-collapse: collapse;
-      border: 1px solid #039ce8;
+      border: 1px solid #17d0b5;
       font-weight: normal; }
     :global .print-body .tableForData thead {
       margin: 0;
@@ -121,14 +121,14 @@
       border-bottom: 2px dashed #979797;
       padding: 5px 3px; }
     :global .print-body .tableForData th {
-      border-bottom: 2px solid #027ab6 !important;
+      border-bottom: 2px solid #12a28d !important;
       vertical-align: middle !important;
       background-color: #e8feff !important;
       padding: 5px;
       font-size: 0.8em;
       text-transform: uppercase;
       text-align: center;
-      border-right: 1px solid #015884; }
+      border-right: 1px solid #0d7465; }
     :global .print-body .tableForData td {
       border: 1px solid #ccc;
       padding: 3px;
@@ -188,7 +188,7 @@
     -webkit-border-radius: 3px;
     border-radius: 3px; }
   :global ::-webkit-scrollbar-thumb {
-    background: #039ce8;
+    background: #17d0b5;
     -webkit-border-radius: 3px;
     border-radius: 3px;
     -webkit-box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5); }
@@ -197,8 +197,8 @@
   :global .displayInlineBlock {
     display: inline-block; }
   :global .greenCell {
-    background-color: #afe4fe !important;
-    color: #027ab6 !important;
+    background-color: #b2f6ed !important;
+    color: #12a28d !important;
     text-decoration: underline !important; }
   :global .cancelledClass {
     background-color: #ff400080 !important;
@@ -290,7 +290,7 @@
         width: 0;
         height: 0;
         border-top: 8px solid #f5232300;
-        border-left: 8px solid #039ce8;
+        border-left: 8px solid #17d0b5;
         border-right: 8px solid transparent;
         border-bottom: 8px solid #e8e8e800;
         clear: both; }
@@ -337,7 +337,7 @@
       text-align: center; }
   :global .caption.caption-green .caption-subject,
   :global .caption.caption-green i {
-    color: #039ce8;
+    color: #17d0b5;
     font-weight: 200; }
   :global .caption.caption-red .caption-subject,
   :global .caption.caption-red i {
@@ -385,8 +385,8 @@
     :global .actions .btn-primary:not(:disabled):not(.disabled).active,
     :global .actions .btn-primary:not(:disabled):not(.disabled):active,
     :global .actions .show > .btn-primary.dropdown-toggle {
-      background-color: #027ab6;
-      border-color: #039ce8; }
+      background-color: #12a28d;
+      border-color: #17d0b5; }
   :global .pagination {
     margin: -3px 0 0;
     border-radius: 50px; }
@@ -448,7 +448,7 @@
   :global .actions .btn.btn-green:hover {
     color: #fff;
     box-shadow: none;
-    background: #039ce8;
+    background: #17d0b5;
     border-color: #01968c; }
   :global .customRadio {
     border-bottom: 1px solid #eee;
@@ -490,13 +490,13 @@
       z-index: 1;
       opacity: 0; }
     :global .customRadio .radio input[type="radio"]:checked + span {
-      color: #039ce8; }
+      color: #17d0b5; }
     :global .customRadio .radio input[type="radio"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
       position: absolute;
-      background: #039ce8;
+      background: #17d0b5;
       left: 5px;
       top: 8px;
       border-radius: 100%;
@@ -543,13 +543,13 @@
       z-index: 1;
       opacity: 0; }
     :global .customCheckbox .checkbox input[type="checkbox"]:checked + span {
-      color: #039ce8; }
+      color: #17d0b5; }
     :global .customCheckbox .checkbox input[type="checkbox"]:checked + span:before {
       content: "";
       width: 5px;
       height: 5px;
       position: absolute;
-      background: #039ce8;
+      background: #17d0b5;
       left: 5px;
       top: 8px;
       border-radius: 100%;
@@ -680,19 +680,19 @@
           text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5); }
       :global .algaeh-modal .popupFooter .btn-primary {
         color: #fff;
-        background-color: #027ab6;
-        border-color: #015884; }
+        background-color: #12a28d;
+        border-color: #0d7465; }
         :global .algaeh-modal .popupFooter .btn-primary:hover {
-          background-color: #015884;
-          border-color: #039ce8; }
+          background-color: #0d7465;
+          border-color: #17d0b5; }
         :global .algaeh-modal .popupFooter .btn-primary:focus {
-          background-color: #027ab6;
-          border-color: #027ab6; }
+          background-color: #12a28d;
+          border-color: #12a28d; }
         :global .algaeh-modal .popupFooter .btn-primary.disabled, :global .algaeh-modal .popupFooter .btn-primary:disabled {
           opacity: 0.3;
           color: #fff;
-          background-color: #027ab6;
-          border-color: #015884;
+          background-color: #12a28d;
+          border-color: #0d7465;
           cursor: not-allowed; }
         :global .algaeh-modal .popupFooter .btn-primary:active {
           background-color: #fff;
@@ -709,9 +709,9 @@
         color: gray;
         border: 1px solid gray; }
         :global .algaeh-modal .popupFooter .btn-other:hover, :global .algaeh-modal .popupFooter .btn-other:focus {
-          background-color: #015884;
+          background-color: #0d7465;
           color: #fff !important;
-          border-color: #039ce8; }
+          border-color: #17d0b5; }
   :global .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;
@@ -798,8 +798,8 @@
         min-width: 70px; }
       :global .algaeh-modal-Ar .popupFooter .btn-primary {
         color: #fff;
-        background-color: #027ab6;
-        border-color: #015884; }
+        background-color: #12a28d;
+        border-color: #0d7465; }
       :global .algaeh-modal-Ar .popupFooter .btn-default {
         background: #efefef;
         color: #5a5a5a;
@@ -833,7 +833,7 @@
       text-align: left;
       font-weight: bold;
       text-transform: uppercase;
-      color: #039ce8;
+      color: #17d0b5;
       border: none; }
     :global .cashReciptStyles .table-report .table tbody td:first-child {
       color: #696969;
@@ -984,7 +984,7 @@
         :global .tabMaster ul li:after {
           display: block;
           content: "";
-          border-bottom: 3px solid #027ab6;
+          border-bottom: 3px solid #12a28d;
           transform: scaleX(0);
           transition: transform 150ms ease-in-out; }
         :global .tabMaster ul li:hover:after {
@@ -1001,10 +1001,10 @@
         border: none !important;
         cursor: pointer; }
       :global .tabMaster ul li.active label {
-        border-bottom: 3px solid #015884;
+        border-bottom: 3px solid #0d7465;
         color: #fff;
         cursor: pointer;
-        background: #027ab6;
+        background: #12a28d;
         text-shadow: 0 1px 1px #868686; }
   :global .divInner {
     overflow-y: auto;
