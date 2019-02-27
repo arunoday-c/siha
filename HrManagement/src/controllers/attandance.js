@@ -14,7 +14,8 @@ import {
   getDailyTimeSheet,
   processBiometricAttendance,
   loadAttendance,
-  notifyException
+  notifyException,
+  updateToDailyTimeSheet
 } from "../models/attendance";
 export default () => {
   const api = Router();
@@ -150,6 +151,17 @@ export default () => {
       records: req.records
     });
   });
+
+  api.put(
+    "/updateToDailyTimeSheet",
+    updateToDailyTimeSheet,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   api.get("/getDailyTimeSheet", getDailyTimeSheet, (req, res, next) => {
     if (req.records.invalid_input == true) {

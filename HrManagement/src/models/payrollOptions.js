@@ -38,7 +38,7 @@ module.exports = {
           overtime_hourly_calculation=?,standard_intime=?,standard_outime=?,standard_working_hours=?,\
           standard_break_hours=?,biometric_database=?,biometric_server_name=?,biometric_port_no=?,\
           biometric_database_name=?,biometric_database_login=?,biometric_database_password=?,biometric_swipe_id=?,\
-          updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
+          manual_timesheet_entry=?,updated_date=?,updated_by=? where hims_d_hrms_options_id=?",
         values: [
           input.salary_process_date,
           input.salary_pay_before_end_date,
@@ -68,6 +68,7 @@ module.exports = {
           input.biometric_database_login,
           input.biometric_database_password,
           input.biometric_swipe_id,
+          input.manual_timesheet_entry,
 
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,

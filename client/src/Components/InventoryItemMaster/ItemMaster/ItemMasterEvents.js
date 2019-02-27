@@ -8,42 +8,42 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Test Name Cannot be blank."
+      title: "Test Name Cannot be blank."
     });
     return isError;
   } else if ($this.state.category_id === null) {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Please Select Category."
+      title: "Please Select Category."
     });
     return isError;
   } else if ($this.state.group_id === null) {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Please Select Group."
+      title: "Please Select Group."
     });
     return isError;
   } else if ($this.state.stocking_uom_id === null) {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Please Select Stocking UOM."
+      title: "Please Select Stocking UOM."
     });
     return isError;
   } else if ($this.state.purchase_uom_id === null) {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Select Purchase UOM."
+      title: "Select Purchase UOM."
     });
     return isError;
   } else if ($this.state.sales_uom_id === null) {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Select Sales UOM."
+      title: "Select Sales UOM."
     });
     return isError;
   } else if (
@@ -53,7 +53,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "error",
-      title: "Invalid Input. Enter the Price."
+      title: "Enter the Price."
     });
     return isError;
   }

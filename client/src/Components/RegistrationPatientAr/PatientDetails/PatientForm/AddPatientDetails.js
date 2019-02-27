@@ -27,6 +27,7 @@ const countryStatehandle = ($this, e) => {
         if (e.name === "country_id") {
           name = e.name;
           value = e.value;
+
           $this.setState({
             state_id: null,
             city_id: null,
@@ -110,17 +111,37 @@ const setAge = ($this, e) => {
     let years = $this.state.age;
     let months = $this.state.AGEMM;
     let days = $this.state.AGEDD;
-    if (e.target.name === "age") years = e.target.value;
-    if (e.target.name === "AGEMM") months = e.target.value;
-    if (e.target.name === "AGEDD") days = e.target.value;
-    let y = moment(new Date()).add(-years, "years");
-    let m = y.add(-months, "months");
-    let d = m.add(-days, "days");
 
-    $this.setState({
-      date_of_birth: d._d,
-      [e.target.name]: e.target.value
-    });
+    if (e.target.name === "AGEMM" && parseInt(e.target.value) > 23) {
+      swalMessage({
+        title: "Age in months cannot be greater than 23.",
+        type: "error"
+      });
+      $this.setState({
+        [e.target.name]: $this.state.AGEMM
+      });
+    }
+    if (e.target.name === "AGEDD" && parseInt(e.target.value) > 365) {
+      swalMessage({
+        title: "Age in days cannot be greater than 365.",
+        type: "error"
+      });
+      $this.setState({
+        [e.target.name]: $this.state.AGEDD
+      });
+    } else {
+      if (e.target.name === "age") years = e.target.value;
+      if (e.target.name === "AGEMM") months = e.target.value;
+      if (e.target.name === "AGEDD") days = e.target.value;
+      let y = moment(new Date()).add(-years, "years");
+      let m = y.add(-months, "months");
+      let d = m.add(-days, "days");
+
+      $this.setState({
+        date_of_birth: d._d,
+        [e.target.name]: e.target.value
+      });
+    }
   }
 };
 
@@ -150,6 +171,7 @@ const nationalityhandle = ($this, context, e) => {
       ) {
         vat_applicable = "N";
       }
+
       $this.setState(
         {
           [name]: value,
@@ -160,6 +182,12 @@ const nationalityhandle = ($this, context, e) => {
             $this.state.appointment_patient === "Y" ||
             $this.state.doctor_id !== null
           ) {
+            if (context !== undefined) {
+              context.updateState({
+                [name]: value,
+                vat_applicable: vat_applicable
+              });
+            }
             // $this.processInsurance.Click();
             generateBillDetails($this, context);
           } else {
@@ -182,6 +210,8 @@ const generateBillDetails = ($this, context) => {
       let serviceInput = [
         {
           insured: $this.state.insured,
+          // insured:
+          //   $this.state.primary_insurance_provider_id !== null ? "Y" : "N",
           //TODO change middle ware to promisify function --added by Nowshad
           vat_applicable: $this.state.vat_applicable,
           hims_d_services_id: $this.state.hims_d_services_id,
@@ -210,6 +240,7 @@ const generateBillDetails = ($this, context) => {
 
             algaehApiCall({
               uri: "/billing/billingCalculations",
+              module: "billing",
               method: "POST",
               data: response.data.records,
               onSuccess: response => {

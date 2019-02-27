@@ -168,8 +168,7 @@ const FinalizedAndInvoice = $this => {
 
   if (NotBilled.length !== 0) {
     swalMessage({
-      title:
-        "Invalid Input. Some of the Services Not Billed, Please Billed and Proceed.",
+      title: "Some of the Services Not Billed, Please Billed and Proceed.",
       type: "warning"
     });
   } else {

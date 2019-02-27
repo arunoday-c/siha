@@ -19,7 +19,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
   if (sheet_discount_percentage > 100) {
     swalMessage({
-      title: "Invalid Input. Discount % cannot be greater than 100.",
+      title: "Discount % cannot be greater than 100.",
       type: "warning"
     });
   } else {
@@ -97,7 +97,7 @@ const itemchangeText = ($this, e) => {
         });
       } else {
         swalMessage({
-          title: "Invalid Input. No Stock Avaiable for selected Item.",
+          title: "No Stock Avaiable for selected Item.",
           type: "warning"
         });
       }
@@ -135,7 +135,7 @@ const AddItems = ($this, context) => {
       if (data.billdetails[0].pre_approval === "Y") {
         swalMessage({
           title:
-            "Invalid Input. Selected Service is Pre-Approval required, you don't have rights to bill.",
+            "Selected Service is Pre-Approval required, you don't have rights to bill.",
           type: "warning"
         });
       } else {
@@ -304,14 +304,12 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
   let value = e.value || e.target.value;
   if (value < 0) {
     swalMessage({
-      title:
-        "Invalid Input. Retuen Quantity cannot be less than or equal to Zero",
+      title: "Retuen Quantity cannot be less than or equal to Zero",
       type: "warning"
     });
   } else if (value > row.quantity) {
     swalMessage({
-      title:
-        "Invalid Input. Retuen Quantity cannot be greater than SOld Quantity",
+      title: "Retuen Quantity cannot be greater than SOld Quantity",
       type: "warning"
     });
   } else {
@@ -377,8 +375,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
   if (e.target.value > $this.state.advance_amount) {
     swalMessage({
-      title:
-        "Invalid Input. Adjusted amount cannot be greater than Advance amount",
+      title: "Adjusted amount cannot be greater than Advance amount",
       type: "warning"
     });
   } else {

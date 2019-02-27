@@ -709,7 +709,10 @@ export default class WeeklyAttendance extends Component {
               <label className="label">Selected Employee</label>
               <br />
               {this.state.employee_name ? this.state.employee_name : "All"}
-            </div>
+            </div>{" "}
+            <label className="timeCheckCntr" style={{ marginLeft: "35%" }}>
+              <input type="checkbox" /> <span className="checkmark" />{" "}
+            </label>
             <div className="actions">
               <span className="legendValue bg-shortage">
                 Shortage Hour<b>04.23 Hr</b>
@@ -770,13 +773,13 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
-                    <div className="col-1">
+                    <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9 dayTypeCntr">
+                    <div className="col-8 dayTypeCntr">
                       <span className="weekOffCntr">Week Off</span>
                       <div className="progress">
                         <div
@@ -798,14 +801,14 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
-                    <div className="col-1">
+                    <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
 
-                    <div className="col-9 dayTypeCntr">
+                    <div className="col-8 dayTypeCntr">
                       <label className="timeCheckCntr">
                         <input type="checkbox" /> <span className="checkmark" />{" "}
                       </label>
@@ -829,20 +832,29 @@ export default class WeeklyAttendance extends Component {
                             <React.Fragment>
                               Shortage Time:
                               <b className="lateTime">
-                                {Math.abs(
+                                {/* {Math.abs(
+                                  data.actual_hours - data.hours
+                                ).toFixed(2)}{" "} */}
+
+                                {Math.floor(
                                   data.actual_hours - data.worked_hours
-                                ).toFixed(2)}{" "}
-                                Hrs
+                                ) + " Hrs"}
+                                {60 - data.minutes + " Mins"}
                               </b>
                             </React.Fragment>
                           ) : (
                             <React.Fragment>
                               Excess Time
                               <b className="OverTime">
-                                {Math.abs(
+                                {/* {Math.abs(
                                   data.actual_hours - data.worked_hours
-                                ).toFixed(2)}{" "}
-                                Hrs
+                                ).toFixed(2)}{" "} */}
+                                {Math.abs(
+                                  parseInt(
+                                    data.actual_hours - data.worked_hours
+                                  )
+                                ) + " Hrs"}
+                                {data.minutes + " Mins"}
                               </b>
                             </React.Fragment>
                           )}
@@ -886,13 +898,13 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
-                    <div className="col-1">
+                    <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9 dayTypeCntr">
+                    <div className="col-8 dayTypeCntr">
                       <span className="absentCntr">Absent</span>
                       <div className="progress">
                         <div
@@ -911,13 +923,13 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
-                    <div className="col-1">
+                    <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9 dayTypeCntr">
+                    <div className="col-8 dayTypeCntr">
                       <span className="holidayCntr">Holiday</span>
                       <div className="progress">
                         <div
@@ -936,13 +948,13 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
-                    <div className="col-1">
+                    <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9 dayTypeCntr">
+                    <div className="col-8 dayTypeCntr">
                       <span className="paidLeaveCntr">Paid Leave</span>
                       <div className="progress">
                         <div
@@ -961,13 +973,13 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
-                    <div className="col-1">
+                    <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9 dayTypeCntr">
+                    <div className="col-8 dayTypeCntr">
                       <div className="progress">
                         <div
                           className="progress-bar  bg-danger"
@@ -1032,13 +1044,13 @@ export default class WeeklyAttendance extends Component {
                     <div className="col-1">
                       {moment(data.attendance_date).format("MMM Do,(ddd)")}
                     </div>
-                    <div className="col-1">
+                    <div className="col-2">
                       {data.employee_name ? data.employee_name : "------"}
                     </div>
                     <div className="col-1">
                       {data.worked_hours ? data.worked_hours : "00:00"} Hrs
                     </div>
-                    <div className="col-9 dayTypeCntr">
+                    <div className="col-8 dayTypeCntr">
                       <span className="unPaidLeaveCntr">Unpaid Leave</span>
                       <div className="progress">
                         <div

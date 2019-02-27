@@ -57,7 +57,7 @@ const onvalidate = $this => {
     if (test_analytes[k].confirm === "N") {
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Please confirm the result"
+        title: "Please confirm the result"
       });
       success = false;
     } else {
@@ -126,7 +126,7 @@ const confirmedgridcol = ($this, row, e) => {
   if (row.result === null && value === "Y") {
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Please enter the result"
+      title: "Please enter the result"
     });
   } else {
     if (row.validate === "Y" && value === "N") {
@@ -155,8 +155,7 @@ const onchangegridcol = ($this, row, e) => {
     if (row.confirm === "N" && value === "Y") {
       swalMessage({
         type: "warning",
-        title:
-          "Invalid Input. Without confirming cannot validate, please confirm"
+        title: "Without confirming cannot validate, please confirm"
       });
     } else {
       row[name] = value;
@@ -215,12 +214,12 @@ const resultEntryUpdate = $this => {
     if (enterResult === false) {
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Please enter input."
+        title: "Please enter input."
       });
     } else if (enterRemarks === false) {
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Please enter Remarks for Ammended.."
+        title: "Please enter Remarks for Ammended.."
       });
     }
   }
@@ -233,7 +232,7 @@ const onconfirm = $this => {
     if (test_analytes[k].result === null) {
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Please enter the result."
+        title: "Please enter the result."
       });
 
       success = false;

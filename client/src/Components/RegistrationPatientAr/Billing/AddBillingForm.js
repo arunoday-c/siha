@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import DisplayOPBilling from "../../BillDetailsAr/BillDetailsAr";
+import DisplayOPBilling from "../../BillDetails/BillDetails";
 import "./AddBillingForm.css";
 import "./../../../styles/site.css";
 import {
@@ -24,7 +24,6 @@ import {
   credittexthandle,
   advanceAdjustCal,
   discountCal,
-  credittextCal,
   cashtexthCal,
   cardtexthCal,
   chequetexthCal,
@@ -37,7 +36,6 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
-import { getLabelFromLanguage } from "../../../utils/GlobalFunctions";
 
 class AddBillingForm extends Component {
   constructor(props) {
@@ -110,9 +108,7 @@ class AddBillingForm extends Component {
                           onClick={ProcessInsurance.bind(this, this, context)}
                           disabled={this.state.ProcessInsure}
                         >
-                          {getLabelFromLanguage({
-                            fieldName: "process_insurance"
-                          })}
+                          Process Insurance
                         </button>
                       </div>
                       <div className="col-lg-6">
@@ -122,7 +118,7 @@ class AddBillingForm extends Component {
                           onClick={this.ShowBillDetails.bind(this)}
                           disabled={this.state.billdetail}
                         >
-                          {getLabelFromLanguage({ fieldName: "bill_details" })}
+                          Bill Details
                         </button>
 
                         <DisplayOPBilling
@@ -176,7 +172,7 @@ class AddBillingForm extends Component {
                         <h6>
                           {this.state.bill_number
                             ? this.state.bill_number
-                            : "غير منشأ"}
+                            : "Not Generated"}
                         </h6>
                       </div>
 
@@ -250,9 +246,7 @@ class AddBillingForm extends Component {
                         }}
                         textBox={{
                           decimal: {
-                            allowNegative: false,
-                            thousandSeparator: ",",
-                            customInput: "0.00"
+                            allowNegative: false
                           },
                           value: this.state.sheet_discount_amount,
                           className: "txt-fld",
@@ -319,7 +313,7 @@ class AddBillingForm extends Component {
                           },
                           others: {
                             placeholder: "0.00",
-                            onBlur: credittextCal.bind(this, this, context),
+                            // onBlur: credittextCal.bind(this, this, context),
                             onFocus: e => {
                               e.target.oldvalue = e.target.value;
                             }
@@ -354,7 +348,7 @@ class AddBillingForm extends Component {
                             fieldName: "balance_due"
                           }}
                         />
-                        <h6>0.00</h6>
+                        <h6>{getAmountFormart(this.state.balance_credit)}</h6>
                       </div>
                     </div>
                     {/* <div className="container-fluid"> */}
@@ -376,7 +370,7 @@ class AddBillingForm extends Component {
                           <h6>
                             {this.state.receipt_number
                               ? this.state.receipt_number
-                              : "غير منشأ"}
+                              : "Not Generated"}
                           </h6>
                         </div>
                         <div className="col-lg-3">
@@ -447,7 +441,7 @@ class AddBillingForm extends Component {
                       {/* Cash */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-3"
+                          className="customCheckbox col-lg-2"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -466,11 +460,7 @@ class AddBillingForm extends Component {
                             />
 
                             <span style={{ fontSize: "0.8rem" }}>
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "payby_cash"
-                                }}
-                              />
+                              Pay by Cash
                             </span>
                           </label>
                         </div>
@@ -505,7 +495,7 @@ class AddBillingForm extends Component {
                       {/* Card */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-3"
+                          className="customCheckbox col-lg-2"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -523,11 +513,7 @@ class AddBillingForm extends Component {
                               )}
                             />
                             <span style={{ fontSize: "0.8rem" }}>
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "payby_card"
-                                }}
-                              />
+                              Pay by Card
                             </span>
                           </label>
                         </div>
@@ -559,11 +545,12 @@ class AddBillingForm extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col no-padding-left-right" }}
                           label={{
                             fieldName: "card_check_number"
                           }}
                           textBox={{
+                            card: { creditCard: true },
                             disabled: !this.state.Cardchecked,
                             className: "txt-fld",
                             name: "card_number",
@@ -598,7 +585,7 @@ class AddBillingForm extends Component {
                       {/* Check */}
                       <div className="row secondary-box-container">
                         <div
-                          className="customCheckbox col-lg-3"
+                          className="customCheckbox col-lg-2"
                           style={{ border: "none", marginTop: "28px" }}
                         >
                           <label
@@ -616,11 +603,7 @@ class AddBillingForm extends Component {
                               )}
                             />
                             <span style={{ fontSize: "0.8rem" }}>
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "payby_check"
-                                }}
-                              />
+                              Pay by Cheque
                             </span>
                           </label>
                         </div>
@@ -656,7 +639,7 @@ class AddBillingForm extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col" }}
+                          div={{ className: "col no-padding-left-right" }}
                           label={{
                             fieldName: "card_check_number"
                           }}

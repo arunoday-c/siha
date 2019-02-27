@@ -19,10 +19,10 @@ const datehandle = ($this, ctrl, e) => {
 
 const addDiet = $this => {
   // doctorsWorkBench/addDietAdvice
-  
+
   if ($this.state.diet_id === null) {
     successfulMessage({
-      message: "Invalid Input. Please select Diet",
+      message: "Please select Diet",
       title: "Warning",
       icon: "warning"
     });
@@ -61,7 +61,6 @@ const addDiet = $this => {
 };
 
 const getDietList = $this => {
-  
   let inputObj = {
     patient_id: Window.global["current_patient"],
     episode_id: Window.global["episode_id"]

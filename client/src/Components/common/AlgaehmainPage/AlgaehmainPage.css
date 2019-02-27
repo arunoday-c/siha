@@ -4,10 +4,10 @@ header {
   border-bottom: 2px solid rgba(0, 0, 0, 0.1); }
 
 .mainTheme {
-  background: #34b8bc;
+  background: #027ab6;
   color: #fff;
   padding: 0 1rem;
-  border-bottom: 1px solid #299194;
+  border-bottom: 1px solid #015884;
   height: 52px; }
 
 .mainPageArea {
@@ -18,13 +18,13 @@ header {
   overflow-x: hidden; }
 
 .sideMenuBars {
-  border-right: 1px solid #53ccd0;
+  border-right: 1px solid #039ce8;
   margin-left: -15px;
   padding: 15px;
   cursor: pointer;
   background: linear-gradient(to right, rgba(228, 171, 89, 0.76) 0%, rgba(0, 186, 190, 0.1) 100%); }
   .sideMenuBars:hover {
-    background: #53ccd0; }
+    background: #039ce8; }
 
 .topNavbar-title {
   margin: 0;
@@ -34,7 +34,7 @@ header {
 
 .appLogoCntr {
   width: 115px;
-  border-left: 1px solid #00d1d6;
+  border-left: 1px solid #015884;
   padding-left: 3px;
   margin-right: 10px; }
   .appLogoCntr .appLogoOnly {
@@ -48,7 +48,7 @@ header {
 .btn-userProfile {
   background: none;
   color: #fff;
-  border-left: 1px solid #53ccd0;
+  border-left: 1px solid #039ce8;
   margin-top: -21px; }
   .btn-userProfile i {
     margin: 3px; }
@@ -66,7 +66,7 @@ header {
     text-transform: uppercase; }
     #simple-menu ul li i {
       margin-right: 15px;
-      color: #34b8bc; }
+      color: #027ab6; }
   #simple-menu hr {
     margin: 5px 0;
     padding: 0; }
@@ -112,7 +112,7 @@ header {
 
 .hptl-phase1-sideMenuBar .side-menu-title:hover {
   background: #fff;
-  color: #53ccd0; }
+  color: #039ce8; }
 
 .hptl-phase1-sideMenuBar .side-menu-arrow {
   margin-top: 5px; }
@@ -153,7 +153,7 @@ header {
         .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li:hover i {
           color: #fff; }
       .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li.active {
-        background: #53ccd0;
+        background: #039ce8;
         color: #fff; }
         .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li.active i {
           color: #fff; }
@@ -329,7 +329,7 @@ header {
 
 .navTopbar-dropdown {
   padding: 15px;
-  border-left: 1px solid #53ccd0;
+  border-left: 1px solid #039ce8;
   margin: 0;
   margin-right: -15px;
   cursor: pointer; }
@@ -346,9 +346,9 @@ header {
       .navTopbar-dropdown .dropdown-menu .dropdown-item i {
         margin-right: 0.5rem; }
       .navTopbar-dropdown .dropdown-menu .dropdown-item:hover {
-        color: #53ccd0; }
+        color: #039ce8; }
   .navTopbar-dropdown:hover {
-    background: #53ccd0; }
+    background: #039ce8; }
     .navTopbar-dropdown:hover .dropdown-menu {
       display: block; }
 

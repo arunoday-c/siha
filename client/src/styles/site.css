@@ -59,19 +59,19 @@ body {
 
 :global .btn-primary {
   color: #fff;
-  background-color: #34b8bc;
-  border-color: #299194; }
+  background-color: #027ab6;
+  border-color: #015884; }
   :global .btn-primary:hover {
-    background-color: #299194;
-    border-color: #53ccd0; }
+    background-color: #015884;
+    border-color: #039ce8; }
   :global .btn-primary:focus {
-    background-color: #34b8bc;
-    border-color: #34b8bc; }
+    background-color: #027ab6;
+    border-color: #027ab6; }
   :global .btn-primary.disabled, :global .btn-primary:disabled {
     opacity: 0.3;
     color: #fff;
-    background-color: #34b8bc;
-    border-color: #299194;
+    background-color: #027ab6;
+    border-color: #015884;
     cursor: not-allowed; }
   :global .btn-primary:active {
     background-color: #fff;
@@ -90,9 +90,9 @@ body {
   color: gray;
   border: 1px solid gray; }
   :global .btn-other:hover, :global .btn-other:focus {
-    background-color: #299194;
+    background-color: #015884;
     color: #fff !important;
-    border-color: #53ccd0; }
+    border-color: #039ce8; }
 
 :global .inner-top-search {
   background: #fff;
@@ -135,14 +135,14 @@ body {
     display: inline-block;
     width: 33.33%;
     padding: 5px;
-    background: #53ccd0;
+    background: #039ce8;
     cursor: pointer;
     text-align: center;
     color: #fff; }
     :global .image-drop-area .img-upload-actions i:hover {
-      background: #34b8bc; }
+      background: #027ab6; }
   :global .image-drop-area .img-upload-progress {
-    background-color: #34b8bc;
+    background-color: #027ab6;
     height: 26px;
     width: 100%;
     position: absolute;
@@ -161,7 +161,7 @@ body {
     left: 40%;
     text-align: center; }
     :global .image-drop-area .img-upload-loader i {
-      color: #34b8bc; }
+      color: #027ab6; }
 
 :global .image-ins-drop-area {
   border: 1px solid #1a1a1a;
@@ -202,7 +202,7 @@ body {
       outline: none; }
     :global .htpl-phase1-radio-btn:checked::before {
       content: "";
-      background: #53ccd0;
+      background: #039ce8;
       display: block;
       position: absolute;
       width: 8px;
@@ -214,16 +214,16 @@ body {
 :global .htpl1-phase1-btn-primary {
   text-transform: uppercase;
   border-radius: 5px;
-  background-color: #53ccd0;
-  border: solid 1pxlighten #34b8bc, 10%;
+  background-color: #039ce8;
+  border: solid 1pxlighten #027ab6, 10%;
   color: #fff;
   padding: 2px 20px;
   margin: 0 !important;
   cursor: pointer; }
   :global .htpl1-phase1-btn-primary:hover {
-    background-color: #53ccd0; }
+    background-color: #039ce8; }
   :global .htpl1-phase1-btn-primary:active {
-    background-color: #53ccd0;
+    background-color: #039ce8;
     box-shadow: 0 8px 8px 0 rgba(0, 0, 0, 0.24), 0 0 8px 0 rgba(0, 0, 0, 0.12);
     border: solid 1px #68509f; }
   :global .htpl1-phase1-btn-primary:disabled {
@@ -239,18 +239,18 @@ body {
   text-transform: uppercase;
   border-radius: 5px;
   background-color: transparent;
-  border: solid 1pxlighten #34b8bc, 10%;
-  color: #53ccd0;
+  border: solid 1pxlighten #027ab6, 10%;
+  color: #039ce8;
   padding: 2px 20px;
   margin: 0 !important;
   cursor: pointer; }
   :global .htpl1-phase1-btn-secondary:hover {
-    color: #53ccd0;
-    border: solid 1pxlighten #34b8bc, 10%;
+    color: #039ce8;
+    border: solid 1pxlighten #027ab6, 10%;
     background-color: #fff; }
   :global .htpl1-phase1-btn-secondary:active {
-    color: #53ccd0;
-    border: solid 1pxlighten #34b8bc, 10%;
+    color: #039ce8;
+    border: solid 1pxlighten #027ab6, 10%;
     background-color: #fff; }
   :global .htpl1-phase1-btn-secondary:disabled {
     background-color: #d0d8dc;
@@ -537,9 +537,9 @@ body {
     color: #fff;
     border: 1px solid #cccccc; }
     :global .hptl-phase1-footer .btn-other:hover, :global .hptl-phase1-footer .btn-other:focus {
-      background-color: #299194;
+      background-color: #015884;
       color: #fff !important;
-      border-color: #53ccd0; }
+      border-color: #039ce8; }
 
 :global .hptl-phase1-master-footer .main {
   background-color: #fff !important;
@@ -1308,7 +1308,7 @@ th {
       color: #fff;
       cursor: pointer; }
       .image-area-cntr .videoActions i:last-child {
-        background: #53ccd0; }
+        background: #039ce8; }
       .image-area-cntr .videoActions i:hover {
         background: rgba(0, 0, 0, 0.1); }
 
@@ -1318,7 +1318,7 @@ th {
 
 .my-calendar {
   text-align: center;
-  background: #34b8bc;
+  background: #027ab6;
   color: #fff; }
   .my-calendar .myDay_date {
     position: relative; }
@@ -1358,7 +1358,7 @@ th {
       color: #fff; }
     .my-calendar .myDay_date .todayBtn:hover {
       background: #fff;
-      color: #299194; }
+      color: #015884; }
   .my-calendar .arrow-box {
     width: 60px;
     cursor: pointer; }
@@ -1370,12 +1370,12 @@ th {
   .my-calendar .arrow-box-right {
     float: right; }
   .my-calendar .calendar .col {
-    border: 1px solid #299194;
+    border: 1px solid #015884;
     padding-right: 3px;
     padding-left: 3px;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3); }
   .my-calendar .calendar .col:hover {
-    background: #299194;
+    background: #015884;
     cursor: pointer;
     text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3); }
   .my-calendar .calendar .col span {
@@ -1386,6 +1386,6 @@ th {
     text-transform: uppercase; }
   .my-calendar .activeDate {
     border-bottom: 4px solid yellow !important;
-    background: #299194; }
+    background: #015884; }
   .my-calendar .CurrentDate {
     border-top: 2px solid yellow !important; }

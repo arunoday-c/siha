@@ -35,7 +35,7 @@ const SubmitRequestUpdate = ($this, e) => {
     });
   } else {
     swalMessage({
-      title: "Invalid Input. Please select Submission Type.",
+      title: "Please select Submission Type.",
       type: "error"
     });
   }

@@ -133,7 +133,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
     type = "from_location_type";
     if ($this.state.to_location_id === value) {
       swalMessage({
-        title: "Invalid Input.From Location and To Location Cannot be Same ",
+        title: "From Location and To Location Cannot be Same ",
         type: "error"
       });
       $this.setState({ [name]: null });
@@ -156,7 +156,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
     type = "to_location_type";
     if ($this.state.from_location_id === value) {
       swalMessage({
-        title: "Invalid Input.From Location and To Location Cannot be Same ",
+        title: "From Location and To Location Cannot be Same ",
         type: "error"
       });
       $this.setState({ [name]: null });

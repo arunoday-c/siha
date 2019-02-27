@@ -20,7 +20,7 @@ const examhandle = ($this, e) => {
       [name]: $this.state.exam_status
     });
     swalMessage({
-      title: "Invalid Input. After Complete cant do any changes.",
+      title: "After Complete cant do any changes.",
       type: "warning"
     });
   } else {
@@ -69,7 +69,7 @@ const rtehandle = ($this, template_html) => {
 const UpdateRadOrder = ($this, value) => {
   if ($this.state.template_id === null && value === "Validate") {
     swalMessage({
-      title: "Invalid Input. Please Select Template",
+      title: "Please Select Template",
       type: "warning"
     });
   } else {

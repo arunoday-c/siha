@@ -91,7 +91,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
   if (sheet_discount_percentage > 100) {
     swalMessage({
-      title: "Invalid Input. Discount % cannot be greater than 100.",
+      title: "Discount % cannot be greater than 100.",
       type: "warning"
     });
   } else {
@@ -115,12 +115,12 @@ const numberchangeTexts = ($this, context, e) => {
 
   if (value < 0) {
     swalMessage({
-      title: "Invalid Input. Quantity cannot be less than Zero",
+      title: "Quantity cannot be less than Zero",
       type: "warning"
     });
   } else if (value > $this.state.qtyhand) {
     swalMessage({
-      title: "Invalid Input. Quantity cannot be greater than Quantity in hand",
+      title: "Quantity cannot be greater than Quantity in hand",
       type: "warning"
     });
   } else {
@@ -150,7 +150,7 @@ const RequisitionSearch = ($this, e) => {
     $this.state.inventory_location_id === null
   ) {
     swalMessage({
-      title: "Invalid Input. Select Location.",
+      title: "Select Location.",
       type: "warning"
     });
   } else {
@@ -492,7 +492,7 @@ const AuthorizePOEntry = $this => {
   );
   if (auth_qty === true) {
     swalMessage({
-      title: "Invalid Input. Please enter Authorize Quantity.",
+      title: "Please enter Authorize Quantity.",
       type: "warning"
     });
   } else {

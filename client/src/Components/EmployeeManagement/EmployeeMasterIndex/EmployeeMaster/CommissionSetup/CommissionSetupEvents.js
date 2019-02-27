@@ -23,7 +23,7 @@ const numberSet = ($this, e) => {
 const AddSeviceTypeComm = $this => {
   if ($this.state.service_type_typ_id === null) {
     swalMessage({
-      title: "Invalid Input. Selected the Service Type .",
+      title: "Selected the Service Type .",
       type: "warning"
     });
   } else {
@@ -72,7 +72,7 @@ const AddSeviceTypeComm = $this => {
       });
     } else {
       swalMessage({
-        title: "Invalid Input. Selected Service Type already defined.",
+        title: "Selected Service Type already defined.",
         type: "warning"
       });
     }
@@ -123,7 +123,7 @@ const AddServiceComm = $this => {
       });
     } else {
       swalMessage({
-        title: "Invalid Input. Selected Service already defined",
+        title: "Selected Service already defined",
         type: "warning"
       });
     }

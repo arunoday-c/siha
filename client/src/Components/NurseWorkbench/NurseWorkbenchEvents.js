@@ -117,7 +117,7 @@ const temperatureConvertion = (temprature, tofarenheat = "C") => {
 const datehandle = ($this, ctrl, e) => {
   if (Date.parse(new Date()) < Date.parse(moment(ctrl)._d)) {
     swalMessage({
-      title: "Invalid Input. Cannot be grater than Today's Date.",
+      title: "Cannot be grater than Today's Date.",
       type: "warning"
     });
     return;

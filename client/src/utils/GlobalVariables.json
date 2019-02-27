@@ -880,5 +880,9 @@
   "SHIFT_END": [
     { "name": "Same Date", "value": "SD" },
     { "name": "Next Date", "value": "ND" }
+  ],
+  "MANUAL_TIME_TYPE": [
+    { "name": "Department", "value": "D" },
+    { "name": "Project", "value": "P" }
   ]
 }

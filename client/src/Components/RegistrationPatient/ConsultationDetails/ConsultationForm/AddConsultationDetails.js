@@ -156,7 +156,7 @@ const doctorselectedHandeler = ($this, context, e) => {
           [e.name]: null
         });
         swalMessage({
-          title: "Invalid Input. No Service defined for the selected doctor.",
+          title: "No Service defined for the selected doctor.",
           type: "warning"
         });
       }
@@ -193,7 +193,7 @@ const doctorselectedHandeler = ($this, context, e) => {
           [e.name]: null
         });
         swalMessage({
-          title: "Invalid Input. No Service defined for the selected doctor.",
+          title: "No Service defined for the selected doctor.",
           type: "warning"
         });
       }
@@ -203,7 +203,7 @@ const doctorselectedHandeler = ($this, context, e) => {
       [e.name]: null
     });
     swalMessage({
-      title: "Invalid Input. Please select department.",
+      title: "Please select department.",
       type: "warning"
     });
   }

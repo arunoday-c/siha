@@ -90,8 +90,7 @@ const adjustadvance = ($this, context, ctrl, e) => {
   if (e.target.value > 0) {
     if (e.target.value > $this.state.advance_amount) {
       successfulMessage({
-        message:
-          "Invalid Input. Adjusted amount cannot be greater than Advance amount",
+        message: "Adjusted amount cannot be greater than Advance amount",
         title: "Warning",
         icon: "warning"
       });
@@ -126,7 +125,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   }
   if (sheet_discount_percentage > 100) {
     successfulMessage({
-      message: "Invalid Input. Discount % cannot be greater than 100.",
+      message: "Discount % cannot be greater than 100.",
       title: "Warning",
       icon: "warning"
     });
@@ -141,8 +140,7 @@ const discounthandle = ($this, context, ctrl, e) => {
     }
   } else if (sheet_discount_amount > $this.state.patient_payable) {
     swalMessage({
-      title:
-        "Invalid Input. Discount Amount cannot be greater than Patient Share.",
+      title: "Discount Amount cannot be greater than Patient Share.",
       type: "Warning"
     });
     $this.setState({
@@ -224,7 +222,7 @@ const credittexthandle = ($this, context, ctrl, e) => {
 
   if (e.target.value > $this.state.net_amount) {
     successfulMessage({
-      message: "Invalid Input. Criedt amount cannot be greater than Net amount",
+      message: "Criedt amount cannot be greater than Net amount",
       title: "Warning",
       icon: "warning"
     });

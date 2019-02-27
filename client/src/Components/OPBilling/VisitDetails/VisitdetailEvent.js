@@ -83,7 +83,7 @@ const handleChange = ($this, row, context, e) => {
               if (pre_approval_Required.length > 0) {
                 swalMessage({
                   title:
-                    "Invalid Input. Some of the service is Pre-Approval required, Please wait for Approval.",
+                    "Some of the service is Pre-Approval required, Please wait for Approval.",
                   type: "warning"
                 });
               } else {

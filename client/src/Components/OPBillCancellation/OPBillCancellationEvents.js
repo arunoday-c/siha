@@ -67,7 +67,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Check Number cannot be blank."
+        title: "Check Number cannot be blank."
       });
 
       document.querySelector("[name='cheque_number']").focus();
@@ -78,7 +78,7 @@ const Validations = $this => {
       isError = true;
       swalMessage({
         type: "warning",
-        title: "Invalid Input. Cheque Date Cannot be blank."
+        title: "Cheque Date Cannot be blank."
       });
 
       document.querySelector("[name='cheque_date']").focus();
@@ -88,8 +88,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title:
-        "Invalid Input. Total receipt amount should be equal to reciveable amount."
+      title: "Total receipt amount should be equal to reciveable amount."
     });
 
     return isError;
@@ -97,7 +96,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Shift is Mandatory."
+      title: "Shift is Mandatory."
     });
 
     return isError;
@@ -105,7 +104,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Invalid Input. Counter is Mandatory."
+      title: "Counter is Mandatory."
     });
 
     return isError;
