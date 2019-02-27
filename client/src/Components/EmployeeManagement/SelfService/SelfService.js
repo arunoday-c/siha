@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./SelfService.css";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
+import ActivityFeed from "./ActivityFeed/ActivityFeed";
 import SelfPersonalDetails from "./PersonalDetails/SelfPersonalDetails";
 import AttendanceRegularization from "./AttendanceRegularization/AttendanceRegularization";
 import ApplyLeave from "./ApplyLeave/ApplyLeave";
@@ -18,7 +19,7 @@ export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "SelfPersonalDetails"
+      pageDisplay: "ActivityFeed"
     };
     this.getEmployeeDetails();
   }
@@ -146,14 +147,14 @@ export default class SelfService extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"SelfPersonalDetails"}
+                algaehtabs={"ActivityFeed"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Personal Info"
+                      forceLabel: "Activity Feed"
                     }}
                   />
                 }
@@ -213,6 +214,19 @@ export default class SelfService extends Component {
               </li>
 
               <li
+                algaehtabs={"SelfPersonalDetails"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Personal Info"
+                    }}
+                  />
+                }
+              </li>
+              <li
                 algaehtabs={"HolidayListSelf"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -229,7 +243,9 @@ export default class SelfService extends Component {
           </div>
         </div>
         <div className="selfService-setion">
-          {this.state.pageDisplay === "SelfPersonalDetails" ? (
+          {this.state.pageDisplay === "ActivityFeed" ? (
+            <ActivityFeed />
+          ) : this.state.pageDisplay === "SelfPersonalDetails" ? (
             <SelfPersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
             <AttendanceRegularization empData={this.state.employee_details} />
