@@ -189,6 +189,7 @@ const billheaderCalculation = ($this, context, e) => {
 
   algaehApiCall({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {

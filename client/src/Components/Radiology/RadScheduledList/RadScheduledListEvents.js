@@ -102,7 +102,7 @@ const getRadTestList = $this => {
 
   $this.props.getRadiologyTestList({
     uri: "/radiology/getRadOrderedServices",
-    // module: "radiology",
+    module: "radiology",
     method: "GET",
     data: inputobj,
     redux: {
@@ -116,7 +116,7 @@ const openResultEntry = ($this, row) => {
   if (row.billed === "Y") {
     $this.props.getTemplateList({
       uri: "/radiology/getRadTemplateList",
-      // module: "radiology",
+      module: "radiology",
       method: "GET",
       data: { services_id: row.service_id },
       redux: {

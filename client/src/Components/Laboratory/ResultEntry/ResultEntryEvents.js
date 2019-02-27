@@ -13,7 +13,7 @@ const texthandle = ($this, e) => {
 const UpdateLabOrder = ($this, value, status) => {
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
-    // module: "laboratory",
+    module: "laboratory",
     data: value,
     method: "PUT",
     onSuccess: response => {
@@ -87,7 +87,7 @@ const onvalidate = $this => {
 const getAnalytes = $this => {
   algaehApiCall({
     uri: "/laboratory/getTestAnalytes",
-    // module: "laboratory",
+    module: "laboratory",
     method: "GET",
     data: { order_id: $this.state.hims_f_lab_order_id },
     onSuccess: response => {

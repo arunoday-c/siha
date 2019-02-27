@@ -4,9 +4,9 @@ const getRadResult = $this => {
     visit_id: Window.global["visit_id"]
   };
 
-  
   $this.props.getRadResult({
     uri: "/radiology/getRadOrderedServices",
+    module: "radiology",
     method: "GET",
     data: inputobj,
     redux: {

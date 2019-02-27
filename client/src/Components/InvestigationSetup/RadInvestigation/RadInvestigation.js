@@ -47,6 +47,7 @@ class RadInvestigation extends Component {
     ) {
       this.props.getTestCategory({
         uri: "/labmasters/selectTestCategory",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "TESTCATEGORY_GET_DATA",

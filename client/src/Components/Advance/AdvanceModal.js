@@ -164,8 +164,8 @@ class AddAdvanceModal extends PureComponent {
         AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/billing/patientAdvanceRefund",
-          method: "POST",
           module: "billing",
+          method: "POST",
           data: $this.state,
           onSuccess: response => {
             AlgaehLoader({ show: false });
