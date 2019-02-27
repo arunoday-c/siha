@@ -2148,36 +2148,36 @@ module.exports = {
                 // select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
                 // Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
                 // PDate<='${to_date}'
-                const _query = `;WITH CTE AS(
-  SELECT
-      UserID,
-      DateTime,
-      AccessDate = CAST(DateTime AS DATE),
-      AccessTime = CAST(DateTime AS TIME),       
-      InOut,
-      In_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) ASC),
-      Out_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) DESC)
-  FROM [FTDP].[dbo].[Transaction] where cast(DateTime  as date)between 
-  '${from_date}' and '${to_date}' and UserId in (${biometric_ids})
-)
-SELECT
-  UserID,  
-  [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
-  InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), null),
-  OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), null),
-  Duration =  ISNULL(RIGHT('00' +             
-              CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
-                  MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
-                  MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
-              )/60), 2) + '.' +
-              RIGHT('00' +CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
-                  MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
-                  MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
-              )%60), 2)
-          ,0.0)
-FROM CTE
-GROUP BY UserID, AccessDate
-ORDER BY  AccessDate `;
+                                  const _query = `;WITH CTE AS(
+                    SELECT
+                        UserID,
+                        DateTime,
+                        AccessDate = CAST(DateTime AS DATE),
+                        AccessTime = CAST(DateTime AS TIME),       
+                        InOut,
+                        In_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) ASC),
+                        Out_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) DESC)
+                    FROM [FTDP].[dbo].[Transaction] where cast(DateTime  as date)between 
+                    '${from_date}' and '${to_date}' and UserId in (${biometric_ids})
+                  )
+                  SELECT
+                    UserID,  
+                    [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
+                    InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), null),
+                    OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), null),
+                    Duration =  ISNULL(RIGHT('00' +             
+                                CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
+                                    MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
+                                    MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+                                )/60), 2) + '.' +
+                                RIGHT('00' +CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
+                                    MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
+                                    MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+                                )%60), 2)
+                            ,0.0)
+                  FROM CTE
+                  GROUP BY UserID, AccessDate
+                  ORDER BY  AccessDate `;
                 console.log("MSSSQL Query : ", _query);
                 request.query(
                   _query,
@@ -3178,7 +3178,223 @@ ORDER BY  AccessDate `;
       _mysql.releaseConnection();
       next(e);
     }
+  },
+  //created by irfan:
+  postTimeSheet: (req, res, next) => {
+    let input = req.query;
+    const utilities = new algaehUtilities();
+  
+    let from_date = moment(input.from_date).format("YYYY-MM-DD");
+    let to_date = moment(input.to_date).format("YYYY-MM-DD");
+    let stringData = "";
+    let dailyAttendance = [];
+    if (
+      input.hospital_id > 0 &&
+      (input.hims_d_employee_id > 0 || input.sub_department_id > 0)
+    ) {
+      if (input.hims_d_employee_id > 0) {
+        stringData = "AND TS.employee_id=" + input.hims_d_employee_id;
+      }
+  
+      if (input.sub_department_id > 0) {
+        stringData = "AND TS.sub_department_id=" + input.sub_department_id;
+      }
+  
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            " select hims_f_daily_time_sheet_id,employee_id,employee_code,full_name,TS.biometric_id,attendance_date,in_time,out_date,\
+          out_time,year,month,status,posted,hours,minutes,actual_hours,actual_minutes,worked_hours,\
+          expected_out_date,expected_out_time ,hims_d_employee_id,TS.hospital_id,TS.sub_department_id \
+          from hims_f_daily_time_sheet TS ,hims_d_employee E where TS.hospital_id=? and  date(attendance_date) between\
+                  date(?) and date(?) and  TS.employee_id=E.hims_d_employee_id " +
+            stringData,
+          values: [input.hospital_id, from_date, to_date],
+          printQuery: true
+        })
+        .then(result => {
+          // utilities.logger().log("result: ",result);
+  
+          if (result.length > 0) {
+            let excptions = new LINQ(result)
+              .Where(w => w.status == "EX")
+              .Select(s => {
+                return {
+                  employee_code: s.employee_code,
+                  employee_name: s.full_name,
+                  attendance_date: s.attendance_date
+                };
+              })
+              .ToArray();
+  
+            utilities.logger().log("excptions: ", excptions);
+  
+            if (excptions.length == 0) {
+              req.records = {
+                invalid_input: true,
+                employees: excptions,
+                message: "Please Regularize attendance for these employees"
+              };  
+              next();
+              return;
+            } else {
+              for (let i = 0; i < result.length; i++) {
+
+
+                let shortage_time = 0;
+                let ot_time = 0;
+
+
+                if(result[i]["status"] == "PR"){
+                let total_minutes =
+                  parseInt(result[i]["actual_hours"] * 60) +
+                  parseInt(result[i]["actual_minutes"]);
+                let worked_minutes =
+                  parseInt(result[i]["hours"] * 60) +
+                  parseInt(result[i]["minutes"]);
+                let diff = total_minutes - worked_minutes;
+               
+  
+                if (diff >0) {
+                  //calculating shortage
+                  shortage_time =
+                    parseInt(parseInt(diff) / parseInt(60)) +
+                    "." +
+                    (parseInt(diff) % parseInt(60));
+                } else if (diff < 0) {
+                  //calculating over time
+                  ot_time =
+                    parseInt(parseInt(Math.abs(diff)) / parseInt(60)) +
+                    "." +
+                    (parseInt(Math.abs(diff)) % parseInt(60));
+                }
+              }
+                // utilities.logger().log("total_minutes: ", total_minutes);
+                // utilities.logger().log("worked_minutes: ", worked_minutes);
+                // utilities.logger().log("diff: ", diff);
+                // utilities.logger().log("ot_time: ", ot_time);
+                // utilities.logger().log("shortage_time: ", shortage_time);
+                // utilities.logger().log("================: ");
+                dailyAttendance.push({
+                  employee_id: result[i]["hims_d_employee_id"],
+                  hospital_id: result[i]["hospital_id"],
+                  sub_department_id: result[i]["sub_department_id"],
+                  attendance_date: result[i]["attendance_date"],
+                  year: moment(result[i]["attendance_date"]).format("YYYY"),
+                  month: moment(result[i]["attendance_date"]).format("M"),
+                  total_days: 1,
+                  present_days: result[i]["status"] == "PR" ? 1 : 0,
+                  absent_days: result[i]["status"] == "AB" ? 1 : 0,
+                  total_work_days: result[i]["status"] == "PR" ? 1 : 0,
+                  weekoff_days: result[i]["status"] == "WO" ? 1 : 0,
+                  holidays: result[i]["status"] == "HO" ? 1 : 0,
+                  paid_leave: result[i]["status"] == "PL" ? 1 : 0,
+                  unpaid_leave: result[i]["status"] == "UL" ? 1 : 0,
+                  total_hours: result[i]["worked_hours"],
+                  hours: result[i]["hours"],
+                  minutes: result[i]["minutes"],
+                  working_hours:
+                    result[i]["actual_hours"] + "." + result[i]["actual_minutes"],
+                  shortage_hours: shortage_time,
+                  ot_work_hours: ot_time
+                });
+              }
+
+              utilities.logger().log("dailyAttendance: ", dailyAttendance);
+
+
+              const insurtColumns = [
+                "employee_id",
+                "hospital_id",
+                "sub_department_id",
+                "year",
+                "month",
+                "attendance_date",
+                "total_days",
+                "present_days",
+                "absent_days",
+                "total_work_days",
+                "weekoff_days",
+                "holidays",
+                "paid_leave",
+                "unpaid_leave",
+                "hours",
+                "minutes",
+                "total_hours",
+                "working_hours",
+                "shortage_hours",
+                "ot_work_hours"
+              ];
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "INSERT IGNORE INTO hims_f_daily_attendance(??) VALUES ? ON DUPLICATE KEY UPDATE employee_id=values(employee_id),\
+                    hospital_id=values(hospital_id),sub_department_id=values(sub_department_id),\
+                    year=values(year),month=values(month),attendance_date=values(attendance_date),total_days=values(total_days),\
+                    present_days=values(present_days),absent_days=values(absent_days),total_work_days=values(total_work_days),\
+                    weekoff_days=values(weekoff_days),holidays=values(holidays),paid_leave=values(paid_leave),\
+                    unpaid_leave=values(unpaid_leave),hours=values(hours),minutes=values(minutes),total_hours=values(total_hours),\
+                    working_hours=values(working_hours), shortage_hours=values(shortage_hours), ot_work_hours=values(ot_work_hours)",
+                  
+                  includeValues:insurtColumns,   
+                  values: dailyAttendance,     
+                  bulkInsertOrUpdate: true
+                })
+                .then(finalResult => {
+
+                  _mysql.releaseConnection();
+
+                  req.records = finalResult;
+                  next();
+                }) .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "No Data Found for this date range"
+            };
+            next();
+            return;
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide valid input"
+      };
+  
+      next();
+      return;
+    }
   }
+  
+
+
 };
 
 //created by irfan: to insert timesheet
@@ -3394,15 +3610,14 @@ function insertTimeSheet(
       "minutes"
     ];
 
-    // "hours",
-    // "minutes",
+    // "INSERT INTO hims_f_daily_time_sheet(??) VALUES ?  ON DUPLICATE KEY UPDATE employee_id=values(employee_id),\
+    // biometric_id=values(biometric_id),attendance_date=values(attendance_date),\
+    // in_time=values(in_time),out_date=values(out_date),out_time=values(out_time),status=values(status),\
+    // hours=values(hours),minutes=values(minutes),worked_hours=values(worked_hours),actual_hours=values(actual_hours)",
     _mysql
       .executeQueryWithTransaction({
         query:
-          "INSERT INTO hims_f_daily_time_sheet(??) VALUES ?  ON DUPLICATE KEY UPDATE employee_id=values(employee_id),\
-          biometric_id=values(biometric_id),attendance_date=values(attendance_date),\
-          in_time=values(in_time),out_date=values(out_date),out_time=values(out_time),status=values(status),\
-          hours=values(hours),minutes=values(minutes),worked_hours=values(worked_hours),actual_hours=values(actual_hours)",
+          "INSERT IGNORE INTO hims_f_daily_time_sheet(??) VALUES ? ",
         values: insertArray,
         includeValues: insurtColumns,
         extraValues: { year: year, month: month },
