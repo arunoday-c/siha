@@ -12,7 +12,7 @@ import {
   getYears,
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
-
+const _options = AlgaehOpenContainer(sessionStorage.getItem("hrOptions"));
 export default class MonthlyAttendance extends Component {
   constructor(props) {
     super(props);
@@ -28,7 +28,8 @@ export default class MonthlyAttendance extends Component {
         .hims_d_hospital_id,
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
-      formatingString: this.monthFormatorString(moment().startOf("month"))
+      formatingString: this.monthFormatorString(moment().startOf("month")),
+      attendance_type: JSON.parse(_options).attendance_type
     };
     this.getSubDepts();
     this.getOrganization();

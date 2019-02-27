@@ -1068,7 +1068,7 @@ class ApplyLeave extends Component {
                     leaveData.map((data, index) => (
                       <div
                         key={data.hims_f_employee_monthly_leave_id}
-                        className="col"
+                        className="col-2"
                       >
                         <AlgaehLabel
                           label={{
