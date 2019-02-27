@@ -643,7 +643,7 @@ export default class WeeklyAttendance extends Component {
             }}
           />
 
-          <div className="col" style={{ marginTop: 10 }}>
+          <div className="col-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
@@ -654,7 +654,7 @@ export default class WeeklyAttendance extends Component {
             >
               <div className="col">
                 <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                <h6>
+                <h6 className="textEllipsis">
                   {this.state.employee_name
                     ? this.state.employee_name
                     : "------"}
@@ -703,14 +703,21 @@ export default class WeeklyAttendance extends Component {
         <div className="portlet portlet-bordered margin-top-15">
           <div
             className="portlet-title"
-            style={{ height: 45, borderBottom: " 1px solid #e2e2e2" }}
+            style={{
+              height: 45,
+              borderBottom: " 1px solid #e2e2e2",
+              position: "relative"
+            }}
           >
             <div className="caption">
               <label className="label">Selected Employee</label>
               <br />
               {this.state.employee_name ? this.state.employee_name : "All"}
             </div>{" "}
-            <label className="timeCheckCntr" style={{ marginLeft: "35%" }}>
+            <label
+              className="timeCheckCntr"
+              style={{ marginLeft: "33%", top: "8px" }}
+            >
               <input type="checkbox" /> <span className="checkmark" />{" "}
             </label>
             <div className="actions">
@@ -838,7 +845,7 @@ export default class WeeklyAttendance extends Component {
 
                                 {Math.floor(
                                   data.actual_hours - data.worked_hours
-                                ) + " Hrs"}
+                                ) + " Hrs: "}
                                 {60 - data.minutes + " Mins"}
                               </b>
                             </React.Fragment>
@@ -1070,8 +1077,8 @@ export default class WeeklyAttendance extends Component {
               padding: "15px"
             }}
           >
-            <div className="col-3" />
-            <div className="col-9">
+            <div className="col-4" />
+            <div className="col-8">
               <div className="ruler">
                 <div className="cm">
                   <div className="mm" />

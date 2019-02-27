@@ -6,13 +6,13 @@
     text-align: left;
     cursor: pointer; }
   .EmployeeDocumentsScreen .documentFor .list-group-item.active {
-    background-color: #34b8bc;
-    border-color: #34b8bc; }
+    background-color: #12a28d;
+    border-color: #12a28d; }
     .EmployeeDocumentsScreen .documentFor .list-group-item.active .badge-primary {
       background-color: #fff;
-      color: #34b8bc; }
+      color: #12a28d; }
   .EmployeeDocumentsScreen .documentFor .badge-primary {
-    background-color: #34b8bc; }
+    background-color: #12a28d; }
   .EmployeeDocumentsScreen .documentFor span {
     display: block; }
 
@@ -34,8 +34,8 @@
     margin-bottom: 10px;
     display: inline-block; }
   .EmployeeDocumentsScreen .upload-drop-zone:hover {
-    border-color: #34b8bc;
-    background: #cbf0f1; }
+    border-color: #12a28d;
+    background: #8ef2e4; }
 
 .EmployeeDocumentsScreen #EmployeeDocumentGrid .ReactTable {
   max-height: 50vh !important; }
