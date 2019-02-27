@@ -293,93 +293,105 @@ module.exports = {
                                 OTManagement.current_ot_amt_array
                               );
                               // ShoartAge
-                              // getOtManagement({
-                              //   earnings: _earnings,
-                              //   current_earning_amt_array: current_earning_amt_array,
-                              //   empResult: empResult[i],
-                              //   hrms_option: results[8],
-                              //   over_time_comp: results[9],
-                              //   over_time: _over_time,
-                              //   leave_salary: req.query.leave_salary
-                              // }).then(OTManagement => {
-                              //Miscellaneous Earning Deduction
-                              const _miscellaneous = _.filter(results[5], f => {
-                                return (
-                                  f.employee_id == empResult[i]["employee_id"]
-                                );
-                              });
-                              getMiscellaneous({
-                                miscellaneous: _miscellaneous
-                              }).then(miscellaneousOutput => {
-                                current_earning_amt_array = current_earning_amt_array.concat(
-                                  miscellaneousOutput.current_earn_compoment
-                                );
-                                current_deduction_amt_array = current_deduction_amt_array.concat(
-                                  miscellaneousOutput.current_deduct_compoment
-                                );
-                                final_earning_amount =
-                                  final_earning_amount +
-                                  miscellaneousOutput.final_earning_amount;
+                              getShortAge({
+                                earnings: _earnings,
+                                empResult: empResult[i],
+                                current_earning_amt_array: current_earning_amt_array,
+                                shortage_comp: results[11],
+                                hrms_option: results[8],
+                                leave_salary: req.query.leave_salary
+                              }).then(ShortAge => {
+                                utilities.logger().log("ShortAge", ShortAge);
                                 final_deduction_amount =
                                   final_deduction_amount +
-                                  miscellaneousOutput.final_deduction_amount;
-                                let per_day_sal =
-                                  empResult[i]["gross_salary"] /
-                                  empResult[i]["total_days"];
+                                  ShortAge.final_deduction_amount;
 
-                                let _salary_number = empResult[i][
-                                  "employee_code"
-                                ].trim();
+                                current_deduction_amt_array = current_deduction_amt_array.concat(
+                                  ShortAge.current_shortage_amt_array
+                                );
+                                //Miscellaneous Earning Deduction
+                                const _miscellaneous = _.filter(
+                                  results[5],
+                                  f => {
+                                    return (
+                                      f.employee_id ==
+                                      empResult[i]["employee_id"]
+                                    );
+                                  }
+                                );
+                                getMiscellaneous({
+                                  miscellaneous: _miscellaneous
+                                }).then(miscellaneousOutput => {
+                                  current_earning_amt_array = current_earning_amt_array.concat(
+                                    miscellaneousOutput.current_earn_compoment
+                                  );
+                                  current_deduction_amt_array = current_deduction_amt_array.concat(
+                                    miscellaneousOutput.current_deduct_compoment
+                                  );
+                                  final_earning_amount =
+                                    final_earning_amount +
+                                    miscellaneousOutput.final_earning_amount;
+                                  final_deduction_amount =
+                                    final_deduction_amount +
+                                    miscellaneousOutput.final_deduction_amount;
+                                  let per_day_sal =
+                                    empResult[i]["gross_salary"] /
+                                    empResult[i]["total_days"];
 
-                                _salary_number +=
-                                  req.query.leave_salary == null
-                                    ? "-NS-"
-                                    : "-LS-";
-                                _salary_number += month_number + "-" + year;
+                                  let _salary_number = empResult[i][
+                                    "employee_code"
+                                  ].trim();
 
-                                let _net_salary =
-                                  final_earning_amount -
-                                  final_deduction_amount -
-                                  total_loan_due_amount;
+                                  _salary_number +=
+                                    req.query.leave_salary == null
+                                      ? "-NS-"
+                                      : "-LS-";
+                                  _salary_number += month_number + "-" + year;
 
-                                _net_salary =
-                                  _net_salary + total_loan_payable_amount;
+                                  let _net_salary =
+                                    final_earning_amount -
+                                    final_deduction_amount -
+                                    total_loan_due_amount;
 
-                                //  if (empResult[i][hims_f_salary_id] == null) {
-                                _headerQuery += _mysql.mysqlQueryFormat(
-                                  "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
+                                  _net_salary =
+                                    _net_salary + total_loan_payable_amount;
+
+                                  //  if (empResult[i][hims_f_salary_id] == null) {
+                                  _headerQuery += _mysql.mysqlQueryFormat(
+                                    "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                               present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
                                               unpaid_leave,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                               total_contributions,net_salary, total_paid_days) \
                                              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
-                                  [
-                                    _salary_number,
-                                    parseInt(month_number),
-                                    parseInt(year),
-                                    empResult[i]["employee_id"],
-                                    empResult[i]["sub_department_id"],
-                                    new Date(),
-                                    per_day_sal,
-                                    empResult[i]["total_days"],
-                                    empResult[i]["present_days"],
-                                    empResult[i]["absent_days"],
-                                    empResult[i]["total_work_days"],
-                                    empResult[i]["total_weekoff_days"],
-                                    empResult[i]["total_holidays"],
-                                    empResult[i]["total_leave"],
-                                    empResult[i]["paid_leave"],
-                                    empResult[i]["unpaid_leave"],
-                                    total_loan_payable_amount,
-                                    total_loan_due_amount,
-                                    advance_due_amount,
-                                    final_earning_amount,
-                                    final_earning_amount, //Gross salary = total earnings
-                                    final_deduction_amount,
-                                    final_contribution_amount,
-                                    _net_salary,
-                                    empResult[i]["total_paid_days"]
-                                  ]
-                                );
+                                    [
+                                      _salary_number,
+                                      parseInt(month_number),
+                                      parseInt(year),
+                                      empResult[i]["employee_id"],
+                                      empResult[i]["sub_department_id"],
+                                      new Date(),
+                                      per_day_sal,
+                                      empResult[i]["total_days"],
+                                      empResult[i]["present_days"],
+                                      empResult[i]["absent_days"],
+                                      empResult[i]["total_work_days"],
+                                      empResult[i]["total_weekoff_days"],
+                                      empResult[i]["total_holidays"],
+                                      empResult[i]["total_leave"],
+                                      empResult[i]["paid_leave"],
+                                      empResult[i]["unpaid_leave"],
+                                      total_loan_payable_amount,
+                                      total_loan_due_amount,
+                                      advance_due_amount,
+                                      final_earning_amount,
+                                      final_earning_amount, //Gross salary = total earnings
+                                      final_deduction_amount,
+                                      final_contribution_amount,
+                                      _net_salary,
+                                      empResult[i]["total_paid_days"]
+                                    ]
+                                  );
+                                });
                               });
                             });
                           });

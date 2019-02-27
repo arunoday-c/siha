@@ -4,6 +4,8 @@
   .arabicVersionOPbilling .primary-details {
     border-right: none;
     border-left: 1px dashed #d3d3d3; }
+  .arabicVersionOPbilling label {
+    font-size: 1rem; }
   .arabicVersionOPbilling .toggle-section .nav {
     padding: 0;
     right: auto; }
