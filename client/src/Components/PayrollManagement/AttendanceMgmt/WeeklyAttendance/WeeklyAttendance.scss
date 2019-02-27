@@ -66,12 +66,11 @@
     .checkmark {
       border-radius: 5px;
       position: absolute;
-      top: 0;
       left: 0;
       height: 25px !important;
       width: 25px !important;
       background-color: #eee;
-      top: 2px;
+      top: -4px;
       border: 1px solid #dcdcdc;
     }
 
@@ -133,7 +132,8 @@
 
         .progress {
           height: 0.5rem;
-          margin-top: 0.6rem;
+          margin-top: 0.4rem;
+          margin-left: 30px;
           .progress-bar {
             position: relative;
             background-color: #e8e8e8;
