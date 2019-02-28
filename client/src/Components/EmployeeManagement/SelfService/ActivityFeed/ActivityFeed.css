@@ -37,4 +37,6 @@
         top: -3px;
         font-size: 1.1rem; }
         .ActivityFeedScreen .activity-feed .feed-item .feedCntr .text a {
-          margin-left: 5px; }
+          margin-left: 5px;
+          color: #4183c4 !important;
+          cursor: pointer !important; }

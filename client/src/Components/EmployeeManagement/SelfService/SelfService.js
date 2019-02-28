@@ -81,7 +81,6 @@ export default class SelfService extends Component {
               />
             </div>
             <div className="EmployeeName">
-              {/* <h6>SYED ADIL FAWAD NIZAMI</h6> */}
               <h6>{empDetails.full_name}</h6>
               <p>
                 {" "}
@@ -244,7 +243,7 @@ export default class SelfService extends Component {
         </div>
         <div className="selfService-setion">
           {this.state.pageDisplay === "ActivityFeed" ? (
-            <ActivityFeed />
+            <ActivityFeed empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "SelfPersonalDetails" ? (
             <SelfPersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
