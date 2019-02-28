@@ -44,7 +44,7 @@ const getPurchaseOrderList = $this => {
   // inpObj.authorie2 = "N";
   $this.props.getPurchaseOrderList({
     uri: "/PurchaseOrderEntry/getAuthPurchaseList",
-    // module: "procurement",
+    module: "procurement",
     method: "GET",
     data: inpObj,
     redux: {
@@ -91,6 +91,7 @@ const getData = $this => {
   } else if ($this.state.po_from === "INV") {
     $this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",

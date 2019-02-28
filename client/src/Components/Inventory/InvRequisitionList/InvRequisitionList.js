@@ -38,6 +38,7 @@ class InvRequisitionList extends Component {
   componentDidMount() {
     this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "INV_LOCATIOS_GET_DATA",

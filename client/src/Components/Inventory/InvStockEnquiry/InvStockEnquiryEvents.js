@@ -36,7 +36,7 @@ const getItemLocationStock = $this => {
 
   $this.props.getItemLocationStock({
     uri: "/inventoryGlobal/getItemandLocationStock",
-    // module: "inventory",
+    module: "inventory",
     method: "GET",
     data: inputObj,
     redux: {

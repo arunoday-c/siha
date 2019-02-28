@@ -65,7 +65,7 @@ const getRequisitionList = $this => {
   // inpObj.authorie2 = "N";
   $this.props.getRequisitionList({
     uri: "/inventoryrequisitionEntry/getinventoryAuthrequisitionList",
-    // module: "inventory",
+    module: "inventory",
     method: "GET",
     data: inpObj,
     redux: {

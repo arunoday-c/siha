@@ -43,6 +43,7 @@ class InvRequisitionEntry extends Component {
     ) {
       this.props.getItems({
         uri: "/inventory/getItemMaster",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
@@ -56,6 +57,7 @@ class InvRequisitionEntry extends Component {
     ) {
       this.props.getLocation({
         uri: "/inventory/getInventoryLocation",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
@@ -70,7 +72,7 @@ class InvRequisitionEntry extends Component {
     ) {
       this.props.getUserLocationPermission({
         uri: "/inventoryGlobal/getUserLocationPermission",
-        // module: "inventory",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",

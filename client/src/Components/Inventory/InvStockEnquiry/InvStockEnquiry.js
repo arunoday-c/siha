@@ -36,6 +36,7 @@ class InvStockEnquiry extends Component {
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/inventory/getItemMaster",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
@@ -50,6 +51,7 @@ class InvStockEnquiry extends Component {
     ) {
       this.props.getLocation({
         uri: "/inventory/getInventoryLocation",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
@@ -60,6 +62,7 @@ class InvStockEnquiry extends Component {
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
         uri: "/inventory/getInventoryUom",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",

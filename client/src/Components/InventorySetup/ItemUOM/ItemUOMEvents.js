@@ -25,7 +25,7 @@ const updateItemUOM = ($this, data) => {
 
   algaehApiCall({
     uri: "/inventory/updateInventoryUom",
-    // module: "inventory",
+    module: "inventory",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -60,7 +60,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/inventory/updateInventoryUom",
-        // module: "inventory",
+        module: "inventory",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -94,7 +94,7 @@ const insertItemUOM = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/inventory/addInventoryUom",
-        // module: "inventory",
+        module: "inventory",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -117,7 +117,7 @@ const insertItemUOM = ($this, e) => {
 const getItemUOM = $this => {
   $this.props.getItemUOM({
     uri: "/inventory/getInventoryUom",
-    // module: "inventory",
+    module: "inventory",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
