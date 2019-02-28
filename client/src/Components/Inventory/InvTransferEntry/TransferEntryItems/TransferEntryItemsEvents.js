@@ -117,6 +117,7 @@ const AddItems = ($this, context) => {
 
     $this.props.getTransferData({
       uri: "/posEntry/getPrescriptionPOS",
+      module: "pharmacy",
       method: "POST",
       data: ItemInput,
       redux: {

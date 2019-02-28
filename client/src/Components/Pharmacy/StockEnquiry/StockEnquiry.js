@@ -36,6 +36,7 @@ class StockEnquiry extends Component {
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
@@ -50,6 +51,7 @@ class StockEnquiry extends Component {
     ) {
       this.props.getLocation({
         uri: "/pharmacy/getPharmacyLocation",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
@@ -60,6 +62,7 @@ class StockEnquiry extends Component {
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
         uri: "/pharmacy/getPharmacyUom",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",

@@ -138,7 +138,7 @@ const itemchangeText = ($this, context, e) => {
 
       algaehApiCall({
         uri: "/pharmacyGlobal/getUomLocationStock",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         data: {
           location_id: $this.state.location_id,

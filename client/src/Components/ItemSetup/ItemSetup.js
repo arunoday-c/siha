@@ -30,7 +30,7 @@ class ItemSetup extends Component {
     ) {
       this.props.getItemCategory({
         uri: "/pharmacy/getItemCategory",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
@@ -44,7 +44,7 @@ class ItemSetup extends Component {
     ) {
       this.props.getItemGroup({
         uri: "/pharmacy/getItemGroup",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GROUOP_GET_DATA",
@@ -56,7 +56,7 @@ class ItemSetup extends Component {
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
         uri: "/pharmacy/getPharmacyUom",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
@@ -71,7 +71,7 @@ class ItemSetup extends Component {
     ) {
       this.props.getItemGeneric({
         uri: "/pharmacy/getItemGeneric",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GENERIC_GET_DATA",
@@ -82,7 +82,7 @@ class ItemSetup extends Component {
     if (this.props.itemform === undefined || this.props.itemform.length === 0) {
       this.props.getItemForm({
         uri: "/pharmacy/getItemForm",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_FORM_GET_DATA",
@@ -96,7 +96,7 @@ class ItemSetup extends Component {
     ) {
       this.props.getItemStorage({
         uri: "/pharmacy/getItemStorage",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",

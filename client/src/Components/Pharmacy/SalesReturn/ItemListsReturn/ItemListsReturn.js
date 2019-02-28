@@ -44,6 +44,7 @@ class ItemListsReturn extends Component {
     ) {
       this.props.getItemCategory({
         uri: "/pharmacy/getItemCategory",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
@@ -54,6 +55,7 @@ class ItemListsReturn extends Component {
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
         uri: "/pharmacy/getPharmacyUom",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",

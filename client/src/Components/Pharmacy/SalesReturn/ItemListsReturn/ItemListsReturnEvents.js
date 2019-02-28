@@ -71,6 +71,7 @@ const itemchangeText = ($this, e) => {
 
   $this.props.getSelectedItemDetais({
     uri: "/pharmacyGlobal/getUomLocationStock",
+    module: "pharmacy",
     method: "GET",
     data: {
       location_id: $this.state.location_id,

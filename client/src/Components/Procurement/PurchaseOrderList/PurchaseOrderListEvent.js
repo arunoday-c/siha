@@ -81,6 +81,7 @@ const getData = $this => {
   if ($this.state.po_from === "PHR") {
     $this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
