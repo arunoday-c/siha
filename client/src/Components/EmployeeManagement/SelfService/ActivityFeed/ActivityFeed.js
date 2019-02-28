@@ -1,6 +1,26 @@
 import React, { Component } from "react";
 import "./ActivityFeed.css";
 export default class ActivityFeed extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pageDisplay: "ActivityFeed"
+    };
+  }
+  skipTab(e) {
+    debugger;
+    e.preventDefault();
+
+    this.props.empData.ChangeRenderTabs({
+      pageDisplay: "AttendanceRegularization"
+    });
+  }
+
+  componentDidMount() {
+    debugger;
+    let InputOutput = this.props.empData;
+    this.setState({ ...this.state, ...InputOutput });
+  }
   render() {
     return (
       <div className="ActivityFeedScreen">
@@ -14,7 +34,9 @@ export default class ActivityFeed extends Component {
                   </div>
                   <div className="text">
                     Request to Regularize Attendance for
-                    <a href="#">05 Feb 2019</a>
+                    <a href="#" onClick={this.skipTab.bind(this)}>
+                      05 Feb 2019
+                    </a>
                   </div>
                 </div>
               </div>
