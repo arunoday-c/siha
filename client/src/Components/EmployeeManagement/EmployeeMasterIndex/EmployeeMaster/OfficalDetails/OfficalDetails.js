@@ -102,6 +102,11 @@ class OfficalDetails extends Component {
                     onChange: texthandle.bind(this, this),
                     others: {
                       tabIndex: "2"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        appointment_type: null
+                      });
                     }
                   }}
                 />
@@ -123,6 +128,11 @@ class OfficalDetails extends Component {
                     onChange: texthandle.bind(this, this),
                     others: {
                       tabIndex: "3"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        employee_type: null
+                      });
                     }
                   }}
                 />
@@ -147,7 +157,12 @@ class OfficalDetails extends Component {
                       data: this.props.subdepartment
                     },
 
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        sub_department_id: null
+                      });
+                    }
                   }}
                 />
               </div>
@@ -254,7 +269,13 @@ class OfficalDetails extends Component {
                       valueField: "value",
                       data: variableJson.EMPLOYEE_STATUS
                     },
-                    onChange: employeeStatusHandler.bind(this, this)
+                    onChange: employeeStatusHandler.bind(this, this),
+
+                    onClear: () => {
+                      this.setState({
+                        employee_status: null
+                      });
+                    }
                   }}
                 />
                 <div className="col">
@@ -372,7 +393,12 @@ class OfficalDetails extends Component {
                       valueField: "hims_d_bank_id",
                       data: this.props.banks
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        company_bank_id: null
+                      });
+                    }
                   }}
                 />
 
@@ -391,7 +417,12 @@ class OfficalDetails extends Component {
                       valueField: "value",
                       data: variableJson.MODE_OF_PAYMENT
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        mode_of_payment: null
+                      });
+                    }
                   }}
                 />
               </div>

@@ -114,7 +114,12 @@ class CommissionSetup extends Component {
                         data: this.props.empservicetype
                       },
                       others: { disabled: this.state.Billexists },
-                      onChange: serviceTypeHandeler.bind(this, this)
+                      onChange: serviceTypeHandeler.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          service_type_typ_id: null
+                        });
+                      }
                     }}
                   />
 
@@ -337,7 +342,12 @@ class CommissionSetup extends Component {
                         data: this.props.empservicetype
                       },
 
-                      onChange: serviceServTypeHandeler.bind(this, this)
+                      onChange: serviceServTypeHandeler.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          service_type_id: null
+                        });
+                      }
                     }}
                   />
 
@@ -359,7 +369,12 @@ class CommissionSetup extends Component {
                         valueField: "hims_d_services_id",
                         data: this.props.empservices
                       },
-                      onChange: texthandle.bind(this, this)
+                      onChange: texthandle.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          services_id: null
+                        });
+                      }
                     }}
                   />
 
