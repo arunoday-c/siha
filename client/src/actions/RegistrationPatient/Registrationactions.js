@@ -14,6 +14,7 @@ export function postPatientDetails(dataValue, callback) {
     } else {
       algaehApiCall({
         uri: "/frontDesk/add",
+        module: "frontDesk",
         method: "POST",
         data: dataValue,
         onSuccess: response => {
@@ -41,6 +42,7 @@ export function postVisitDetails(dataValue, callback) {
   return function(dispatch) {
     algaehApiCall({
       uri: "/frontDesk/update",
+      module: "frontDesk",
       method: "POST",
       data: dataValue,
       onSuccess: response => {

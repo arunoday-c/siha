@@ -337,6 +337,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
 
     algaehApiCall({
       uri: "/billing/getBillDetails",
+      module: "billing",
       method: "POST",
       data: serviceInput,
       onSuccess: response => {

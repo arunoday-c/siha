@@ -28,6 +28,7 @@ class LabResult extends Component {
     ) {
       this.props.getLabAnalytes({
         uri: "/labmasters/selectAnalytes",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",

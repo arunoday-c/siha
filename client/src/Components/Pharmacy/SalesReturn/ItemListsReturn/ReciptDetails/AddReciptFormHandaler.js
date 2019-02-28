@@ -40,6 +40,7 @@ const calculateRecipt = ($this, context) => {
   intervalId = setInterval(() => {
     $this.props.reciptCalculations({
       uri: "/billing/billingCalculations",
+      module: "billing",
       method: "POST",
       data: serviceInput,
       redux: {

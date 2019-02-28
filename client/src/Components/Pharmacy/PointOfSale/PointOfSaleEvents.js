@@ -526,6 +526,7 @@ const AddItems = ($this, ItemInput) => {
 
             algaehApiCall({
               uri: "/billing/billingCalculations",
+              module: "billing",
               method: "POST",
               data: { billdetails: existingservices },
               onSuccess: response => {

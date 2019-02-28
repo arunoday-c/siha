@@ -35,6 +35,14 @@ export default class MonthlyAttendance extends Component {
     this.getOrganization();
   }
 
+  componentDidMount() {
+    this.setState({
+      attendance_type: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).attendance_type
+    });
+  }
+
   loadAttendance() {
     this.setState({
       displayLoader: true

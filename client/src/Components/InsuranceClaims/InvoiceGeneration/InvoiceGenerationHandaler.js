@@ -106,6 +106,7 @@ const getVisitWiseBillDetailS = $this => {
 
           algaehApiCall({
             uri: "/billing/billingCalculations",
+            module: "billing",
             method: "POST",
             data: { billdetails: data },
             onSuccess: response => {

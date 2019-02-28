@@ -397,6 +397,7 @@ const AddItems = ($this, context) => {
 
     algaehApiCall({
       uri: "/billing/getBillDetails",
+      module: "billing",
       method: "POST",
       data: ItemInput,
       onSuccess: response => {
@@ -470,6 +471,7 @@ const AddItems = ($this, context) => {
 
             algaehApiCall({
               uri: "/billing/billingCalculations",
+              module: "billing",
               method: "POST",
               data: { billdetails: existingservices },
               onSuccess: response => {
@@ -602,6 +604,7 @@ const deletePosDetail = ($this, context, row) => {
     // calculateAmount($this, context, row, e);
     algaehApiCall({
       uri: "/billing/billingCalculations",
+      module: "billing",
       method: "POST",
       data: { billdetails: pharmacy_stock_detail },
       onSuccess: response => {
@@ -654,6 +657,7 @@ const updatePosDetail = ($this, context) => {
 
   algaehApiCall({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: { billdetails: $this.state.pharmacy_stock_detail },
     onSuccess: response => {
@@ -734,6 +738,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
 
     algaehApiCall({
       uri: "/billing/getBillDetails",
+      module: "billing",
       method: "POST",
       cancelRequestId: "getPosDetails",
       data: inputParam,
@@ -758,6 +763,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
 
           algaehApiCall({
             uri: "/billing/billingCalculations",
+            module: "billing",
             method: "POST",
             data: { billdetails: pharmacy_stock_detail },
             onSuccess: response => {
@@ -866,6 +872,7 @@ const PosheaderCalculation = ($this, context) => {
 
   algaehApiCall({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: ItemInput,
     onSuccess: response => {

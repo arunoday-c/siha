@@ -9,6 +9,7 @@ import {
 import DirectRoutes from "../../../Dynamicroutes";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
+import Enumarable from "linq";
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
@@ -66,6 +67,34 @@ class PersistentDrawer extends React.Component {
               }
             }
           });
+          debugger;
+          const HRActive = Enumarable.from(dataResponse.data.records)
+            .where(w => w.module_code === "HRMNGMT")
+            .toArray();
+
+          if (HRActive.length > 0) {
+            algaehApiCall({
+              uri: "/payrollOptions/getHrmsOptions",
+              method: "GET",
+              module: "hrManagement",
+              onSuccess: res => {
+                if (res.data.success) {
+                  sessionStorage.removeItem("hrOptions");
+                  sessionStorage.setItem(
+                    "hrOptions",
+                    AlgaehCloseContainer(JSON.stringify(res.data.result[0]))
+                  );
+                }
+              },
+              onFailure: err => {
+                swalMessage({
+                  title: err.message,
+                  type: "error"
+                });
+              }
+            });
+          }
+          debugger;
           that.setState({
             menuList: dataResponse.data.records
           });
@@ -270,6 +299,7 @@ class PersistentDrawer extends React.Component {
   }
 
   createSideMenuItemList() {
+    debugger;
     const { onlyToggeleMenu, activeNode, searchModules, menuList } = this.state;
 
     const _isEnglish = this.state.Language !== "en" ? false : true;

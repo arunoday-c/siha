@@ -178,6 +178,7 @@ class OPBillingAr extends Component {
 
     algaehApiCall({
       uri: "/opBilling/get",
+      module: "billing",
       method: "GET",
       data: { bill_number: billcode },
       onSuccess: response => {
@@ -305,6 +306,7 @@ class OPBillingAr extends Component {
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
+            module: "billing",
             data: Inputobj,
             method: "POST",
             onSuccess: response => {

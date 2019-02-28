@@ -864,7 +864,7 @@ module.exports = {
           "INSERT INTO `hims_f_shift_roster` (employee_id,sub_department_id,shift_date,shift_id,shift_end_date,\
           shift_start_time,shift_end_time,shift_time,weekoff,holiday) values(?,?,?,?,?,?,?,?,?,?)\
            ON DUPLICATE KEY UPDATE shift_id=?, sub_department_id=?,shift_end_date=?,\
-          shift_start_time=?,shift_end_time=?,shift_time=?",
+          shift_start_time=?,shift_end_time=?,shift_time=?,weekoff=?,holiday=?",
         values: [
           input.employee_id,
           input.sub_department_id,
@@ -882,9 +882,9 @@ module.exports = {
           input.shift_end_date,
           input.shift_start_time,
           input.shift_end_time,
-          input.shift_time
-          // input.weekoff,
-          // input.holiday
+          input.shift_time,
+          input.weekoff,
+          input.holiday
         ],
         printQuery: true
       })

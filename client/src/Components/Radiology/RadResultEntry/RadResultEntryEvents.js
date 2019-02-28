@@ -138,6 +138,7 @@ const UpdateRadOrder = ($this, value) => {
 
         algaehApiCall({
           uri: "/radiology/updateRadOrderedServices",
+          module: "radiology",
           data: inputobj,
           method: "PUT",
           onSuccess: response => {
@@ -148,6 +149,7 @@ const UpdateRadOrder = ($this, value) => {
               });
               $this.props.getRadiologyTestList({
                 uri: "/radiology/getRadOrderedServices",
+                module: "radiology",
                 method: "GET",
                 data: inputobj,
                 redux: {

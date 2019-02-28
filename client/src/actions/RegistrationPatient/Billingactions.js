@@ -6,6 +6,7 @@ export function postAdvance(dataValue, callback) {
   return function(dispatch) {
     algaehApiCall({
       uri: "/billing/patientAdvanceRefund",
+      module: "billing",
       method: "POST",
       data: dataValue,
       onSuccess: response => {

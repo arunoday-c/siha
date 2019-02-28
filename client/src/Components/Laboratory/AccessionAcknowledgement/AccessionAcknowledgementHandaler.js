@@ -102,6 +102,7 @@ const getSampleCollectionDetails = $this => {
 
   $this.props.getSampleCollection({
     uri: "/laboratory/getLabOrderedServices",
+    module: "laboratory",
     method: "GET",
     data: inputobj,
     redux: {
@@ -137,7 +138,7 @@ const AcceptandRejectSample = ($this, row, AccRej) => {
 
       algaehApiCall({
         uri: "/laboratory/updateLabSampleStatus",
-        // module: "laboratory",
+        module: "laboratory",
         data: inputobj,
         method: "PUT",
         onSuccess: response => {

@@ -10,6 +10,7 @@ import thunk from "redux-thunk";
 import { applyMiddleware, createStore } from "redux";
 import "./index.css";
 import "./styles/site.css";
+import * as serviceWorker from "./serviceWorker";
 
 const middleware =
   process.env.NODE_ENV === "development"
@@ -35,3 +36,5 @@ ReactDOM.render(
   // </MuiThemeProvider>,
   document.getElementById("root")
 );
+
+serviceWorker.register();

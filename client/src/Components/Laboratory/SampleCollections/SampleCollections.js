@@ -45,6 +45,7 @@ class SampleCollectionPatient extends PureComponent {
     ) {
       this.props.getLabSpecimen({
         uri: "/labmasters/selectSpecimen",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",
@@ -174,7 +175,6 @@ class SampleCollectionPatient extends PureComponent {
                                   />
                                 ),
                                 displayTemplate: row => {
-                                  
                                   return (
                                     <span>
                                       {row.collected !== "Y" ? (

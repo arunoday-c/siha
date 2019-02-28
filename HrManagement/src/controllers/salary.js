@@ -13,8 +13,8 @@ export default () => {
   const api = Router();
   api.get(
     "/processSalary",
-    processSalary,
-    //newProcessSalary,
+    // processSalary,
+    newProcessSalary,
     getSalaryProcess,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
