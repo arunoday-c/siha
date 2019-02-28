@@ -1,10 +1,13 @@
-@import "algaehCssVariables.scss";
+@import "./algaehCssVariables.scss";
 body {
   line-height: 1.45;
   font-weight: $fontWeight;
   background-color: #e9e9e9;
   -webkit-font-smoothing: $webkit-font-smoothing;
   -moz-osx-font-smoothing: $moz-osx-font-smoothing;
+  label {
+    font-weight: 400 !important;
+  }
 }
 :global {
   .header {
@@ -43,6 +46,10 @@ body {
     }
     .style_Label {
       font-size: 1em;
+    }
+    .style_Label + h4 {
+      font-size: 1.5em;
+      color: #fff;
     }
   }
   .btn:hover {

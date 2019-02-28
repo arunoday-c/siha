@@ -26,6 +26,7 @@ const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   $this.props.getPosEntry({
     uri: "/posEntry/getPosEntry",
+    // module:"pharmacy",
     method: "GET",
     printInput: true,
     data: { pos_number: docNumber },
@@ -304,7 +305,7 @@ const SavePosEnrty = $this => {
 
       algaehApiCall({
         uri: "/posEntry/addPosEntry",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success) {
@@ -445,7 +446,7 @@ const getMedicationList = $this => {
 
   $this.props.getMedicationList({
     uri: "/pharmacyGlobal/getVisitPrescriptionDetails",
-    moduel: "pharmacy",
+    // moduel: "pharmacy",
     method: "GET",
     data: inputobj,
     redux: {
@@ -488,7 +489,7 @@ const AddItems = ($this, ItemInput) => {
 
     algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
-      // module: "pharmacy",
+      module: "pharmacy",
       method: "POST",
       data: inputArray,
       onSuccess: response => {

@@ -58,6 +58,7 @@ class LocationPermission extends Component {
     ) {
       this.props.getLocation({
         uri: "/inventory/getInventoryLocation",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",

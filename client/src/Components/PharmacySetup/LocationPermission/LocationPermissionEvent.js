@@ -19,7 +19,7 @@ const onchangegridcol = ($this, row, e) => {
 const updateLocationPermission = ($this, data) => {
   algaehApiCall({
     uri: "/pharmacy/updateLocationPermission",
-    // module: "pharmacy",
+    module: "pharmacy",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -38,7 +38,7 @@ const updateLocationPermission = ($this, data) => {
 const getLocationPermission = $this => {
   $this.props.getLocationPermission({
     uri: "/pharmacy/getLocationPermission",
-    // module: "pharmacy",
+    module: "pharmacy",
     method: "GET",
     redux: {
       type: "LOCATION_PERMISSION_GET_DATA",
@@ -67,7 +67,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/pharmacy/updateLocationPermission",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -100,6 +100,7 @@ const insertLocationPermission = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/pharmacy/addLocationPermission",
+        // module:"pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {

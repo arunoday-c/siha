@@ -39,6 +39,7 @@ const numberchangeTexts = ($this, e) => {
 const getItemUom = $this => {
   $this.props.getItemMasterAndItemUom({
     uri: "/inventory/getItemMasterAndItemUom",
+    module: "inventory",
     method: "GET",
     redux: {
       type: "ITEMS_GET_DATA",
@@ -154,7 +155,7 @@ const getCtrlCode = ($this, docNumber) => {
     AlgaehLoader({ show: true });
     $this.props.getInitialStock({
       uri: "/inventoryinitialstock/getInventoryInitialStock",
-      // module: "inventory",
+      module: "inventory",
       method: "GET",
       printInput: true,
       data: { document_number: docNumber },
@@ -182,7 +183,7 @@ const getCtrlCode = ($this, docNumber) => {
 const SaveInitialStock = $this => {
   algaehApiCall({
     uri: "/inventoryinitialstock/addInventoryInitialStock",
-    // module: "inventory",
+    module: "inventory",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
@@ -252,7 +253,7 @@ const PostInitialStock = $this => {
   }
   algaehApiCall({
     uri: "/inventoryinitialstock/updateInventoryInitialStock",
-    // module: "inventory",
+    module: "inventory",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {

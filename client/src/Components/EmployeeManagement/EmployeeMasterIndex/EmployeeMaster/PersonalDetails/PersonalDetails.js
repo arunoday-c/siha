@@ -205,6 +205,11 @@ class PersonalDetails extends Component {
                         onChange: texthandle.bind(this, this),
                         others: {
                           tabIndex: "5"
+                        },
+                        onClear: () => {
+                          this.setState({
+                            sex: null
+                          });
                         }
                       }}
                     />
@@ -275,6 +280,11 @@ class PersonalDetails extends Component {
                         onChange: texthandle.bind(this, this),
                         others: {
                           tabIndex: "9"
+                        },
+                        onClear: () => {
+                          this.setState({
+                            blood_group: null
+                          });
                         }
                       }}
                     />
@@ -299,6 +309,11 @@ class PersonalDetails extends Component {
                         onChange: texthandle.bind(this, this),
                         others: {
                           tabIndex: "10"
+                        },
+                        onClear: () => {
+                          this.setState({
+                            religion_id: null
+                          });
                         }
                       }}
                     />
@@ -322,7 +337,12 @@ class PersonalDetails extends Component {
                           valueField: "value",
                           data: variableJson.FORMAT_MARTIALSTS_EMP
                         },
-                        onChange: texthandle.bind(this, this)
+                        onChange: texthandle.bind(this, this),
+                        onClear: () => {
+                          this.setState({
+                            marital_status: null
+                          });
+                        }
                       }}
                     />
                     <AlagehAutoComplete
@@ -344,9 +364,10 @@ class PersonalDetails extends Component {
                           data: this.props.nationalities
                         },
                         onChange: texthandle.bind(this, this),
-                        others: {
-                          //disabled: this.state.existingPatient,
-                          //tabIndex: "13"
+                        onClear: () => {
+                          this.setState({
+                            nationality: null
+                          });
                         }
                       }}
                     />
@@ -395,6 +416,11 @@ class PersonalDetails extends Component {
                             onChange: countryStatehandle.bind(this, this),
                             others: {
                               tabIndex: "10"
+                            },
+                            onClear: () => {
+                              this.setState({
+                                present_country_id: null
+                              });
                             }
                           }}
                         />
@@ -421,6 +447,11 @@ class PersonalDetails extends Component {
                             others: {
                               tabIndex: "11",
                               disabled: this.state.existingPatient
+                            },
+                            onClear: () => {
+                              this.setState({
+                                present_state_id: null
+                              });
                             }
                           }}
                         />
@@ -446,6 +477,11 @@ class PersonalDetails extends Component {
                             others: {
                               tabIndex: "12",
                               disabled: this.state.existingPatient
+                            },
+                            onClear: () => {
+                              this.setState({
+                                present_city_id: null
+                              });
                             }
                           }}
                         />
@@ -521,6 +557,11 @@ class PersonalDetails extends Component {
                             onChange: countryStatehandle.bind(this, this),
                             others: {
                               tabIndex: "10"
+                            },
+                            onClear: () => {
+                              this.setState({
+                                permanent_country_id: null
+                              });
                             }
                           }}
                         />
@@ -552,6 +593,11 @@ class PersonalDetails extends Component {
                             onChange: countryStatehandle.bind(this, this),
                             others: {
                               tabIndex: "11"
+                            },
+                            onClear: () => {
+                              this.setState({
+                                permanent_state_id: null
+                              });
                             }
                           }}
                         />
@@ -583,6 +629,11 @@ class PersonalDetails extends Component {
                             others: {
                               tabIndex: "12",
                               disabled: this.state.existingPatient
+                            },
+                            onClear: () => {
+                              this.setState({
+                                permanent_city_id: null
+                              });
                             }
                           }}
                         />

@@ -17,7 +17,7 @@ const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   $this.props.getRequisitionEntry({
     uri: "/inventoryrequisitionEntry/getinventoryrequisitionEntry",
-    // module: "inventory",
+    module: "inventory",
     method: "GET",
     printInput: true,
     data: { material_requisition_number: docNumber },
@@ -70,7 +70,7 @@ const ClearData = ($this, e) => {
 const SaveRequisitionEntry = $this => {
   algaehApiCall({
     uri: "/inventoryrequisitionEntry/addinventoryrequisitionEntry",
-    // module: "inventory",
+    module: "inventory",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
@@ -105,7 +105,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
 
   algaehApiCall({
     uri: "/inventoryrequisitionEntry/updateinventoryrequisitionEntry",
-    // module: "inventory",
+    module: "inventory",
     data: $this.state,
     method: "PUT",
     onSuccess: response => {

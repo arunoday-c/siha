@@ -25,7 +25,7 @@ const updateItemUOM = ($this, data) => {
 
   algaehApiCall({
     uri: "/pharmacy/updatePharmacyUom",
-    // module: "pharmacy",
+    module: "pharmacy",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -60,7 +60,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/pharmacy/updatePharmacyUom",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -94,7 +94,7 @@ const insertItemUOM = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/pharmacy/addPharmacyUom",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -117,6 +117,7 @@ const insertItemUOM = ($this, e) => {
 const getItemUOM = $this => {
   $this.props.getItemUOM({
     uri: "/pharmacy/getPharmacyUom",
+    module: "pharmacy",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",

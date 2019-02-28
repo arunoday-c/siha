@@ -22,7 +22,7 @@ const onchangegridcol = ($this, row, e) => {
 const updateItemCategory = ($this, data) => {
   algaehApiCall({
     uri: "/inventory/updateItemCategory",
-    // module: "inventory",
+    module: "inventory",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -57,7 +57,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/inventory/updateItemCategory",
-        // module: "inventory",
+        module: "inventory",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -91,7 +91,7 @@ const insertItemCategory = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/inventory/addItemCategory",
-        // module: "inventory",
+        module: "inventory",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -114,7 +114,7 @@ const insertItemCategory = ($this, e) => {
 const getItemCategory = $this => {
   $this.props.getItemCategory({
     uri: "/inventory/getItemCategory",
-    // module: "inventory",
+    module: "inventory",
     method: "GET",
     redux: {
       type: "ITEM_CATEGORY_GET_DATA",

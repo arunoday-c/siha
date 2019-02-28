@@ -23,7 +23,7 @@ const onchangegridcol = ($this, row, e) => {
 const updateLocation = ($this, data) => {
   algaehApiCall({
     uri: "/pharmacy/updatePharmacyLocation",
-    // module: "pharmacy",
+    module: "pharmacy",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -59,7 +59,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/pharmacy/updatePharmacyLocation",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -94,6 +94,7 @@ const insertLocation = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/pharmacy/addPharmacyLocation",
+        module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -116,6 +117,7 @@ const insertLocation = ($this, e) => {
 const getLocation = $this => {
   $this.props.getLocation({
     uri: "/pharmacy/getPharmacyLocation",
+    module: "pharmacy",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",

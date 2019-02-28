@@ -175,7 +175,7 @@ const PurchaseOrderSearch = ($this, e) => {
       onRowSelect: row => {
         algaehApiCall({
           uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-          // module: "procurement",
+          module: "procurement",
           method: "GET",
           data: {
             purchase_number: row.purchase_number
@@ -252,7 +252,7 @@ const SaveDNEnrty = $this => {
   if (dnQuantity.length === 0) {
     algaehApiCall({
       uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
-      // module: "procurement",
+      module: "procurement",
       data: $this.state,
       onSuccess: response => {
         if (response.data.success === true) {
@@ -283,7 +283,7 @@ const getCtrlCode = ($this, docNumber) => {
 
   algaehApiCall({
     uri: "/DeliveryNoteEntry/getDeliveryNoteEntry",
-    // module: "procurement",
+    module: "procurement",
     method: "GET",
     data: { delivery_note_number: docNumber },
     onSuccess: response => {
@@ -321,6 +321,7 @@ const getData = $this => {
   if ($this.state.dn_from === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
@@ -330,6 +331,7 @@ const getData = $this => {
 
     $this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
@@ -339,6 +341,7 @@ const getData = $this => {
 
     $this.props.getItemCategory({
       uri: "/pharmacy/getItemCategory",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
@@ -348,6 +351,7 @@ const getData = $this => {
 
     $this.props.getItemGroup({
       uri: "/pharmacy/getItemGroup",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
@@ -357,6 +361,7 @@ const getData = $this => {
 
     $this.props.getItemUOM({
       uri: "/pharmacy/getPharmacyUom",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
@@ -366,6 +371,7 @@ const getData = $this => {
   } else if ($this.state.dn_from === "INV") {
     $this.props.getItems({
       uri: "/inventory/getItemMaster",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
@@ -375,6 +381,7 @@ const getData = $this => {
 
     $this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
@@ -384,6 +391,7 @@ const getData = $this => {
 
     $this.props.getItemCategory({
       uri: "/inventory/getItemCategory",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
@@ -394,6 +402,7 @@ const getData = $this => {
 
     $this.props.getItemGroup({
       uri: "/inventory/getItemGroup",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
@@ -403,6 +412,7 @@ const getData = $this => {
 
     $this.props.getItemUOM({
       uri: "/inventory/getInventoryUom",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",

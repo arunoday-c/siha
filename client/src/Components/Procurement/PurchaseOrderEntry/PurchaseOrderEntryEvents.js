@@ -174,7 +174,7 @@ const RequisitionSearch = ($this, e) => {
             $this.state.po_from === "PHR"
               ? "/PurchaseOrderEntry/getPharRequisitionEntryPO"
               : "/PurchaseOrderEntry/getInvRequisitionEntryPO",
-          // module: "procurement",
+          module: "procurement",
           method: "GET",
           data: {
             material_requisition_number: row.material_requisition_number,
@@ -328,7 +328,7 @@ const SavePOEnrty = $this => {
 
   algaehApiCall({
     uri: "/PurchaseOrderEntry/addPurchaseOrderEntry",
-    // module: "procurement",
+    module: "procurement",
     data: $this.state,
     onSuccess: response => {
       if (response.data.success === true) {
@@ -352,7 +352,7 @@ const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   $this.props.getPurchaseOrderEntry({
     uri: "/PurchaseOrderEntry/getPurchaseOrderEntry",
-    // module: "procurement",
+    module: "procurement",
     method: "GET",
     printInput: true,
     data: { purchase_number: docNumber },
@@ -391,6 +391,7 @@ const getData = $this => {
   if ($this.state.po_from === "PHR") {
     $this.props.getItems({
       uri: "/pharmacy/getItemMaster",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
@@ -400,6 +401,7 @@ const getData = $this => {
 
     $this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
@@ -409,6 +411,7 @@ const getData = $this => {
 
     $this.props.getItemCategory({
       uri: "/pharmacy/getItemCategory",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
@@ -418,6 +421,7 @@ const getData = $this => {
 
     $this.props.getItemGroup({
       uri: "/pharmacy/getItemGroup",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
@@ -427,6 +431,7 @@ const getData = $this => {
 
     $this.props.getItemUOM({
       uri: "/pharmacy/getPharmacyUom",
+      module: "pharmacy",
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
@@ -436,6 +441,7 @@ const getData = $this => {
   } else if ($this.state.po_from === "INV") {
     $this.props.getItems({
       uri: "/inventory/getItemMaster",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_GET_DATA",
@@ -445,6 +451,7 @@ const getData = $this => {
 
     $this.props.getLocation({
       uri: "/inventory/getInventoryLocation",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "LOCATIONS_GET_DATA",
@@ -454,6 +461,7 @@ const getData = $this => {
 
     $this.props.getItemCategory({
       uri: "/inventory/getItemCategory",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_CATEGORY_GET_DATA",
@@ -464,6 +472,7 @@ const getData = $this => {
 
     $this.props.getItemGroup({
       uri: "/inventory/getItemGroup",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_GROUP_GET_DATA",
@@ -473,6 +482,7 @@ const getData = $this => {
 
     $this.props.getItemUOM({
       uri: "/inventory/getInventoryUom",
+      module: "inventory",
       method: "GET",
       redux: {
         type: "ITEM_UOM_GET_DATA",
@@ -504,7 +514,7 @@ const AuthorizePOEntry = $this => {
     $this.state.authorize1 = "Y";
     algaehApiCall({
       uri: "/PurchaseOrderEntry/updatePurchaseOrderEntry",
-      // module: "procurement",
+      module: "procurement",
       data: $this.state,
       method: "PUT",
       onSuccess: response => {

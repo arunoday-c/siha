@@ -3,7 +3,7 @@ export default function ItemSetupEvent() {
     getItems: $this => {
       $this.props.getItemMaster({
         uri: "/pharmacy/getItemMasterAndItemUom",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEMS_GET_DATA",

@@ -17,7 +17,7 @@ const getCtrlCode = ($this, docNumber) => {
 
   algaehApiCall({
     uri: "/salesReturn/getsalesReturn",
-    // module: "pharmacy",
+    module: "pharmacy",
     method: "GET",
     data: { sales_return_number: docNumber },
     onSuccess: response => {
@@ -177,7 +177,7 @@ const SaveSalesReturn = $this => {
     }
     algaehApiCall({
       uri: "/salesReturn/addsalesReturn",
-      // module: "pharmacy",
+      module: "pharmacy",
       data: inputObj,
       onSuccess: response => {
         if (response.data.success === true) {
@@ -230,7 +230,7 @@ const POSSearch = ($this, e) => {
 const getPOSEntry = $this => {
   algaehApiCall({
     uri: "/posEntry/getPosEntry",
-    // module: "pharmacy",
+    module: "pharmacy",
     method: "GET",
     data: { pos_number: $this.state.pos_number },
     onSuccess: response => {

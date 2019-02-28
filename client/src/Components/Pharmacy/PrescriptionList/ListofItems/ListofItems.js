@@ -36,6 +36,7 @@ class ListofItems extends PureComponent {
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "DIET_GET_DATA",
@@ -49,6 +50,7 @@ class ListofItems extends PureComponent {
     ) {
       this.props.getGenerics({
         uri: "/pharmacy/getItemGeneric",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "DIET_GET_DATA",

@@ -41,6 +41,7 @@ class RequisitionItems extends Component {
     ) {
       this.props.getItemCategory({
         uri: "/inventory/getItemCategory",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
@@ -55,6 +56,7 @@ class RequisitionItems extends Component {
     ) {
       this.props.getItemGroup({
         uri: "/inventory/getItemGroup",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ITEM_GROUOP_GET_DATA",
@@ -69,6 +71,7 @@ class RequisitionItems extends Component {
     ) {
       this.props.getItemUOM({
         uri: "/inventory/getInventoryUom",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",

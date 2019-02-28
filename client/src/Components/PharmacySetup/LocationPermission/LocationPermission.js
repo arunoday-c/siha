@@ -55,6 +55,7 @@ class LocationPermission extends Component {
     if (this.props.location === undefined || this.props.location.length === 0) {
       this.props.getLocation({
         uri: "/pharmacy/getPharmacyLocation",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",

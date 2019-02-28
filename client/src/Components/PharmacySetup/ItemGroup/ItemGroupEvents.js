@@ -25,7 +25,7 @@ const updateItemGroup = ($this, data) => {
 
   algaehApiCall({
     uri: "/pharmacy/updateItemGroup",
-    // module: "pharmacy",
+    module: "pharmacy",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -60,7 +60,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/pharmacy/updateItemGroup",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -94,7 +94,7 @@ const insertItemGroup = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/pharmacy/addItemGroup",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -117,6 +117,7 @@ const insertItemGroup = ($this, e) => {
 const getItemGroup = $this => {
   $this.props.getItemGroup({
     uri: "/pharmacy/getItemGroup",
+    module: "pharmacy",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
@@ -136,6 +137,7 @@ const getItemGroup = $this => {
 const getItemCategory = $this => {
   $this.props.getItemCategory({
     uri: "/pharmacy/getItemCategory",
+    module: "pharmacy",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
