@@ -26,7 +26,7 @@ export default function InvItemSetupEvent() {
     getItems: $this => {
       $this.props.getItemMaster({
         uri: "/inventory/getItemMasterAndItemUom",
-        // module: "inventory",
+        module: "inventory",
         method: "GET",
         redux: {
           type: "ITEMS_GET_DATA",

@@ -2377,7 +2377,7 @@ module.exports = {
       next(e);
     }
   },
-  getDailyTimeSheet: (req, res, next) => {
+  getDailyTimeSheetbukp28_feb: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     const utilities = new algaehUtilities();
@@ -2909,8 +2909,657 @@ module.exports = {
       next(e);
     }
   },
+  getDailyTimeSheet: (req, res, next) => {
+    const _mysql = new algaehMysql();
+  
+    const utilities = new algaehUtilities();
+  
+    let options = [];
+    let allHolidays = [];
+    let AllLeaves = [];
+    let AllEmployees = [];
+    let AllShifts = [];
+    let biometric_ids = [];
+  
+    let input = req.query;
+    try {
+      if (
+        input.from_date != null &&
+        input.to_date != null &&
+        input.hospital_id > 0
+      ) {
+        let attendcResult = [];
+        let standard_hours = "";
+        let biometricData = [];
+        let singleEmployee = "N";
+        let shiftRange = "";
+        let totalTime = "";
+        let _lastDayInPreMonth = null;
+        let to_date_plus_one = moment(input.to_date)
+          .add(1, "days")
+          .format("YYYY-MM-DD");
+        let from_date = moment(input.from_date).format("YYYY-MM-DD");
+        let to_date = moment(input.to_date).format("YYYY-MM-DD");
+  
+        let stringData = "";
+        if (input.sub_department_id > 0) {
+          stringData += " and sub_department_id=" + input.sub_department_id;
+          shiftRange += ` and sub_department_id=${
+            req.query.sub_department_id
+          } `;
+        }
+        if (input.hims_d_employee_id > 0) {
+          stringData += " and hims_d_employee_id=" + input.hims_d_employee_id;
+          shiftRange += ` and employee_id=${req.query.hims_d_employee_id} `;
+          singleEmployee="Y";
+        }
+        _mysql
+          .executeQuery({
+            query: "SELECT * FROM hims_d_hrms_options;"
+          })
+          .then(hrms_options => {
+            options = hrms_options;
+            if (input.attendance_type == "MW") {
+              if (
+                options[0]["salary_pay_before_end_date"] == "Y" &&
+                options[0]["payroll_payment_date"] != null
+              ) {
+                const _endDate =
+                  moment(input.from_date)
+                    .clone()
+                    .format("YYYY-MM-") + options[0]["payroll_payment_date"];
+                const _prevDays = options[0]["payroll_payment_date"] + 1;
+                const _prevMonthYear = moment(input.from_date)
+                  .clone()
+                  .add(-1, "months");
+                _lastDayInPreMonth = moment(_prevMonthYear).endOf("month");
+                from_date =
+                  moment(_prevMonthYear)
+                    .clone()
+                    .format("YYYY-MM") +
+                  "-" +
+                  _prevDays;
+                to_date = _endDate;
+              }
+            }
+  
+            _mysql
+              .executeQuery({
+                query: ` select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
+                religion_id from hims_d_holiday where record_status='A' and date(holiday_date) between date(?) and date(?) and hospital_id=?;\
+                select hims_f_leave_application_id,leave_application_code,employee_id,application_date,sub_department_id,\
+                    leave_id,from_leave_session,from_date,to_date,to_leave_session,status,L.leave_type from hims_f_leave_application LA,hims_d_leave L \
+                    where status='APR'  and LA.leave_id=L.hims_d_leave_id  AND ((from_date>= ? and from_date <= ?) or\
+                    (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?)); \
+                    select hims_d_employee_id,biometric_id,date_of_joining,exit_date,sub_department_id,religion_id,hospital_id from hims_d_employee where record_status='A'\
+                    and employee_status='A'and biometric_id is not null and hospital_id=? and hims_d_employee_id>491 and (( date(date_of_joining) <= date(?) and date(exit_date) >= date(?)) or\
+                    (date(date_of_joining) <= date(?) and exit_date is null)) ${stringData};\
+                     select hims_f_shift_roster_id,employee_id,shift_date,shift_id,shift_end_date, weekoff,holiday,\
+                    shift_start_time,shift_end_time,shift_time,\
+                    shift_code,shift_description,arabic_name,shift_status,in_time1,out_time1,\
+                    in_time2,out_time2,break,break_start,break_end,shift_abbreviation,shift_end_day\
+                    from hims_f_shift_roster SR inner join hims_d_shift S\
+                    on SR.shift_id=S.hims_d_shift_id and S.record_status='A'\
+                    where date(shift_date) between date(?) and date(?) ${shiftRange}`,
+                values: [
+                  from_date,
+                  to_date,
+                  input.hospital_id,
+                  from_date,
+                  to_date,
+                  from_date,
+                  to_date,
+                  from_date,
+                  to_date,
+                  input.hospital_id,
+                  to_date,
+                  from_date,
+                  to_date,
+                  from_date,
+                  to_date
+                ],printQuery:true
+              })
+              .then(result => {
+                allHolidays = result[0];
+                AllLeaves = result[1];
+                AllEmployees = result[2];
+                AllShifts = result[3];
+  
+                // utilities.logger().log("options: ", options);
+                // utilities.logger().log("allHolidays: ", allHolidays);
+                // utilities.logger().log("AllLeaves: ", AllLeaves);
+                // utilities.logger().log("AllEmployees: ", AllEmployees);
+                // utilities.logger().log("AllShifts: ", AllShifts);
+  
+                if (
+                  AllEmployees.length > 0 &&
+                  options.length > 0 &&
+                  options[0]["biometric_database"] == "SQL"
+                ) {
+                  standard_hours = options[0]["standard_working_hours"];
+  
+                  var sql = require("mssql");
+  
+                  // config for your database
+                  var config = {
+                    user: options[0]["biometric_database_login"],
+                    password: options[0]["biometric_database_password"],
+                    server: options[0]["biometric_server_name"],
+                    database: options[0]["biometric_database_name"]
+                  };
+  
+                  biometric_ids = new LINQ(AllEmployees)
+                    .Select(s => s.biometric_id)
+                    .ToArray();
+  
+                  let employee_ids = new LINQ(AllEmployees)
+                    .Select(s => s.hims_d_employee_id)
+                    .ToArray();
+  
+                  let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, employee_id,TS.biometric_id, attendance_date, \
+                in_time, out_date, out_time, year, month, status,\
+                 posted, hours, minutes, actual_hours, actual_minutes, worked_hours,\
+                 expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name\
+                 from  hims_f_daily_time_sheet TS \
+                inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+                where attendance_date between ('${from_date}') and ('${to_date}') and employee_id in (${employee_ids})`;
+  
+                  utilities.logger().log("biometric_ids : ", biometric_ids);
+                  //---------------------------------------------------
+                  // connect to your database
+                  sql.close();
+                  sql.connect(config, function(err) {
+                    if (err) {
+                      utilities
+                        .logger()
+                        .log("connection eror: ", "connection eror");
+                      next(err);
+                    }
+                    // create Request object
+                    var request = new sql.Request();
+  
+               
+  
+                    utilities.logger().log("from_date ", from_date);
+                    utilities.logger().log("to_date ", to_date);
+                    // query to the biometric database and get the records
+  
+                    // select  TOP (100) UserID as biometric_id ,PDate as attendance_date,Punch1 as in_time,Punch2 as out_time,\
+                    // Punch2 as out_date   from Mx_DATDTrn  where UserID in (${biometric_id}) and PDate>='${from_date}'  and\
+                    // PDate<='${to_date}'
+  
+                    request.query(
+                      `;WITH CTE AS(
+                      SELECT
+                          UserID,
+                          DateTime,
+                          AccessDate = CAST(DateTime AS DATE),
+                          AccessTime = CAST(DateTime AS TIME),       
+                          InOut,
+                          In_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) ASC),
+                          Out_RN = ROW_NUMBER() OVER(PARTITION BY UserID, CAST(DateTime AS DATE), InOut ORDER BY CAST(DateTime AS TIME) DESC)
+                      FROM [FTDP].[dbo].[Transaction] where cast(DateTime  as date)between 
+                      '${from_date}' and '${to_date_plus_one}' and UserId in (${biometric_ids})
+                    )
+                    SELECT
+                      UserID,  
+                      [Date] = CONVERT(VARCHAR(10), AccessDate, 101),
+                      InTime= ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END)), 1, 5), null),
+                      OutTime = ISNULL(SUBSTRING(CONVERT(VARCHAR(20), MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)), 1, 5), null),
+                      Duration =  ISNULL(RIGHT('00' +             
+                                  CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
+                                      MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
+                                      MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+                                  )/60), 2) + '.' +
+                                  RIGHT('00' +CONVERT(VARCHAR(2), DATEDIFF(MINUTE, 
+                                      MAX(CASE WHEN InOut = 0 AND In_RN = 1 THEN AccessTime END), 
+                                      MAX(CASE WHEN InOut = 1 AND OUT_RN = 1 THEN AccessTime END)
+                                  )%60), 2)
+                              ,0.0)
+                    FROM CTE
+                    GROUP BY UserID, AccessDate
+                    ORDER BY  AccessDate `,
+  
+                      function(err, attResult) {
+                        sql.close();
+                        if (err) {
+                          _mysql.releaseConnection();
+                          next(err);
+                          return;
+                        }
+  
+                        utilities
+                          .logger()
+                          .log("attResult", attResult["recordset"]);
+                        attendcResult = attResult["recordset"];
+  
+                        if (attendcResult.length > 0 && from_date == to_date) {
 
-  processBiometricAttendance: (req, res, next) => {
+                          for (let i = 0; i < AllEmployees.length; i++) {
+                            let shiftData = new LINQ(AllShifts)
+                              .Where(
+                                w =>
+                                  w.employee_id ==
+                                    AllEmployees[i]["hims_d_employee_id"] &&
+                                  w.shift_date == from_date
+                              )
+                              .Select(s => {
+                                return {
+                                  shift_end_day: s.shift_end_day,
+                                  shift_date: s.shift_date,
+                                  shift_end_date: s.shift_end_date,
+                                  shift_time:s.shift_time,
+                                  shift_end_time:s.shift_end_time
+                                };
+                              })
+                              .FirstOrDefault({
+                                shift_end_day: null,
+                                shift_date: null,
+                                shift_end_date: null,
+                                shift_time:0.0,
+                                shift_end_time:0
+                              });
+
+                              
+
+                              let actual_hours= 0;
+                              let actual_mins= 0;
+                              if(shiftData["shift_time"]>0){
+                                actual_hours=  shiftData.shift_time.toString().split(".")[0];
+                                actual_mins= shiftData.shift_time.toString().split(".")[1];
+                              }
+                                                    
+                             
+                            utilities.logger().log("actual_hours", actual_hours);
+  
+                            //---------------------------------begin logic
+  
+                            if (shiftData.shift_end_day == "ND") {
+                              //--ST--punchin
+                              let punchIn = new LINQ(attendcResult)
+                                .Where(
+                                  w =>
+                                    w.UserID ==
+                                      AllEmployees[i]["biometric_id"] &&
+                                    moment(w.Date, "MM-DD-YYYY").format(
+                                      "YYYY-MM-DD"
+                                    ) == shiftData.shift_date
+                                )
+                                .Select(s => {
+                                  return {
+                                    biometric_id: s.UserID,
+                                    attendance_date: moment(
+                                      s.Date,
+                                      "MM-DD-YYYY"
+                                    ).format("YYYY-MM-DD"),
+                                    in_time: s.InTime
+                                  };
+                                })
+                                .FirstOrDefault({
+                                  biometric_id: null,
+                                  attendance_date: shiftData.shift_date,
+                                  in_time: null
+                                });
+  
+                              // utilities.logger().log("punchIn", punchIn);
+                              //--EN--punchin
+  
+                              //--ST--punchout
+                              let punchOut = new LINQ(attendcResult)
+                                .Where(
+                                  w =>
+                                    w.UserID ==
+                                      AllEmployees[i]["biometric_id"] &&
+                                    moment(w.Date, "MM-DD-YYYY").format(
+                                      "YYYY-MM-DD"
+                                    ) == shiftData.shift_end_date
+                                )
+                                .Select(s => {
+                                  return {
+                                    biometric_id: s.UserID,
+                                    out_date: moment(
+                                      s.Date,
+                                      "MM-DD-YYYY"
+                                    ).format("YYYY-MM-DD"),
+                                    out_time: s.OutTime
+                                  };
+                                })
+                                .FirstOrDefault({
+                                  biometric_id: null,
+                                  out_date: shiftData.shift_end_date,
+                                  out_time: null
+                                });
+  
+                              // utilities.logger().log("punchOut", punchOut);
+                              //--EN--punchout
+                              if (
+                                punchIn.in_time != null &&
+                                punchOut.out_time != null
+                              ) {
+                                let inDateTime = moment(
+                                  punchIn.attendance_date +
+                                    " " +
+                                    punchIn.in_time,
+                                  "YYYY-MM-DD HH:mm"
+                                );
+                                let outDateTime = moment(
+                                  punchOut.out_date + " " + punchOut.out_time,
+                                  "YYYY-MM-DD HH:mm"
+                                );
+                                totalTime =
+                                  outDateTime.diff(inDateTime, "hours") +
+                                  "." +
+                                  (outDateTime.diff(inDateTime, "minute") % 60);
+  
+                                  biometricData.push({
+                                    biometric_id: punchIn.biometric_id,
+                                    attendance_date: punchIn.attendance_date,
+                                    out_date: punchOut.out_date,
+                                    in_time: punchIn.in_time,
+                                    out_time:  punchOut.out_time,
+                                    worked_hours:totalTime,
+                                    employee_id:
+                                      AllEmployees[i]["hims_d_employee_id"],
+                                      sub_department_id: AllEmployees[i]["sub_department_id"],
+                                    religion_id: AllEmployees[i]["religion_id"],
+                                    date_of_joining:
+                                      AllEmployees[i]["date_of_joining"],
+                                    exit_date: AllEmployees[i]["exit_date"],
+                                    actual_hours: actual_hours,
+                                    actual_minutes:actual_mins,
+                                    expected_out_date:shiftData.shift_end_date,
+                                    expected_out_time:shiftData.shift_end_time,
+                                    hospital_id:AllEmployees[i]["hospital_id"],
+                                    hours: outDateTime.diff(inDateTime, "hours"),
+                                    minutes: outDateTime.diff(inDateTime, "minute") % 60
+                                  }
+                                  );
+  
+                              } else {
+                                //exception
+                                 utilities.logger().log("excption", "am in excption");
+                                biometricData.push({
+                                  biometric_id: punchIn.biometric_id,
+                                  attendance_date: punchIn.attendance_date,
+                                  out_date: punchOut.out_date,
+                                  in_time: punchIn.in_time,
+                                  out_time:  punchOut.out_time,
+                                  worked_hours:0,
+                                  employee_id:
+                                    AllEmployees[i]["hims_d_employee_id"],
+                                    sub_department_id: AllEmployees[i]["sub_department_id"],
+                                  religion_id: AllEmployees[i]["religion_id"],
+                                  date_of_joining:
+                                    AllEmployees[i]["date_of_joining"],
+                                  exit_date: AllEmployees[i]["exit_date"],
+                                  actual_hours: actual_hours,
+                                  actual_minutes:actual_mins,
+                                  expected_out_date:shiftData.shift_end_date,
+                                  expected_out_time:shiftData.shift_end_time,
+                                  hospital_id:AllEmployees[i]["hospital_id"],
+                                  hours: 0,
+                                  minutes: 0
+                                }
+                                );
+  
+  
+                              }
+                            } else {
+
+
+                              utilities.logger().log("same day", "same day");
+                              biometricData.push(
+                                new LINQ(attendcResult)
+                                  .Where(
+                                    w =>
+                                      w.UserID ==
+                                      AllEmployees[i]["biometric_id"]
+                                  )
+                                  .Select(s => {
+                                    return {
+                                      biometric_id: s.UserID,
+                                      attendance_date: moment(
+                                        s.Date,
+                                        "MM-DD-YYYY"
+                                      ).format("YYYY-MM-DD"),
+                                      out_date: moment(
+                                        s.Date,
+                                        "MM-DD-YYYY"
+                                      ).format("YYYY-MM-DD"),
+                                      in_time: s.InTime,
+                                      out_time: s.OutTime,
+                                      worked_hours: s.Duration,
+                                      employee_id:
+                                        AllEmployees[i]["hims_d_employee_id"],
+                                        sub_department_id: AllEmployees[i]["sub_department_id"],
+                                      religion_id:
+                                        AllEmployees[i]["religion_id"],
+                                      date_of_joining:
+                                        AllEmployees[i]["date_of_joining"],
+                                      exit_date: AllEmployees[i]["exit_date"],
+                                      actual_hours: actual_hours,
+                                      actual_minutes:actual_mins,
+                                      expected_out_date:shiftData.shift_end_date,
+                                      expected_out_time:shiftData.shift_end_time,
+                                      hospital_id:AllEmployees[i]["hospital_id"],
+                                      hours: s.Duration.split(".")[0],
+                                      minutes: s.Duration.split(".")[1]
+                                    };
+                                  })
+                                  .FirstOrDefault({
+                                    biometric_id: null,
+                                    attendance_date: from_date,
+                                    out_date: from_date,
+                                    in_time: null,
+                                    out_time: null,
+                                    worked_hours: 0,
+                                    employee_id:
+                                      AllEmployees[i]["hims_d_employee_id"],
+                                      sub_department_id: AllEmployees[i]["sub_department_id"],
+                                    religion_id: AllEmployees[i]["religion_id"],
+                                    date_of_joining:
+                                      AllEmployees[i]["date_of_joining"],
+                                    exit_date: AllEmployees[i]["exit_date"],
+                                    actual_hours: actual_hours,
+                                    actual_minutes:actual_mins,
+                                    expected_out_date:shiftData.shift_end_date,
+                                    expected_out_time:shiftData.shift_end_time,
+                                    hospital_id:AllEmployees[i]["hospital_id"],
+                                    hours: 0,
+                                    minutes: 0
+                                  })
+                              );
+                            }
+                          }
+  
+                          ///----end logic
+                          // utilities
+                          //   .logger()
+                          //   .log("biometricData", biometricData);
+  
+                          insertTimeSheet(
+                            returnQry,
+                            biometricData,
+                            AllLeaves,
+                            allHolidays,
+                            from_date,
+                            to_date,
+                            _mysql,
+                            req,
+                            res,
+                            next,
+                            singleEmployee
+                          );
+                        } else if (
+                          input.hims_d_employee_id > 0 &&
+                          attendcResult.length > 0 &&
+                          from_date < to_date
+                        ) {
+                          singleEmployee = "Y";
+  
+                          // utilities.logger().log("date_range:", "date_range");
+  
+                          let date_range = getDays(
+                            new Date(from_date),
+                            new Date(to_date)
+                          );
+                          // utilities.logger().log("date_range:", date_range);
+  
+                          for (let i = 0; i < date_range.length; i++) {
+
+
+                            let shiftData = new LINQ(AllShifts)
+                            .Where(
+                              w =>
+                                w.employee_id ==
+                                  AllEmployees[i]["hims_d_employee_id"] &&
+                                w.shift_date == from_date
+                            )
+                            .Select(s => {
+                              return {
+                                shift_end_day: s.shift_end_day,
+                                shift_date: s.shift_date,
+                                shift_end_date: s.shift_end_date,
+                                shift_time:s.shift_time,
+                                shift_end_time:s.shift_end_time
+                              };
+                            })
+                            .FirstOrDefault({
+                              shift_end_day: null,
+                              shift_date: null,
+                              shift_end_date: null,
+                              shift_time:0,
+                              shift_end_time:0
+                            });
+
+                            let actual_hours= 0;
+                            let actual_mins= 0;
+                          if(shiftData["shift_time"]>0){
+                            actual_hours=  shiftData.shift_time.toString().split(".")[0];
+                            actual_mins= shiftData.shift_time.toString().split(".")[1];
+                          }
+
+                            utilities.logger().log("i ", date_range[i]);
+  
+                            biometricData.push(
+                              new LINQ(attendcResult)
+                                .Where(
+                                  w =>
+                                    moment(w.Date, "MM-DD-YYYY").format(
+                                      "YYYY-MM-DD"
+                                    ) == date_range[i]
+                                )
+                                .Select(s => {
+                                  return {
+                                    biometric_id: s.UserID,
+                                    attendance_date: date_range[i],
+                                    out_date: date_range[i],
+                                    in_time: s.InTime,
+                                    out_time: s.OutTime,
+                                    worked_hours: s.Duration,
+                                    employee_id:
+                                      AllEmployees[0]["hims_d_employee_id"],
+                                      sub_department_id: AllEmployees[i]["sub_department_id"],
+                                    religion_id: AllEmployees[0]["religion_id"],
+                                    date_of_joining:
+                                      AllEmployees[0]["date_of_joining"],
+                                    exit_date: AllEmployees[0]["exit_date"],
+                                    actual_hours: actual_hours,
+                                    actual_minutes:actual_mins,
+                                    expected_out_date:shiftData.shift_end_date,
+                                    expected_out_time:shiftData.shift_end_time,
+                                    hospital_id:AllEmployees[i]["hospital_id"],
+                                    hours: s.Duration.split(".")[0],
+                                    minutes: s.Duration.split(".")[1]
+                                  };
+                                })
+                                .FirstOrDefault({
+                                  biometric_id: null,
+                                  attendance_date: date_range[i],
+                                  out_date: null,
+                                  in_time: null,
+                                  out_time: null,
+                                  worked_hours: 0,
+                                  employee_id:
+                                    AllEmployees[0]["hims_d_employee_id"],
+                                    sub_department_id: AllEmployees[i]["sub_department_id"],
+                                  religion_id: AllEmployees[0]["religion_id"],
+                                  date_of_joining:
+                                    AllEmployees[0]["date_of_joining"],
+                                  exit_date: AllEmployees[0]["exit_date"],
+                                  actual_hours: actual_hours,
+                                  actual_minutes:actual_mins,
+                                  expected_out_date:shiftData.shift_end_date,
+                                  expected_out_time:shiftData.shift_end_time,
+                                  hospital_id:AllEmployees[i]["hospital_id"],
+                                  hours: 0,
+                                  minutes: 0
+                                })
+                            );
+                          }
+                          // utilities
+                          //   .logger()
+                          //   .log("biometricData single emp", biometricData);
+                          insertTimeSheet(
+                            returnQry,
+                            biometricData,
+                            AllLeaves,
+                            allHolidays,
+                            from_date,
+                            to_date,
+                            _mysql,
+                            req,
+                            res,
+                            next,
+                            singleEmployee
+                          );
+                        } else {
+                          req.records = {
+                            invalid_data: true,
+                            message: "no punches exist"
+                          };
+                          _mysql.releaseConnection();
+  
+                          next();
+                        }
+                      }
+                    );
+                  });
+                  //---------------------------------------------------
+                } else {
+                  //no matchimg data
+                  req.records = {
+                    invalid_data: true,
+                    message: "biometric database or Employees not found "
+                  };
+                  _mysql.releaseConnection();
+  
+                  next();
+                }
+              })
+              .catch(e => {
+                // utilities.logger().log("error: ", e);
+                _mysql.releaseConnection();
+                next(e);
+              });
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please select a branch and  date"
+        };
+        next();
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
+
+  processBiometricAttendanceBkp27feb: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     try {
@@ -3041,6 +3690,227 @@ module.exports = {
             _mysql.releaseConnection();
             next(e);
           });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please select a branch and  date"
+        };
+        next();
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
+  processBiometricAttendance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      const utilities = new algaehUtilities();
+      const input = req.query;
+      utilities.logger().log("input: ", input);
+
+      if (
+        input.from_date != null &&
+        input.to_date != null &&
+        input.hospital_id > 0
+      ) {
+        let month = moment(input.from_date).format("M");
+        let year = moment(input.from_date).format("YYYY");
+
+        let from_date= moment(input.from_date).format("YYYY-MM-DD");
+        let to_date= moment(input.to_date).format("YYYY-MM-DD");
+        let  next_dayOf_cutoff =null;
+        let  endOfMonth = moment(input.to_date).format("YYYY-MM-DD");
+        let stringData = "";
+        if (input.sub_department_id > 0) {
+          stringData += " and sub_department_id=" + input.sub_department_id;
+        }
+        if (input.hims_d_employee_id > 0) {
+          stringData += " and employee_id=" + input.hims_d_employee_id;
+        }
+
+    //ST---pending unpaid leaves
+    let pendingYear = "";
+    let pendingMonth = "";
+
+    if (month == 1) {
+      pendingYear = year - 1;
+      pendingMonth = 12;
+    } else {
+      pendingYear = year;
+      pendingMonth = month - 1;
+    }
+    //EN---pending unpaid leaves
+    let attResult=[];
+    let allPendingLeaves=[];
+            let insertArray = [];
+
+        _mysql
+          .executeQuery({
+            query: "SELECT * FROM hims_d_hrms_options;"
+          })
+          .then(options => {
+           //let options = hrms_options;
+
+           utilities.logger().log("options: ", options);
+            if (input.attendance_type == "MW") {
+
+
+  
+            
+              if (
+                options[0]["salary_pay_before_end_date"] == "Y" &&
+                options[0]["payroll_payment_date"] != null
+              ) {
+               
+           
+
+                let  cut_off_date =
+                  moment(input.to_date)
+                    .clone()
+                    .format("YYYY-MM-") + options[0]["payroll_payment_date"];
+
+               next_dayOf_cutoff =  moment(input.to_date)
+                .clone()
+                .format("YYYY-MM-") + options[0]["payroll_payment_date"] + 1;
+
+              
+                to_date= cut_off_date;
+               
+
+              }
+            }
+
+
+
+        _mysql
+          .executeQuery({
+            query:
+              "select employee_id,hospital_id,sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,\
+              sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
+              sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
+              sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
+              as total_hours,sum(working_hours)as total_working_hours ,\
+              COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
+              COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
+              from hims_f_daily_attendance where     \
+              hospital_id=?  and year=? and month=?   " +stringData +" and attendance_date between date(?) and\
+              date(?) group by employee_id; select hims_f_pending_leave_id,PL.employee_id,year,month,leave_application_id,adjusted,\
+              adjusted_year,adjusted_month,updaid_leave_duration,status from hims_f_pending_leave PL \
+              inner join hims_f_leave_application LA on  PL.leave_application_id=LA.hims_f_leave_application_id\
+                where LA.status='APR' and  year=? and month=?",
+            values: [input.hospital_id,year, month, from_date ,to_date, pendingYear,pendingMonth],
+            printQuery: true
+          })
+          .then(results => {
+            attResult= results[0];
+            allPendingLeaves= results[1];
+            utilities.logger().log("attResult: ", attResult);
+
+            for (let i = 0; i < attResult.length; i++) {
+
+              let pending_leaves = new LINQ(allPendingLeaves)
+              .Where(w => w.employee_id == attResult[i]["employee_id"])
+              .Sum(s => s.updaid_leave_duration);
+
+
+              insertArray.push({
+                ...attResult[i],
+                total_paid_days:
+                  attResult[i]["present_days"] +
+                  attResult[i]["paid_leave"] +
+                  attResult[i]["total_weekoff_days"] +
+                  attResult[i]["total_holidays"],
+                total_leave:
+                  attResult[i]["paid_leave"] + attResult[i]["unpaid_leave"],
+                total_hours: attResult[i]["total_hours"],
+                total_working_hours: attResult[i]["total_working_hours"],
+                shortage_hours:
+                  parseInt(attResult[i]["total_working_hours"]) -
+                    parseInt(attResult[i]["total_hours"]) >
+                  0
+                    ? parseInt(attResult[i]["total_working_hours"]) -
+                      parseInt(attResult[i]["total_hours"])
+                    : 0,
+                ot_work_hours:
+                  parseInt(attResult[i]["total_hours"]) -
+                    parseInt(attResult[i]["total_working_hours"]) >
+                  0
+                    ? parseInt(attResult[i]["total_hours"]) -
+                      parseInt(attResult[i]["total_working_hours"])
+                    : 0,
+                    pending_unpaid_leave:pending_leaves
+              });
+            }
+
+            utilities.logger().log("insertArray: ", insertArray);
+
+            const insurtColumns = [
+              "employee_id",
+              "year",
+              "month",
+              "hospital_id",
+              "sub_department_id",
+              "total_days",
+              "present_days",
+              "absent_days",
+              "total_work_days",
+              "total_weekoff_days",
+              "total_holidays",
+              "total_leave",
+              "paid_leave",
+              "unpaid_leave",
+              "total_paid_days",
+              "total_hours",
+              "total_working_hours",
+              "shortage_hours",
+              "ot_work_hours",
+              "pending_leaves"
+            ];
+
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO hims_f_attendance_monthly(??) VALUES ? ON DUPLICATE KEY UPDATE \
+                employee_id=values(employee_id),year=values(year),\
+                month=values(month),hospital_id=values(hospital_id),\
+                sub_department_id=values(sub_department_id),total_days=values(total_days),present_days=values(present_days),\
+                absent_days=values(absent_days),total_work_days=values(total_work_days),\
+                total_weekoff_days=values(total_weekoff_days),total_holidays=values(total_holidays),total_leave=values(total_leave),\
+                paid_leave=values(paid_leave),unpaid_leave=values(unpaid_leave),total_paid_days=values(total_paid_days),\
+                total_hours=values(total_hours),total_working_hours=values(total_working_hours),shortage_hours=values(shortage_hours)\
+                ,ot_work_hours=values(ot_work_hours),pending_leaves=values(pending_leaves)",
+                values: insertArray,
+                includeValues: insurtColumns,
+                extraValues: {
+                  created_date: new Date(),
+                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                  updated_date: new Date(),
+                  updated_by: req.userIdentity.algaeh_d_app_user_id
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              })
+              .catch(e => {
+                next(e);
+              });
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+
+
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
       } else {
         req.records = {
           invalid_input: true,
@@ -3183,23 +4053,29 @@ module.exports = {
   postTimeSheet: (req, res, next) => {
     let input = req.query;
     const utilities = new algaehUtilities();
-  
+
+    let month = moment(input.from_date).format("M");
+    let year = moment(input.from_date).format("YYYY");
+
     let from_date = moment(input.from_date).format("YYYY-MM-DD");
     let to_date = moment(input.to_date).format("YYYY-MM-DD");
     let stringData = "";
     let dailyAttendance = [];
+    let fetchData = "";
     if (
       input.hospital_id > 0 &&
       (input.hims_d_employee_id > 0 || input.sub_department_id > 0)
     ) {
       if (input.hims_d_employee_id > 0) {
         stringData = "AND TS.employee_id=" + input.hims_d_employee_id;
+        fetchData = "AND employee_id=" + input.hims_d_employee_id;
       }
-  
+
       if (input.sub_department_id > 0) {
         stringData = "AND TS.sub_department_id=" + input.sub_department_id;
+        fetchData = "AND sub_department_id=" + input.sub_department_id;
       }
-  
+
       const _mysql = new algaehMysql();
       _mysql
         .executeQuery({
@@ -3215,7 +4091,7 @@ module.exports = {
         })
         .then(result => {
           // utilities.logger().log("result: ",result);
-  
+
           if (result.length > 0) {
             let excptions = new LINQ(result)
               .Where(w => w.status == "EX")
@@ -3227,49 +4103,44 @@ module.exports = {
                 };
               })
               .ToArray();
-  
+
             utilities.logger().log("excptions: ", excptions);
-  
+
             if (excptions.length == 0) {
               req.records = {
                 invalid_input: true,
                 employees: excptions,
                 message: "Please Regularize attendance for these employees"
-              };  
+              };
               next();
               return;
             } else {
               for (let i = 0; i < result.length; i++) {
-
-
                 let shortage_time = 0;
+                let shortage_min = 0;
                 let ot_time = 0;
+                let ot_min = 0;
 
+                if (result[i]["status"] == "PR") {
+                  let total_minutes =
+                    parseInt(result[i]["actual_hours"] * 60) +
+                    parseInt(result[i]["actual_minutes"]);
+                  let worked_minutes =
+                    parseInt(result[i]["hours"] * 60) +
+                    parseInt(result[i]["minutes"]);
 
-                if(result[i]["status"] == "PR"){
-                let total_minutes =
-                  parseInt(result[i]["actual_hours"] * 60) +
-                  parseInt(result[i]["actual_minutes"]);
-                let worked_minutes =
-                  parseInt(result[i]["hours"] * 60) +
-                  parseInt(result[i]["minutes"]);
-                let diff = total_minutes - worked_minutes;
-               
-  
-                if (diff >0) {
-                  //calculating shortage
-                  shortage_time =
-                    parseInt(parseInt(diff) / parseInt(60)) +
-                    "." +
-                    (parseInt(diff) % parseInt(60));
-                } else if (diff < 0) {
-                  //calculating over time
-                  ot_time =
-                    parseInt(parseInt(Math.abs(diff)) / parseInt(60)) +
-                    "." +
-                    (parseInt(Math.abs(diff)) % parseInt(60));
+                  let diff = total_minutes - worked_minutes;
+
+                  if (diff > 0) {
+                    //calculating shortage
+                    shortage_time = parseInt(parseInt(diff) / parseInt(60));
+                    shortage_min = parseInt(diff) % parseInt(60);
+                  } else if (diff < 0) {
+                    //calculating over time
+                    ot_time = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
+                    ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+                  }
                 }
-              }
                 // utilities.logger().log("total_minutes: ", total_minutes);
                 // utilities.logger().log("worked_minutes: ", worked_minutes);
                 // utilities.logger().log("diff: ", diff);
@@ -3277,7 +4148,7 @@ module.exports = {
                 // utilities.logger().log("shortage_time: ", shortage_time);
                 // utilities.logger().log("================: ");
                 dailyAttendance.push({
-                  employee_id: result[i]["hims_d_employee_id"],
+                  employee_id: result[i]["employee_id"],
                   hospital_id: result[i]["hospital_id"],
                   sub_department_id: result[i]["sub_department_id"],
                   attendance_date: result[i]["attendance_date"],
@@ -3297,12 +4168,13 @@ module.exports = {
                   working_hours:
                     result[i]["actual_hours"] + "." + result[i]["actual_minutes"],
                   shortage_hours: shortage_time,
-                  ot_work_hours: ot_time
+                  shortage_minutes: shortage_min,
+                  ot_work_hours: ot_time,
+                  ot_minutes: ot_min
                 });
               }
 
               utilities.logger().log("dailyAttendance: ", dailyAttendance);
-
 
               const insurtColumns = [
                 "employee_id",
@@ -3324,7 +4196,9 @@ module.exports = {
                 "total_hours",
                 "working_hours",
                 "shortage_hours",
-                "ot_work_hours"
+                "shortage_minutes",
+                "ot_work_hours",
+                "ot_minutes"
               ];
 
               _mysql
@@ -3336,37 +4210,131 @@ module.exports = {
                     present_days=values(present_days),absent_days=values(absent_days),total_work_days=values(total_work_days),\
                     weekoff_days=values(weekoff_days),holidays=values(holidays),paid_leave=values(paid_leave),\
                     unpaid_leave=values(unpaid_leave),hours=values(hours),minutes=values(minutes),total_hours=values(total_hours),\
-                    working_hours=values(working_hours), shortage_hours=values(shortage_hours), ot_work_hours=values(ot_work_hours)",
-                  
-                  includeValues:insurtColumns,   
-                  values: dailyAttendance,     
+                    working_hours=values(working_hours), shortage_hours=values(shortage_hours), shortage_minutes=values(shortage_minutes),\
+                    ot_work_hours=values(ot_work_hours), ot_minutes=values(ot_minutes)",
+
+                  includeValues: insurtColumns,
+                  values: dailyAttendance,
                   bulkInsertOrUpdate: true
                 })
                 .then(finalResult => {
+                  // _mysql.releaseConnection();
 
-                  _mysql.releaseConnection();
+                  // req.records = finalResult;
+                  // next();
 
-                  req.records = finalResult;
-                  next();
-                }) .catch(e => {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select employee_id,hospital_id,sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,\
+                      sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
+                      sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
+                      sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
+                      as total_hours,sum(working_hours)as total_working_hours ,\
+                      COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
+                      COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
+                      from hims_f_daily_attendance where      \
+                      hospital_id=?  and year=? and month=?  " +
+                        fetchData +
+                        " and attendance_date between date(?) and\
+                      date(?)  group by employee_id;",
+                      values: [
+                        input.hospital_id,
+                        year,
+                        month,
+                        from_date,
+                        to_date
+                      ],
+
+                      printQuery: true
+                    })
+                    .then(attResult => {
+                      let insertArray = [];
+                      for (let i = 0; i < attResult.length; i++) {
+                        insertArray.push({
+                          ...attResult[i],
+                          total_paid_days:
+                            attResult[i]["present_days"] +
+                            attResult[i]["paid_leave"] +
+                            attResult[i]["total_weekoff_days"] +
+                            attResult[i]["total_holidays"],
+                          total_leave:
+                            attResult[i]["paid_leave"] +
+                            attResult[i]["unpaid_leave"],
+                          total_hours: attResult[i]["total_hours"],
+                          total_working_hours:
+                            attResult[i]["total_working_hours"],
+                          shortage_hours: attResult[i]["shortage_hourss"],
+                          ot_work_hours: attResult[i]["ot_hourss"]
+                        });
+                      }
+
+                      const insurtColumns = [
+                        "employee_id",
+                        "year",
+                        "month",
+                        "hospital_id",
+                        "sub_department_id",
+                        "total_days",
+                        "present_days",
+                        "absent_days",
+                        "total_work_days",
+                        "total_weekoff_days",
+                        "total_holidays",
+                        "total_leave",
+                        "paid_leave",
+                        "unpaid_leave",
+                        "total_paid_days",
+                        "total_hours",
+                        "total_working_hours",
+                        "shortage_hours",
+                        "ot_work_hours"
+                      ];
+
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "INSERT INTO hims_f_attendance_monthly(??) VALUES ? ON DUPLICATE KEY UPDATE \
+                      employee_id=values(employee_id),year=values(year),\
+                      month=values(month),hospital_id=values(hospital_id),\
+                      sub_department_id=values(sub_department_id),total_days=values(total_days),present_days=values(present_days),\
+                      absent_days=values(absent_days),total_work_days=values(total_work_days),\
+                      total_weekoff_days=values(total_weekoff_days),total_holidays=values(total_holidays),total_leave=values(total_leave),\
+                      paid_leave=values(paid_leave),unpaid_leave=values(unpaid_leave),total_paid_days=values(total_paid_days),\
+                      total_hours=values(total_hours),total_working_hours=values(total_working_hours),shortage_hours=values(shortage_hours)\
+                      ,ot_work_hours=values(ot_work_hours)",
+                          values: insertArray,
+                          includeValues: insurtColumns,
+                          extraValues: {
+                            created_date: new Date(),
+                            created_by: req.userIdentity.algaeh_d_app_user_id,
+                            updated_date: new Date(),
+                            updated_by: req.userIdentity.algaeh_d_app_user_id
+                          },
+                          bulkInsertOrUpdate: true,
+                          printQuery: true
+                        })
+                        .then(result => {
+                          _mysql.releaseConnection();
+                          req.records = result;
+                          next();
+                        })
+                        .catch(e => {
+                          utilities.logger().log("erro1: ", e);
+                          _mysql.releaseConnection();
+                          next(e);
+                        });
+                    })
+                    .catch(e => {
+                      utilities.logger().log("erro52: ", e);
+                      _mysql.releaseConnection();
+                      next(e);
+                    });
+                })
+                .catch(e => {
                   _mysql.releaseConnection();
                   next(e);
                 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             }
           } else {
             _mysql.releaseConnection();
@@ -3387,12 +4355,651 @@ module.exports = {
         invalid_input: true,
         message: "Please provide valid input"
       };
-  
+
       next();
       return;
     }
+  },
+
+  postTimeSheetMonthWise: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.query;
+
+      const utilities = new algaehUtilities();
+      let month = moment(input.from_date).format("M");
+      let year = moment(input.from_date).format("YYYY");
+
+      let from_date = moment(input.from_date).format("YYYY-MM-DD");
+      let to_date = moment(input.to_date).format("YYYY-MM-DD");
+
+      let cut_off_date = null;
+      let next_dayOf_cutoff = null;
+
+      let lastMonth_after_cutoff_date = null;
+      let lastMonth_end_date = null;
+      let stringData = "";
+      let dailyAttendance = [];
+      let RosterAttendance = [];
+      let mergedArray = [];
+      let AttenResult = [];
+      let RosterResult = [];
+      let LastTenDaysResult = [];
+      let previousMonthData = [];
+
+      //ST---pending unpaid leaves,shoratge,ot
+      let pendingYear = "";
+      let pendingMonth = "";
+
+      if (month == 1) {
+        pendingYear = year - 1;
+        pendingMonth = 12;
+      } else {
+        pendingYear = year;
+        pendingMonth = month - 1;
+      }
+      //EN---pending unpaid leaves,shoratge,ot
+
+      if (input.hims_d_employee_id > 0) {
+        stringData = " AND employee_id=" + input.hims_d_employee_id;
+      }
+
+      if (
+        input.attendance_type == "MW" &&
+        input.hims_d_employee_id > 0 &&
+        input.hospital_id > 0 &&
+        input.sub_department_id > 0
+      ) {
+        _mysql
+          .executeQuery({
+            query: "SELECT * FROM hims_d_hrms_options;"
+          })
+          .then(options => {
+            if (
+              input.attendance_type == "MW" &&
+              options[0]["salary_pay_before_end_date"] == "Y" &&
+              options[0]["payroll_payment_date"] != null
+            ) {
+              cut_off_date =
+                moment(input.to_date)
+                  .clone()
+                  .format("YYYY-MM-") + options[0]["payroll_payment_date"];
+
+              next_dayOf_cutoff =
+                moment(input.to_date)
+                  .clone()
+                  .format("YYYY-MM-") +
+                parseInt(options[0]["payroll_payment_date"] + 1);
+
+              const prevDays = options[0]["payroll_payment_date"] + 1;
+
+              const prevMonthYear = moment(input.from_date)
+                .clone()
+                .add(-1, "months");
+
+              lastMonth_after_cutoff_date =
+                moment(prevMonthYear)
+                  .clone()
+                  .format("YYYY-MM") +
+                "-" +
+                prevDays;
+              utilities
+                .logger()
+                .log(
+                  "lastMonth_after_cutoff_date: ",
+                  lastMonth_after_cutoff_date
+                );
+
+              lastMonth_end_date = moment(prevMonthYear)
+                .endOf("month")
+                .format("YYYY-MM-DD");
+              utilities.logger().log("lastMonth_end_date: ", lastMonth_end_date);
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "select hims_f_daily_time_sheet_id,employee_id,employee_code,full_name,TS.sub_department_id,TS.biometric_id,\
+                  attendance_date,in_time,out_date,out_time,year,month,status,posted,hours,minutes,actual_hours,\
+                  actual_minutes,worked_hours,expected_out_date,expected_out_time,TS.hospital_id\
+                  from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+                  where TS.hospital_id=? and year=? and month=? and TS.sub_department_id=? " +
+                    stringData +
+                    " and attendance_date between date(?) and date(?);\
+                  select hims_f_shift_roster_id,employee_id,sub_department_id,shift_date,shift_id,shift_end_date,\
+                  shift_start_time,shift_end_time,shift_time,weekoff,holiday,hospital_id\
+                  from hims_f_shift_roster  where hospital_id=? and sub_department_id=? " +
+                    stringData +
+                    " and shift_date \
+                  between date(?) and  date(?); \
+                  select hims_f_daily_time_sheet_id,employee_id,employee_code,full_name,TS.sub_department_id,TS.biometric_id,\
+                  attendance_date,in_time,out_date,out_time,year,month,status,posted,hours,minutes,actual_hours,\
+                  actual_minutes,worked_hours,expected_out_date,expected_out_time,TS.hospital_id\
+                  from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+                  where TS.hospital_id=? and year=? and month=? and TS.sub_department_id=? " +
+                    stringData +
+                    " and attendance_date between date(?) and date(?);",
+                  values: [
+                    input.hospital_id,
+                    year,
+                    month,
+                    input.sub_department_id,
+                    from_date,
+                    cut_off_date,
+                    input.hospital_id,
+                    input.sub_department_id,
+                    next_dayOf_cutoff,
+                    to_date,
+                    input.hospital_id,
+                    pendingYear,
+                    pendingMonth,
+                    input.sub_department_id,
+                    lastMonth_after_cutoff_date,
+                    lastMonth_end_date
+                  ],
+
+                  printQuery: true
+                })
+                .then(result => {
+                  let AttenResult = result[0];
+                  let RosterResult = result[1];
+                  let LastTenDaysResult = result[2];
+
+                  utilities.logger().log("AttenResult: ", AttenResult);
+                  utilities.logger().log("RosterResult: ", RosterResult);
+                  utilities
+                    .logger()
+                    .log("LastTenDaysResult: ", LastTenDaysResult);
+
+                  if (AttenResult.length > 0) {
+                    let excptions = new LINQ(AttenResult)
+                      .Where(w => w.status == "EX")
+                      .Select(s => {
+                        return {
+                          employee_code: s.employee_code,
+                          employee_name: s.full_name,
+                          attendance_date: s.attendance_date
+                        };
+                      })
+                      .ToArray();
+
+                    utilities.logger().log("excptions: ", excptions);
+
+                    if (excptions.length > 0) {
+                      req.records = {
+                        invalid_input: true,
+                        employees: excptions,
+                        message:
+                          "Please Regularize attendance for these employees"
+                      };
+                      next();
+                      return;
+                    } else {
+                      //present month
+                      for (let i = 0; i < AttenResult.length; i++) {
+                        let shortage_time = 0;
+                        let shortage_min = 0;
+                        let ot_time = 0;
+                        let ot_min = 0;
+
+                        if (AttenResult[i]["status"] == "PR") {
+                          let total_minutes =
+                            parseInt(AttenResult[i]["actual_hours"] * 60) +
+                            parseInt(AttenResult[i]["actual_minutes"]);
+                          let worked_minutes =
+                            parseInt(AttenResult[i]["hours"] * 60) +
+                            parseInt(AttenResult[i]["minutes"]);
+
+                          let diff = total_minutes - worked_minutes;
+
+                          if (diff > 0) {
+                            //calculating shortage
+                            shortage_time = parseInt(
+                              parseInt(diff) / parseInt(60)
+                            );
+                            shortage_min = parseInt(diff) % parseInt(60);
+                          } else if (diff < 0) {
+                            //calculating over time
+                            ot_time = parseInt(
+                              parseInt(Math.abs(diff)) / parseInt(60)
+                            );
+                            ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+                          }
+                        }
+                        // utilities.logger().log("total_minutes: ", total_minutes);
+                        // utilities.logger().log("worked_minutes: ", worked_minutes);
+                        // utilities.logger().log("diff: ", diff);
+                        // utilities.logger().log("ot_time: ", ot_time);
+                        // utilities.logger().log("shortage_time: ", shortage_time);
+                        // utilities.logger().log("================: ");
+                        dailyAttendance.push({
+                          employee_id: AttenResult[i]["employee_id"],
+                          hospital_id: AttenResult[i]["hospital_id"],
+                          sub_department_id: AttenResult[i]["sub_department_id"],
+                          attendance_date: AttenResult[i]["attendance_date"],
+                          year: moment(AttenResult[i]["attendance_date"]).format(
+                            "YYYY"
+                          ),
+                          month: moment(AttenResult[i]["attendance_date"]).format(
+                            "M"
+                          ),
+                          total_days: 1,
+                          present_days: AttenResult[i]["status"] == "PR" ? 1 : 0,
+                          absent_days: AttenResult[i]["status"] == "AB" ? 1 : 0,
+                          total_work_days:
+                            AttenResult[i]["status"] == "PR" ? 1 : 0,
+                          weekoff_days: AttenResult[i]["status"] == "WO" ? 1 : 0,
+                          holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
+                          paid_leave: AttenResult[i]["status"] == "PL" ? 1 : 0,
+                          unpaid_leave: AttenResult[i]["status"] == "UL" ? 1 : 0,
+                          total_hours: AttenResult[i]["worked_hours"],
+                          hours: AttenResult[i]["hours"],
+                          minutes: AttenResult[i]["minutes"],
+                          working_hours:
+                            AttenResult[i]["actual_hours"] +
+                            "." +
+                            AttenResult[i]["actual_minutes"],
+                          shortage_hours: shortage_time,
+                          shortage_minutes: shortage_min,
+                          ot_work_hours: ot_time,
+                          ot_minutes: ot_min
+                        });
+                      }
+
+                      //present month
+                      for (let j = 0; j < RosterResult.length; j++) {
+                        RosterAttendance.push({
+                          employee_id: RosterResult[j]["employee_id"],
+                          hospital_id: RosterResult[j]["hospital_id"],
+                          sub_department_id: RosterResult[j]["sub_department_id"],
+                          attendance_date: RosterResult[j]["shift_date"],
+                          year: moment(RosterResult[j]["shift_date"]).format(
+                            "YYYY"
+                          ),
+                          month: moment(RosterResult[j]["shift_date"]).format(
+                            "M"
+                          ),
+                          total_days: 1,
+                          weekoff_days: RosterResult[j]["weekoff"] == "Y" ? 1 : 0,
+                          holidays: RosterResult[j]["holiday"] == "Y" ? 1 : 0,
+                          present_days:
+                            RosterResult[j]["weekoff"] == "N" &&
+                            RosterResult[j]["holiday"] == "N"
+                              ? 1
+                              : 0,
+                          absent_days: 0,
+                          total_work_days:
+                            RosterResult[j]["weekoff"] == "N" &&
+                            RosterResult[j]["holiday"] == "N"
+                              ? 1
+                              : 0,
+                          paid_leave: 0,
+                          unpaid_leave: 0,
+                          total_hours: RosterResult[j]["shift_time"],
+                          hours: parseInt(RosterResult[j]["shift_time"]),
+                          minutes:
+                            (parseFloat(RosterResult[j]["shift_time"]) % 1) * 100,
+                          working_hours: RosterResult[j]["shift_time"],
+                          shortage_hours: 0,
+                          shortage_minutes: 0,
+                          ot_work_hours: 0,
+                          ot_minutes: 0
+                        });
+                      }
+
+                      //last month 10 days
+                      for (let i = 0; i < LastTenDaysResult.length; i++) {
+                        let shortage_time = 0;
+                        let shortage_min = 0;
+                        let ot_time = 0;
+                        let ot_min = 0;
+
+                        if (LastTenDaysResult[i]["status"] == "PR") {
+                          let total_minutes =
+                            parseInt(LastTenDaysResult[i]["actual_hours"] * 60) +
+                            parseInt(LastTenDaysResult[i]["actual_minutes"]);
+                          let worked_minutes =
+                            parseInt(LastTenDaysResult[i]["hours"] * 60) +
+                            parseInt(LastTenDaysResult[i]["minutes"]);
+
+                          let diff = total_minutes - worked_minutes;
+
+                          if (diff > 0) {
+                            //calculating shortage
+                            shortage_time = parseInt(
+                              parseInt(diff) / parseInt(60)
+                            );
+                            shortage_min = parseInt(diff) % parseInt(60);
+                          } else if (diff < 0) {
+                            //calculating over time
+                            ot_time = parseInt(
+                              parseInt(Math.abs(diff)) / parseInt(60)
+                            );
+                            ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+                          }
+                        }
+
+                        previousMonthData.push({
+                          employee_id: LastTenDaysResult[i]["employee_id"],
+                          hospital_id: LastTenDaysResult[i]["hospital_id"],
+                          sub_department_id:
+                            LastTenDaysResult[i]["sub_department_id"],
+                          attendance_date:
+                            LastTenDaysResult[i]["attendance_date"],
+                          year: moment(
+                            LastTenDaysResult[i]["attendance_date"]
+                          ).format("YYYY"),
+                          month: moment(
+                            LastTenDaysResult[i]["attendance_date"]
+                          ).format("M"),
+                          total_days: 1,
+                          present_days:
+                            LastTenDaysResult[i]["status"] == "PR" ? 1 : 0,
+                          absent_days:
+                            LastTenDaysResult[i]["status"] == "AB" ? 1 : 0,
+                          total_work_days:
+                            LastTenDaysResult[i]["status"] == "PR" ? 1 : 0,
+                          weekoff_days:
+                            LastTenDaysResult[i]["status"] == "WO" ? 1 : 0,
+                          holidays:
+                            LastTenDaysResult[i]["status"] == "HO" ? 1 : 0,
+                          paid_leave:
+                            LastTenDaysResult[i]["status"] == "PL" ? 1 : 0,
+                          unpaid_leave:
+                            LastTenDaysResult[i]["status"] == "UL" ? 1 : 0,
+                          total_hours: LastTenDaysResult[i]["worked_hours"],
+                          hours: LastTenDaysResult[i]["hours"],
+                          minutes: LastTenDaysResult[i]["minutes"],
+                          working_hours:
+                            LastTenDaysResult[i]["actual_hours"] +
+                            "." +
+                            LastTenDaysResult[i]["actual_minutes"],
+                          shortage_hours: shortage_time,
+                          shortage_minutes: shortage_min,
+                          ot_work_hours: ot_time,
+                          ot_minutes: ot_min
+                        });
+                      }
+
+                      utilities
+                        .logger()
+                        .log("dailyAttendance: ", dailyAttendance);
+                      utilities
+                        .logger()
+                        .log("RosterAttendance: ", RosterAttendance);
+
+                      mergedArray = dailyAttendance.concat(RosterAttendance);
+
+                      utilities.logger().log("mergedArray: ", mergedArray);
+
+                      const insurtColumns = [
+                        "employee_id",
+                        "hospital_id",
+                        "sub_department_id",
+                        "year",
+                        "month",
+                        "attendance_date",
+                        "total_days",
+                        "present_days",
+                        "absent_days",
+                        "total_work_days",
+                        "weekoff_days",
+                        "holidays",
+                        "paid_leave",
+                        "unpaid_leave",
+                        "hours",
+                        "minutes",
+                        "total_hours",
+                        "working_hours",
+                        "shortage_hours",
+                        "shortage_minutes",
+                        "ot_work_hours",
+                        "ot_minutes"
+                      ];
+
+                      _mysql
+                        .executeQuery({
+                          query:
+                            "INSERT IGNORE INTO hims_f_daily_attendance(??) VALUES ? ON DUPLICATE KEY UPDATE employee_id=values(employee_id),\
+                              hospital_id=values(hospital_id),sub_department_id=values(sub_department_id),\
+                              year=values(year),month=values(month),attendance_date=values(attendance_date),total_days=values(total_days),\
+                              present_days=values(present_days),absent_days=values(absent_days),total_work_days=values(total_work_days),\
+                              weekoff_days=values(weekoff_days),holidays=values(holidays),paid_leave=values(paid_leave),\
+                              unpaid_leave=values(unpaid_leave),hours=values(hours),minutes=values(minutes),total_hours=values(total_hours),\
+                              working_hours=values(working_hours), shortage_hours=values(shortage_hours), shortage_minutes=values(shortage_minutes),\
+                              ot_work_hours=values(ot_work_hours), ot_minutes=values(ot_minutes)",
+
+                          includeValues: insurtColumns,
+                          values: mergedArray,
+                          bulkInsertOrUpdate: true
+                        })
+                        .then(insertResult => {
+                          // _mysql.releaseConnection();
+
+                          // req.records = finalAttenResult;
+                          // next();
+
+                          _mysql
+                            .executeQuery({
+                              query:
+                                "select employee_id,hospital_id,sub_department_id,year,month,sum(total_days)as total_days,sum(present_days)as present_days,\
+                                sum(absent_days)as absent_days,sum(total_work_days)as total_work_days,sum(weekoff_days)as total_weekoff_days,\
+                                sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
+                                sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
+                                as total_hours,sum(working_hours)as total_working_hours ,\
+                                COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
+                                COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss\
+                                from hims_f_daily_attendance where      \
+                                hospital_id=?  and year=? and month=?  and sub_department_id=? " +
+                                stringData +
+                                " and attendance_date between date(?) and\
+                                date(?)  group by employee_id;\
+                                select hims_f_pending_leave_id,PL.employee_id,year,month,leave_application_id,adjusted,\
+                                adjusted_year,adjusted_month,updaid_leave_duration,status from hims_f_pending_leave PL \
+                                inner join hims_f_leave_application LA on  PL.leave_application_id=LA.hims_f_leave_application_id\
+                                where LA.status='APR' and  year=? and month=?",
+                              values: [
+                                input.hospital_id,
+                                year,
+                                month,
+                                input.sub_department_id,
+
+                                from_date,
+                                to_date,
+                                pendingYear,
+                                pendingMonth
+                              ],
+
+                              printQuery: true
+                            })
+                            .then(results => {
+                              let attResult = results[0];
+                              let allPendingLeaves = results[1];
+                              let insertArray = [];
+
+                              for (let i = 0; i < attResult.length; i++) {
+                                //ST--shortage
+                                let short_hrs = new LINQ(previousMonthData)
+                                  .Where(
+                                    w =>
+                                      w.employee_id == attResult[i]["employee_id"]
+                                  )
+                                  .Sum(s => s.shortage_hours);
+
+                                let short_min = new LINQ(previousMonthData)
+                                  .Where(
+                                    w =>
+                                      w.employee_id == attResult[i]["employee_id"]
+                                  )
+                                  .Sum(s => s.shortage_minutes);
+
+                                short_hrs +=
+                                  parseInt(parseInt(short_min) / parseInt(60)) +
+                                  "." +
+                                  (parseInt(short_min) % parseInt(60));
+                                //EN--shortage
+
+                                //ST--over time
+                                let ot_hrs = new LINQ(previousMonthData)
+                                  .Where(
+                                    w =>
+                                      w.employee_id == attResult[i]["employee_id"]
+                                  )
+                                  .Sum(s => s.ot_work_hours);
+
+                                let ot_min = new LINQ(previousMonthData)
+                                  .Where(
+                                    w =>
+                                      w.employee_id == attResult[i]["employee_id"]
+                                  )
+                                  .Sum(s => s.ot_minutes);
+
+                                ot_hrs +=
+                                  parseInt(parseInt(ot_min) / parseInt(60)) +
+                                  "." +
+                                  (parseInt(ot_min) % parseInt(60));
+
+                                //EN--over time
+
+                                let pending_leaves = new LINQ(allPendingLeaves)
+                                  .Where(
+                                    w =>
+                                      w.employee_id == attResult[i]["employee_id"]
+                                  )
+                                  .Sum(s => s.updaid_leave_duration);
+
+                                utilities
+                                  .logger()
+                                  .log("allPendingLeaves: ", allPendingLeaves);
+
+                                utilities
+                                  .logger()
+                                  .log("pending_leaves: ", pending_leaves);
+
+                                insertArray.push({
+                                  ...attResult[i],
+                                  total_paid_days:
+                                    attResult[i]["present_days"] +
+                                    attResult[i]["paid_leave"] +
+                                    attResult[i]["total_weekoff_days"] +
+                                    attResult[i]["total_holidays"],
+                                  total_leave:
+                                    attResult[i]["paid_leave"] +
+                                    attResult[i]["unpaid_leave"],
+                                  total_hours: attResult[i]["total_hours"],
+                                  total_working_hours:
+                                    attResult[i]["total_working_hours"],
+                                  shortage_hours: attResult[i]["shortage_hourss"],
+                                  ot_work_hours: attResult[i]["ot_hourss"],
+                                  pending_unpaid_leave: pending_leaves,
+
+                                  prev_month_shortage_hr: short_hrs,
+                                  prev_month_ot_hr: ot_hrs
+                                });
+                              }
+
+                              const insurtColumns = [
+                                "employee_id",
+                                "year",
+                                "month",
+                                "hospital_id",
+                                "sub_department_id",
+                                "total_days",
+                                "present_days",
+                                "absent_days",
+                                "total_work_days",
+                                "total_weekoff_days",
+                                "total_holidays",
+                                "total_leave",
+                                "paid_leave",
+                                "unpaid_leave",
+                                "total_paid_days",
+                                "total_hours",
+                                "total_working_hours",
+                                "shortage_hours",
+                                "ot_work_hours",
+                                "pending_unpaid_leave",
+                                "prev_month_shortage_hr",
+                                "prev_month_ot_hr"
+                              ];
+
+                              _mysql
+                                .executeQuery({
+                                  query:
+                                    "INSERT INTO hims_f_attendance_monthly(??) VALUES ? ON DUPLICATE KEY UPDATE \
+                                employee_id=values(employee_id),year=values(year),\
+                                month=values(month),hospital_id=values(hospital_id),\
+                                sub_department_id=values(sub_department_id),total_days=values(total_days),present_days=values(present_days),\
+                                absent_days=values(absent_days),total_work_days=values(total_work_days),\
+                                total_weekoff_days=values(total_weekoff_days),total_holidays=values(total_holidays),total_leave=values(total_leave),\
+                                paid_leave=values(paid_leave),unpaid_leave=values(unpaid_leave),total_paid_days=values(total_paid_days),\
+                                total_hours=values(total_hours),total_working_hours=values(total_working_hours),shortage_hours=values(shortage_hours)\
+                                ,ot_work_hours=values(ot_work_hours),pending_unpaid_leave=values(pending_unpaid_leave),prev_month_shortage_hr=values(prev_month_shortage_hr)\
+                                ,prev_month_ot_hr=values(prev_month_ot_hr)",
+                                  values: insertArray,
+                                  includeValues: insurtColumns,
+                                  extraValues: {
+                                    created_date: new Date(),
+                                    created_by:
+                                      req.userIdentity.algaeh_d_app_user_id,
+                                    updated_date: new Date(),
+                                    updated_by:
+                                      req.userIdentity.algaeh_d_app_user_id
+                                  },
+                                  bulkInsertOrUpdate: true,
+                                  printQuery: true
+                                })
+                                .then(result => {
+                                  _mysql.releaseConnection();
+                                  req.records = result;
+                                  next();
+                                })
+                                .catch(e => {
+                                  next(e);
+                                });
+                            })
+                            .catch(e => {
+                              _mysql.releaseConnection();
+                              next(e);
+                            });
+                        })
+                        .catch(e => {
+                          _mysql.releaseConnection();
+                          next(e);
+                        });
+                    }
+                  } else {
+                    _mysql.releaseConnection();
+                    req.records = {
+                      invalid_input: true,
+                      message: "No Data Found for this date range"
+                    };
+                    next();
+                    return;
+                  }
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            }
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid input"
+        };
+
+        next();
+        return;
+      }
+    } catch (e) {
+      next(e);
+    }
   }
-  
 
 
 };
@@ -3592,12 +5199,13 @@ function insertTimeSheet(
       }
     }
 
-    utilities.logger().log("insertArray: ", insertArray);
+    utilities.logger().log("insertArray-66: ", insertArray);
 
     let month = moment(from_date).format("M");
     let year = moment(from_date).format("YYYY");
     const insurtColumns = [
-      "employee_id",
+      "sub_department_id",
+      "employee_id",      
       "biometric_id",
       "attendance_date",
       "in_time",
@@ -3607,7 +5215,11 @@ function insertTimeSheet(
       "worked_hours",
       "actual_hours",
       "hours",
-      "minutes"
+      "minutes",
+      "actual_minutes",
+      "expected_out_date",
+      "expected_out_time",
+      "hospital_id"
     ];
 
     // "INSERT INTO hims_f_daily_time_sheet(??) VALUES ?  ON DUPLICATE KEY UPDATE employee_id=values(employee_id),\

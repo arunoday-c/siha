@@ -296,6 +296,11 @@ class DeptUserDetails extends Component {
                     onChange: texthandle.bind(this, this),
                     others: {
                       tabIndex: "2"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        employee_group_id: null
+                      });
                     }
                   }}
                 />
@@ -315,7 +320,12 @@ class DeptUserDetails extends Component {
                       valueField: "hims_d_overtime_group_id",
                       data: this.props.overTime
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        overtime_group_id: null
+                      });
+                    }
                   }}
                 />
                 <AlagehAutoComplete
@@ -336,6 +346,11 @@ class DeptUserDetails extends Component {
                     onChange: texthandle.bind(this, this),
                     others: {
                       tabIndex: "2"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        hospital_id: null
+                      });
                     }
                   }}
                 />
@@ -364,7 +379,12 @@ class DeptUserDetails extends Component {
                       data: this.props.subdepartment
                     },
 
-                    onChange: departmenttexthandle.bind(this, this)
+                    onChange: departmenttexthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        sub_department: null
+                      });
+                    }
                   }}
                 />
 
@@ -385,7 +405,12 @@ class DeptUserDetails extends Component {
                       data: this.props.empdepspeciality
                     },
 
-                    onChange: specialitytexthandle.bind(this, this)
+                    onChange: specialitytexthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        speciality_id: null
+                      });
+                    }
                   }}
                 />
 
@@ -406,7 +431,12 @@ class DeptUserDetails extends Component {
                       data: this.props.specimapcategory
                     },
 
-                    onChange: categorytexthandle.bind(this, this)
+                    onChange: categorytexthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        category_id: null
+                      });
+                    }
                   }}
                 />
 
@@ -428,6 +458,11 @@ class DeptUserDetails extends Component {
                     onChange: texthandle.bind(this, this),
                     others: {
                       tabIndex: "2"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        designation_id: null
+                      });
                     }
                   }}
                 />
@@ -452,6 +487,11 @@ class DeptUserDetails extends Component {
                     onChange: texthandle.bind(this, this),
                     others: {
                       tabIndex: "2"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        reporting_to: null
+                      });
                     }
                   }}
                 />
@@ -494,7 +534,12 @@ class DeptUserDetails extends Component {
                     others: {
                       disabled: _isDoctor === "Y" ? false : true
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        services_id: null
+                      });
+                    }
                   }}
                 />
 
@@ -509,7 +554,12 @@ class DeptUserDetails extends Component {
                     name: "from_date"
                   }}
                   events={{
-                    onChange: datehandle.bind(this, this)
+                    onChange: datehandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        from_date: null
+                      });
+                    }
                   }}
                   value={this.state.from_date}
                 />

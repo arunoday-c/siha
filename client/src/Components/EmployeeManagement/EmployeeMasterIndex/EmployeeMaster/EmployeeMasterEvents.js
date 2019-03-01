@@ -228,6 +228,7 @@ const InsertUpdateEmployee = $this => {
         delete inputObj.cities;
         delete inputObj.precountrystates;
         delete inputObj.precities;
+        delete inputObj.present_cities;
 
         const _payload = {
           hospital_id: hospital.hims_d_hospital_id,

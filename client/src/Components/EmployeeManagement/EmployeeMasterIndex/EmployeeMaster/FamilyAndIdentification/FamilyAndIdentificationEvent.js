@@ -98,10 +98,25 @@ const getFamilyIdentification = $this => {
       if (response.data.success) {
         let data = response.data.records;
         if (data.length > 0) {
-          $this.setState({ idDetails: data[0], dependentDetails: data[1] });
+          $this.setState({
+            idDetails:
+              $this.state.idDetails.length > 0
+                ? $this.state.idDetails
+                : data[0],
+            dependentDetails:
+              $this.state.dependentDetails.length > 0
+                ? $this.state.dependentDetails
+                : data[1]
+          });
           $this.props.EmpMasterIOputs.updateEmployeeTabs({
-            idDetails: data[0],
-            dependentDetails: data[1],
+            idDetails:
+              $this.state.idDetails.length > 0
+                ? $this.state.idDetails
+                : data[0],
+            dependentDetails:
+              $this.state.dependentDetails.length > 0
+                ? $this.state.dependentDetails
+                : data[1],
             dataFamIdsExists: true
           });
         }
@@ -134,6 +149,7 @@ const deleteIdentifications = ($this, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
+      debugger;
       let idDetails = $this.state.idDetails;
       let insertIdDetails = $this.state.insertIdDetails;
       let deleteIdDetails = $this.state.deleteIdDetails;
@@ -156,24 +172,15 @@ const deleteIdentifications = ($this, row) => {
           deleteIdDetails: deleteIdDetails,
           insertIdDetails: insertIdDetails
         },
-        () => {}
+        () => {
+          debugger;
+        }
       );
 
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         idDetails: idDetails,
         deleteIdDetails: deleteIdDetails,
         insertIdDetails: insertIdDetails
-      });
-
-      // $this.props.EmpMasterIOputs.updateEmployeeTabs({
-      //   idDetails: idDetails,
-      //   deleteIdDetails: deleteIdDetails,
-      //   insertIdDetails: insertIdDetails
-      // });
-    } else {
-      swalMessage({
-        title: "Delete request cancelled",
-        type: "error"
       });
     }
   });
@@ -314,6 +321,33 @@ const datehandlegrid = ($this, row, ctrl, e) => {
   $this.setState({ append: !$this.state.append });
 };
 
+const datehandle = ($this, ctrl, e) => {
+  let intFailure = false;
+  if (e === "issue_date") {
+    if (Date.parse($this.state.valid_upto) < Date.parse(moment(ctrl)._d)) {
+      intFailure = true;
+      swalMessage({
+        title: "Issue Date cannot be grater than Expiry Date.",
+        type: "warning"
+      });
+    }
+  } else if (e === "valid_upto") {
+    if (Date.parse(moment(ctrl)._d) < Date.parse($this.state.issue_date)) {
+      intFailure = true;
+      swalMessage({
+        title: "Expiry Date cannot be less than Issue Date.",
+        type: "warning"
+      });
+    }
+  }
+
+  if (intFailure === false) {
+    $this.setState({
+      [e]: moment(ctrl)._d
+    });
+  }
+};
+
 export {
   texthandle,
   datehandlegrid,
@@ -325,5 +359,6 @@ export {
   updateIdentifications,
   deleteDependencies,
   updateDependencies,
-  dateFormater
+  dateFormater,
+  datehandle
 };

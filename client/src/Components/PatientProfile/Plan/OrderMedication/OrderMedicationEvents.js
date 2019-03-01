@@ -271,6 +271,7 @@ const calcuateDispense = ($this, e) => {
 const getItemStock = $this => {
   $this.props.getItemStock({
     uri: "/pharmacyGlobal/getItemandLocationStock",
+    module: "pharmacy",
     method: "GET",
     data: { item_id: $this.state.item_id },
     redux: {

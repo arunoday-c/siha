@@ -10,7 +10,7 @@
   color: #000 !important;
   background: #d2faf4 !important; }
   .ReactTable .rt-thead .rt-th .style_Label {
-    font-weight: bold !important;
+    font-weight: 500 !important;
     white-space: pre-line !important;
     padding: 3px 0 !important; }
 

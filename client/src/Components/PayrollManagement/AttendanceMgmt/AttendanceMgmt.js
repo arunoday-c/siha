@@ -14,31 +14,31 @@ export default class AttendanceMgmt extends Component {
     this.state = {
       pageDisplay: "MonthlyAttendance"
     };
-    this.getOptions();
+    // this.getOptions();
   }
 
-  getOptions() {
-    algaehApiCall({
-      uri: "/payrollOptions/getHrmsOptions",
-      method: "GET",
-      module: "hrManagement",
-      onSuccess: res => {
-        if (res.data.success) {
-          sessionStorage.removeItem("hrOptions");
-          sessionStorage.setItem(
-            "hrOptions",
-            AlgaehCloseContainer(JSON.stringify(res.data.result[0]))
-          );
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
-  }
+  // getOptions() {
+  //   algaehApiCall({
+  //     uri: "/payrollOptions/getHrmsOptions",
+  //     method: "GET",
+  //     module: "hrManagement",
+  //     onSuccess: res => {
+  //       if (res.data.success) {
+  //         sessionStorage.removeItem("hrOptions");
+  //         sessionStorage.setItem(
+  //           "hrOptions",
+  //           AlgaehCloseContainer(JSON.stringify(res.data.result[0]))
+  //         );
+  //       }
+  //     },
+  //     onFailure: err => {
+  //       swalMessage({
+  //         title: err.message,
+  //         type: "error"
+  //       });
+  //     }
+  //   });
+  // }
 
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");

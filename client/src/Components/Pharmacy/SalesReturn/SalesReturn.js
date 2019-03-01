@@ -54,6 +54,7 @@ class SalesReturn extends Component {
     ) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
@@ -68,6 +69,7 @@ class SalesReturn extends Component {
     ) {
       this.props.getLocation({
         uri: "/pharmacy/getPharmacyLocation",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",

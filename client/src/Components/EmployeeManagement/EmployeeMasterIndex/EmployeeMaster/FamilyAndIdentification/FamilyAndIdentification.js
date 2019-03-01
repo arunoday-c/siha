@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import "./FamilyAndIdentification.css";
 import {
   AlgaehDateHandler,
@@ -8,7 +8,7 @@ import {
   AlgaehLabel
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
-import { algaehApiCall } from "../../../../../utils/algaehApiCall";
+// import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 
 import {
   texthandle,
@@ -21,21 +21,22 @@ import {
   updateIdentifications,
   deleteDependencies,
   updateDependencies,
-  dateFormater
+  dateFormater,
+  datehandle
 } from "./FamilyAndIdentificationEvent";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import moment from "moment";
+// import moment from "moment";
 
-class FamilyAndIdentification extends PureComponent {
+class FamilyAndIdentification extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      idDetails: [],
-      deleteIdDetails: [],
-      dependentDetails: []
+      // idDetails: [],
+      // deleteIdDetails: [],
+      // dependentDetails: []
     };
   }
 
@@ -59,9 +60,8 @@ class FamilyAndIdentification extends PureComponent {
     }
   }
 
-  componentWillReceiveProps() {}
-
   render() {
+    debugger;
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">
@@ -89,6 +89,11 @@ class FamilyAndIdentification extends PureComponent {
                     onChange: texthandle.bind(this, this),
                     others: {
                       tabIndex: "1"
+                    },
+                    onClear: () => {
+                      this.setState({
+                        identity_documents_id: null
+                      });
                     }
                   }}
                 />
@@ -128,11 +133,7 @@ class FamilyAndIdentification extends PureComponent {
                   }}
                   maxDate={new Date()}
                   events={{
-                    onChange: selDate => {
-                      this.setState({
-                        issue_date: moment(selDate).format("YYYY-MM-DD")
-                      });
-                    }
+                    onChange: datehandle.bind(this, this)
                   }}
                   value={this.state.issue_date}
                 />
@@ -151,11 +152,7 @@ class FamilyAndIdentification extends PureComponent {
                   }}
                   //maxDate={new Date()}
                   events={{
-                    onChange: selDate => {
-                      this.setState({
-                        valid_upto: moment(selDate).format("YYYY-MM-DD")
-                      });
-                    }
+                    onChange: datehandle.bind(this, this)
                   }}
                   value={this.state.valid_upto}
                 />
@@ -326,7 +323,12 @@ class FamilyAndIdentification extends PureComponent {
                       valueField: "value",
                       data: variableJson.DEPENDENT_TYPE
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        dependent_type: null
+                      });
+                    }
                   }}
                 />
                 <AlagehFormGroup
@@ -360,7 +362,12 @@ class FamilyAndIdentification extends PureComponent {
                       valueField: "hims_d_identity_document_id",
                       data: this.props.idtypes
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        dependent_identity_type: null
+                      });
+                    }
                   }}
                 />
                 <AlagehFormGroup

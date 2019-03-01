@@ -43,6 +43,7 @@ class TransferEntry extends Component {
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
@@ -57,6 +58,7 @@ class TransferEntry extends Component {
     ) {
       this.props.getLocation({
         uri: "/pharmacy/getPharmacyLocation",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
@@ -71,7 +73,7 @@ class TransferEntry extends Component {
     ) {
       this.props.getUserLocationPermission({
         uri: "/pharmacyGlobal/getUserLocationPermission",
-        // module: "pharmacy",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",

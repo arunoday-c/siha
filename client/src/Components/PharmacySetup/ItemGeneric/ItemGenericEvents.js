@@ -25,7 +25,7 @@ const updateItemGeneric = ($this, data) => {
 
   algaehApiCall({
     uri: "/pharmacy/updateItemGeneric",
-    // module: "pharmacy",
+    module: "pharmacy",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -59,7 +59,7 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/pharmacy/updateItemGeneric",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: data,
         method: "PUT",
         onSuccess: response => {
@@ -93,7 +93,7 @@ const insertItemGeneric = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/pharmacy/addItemGeneric",
-        // module: "pharmacy",
+        module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -116,6 +116,7 @@ const insertItemGeneric = ($this, e) => {
 const getItemGeneric = $this => {
   $this.props.getItemGeneric({
     uri: "/pharmacy/getItemGeneric",
+    module: "pharmacy",
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",

@@ -43,6 +43,7 @@ const itemchangeText = ($this, e) => {
 
     $this.props.getSelectedItemDetais({
       uri: "/pharmacyGlobal/getUomLocationStock",
+      module: "pharmacy",
       method: "GET",
       data: {
         location_id: $this.state.from_location_id,
@@ -116,6 +117,7 @@ const AddItems = ($this, context) => {
 
     $this.props.getTransferData({
       uri: "/posEntry/getPrescriptionPOS",
+      module: "pharmacy",
       method: "POST",
       data: ItemInput,
       redux: {
@@ -304,6 +306,7 @@ const dateFormater = ($this, value) => {
 const getItemLocationStock = ($this, value) => {
   $this.props.getItemLocationStock({
     uri: "/pharmacyGlobal/getItemLocationStock",
+    module: "pharmacy",
     method: "GET",
     data: {
       location_id: $this.state.from_location_id,
