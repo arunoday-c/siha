@@ -105,16 +105,30 @@ const numberchangeTexts = ($this, context, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  if (value < 0) {
-    swalMessage({
-      title: "Quantity cannot be less than or equal to Zero",
-      type: "warning"
-    });
-  } else if (value > $this.state.qtyhand) {
-    swalMessage({
-      title: "Quantity cannot be greater than Quantity in hand",
-      type: "warning"
-    });
+  if (name === "quantity") {
+    if (value < 0) {
+      swalMessage({
+        title: "Quantity cannot be less than or equal to Zero",
+        type: "warning"
+      });
+    } else if (value > $this.state.qtyhand) {
+      swalMessage({
+        title: "Quantity cannot be greater than Quantity in hand",
+        type: "warning"
+      });
+    } else {
+      $this.setState({ [name]: value });
+
+      clearInterval(texthandlerInterval);
+      texthandlerInterval = setInterval(() => {
+        if (context !== undefined) {
+          context.updateState({
+            [name]: value
+          });
+        }
+        clearInterval(texthandlerInterval);
+      }, 500);
+    }
   } else {
     $this.setState({ [name]: value });
 
