@@ -22,6 +22,7 @@ import {
 import "./PointOfSale.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import ReactDOM from "react-dom";
 
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import PosListItems from "./PosListItems/PosListItems";
@@ -49,6 +50,7 @@ class PointOfSale extends Component {
       advance: 0,
       popUpGenereted: false
     };
+    this.onKeyPress = this.onKeyPress.bind(this);
   }
 
   componentWillMount() {
@@ -57,6 +59,8 @@ class PointOfSale extends Component {
   }
 
   componentDidMount() {
+    document.addEventListener("keypress", this.onKeyPress, false);
+
     if (
       this.props.positemlist === undefined ||
       this.props.positemlist.length === 0
@@ -122,13 +126,31 @@ class PointOfSale extends Component {
   //   this.setState({ ...this.state, ...posHeaderOut });
   // }
 
+  onKeyPress(e) {
+    debugger;
+    if (e.ctrlKey && e.keyCode === 9) {
+      // this.attReg.focus();
+      const element = ReactDOM.findDOMNode(
+        document.getElementById("root")
+      ).querySelector("input[name='item_id']");
+      element.focus();
+
+      // ReactDOM.findDOMNode()
+      // document.querySelector("[name='item_id']").focus();
+    }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keypress", this.onKeyPress, false);
+  }
+
   render() {
     const _posLocation = Enumerable.from(this.props.poslocations)
       .where(w => w.allow_pos === "Y")
       .toArray();
     return (
       <React.Fragment>
-        <div>
+        <div onKeyPress={this.onKeyPress}>
           {/* <BreadCrumb
             title={
               <AlgaehLabel

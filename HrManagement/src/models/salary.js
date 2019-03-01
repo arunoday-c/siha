@@ -10,6 +10,8 @@ module.exports = {
     return new Promise((resolve, reject) => {
       try {
         const utilities = new algaehUtilities();
+
+        utilities.logger().log("newProcessSalary: ");
         const input = req.query;
         const month_number = input.month;
         const year = input.year;
@@ -76,19 +78,44 @@ module.exports = {
               return;
             }
 
+            let avail_till_date = "";
+            if (input.month != 1) {
+              let months = "";
+              avail_till_date = "COALESCE(january, 0)";
+              for (let k = 2; k <= input.month; k++) {
+                months = moment(k, "MM").format("MMMM");
+                avail_till_date += "+" + "COALESCE(" + months + ", 0)";
+              }
+            } else {
+              utilities.logger().log("else: ");
+              avail_till_date = moment(input.month, "MM").format("MMMM");
+              utilities.logger().log("avail_till_date: ", avail_till_date);
+              avail_till_date = "COALESCE(" + avail_till_date + ", 0)";
+            }
             const month_name = moment(input.month, "MM").format("MMMM");
+
             let strQuery =
               "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
+              avail_till_date +
+              "as avail_till_date," +
               month_name +
               " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
                   FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
                   and ML.leave_id=LR.leave_header_id and LR.calculation_type='SL'and L.hims_d_leave_id = LR.leave_header_id and\
                   L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
               month_name +
-              " > 0 and (availed_till_date >= to_value   or availed_till_date >=from_value and availed_till_date <=to_value )\
+              " > 0 and (" +
+              avail_till_date +
+              " >= to_value   or " +
+              avail_till_date +
+              " >=from_value and " +
+              avail_till_date +
+              " <=to_value )\
                     and  employee_id in (?) and year=? union all	";
             strQuery +=
               "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
+              avail_till_date +
+              "as avail_till_date," +
               month_name +
               " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
                     FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
@@ -96,6 +123,25 @@ module.exports = {
                     L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
               month_name +
               " > 0 and  employee_id in (?) and year=? ;";
+            // let strQuery =
+            //   "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
+            //   month_name +
+            //   " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
+            //       FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
+            //       and ML.leave_id=LR.leave_header_id and LR.calculation_type='SL'and L.hims_d_leave_id = LR.leave_header_id and\
+            //       L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
+            //   month_name +
+            //   " > 0 and (availed_till_date >= to_value   or availed_till_date >=from_value and availed_till_date <=to_value )\
+            //         and  employee_id in (?) and year=? union all	";
+            // strQuery +=
+            //   "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
+            //   month_name +
+            //   " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
+            //         FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
+            //         and ML.leave_id=LR.leave_header_id and LR.calculation_type='CO'and L.hims_d_leave_id = LR.leave_header_id and \
+            //         L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
+            //   month_name +
+            //   " > 0 and  employee_id in (?) and year=? ;";
 
             _mysql
               .executeQuery({
@@ -479,7 +525,10 @@ module.exports = {
                           for (let k = 0; k < inserted_salary.length; k++) {
                             utilities
                               .logger()
-                              .log("insertId: ", inserted_salary[k].insertId);
+                              .log(
+                                "final_earning_amt_array: ",
+                                final_earning_amt_array[k]
+                              );
                             if (final_earning_amt_array[k].length > 0) {
                               for (
                                 let l = 0;
@@ -2465,6 +2514,9 @@ function getShortAge(options) {
 function getEarningComponents(options) {
   return new Promise((resolve, reject) => {
     try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("getEarningComponents: ");
+
       const _earnings = options.earnings;
       const empResult = options.empResult;
       const leave_salary = options.leave_salary;
@@ -2478,7 +2530,7 @@ function getEarningComponents(options) {
 
       let total_days = empResult["total_days"];
 
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       if (_earnings.length == 0) {
         resolve({ current_earning_amt_array, final_earning_amount });
@@ -2515,6 +2567,11 @@ function getEarningComponents(options) {
         } else if (obj["calculation_type"] == "V") {
           utilities.logger().log("leave_salary: ", leave_salary);
           if (leave_salary == null || leave_salary == undefined) {
+            utilities.logger().log("amount: ", obj["amount"]);
+            utilities.logger().log("total_days: ", empResult["total_days"]);
+            utilities
+              .logger()
+              .log("total_paid_days: ", empResult["total_paid_days"]);
             current_earning_per_day_salary = parseFloat(
               obj["amount"] / parseFloat(empResult["total_days"])
             );
@@ -2537,6 +2594,7 @@ function getEarningComponents(options) {
             current_earning_amt = 0;
           }
 
+          utilities.logger().log("current_earning_amt: ", current_earning_amt);
           //Apply Leave Rule
 
           if (leave_salary != "Y") {

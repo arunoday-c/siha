@@ -49,6 +49,7 @@ class PosListItems extends Component {
       selectBatchButton: true,
       viewInsurance: false
     };
+    // this.onKeyPress = this.onKeyPress.bind(this);
   }
 
   componentWillMount() {
@@ -57,6 +58,8 @@ class PosListItems extends Component {
   }
 
   componentDidMount() {
+    // document.addEventListener("keypress", this.onKeyPress, false);
+
     if (
       this.props.itemcategory === undefined ||
       this.props.itemcategory.length === 0
@@ -100,6 +103,21 @@ class PosListItems extends Component {
     }
   }
 
+  // onKeyPress(e) {
+  //   debugger;
+  //   if (e.ctrlKey && e.keyCode === 9) {
+  //     this.attReg.focus();
+  //     // const element = ReactDOM.findDOMNode("root").querySelector(
+  //     //   "[name='item_id']"
+  //     // );
+  //     // element.focus();
+  //   }
+  // }
+
+  componentWillUnmount() {
+    document.removeEventListener("keypress", this.onKeyPress, false);
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.POSIOputs);
   }
@@ -121,7 +139,7 @@ class PosListItems extends Component {
                               div={{ className: "col-lg-3" }}
                               label={{ forceLabel: "Item Name" }}
                               title="Testing Title"
-                              id="patient_code_search"
+                              id="item_search"
                               template={result => {
                                 return (
                                   <table>
@@ -142,7 +160,11 @@ class PosListItems extends Component {
                               //extraParameters={{}}
                               searchName="itemmaster"
                               onClick={itemchangeText.bind(this, this, context)}
+                              ref={attReg => {
+                                this.attReg = attReg;
+                              }}
                             />
+
                             {/* <AlagehAutoComplete
                               div={{ className: "col-lg-3" }}
                               label={{ forceLabel: "Item Name" }}
