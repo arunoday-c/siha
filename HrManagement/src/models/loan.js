@@ -15,58 +15,106 @@ module.exports = {
     try {
       const _mysql = new algaehMysql();
       let input = req.body;
+      mysql
+        .executeQuery({
+          query:
+            "select hims_d_employee_id,date_of_joining,exit_date ,employee_status from hims_d_employee\
+              where record_status='A' and  hims_d_employee_id=?",
 
-      _mysql
-        .generateRunningNumber({
-          modules: ["EMPLOYEE_LOAN"]
+          values: [input.employee_id],
+
+          printQuery: true
         })
-        .then(numGenLeave => {
-          _mysql
-            .executeQuery({
-              query:
-                "INSERT INTO `hims_f_loan_application` (loan_application_number,employee_id,loan_id,\
-            application_reason,loan_application_date,loan_amount,start_month,start_year,loan_tenure,\
-            installment_amount, pending_loan,created_date, created_by, updated_date, updated_by)\
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-              values: [
-                numGenLeave[0],
+        .then(emp => {
+          if (emp.length > 0) {
+            let today = moment(new Date()).format("YYYY-MM-DD");
 
-                input.employee_id,
-                input.loan_id,
-                input.application_reason,
-                new Date(),
-                input.loan_amount,
-                input.start_month,
-                input.start_year,
-                input.loan_tenure,
-                input.installment_amount,
-                input.loan_amount,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id
-              ],
+            if (emp[0].employee_status != "A") {
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "Cant apply for loan ,your status is inactive"
+              };
+              next();
+              return;
+            } else if (
+              emp[0].date_of_joining > today ||
+              emp[0].exit_date != null
+            ) {
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "Cant apply for loan before joining date"
+              };
+              next();
+              return;
+            } else {
+              _mysql
+                .generateRunningNumber({
+                  modules: ["EMPLOYEE_LOAN"]
+                })
+                .then(numGenLeave => {
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "INSERT INTO `hims_f_loan_application` (loan_application_number,employee_id,loan_id,\
+                application_reason,loan_application_date,loan_amount,start_month,start_year,loan_tenure,\
+                installment_amount, pending_loan,created_date, created_by, updated_date, updated_by)\
+                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                      values: [
+                        numGenLeave[0],
 
-              printQuery: true
-            })
-            .then(result => {
-              _mysql.commitTransaction(() => {
-                _mysql.releaseConnection();
-                req.records = result;
-                next();
-              });
-            })
-            .catch(e => {
-              utilities.logger().log("e: ", e);
-              _mysql.rollBackTransaction(() => {
-                next(e);
-              });
-            });
+                        input.employee_id,
+                        input.loan_id,
+                        input.application_reason,
+                        new Date(),
+                        input.loan_amount,
+                        input.start_month,
+                        input.start_year,
+                        input.loan_tenure,
+                        input.installment_amount,
+                        input.loan_amount,
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id,
+                        new Date(),
+                        req.userIdentity.algaeh_d_app_user_id
+                      ],
+
+                      printQuery: true
+                    })
+                    .then(result => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = result;
+                        next();
+                      });
+                    })
+                    .catch(e => {
+                      utilities.logger().log("e: ", e);
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
+                    });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            }
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Employee doesn't exist"
+            };
+            next();
+            return;
+          }
         })
         .catch(e => {
-          _mysql.rollBackTransaction(() => {
-            next(e);
-          });
+          _mysql.releaseConnection();
+          next(e);
         });
     } catch (e) {
       next(e);

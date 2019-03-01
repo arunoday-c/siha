@@ -3064,7 +3064,7 @@ module.exports = {
                 inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                 where attendance_date between ('${from_date}') and ('${to_date}') and employee_id in (${employee_ids})`;
   
-                  utilities.logger().log("biometric_ids : ", biometric_ids);
+               
                   //---------------------------------------------------
                   // connect to your database
                   sql.close();
@@ -3128,9 +3128,9 @@ module.exports = {
                           return;
                         }
   
-                        utilities
-                          .logger()
-                          .log("attResult", attResult["recordset"]);
+                        // utilities
+                        //   .logger()
+                        //   .log("attResult", attResult["recordset"]);
                         attendcResult = attResult["recordset"];
   
                         if (attendcResult.length > 0 && from_date == to_date) {
@@ -5199,7 +5199,7 @@ function insertTimeSheet(
       }
     }
 
-    utilities.logger().log("insertArray-66: ", insertArray);
+    // utilities.logger().log("insertArray-66: ", insertArray);
 
     let month = moment(from_date).format("M");
     let year = moment(from_date).format("YYYY");
