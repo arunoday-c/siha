@@ -2929,7 +2929,8 @@ module.exports = {
         input.hospital_id > 0
       ) {
         let attendcResult = [];
-        let standard_hours = "";
+        let standard_hours = 0;
+        let standard_mins = 0;
         let biometricData = [];
         let singleEmployee = "N";
         let shiftRange = "";
@@ -3036,7 +3037,8 @@ module.exports = {
                   options.length > 0 &&
                   options[0]["biometric_database"] == "SQL"
                 ) {
-                  standard_hours = options[0]["standard_working_hours"];
+                  standard_hours = options[0]["standard_working_hours"].toString().split(".")[0];
+                  standard_mins=options[0]["standard_working_hours"].toString().split(".")[1];
   
                   var sql = require("mssql");
   
@@ -3167,6 +3169,10 @@ module.exports = {
                               if(shiftData["shift_time"]>0){
                                 actual_hours=  shiftData.shift_time.toString().split(".")[0];
                                 actual_mins= shiftData.shift_time.toString().split(".")[1];
+                              }else{
+                                actual_hours=  standard_hours;
+                                actual_mins= standard_mins;
+                                
                               }
                                                     
                              
@@ -3271,7 +3277,9 @@ module.exports = {
                                     expected_out_time:shiftData.shift_end_time,
                                     hospital_id:AllEmployees[i]["hospital_id"],
                                     hours: outDateTime.diff(inDateTime, "hours"),
-                                    minutes: outDateTime.diff(inDateTime, "minute") % 60
+                                    minutes: outDateTime.diff(inDateTime, "minute") % 60,
+                                    year:moment( date_range[i]).format("YYYY"),
+                                    month:moment( date_range[i]).format("M")
                                   }
                                   );
   
@@ -3298,7 +3306,9 @@ module.exports = {
                                   expected_out_time:shiftData.shift_end_time,
                                   hospital_id:AllEmployees[i]["hospital_id"],
                                   hours: 0,
-                                  minutes: 0
+                                  minutes: 0,
+                                  year:moment( date_range[i]).format("YYYY"),
+                                  month:moment( date_range[i]).format("M")
                                 }
                                 );
   
@@ -3343,7 +3353,9 @@ module.exports = {
                                       expected_out_time:shiftData.shift_end_time,
                                       hospital_id:AllEmployees[i]["hospital_id"],
                                       hours: s.Duration.split(".")[0],
-                                      minutes: s.Duration.split(".")[1]
+                                      minutes: s.Duration.split(".")[1],
+                                      year:moment( date_range[i]).format("YYYY"),
+                                      month:moment( date_range[i]).format("M")
                                     };
                                   })
                                   .FirstOrDefault({
@@ -3366,7 +3378,9 @@ module.exports = {
                                     expected_out_time:shiftData.shift_end_time,
                                     hospital_id:AllEmployees[i]["hospital_id"],
                                     hours: 0,
-                                    minutes: 0
+                                    minutes: 0,
+                                    year:moment( date_range[i]).format("YYYY"),
+                                    month:moment( date_range[i]).format("M")
                                   })
                               );
                             }
@@ -3434,10 +3448,17 @@ module.exports = {
 
                             let actual_hours= 0;
                             let actual_mins= 0;
+                        
+
                           if(shiftData["shift_time"]>0){
                             actual_hours=  shiftData.shift_time.toString().split(".")[0];
                             actual_mins= shiftData.shift_time.toString().split(".")[1];
+                          }else{
+                            actual_hours=  standard_hours;
+                            actual_mins= standard_mins;
+                            
                           }
+
 
                             utilities.logger().log("i ", date_range[i]);
   
@@ -3470,7 +3491,9 @@ module.exports = {
                                     expected_out_time:shiftData.shift_end_time,
                                     hospital_id:AllEmployees[0]["hospital_id"],
                                     hours: s.Duration.split(".")[0],
-                                    minutes: s.Duration.split(".")[1]
+                                    minutes: s.Duration.split(".")[1],
+                                    year:moment( date_range[i]).format("YYYY"),
+                                    month:moment( date_range[i]).format("M")
                                   };
                                 })
                                 .FirstOrDefault({
@@ -3493,7 +3516,9 @@ module.exports = {
                                   expected_out_time:shiftData.shift_end_time,
                                   hospital_id:AllEmployees[0]["hospital_id"],
                                   hours: 0,
-                                  minutes: 0
+                                  minutes: 0,
+                                  year:moment( date_range[i]).format("YYYY"),
+                                  month:moment( date_range[i]).format("M")
                                 })
                             );
                           }
@@ -3979,7 +4004,7 @@ module.exports = {
       'PEN' as regularize_status,attendance_date as login_date,\
       out_date as logout_date,in_time as punch_in_time,\
       out_time as punch_out_time from hims_f_daily_time_sheet where  \
-       date(attendance_date)>=date(?) and date(out_date) <=date(?) and status='EX' ";
+       date(attendance_date)>=date(?) and date(out_date) <=date(?) and status='EX' or status='AB' ";
 
       if (input.hims_d_employee_id != null) {
         _QueryDtl += " and employee_id=?;";
@@ -3997,21 +4022,29 @@ module.exports = {
         .then(result => {
           if (result.length > 0) {
             let _query = "";
+
+            
             for (let i = 0; i < result.length; i++) {
               _query += _mysql.mysqlQueryFormat(
                 "insert into hims_f_attendance_regularize(`employee_id`,`attendance_date`,\
-              `regularize_status`,`login_date`,`logout_date`,`punch_in_time`,`punch_out_time`)values(?,?,?,?,?,?,?)\
+              `regularize_status`,`login_date`,`logout_date`,`punch_in_time`,`punch_out_time`,created_by, created_date, updated_by, updated_date)values(?,?,?,?,?,?,?,?,?,?,?)\
               ON DUPLICATE KEY UPDATE `punch_in_time`=?,`punch_out_time`=?;",
                 [
                   result[i]["employee_id"],
                   result[i]["attendance_date"],
-                  result[i]["regularize_status"],
+                  "NFD",
                   result[i]["login_date"],
                   result[i]["logout_date"],
                   result[i]["punch_in_time"],
                   result[i]["punch_out_time"],
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+
                   result[i]["punch_in_time"],
                   result[i]["punch_out_time"]
+
                 ]
               );
             }
@@ -4110,7 +4143,7 @@ module.exports = {
               req.records = {
                 invalid_input: true,
                 employees: excptions,
-                message: "Please Regularize attendance for these employees"
+                message: "PLease Notify Exceptions to proceed"
               };
               next();
               return;
@@ -4529,7 +4562,7 @@ module.exports = {
                         invalid_input: true,
                         employees: excptions,
                         message:
-                          "Please Regularize attendance for these employees"
+                          "PLease Notify Exceptions to proceed"
                       };
                       next();
                       return;
@@ -5201,8 +5234,8 @@ function insertTimeSheet(
 
     utilities.logger().log("insertArray-66: ", insertArray);
 
-    let month = moment(from_date).format("M");
-    let year = moment(from_date).format("YYYY");
+    // let month = moment(from_date).format("M");
+    // let year = moment(from_date).format("YYYY");
     const insurtColumns = [
       "sub_department_id",
       "employee_id",      
@@ -5219,7 +5252,9 @@ function insertTimeSheet(
       "actual_minutes",
       "expected_out_date",
       "expected_out_time",
-      "hospital_id"
+      "hospital_id",
+      "year",
+      "month"
     ];
 
     // "INSERT INTO hims_f_daily_time_sheet(??) VALUES ?  ON DUPLICATE KEY UPDATE employee_id=values(employee_id),\
@@ -5232,7 +5267,7 @@ function insertTimeSheet(
           "INSERT IGNORE INTO hims_f_daily_time_sheet(??) VALUES ? ",
         values: insertArray,
         includeValues: insurtColumns,
-        extraValues: { year: year, month: month },
+        
         bulkInsertOrUpdate: true
       })
       .then(finalResult => {
