@@ -307,15 +307,6 @@ export default class WeeklyAttendance extends Component {
   }
 
   postTimeSheet() {
-    // let _fromDate =
-    //   this.state.attendance_type === "MW"
-    //     ? this.state.attendance_date
-    //     : this.state.from_date;
-    // let _toDate =
-    //   this.state.attendance_type === "MW"
-    //     ? this.state.attendance_date
-    //     : this.state.to_date;
-
     let _fromDate = this.state.from_date;
     let _toDate = this.state.to_date;
 
@@ -350,6 +341,11 @@ export default class WeeklyAttendance extends Component {
           swalMessage({
             title: "Posted Successfully. . ",
             type: "success"
+          });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.result.message,
+            type: "warning"
           });
         }
       },

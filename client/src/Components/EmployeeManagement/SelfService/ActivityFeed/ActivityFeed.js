@@ -25,7 +25,7 @@ export default class ActivityFeed extends Component {
       method: "GET",
       data: {
         employee_id: this.state.hims_d_employee_id,
-        requested: "NFD"
+        status: "NFD"
       },
       onSuccess: res => {
         if (res.data.success) {
