@@ -320,6 +320,19 @@ let algaehSearchConfig = searchName => {
           from algaeh_d_app_user U inner join  hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
           inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id",
         orderBy: "algaeh_d_app_user_id desc"
+      },
+      {
+        searchName: "itemmaster",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS IM.hims_d_item_master_id, IM.item_description, IM.category_id, IM.sales_uom_id,\
+          IM.service_id, IM.group_id, IC.category_desc, IE.generic_name,\
+          IG.group_description, PU.uom_description,SR.standard_fee from hims_d_item_master IM, hims_d_item_category IC, \
+          hims_d_item_generic IE, hims_d_item_group IG, hims_d_pharmacy_uom PU, hims_d_services SR where \
+          IM.category_id = IC.hims_d_item_category_id and IM.group_id = IG.hims_d_item_group_id and \
+          IM.generic_id = IE.hims_d_item_generic_id and IM.sales_uom_id=PU.hims_d_pharmacy_uom_id and \
+          IM.service_id= SR.hims_d_services_id  and IM.item_status='A' and IM.record_status='A' and \
+          IC.record_status='A' and IE.record_status='A' and IG.record_status='A' ",
+        orderBy: "IM.hims_d_item_master_id desc"
       }
     ]
   };

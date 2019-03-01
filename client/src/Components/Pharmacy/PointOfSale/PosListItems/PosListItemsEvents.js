@@ -130,11 +130,12 @@ const numberchangeTexts = ($this, context, e) => {
   }
 };
 
-const itemchangeText = ($this, context, e) => {
-  let name = e.name || e.target.name;
+const itemchangeText = ($this, context, e, ctrl) => {
+  debugger;
+  let name = ctrl;
   if ($this.state.location_id !== null) {
-    if (e.selected.service_id !== null) {
-      let value = e.value || e.target.value;
+    if (e.service_id !== null) {
+      let value = e.hims_d_item_master_id;
 
       algaehApiCall({
         uri: "/pharmacyGlobal/getUomLocationStock",
@@ -148,13 +149,13 @@ const itemchangeText = ($this, context, e) => {
           if (response.data.success) {
             let data = response.data.records;
             if (data.locationResult.length > 0) {
-              getUnitCost($this, context, e.selected.service_id);
+              getUnitCost($this, context, e.service_id);
               $this.setState({
                 [name]: value,
-                item_category: e.selected.category_id,
-                uom_id: e.selected.sales_uom_id,
-                service_id: e.selected.service_id,
-                item_group_id: e.selected.group_id,
+                item_category: e.category_id,
+                uom_id: e.sales_uom_id,
+                service_id: e.service_id,
+                item_group_id: e.group_id,
                 quantity: 1,
                 expiry_date: data.locationResult[0].expirydt,
                 batchno: data.locationResult[0].batchno,
@@ -162,16 +163,17 @@ const itemchangeText = ($this, context, e) => {
                 qtyhand: data.locationResult[0].qtyhand,
                 ItemUOM: data.uomResult,
                 Batch_Items: data.locationResult,
-                addItemButton: false
+                addItemButton: false,
+                item_description: e.item_description
               });
 
               if (context !== undefined) {
                 context.updateState({
                   [name]: value,
-                  item_category: e.selected.category_id,
-                  uom_id: e.selected.sales_uom_id,
-                  service_id: e.selected.service_id,
-                  item_group_id: e.selected.group_id,
+                  item_category: e.category_id,
+                  uom_id: e.sales_uom_id,
+                  service_id: e.service_id,
+                  item_group_id: e.group_id,
                   quantity: 1,
 
                   expiry_date: data.locationResult[0].expirydt,
@@ -449,11 +451,13 @@ const AddItems = ($this, context) => {
                 grn_no: null,
                 item_group_id: null,
                 item_category: null,
-                qtyhand: 0
+                qtyhand: 0,
+                discount_percentage: 0
               });
             }
 
             $this.setState({
+              item_description: "",
               item_id: null,
               uom_id: null,
               batchno: null,
@@ -466,7 +470,8 @@ const AddItems = ($this, context) => {
               grn_no: null,
               item_group_id: null,
               selectBatchButton: false,
-              qtyhand: 0
+              qtyhand: 0,
+              discount_percentage: 0
             });
 
             algaehApiCall({
