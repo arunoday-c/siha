@@ -19,7 +19,8 @@ export default class SelfService extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "ActivityFeed"
+      pageDisplay: "ActivityFeed",
+      regularize: {}
     };
     this.getEmployeeDetails();
   }
@@ -56,6 +57,7 @@ export default class SelfService extends Component {
     if (options.pageDisplay === "AttendanceRegularization") {
       this.attReg.click();
     }
+    this.setState(...options);
   }
 
   render() {
@@ -257,7 +259,10 @@ export default class SelfService extends Component {
           ) : this.state.pageDisplay === "SelfPersonalDetails" ? (
             <SelfPersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (
-            <AttendanceRegularization empData={this.state.employee_details} />
+            <AttendanceRegularization
+              regularize={this.state.regularize}
+              empData={this.state.employee_details}
+            />
           ) : this.state.pageDisplay === "ApplyLeave" ? (
             <ApplyLeave empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "LoanRequest" ? (

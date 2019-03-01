@@ -3412,7 +3412,7 @@ module.exports = {
                             .Where(
                               w =>
                                 w.employee_id ==
-                                  AllEmployees[i]["hims_d_employee_id"] &&
+                                  AllEmployees[0]["hims_d_employee_id"] &&
                                 w.shift_date == from_date
                             )
                             .Select(s => {
@@ -3459,7 +3459,7 @@ module.exports = {
                                     worked_hours: s.Duration,
                                     employee_id:
                                       AllEmployees[0]["hims_d_employee_id"],
-                                      sub_department_id: AllEmployees[i]["sub_department_id"],
+                                      sub_department_id: AllEmployees[0]["sub_department_id"],
                                     religion_id: AllEmployees[0]["religion_id"],
                                     date_of_joining:
                                       AllEmployees[0]["date_of_joining"],
@@ -3468,7 +3468,7 @@ module.exports = {
                                     actual_minutes:actual_mins,
                                     expected_out_date:shiftData.shift_end_date,
                                     expected_out_time:shiftData.shift_end_time,
-                                    hospital_id:AllEmployees[i]["hospital_id"],
+                                    hospital_id:AllEmployees[0]["hospital_id"],
                                     hours: s.Duration.split(".")[0],
                                     minutes: s.Duration.split(".")[1]
                                   };
@@ -3482,7 +3482,7 @@ module.exports = {
                                   worked_hours: 0,
                                   employee_id:
                                     AllEmployees[0]["hims_d_employee_id"],
-                                    sub_department_id: AllEmployees[i]["sub_department_id"],
+                                    sub_department_id: AllEmployees[0]["sub_department_id"],
                                   religion_id: AllEmployees[0]["religion_id"],
                                   date_of_joining:
                                     AllEmployees[0]["date_of_joining"],
@@ -3491,7 +3491,7 @@ module.exports = {
                                   actual_minutes:actual_mins,
                                   expected_out_date:shiftData.shift_end_date,
                                   expected_out_time:shiftData.shift_end_time,
-                                  hospital_id:AllEmployees[i]["hospital_id"],
+                                  hospital_id:AllEmployees[0]["hospital_id"],
                                   hours: 0,
                                   minutes: 0
                                 })
@@ -4106,7 +4106,7 @@ module.exports = {
 
             utilities.logger().log("excptions: ", excptions);
 
-            if (excptions.length == 0) {
+            if (excptions.length > 0) {
               req.records = {
                 invalid_input: true,
                 employees: excptions,
@@ -4727,7 +4727,7 @@ module.exports = {
                         .logger()
                         .log("RosterAttendance: ", RosterAttendance);
 
-                      mergedArray = dailyAttendance.concat(RosterAttendance);
+                      mergedArray = RosterAttendance.concat(dailyAttendance); 
 
                       utilities.logger().log("mergedArray: ", mergedArray);
 

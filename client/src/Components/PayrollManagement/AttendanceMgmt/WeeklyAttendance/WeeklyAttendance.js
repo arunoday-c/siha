@@ -203,6 +203,14 @@ export default class WeeklyAttendance extends Component {
 
   getDailyTimeSheet() {
     if (
+      this.state.sub_department_id === null ||
+      this.state.sub_department_id === undefined
+    ) {
+      swalMessage({
+        title: "Please select a Department to view ",
+        type: "warning"
+      });
+    } else if (
       this.state.attendance_type === "MW" &&
       (this.state.hims_d_employee_id === null ||
         this.state.hims_d_employee_id === undefined)
@@ -212,8 +220,9 @@ export default class WeeklyAttendance extends Component {
         type: "warning"
       });
     } else if (
+      this.state.attendance_type !== "MW" &&
       moment(this.state.from_date).format("YYYYMMDD") >
-      moment(this.state.to_date).format("YYYYMMDD")
+        moment(this.state.to_date).format("YYYYMMDD")
     ) {
       swalMessage({
         title: "Please set a proper date range",
@@ -298,23 +307,44 @@ export default class WeeklyAttendance extends Component {
   }
 
   postTimeSheet() {
-    let _fromDate =
-      this.state.attendance_type === "DW"
-        ? this.state.attendance_date
-        : this.state.from_date;
-    let _toDate =
-      this.state.attendance_type === "DW"
-        ? this.state.attendance_date
-        : this.state.to_date;
+    // let _fromDate =
+    //   this.state.attendance_type === "MW"
+    //     ? this.state.attendance_date
+    //     : this.state.from_date;
+    // let _toDate =
+    //   this.state.attendance_type === "MW"
+    //     ? this.state.attendance_date
+    //     : this.state.to_date;
+
+    let _fromDate = this.state.from_date;
+    let _toDate = this.state.to_date;
+
+    if (this.state.attendance_type === "MW") {
+      let date = this.state.year + "-" + this.state.month + "-01";
+
+      _fromDate = moment(date)
+        .startOf("month")
+        .format("YYYY-MM-DD");
+      _toDate = moment(date)
+        .endOf("month")
+        .format("YYYY-MM-DD");
+    }
 
     algaehApiCall({
-      uri: "/holiday/postTimeSheet",
+      uri:
+        this.state.attendance_type === "MW"
+          ? "/attendance/postTimeSheetMonthWise"
+          : "/attendance/postTimeSheet",
       method: "GET",
       data: {
         from_date: _fromDate,
         to_date: _toDate,
-        hims_d_employee_id: this.state.hims_d_employee_id
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id,
+        sub_department_id: this.state.sub_department_id,
+        attendance_type: this.state.attendance_type
       },
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           swalMessage({
@@ -679,6 +709,7 @@ export default class WeeklyAttendance extends Component {
 
           <div className="col form-group">
             <button
+              disabled={this.state.loader}
               onClick={this.getDailyTimeSheet.bind(this)}
               style={{ marginTop: 21 }}
               className="btn btn-primary"

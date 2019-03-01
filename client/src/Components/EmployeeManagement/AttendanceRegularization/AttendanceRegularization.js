@@ -19,6 +19,10 @@ export default class AttendanceRegularization extends Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    console.log("REGZ", nextProps.regularize);
+  }
+
   loadRegularizationList() {
     AlgaehValidation({
       alertTypeIcon: "warning",

@@ -47,7 +47,16 @@ export default class ActivityFeed extends Component {
     e.preventDefault();
 
     this.props.parent.ChangeRenderTabs({
-      pageDisplay: "AttendanceRegularization"
+      pageDisplay: "AttendanceRegularization",
+      regularize: {
+        hims_f_attendance_regularize_id: 201,
+        login_date: "2019-01-17",
+        logout_date: "2019-01-17",
+        punch_in_time: null,
+        punch_out_time: "15:26:00",
+        regularize_in_time: "06:00:06",
+        regularize_out_time: "15:26:00"
+      }
     });
   }
 
@@ -85,7 +94,8 @@ export default class ActivityFeed extends Component {
                     Sep 27, 03:48 PM by <i>Aboobacker Sidhiqe - Manager</i>
                   </div>
                   <div className="text">
-                    Sick Leave Approved for<a href="#">26 Dec 2018</a>
+                    Sick Leave Approved for
+                    <a onClick={this.skipTab.bind(this)}>26 Dec 2018</a>
                   </div>
                 </div>
               </div>
