@@ -151,3 +151,31 @@
     max-width: 95vw !important;
   }
 }
+.ui.search {
+  .resultSecStyles {
+    .title {
+      color: $color-black;
+    }
+    .price {
+      color: $primary-color;
+      font-size: 1.2rem;
+    }
+    small {
+      display: block;
+      &:last-child {
+        text-transform: uppercase;
+        color: lighten($color-black, 50%);
+      }
+    }
+  }
+  .input {
+    width: 100%;
+  }
+  .prompt {
+    border-radius: 0.28571429rem;
+  }
+  .results {
+    margin-top: 0;
+    width: 100%;
+  }
+}

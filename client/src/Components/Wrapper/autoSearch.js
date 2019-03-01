@@ -69,7 +69,7 @@ export default class AlgaehAutoSearch extends Component {
     );
   }
   generateTemplate(details) {
-    return <div key={details.title}>{this.props.template(details)}</div>;
+    return this.props.template(details);
   }
   generateInputParm() {
     const { columns, extraParameters, searchName } = this.props;
@@ -123,7 +123,11 @@ export default class AlgaehAutoSearch extends Component {
       this.props.fullWidth !== undefined ? { fluid: this.props.fullWidth } : {};
 
     return (
-      <React.Fragment>
+      <div
+        className={
+          this.props.div !== undefined ? this.props.div.className : null
+        }
+      >
         {this.renderLabel()}
         <Search
           loading={isLoading}
@@ -138,7 +142,7 @@ export default class AlgaehAutoSearch extends Component {
           name={this.props.name}
           resultRenderer={this.generateTemplate.bind(this)}
         />
-      </React.Fragment>
+      </div>
     );
   }
 }

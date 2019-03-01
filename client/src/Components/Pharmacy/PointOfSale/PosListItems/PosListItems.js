@@ -118,21 +118,35 @@ class PosListItems extends Component {
                         <div className="portlet portlet-bordered margin-bottom-15">
                           <div className="row">
                             <AlgaehAutoSearch
-                              div={{ className: "col-lg-3" }}
+                              div={{ className: "col-3" }}
                               label={{ forceLabel: "Item Name" }}
-                              title="Testing Title"
-                              id="patient_code_search"
+                              title="Search Items"
+                              id="item_id_search"
                               template={result => {
                                 return (
-                                  <table>
-                                    <tr>
+                                  <section className="resultSecStyles">
+                                    <div className="row">
+                                      <div className="col-8">
+                                        <h4 className="title">
+                                          {result.item_description}
+                                        </h4>
+                                        <small>{result.generic_name}</small>
+                                        <small>{result.uom_description}</small>
+                                      </div>
+                                      <div className="col-4">
+                                        <h6 className="price">
+                                          {result.standard_fee}
+                                        </h6>
+                                      </div>
+                                    </div>
+                                    {/* <tr>
                                       <td>{result.item_description}</td>
                                       <td>{result.category_desc}</td>
                                       <td>{result.generic_name}</td>
                                       <td>{result.uom_description}</td>
                                       <td>{result.standard_fee}</td>
-                                    </tr>
-                                  </table>
+                                    </tr> */}
+                                  </section>
                                 );
                               }}
                               name="item_id"
@@ -143,65 +157,6 @@ class PosListItems extends Component {
                               searchName="itemmaster"
                               onClick={itemchangeText.bind(this, this, context)}
                             />
-                            {/* <AlagehAutoComplete
-                              div={{ className: "col-lg-3" }}
-                              label={{ forceLabel: "Item Name" }}
-                              selector={{
-                                name: "item_id",
-                                className: "select-fld",
-                                value: this.state.item_id,
-                                dataSource: {
-                                  textField: "item_description",
-                                  valueField: "hims_d_item_master_id",
-                                  data: this.props.positemlist
-                                },
-                                onChange: itemchangeText.bind(
-                                  this,
-                                  this,
-                                  context
-                                ),
-                                others: {
-                                  disabled: this.state.dataExitst,
-                                  tabIndex: "1"
-                                }
-                              }}
-                            /> */}
-                            {/* <AlagehAutoComplete
-                              div={{ className: "col" }}
-                              label={{ forceLabel: "Item Category" }}
-                              selector={{
-                                name: "item_category",
-                                className: "select-fld",
-                                value: this.state.item_category,
-                                dataSource: {
-                                  textField: "category_desc",
-                                  valueField: "hims_d_item_category_id",
-                                  data: this.props.itemcategory
-                                },
-                                others: {
-                                  disabled: true
-                                },
-                                onChange: null
-                              }}
-                            />
-                            <AlagehAutoComplete
-                              div={{ className: "col" }}
-                              label={{ forceLabel: "Item Group" }}
-                              selector={{
-                                name: "item_group_id",
-                                className: "select-fld",
-                                value: this.state.item_group_id,
-                                dataSource: {
-                                  textField: "group_description",
-                                  valueField: "hims_d_item_group_id",
-                                  data: this.props.itemgroup
-                                },
-                                others: {
-                                  disabled: true
-                                },
-                                onChange: null
-                              }}
-                            /> */}
                             <AlagehFormGroup
                               div={{ className: "col" }}
                               label={{
