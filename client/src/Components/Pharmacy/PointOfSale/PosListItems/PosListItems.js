@@ -153,7 +153,10 @@ class PosListItems extends Component {
                                       </div>
                                       <div className="col-4">
                                         <h6 className="price">
-                                          {result.standard_fee}
+                                          {/* {result.standard_fee} */}
+                                          {getAmountFormart(
+                                            result.standard_fee
+                                          )}
                                         </h6>
                                       </div>
                                     </div>
