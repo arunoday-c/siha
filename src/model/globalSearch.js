@@ -145,6 +145,7 @@ const newSearch = (req, res, next) => {
   _values.push(offSet);
 
   const _query = mysql.format(_hasQuery, _values);
+  console.log("_query", _query);
   try {
     db.getConnection((error, connection) => {
       if (error) {
