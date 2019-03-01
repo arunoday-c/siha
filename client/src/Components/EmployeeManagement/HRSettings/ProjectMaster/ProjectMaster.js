@@ -69,7 +69,7 @@ class EmployeeGroups extends Component {
         <div className="col-lg-12">
           <div className="row" data-validate="project">
             <AlagehFormGroup
-              div={{ className: "col mandatory" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Code",
                 isImp: true
@@ -84,7 +84,7 @@ class EmployeeGroups extends Component {
               }}
             />
             <AlagehFormGroup
-              div={{ className: "col mandatory" }}
+              div={{ className: "col" }}
               label={{
                 forceLabel: "Description",
                 isImp: true
@@ -101,7 +101,7 @@ class EmployeeGroups extends Component {
 
             <AlagehFormGroup
               div={{
-                className: "col mandatory arabic-txt-fld"
+                className: "col arabic-txt-fld"
               }}
               label={{
                 forceLabel: "Arabic Description",
@@ -121,7 +121,7 @@ class EmployeeGroups extends Component {
             />
 
             <AlgaehDateHandler
-              div={{ className: "col mandatory" }}
+              div={{ className: "col" }}
               label={{ forceLabel: "Start Date", isImp: true }}
               textBox={{ className: "txt-fld", name: "start_date" }}
               events={{
@@ -130,7 +130,7 @@ class EmployeeGroups extends Component {
               value={this.state.start_date}
             />
             <AlgaehDateHandler
-              div={{ className: "col mandatory" }}
+              div={{ className: "col" }}
               label={{ forceLabel: "End Date", isImp: true }}
               textBox={{ className: "txt-fld", name: "end_date" }}
               events={{
