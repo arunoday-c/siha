@@ -13,6 +13,8 @@ import {
   AlgaehDateHandler
 } from "../../../Wrapper/algaehWrapper";
 
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+
 import {
   discounthandle,
   itemchangeText,
@@ -37,6 +39,7 @@ import { AlgaehActions } from "../../../../actions/algaehActions";
 import ItemBatchs from "../ItemBatchs/ItemBatchs";
 import DisplayInsuranceDetails from "../DisplayInsuranceDetails/DisplayInsuranceDetails";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 class PosListItems extends Component {
   constructor(props) {
@@ -114,7 +117,33 @@ class PosListItems extends Component {
                       <div className="col-lg-12">
                         <div className="portlet portlet-bordered margin-bottom-15">
                           <div className="row">
-                            <AlagehAutoComplete
+                            <AlgaehAutoSearch
+                              div={{ className: "col-lg-3" }}
+                              label={{ forceLabel: "Item Name" }}
+                              title="Testing Title"
+                              id="patient_code_search"
+                              template={result => {
+                                return (
+                                  <table>
+                                    <tr>
+                                      <td>{result.item_description}</td>
+                                      <td>{result.category_desc}</td>
+                                      <td>{result.generic_name}</td>
+                                      <td>{result.uom_description}</td>
+                                      <td>{result.standard_fee}</td>
+                                    </tr>
+                                  </table>
+                                );
+                              }}
+                              name="item_id"
+                              columns={spotlightSearch.pharmacy.itemmaster}
+                              displayField="item_description"
+                              value={this.state.item_description}
+                              //extraParameters={{}}
+                              searchName="itemmaster"
+                              onClick={itemchangeText.bind(this, this, context)}
+                            />
+                            {/* <AlagehAutoComplete
                               div={{ className: "col-lg-3" }}
                               label={{ forceLabel: "Item Name" }}
                               selector={{
@@ -136,7 +165,7 @@ class PosListItems extends Component {
                                   tabIndex: "1"
                                 }
                               }}
-                            />
+                            /> */}
                             {/* <AlagehAutoComplete
                               div={{ className: "col" }}
                               label={{ forceLabel: "Item Category" }}

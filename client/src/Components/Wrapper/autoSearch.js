@@ -1,7 +1,9 @@
 import React, { Component } from "react";
-import { Search, SearchResult } from "semantic-ui-react";
+import { Search } from "semantic-ui-react";
 import _ from "lodash";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
+import Label from "./label";
+
 export default class AlgaehAutoSearch extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +23,16 @@ export default class AlgaehAutoSearch extends Component {
     this.setState({
       value: this.props.value
     });
+  }
+
+  componentWillReceiveProps(props) {
+    debugger;
+    if (this.state.hasSecurity) return;
+    if (props.value !== this.state.value) {
+      this.setState({
+        value: props.value
+      });
+    }
   }
 
   handleSearchChange = (e, { value }) => {
@@ -46,9 +58,15 @@ export default class AlgaehAutoSearch extends Component {
     );
   };
   onResultSelectHandler(e, { result }) {
-    this.setState({
-      value: result[this.props.displayField]
-    });
+    this.setState(
+      {
+        value: result[this.props.displayField]
+      },
+      () => {
+        if (typeof this.props.onClick === "function")
+          this.props.onClick(result, this.props.name);
+      }
+    );
   }
   generateTemplate(details) {
     return <div key={details.title}>{this.props.template(details)}</div>;
@@ -95,6 +113,9 @@ export default class AlgaehAutoSearch extends Component {
     });
   }
   onSelectionChangeHandler(event, data) {}
+  renderLabel = () => {
+    return <Label label={this.props.label} />;
+  };
   render() {
     const { isLoading, results, value } = this.state;
 
@@ -102,18 +123,22 @@ export default class AlgaehAutoSearch extends Component {
       this.props.fullWidth !== undefined ? { fluid: this.props.fullWidth } : {};
 
     return (
-      <Search
-        loading={isLoading}
-        results={results}
-        onSearchChange={_.debounce(this.handleSearchChange, 500, {
-          leading: true
-        })}
-        placeholder={this.props.title}
-        {..._fluid}
-        onResultSelect={this.onResultSelectHandler}
-        value={value}
-        resultRenderer={this.generateTemplate.bind(this)}
-      />
+      <React.Fragment>
+        {this.renderLabel()}
+        <Search
+          loading={isLoading}
+          results={results}
+          onSearchChange={_.debounce(this.handleSearchChange, 500, {
+            leading: true
+          })}
+          placeholder={this.props.title}
+          {..._fluid}
+          onResultSelect={this.onResultSelectHandler}
+          value={value}
+          name={this.props.name}
+          resultRenderer={this.generateTemplate.bind(this)}
+        />
+      </React.Fragment>
     );
   }
 }
