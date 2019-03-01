@@ -24,7 +24,7 @@ const updateLabAnalytes = ($this, data) => {
 
   algaehApiCall({
     uri: "/labmasters/updateAnalytes",
-    // module: "laboratory",
+    module: "laboratory",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -35,7 +35,7 @@ const updateLabAnalytes = ($this, data) => {
         });
         $this.props.getLabAnalytes({
           uri: "/labmasters/selectAnalytes",
-          // module: "laboratory",
+          module: "laboratory",
           method: "GET",
           redux: {
             type: "ANALYTES_GET_DATA",
@@ -65,7 +65,7 @@ const showconfirmDialog = ($this, id) => {
       };
       algaehApiCall({
         uri: "/labmasters/deleteAnalytes",
-        // module: "laboratory",
+        module: "laboratory",
         data: data,
         method: "DELETE",
         onSuccess: response => {
@@ -76,7 +76,7 @@ const showconfirmDialog = ($this, id) => {
             });
             $this.props.getLabAnalytes({
               uri: "/labmasters/selectAnalytes",
-              // module: "laboratory",
+              module: "laboratory",
               method: "GET",
               redux: {
                 type: "ANALYTES_GET_DATA",
@@ -108,7 +108,7 @@ const insertLabAnalytes = ($this, e) => {
     onSuccess: () => {
       algaehApiCall({
         uri: "/labmasters/insertAnalytes",
-        // module: "laboratory",
+        module: "laboratory",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -116,7 +116,7 @@ const insertLabAnalytes = ($this, e) => {
             //Handle Successful Add here
             $this.props.getLabAnalytes({
               uri: "/labmasters/selectAnalytes",
-              // module: "laboratory",
+              module: "laboratory",
               method: "GET",
               redux: {
                 type: "ANALYTES_GET_DATA",

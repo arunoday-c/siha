@@ -125,6 +125,7 @@ const AddItems = ($this, context) => {
 
   $this.props.generateBill({
     uri: "/billing/getBillDetails",
+    module: "billing",
     method: "POST",
     data: ItemInput,
     redux: {
@@ -188,6 +189,7 @@ const AddItems = ($this, context) => {
 
         $this.props.SalesReturnCalculations({
           uri: "/billing/billingCalculations",
+          module: "billing",
           method: "POST",
           data: { billdetails: existingservices },
           redux: {
@@ -212,6 +214,7 @@ const deleteSalesReturnDetail = ($this, context, row) => {
 
   $this.props.SalesReturnCalculations({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: { billdetails: pharmacy_stock_detail },
     redux: {
@@ -276,6 +279,7 @@ const updateSalesReturnDetail = ($this, context) => {
   if ($this.state.dataChange === true) {
     $this.props.SalesReturnCalculations({
       uri: "/billing/billingCalculations",
+      module: "billing",
       method: "POST",
       data: { billdetails: $this.state.pharmacy_stock_detail },
       redux: {
@@ -340,6 +344,7 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
 
     $this.props.generateBill({
       uri: "/billing/getBillDetails",
+      module: "billing",
       method: "POST",
       data: inputParam,
       redux: {
@@ -414,6 +419,7 @@ const SalesReturnheaderCalculation = ($this, context) => {
   intervalId = setInterval(() => {
     $this.props.SalesReturnCalculations({
       uri: "/billing/billingCalculations",
+      module: "billing",
       method: "POST",
       data: ItemInput,
       redux: {

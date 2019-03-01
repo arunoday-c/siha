@@ -38,6 +38,7 @@ const calculateRecipt = ($this, context) => {
 
   algaehApiCall({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {

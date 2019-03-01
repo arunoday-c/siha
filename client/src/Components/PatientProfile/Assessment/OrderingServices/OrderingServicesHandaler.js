@@ -80,6 +80,7 @@ const ProcessService = ($this, e) => {
 
       $this.props.generateBill({
         uri: "/billing/getBillDetails",
+        module: "billing",
         method: "POST",
         data: serviceInput,
         cancelRequestId: "getBillDetails",
@@ -112,6 +113,7 @@ const ProcessService = ($this, e) => {
 
                 $this.props.generateBill({
                   uri: "/billing/getBillDetails",
+                  module: "billing",
                   method: "POST",
                   data: preserviceInput,
                   redux: {
@@ -159,6 +161,7 @@ const ProcessService = ($this, e) => {
 
                     $this.props.billingCalculations({
                       uri: "/billing/billingCalculations",
+                      module: "billing",
                       method: "POST",
                       data: { billdetails: data.billdetails },
                       redux: {
@@ -243,6 +246,7 @@ const ProcessService = ($this, e) => {
 
             $this.props.billingCalculations({
               uri: "/billing/billingCalculations",
+              module: "billing",
               method: "POST",
               data: { billdetails: existingservices },
               redux: {
@@ -312,6 +316,7 @@ const deleteServices = ($this, row, rowId) => {
       }
       $this.props.generateBill({
         uri: "/billing/getBillDetails",
+        module: "billing",
         method: "POST",
         data: preserviceInput,
         redux: {
@@ -418,6 +423,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
 
     $this.props.billingCalculations({
       uri: "/billing/getBillDetails",
+      module: "billing",
       method: "POST",
       data: inputParam,
       redux: {
@@ -436,6 +442,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
 const updateBillDetail = ($this, e) => {
   $this.props.billingCalculations({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: { billdetails: $this.state.orderservicesdata },
     redux: {

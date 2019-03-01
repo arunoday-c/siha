@@ -43,6 +43,7 @@ class LabInvestigation extends Component {
     ) {
       this.props.getLabsection({
         uri: "/labmasters/selectSection",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "SECTION_GET_DATA",
@@ -57,6 +58,7 @@ class LabInvestigation extends Component {
     ) {
       this.props.getLabSpecimen({
         uri: "/labmasters/selectSpecimen",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",
@@ -71,6 +73,7 @@ class LabInvestigation extends Component {
     ) {
       this.props.getLabAnalytes({
         uri: "/labmasters/selectAnalytes",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "ANALYTES_GET_DATA",
@@ -84,6 +87,7 @@ class LabInvestigation extends Component {
     ) {
       this.props.getLabContainer({
         uri: "/labmasters/selectContainer",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "CONTAINER_GET_DATA",

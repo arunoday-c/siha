@@ -47,7 +47,7 @@ class LabSpecimen extends Component {
     ) {
       this.props.getLabSpecimen({
         uri: "/labmasters/selectSpecimen",
-        // module: "laboratory",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",

@@ -51,6 +51,13 @@ export default class SelfService extends Component {
       pageDisplay: specified
     });
   }
+
+  ChangeRenderTabs(options) {
+    if (options.pageDisplay === "AttendanceRegularization") {
+      this.attReg.click();
+    }
+  }
+
   render() {
     let empDetails =
       this.state.employee_details !== undefined
@@ -176,6 +183,9 @@ export default class SelfService extends Component {
                 algaehtabs={"AttendanceRegularization"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
+                ref={attReg => {
+                  this.attReg = attReg;
+                }}
               >
                 {
                   <AlgaehLabel
@@ -243,7 +253,7 @@ export default class SelfService extends Component {
         </div>
         <div className="selfService-setion">
           {this.state.pageDisplay === "ActivityFeed" ? (
-            <ActivityFeed empData={this.state.employee_details} />
+            <ActivityFeed parent={this} empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "SelfPersonalDetails" ? (
             <SelfPersonalDetails empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "AttendanceRegularization" ? (

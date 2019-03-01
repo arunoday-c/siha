@@ -159,6 +159,7 @@ class Dental extends Component {
 
     algaehApiCall({
       uri: "/billing/getBillDetails",
+          module: "billing",
       method: "POST",
       cancelRequestId: "getBillDetails8",
       data: inputParam,
@@ -283,6 +284,7 @@ class Dental extends Component {
 
           algaehApiCall({
             uri: "/billing/getBillDetails",
+          module: "billing",
             method: "POST",
             cancelRequestId: "getBillDetails4",
             data: [

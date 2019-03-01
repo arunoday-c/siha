@@ -42,6 +42,7 @@ class InvestigationSetup extends Component {
     ) {
       this.props.getTestCategory({
         uri: "/labmasters/selectTestCategory",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "TESTCATEGORY_GET_DATA",
@@ -55,6 +56,7 @@ class InvestigationSetup extends Component {
     ) {
       this.props.getLabSpecimen({
         uri: "/labmasters/selectSpecimen",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "SPECIMEN_GET_DATA",
@@ -68,6 +70,7 @@ class InvestigationSetup extends Component {
     ) {
       this.props.getLabsection({
         uri: "/labmasters/selectSection",
+        module: "laboratory",
         method: "GET",
         redux: {
           type: "SECTION_GET_DATA",

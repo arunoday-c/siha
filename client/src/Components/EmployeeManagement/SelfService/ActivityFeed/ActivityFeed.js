@@ -7,7 +7,8 @@ export default class ActivityFeed extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      regularization_list: []
+      regularization_list: [],
+      pageDisplay: "ActivityFeed"
     };
   }
 
@@ -23,7 +24,8 @@ export default class ActivityFeed extends Component {
       uri: "/leave/getEmployeeAttendReg",
       method: "GET",
       data: {
-        employee_id: this.state.hims_d_employee_id
+        employee_id: this.state.hims_d_employee_id,
+        requested: "NFD"
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -41,6 +43,18 @@ export default class ActivityFeed extends Component {
     });
   }
 
+  skipTab(e) {
+    e.preventDefault();
+
+    this.props.parent.ChangeRenderTabs({
+      pageDisplay: "AttendanceRegularization"
+    });
+  }
+
+  componentDidMount() {
+    let InputOutput = this.props.parent;
+    this.setState({ ...this.state, ...InputOutput });
+  }
   render() {
     const regz = this.state.regularization_list;
 
@@ -50,21 +64,15 @@ export default class ActivityFeed extends Component {
           <div className="col-8">
             <div className="activity-feed">
               {regz.map((data, index) => (
-                <div
-                  key={data.hims_f_attendance_regularize_id}
-                  className="feed-item"
-                >
+                <div className="feed-item">
                   <div className="feedCntr">
                     <div className="dateUser">
-                      {moment(new Date(data.created_date)).format(
-                        "MMM DD, HH:mm a"
-                      )}
-                      {/* <i>Shwetha - HR Administrator</i> */}
+                      Feb 06, 11:45 AM by <i>Shwetha - HR Administrator</i>
                     </div>
                     <div className="text">
                       Request to Regularize Attendance for
-                      <a onClick={() => {}}>
-                        {moment(data.attendance_date).format("DD MMM YYYY")}
+                      <a href="#" onClick={this.skipTab.bind(this)}>
+                        05 Feb 2019
                       </a>
                     </div>
                   </div>
@@ -81,7 +89,6 @@ export default class ActivityFeed extends Component {
                   </div>
                 </div>
               </div>
-
               <div className="feed-item">
                 <div className="feedCntr">
                   <div className="dateUser">
@@ -104,7 +111,6 @@ export default class ActivityFeed extends Component {
                   </div>
                 </div>
               </div>
-
               <div className="feed-item">
                 <div className="feedCntr">
                   <div className="dateUser">
@@ -115,7 +121,6 @@ export default class ActivityFeed extends Component {
                   </div>
                 </div>
               </div>
-
               <div className="feed-item">
                 <div className="feedCntr">
                   <div className="dateUser">
@@ -129,8 +134,8 @@ export default class ActivityFeed extends Component {
               </div>
             </div>
           </div>
-          <div className="col-4" />
         </div>
+        <div className="col-4" />
       </div>
     );
   }

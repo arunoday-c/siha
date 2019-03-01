@@ -84,7 +84,7 @@ const InsertLabTest = ($this, e) => {
     if ($this.state.hims_d_investigation_test_id === null) {
       algaehApiCall({
         uri: "/investigation/addInvestigationTest",
-        // module: "laboratory",
+        module: "laboratory",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -99,7 +99,7 @@ const InsertLabTest = ($this, e) => {
     } else {
       algaehApiCall({
         uri: "/investigation/updateInvestigationTest",
-        // module: "laboratory",
+        module: "laboratory",
         data: $this.state,
         method: "PUT",
         onSuccess: response => {

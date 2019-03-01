@@ -5,6 +5,7 @@ const getLabResult = $this => {
   };
   $this.props.getLabResult({
     uri: "/laboratory/getLabOrderedServices",
+    module: "laboratory",
     method: "GET",
     data: inputobj,
     redux: {
@@ -17,7 +18,7 @@ const getLabResult = $this => {
 const getAnalytes = ($this, row) => {
   $this.props.getTestAnalytes({
     uri: "/laboratory/getTestAnalytes",
-    // module: "laboratory",
+    module: "laboratory",
     method: "GET",
     data: { order_id: row.hims_f_lab_order_id },
     redux: {

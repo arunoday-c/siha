@@ -198,6 +198,7 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
 
   $this.props.PosHeaderCalculations({
     uri: "/billing/billingCalculations",
+    module: "billing",
     method: "POST",
     data: { billdetails: inventory_stock_detail },
     redux: {

@@ -103,6 +103,7 @@ const getSampleCollectionDetails = $this => {
 
   $this.props.getSampleCollection({
     uri: "/laboratory/getLabOrderedServices",
+    module: "laboratory",
     method: "GET",
     data: inputobj,
     redux: {

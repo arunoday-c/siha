@@ -1277,6 +1277,7 @@ let getEmployeeAttendReg = (req, res, next) => {
 
     let dateRange = "";
     let employee = "";
+    let requested = "";
     if (
       req.query.from_date != "" &&
       req.query.from_date != null &&
@@ -1287,6 +1288,12 @@ let getEmployeeAttendReg = (req, res, next) => {
     ) {
       dateRange = ` date(attendance_date)
       between date('${req.query.from_date}') and date('${req.query.to_date}') `;
+    }
+
+    if (req.query.requested != "" &&
+    req.query.requested != null &&
+    req.query.requested != "null"){
+       requested = ` and requested=${req.query.requested}`
     }
 
     if (
@@ -1311,9 +1318,11 @@ let getEmployeeAttendReg = (req, res, next) => {
           E.employee_code,E.full_name as employee_name ,attendance_date,\
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
-          from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
+          from hims_f_attendance_regularize AR inner join hims_d_employee E  on\
            AR.employee_id=E.hims_d_employee_id and record_status='A' where" +
             employee +
+            "" +
+            requested +
             "" +
             dateRange +
             " order by\

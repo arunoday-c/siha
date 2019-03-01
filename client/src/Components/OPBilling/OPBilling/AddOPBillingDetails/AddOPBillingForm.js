@@ -132,6 +132,7 @@ class AddOPBillingForm extends Component {
 
           algaehApiCall({
             uri: "/billing/getBillDetails",
+            module: "billing",
             method: "POST",
             data: serviceInput,
             onSuccess: response => {
@@ -168,6 +169,7 @@ class AddOPBillingForm extends Component {
 
                   algaehApiCall({
                     uri: "/billing/billingCalculations",
+                    module: "billing",
                     method: "POST",
                     data: { billdetails: existingservices },
                     onSuccess: response => {
@@ -256,6 +258,7 @@ class AddOPBillingForm extends Component {
 
       algaehApiCall({
         uri: "/billing/getBillDetails",
+        module: "billing",
         method: "POST",
         data: inputParam,
         onSuccess: response => {
@@ -280,6 +283,7 @@ class AddOPBillingForm extends Component {
   updateBillDetail(context, row, e) {
     algaehApiCall({
       uri: "/billing/billingCalculations",
+      module: "billing",
       method: "POST",
       data: { billdetails: this.state.billdetails },
       onSuccess: response => {
@@ -354,6 +358,7 @@ class AddOPBillingForm extends Component {
     } else {
       algaehApiCall({
         uri: "/billing/billingCalculations",
+        module: "billing",
         method: "POST",
         data: { billdetails: serviceDetails },
         onSuccess: response => {
