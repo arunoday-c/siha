@@ -16,8 +16,25 @@ const TreeTable = treeTableHOC(ReactTable);
 class AttendanceRegularization extends Component {
   constructor(props) {
     super(props);
+    debugger;
     this.state = {
-      regularization_list: []
+      regularization_list: [],
+      login_date: props.regularize.login_date
+        ? props.regularize.login_date
+        : null,
+      logout_date: props.regularize.logout_date
+        ? props.regularize.logout_date
+        : null,
+      hims_f_attendance_regularize_id: props.regularize
+        .hims_f_attendance_regularize_id
+        ? props.regularize.hims_f_attendance_regularize_id
+        : null,
+      punch_in_time: props.regularize.punch_in_time
+        ? moment(props.regularize.punch_in_time, "HH:mm:ss").format("hh:mm a")
+        : "Not Exist",
+      punch_out_time: props.regularize.punch_out_time
+        ? moment(props.regularize.punch_out_time, "HH:mm:ss").format("hh:mm a")
+        : "Not Exist"
     };
   }
 
@@ -195,7 +212,7 @@ class AttendanceRegularization extends Component {
                       forceLabel: "Old In-Time"
                     }}
                   />
-                  <h6>00.00</h6>
+                  <h6>{this.state.punch_in_time}</h6>
                 </div>{" "}
                 <div className="col-6">
                   <AlgaehLabel
@@ -203,7 +220,7 @@ class AttendanceRegularization extends Component {
                       forceLabel: "Old Out-Time"
                     }}
                   />
-                  <h6>00.00</h6>
+                  <h6>{this.state.punch_out_time}</h6>
                 </div>
                 {/* Need to fetch the old in time and old out time from API */}
                 <AlagehFormGroup

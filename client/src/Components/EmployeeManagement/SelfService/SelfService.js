@@ -57,7 +57,14 @@ export default class SelfService extends Component {
     if (options.pageDisplay === "AttendanceRegularization") {
       this.attReg.click();
     }
-    this.setState(...options);
+    debugger;
+    this.setState(
+      {
+        ...this.state,
+        ...options
+      },
+      console.log("Rz:", this.state.regularize)
+    );
   }
 
   render() {

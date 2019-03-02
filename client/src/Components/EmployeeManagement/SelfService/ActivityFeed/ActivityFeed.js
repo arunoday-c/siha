@@ -50,8 +50,8 @@ export default class ActivityFeed extends Component {
       pageDisplay: "AttendanceRegularization",
       regularize: {
         hims_f_attendance_regularize_id: 201,
-        login_date: "2019-01-17",
-        logout_date: "2019-01-17",
+        login_date: "2019-01-16",
+        logout_date: "2019-01-16",
         punch_in_time: null,
         punch_out_time: "15:26:00",
         regularize_in_time: "06:00:06",
@@ -79,10 +79,12 @@ export default class ActivityFeed extends Component {
                       Feb 06, 11:45 AM by <i>Shwetha - HR Administrator</i>
                     </div>
                     <div className="text">
-                      Request to Regularize Attendance for
+                      Request to{" "}
                       <a href="#" onClick={this.skipTab.bind(this)}>
-                        05 Feb 2019
-                      </a>
+                        Regularize Attendance{" "}
+                      </a>{" "}
+                      for
+                      <span className="reqDate">05 Feb 2019</span>
                     </div>
                   </div>
                 </div>
@@ -91,11 +93,31 @@ export default class ActivityFeed extends Component {
               <div className="feed-item">
                 <div className="feedCntr">
                   <div className="dateUser">
+                    Feb 06, 11:45 AM by <i>Shwetha - HR Administrator</i>
+                  </div>
+                  <div className="text">
+                    Request to{" "}
+                    <a href="#" onClick={this.skipTab.bind(this)}>
+                      Regularize Attendance{" "}
+                    </a>{" "}
+                    or{" "}
+                    <a href="#" onClick={this.skipTab.bind(this)}>
+                      Apply Leave Attendance{" "}
+                    </a>{" "}
+                    for
+                    <span className="reqDate"> 05 Feb 2019</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="feed-item">
+                <div className="feedCntr">
+                  <div className="dateUser">
                     Sep 27, 03:48 PM by <i>Aboobacker Sidhiqe - Manager</i>
                   </div>
                   <div className="text">
                     Sick Leave Approved for
-                    <a onClick={this.skipTab.bind(this)}>26 Dec 2018</a>
+                    <a onClick={this.skipTab.bind(this)}>16 Jan 2018</a>
                   </div>
                 </div>
               </div>

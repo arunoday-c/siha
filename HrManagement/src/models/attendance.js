@@ -3949,7 +3949,7 @@ module.exports = {
   },
   loadAttendance: (req, res, next) => {
     const _mysql = new algaehMysql();
-
+   
     try {
       const month_number = moment(req.query.yearAndMonth).format("M");
       const year = moment(new Date(req.query.yearAndMonth)).format("YYYY");
@@ -4086,6 +4086,8 @@ module.exports = {
     //created by irfan:
   notifyException: (req, res, next) => {
     const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    
     try {
       const input = req.body;
   
@@ -4099,10 +4101,10 @@ module.exports = {
         .executeQuery({
           query: `select employee_id,attendance_date,attendance_date as login_date,\
             out_date as logout_date,in_time as punch_in_time,\
-            out_time as punch_out_time,status from hims_f_daily_time_sheet where  \
-             date(attendance_date)>=date(?) and date(out_date) <=date(?') \
-             and status='EX' or status='AB' ${employee_id};`,
-          values: [input.from_date, input.to_date],
+            out_time as punch_out_time,status from hims_f_daily_time_sheet where hospital_id=? and  \
+             date(attendance_date)>=date(?) and date(out_date) <=date(?) \
+             and (status='EX' or status='AB') ${employee_id};`,
+          values: [input.hospital_id,input.from_date, input.to_date],
           printQuery: true
         })
         .then(result => {
@@ -4144,9 +4146,15 @@ module.exports = {
               })
               .ToArray();
   
+              utilities.logger().log("absentArray: ", absentArray);
+              utilities.logger().log("excptionArray: ", excptionArray);
+
+
             new Promise((resolve, reject) => {
               try {
                 if (excptionArray.length > 0) {
+
+                  utilities.logger().log("am one: ", "am one");
                   const insurtColumns = [
                     "employee_id",
                     "attendance_date",
@@ -4173,10 +4181,12 @@ module.exports = {
                       bulkInsertOrUpdate: true
                     })
                     .then(exptionResult => {
-                      //
+                      utilities.logger().log("exptionResult: ", exptionResult);
                       resolve(exptionResult);
                     })
                     .catch(e => {
+
+                      utilities.logger().log("eroo22: ", e);
                       mysql.rollBackTransaction(() => {
                         next(e);
                       });
@@ -4187,7 +4197,7 @@ module.exports = {
               } catch (e) {
                 reject(e);
               }
-            }).then(result => {
+            }).then(exptionResult => {
               if (absentArray.length > 0) {
                 const insertColumns = [
                   "employee_id",
@@ -4221,6 +4231,7 @@ module.exports = {
                     });
                   })
                   .catch(e => {
+                    utilities.logger().log("ero6: ", e);
                     mysql.rollBackTransaction(() => {
                       next(e);
                     });
@@ -4246,6 +4257,7 @@ module.exports = {
           }
         })
         .catch(error => {
+          utilities.logger().log("ero33: ",error);
           _mysql.releaseConnection();
           next(error);
         });
