@@ -953,7 +953,7 @@ module.exports = {
   },
 
   //created by irfan:
-  addAttendanceRegularization: (req, res, next) => {
+  addAttendanceRegularizationBAKUP_04_march: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
     _mysql
@@ -1015,6 +1015,88 @@ module.exports = {
           next(e);
         });
       });
+  },
+
+  //created by irfan:
+  addAttendanceRegularization: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    _mysql
+          .executeQueryWithTransaction({
+            query:
+              "INSERT INTO `hims_f_attendance_regularize` (employee_id,attendance_date,\
+            login_date,logout_date,\
+            punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
+            created_by,created_date,updated_by,updated_date)\
+            VALUE(?,date(?),date(?),date(?),?,?,?,?,?,?,?,?,?)",
+            values: [
+              
+              input.employee_id,
+              input.attendance_date,
+              input.login_date,
+              input.logout_date,
+              input.punch_in_time,
+              input.punch_out_time,
+              input.regularize_in_time,
+              input.regularize_out_time,
+              input.regularization_reason,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date()
+            ]
+          })
+          .then(result => {
+
+            if(input.absent_id>0){
+
+              _mysql
+              .executeQuery({
+                query:
+                  "update hims_f_absent  set status='CPR' where hims_f_absent_id=?;",
+                values: [input.absent_id
+                ]       
+          
+              })
+              .then(result2 => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = result2;
+                  next();
+                });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+
+
+
+
+
+            }else{
+        
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+           
+
+            }
+
+            // _mysql.commitTransaction(() => {
+            //   _mysql.releaseConnection();
+            //   req.records = result;
+            //   next();
+            // });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
   },
 
   //created by irfan:
