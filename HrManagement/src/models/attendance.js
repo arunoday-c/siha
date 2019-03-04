@@ -1142,6 +1142,14 @@ module.exports = {
     } else {
       const _mysql = new algaehMysql();
 
+      let stringData= " regularize_status<>'NFD' ";
+
+      if(req.query.type="auth"){
+
+        stringData="regularize_status='PEN' ";
+
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -1150,7 +1158,7 @@ module.exports = {
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
           from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
-           AR.employee_id=E.hims_d_employee_id and record_status='A' where regularize_status<>'NFD' and " +
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where "+stringData+" and " +
             employee +
             "" +
             dateRange +
@@ -5352,59 +5360,59 @@ module.exports = {
     }
   },
     //created by irfan:
-    requestAttndncReglztion: (req, res, next) => {
-      let input = req.body;
-      const utilities = new algaehUtilities();
-     
-      if (input.regularize_status == "PEN" &&   input.hims_f_attendance_regularize_id>0) {
-        const _mysql = new algaehMysql();
-        _mysql
-          .executeQuery({
-            query:
-              "UPDATE hims_f_attendance_regularize SET regularize_status = ?,regularization_reason=?,regularize_in_time=?,regularize_out_time=?,\
-               updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
-            values: [
-              input.regularize_status,
-              input.regularization_reason,
-              input.regularize_in_time,
-              input.regularize_out_time,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              input.hims_f_attendance_regularize_id
-            ]
-          })
-          .then(result => {
-            if (result.affectedRows > 0) {
-              
-              _mysql.releaseConnection();
-            req.records = result;
-            next();
-            } else {
-              _mysql.releaseConnection();
-              req.records = {
-                invalid_input: true,
-                message: "Please provide valid input"
-              };
+  requestAttndncReglztion: (req, res, next) => {
+        let input = req.body;
+        const utilities = new algaehUtilities();
+      
+        if (input.regularize_status == "PEN" &&   input.hims_f_attendance_regularize_id>0) {
+          const _mysql = new algaehMysql();
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE hims_f_attendance_regularize SET regularize_status = ?,regularization_reason=?,regularize_in_time=?,regularize_out_time=?,\
+                updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
+              values: [
+                input.regularize_status,
+                input.regularization_reason,
+                input.regularize_in_time,
+                input.regularize_out_time,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                input.hims_f_attendance_regularize_id
+              ]
+            })
+            .then(result => {
+              if (result.affectedRows > 0) {
+                
+                _mysql.releaseConnection();
+              req.records = result;
               next();
-            }
-          })
-          .catch(e => {
-            _mysql.releaseConnection();
-              next(e);
-            
-          });
-      } else {
-        req.records = {
-          invalid_input: true,
-          message: "Please provide valid input"
-        };  
-        next();
-        return;
-      }
-    },
+              } else {
+                _mysql.releaseConnection();
+                req.records = {
+                  invalid_input: true,
+                  message: "Please provide valid input"
+                };
+                next();
+              }
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+                next(e);
+              
+            });
+        } else {
+          req.records = {
+            invalid_input: true,
+            message: "Please provide valid input"
+          };  
+          next();
+          return;
+        }
+      },
 
 
-};
+  };
 
 //created by irfan: to insert timesheet
 function insertTimeSheet(
