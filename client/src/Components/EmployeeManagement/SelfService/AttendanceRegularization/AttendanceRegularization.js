@@ -31,10 +31,10 @@ class AttendanceRegularization extends Component {
         : null,
       punch_in_time: props.regularize.punch_in_time
         ? moment(props.regularize.punch_in_time, "HH:mm:ss").format("hh:mm a")
-        : "Not Exist",
+        : null,
       punch_out_time: props.regularize.punch_out_time
         ? moment(props.regularize.punch_out_time, "HH:mm:ss").format("hh:mm a")
-        : "Not Exist"
+        : null
     };
   }
 
@@ -119,8 +119,13 @@ class AttendanceRegularization extends Component {
               employee_id: this.state.hims_d_employee_id,
               login_date: this.state.login_date,
               logout_date: this.state.logout_date,
-              punch_in_time: this.state.punch_in_time,
-              punch_out_time: this.state.punch_out_time,
+              punch_in_time: moment(this.state.punch_in_time, "hh:mm a").format(
+                "HH:mm:ss"
+              ),
+              punch_out_time: moment(
+                this.state.punch_out_time,
+                "hh:mm a"
+              ).format("HH:mm:ss"),
               regularize_in_time: this.state.regularize_in_time,
               regularize_out_time: this.state.regularize_out_time,
               regularization_reason: this.state.regularization_reason
@@ -212,7 +217,11 @@ class AttendanceRegularization extends Component {
                       forceLabel: "Old In-Time"
                     }}
                   />
-                  <h6>{this.state.punch_in_time}</h6>
+                  <h6>
+                    {this.state.punch_in_time !== null
+                      ? this.state.punch_in_time
+                      : "Not Exists"}
+                  </h6>
                 </div>{" "}
                 <div className="col-6">
                   <AlgaehLabel
@@ -220,7 +229,11 @@ class AttendanceRegularization extends Component {
                       forceLabel: "Old Out-Time"
                     }}
                   />
-                  <h6>{this.state.punch_out_time}</h6>
+                  <h6>
+                    {this.state.punch_out_time !== null
+                      ? this.state.punch_out_time
+                      : "Not Exists"}
+                  </h6>
                 </div>
                 {/* Need to fetch the old in time and old out time from API */}
                 <AlagehFormGroup

@@ -23,10 +23,20 @@ class ApplyLeave extends Component {
       emp_leaves_data: [],
       leave_his: [],
       available_balance: 0.0,
-      total_applied_days: 0.0
+      total_applied_days: 0.0,
+      from_date: props.leave.from_date ? props.leave.from_date : null,
+      to_date: props.leave.to_date ? props.leave.to_date : null,
+      from_leave_session: props.leave.from_session
+        ? props.leave.from_session
+        : null,
+      to_leave_session: props.leave.to_session ? props.leave.to_session : null
     };
     this.getLeaveTypes();
     this.getEmployees();
+  }
+
+  componentWillUnmount() {
+    console.log("Unmounted Leave");
   }
 
   getDateRange(startDate, endDate) {
@@ -938,24 +948,6 @@ class ApplyLeave extends Component {
                             );
                           }
                         },
-                        // {
-                        //   fieldName: "total_approved_days",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Approved Days" }}
-                        //     />
-                        //   ),
-
-                        //   displayTemplate: row => {
-                        //     return (
-                        //       <span>
-                        //         {row.total_approved_days !== null
-                        //           ? row.total_approved_days
-                        //           : 0}
-                        //       </span>
-                        //     );
-                        //   }
-                        // },
                         {
                           fieldName: "remarks",
 

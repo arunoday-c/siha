@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./ActivityFeed.css";
-import moment from "moment";
+// import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 export default class ActivityFeed extends Component {
@@ -8,6 +8,7 @@ export default class ActivityFeed extends Component {
     super(props);
     this.state = {
       regularization_list: [],
+      absent_list: [],
       pageDisplay: "ActivityFeed"
     };
   }
@@ -21,16 +22,17 @@ export default class ActivityFeed extends Component {
 
   getRegularizationRequests() {
     algaehApiCall({
-      uri: "/leave/getEmployeeAttendReg",
+      uri: "/attendance/getActivityFeed",
       method: "GET",
+      module: "hrManagement",
       data: {
-        employee_id: this.state.hims_d_employee_id,
-        status: "NFD"
+        employee_id: this.state.hims_d_employee_id
       },
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            regularization_list: res.data.records
+            regularization_list: res.data.result.exceptions,
+            absent_list: res.data.result.absents
           });
         }
       },
@@ -43,11 +45,10 @@ export default class ActivityFeed extends Component {
     });
   }
 
-  skipTab(e) {
+  skipTab(type, e) {
     e.preventDefault();
-
     this.props.parent.ChangeRenderTabs({
-      pageDisplay: "AttendanceRegularization",
+      pageDisplay: type,
       regularize: {
         hims_f_attendance_regularize_id: 201,
         login_date: "2019-01-16",
@@ -56,6 +57,12 @@ export default class ActivityFeed extends Component {
         punch_out_time: "15:26:00",
         regularize_in_time: "06:00:06",
         regularize_out_time: "15:26:00"
+      },
+      leave: {
+        from_date: "2019-01-20",
+        to_date: "2019-01-20",
+        from_session: "FD",
+        to_session: "FD"
       }
     });
   }
@@ -66,6 +73,7 @@ export default class ActivityFeed extends Component {
   }
   render() {
     const regz = this.state.regularization_list;
+    const abzs = this.state.absent_list;
 
     return (
       <div className="ActivityFeedScreen">
@@ -80,7 +88,13 @@ export default class ActivityFeed extends Component {
                     </div>
                     <div className="text">
                       Request to{" "}
-                      <a href="#" onClick={this.skipTab.bind(this)}>
+                      <a
+                        href="#"
+                        onClick={this.skipTab.bind(
+                          this,
+                          "AttendanceRegularization"
+                        )}
+                      >
                         Regularize Attendance{" "}
                       </a>{" "}
                       for
@@ -96,14 +110,19 @@ export default class ActivityFeed extends Component {
                     Feb 06, 11:45 AM by <i>Shwetha - HR Administrator</i>
                   </div>
                   <div className="text">
-                    Request to{" "}
-                    <a href="#" onClick={this.skipTab.bind(this)}>
-                      Regularize Attendance{" "}
-                    </a>{" "}
-                    or{" "}
-                    <a href="#" onClick={this.skipTab.bind(this)}>
-                      Apply Leave Attendance{" "}
-                    </a>{" "}
+                    Request to
+                    <a
+                      onClick={this.skipTab.bind(
+                        this,
+                        "AttendanceRegularization"
+                      )}
+                    >
+                      Regularize Attendance
+                    </a>
+                    or
+                    <a onClick={this.skipTab.bind(this, "ApplyLeave")}>
+                      Apply Leave Attendance
+                    </a>
                     for
                     <span className="reqDate"> 05 Feb 2019</span>
                   </div>
@@ -117,7 +136,14 @@ export default class ActivityFeed extends Component {
                   </div>
                   <div className="text">
                     Sick Leave Approved for
-                    <a onClick={this.skipTab.bind(this)}>16 Jan 2018</a>
+                    <a
+                      onClick={this.skipTab.bind(
+                        this,
+                        "AttendanceRegularization"
+                      )}
+                    >
+                      16 Jan 2018
+                    </a>
                   </div>
                 </div>
               </div>
