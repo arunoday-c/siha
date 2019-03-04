@@ -1023,7 +1023,7 @@ module.exports = {
     _mysql
           .executeQueryWithTransaction({
             query:
-              "INSERT INTO `hims_f_attendance_regularize` (employee_id,attendance_date,\
+              "INSERT INTO `hims_f_attendance_regularize` (employee_id,attendance_date,regularize_status,\
             login_date,logout_date,\
             punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
             created_by,created_date,updated_by,updated_date)\
@@ -1032,6 +1032,7 @@ module.exports = {
               
               input.employee_id,
               input.attendance_date,
+              input.regularize_status,
               input.login_date,
               input.logout_date,
               input.punch_in_time,
