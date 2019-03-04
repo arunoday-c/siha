@@ -2,6 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import ReactDOM from "react-dom";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
 import {
@@ -178,7 +179,12 @@ const ClearData = ($this, e) => {
           if (response.data.records.selectedValue !== undefined) {
             IOputs.location_type = response.data.records.selectedValue;
           }
-          $this.setState(IOputs);
+          $this.setState(IOputs, () => {
+            const element = ReactDOM.findDOMNode(
+              document.getElementById("root")
+            ).querySelector("input[name='item_id']");
+            element.focus();
+          });
         },
         onFailure: error => {
           swalMessage({
