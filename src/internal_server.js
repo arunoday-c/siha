@@ -1,5 +1,5 @@
 import http from "http";
-
+import https from "https";
 import compression from "compression";
 import express from "express";
 import bodyParser from "body-parser";
@@ -7,48 +7,47 @@ import routes from "./routes";
 import passport from "passport";
 import cors from "cors";
 const LocalStrategy = require("passport-local").Strategy;
-import morgan from "morgan";
+// import morgan from "morgan";
 import fs from "fs";
 import path from "path";
-import keys from "./keys/keys";
+// import keys from "./keys/keys";
 import rfs from "rotating-file-stream";
 import httpStatus from "./utils/httpStatus";
 import { logger, requestTracking } from "./utils/logging";
 import jwtDecode from "jwt-decode";
 import { decryption } from "./utils/cryptography";
-import moment from "moment";
+import algaehKeys from "algaeh-keys";
+const keys = algaehKeys.default;
 let app = express();
-const _port = keys.port;
-
+const _port = process.env.PORT; //keys.port;
 app.use(compression());
 if (process.env.NODE_ENV == "production") {
   console.log("Running prod...." + _port);
-  console.log(process.env.NODE_ENV);
   app.use(express.static("build"));
 }
 
-// app.server = http.createServer(app);
-
-// app.options(
-//   "*",
-//   cors({
-//     origin: "*",
-//     optionsSuccessStatus: 200
-//   })
-// );
-// app.use(
-//   cors({
-//     origin: "*",
-//     optionsSuccessStatus: 200
-//   })
-// );
 app.use(
   cors({
     origin: "*",
     optionsSuccessStatus: 200
   })
 );
-app.server = http.createServer(app);
+
+if (keys.useSSL) {
+  const _privateKey = require("algaeh-keys/private.key");
+  const _certificate = require("algaeh-keys/certificate.crt");
+  const _ca = require("algaeh-keys/ca_bundle.crt");
+  var https_options = {
+    key: fs.readFileSync(_privateKey),
+
+    cert: fs.readFileSync(_certificate),
+
+    ca: [fs.readFileSync(_ca)]
+  };
+  app.server = https.createServer(https_options, app);
+} else {
+  app.server = http.createServer(app);
+}
 
 //parse application json
 app.use(
@@ -136,7 +135,7 @@ app.use((req, res, next) => {
   next();
 });
 
-let logdir = path.join(__dirname, "../" + keys.logpath);
+let logdir = path.join(__dirname, "../LOGS");
 if (!fs.existsSync(logdir)) {
   fs.mkdirSync(logdir);
 }
@@ -145,12 +144,12 @@ if (!fs.existsSync(logdir)) {
 //   flags: "a"
 // });
 
-var accessLogStream = rfs("access.log", {
-  size: "5M",
-  path: logdir
-});
+// var accessLogStream = rfs("access.log", {
+//   size: "5M",
+//   path: logdir
+// });
 
-app.use(morgan("combined", { streamexceptionHandlers: accessLogStream }));
+//app.use(morgan("combined", { streamexceptionHandlers: accessLogStream }));
 app.set("trust proxy", true);
 //api routeres v1
 app.use("/api/v1", routes);
@@ -223,7 +222,6 @@ app.use((error, req, res, next) => {
 });
 
 app.server.listen(_port);
-
 console.log(`started on port ${_port}`);
 
 export default app;
