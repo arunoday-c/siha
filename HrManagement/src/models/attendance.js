@@ -1130,7 +1130,7 @@ module.exports = {
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
           from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
-           AR.employee_id=E.hims_d_employee_id and record_status='A' where status<>'NFD' and " +
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where regularize_status<>'NFD' and " +
             employee +
             "" +
             dateRange +
@@ -5222,7 +5222,7 @@ module.exports = {
    
       _mysql
         .executeQuery({
-          query: "select regularization_code,employee_id,AR.updated_date,user_display_name as updated_by,attendance_date,regularize_status,login_date,\
+          query: "select hims_f_attendance_regularize_id,regularization_code,employee_id,AR.updated_date,user_display_name as updated_by,attendance_date,regularize_status,login_date,\
           logout_date,punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason\
           from hims_f_attendance_regularize AR left  join algaeh_d_app_user U on AR.updated_by= U.algaeh_d_app_user_id \
           where  AR.employee_id=?;\
