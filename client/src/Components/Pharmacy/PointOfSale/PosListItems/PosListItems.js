@@ -341,7 +341,7 @@ class PosListItems extends Component {
                             </button>
 
                             <div>
-                              {this.state.case_type === "O" ? null : (
+                              {this.state.insured === "N" ? null : (
                                 <button
                                   className="btn btn-default"
                                   onClick={ViewInsurance.bind(this, this)}
@@ -1217,7 +1217,9 @@ class PosListItems extends Component {
                                 others: {
                                   placeholder: "0.00",
                                   disabled:
-                                    this.state.case_type === "O" ? true : false
+                                    this.state.pos_customer_type === "OT"
+                                      ? true
+                                      : false
                                 }
                               }}
                             />

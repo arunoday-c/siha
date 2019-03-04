@@ -50,7 +50,7 @@ export default {
       advance_adjust: 0,
       ItemUOM: [],
 
-      case_type: "O",
+      pos_customer_type: "OT",
       mode_of_pay: "1",
       dataChange: false,
       insured: "N",

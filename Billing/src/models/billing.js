@@ -792,7 +792,7 @@ module.exports = {
                   checkShiftStatus.length == ""
                 ) {
                   _mysql
-                    .executeQuery({
+                    .executeQueryWithTransaction({
                       query:
                         "INSERT INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
                         created_date, created_by, updated_date, updated_by)\
@@ -852,13 +852,16 @@ module.exports = {
                           .catch(error => {
                             _mysql.rollBackTransaction(() => {
                               next(error);
+                              reject(error);
                             });
                           });
                       }
                     })
                     .catch(error => {
-                      _mysql.releaseConnection();
-                      next(error);
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                        reject(error);
+                      });
                     });
                 } else if (checkShiftStatus.length > 0) {
                   resolve({});

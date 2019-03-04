@@ -11,7 +11,6 @@ import moment from "moment";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
-  getCtrlCode,
   ClearData,
   Patientchange,
   SavePosEnrty,
@@ -19,6 +18,7 @@ import {
   LocationchangeTexts,
   closePopup
 } from "./PointOfSaleEvents";
+// getCtrlCode,
 import "./PointOfSale.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -30,6 +30,11 @@ import MyContext from "../../../utils/MyContext";
 import POSIOputs from "../../../Models/POS";
 import Options from "../../../Options.json";
 import Enumerable from "linq";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 
 class PointOfSale extends Component {
   constructor(props) {
@@ -90,6 +95,53 @@ class PointOfSale extends Component {
         }
       });
     }
+
+    let IOputs = {};
+    let _screenName = getCookie("ScreenName").replace("/", "");
+
+    algaehApiCall({
+      uri: "/userPreferences/get",
+      data: {
+        screenName: _screenName,
+        identifier: "PharmacyLocation"
+      },
+      method: "GET",
+      onSuccess: response => {
+        debugger;
+
+        if (response.data.records.selectedValue !== undefined) {
+          IOputs.location_id = response.data.records.selectedValue;
+        }
+        algaehApiCall({
+          uri: "/userPreferences/get",
+          data: {
+            screenName: _screenName,
+            identifier: "LocationType"
+          },
+          method: "GET",
+          onSuccess: response => {
+            debugger;
+
+            if (response.data.records.selectedValue !== undefined) {
+              IOputs.location_type = response.data.records.selectedValue;
+            }
+            this.setState(IOputs);
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   // componentWillReceiveProps(nextProps) {
@@ -129,14 +181,18 @@ class PointOfSale extends Component {
   onKeyPress(e) {
     debugger;
     if (e.ctrlKey && e.keyCode === 9) {
-      // this.attReg.focus();
       const element = ReactDOM.findDOMNode(
         document.getElementById("root")
       ).querySelector("input[name='item_id']");
       element.focus();
+    }
 
-      // ReactDOM.findDOMNode()
-      // document.querySelector("[name='item_id']").focus();
+    if (e.ctrlKey && e.keyCode === 14) {
+      ClearData(this);
+      const element = ReactDOM.findDOMNode(
+        document.getElementById("root")
+      ).querySelector("input[name='item_id']");
+      element.focus();
     }
   }
 
@@ -215,10 +271,10 @@ class PointOfSale extends Component {
 
           <div className="row  inner-top-search" style={{ paddingBottom: 10 }}>
             {/* Patient code */}
-            <div className="col-lg-8">
+            <div className="col-lg-4">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col-lg-6" }}
                   label={{ forceLabel: "Location" }}
                   selector={{
                     name: "location_id",
@@ -237,12 +293,12 @@ class PointOfSale extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-lg-6" }}
                   label={{ forceLabel: "Case Type" }}
                   selector={{
-                    name: "case_type",
+                    name: "pos_customer_type",
                     className: "select-fld",
-                    value: this.state.case_type,
+                    value: this.state.pos_customer_type,
                     dataSource: {
                       textField: "name",
                       valueField: "value",
@@ -255,27 +311,29 @@ class PointOfSale extends Component {
                     }
                   }}
                 />
+              </div>
+            </div>
+            <div className="col-lg-8">
+              {this.state.pos_customer_type === "OP" ? (
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      forceLabel: "Visit Code"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "visit_code",
+                      value: this.state.visit_code,
+                      events: {
+                        onChange: Patientchange.bind(this, this)
+                      },
+                      others: {
+                        disabled: true
+                      }
+                    }}
+                  />
 
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Visit Code"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "visit_code",
-                    value: this.state.visit_code,
-                    events: {
-                      onChange: Patientchange.bind(this, this)
-                    },
-                    others: {
-                      // disabled: this.state.case_type === "O" ? true : false
-                      disabled: true
-                    }
-                  }}
-                />
-
-                {this.state.case_type === "OP" ? (
                   <div
                     className="col-lg-2 print_actions"
                     style={{ marginTop: "auto" }}
@@ -283,85 +341,105 @@ class PointOfSale extends Component {
                     <span
                       style={{ cursor: "pointer" }}
                       className="fas fa-search fa-2x"
-                      disabled={this.state.case_type === "O" ? false : true}
                       onClick={VisitSearch.bind(this, this)}
                     />
                   </div>
-                ) : null}
 
-                {/* <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    forceLabel: "Patient Code"
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "patient_code",
-                    value: this.state.patient_code,
-                    events: {
-                      onChange: Patientchange.bind(this, this)
-                    }
-                    // others: {
-                    //   disabled: true
-                    // }
-                  }}
-                /> */}
-              </div>
-            </div>
-            <div className="col-lg-4">
-              <div className="row">
-                <div className="col-lg-4">
-                  <AlgaehLabel
+                  <div className="col-lg-2">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Patient Name"
+                      }}
+                    />
+                    <h6>
+                      {this.state.full_name
+                        ? this.state.full_name
+                        : "-----------"}
+                    </h6>
+                  </div>
+
+                  <div className="col-lg-2">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Patient Code"
+                      }}
+                    />
+                    <h6>
+                      {this.state.patient_code
+                        ? this.state.patient_code
+                        : "-----------"}
+                    </h6>
+                  </div>
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-2" }}
+                    label={{ forceLabel: "Mode of Payment" }}
+                    selector={{
+                      name: "mode_of_pay",
+                      className: "select-fld",
+                      value: this.state.mode_of_pay,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.MODE_OF_PAY
+                      },
+                      others: {
+                        disabled: true
+                      },
+                      onChange: changeTexts.bind(this, this)
+                    }}
+                  />
+                </div>
+              ) : (
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
                     label={{
                       forceLabel: "Patient Name"
                     }}
-                  />
-                  <h6>
-                    {this.state.full_name
-                      ? this.state.full_name
-                      : "-----------"}
-                  </h6>
-                </div>
-
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Patient Code"
+                    textBox={{
+                      className: "txt-fld",
+                      name: "patient_name",
+                      value: this.state.patient_name,
+                      events: {
+                        onChange: changeTexts.bind(this, this)
+                      }
                     }}
                   />
-                  <h6>
-                    {this.state.patient_code
-                      ? this.state.patient_code
-                      : "-----------"}
-                  </h6>
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      forceLabel: "Prescribed Doctor"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "referal_doctor",
+                      value: this.state.referal_doctor,
+                      events: {
+                        onChange: changeTexts.bind(this, this)
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      forceLabel: "Mobile Number"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "mobile_number",
+                      value: this.state.mobile_number,
+                      events: {
+                        onChange: changeTexts.bind(this, this)
+                      }
+                    }}
+                  />
                 </div>
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Mode of Payment" }}
-                  selector={{
-                    name: "mode_of_pay",
-                    className: "select-fld",
-                    value: this.state.mode_of_pay,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.MODE_OF_PAY
-                    },
-                    others: {
-                      // disabled: this.state.case_type === "O" ? false : true
-                      disabled: true
-                    },
-                    onChange: changeTexts.bind(this, this)
-                  }}
-                />
-              </div>
+              )}
             </div>
           </div>
-          {/* <div>
-            {this.state.case_type === "O" ? null : (
-              <DisplayInsuranceDetails POSIOputs={this.state} />
-            )}
-          </div> */}
+
           <div className="hptl-phase1-pos-form">
             <div className="row">
               <MyContext.Provider

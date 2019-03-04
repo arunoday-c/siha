@@ -204,6 +204,16 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 title: "No stock available for selected Item.",
                 type: "warning"
               });
+              $this.setState({
+                item_description: $this.state.item_description,
+                item_id: $this.state.item_id
+              });
+              if (context !== undefined) {
+                context.updateState({
+                  item_description: $this.state.item_description,
+                  item_id: $this.state.item_id
+                });
+              }
             }
           } else {
             swalMessage({
@@ -377,82 +387,115 @@ const getUnitCost = ($this, context, serviceid) => {
   }
 };
 const AddItems = ($this, context) => {
-  if ($this.state.item_id === null) {
+  debugger;
+  let itemData = Enumerable.from($this.state.pharmacy_stock_detail)
+    .where(
+      w =>
+        w.item_id === $this.state.item_id && w.batchno === $this.state.batchno
+    )
+    .toArray();
+  if (itemData.length > 0) {
     swalMessage({
-      title: "Please Select Item.",
-      type: "warning"
-    });
-  } else if (
-    parseFloat($this.state.quantity) === 0 ||
-    $this.state.quantity === ""
-  ) {
-    swalMessage({
-      title: "Enter the Quantity.",
+      title: "Selected Item already added in the list.",
       type: "warning"
     });
   } else {
-    let ItemInput = [
-      {
-        discount_percentage: $this.state.discount_percentage,
-        insured: $this.state.insured,
-        conversion_factor: $this.state.conversion_factor,
-        vat_applicable: "Y",
-        hims_d_services_id: $this.state.service_id,
-        quantity: $this.state.quantity,
-        primary_insurance_provider_id: $this.state.insurance_provider_id,
-        primary_network_office_id:
-          $this.state.hims_d_insurance_network_office_id,
-        primary_network_id: $this.state.network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
-      }
-    ];
+    if ($this.state.item_id === null) {
+      swalMessage({
+        title: "Please Select Item.",
+        type: "warning"
+      });
+    } else if (
+      parseFloat($this.state.quantity) === 0 ||
+      $this.state.quantity === ""
+    ) {
+      swalMessage({
+        title: "Enter the Quantity.",
+        type: "warning"
+      });
+    } else {
+      let ItemInput = [
+        {
+          discount_percentage: $this.state.discount_percentage,
+          insured: $this.state.insured,
+          conversion_factor: $this.state.conversion_factor,
+          vat_applicable: "Y",
+          hims_d_services_id: $this.state.service_id,
+          quantity: $this.state.quantity,
+          primary_insurance_provider_id: $this.state.insurance_provider_id,
+          primary_network_office_id:
+            $this.state.hims_d_insurance_network_office_id,
+          primary_network_id: $this.state.network_id,
+          sec_insured: $this.state.sec_insured,
+          secondary_insurance_provider_id:
+            $this.state.secondary_insurance_provider_id,
+          secondary_network_id: $this.state.secondary_network_id,
+          secondary_network_office_id: $this.state.secondary_network_office_id
+        }
+      ];
 
-    algaehApiCall({
-      uri: "/billing/getBillDetails",
-      module: "billing",
-      method: "POST",
-      data: ItemInput,
-      onSuccess: response => {
-        if (response.data.success) {
-          let data = response.data.records;
-          if (data.billdetails[0].pre_approval === "Y") {
-            swalMessage({
-              title:
-                "Selected Service is Pre-Approval required, you don't have rights to bill.",
-              type: "warning"
-            });
-          } else {
-            let existingservices = $this.state.pharmacy_stock_detail;
+      algaehApiCall({
+        uri: "/billing/getBillDetails",
+        module: "billing",
+        method: "POST",
+        data: ItemInput,
+        onSuccess: response => {
+          if (response.data.success) {
+            let data = response.data.records;
+            if (data.billdetails[0].pre_approval === "Y") {
+              swalMessage({
+                title:
+                  "Selected Service is Pre-Approval required, you don't have rights to bill.",
+                type: "warning"
+              });
+            } else {
+              let existingservices = $this.state.pharmacy_stock_detail;
 
-            if (data.billdetails.length !== 0) {
-              data.billdetails[0].extended_cost =
-                data.billdetails[0].gross_amount;
-              data.billdetails[0].net_extended_cost =
-                data.billdetails[0].net_amout;
+              if (data.billdetails.length !== 0) {
+                data.billdetails[0].extended_cost =
+                  data.billdetails[0].gross_amount;
+                data.billdetails[0].net_extended_cost =
+                  data.billdetails[0].net_amout;
 
-              data.billdetails[0].item_id = $this.state.item_id;
-              data.billdetails[0].item_category = $this.state.item_category;
-              data.billdetails[0].item_group_id = $this.state.item_group_id;
-              data.billdetails[0].expiry_date = $this.state.expiry_date;
-              data.billdetails[0].batchno = $this.state.batchno;
-              data.billdetails[0].uom_id = $this.state.uom_id;
-              data.billdetails[0].operation = "-";
-              data.billdetails[0].grn_no = $this.state.grn_no;
-              data.billdetails[0].qtyhand = $this.state.qtyhand;
-              data.billdetails[0].service_id = data.billdetails[0].services_id;
-              data.billdetails[0].discount_amount =
-                data.billdetails[0].discount_amout;
+                data.billdetails[0].item_id = $this.state.item_id;
+                data.billdetails[0].item_category = $this.state.item_category;
+                data.billdetails[0].item_group_id = $this.state.item_group_id;
+                data.billdetails[0].expiry_date = $this.state.expiry_date;
+                data.billdetails[0].batchno = $this.state.batchno;
+                data.billdetails[0].uom_id = $this.state.uom_id;
+                data.billdetails[0].operation = "-";
+                data.billdetails[0].grn_no = $this.state.grn_no;
+                data.billdetails[0].qtyhand = $this.state.qtyhand;
+                data.billdetails[0].service_id =
+                  data.billdetails[0].services_id;
+                data.billdetails[0].discount_amount =
+                  data.billdetails[0].discount_amout;
 
-              existingservices.splice(0, 0, data.billdetails[0]);
-            }
+                existingservices.splice(0, 0, data.billdetails[0]);
+              }
 
-            if (context !== null) {
-              context.updateState({
-                pharmacy_stock_detail: existingservices,
+              if (context !== null) {
+                context.updateState({
+                  pharmacy_stock_detail: existingservices,
+                  item_id: null,
+                  uom_id: null,
+                  batchno: null,
+                  expiry_date: null,
+                  quantity: 0,
+                  unit_cost: 0,
+                  Batch_Items: [],
+                  service_id: null,
+                  conversion_factor: 1,
+                  grn_no: null,
+                  item_group_id: null,
+                  item_category: null,
+                  qtyhand: 0,
+                  discount_percentage: 0
+                });
+              }
+
+              $this.setState({
+                item_description: "",
                 item_id: null,
                 uom_id: null,
                 batchno: null,
@@ -464,92 +507,75 @@ const AddItems = ($this, context) => {
                 conversion_factor: 1,
                 grn_no: null,
                 item_group_id: null,
-                item_category: null,
+                selectBatchButton: false,
                 qtyhand: 0,
                 discount_percentage: 0
               });
-            }
 
-            $this.setState({
-              item_description: "",
-              item_id: null,
-              uom_id: null,
-              batchno: null,
-              expiry_date: null,
-              quantity: 0,
-              unit_cost: 0,
-              Batch_Items: [],
-              service_id: null,
-              conversion_factor: 1,
-              grn_no: null,
-              item_group_id: null,
-              selectBatchButton: false,
-              qtyhand: 0,
-              discount_percentage: 0
-            });
+              algaehApiCall({
+                uri: "/billing/billingCalculations",
+                module: "billing",
+                method: "POST",
+                data: { billdetails: existingservices },
+                onSuccess: response => {
+                  if (response.data.success) {
+                    let data = response.data.records;
 
-            algaehApiCall({
-              uri: "/billing/billingCalculations",
-              module: "billing",
-              method: "POST",
-              data: { billdetails: existingservices },
-              onSuccess: response => {
-                if (response.data.success) {
-                  let data = response.data.records;
+                    data.patient_payable_h =
+                      data.patient_payable || $this.state.patient_payable;
+                    data.sub_total =
+                      data.sub_total_amount || $this.state.sub_total;
+                    data.patient_responsibility =
+                      data.patient_res || $this.state.patient_responsibility;
+                    data.company_responsibility =
+                      data.company_res || $this.state.company_responsibility;
 
-                  data.patient_payable_h =
-                    data.patient_payable || $this.state.patient_payable;
-                  data.sub_total =
-                    data.sub_total_amount || $this.state.sub_total;
-                  data.patient_responsibility =
-                    data.patient_res || $this.state.patient_responsibility;
-                  data.company_responsibility =
-                    data.company_res || $this.state.company_responsibility;
+                    data.company_payable =
+                      data.company_payble || $this.state.company_payable;
+                    data.sec_company_responsibility =
+                      data.sec_company_res ||
+                      $this.state.sec_company_responsibility;
+                    data.sec_company_payable =
+                      data.sec_company_paybale ||
+                      $this.state.sec_company_payable;
 
-                  data.company_payable =
-                    data.company_payble || $this.state.company_payable;
-                  data.sec_company_responsibility =
-                    data.sec_company_res ||
-                    $this.state.sec_company_responsibility;
-                  data.sec_company_payable =
-                    data.sec_company_paybale || $this.state.sec_company_payable;
-
-                  data.copay_amount =
-                    data.copay_amount || $this.state.copay_amount;
-                  data.sec_copay_amount =
-                    data.sec_copay_amount || $this.state.sec_copay_amount;
-                  data.addItemButton = false;
-                  data.saveEnable = false;
-                  if (context !== null) {
-                    context.updateState({ ...data });
+                    data.copay_amount =
+                      data.copay_amount || $this.state.copay_amount;
+                    data.sec_copay_amount =
+                      data.sec_copay_amount || $this.state.sec_copay_amount;
+                    data.addItemButton = false;
+                    data.saveEnable = false;
+                    if (context !== null) {
+                      context.updateState({ ...data });
+                    }
+                  } else {
+                    swalMessage({
+                      title: response.data.message,
+                      type: "error"
+                    });
                   }
-                } else {
+                  AlgaehLoader({ show: false });
+                },
+                onFailure: error => {
+                  AlgaehLoader({ show: false });
                   swalMessage({
-                    title: response.data.message,
+                    title: error.message,
                     type: "error"
                   });
                 }
-                AlgaehLoader({ show: false });
-              },
-              onFailure: error => {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                  title: error.message,
-                  type: "error"
-                });
-              }
-            });
+              });
+            }
           }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
         }
-      },
-      onFailure: error => {
-        AlgaehLoader({ show: false });
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+      });
+    }
   }
 };
 

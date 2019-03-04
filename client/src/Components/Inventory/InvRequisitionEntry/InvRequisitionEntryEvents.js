@@ -51,9 +51,9 @@ const getCtrlCode = ($this, docNumber) => {
       } else {
         data.postEnable = false;
       }
-      if (data.visit_id !== null) {
-        data.case_type = "OP";
-      }
+      // if (data.visit_id !== null) {
+      //   data.case_type = "OP";
+      // }
 
       data.addedItem = true;
       $this.setState(data, () => {});
