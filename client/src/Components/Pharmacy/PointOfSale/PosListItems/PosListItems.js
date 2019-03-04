@@ -137,7 +137,7 @@ class PosListItems extends Component {
                           <div className="row">
                             <AlgaehAutoSearch
                               div={{ className: "col-3" }}
-                              label={{ forceLabel: "Item Name" }}
+                              label={{ forceLabel: "Item Name (Ctrl + i)" }}
                               title="Search Items"
                               id="item_id_search"
                               template={result => {

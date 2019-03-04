@@ -399,7 +399,7 @@ export default class MonthlyAttendance extends Component {
           <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">
-                Employee Monthly Attendance:{" "}
+                Monthly Attendance of:{" "}
                 <b style={{ color: "#33b8bc" }}>{this.state.formatingString}</b>
               </h3>
             </div>

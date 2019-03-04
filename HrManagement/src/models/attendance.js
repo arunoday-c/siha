@@ -953,7 +953,7 @@ module.exports = {
   },
 
   //created by irfan:
-  addAttendanceRegularization: (req, res, next) => {
+  addAttendanceRegularizationBAKUP_04_march: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
     _mysql
@@ -1014,6 +1014,89 @@ module.exports = {
           next(e);
         });
       });
+  },
+
+  //created by irfan:
+  addAttendanceRegularization: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    _mysql
+          .executeQueryWithTransaction({
+            query:
+              "INSERT INTO `hims_f_attendance_regularize` (employee_id,attendance_date,regularize_status,\
+            login_date,logout_date,\
+            punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
+            created_by,created_date,updated_by,updated_date)\
+            VALUE(?,date(?),date(?),date(?),?,?,?,?,?,?,?,?,?)",
+            values: [
+              
+              input.employee_id,
+              input.attendance_date,
+              input.regularize_status,
+              input.login_date,
+              input.logout_date,
+              input.punch_in_time,
+              input.punch_out_time,
+              input.regularize_in_time,
+              input.regularize_out_time,
+              input.regularization_reason,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date()
+            ]
+          })
+          .then(result => {
+
+            if(input.absent_id>0){
+
+              _mysql
+              .executeQuery({
+                query:
+                  "update hims_f_absent  set status='CPR' where hims_f_absent_id=?;",
+                values: [input.absent_id
+                ]       
+          
+              })
+              .then(result2 => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = result2;
+                  next();
+                });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+
+
+
+
+
+            }else{
+        
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+           
+
+            }
+
+            // _mysql.commitTransaction(() => {
+            //   _mysql.releaseConnection();
+            //   req.records = result;
+            //   next();
+            // });
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
   },
 
   //created by irfan:
@@ -1142,9 +1225,9 @@ module.exports = {
     } else {
       const _mysql = new algaehMysql();
 
-      let stringData= " regularize_status<>'NFD' ";
+      let stringData= " regularize_status <>'NFD' ";
 
-      if(req.query.type="auth"){
+      if(req.query.type=="auth"){
 
         stringData="regularize_status='PEN' ";
 
@@ -3500,8 +3583,15 @@ module.exports = {
 
                           // utilities.logger().log("date_range:", "date_range");
 
+
+                          let fr_date=from_date;
+                          if(AllEmployees[0]["date_of_joining"]>from_date){
+                            fr_date=AllEmployees[0]["date_of_joining"];
+
+                          }
+
                           let date_range = getDays(
-                            new Date(from_date),
+                            new Date(fr_date),
                             new Date(to_date)
                           );
                           // utilities.logger().log("date_range:", date_range);
@@ -4564,8 +4654,8 @@ module.exports = {
                           total_hours: attResult[i]["total_hours"],
                           total_working_hours:
                             attResult[i]["total_working_hours"],
-                          shortage_hours: attResult[i]["shortage_hourss"],
-                          ot_work_hours: attResult[i]["ot_hourss"]
+                          shortage_hours: attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]>=0?attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]:0,
+                          ot_work_hours: attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]>=0?attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]:0
                         });
                       }
 
@@ -5203,9 +5293,8 @@ module.exports = {
                                   total_hours: attResult[i]["total_hours"],
                                   total_working_hours:
                                     attResult[i]["total_working_hours"],
-                                  shortage_hours:
-                                    attResult[i]["shortage_hourss"],
-                                  ot_work_hours: attResult[i]["ot_hourss"],
+                                    shortage_hours: attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]>=0?attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]:0,
+                                    ot_work_hours: attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]>=0?attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]:0,
                                   pending_unpaid_leave: pending_leaves,
 
                                   prev_month_shortage_hr: short_hrs,
