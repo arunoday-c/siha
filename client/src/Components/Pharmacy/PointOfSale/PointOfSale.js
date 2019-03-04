@@ -8,7 +8,7 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
+// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   ClearData,

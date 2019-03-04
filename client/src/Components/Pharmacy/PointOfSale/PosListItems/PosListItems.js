@@ -603,6 +603,10 @@ class PosListItems extends Component {
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
+                                            number: {
+                                              allowNegative: false,
+                                              thousandSeparator: ","
+                                            },
                                             value: row.quantity,
                                             className: "txt-fld",
                                             name: "quantity",
