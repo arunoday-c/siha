@@ -51,7 +51,6 @@ export default class ActivityFeed extends Component {
   }
 
   skipTab(type, data, e) {
-    debugger;
     e.preventDefault();
     let sendData = {};
 

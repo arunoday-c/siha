@@ -16,7 +16,6 @@ const TreeTable = treeTableHOC(ReactTable);
 class AttendanceRegularization extends Component {
   constructor(props) {
     super(props);
-    debugger;
     this.state = {
       regularization_list: [],
       login_date: props.regularize.login_date
@@ -74,7 +73,7 @@ class AttendanceRegularization extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            regularization_list: res.data.records
+            regularization_list: res.data.result
           });
         }
       },
@@ -112,8 +111,10 @@ class AttendanceRegularization extends Component {
           });
         } else {
           algaehApiCall({
-            uri: "/attendance/addAttendanceRegularization",
-            method: "POST",
+            uri: this.state.hims_f_attendance_regularize_id
+              ? "/attendance/requestAttndncReglztion"
+              : "/attendance/addAttendanceRegularization",
+            method: this.state.hims_f_attendance_regularize_id ? "PUT" : "POST",
             module: "hrManagement",
             data: {
               attendance_date: this.state.login_date,
@@ -130,7 +131,9 @@ class AttendanceRegularization extends Component {
               regularize_in_time: this.state.regularize_in_time,
               regularize_out_time: this.state.regularize_out_time,
               regularization_reason: this.state.regularization_reason,
-              status: "PEN"
+              regularize_status: "PEN",
+              hims_f_attendance_regularize_id: this.state
+                .hims_f_attendance_regularize_id
             },
             onSuccess: res => {
               if (res.data.success) {
@@ -364,10 +367,10 @@ class AttendanceRegularization extends Component {
                             accessor: d =>
                               moment(d.created_date).format("DD-MM-YYYY")
                           },
-                          {
-                            Header: <b>Code</b>,
-                            accessor: "regularization_code"
-                          },
+                          // {
+                          //   Header: <b>Code</b>,
+                          //   accessor: "regularization_code"
+                          // },
                           {
                             Header: <b>Reason</b>,
                             accessor: "regularization_reason"

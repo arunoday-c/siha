@@ -405,7 +405,7 @@ export default class WeeklyAttendance extends Component {
         this.state.sub_department_id !== null &&
         this.state.sub_department_id !== undefined
           ? "sub_department_id = " + this.state.sub_department_id
-          : "sub_department_id > 1",
+          : "sub_department_id > 0",
       searchName: "employee",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
