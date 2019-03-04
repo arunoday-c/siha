@@ -61,13 +61,10 @@ export default class SelfService extends Component {
       this.attlv.click();
     }
 
-    this.setState(
-      {
-        ...this.state,
-        ...options
-      },
-      console.log("Leave:", this.state.leave)
-    );
+    this.setState({
+      ...this.state,
+      ...options
+    });
   }
 
   render() {

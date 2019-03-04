@@ -36,7 +36,7 @@ class ApplyLeave extends Component {
   }
 
   componentWillUnmount() {
-    console.log("Unmounted Leave");
+    this.clearState();
   }
 
   getDateRange(startDate, endDate) {

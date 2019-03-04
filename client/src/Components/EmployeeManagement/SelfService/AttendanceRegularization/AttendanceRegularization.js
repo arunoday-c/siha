@@ -65,11 +65,12 @@ class AttendanceRegularization extends Component {
 
   getRegularizationRequests() {
     algaehApiCall({
-      uri: "/leave/getEmployeeAttendReg",
+      uri: "/attendance/getEmployeeAttendReg",
       method: "GET",
       data: {
         employee_id: this.state.hims_d_employee_id
       },
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
@@ -128,7 +129,8 @@ class AttendanceRegularization extends Component {
               ).format("HH:mm:ss"),
               regularize_in_time: this.state.regularize_in_time,
               regularize_out_time: this.state.regularize_out_time,
-              regularization_reason: this.state.regularization_reason
+              regularization_reason: this.state.regularization_reason,
+              status: "PEN"
             },
             onSuccess: res => {
               if (res.data.success) {
@@ -297,7 +299,9 @@ class AttendanceRegularization extends Component {
                     style={{ marginTop: 21 }}
                     onClick={this.requestRegularization.bind(this)}
                   >
-                    Request
+                    {this.state.hims_f_attendance_regularize_id
+                      ? "Update"
+                      : "Request"}
                   </button>
                 </div>
               </div>

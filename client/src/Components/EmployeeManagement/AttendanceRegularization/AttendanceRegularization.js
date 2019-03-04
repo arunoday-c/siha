@@ -80,8 +80,6 @@ export default class AttendanceRegularization extends Component {
   }
 
   regularizeAttendance(data, type) {
-    debugger;
-
     const diff_hour = moment(data.regularize_out_time, "HH").diff(
       moment(data.regularize_in_time, "HH"),
       "hours"
