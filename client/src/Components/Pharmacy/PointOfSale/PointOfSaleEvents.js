@@ -4,7 +4,11 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  getCookie
+} from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -37,14 +41,14 @@ const getCtrlCode = ($this, docNumber) => {
     afterSuccess: data => {
       data.saveEnable = true;
       data.patient_payable_h = data.patient_payable;
-      data.case_type = "O";
+      data.pos_customer_type = "OT";
       if (data.posted === "Y") {
         data.postEnable = true;
       } else {
         data.postEnable = false;
       }
       if (data.visit_id !== null) {
-        data.case_type = "OP";
+        data.pos_customer_type = "OP";
       }
       data.dataExitst = true;
 
@@ -129,7 +133,9 @@ const getPatientDetails = ($this, output) => {
 };
 
 const ClearData = ($this, e) => {
+  debugger;
   let IOputs = POSIOputs.inputParam();
+
   IOputs.patient_payable_h = 0;
   IOputs.mode_of_pa = "";
   IOputs.pay_cash = "CA";
@@ -145,7 +151,50 @@ const ClearData = ($this, e) => {
   IOputs.advance = 0;
   IOputs.total_quantity = 0;
   IOputs.dataExitst = false;
-  $this.setState(IOputs);
+
+  let _screenName = getCookie("ScreenName").replace("/", "");
+
+  algaehApiCall({
+    uri: "/userPreferences/get",
+    data: {
+      screenName: _screenName,
+      identifier: "PharmacyLocation"
+    },
+    method: "GET",
+    onSuccess: response => {
+      debugger;
+      if (response.data.records.selectedValue !== undefined) {
+        IOputs.location_id = response.data.records.selectedValue;
+      }
+      algaehApiCall({
+        uri: "/userPreferences/get",
+        data: {
+          screenName: _screenName,
+          identifier: "LocationType"
+        },
+        method: "GET",
+        onSuccess: response => {
+          debugger;
+          if (response.data.records.selectedValue !== undefined) {
+            IOputs.location_type = response.data.records.selectedValue;
+          }
+          $this.setState(IOputs);
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
 };
 
 const GenerateReciept = ($this, callBack) => {
@@ -594,7 +643,33 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  $this.setState({ [name]: value, location_type: e.selected.location_type });
+  $this.setState(
+    { [name]: value, location_type: e.selected.location_type },
+    () => {
+      debugger;
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      algaehApiCall({
+        uri: "/userPreferences/save",
+        data: {
+          screenName: _screenName,
+          identifier: "PharmacyLocation",
+          value: value
+        },
+
+        method: "POST"
+      });
+
+      algaehApiCall({
+        uri: "/userPreferences/save",
+        data: {
+          screenName: _screenName,
+          identifier: "LocationType",
+          value: e.selected.location_type
+        },
+        method: "POST"
+      });
+    }
+  );
 };
 
 const closePopup = $this => {
