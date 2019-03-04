@@ -75,7 +75,9 @@ export default class ActivityFeed extends Component {
               from_date: data.absent_date,
               to_date: data.absent_date,
               from_session: "FD",
-              to_session: "FD"
+              to_session: "FD",
+              absent_id: data.hims_f_absent_id,
+              leave_from: "AB"
             }
           };
 

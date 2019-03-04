@@ -3625,6 +3625,8 @@ module.exports = {
                             let actual_hours = 0;
                             let actual_mins = 0;
 
+
+
                             if (shiftData["shift_time"] > 0) {
                               actual_hours = shiftData.shift_time
                                 .toString()
@@ -3636,6 +3638,8 @@ module.exports = {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
                             }
+                            
+
 
                             utilities.logger().log("i ", date_range[i]);
 
@@ -3701,9 +3705,7 @@ module.exports = {
                                 })
                             );
                           }
-                          // utilities
-                          //   .logger()
-                          //   .log("biometricData single emp", biometricData);
+                        
                           insertTimeSheet(
                             returnQry,
                             biometricData,
@@ -4276,7 +4278,7 @@ module.exports = {
           query: `select employee_id,attendance_date,attendance_date as login_date,\
             out_date as logout_date,in_time as punch_in_time,\
             out_time as punch_out_time,status from hims_f_daily_time_sheet where hospital_id=? and  \
-             date(attendance_date)>=date(?) and date(out_date) <=date(?) \
+             date(attendance_date)>=date(?) and date(attendance_date) <=date(?) \
              and (status='EX' or status='AB') ${employee_id};`,
           values: [input.hospital_id, input.from_date, input.to_date],
           printQuery: true
@@ -4565,7 +4567,7 @@ module.exports = {
                 });
               }
 
-              utilities.logger().log("dailyAttendance: ", dailyAttendance);
+             
 
               const insurtColumns = [
                 "employee_id",

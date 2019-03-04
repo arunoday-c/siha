@@ -130,6 +130,11 @@ export default class WeeklyAttendance extends Component {
           this.setState({
             disableNotify: true
           });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.message,
+            type: "warning"
+          });
         }
       },
       onFailure: err => {
