@@ -57,6 +57,7 @@ class VisitType extends Component {
         let data = { hims_d_visit_type_id: id };
         algaehApiCall({
           uri: "/visitType/delete",
+          module: "masterSettings",
           data: data,
           method: "DELETE",
           onSuccess: response => {
@@ -68,6 +69,7 @@ class VisitType extends Component {
 
               this.props.getVisittypes({
                 uri: "/visitType/get",
+                module: "masterSettings",
                 method: "GET",
                 redux: {
                   type: "VISITTYPE_GET_DATA",
@@ -128,6 +130,7 @@ class VisitType extends Component {
     ) {
       this.props.getVisittypes({
         uri: "/visitType/get",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "VISITTYPE_GET_DATA",
@@ -155,6 +158,7 @@ class VisitType extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/visitType/add",
+          module: "masterSettings",
           data: this.state,
           onSuccess: response => {
             if (response.data.success === true) {
@@ -162,6 +166,7 @@ class VisitType extends Component {
               //Handle Successful Add here
               this.props.getVisittypes({
                 uri: "/visitType/get",
+                module: "masterSettings",
                 method: "GET",
                 redux: {
                   type: "VISITTYPE_GET_DATA",
@@ -208,6 +213,7 @@ class VisitType extends Component {
   updateVisitType(data) {
     algaehApiCall({
       uri: "/visitType/update",
+      module: "masterSettings",
       data: data,
       method: "PUT",
       onSuccess: response => {
@@ -219,6 +225,7 @@ class VisitType extends Component {
 
           this.props.getVisittypes({
             uri: "/visitType/get",
+            module: "masterSettings",
             method: "GET",
             redux: {
               type: "VISITTYPE_GET_DATA",

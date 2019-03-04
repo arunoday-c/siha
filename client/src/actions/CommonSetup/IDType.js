@@ -5,6 +5,7 @@ export function getIDTypes() {
   return function(dispatch) {
     algaehApiCall({
       uri: "/identity/get",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success === true) {

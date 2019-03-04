@@ -67,6 +67,7 @@ import opCreditSettlement from "../controller/opCreditSettlement";
 import algaehMasters from "../controller/algaehMasters";
 import dental from "../controller/dental";
 
+import algaehappexpiry from "../controller/algaehappexpiry";
 import selfService from "../selfService/controller/selfService";
 let router = express();
 import leave from "../Payroll/controller/leave";
@@ -155,6 +156,7 @@ initializedDb(db => {
   router.use("/loan", loan({ config, db }));
   router.use("/salary", salary({ config, db }));
   router.use("/payrollSettings", payrollSettings({ config, db }));
+  router.use("/algaehappexpiry", algaehappexpiry({ config, db }));
 });
 
 export default router;

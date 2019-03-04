@@ -55,6 +55,7 @@ class AddConsultationForm extends Component {
     ) {
       this.props.getVisittypes({
         uri: "/visitType/get",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "VISITTYPE_GET_DATA",
