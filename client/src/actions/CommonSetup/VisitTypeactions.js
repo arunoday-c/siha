@@ -7,6 +7,7 @@ export function getVisittypes() {
   return function(dispatch) {
     algaehApiCall({
       uri: "/visitType/get",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success === true) {

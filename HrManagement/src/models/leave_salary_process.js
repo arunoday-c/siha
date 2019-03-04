@@ -1,9 +1,9 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
-
+import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
 import { processAttendance } from "./attendance";
-import { processSalary } from "./salary";
+import { newProcessSalary, processSalary } from "./salary";
 
 module.exports = {
   getLeaveSalaryProcess: (req, res, next) => {
@@ -130,6 +130,9 @@ module.exports = {
 
   processLeaveSalary: (req, res, next) => {
     try {
+      const utilities = new algaehUtilities();
+
+      utilities.logger().log("processLeaveSalary: ");
       const _mysql = new algaehMysql();
       const _leaveSalary = req.query;
 
@@ -150,7 +153,7 @@ module.exports = {
           hims_f_employee_leave_salary_header where employee_id=? and `year`=?; \
           SELECT EE.employee_id,EE.earnings_id,EE.amount FROM hims_d_earning_deduction ED, \
           hims_d_employee_earnings EE where EE.earnings_id=ED.hims_d_earning_deduction_id and \
-          ED.annual_salary_comp='Y' and EE.employee_id=?;",
+          ED.annual_salary_comp='Y' and EE.employee_id=?;select attendance_type from hims_test_db.hims_d_hrms_options;",
           values: [
             req.query.hims_d_employee_id,
             req.query.hims_d_employee_id,
@@ -163,6 +166,9 @@ module.exports = {
           let employee_result = all_result[0];
           let employee_leave_salary = all_result[1][0];
           let annual_leave_result = all_result[2];
+          let hrms_options = all_result[3];
+
+          utilities.logger().log("hrms_options: ", hrms_options);
 
           if (employee_leave_salary == undefined) {
             _mysql.commitTransaction((error, result) => {
@@ -217,16 +223,21 @@ module.exports = {
                     req.query.leave_salary = "Y";
                   }
 
+                  let _attandance = null;
+                  if (hrms_options[0].attendance_type === "M") {
+                    req.mySQl = _mysql;
+                    _attandance = await processAttendance(req, res, next);
+                  } else {
+                    utilities.logger().log("attendance_type else: ");
+                    _attandance = Promise.resolve();
+                  }
                   req.mySQl = _mysql;
-
-                  let _attandance = await processAttendance(req, res, next);
-
-                  req.mySQl = _mysql;
-                  let _sarary = await processSalary(req, res, next);
+                  let _sarary = await newProcessSalary(req, res, next);
 
                   _sarary = parseFloat(_sarary) + 1;
 
                   Promise.all([_attandance, _sarary]).then(rse => {
+                    utilities.logger().log("_sarary: ", _sarary);
                     strGetdataQry +=
                       "select hims_f_salary_id,salary_number,month,year,employee_id,salary_date,gross_salary,net_salary from hims_f_salary where hims_f_salary_id=" +
                       _sarary +

@@ -20,7 +20,8 @@ export default class SelfService extends Component {
     super(props);
     this.state = {
       pageDisplay: "ActivityFeed",
-      regularize: {}
+      regularize: {},
+      leave: {}
     };
     this.getEmployeeDetails();
   }
@@ -56,15 +57,14 @@ export default class SelfService extends Component {
   ChangeRenderTabs(options) {
     if (options.pageDisplay === "AttendanceRegularization") {
       this.attReg.click();
+    } else if (options.pageDisplay === "ApplyLeave") {
+      this.attlv.click();
     }
-    debugger;
-    this.setState(
-      {
-        ...this.state,
-        ...options
-      },
-      console.log("Rz:", this.state.regularize)
-    );
+
+    this.setState({
+      ...this.state,
+      ...options
+    });
   }
 
   render() {
@@ -208,6 +208,9 @@ export default class SelfService extends Component {
                 algaehtabs={"ApplyLeave"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
+                ref={attlv => {
+                  this.attlv = attlv;
+                }}
               >
                 {
                   <AlgaehLabel
@@ -271,7 +274,10 @@ export default class SelfService extends Component {
               empData={this.state.employee_details}
             />
           ) : this.state.pageDisplay === "ApplyLeave" ? (
-            <ApplyLeave empData={this.state.employee_details} />
+            <ApplyLeave
+              leave={this.state.leave}
+              empData={this.state.employee_details}
+            />
           ) : this.state.pageDisplay === "LoanRequest" ? (
             <LoanRequest empData={this.state.employee_details} />
           ) : this.state.pageDisplay === "LeaveEncashment" ? (

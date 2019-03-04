@@ -7,7 +7,8 @@ import mkdirp from "mkdirp";
 import { LINQ } from "node-linq";
 //import sharp from "sharp";
 import mime from "mime/lite";
-import config from "../keys/keys";
+import algaehKeys from "algaeh-keys"; //"../keys/keys";
+const config = algaehKeys.default;
 let logDirectory = path.join(__dirname, "../../Documents");
 if (!fs.existsSync(logDirectory)) {
   fs.mkdirSync(logDirectory);

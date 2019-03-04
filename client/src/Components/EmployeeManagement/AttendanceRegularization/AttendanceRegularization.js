@@ -20,7 +20,7 @@ export default class AttendanceRegularization extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log("REGZ", nextProps.regularize);
+    // console.log("REGZ", nextProps.regularize);
   }
 
   loadRegularizationList() {
@@ -46,7 +46,8 @@ export default class AttendanceRegularization extends Component {
             module: "hrManagement",
             data: {
               from_date: this.state.from_date,
-              to_date: this.state.to_date
+              to_date: this.state.to_date,
+              type: "auth"
             },
             onSuccess: res => {
               if (res.data.success) {
@@ -80,8 +81,6 @@ export default class AttendanceRegularization extends Component {
   }
 
   regularizeAttendance(data, type) {
-    debugger;
-
     const diff_hour = moment(data.regularize_out_time, "HH").diff(
       moment(data.regularize_in_time, "HH"),
       "hours"
@@ -267,10 +266,10 @@ export default class AttendanceRegularization extends Component {
                       Header: "Regularization",
                       accessor: "regularization_code",
                       columns: [
-                        {
-                          Header: <b>Code</b>,
-                          accessor: "regularization_code"
-                        },
+                        // {
+                        //   Header: <b>Code</b>,
+                        //   accessor: "regularization_code"
+                        // },
                         {
                           Header: <b>Reason</b>,
                           accessor: "regularization_reason"

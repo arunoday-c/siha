@@ -1,5 +1,5 @@
 import pad from "node-string-pad";
-import config from "../keys/keys";
+import algaehKeys from "algaeh-keys"; //"../keys/keys";
 import multer from "multer";
 import path from "path";
 import mkdirp from "mkdirp";
@@ -8,6 +8,7 @@ import fs from "fs";
 import { LINQ } from "node-linq";
 
 import _ from "underscore";
+const config = algaehKeys.default;
 let paging = options => {
   let pageLimit = options.paging.pageNo * options.paging.pageSize;
   return {

@@ -5,16 +5,6 @@ exports.default = {
   // Server port and request body limit
   port: 3002,
   bodyLimit: "900kb",
-  // Dev db
-  // mysqlDb: {
-  //   connectionLimit: 20,
-  //   host: "him-app-db-server.cue9pqguf30s.ap-south-1.rds.amazonaws.com",
-  //   port: 3306,
-  //   user: "root",
-  //   password: "medteam2013",
-  //   database: "algaeh_hims_db",
-  //   multipleStatements: true
-  // },
 
   mysqlDb: {
     connectionLimit: 20,
@@ -41,23 +31,5 @@ exports.default = {
   dbFormat: {
     date: "YYYY-MM-DD"
   },
-  logpath: "/logs", //log folder path
-  logFileSize: "20m", //maximum size of log file.
-  logFileDatePatter: "YYYYMMDD",
-  logLevel:
-    "debug" /*log printing based on parameters; 
-2 info:{Warning,infomation,error};
-1 warn:{warning,error};
-0 error:{error},
-4 debug:{debug,error,warning,information}
-*/,
-  /* AWS Translator api settings */
-  AWSCredentials: {
-    accessKeyId: "AKIAI3LBOY7VFNGLQFWA",
-    secretAccessKey: "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",
-    region: "us-east-1",
-    endpoint: "https://translate.us-east-1.amazonaws.com"
-  },
-  /* folder path for language changing */
-  languageFolderPath: "/media/syed/Office/ALGAEH/DEV/HIMS/hims-app/logs"
+  useSSL: false
 };

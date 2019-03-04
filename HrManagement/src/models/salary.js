@@ -25,18 +25,7 @@ module.exports = {
           _stringData += " and A.sub_department_id=? ";
           inputValues.push(input.sub_department_id);
         }
-
-        // let salary_input = [month_number, year];
-        // let _strSalary = "";
-        // if (input.employee_id != null) {
-        //   _strSalary += " and A.employee_id=?";
-        //   salary_input.push(input.employee_id);
-        // }
-
-        // if (input.sub_department_id != null) {
-        //   _strSalary += " and sub_department_id=? ";
-        //   salary_input.push(input.sub_department_id);
-        // }
+        utilities.logger().log("_stringData: ");
 
         _mysql
           .executeQuery({
@@ -56,13 +45,16 @@ module.exports = {
             printQuery: true
           })
           .then(empResult => {
+            utilities.logger().log("empResult: ", empResult);
             if (empResult.length == 0) {
+              utilities.logger().log("empResult: ", empResult.length);
               _mysql.releaseConnection();
               req.records = empResult;
               next();
               resolve(empResult);
               return;
             }
+            utilities.logger().log("_salaryHeader_id: ");
             let _salaryHeader_id = [];
             let _myemp = [];
             empResult.map(o => {
@@ -220,11 +212,12 @@ module.exports = {
                 let final_deduction_amt_array = [];
                 let final_contribution_amt_array = [];
                 let final_loan_array = [];
+                let salary_header_id = 0;
                 new Promise((resolve, reject) => {
                   try {
                     for (let i = 0; i < empResult.length; i++) {
                       let results = Salaryresults;
-                      let salary_header_id = 0;
+
                       let final_earning_amount = 0;
                       let current_earning_amt_array = [];
 
@@ -500,6 +493,27 @@ module.exports = {
                 })
                   .then(result => {
                     utilities.logger().log("_headerQuery: ", _headerQuery);
+                    utilities
+                      .logger()
+                      .log(
+                        "final_earning_amt_array: ",
+                        final_earning_amt_array
+                      );
+                    utilities
+                      .logger()
+                      .log(
+                        "final_deduction_amt_array: ",
+                        final_deduction_amt_array
+                      );
+                    utilities
+                      .logger()
+                      .log(
+                        "final_contribution_amt_array: ",
+                        final_contribution_amt_array
+                      );
+                    utilities
+                      .logger()
+                      .log("final_loan_array: ", final_loan_array);
                     _mysql
                       .executeQueryWithTransaction({
                         query: _headerQuery,
@@ -523,6 +537,7 @@ module.exports = {
                           let execute_query = "";
 
                           for (let k = 0; k < inserted_salary.length; k++) {
+                            salary_header_id = inserted_salary[k].insertId;
                             utilities
                               .logger()
                               .log(
@@ -613,6 +628,9 @@ module.exports = {
                             }
 
                             if (k == inserted_salary.length - 1) {
+                              utilities
+                                .logger()
+                                .log("execute_query: ", execute_query);
                               _mysql
                                 .executeQuery({
                                   query: execute_query,
@@ -627,7 +645,13 @@ module.exports = {
                                       resolve(detailresult);
                                     });
                                   } else {
-                                    resolve(detailresult);
+                                    utilities
+                                      .logger()
+                                      .log(
+                                        "salary_header_id: ",
+                                        salary_header_id
+                                      );
+                                    resolve(salary_header_id);
                                   }
                                 })
                                 .catch(error => {
@@ -641,6 +665,7 @@ module.exports = {
                         }
                       })
                       .catch(error => {
+                        utilities.logger().log("error: ", error);
                         _mysql.rollBackTransaction(() => {
                           next(error);
                           reject(error);
@@ -660,6 +685,7 @@ module.exports = {
               });
           })
           .catch(error => {
+            utilities.logger().log("error: ", error);
             _mysql.releaseConnection();
             next(error);
             reject(error);

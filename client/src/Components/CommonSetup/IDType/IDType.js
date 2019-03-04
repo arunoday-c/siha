@@ -52,6 +52,7 @@ class IDType extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/identity/add",
+          module: "masterSettings",
           data: this.state,
           onSuccess: response => {
             if (response.data.success === true) {
@@ -59,6 +60,7 @@ class IDType extends Component {
 
               this.props.getIDTypes({
                 uri: "/identity/get",
+                module: "masterSettings",
                 method: "GET",
                 redux: {
                   type: "IDTYPE_GET_DATA",
@@ -98,6 +100,7 @@ class IDType extends Component {
         let data = { hims_d_identity_document_id: id };
         algaehApiCall({
           uri: "/identity/delete",
+          module: "masterSettings",
           data: data,
           method: "DELETE",
           onSuccess: response => {
@@ -109,6 +112,7 @@ class IDType extends Component {
 
               this.props.getIDTypes({
                 uri: "/identity/get",
+                module: "masterSettings",
                 method: "GET",
                 redux: {
                   type: "IDTYPE_GET_DATA",
@@ -148,6 +152,7 @@ class IDType extends Component {
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
       this.props.getIDTypes({
         uri: "/identity/get",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "IDTYPE_GET_DATA",
@@ -160,6 +165,7 @@ class IDType extends Component {
   updateIDtypes(data) {
     algaehApiCall({
       uri: "/identity/update",
+      module: "masterSettings",
       data: data,
       method: "PUT",
       onSuccess: response => {
@@ -171,6 +177,7 @@ class IDType extends Component {
 
           this.props.getIDTypes({
             uri: "/identity/get",
+            module: "masterSettings",
             method: "GET",
             redux: {
               type: "IDTYPE_GET_DATA",
