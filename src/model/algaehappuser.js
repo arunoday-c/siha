@@ -2,7 +2,7 @@ import { whereCondition, releaseDBConnection, selectStatement } from "../utils";
 import extend from "extend";
 import httpStatus from "../utils/httpStatus";
 import { logger, debugFunction, debugLog } from "../utils/logging";
-
+// import algaehMysql from "algaeh-mysql";
 let selectAppUsers = (req, res, next) => {
   let labSection = {
     algaeh_d_app_user_id: "ALL"
@@ -244,7 +244,10 @@ let selectRoles = (req, res, next) => {
 
 //created by irfan: to
 let createUserLogin = (req, res, next) => {
+  // const _mysql = new algaehMysql();
   try {
+    // _mysql.executeQueryWithTransaction()
+
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }

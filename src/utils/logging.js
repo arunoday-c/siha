@@ -1,7 +1,8 @@
 import winston from "winston";
-import keys from "../keys/keys";
+import algaehKeys from "algaeh-keys"; //"../keys/keys";
 import path from "path";
 import moment from "moment";
+const keys = algaehKeys.default;
 const rotatingDate = require("winston-daily-rotate-file");
 const tsFormat = () => {
   return moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
@@ -23,12 +24,9 @@ const logger = new winston.Logger({
   ]
 });
 
-
-
 let debugFunction = functionName => {
   debugLog("Function Name : " + functionName);
 };
-
 
 let debugLog = (message, obj) => {
   obj = obj || null;
@@ -40,7 +38,6 @@ let debugLog = (message, obj) => {
     else logger.log("debug", message + "%j", obj);
   }
 };
-
 
 const wLogger = new winston.Logger({
   transports: [

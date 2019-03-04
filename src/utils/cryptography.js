@@ -1,7 +1,7 @@
 import cryptr from "cryptr";
-import keys from "../keys/prod";
+import algaehKeys from "algaeh-keys"; //"../keys/prod";
 import { debugLog } from "../utils/logging";
-
+const keys = algaehKeys.default;
 let encryption = data => {
   debugLog("data", data);
   const stringData = JSON.stringify({
