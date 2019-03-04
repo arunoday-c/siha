@@ -121,13 +121,18 @@ class AttendanceRegularization extends Component {
               employee_id: this.state.hims_d_employee_id,
               login_date: this.state.login_date,
               logout_date: this.state.logout_date,
-              punch_in_time: moment(this.state.punch_in_time, "hh:mm a").format(
-                "HH:mm:ss"
-              ),
-              punch_out_time: moment(
-                this.state.punch_out_time,
-                "hh:mm a"
-              ).format("HH:mm:ss"),
+              punch_in_time:
+                this.state.punch_in_time !== null
+                  ? moment(this.state.punch_in_time, "hh:mm a").format(
+                      "HH:mm:ss"
+                    )
+                  : null,
+              punch_out_time:
+                this.state.punch_out_time !== null
+                  ? moment(this.state.punch_out_time, "hh:mm a").format(
+                      "HH:mm:ss"
+                    )
+                  : null,
               regularize_in_time: this.state.regularize_in_time,
               regularize_out_time: this.state.regularize_out_time,
               regularization_reason: this.state.regularization_reason,
