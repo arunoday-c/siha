@@ -1046,10 +1046,12 @@ module.exports = {
                   ],
                   printQuery: true
                 })
-                .then(result => {                 
-                  _mysql.releaseConnection();
-                  req.records = result;
-                  next();
+                .then(result2 => {                 
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = result2;
+                    next();
+                  });
                 })
                 .catch(e => {
                   _mysql.rollBackTransaction(() => {
@@ -1057,9 +1059,17 @@ module.exports = {
                   });
                 });
             } else {
-              _mysql.releaseConnection();
-              req.records = result;
-              next();
+
+
+
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = result;
+                next();
+              });
+
+
+              
             }
           } else {
             _mysql.releaseConnection();
@@ -5255,7 +5265,7 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  },
+  }
 
 
 };
