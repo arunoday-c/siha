@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { releaseConnection } from "../utils";
 import {
-  selectStatement,
-  addVisit,
-  updateVisit,
-  deleteVisitType
+  selectStatement, //Done
+  addVisit, //Done
+  updateVisit, //Done
+  deleteVisitType //Done
 } from "../model/visitType";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {
