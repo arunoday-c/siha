@@ -230,6 +230,7 @@ class PointOfSale extends Component {
                       data: _posLocation
                     },
                     onChange: LocationchangeTexts.bind(this, this),
+                    autoComplete: "off",
                     others: {
                       disabled: this.state.dataExitst
                     }

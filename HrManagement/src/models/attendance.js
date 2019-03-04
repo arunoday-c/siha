@@ -3501,8 +3501,15 @@ module.exports = {
 
                           // utilities.logger().log("date_range:", "date_range");
 
+
+                          let fr_date=from_date;
+                          if(AllEmployees[0]["date_of_joining"]>from_date){
+                            fr_date=AllEmployees[0]["date_of_joining"];
+
+                          }
+
                           let date_range = getDays(
-                            new Date(from_date),
+                            new Date(fr_date),
                             new Date(to_date)
                           );
                           // utilities.logger().log("date_range:", date_range);
@@ -4393,7 +4400,7 @@ module.exports = {
 
           if (result.length > 0) {
             let excptions = new LINQ(result)
-              .Where(w => w.status == "EX")
+              .Where(w => w.status == "EX"||w.status == "AB")
               .Select(s => {
                 return {
                   employee_code: s.employee_code,
@@ -4565,8 +4572,8 @@ module.exports = {
                           total_hours: attResult[i]["total_hours"],
                           total_working_hours:
                             attResult[i]["total_working_hours"],
-                          shortage_hours: attResult[i]["shortage_hourss"],
-                          ot_work_hours: attResult[i]["ot_hourss"]
+                          shortage_hours: attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]>=0?attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]:0,
+                          ot_work_hours: attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]>=0?attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]:0
                         });
                       }
 
@@ -4815,7 +4822,7 @@ module.exports = {
 
                   if (AttenResult.length > 0) {
                     let excptions = new LINQ(AttenResult)
-                      .Where(w => w.status == "EX")
+                      .Where(w => w.status == "EX"||w.status == "AB")
                       .Select(s => {
                         return {
                           employee_code: s.employee_code,
@@ -5204,9 +5211,8 @@ module.exports = {
                                   total_hours: attResult[i]["total_hours"],
                                   total_working_hours:
                                     attResult[i]["total_working_hours"],
-                                  shortage_hours:
-                                    attResult[i]["shortage_hourss"],
-                                  ot_work_hours: attResult[i]["ot_hourss"],
+                                    shortage_hours: attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]>=0?attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]:0,
+                                    ot_work_hours: attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]>=0?attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]:0,
                                   pending_unpaid_leave: pending_leaves,
 
                                   prev_month_shortage_hr: short_hrs,
