@@ -76,6 +76,7 @@ class AddPatientForm extends PureComponent {
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
       this.props.getIDTypes({
         uri: "/identity/get",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "IDTYPE_GET_DATA",
@@ -131,6 +132,7 @@ class AddPatientForm extends PureComponent {
     ) {
       this.props.getPatientType({
         uri: "/patientType/getPatientType",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",

@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { releaseConnection } from "../utils";
 import {
-  addIdentity,
-  updateIdentity,
-  selectIdentity,
-  deleteIdentity
+  addIdentity, //Done
+  updateIdentity, //Done
+  selectIdentity, //Done
+  deleteIdentity //Done
 } from "../model/identity";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {

@@ -1,20 +1,19 @@
 import algaehMysql from "algaeh-mysql";
 module.exports = {
-  addVisit: (req, res, next) => {
+  addIdentity: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
     try {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_visit_type` (`visit_type_code`, `visit_type_desc`,`arabic_visit_type_desc`, `consultation` \
+            "INSERT INTO `hims_d_identity_document` (`identity_document_code`, `identity_document_name`,`arabic_identity_document_name` \
             , `created_by` ,`created_date`) \
-         VALUES ( ?, ?, ?, ?, ?, ?)",
+         VALUES ( ?, ?, ?, ?, ?)",
           values: [
-            inputParam.visit_type_code,
-            inputParam.visit_type_desc,
-            inputParam.arabic_visit_type_desc,
-            inputParam.consultation,
+            inputParam.identity_document_code,
+            inputParam.identity_document_name,
+            inputParam.arabic_identity_document_name,
             req.userIdentity.algaeh_d_app_user_id,
             new Date()
           ],
@@ -35,24 +34,23 @@ module.exports = {
     }
   },
 
-  updateVisit: (req, res, next) => {
+  updateIdentity: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
     try {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_visit_type` \
-            SET `visit_type_desc`=?,  `arabic_visit_type_desc`=?,`consultation`=?, `updated_by`=?, `updated_date`=?,visit_status=? \
-            WHERE `record_status`='A' and `hims_d_visit_type_id`=?",
+            "UPDATE `hims_d_identity_document` SET  `identity_document_name`=?, `arabic_identity_document_name` = ?,\
+          `updated_by`=?, `updated_date`=? ,`identity_status` = ? \
+          WHERE `record_status`='A' AND `hims_d_identity_document_id`=?;",
           values: [
-            inputParam.visit_type_desc,
-            inputParam.arabic_visit_type_desc,
-            inputParam.consultation,
+            inputParam.identity_document_name,
+            inputParam.arabic_identity_document_name,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.visit_status,
-            inputParam.hims_d_visit_type_id
+            inputParam.identity_status,
+            inputParam.hims_d_identity_document_id
           ],
           printQuery: true
         })
@@ -71,7 +69,7 @@ module.exports = {
     }
   },
 
-  selectStatement: (req, res, next) => {
+  selectIdentity: (req, res, next) => {
     let input = req.query;
     const _mysql = new algaehMysql();
 
@@ -79,23 +77,23 @@ module.exports = {
       let _strAppend = "";
       let inputValues = [];
 
-      if (input.hims_d_visit_type_id != null) {
-        _strAppend += "and hims_d_visit_type_id=?";
-        inputValues.push(input.hims_d_visit_type_id);
+      if (input.hims_d_identity_document_id != null) {
+        _strAppend += "and hims_d_identity_document_id=?";
+        inputValues.push(input.hims_d_identity_document_id);
       }
-      if (input.visit_status != null) {
-        _strAppend += "and visit_status=?";
-        inputValues.push(input.visit_status);
+      if (input.identity_status != null) {
+        _strAppend += "and identity_status=?";
+        inputValues.push(input.identity_status);
       }
 
       _mysql
         .executeQuery({
           query:
-            "SELECT `hims_d_visit_type_id`, `visit_type_code`, `visit_type_desc`,`visit_status`,`arabic_visit_type_desc`\
-            , `consultation`, `created_by`, `created_date`, `updated_by`, `updated_date` FROM `hims_d_visit_type`  \
-            WHERE record_status='A' " +
+            "SELECT `hims_d_identity_document_id`, `identity_document_code`, `identity_document_name`, `arabic_identity_document_name`, `identity_status`\
+          ,`created_by`, `created_date`, `updated_by`, `updated_date`,`identity_status` FROM `hims_d_identity_document` WHERE record_status ='A' " +
             _strAppend +
-            " order by hims_d_visit_type_id desc",
+            " order by hims_d_identity_document_id desc",
+
           values: inputValues,
           printQuery: true
         })
@@ -113,19 +111,19 @@ module.exports = {
       next(e);
     }
   },
-  deleteVisitType: (req, res, next) => {
+  deleteIdentity: (req, res, next) => {
     let inputParam = req.body;
     const _mysql = new algaehMysql();
     try {
       _mysql
         .executeQuery({
           query:
-            "UPDATE hims_d_visit_type SET  record_status='I', \
-          updated_by=?,updated_date=? WHERE hims_d_visit_type_id=?",
+            "UPDATE hims_d_identity_document SET  record_status='I', \
+          updated_by=?,updated_date=? WHERE hims_d_identity_document_id=?",
           values: [
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            inputParam.hims_d_visit_type_id
+            inputParam.hims_d_identity_document_id
           ],
           printQuery: true
         })

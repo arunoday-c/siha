@@ -714,6 +714,7 @@ class SelfPersonalDetails extends Component {
   getIdTypes() {
     algaehApiCall({
       uri: "/identity/get",
+      module: "masterSettings",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -1350,7 +1351,10 @@ class SelfPersonalDetails extends Component {
                                     tabIndex: "3"
                                   },
                                   events: {
-                                    onChange: this.changeGridEditors.bind(this,row )
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
                                   }
                                 }}
                               />

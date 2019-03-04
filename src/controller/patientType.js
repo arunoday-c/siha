@@ -2,11 +2,11 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import { debugLog } from "../utils/logging";
 import {
-  selectPattypeStatement,
-  addPatientType,
-  updatePatientType,
-  deletePatientType,
-  getPatientType
+  selectPattypeStatement, //Not in Use
+  addPatientType, //Done
+  updatePatientType, //Done
+  deletePatientType, //Done
+  getPatientType //Done
 } from "../model/patientType";
 import httpStatus from "../utils/httpStatus";
 export default ({ config, db }) => {

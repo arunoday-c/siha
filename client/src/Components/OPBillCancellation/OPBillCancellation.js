@@ -68,6 +68,7 @@ class OPBillCancellation extends Component {
     ) {
       this.props.getPatientType({
         uri: "/patientType/getPatientType",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",
