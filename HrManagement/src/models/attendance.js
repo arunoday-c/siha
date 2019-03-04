@@ -1136,13 +1136,13 @@ module.exports = {
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
           from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
-           AR.employee_id=E.hims_d_employee_id and record_status='A' where status=? and " +
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where status<>'NFD' and " +
             employee +
             "" +
             dateRange +
             " order by\
           hims_f_attendance_regularize_id desc ;",
-          values:[req.query.status]
+         
         })
         .then(result => {
           _mysql.releaseConnection();
