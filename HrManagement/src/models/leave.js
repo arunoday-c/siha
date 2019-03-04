@@ -5,6 +5,7 @@ import moment from "moment";
 import { LINQ } from "node-linq";
 //import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
+import { KinesisVideoArchivedMedia } from "aws-sdk";
 //import { getMaxAuth } from "../../../src/utils";
 // import Sync from "sync";
 module.exports = {
@@ -4514,8 +4515,8 @@ function saveF  (_mysql,req,  next,  input, msg){
       query:
       "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,application_date,sub_department_id,leave_id,leave_type,\
         from_date,to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days,remarks,weekoff_included,holiday_included,\
-        weekoff_days,holidays, created_date, created_by, updated_date, updated_by)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        weekoff_days,holidays,leave_from,absent_id, created_date, created_by, updated_date, updated_by)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       values: [
         numGenLeave[0],
         input.employee_id,
@@ -4534,6 +4535,8 @@ function saveF  (_mysql,req,  next,  input, msg){
         input.holiday_included,
         input.weekoff_days,
         input.holidays,
+        input.leave_from,
+        input.absent_id,
         new Date(),
         req.userIdentity.algaeh_d_app_user_id,
         new Date(),
@@ -4543,11 +4546,42 @@ function saveF  (_mysql,req,  next,  input, msg){
       printQuery: true
     })
     .then(result => {
-      _mysql.commitTransaction(() => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      });
+
+      if(input.absent_id>0){
+
+        _mysql
+        .executeQuery({
+          query:
+            "update hims_f_absent  set status='CTL' where hims_f_absent_id=?;",
+          values: [input.absent_id]       
+    
+        })
+        .then(result2 => {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result2;
+            next();
+          });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+
+
+
+
+
+      }     else{
+
+        _mysql.commitTransaction(() => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        });
+      }
+  
     })
     .catch(e => {
    

@@ -216,7 +216,9 @@ class SalesReturn extends Component {
                   <span
                     style={{ cursor: "pointer" }}
                     className="fas fa-search fa-2x"
-                    disabled={this.state.case_type === "O" ? false : true}
+                    disabled={
+                      this.state.pos_customer_type === "O" ? false : true
+                    }
                     onClick={POSSearch.bind(this, this)}
                   />
                 </div>
