@@ -520,8 +520,8 @@
         "label": "Item Category"
       },
       {
-        "fieldName": "group_description",
-        "label": "Item Group"
+        "fieldName": "generic_name",
+        "label": "Generic Name"
       }
     ]
   }

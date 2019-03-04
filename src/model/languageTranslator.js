@@ -1,7 +1,7 @@
 import AWS from "aws-sdk";
 import { logger, debugFunction, debugLog } from "../utils/logging";
-import keys from "../keys/keys";
-
+import algaehKeys from "algaeh-keys"; //"../keys/keys";
+const keys = algaehKeys.default;
 import fs from "fs";
 let translate = new AWS.Translate(keys.AWSCredentials);
 
