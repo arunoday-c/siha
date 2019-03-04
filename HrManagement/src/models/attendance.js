@@ -5217,7 +5217,48 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  }
+  },
+  getActivityFeed: (req, res, next) => {
+    const _mysql = new algaehMysql();
+   
+    try {
+   
+      if (req.query.employee_id > 0) {
+   
+      _mysql
+        .executeQuery({
+          query: "select hims_f_attendance_regularize_id,regularization_code,employee_id,attendance_date,regularize_status,login_date,\
+          logout_date,punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason\
+          from hims_f_attendance_regularize where  employee_id=?;\
+          select hims_f_absent_id,employee_id,absent_date,from_session,to_session,absent_reason,\
+          absent_duration,status,cancel from hims_f_absent where employee_id=?",
+          values: [req.query.employee_id,req.query.employee_id],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = {
+           exceptions: result[0],
+          absents:  result[1],
+          };
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+      }
+        else {
+          req.records = {
+            invalid_input: true,
+            message: "Please provide valid input"
+          };
+          next();
+        }
+    } catch (e) {
+      next(e);
+    }
+  },
 
 
 };
