@@ -1028,7 +1028,7 @@ module.exports = {
             login_date,logout_date,\
             punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
             created_by,created_date,updated_by,updated_date)\
-            VALUE(?,date(?),date(?),date(?),?,?,?,?,?,?,?,?,?)",
+            VALUE(?,date(?),?,date(?),date(?),?,?,?,?,?,?,?,?,?)",
             values: [
               
               input.employee_id,

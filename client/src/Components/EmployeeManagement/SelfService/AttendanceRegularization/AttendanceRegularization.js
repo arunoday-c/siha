@@ -33,7 +33,8 @@ class AttendanceRegularization extends Component {
         : null,
       punch_out_time: props.regularize.punch_out_time
         ? moment(props.regularize.punch_out_time, "HH:mm:ss").format("hh:mm a")
-        : null
+        : null,
+      absent_id: props.regularize.absent_id
     };
   }
 
@@ -117,6 +118,7 @@ class AttendanceRegularization extends Component {
             method: this.state.hims_f_attendance_regularize_id ? "PUT" : "POST",
             module: "hrManagement",
             data: {
+              absent_id: this.state.absent_id,
               attendance_date: this.state.login_date,
               employee_id: this.state.hims_d_employee_id,
               login_date: this.state.login_date,

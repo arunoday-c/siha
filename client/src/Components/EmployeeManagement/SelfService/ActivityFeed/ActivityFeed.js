@@ -65,7 +65,8 @@ export default class ActivityFeed extends Component {
             pageDisplay: "AttendanceRegularization",
             regularize: {
               login_date: data.absent_date,
-              logout_date: data.absent_date
+              logout_date: data.absent_date,
+              absent_id: data.hims_f_absent_id
             }
           }
         : {
