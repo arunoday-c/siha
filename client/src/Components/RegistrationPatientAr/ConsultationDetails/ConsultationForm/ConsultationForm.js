@@ -55,6 +55,7 @@ class AddConsultationForm extends Component {
     ) {
       this.props.getVisittypes({
         uri: "/visitType/get",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "VISITTYPE_GET_DATA",
@@ -89,7 +90,7 @@ class AddConsultationForm extends Component {
     ) {
       this.props.getSubDepartment({
         uri: "/department/get/subdepartment",
-        module : "masterSettings",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
