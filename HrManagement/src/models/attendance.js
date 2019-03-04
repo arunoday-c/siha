@@ -3602,7 +3602,7 @@ module.exports = {
                                 w =>
                                   w.employee_id ==
                                     AllEmployees[0]["hims_d_employee_id"] &&
-                                  w.shift_date == from_date
+                                  w.shift_date ==  date_range[i]
                               )
                               .Select(s => {
                                 return {
@@ -3615,7 +3615,7 @@ module.exports = {
                               })
                               .FirstOrDefault({
                                 shift_end_day: null,
-                                shift_date: null,
+                                shift_date: date_range[i],
                                 shift_end_date: null,
                                 shift_time: 0,
                                 shift_end_time: 0
