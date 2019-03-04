@@ -1143,9 +1143,9 @@ module.exports = {
     } else {
       const _mysql = new algaehMysql();
 
-      let stringData= " regularize_status<>'NFD' ";
+      let stringData= " regularize_status <>'NFD' ";
 
-      if(req.query.type="auth"){
+      if(req.query.type=="auth"){
 
         stringData="regularize_status='PEN' ";
 
@@ -4400,7 +4400,7 @@ module.exports = {
 
           if (result.length > 0) {
             let excptions = new LINQ(result)
-              .Where(w => w.status == "EX"||w.status == "AB")
+              .Where(w => w.status == "EX")
               .Select(s => {
                 return {
                   employee_code: s.employee_code,
@@ -4822,7 +4822,7 @@ module.exports = {
 
                   if (AttenResult.length > 0) {
                     let excptions = new LINQ(AttenResult)
-                      .Where(w => w.status == "EX"||w.status == "AB")
+                      .Where(w => w.status == "EX")
                       .Select(s => {
                         return {
                           employee_code: s.employee_code,
