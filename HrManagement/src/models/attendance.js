@@ -1011,7 +1011,7 @@ module.exports = {
     let input = req.body;
     const utilities = new algaehUtilities();
     utilities.logger().log("regularizeAttendance: ");
-    if (input.regularize_status == "REJ" || input.regularize_status == "APR") {
+    if (input.regularize_status == "REJ" || input.regularize_status == "APR"||input.regularize_status == "PEN" ) {
       const _mysql = new algaehMysql();
       _mysql
         .executeQueryWithTransaction({
@@ -1027,12 +1027,7 @@ module.exports = {
         })
         .then(result => {
           if (result.affectedRows > 0) {
-            utilities
-              .logger()
-              .log("result.affectedRows: ", result.affectedRows);
-            utilities
-              .logger()
-              .log("regularize_status: ", input.regularize_status);
+            
             if (input.regularize_status == "APR") {
               _mysql
                 .executeQuery({
@@ -1051,8 +1046,7 @@ module.exports = {
                   ],
                   printQuery: true
                 })
-                .then(result => {
-                  utilities.logger().log("result: ", result);
+                .then(result => {                 
                   _mysql.releaseConnection();
                   req.records = result;
                   next();
@@ -5228,12 +5222,14 @@ module.exports = {
    
       _mysql
         .executeQuery({
-          query: "select hims_f_attendance_regularize_id,regularization_code,employee_id,attendance_date,regularize_status,login_date,\
+          query: "select regularization_code,employee_id,AR.updated_date,user_display_name as updated_by,attendance_date,regularize_status,login_date,\
           logout_date,punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason\
-          from hims_f_attendance_regularize where  employee_id=?;\
-          select hims_f_absent_id,employee_id,absent_date,from_session,to_session,absent_reason,\
-          absent_duration,status,cancel from hims_f_absent where employee_id=?",
-          values: [req.query.employee_id,req.query.employee_id],
+          from hims_f_attendance_regularize AR left  join algaeh_d_app_user U on AR.updated_by= U.algaeh_d_app_user_id \
+          where  AR.employee_id=?;\
+          select hims_f_absent_id,employee_id,A.updated_date,user_display_name as updated_by,absent_date,\
+          from_session,to_session,absent_reason,absent_duration,status,cancel from hims_f_absent A left  join algaeh_d_app_user U on\
+          A.updated_by= U.algaeh_d_app_user_id  where employee_id=?",
+        values: [req.query.employee_id,req.query.employee_id],
           printQuery: true
         })
         .then(result => {
