@@ -5320,10 +5320,10 @@ module.exports = {
           query: "select hims_f_attendance_regularize_id,regularization_code,employee_id,AR.updated_date,user_display_name as updated_by,attendance_date,regularize_status,login_date,\
           logout_date,punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason\
           from hims_f_attendance_regularize AR left  join algaeh_d_app_user U on AR.updated_by= U.algaeh_d_app_user_id \
-          where  AR.employee_id=?;\
+          where  AR.employee_id=? and regularize_status='NFD';\
           select hims_f_absent_id,employee_id,A.updated_date,user_display_name as updated_by,absent_date,\
           from_session,to_session,absent_reason,absent_duration,status,cancel from hims_f_absent A left  join algaeh_d_app_user U on\
-          A.updated_by= U.algaeh_d_app_user_id  where employee_id=?",
+          A.updated_by= U.algaeh_d_app_user_id  where employee_id=? and status='NFD' and cancel='N';",
         values: [req.query.employee_id,req.query.employee_id],
           printQuery: true
         })
@@ -5397,8 +5397,7 @@ module.exports = {
         req.records = {
           invalid_input: true,
           message: "Please provide valid input"
-        };
-  
+        };  
         next();
         return;
       }
