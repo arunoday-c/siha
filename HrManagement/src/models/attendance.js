@@ -1031,7 +1031,7 @@ module.exports = {
           values: [
             input.regularize_status,
             new Date(),
-            input.updated_by,
+            req.userIdentity.algaeh_d_app_user_id,
             input.hims_f_attendance_regularize_id
           ]
         })
@@ -5350,7 +5350,59 @@ module.exports = {
     } catch (e) {
       next(e);
     }
-  }
+  },
+    //created by irfan:
+    requestAttndncReglztion: (req, res, next) => {
+      let input = req.body;
+      const utilities = new algaehUtilities();
+     
+      if (input.regularize_status == "PEN" &&   input.hims_f_attendance_regularize_id>0) {
+        const _mysql = new algaehMysql();
+        _mysql
+          .executeQuery({
+            query:
+              "UPDATE hims_f_attendance_regularize SET regularize_status = ?,regularization_reason=?,regularize_in_time=?,regularize_out_time=?,\
+               updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
+            values: [
+              input.regularize_status,
+              input.regularization_reason,
+              input.regularize_in_time,
+              input.regularize_out_time,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              input.hims_f_attendance_regularize_id
+            ]
+          })
+          .then(result => {
+            if (result.affectedRows > 0) {
+              
+              _mysql.releaseConnection();
+            req.records = result;
+            next();
+            } else {
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "Please provide valid input"
+              };
+              next();
+            }
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+              next(e);
+            
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid input"
+        };
+  
+        next();
+        return;
+      }
+    },
 
 
 };
