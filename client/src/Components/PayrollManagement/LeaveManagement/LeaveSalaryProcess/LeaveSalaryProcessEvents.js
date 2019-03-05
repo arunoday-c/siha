@@ -33,7 +33,7 @@ const getLeaveSalaryProcess = ($this, e) => {
     onSuccess: response => {
       AlgaehLoader({ show: false });
       let data = response.data.result;
-      debugger;
+
       if (Object.keys(data).length > 0) {
         data.ProcessBtn = false;
       }
@@ -120,9 +120,7 @@ const LeaveSalProcess = $this => {
     module: "hrManagement",
     data: inputObj,
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
-        debugger;
         if (response.data.result.length > 0) {
           let salaryObj = [];
           // let data = response.data.result;
@@ -153,7 +151,7 @@ const LeaveSalProcess = $this => {
           let airfare_amount = getAmountFormart(
             response.data.result[1][0].airfare_amount
           );
-          debugger;
+
           let x = leave_amount.split(" ");
           leave_amount = x[1];
 
@@ -226,7 +224,6 @@ const LeaveSalProcess = $this => {
 };
 
 const SaveLeaveSalary = $this => {
-  debugger;
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/leavesalaryprocess/InsertLeaveSalary",
@@ -234,7 +231,6 @@ const SaveLeaveSalary = $this => {
     data: $this.state,
     method: "POST",
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         AlgaehLoader({ show: false });
         let data = response.data.result;
@@ -277,7 +273,6 @@ const getLeaveSalary = $this => {
     method: "GET",
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         let data = response.data.result;
 
         AlgaehLoader({ show: false });
@@ -331,7 +326,6 @@ const LoadLeaveSalary = $this => {
 };
 
 const openSalaryComponents = ($this, row) => {
-  debugger;
   let inputObj = {
     year: row.year,
     month: row.month,
@@ -345,7 +339,6 @@ const openSalaryComponents = ($this, row) => {
     method: "GET",
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         let data = response.data.result;
         let header = data[0]["salaryprocess_header"][0];
         const salaryprocess_Earning = Enumerable.from(

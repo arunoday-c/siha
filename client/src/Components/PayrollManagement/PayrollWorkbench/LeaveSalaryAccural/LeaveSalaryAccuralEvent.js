@@ -7,7 +7,6 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import moment from "moment";
 
 const texthandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -37,8 +36,6 @@ const employeeSearch = $this => {
 };
 
 const LoadLeaveAccrual = $this => {
-  debugger;
-
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadLeaveAccrual'",
@@ -54,14 +51,12 @@ const LoadLeaveAccrual = $this => {
         inputObj.employee_id = $this.state.employee_id;
       }
 
-      debugger;
       algaehApiCall({
         uri: "/leavesalaryaccural/getLeaveSalaryAccural",
         module: "hrManagement",
         data: inputObj,
         method: "GET",
         onSuccess: response => {
-          debugger;
           if (response.data.success) {
             let leave_salary = Enumerable.from(response.data.result).sum(s =>
               parseFloat(s.leave_salary)

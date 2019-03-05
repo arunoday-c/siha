@@ -18,11 +18,8 @@ export default class SalariesComponents extends PureComponent {
   };
 
   componentWillReceiveProps(newProps) {
-    // debugger;
     if (newProps.selectedEmployee !== undefined) {
-      this.setState({ ...this.state, ...newProps.selectedEmployee }, () => {
-        //   debugger;
-      });
+      this.setState({ ...this.state, ...newProps.selectedEmployee });
     }
   }
 

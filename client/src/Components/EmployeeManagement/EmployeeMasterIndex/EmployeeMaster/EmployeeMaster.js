@@ -155,7 +155,6 @@ class EmployeeMaster extends Component {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.editEmployee) {
       let IOputs = newProps.employeeDetailsPop;
       IOputs.Applicable = IOputs.isdoctor === "Y" ? true : false;
@@ -165,7 +164,6 @@ class EmployeeMaster extends Component {
           personalDetails: { ...this.state.personalDetails, ...IOputs }
         },
         () => {
-          debugger;
           if (this.state.personalDetails.present_country_id === null) return;
           if (
             this.state.personalDetails.present_country_id !==

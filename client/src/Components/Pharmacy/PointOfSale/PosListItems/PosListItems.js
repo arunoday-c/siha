@@ -104,7 +104,6 @@ class PosListItems extends Component {
   }
 
   // onKeyPress(e) {
-  //   debugger;
   //   if (e.ctrlKey && e.keyCode === 9) {
   //     this.attReg.focus();
   //     // const element = ReactDOM.findDOMNode("root").querySelector(

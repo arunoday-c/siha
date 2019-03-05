@@ -260,7 +260,6 @@ class VisitType extends Component {
     row.update();
   }
   tedting() {
-    debugger;
     this.setState({
       isEditable: !this.state.isEditable
     });

@@ -43,6 +43,7 @@ class DeliveryNoteEntry extends Component {
   componentDidMount() {
     this.props.getVendorMaster({
       uri: "/vendor/getVendorMaster",
+      module: "masterSettings",
       method: "GET",
       data: { vendor_status: "A" },
       redux: {

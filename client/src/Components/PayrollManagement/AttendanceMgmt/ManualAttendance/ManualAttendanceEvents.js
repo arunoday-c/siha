@@ -6,7 +6,6 @@ import Enumerable from "linq";
 export default function ManualAttendanceEvents() {
   return {
     texthandle: ($this, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
 
@@ -30,10 +29,9 @@ export default function ManualAttendanceEvents() {
           method: "GET",
           module: "hrManagement",
           onSuccess: res => {
-            debugger;
             resolve(res);
             // if (res.data.success) {
-            //   debugger;
+            //
             //   resolve(res);
             //   // $this.setState({
             //   //   manual_timesheet_entry:
@@ -57,7 +55,6 @@ export default function ManualAttendanceEvents() {
         method: "GET",
         onSuccess: res => {
           if (res.data.success) {
-            debugger;
             $this.setState({
               subdepartment: res.data.records
             });
@@ -73,7 +70,6 @@ export default function ManualAttendanceEvents() {
     },
 
     LoadEmployee: $this => {
-      debugger;
       let InputObj = {
         branch_id: $this.state.hospital_id,
         attendance_date: moment($this.state.attendance_date).format(
@@ -86,7 +82,7 @@ export default function ManualAttendanceEvents() {
       } else {
         InputObj.project_id = $this.state.project_id;
       }
-      debugger;
+
       algaehApiCall({
         uri: "/attendance/getEmployeeToManualTimeSheet",
         module: "hrManagement",
@@ -112,14 +108,12 @@ export default function ManualAttendanceEvents() {
     },
 
     datehandle: ($this, ctrl, e) => {
-      debugger;
       $this.setState({
         [e]: moment(ctrl)._d
       });
     },
 
     timehandle: ($this, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let diff_hour = null;
@@ -172,7 +166,6 @@ export default function ManualAttendanceEvents() {
     },
 
     gdtimehandle: ($this, row, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let diff_hour = null;
@@ -227,8 +220,6 @@ export default function ManualAttendanceEvents() {
       });
     },
     AddtoList: $this => {
-      debugger;
-
       let employee_details = $this.state.employee_details.map((row, index) => {
         return {
           ...row,
@@ -249,7 +240,6 @@ export default function ManualAttendanceEvents() {
       });
     },
     ProcessAttendanceEvent: $this => {
-      debugger;
       // const notEntered = _.
 
       const notEntered = Enumerable.from($this.state.employee_details)
@@ -315,7 +305,6 @@ export default function ManualAttendanceEvents() {
       }
     },
     formulazone: (rowsLength, ws, callBack) => {
-      debugger;
       ws["!cols"] = [];
       ws["!cols"][6] = { hidden: true };
 

@@ -21,7 +21,6 @@ const CollectSample = ($this, context, row) => {
     data: inputobj,
     method: "PUT",
     onSuccess: response => {
-      debugger;
       if (response.data.success === true) {
         let test_details = $this.state.test_details;
         for (let i = 0; i < test_details.length; i++) {

@@ -145,7 +145,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e, ctrl) => {
-  debugger;
   let name = ctrl;
   if ($this.state.location_id !== null) {
     if (e.service_id !== null) {
@@ -388,7 +387,6 @@ const getUnitCost = ($this, context, serviceid) => {
   }
 };
 const AddItems = ($this, context) => {
-  debugger;
   let itemData = Enumerable.from($this.state.pharmacy_stock_detail)
     .where(
       w =>
@@ -1015,7 +1013,7 @@ const onchangegridcol = ($this, context, row, e) => {
 const qtyonchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  debugger;
+
   if (value <= 0) {
     swalMessage({
       title: "Quantity cannot be less than or equal to Zero",
@@ -1027,7 +1025,6 @@ const qtyonchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
   } else {
-    debugger;
     row[name] = value;
     // row.update();
     calculateAmount($this, context, row, e);

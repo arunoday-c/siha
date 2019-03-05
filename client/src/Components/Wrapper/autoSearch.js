@@ -26,7 +26,6 @@ export default class AlgaehAutoSearch extends Component {
   }
 
   componentWillReceiveProps(props) {
-    debugger;
     if (this.state.hasSecurity) return;
     if (props.value !== this.state.value) {
       this.setState({

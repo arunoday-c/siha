@@ -41,7 +41,6 @@ class EmployeeGroups extends Component {
   }
 
   addProjectMaster() {
-    debugger;
     AlgaehValidation({
       alertTypeIcon: "warning",
       querySelector: "data-validate='project'",

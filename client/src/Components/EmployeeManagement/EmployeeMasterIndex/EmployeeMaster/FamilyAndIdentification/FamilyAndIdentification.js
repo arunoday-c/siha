@@ -62,7 +62,6 @@ class FamilyAndIdentification extends Component {
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">

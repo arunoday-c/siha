@@ -28,8 +28,6 @@ const Paymenttexthandle = ($this, e) => {
 };
 
 const PaymentOnClear = ($this, e) => {
-  debugger;
-
   let IOputs = EmployeePaymentIOputs.inputParam();
 
   $this.setState({
@@ -126,7 +124,6 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "GR") {
-        debugger;
         if ($this.state.document_num !== null) {
           inputObj.end_of_service_number = $this.state.document_num;
         }
@@ -137,7 +134,6 @@ const LoadData = ($this, e) => {
           data: inputObj,
           method: "GET",
           onSuccess: response => {
-            debugger;
             $this.setState({
               requestPayment: response.data.result
             });
@@ -152,7 +148,6 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "FS") {
-        debugger;
         if ($this.state.document_num !== null) {
           inputObj.final_settlement_number = $this.state.document_num;
         }
@@ -163,7 +158,6 @@ const LoadData = ($this, e) => {
           data: inputObj,
           method: "GET",
           onSuccess: response => {
-            debugger;
             $this.setState({
               requestPayment: response.data.result
             });
@@ -178,7 +172,6 @@ const LoadData = ($this, e) => {
           }
         });
       } else if ($this.state.sel_payment_type === "LS") {
-        debugger;
         if ($this.state.document_num !== null) {
           inputObj.leave_salary_number = $this.state.document_num;
         }
@@ -189,7 +182,6 @@ const LoadData = ($this, e) => {
           data: inputObj,
           method: "GET",
           onSuccess: response => {
-            debugger;
             $this.setState({
               requestPayment: response.data.result
             });
@@ -374,7 +366,7 @@ const ProessEmpPayment = ($this, e) => {
     querySelector: "data-validate='processData'",
     onSuccess: () => {
       AlgaehLoader({ show: true });
-      debugger;
+
       algaehApiCall({
         uri: "/employeepayments/InsertEmployeePayment",
         module: "hrManagement",
