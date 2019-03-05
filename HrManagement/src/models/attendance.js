@@ -4979,7 +4979,7 @@ module.exports = {
 
                     utilities.logger().log("excptions: ", excptions);
 
-                    if (excptions.length >40) {
+                    if (excptions.length >0) {
                       req.records = {
                         invalid_input: true,
                         employees: excptions,
@@ -5514,18 +5514,18 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
                                 insertArray.push({
                                   ...attResult[i],
                                   total_paid_days:
-                                    attResult[i]["present_days"] +
-                                    attResult[i]["paid_leave"] +
-                                    attResult[i]["total_weekoff_days"] +
-                                    attResult[i]["total_holidays"],
+                                   parseFloat( attResult[i]["present_days"]) +
+                                    parseFloat(attResult[i]["paid_leave"]) +
+                                    parseFloat(attResult[i]["total_weekoff_days"]) +
+                                    parseFloat(attResult[i]["total_holidays"]),
                                   total_leave:
-                                    attResult[i]["paid_leave"] +
-                                    attResult[i]["unpaid_leave"],
+                                    parseFloat(attResult[i]["paid_leave"]) +
+                                    parseFloat(attResult[i]["unpaid_leave"]),
                                   total_hours: attResult[i]["total_hours"],
                                   total_working_hours:
                                     attResult[i]["total_working_hours"],
-                                    shortage_hours: attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]>=0?attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]:0,
-                                    ot_work_hours: attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]>=0?attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]:0,
+                                    shortage_hours: attResult[i]["shortage_hourss"],
+                                    ot_work_hours: attResult[i]["ot_hourss"],
                                   pending_unpaid_leave: pending_leaves,
 
                                   prev_month_shortage_hr: short_hrs,
