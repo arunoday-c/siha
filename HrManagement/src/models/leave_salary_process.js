@@ -3,7 +3,7 @@ import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import moment from "moment";
 import { processAttendance } from "./attendance";
-import { newProcessSalary, processSalary } from "./salary";
+import { newProcessSalary } from "./salary";
 
 module.exports = {
   getLeaveSalaryProcess: (req, res, next) => {
@@ -146,7 +146,7 @@ module.exports = {
       delete req.query.leave_end_date;
 
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
             "select hospital_id,airfare_process from hims_d_employee where hims_d_employee_id=?;\
           SELECT balance_leave_days,balance_leave_salary_amount,balance_airticket_amount,airfare_months FROM \
@@ -171,7 +171,7 @@ module.exports = {
           utilities.logger().log("hrms_options: ", hrms_options);
 
           if (employee_leave_salary == undefined) {
-            _mysql.commitTransaction((error, result) => {
+            _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = { message: "No Leave exists" };
               req.flag = 1;
@@ -224,17 +224,24 @@ module.exports = {
                   }
 
                   let _attandance = null;
+                  let _sarary = null;
+                  req.connection = {
+                    connection: _mysql.connection,
+                    isTransactionConnection: _mysql.isTransactionConnection,
+                    pool: _mysql.pool
+                  };
                   if (hrms_options[0].attendance_type === "M") {
-                    req.mySQl = _mysql;
                     _attandance = await processAttendance(req, res, next);
+                    _sarary = await newProcessSalary(req, res, next);
                   } else {
                     utilities.logger().log("attendance_type else: ");
+                    _sarary = await newProcessSalary(req, res, next);
                     _attandance = Promise.resolve();
                   }
-                  req.mySQl = _mysql;
-                  let _sarary = await newProcessSalary(req, res, next);
 
-                  _sarary = parseFloat(_sarary) + 1;
+                  // let _sarary = await newProcessSalary(req, res, next);
+
+                  _sarary = _sarary != null ? parseFloat(_sarary) + 1 : "";
 
                   Promise.all([_attandance, _sarary]).then(rse => {
                     utilities.logger().log("_sarary: ", _sarary);
@@ -258,45 +265,40 @@ module.exports = {
                 }
               }
 
+              utilities.logger().log("strGetdataQry: ", strGetdataQry);
+
               _mysql
-                .executeQueryWithTransaction({
+                .executeQuery({
                   query: strGetdataQry,
                   printQuery: true
                 })
                 .then(Salary_result => {
-                  _mysql.commitTransaction((error, result) => {
-                    _mysql.releaseConnection();
+                  utilities.logger().log("Salary_result: ", Salary_result);
+                  _mysql.commitTransaction(() => {
+                    let result_data = [];
+                    let final_result = [];
 
-                    if (error) {
-                      _mysql.rollBackTransaction(() => {
-                        next(error);
-                      });
-                    } else {
-                      let result_data = [];
-                      let final_result = [];
-
-                      for (let i = 0; i < Salary_result.length; i++) {
-                        if (Array.isArray(Salary_result[i])) {
-                          Array.prototype.push.apply(
-                            result_data,
-                            Salary_result[i]
-                          );
-                        } else {
-                          result_data.push(Salary_result[i]);
-                        }
+                    for (let i = 0; i < Salary_result.length; i++) {
+                      if (Array.isArray(Salary_result[i])) {
+                        Array.prototype.push.apply(
+                          result_data,
+                          Salary_result[i]
+                        );
+                      } else {
+                        result_data.push(Salary_result[i]);
                       }
-
-                      let amount_data = [];
-                      amount_data.push({
-                        leave_amount: leave_amount,
-                        airfare_amount: airfare_amount
-                      });
-
-                      final_result.push(result_data, amount_data);
-
-                      req.records = final_result;
-                      next();
                     }
+
+                    let amount_data = [];
+                    amount_data.push({
+                      leave_amount: leave_amount,
+                      airfare_amount: airfare_amount
+                    });
+
+                    final_result.push(result_data, amount_data);
+
+                    req.records = final_result;
+                    next();
                   });
                 })
                 .catch(e => {
@@ -307,7 +309,7 @@ module.exports = {
             };
             syscCall();
           } else {
-            _mysql.commitTransaction((error, result) => {
+            _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = { message: "Dont have enough leaves" };
               req.flag = 1;

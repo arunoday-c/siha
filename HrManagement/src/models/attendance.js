@@ -1265,7 +1265,8 @@ module.exports = {
 
   //created by irfan:
   processAttendance: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     return new Promise((resolve, reject) => {
       try {
         const utilities = new algaehUtilities();
@@ -1837,7 +1838,7 @@ module.exports = {
                       //utilities.logger().log("allEmployees: ", allEmployees);
                     }
                   } else {
-                    if (req.mySQl == null) {
+                    if (req.connection == null ) {
                       _mysql.releaseConnection();
                       req.records = {
                         invalid_input: true,
@@ -1913,7 +1914,7 @@ module.exports = {
                         })
                         .then(selectData => {
                           //utilities.logger().log("selectData: ", selectData);
-                          if (req.mySQl == null) {
+                          if (req.connection == null) {
                             _mysql.commitTransaction(() => {
                               _mysql.releaseConnection();
                               req.records = selectData;
@@ -1953,7 +1954,7 @@ module.exports = {
               });
           });
         } else {
-          if (req.mySQl == null) {
+          if (req.connection == null) {
             req.records = {
               invalid_input: true,
               message: "Please select a branch"

@@ -112,6 +112,7 @@ const LeaveSalProcess = $this => {
     leave_period: $this.state.leave_period,
     year: year
   };
+  let leave_salary_detail = $this.state.leave_salary_detail;
 
   AlgaehLoader({ show: true });
   algaehApiCall({
@@ -120,30 +121,31 @@ const LeaveSalProcess = $this => {
     module: "hrManagement",
     data: inputObj,
     onSuccess: response => {
+      debugger;
       if (response.data.success) {
         if (response.data.result.length > 0) {
           let salaryObj = [];
           // let data = response.data.result;
 
-          let leave_salary_detail = $this.state.leave_salary_detail;
           // let data = response.data.result;
 
-          for (let i = 0; i < leave_salary_detail.length; i++) {
-            salaryObj = Enumerable.from(response.data.result[0])
-              .where(
-                w =>
-                  w.month === leave_salary_detail[i].month &&
-                  w.year === leave_salary_detail[i].year
-              )
-              .toArray();
+          // for (let i = 0; i < leave_salary_detail.length; i++) {
+          debugger;
+          salaryObj = Enumerable.from(response.data.result[0])
+            .where(
+              w =>
+                w.month === leave_salary_detail[0].month &&
+                w.year === leave_salary_detail[0].year
+            )
+            .toArray();
 
-            leave_salary_detail[i].salary_no = salaryObj[0].salary_number;
-            leave_salary_detail[i].salary_date = salaryObj[0].salary_date;
-            leave_salary_detail[i].gross_amount = salaryObj[0].gross_salary;
-            leave_salary_detail[i].net_amount = salaryObj[0].net_salary;
-            leave_salary_detail[i].salary_header_id =
-              salaryObj[0].hims_f_salary_id;
-          }
+          leave_salary_detail[0].salary_no = salaryObj[0].salary_number;
+          leave_salary_detail[0].salary_date = salaryObj[0].salary_date;
+          leave_salary_detail[0].gross_amount = salaryObj[0].gross_salary;
+          leave_salary_detail[0].net_amount = salaryObj[0].net_salary;
+          leave_salary_detail[0].salary_header_id =
+            salaryObj[0].hims_f_salary_id;
+          // }
 
           let leave_amount = getAmountFormart(
             response.data.result[1][0].leave_amount

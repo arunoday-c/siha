@@ -6,7 +6,8 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   newProcessSalary: (req, res, next) => {
-    const _mysql = req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
     return new Promise((resolve, reject) => {
       try {
         const utilities = new algaehUtilities();
@@ -45,16 +46,19 @@ module.exports = {
             printQuery: true
           })
           .then(empResult => {
-            utilities.logger().log("empResult: ", empResult);
             if (empResult.length == 0) {
-              utilities.logger().log("empResult: ", empResult.length);
-              _mysql.releaseConnection();
-              req.records = empResult;
-              next();
-              resolve(empResult);
+              utilities.logger().log("empResult reslove: ", empResult.length);
+
+              if (req.connection == null) {
+                _mysql.releaseConnection();
+                req.records = empResult;
+                next();
+              } else {
+                resolve(empResult);
+              }
               return;
             }
-            utilities.logger().log("_salaryHeader_id: ");
+
             let _salaryHeader_id = [];
             let _myemp = [];
             empResult.map(o => {
@@ -637,7 +641,7 @@ module.exports = {
                                   printQuery: true
                                 })
                                 .then(detailresult => {
-                                  if (req.mySQl == null) {
+                                  if (req.connection == null) {
                                     _mysql.commitTransaction(() => {
                                       _mysql.releaseConnection();
                                       req.records = detailresult;
