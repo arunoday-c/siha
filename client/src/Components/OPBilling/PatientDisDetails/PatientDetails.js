@@ -149,17 +149,12 @@ class DisPatientForm extends Component {
                         },
                         others: { disabled: this.state.Billexists },
                         template: item => (
-                          <span>
-                            <p>
-                              {item.visit_code} <br />
-                              {item.visit_date}
-                              <br />
-                              {item.sub_department_name}
-                              <br />
-                              {item.full_name}
-                              <br />
-                            </p>
-                          </span>
+                          <div className="multiInfoList">
+                            <h5>{item.visit_code}</h5>
+                            <h6>Date: {item.visit_date}</h6>
+                            <p>Doctor.: {item.full_name}</p>
+                            <p>Dept.: {item.sub_department_name}</p>
+                          </div>
                         )
                       }}
                     />

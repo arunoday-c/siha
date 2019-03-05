@@ -6,6 +6,20 @@
   .gridToolSec div {
     display: inline; }
 
+.multiInfoList {
+  margin-left: -15px;
+  margin-right: -15px;
+  padding: 0 15px; }
+  .multiInfoList h5 {
+    font-size: 1rem;
+    margin: 0; }
+  .multiInfoList h6 {
+    font-size: 0.8rem;
+    margin: 0; }
+  .multiInfoList p {
+    font-size: 0.7rem;
+    margin: 0; }
+
 .ReactTable .rt-thead .rt-th {
   color: #000 !important;
   background: #d2faf4 !important; }
