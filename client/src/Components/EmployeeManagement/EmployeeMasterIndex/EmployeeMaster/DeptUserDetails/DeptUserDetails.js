@@ -61,6 +61,7 @@ class DeptUserDetails extends Component {
     ) {
       this.props.getDepServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         data: { hims_d_services_id: 1 },
         redux: {

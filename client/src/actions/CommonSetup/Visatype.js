@@ -6,7 +6,8 @@ import { algaehApiCall } from "../../utils/algaehApiCall.js";
 export function getVisatypes() {
   return function(dispatch) {
     algaehApiCall({
-      uri: "/masters/get/visa",
+      uri: "/visaType/getVisaMaster",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success === true) {

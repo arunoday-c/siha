@@ -87,6 +87,7 @@ class OrderingServices extends Component {
     ) {
       this.props.getServiceTypes({
         uri: "/serviceType",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
@@ -98,6 +99,7 @@ class OrderingServices extends Component {
     if (this.props.services === undefined || this.props.services.length === 0) {
       this.props.getServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
@@ -112,6 +114,7 @@ class OrderingServices extends Component {
     ) {
       this.props.getServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",

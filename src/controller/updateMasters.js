@@ -1,9 +1,9 @@
 import {
-  insertToAppgen,
-  updateToAppgen,
-  updateVisa,
-  addVisa,
-  deleteVisa
+  insertToAppgen, //Not in use
+  updateToAppgen, //Not in use
+  updateVisa, //Done
+  addVisa, //Done
+  deleteVisa //Done
 } from "../model/mastersUpdate";
 import { Router } from "express";
 import { releaseConnection } from "../utils";

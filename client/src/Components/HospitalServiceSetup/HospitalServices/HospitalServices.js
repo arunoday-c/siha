@@ -44,7 +44,8 @@ class HospitalServices extends PureComponent {
       vat_applicable: "N",
       vat_percent: 0,
       cpt_code_data: null,
-      sub_department_id: null
+      sub_department_id: null,
+      record_status: "A"
     };
   }
 

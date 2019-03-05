@@ -242,6 +242,7 @@ const serviceServTypeHandeler = ($this, e) => {
     () => {
       $this.props.getServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         data: { service_type_id: $this.state.service_type_id },
         redux: {

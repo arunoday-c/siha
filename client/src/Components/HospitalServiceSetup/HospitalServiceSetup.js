@@ -57,6 +57,7 @@ class HospitalServiceSetup extends Component {
     ) {
       this.props.getServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
@@ -70,6 +71,7 @@ class HospitalServiceSetup extends Component {
     ) {
       this.props.getServiceTypes({
         uri: "/serviceType",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
@@ -126,6 +128,7 @@ class HospitalServiceSetup extends Component {
         if (e === true) {
           this.props.getServices({
             uri: "/serviceType/getService",
+            module: "masterSettings",
             method: "GET",
             redux: {
               type: "SERVICES_GET_DATA",
