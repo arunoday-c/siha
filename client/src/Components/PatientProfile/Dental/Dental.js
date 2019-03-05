@@ -62,6 +62,7 @@ class Dental extends Component {
   getProcedures() {
     algaehApiCall({
       uri: "/serviceType/getService",
+      module: "masterSettings",
       data: {
         procedure_type: "DN"
       },

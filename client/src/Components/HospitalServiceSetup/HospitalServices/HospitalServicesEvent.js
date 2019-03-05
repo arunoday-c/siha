@@ -64,6 +64,7 @@ const InsertServices = $this => {
     if ($this.state.hims_d_services_id === null) {
       algaehApiCall({
         uri: "/serviceType/addServices",
+        module: "masterSettings",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -79,6 +80,7 @@ const InsertServices = $this => {
     } else {
       algaehApiCall({
         uri: "/serviceType/updateServices",
+        module: "masterSettings",
         data: $this.state,
         method: "PUT",
         onSuccess: response => {

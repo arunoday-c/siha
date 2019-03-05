@@ -42,6 +42,7 @@ class NewInvestigation extends PureComponent {
     ) {
       this.props.getServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",

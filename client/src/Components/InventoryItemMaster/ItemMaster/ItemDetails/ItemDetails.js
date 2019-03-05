@@ -31,6 +31,7 @@ class ItemDetails extends Component {
     ) {
       this.props.getServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
@@ -56,10 +57,7 @@ class ItemDetails extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-item-master-form">
-              <div
-                className="col-lg-12 card"
-                style={{ paddingBottom: "10px" }}
-              >
+              <div className="col-lg-12 card" style={{ paddingBottom: "10px" }}>
                 <div className="row">
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}

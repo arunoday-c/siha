@@ -219,7 +219,8 @@ export default [
             initialLoad: true,
             isImp: true,
             link: {
-              uri: "/serviceType"
+              uri: "/serviceType",
+              module: "masterSettings"
             },
             dataSource: {
               textField: "service_type",
@@ -795,7 +796,8 @@ export default [
           },
           {
             type: "dropdown",
-            sort:"off",name: "month",
+            sort: "off",
+            name: "month",
             initialLoad: true,
             dataSource: {
               textField: "name",

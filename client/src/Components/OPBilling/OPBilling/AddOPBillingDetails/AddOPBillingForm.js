@@ -55,6 +55,7 @@ class AddOPBillingForm extends Component {
     ) {
       this.props.getServiceTypes({
         uri: "/serviceType",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
@@ -67,17 +68,9 @@ class AddOPBillingForm extends Component {
       this.props.opbilservices === undefined ||
       this.props.opbilservices.length === 0
     ) {
-      // this.props.getServices({
-      //   uri: "/serviceType/getService",
-      //   method: "GET",
-      //   redux: {
-      //     type: "SERVICES_GET_DATA",
-      //     mappingName: "opbilservices"
-      //   }
-      // });
-
       this.props.getServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",

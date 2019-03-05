@@ -6,6 +6,7 @@ export function getServiceTypes() {
     algaehApiCall({
       uri: "/serviceType",
       method: "GET",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success === true) {
           dispatch({
