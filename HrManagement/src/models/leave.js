@@ -2717,7 +2717,7 @@ processYearlyLeave: (req, res, next) => {
                         printQuery: true
                       })
                       .then(monthResult => {
-                        utilities.logger().log("monthResult: ", monthResult);
+                        utilities.logger().log("monthlyArray: ", monthlyArray);
 
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
