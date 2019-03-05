@@ -26,7 +26,6 @@ export default class AlgaehAutoSearch extends Component {
   }
 
   componentWillReceiveProps(props) {
-    debugger;
     if (this.state.hasSecurity) return;
     if (props.value !== this.state.value) {
       this.setState({
@@ -141,6 +140,7 @@ export default class AlgaehAutoSearch extends Component {
           value={value}
           name={this.props.name}
           resultRenderer={this.generateTemplate.bind(this)}
+          {...this.props.others}
         />
       </div>
     );

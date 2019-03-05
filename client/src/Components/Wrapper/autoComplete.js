@@ -18,22 +18,20 @@ class AutoComplete extends Component {
 
   componentWillReceiveProps(props) {
     if (this.state.hasSecurity) return;
-
+    const _templtate =
+      typeof props.selector.template === "function"
+        ? item => {
+            return props.selector.template(item);
+          }
+        : undefined;
     if (
       !_.isEqual(props.selector, this.props.selector) ||
       !_.isEqual(props.selector.dataSource.data, this.props.selector.dataSource)
     ) {
-      // if (
-      //   !_.isEqual(
-      //     props.selector.dataSource.data,
-      //     this.props.selector.dataSource
-      //   )
-      //) {
       const _estData =
         props.selector.dataSource.data === undefined
           ? []
           : props.selector.dataSource.data;
-
       const _data =
         this.props.selector.sort === null ||
         this.props.selector.sort === undefined
@@ -48,6 +46,8 @@ class AutoComplete extends Component {
                   key: index,
                   value: item[this.props.selector.dataSource.valueField],
                   text: item[this.props.selector.dataSource.textField],
+                  content:
+                    _templtate === undefined ? undefined : _templtate(item),
                   ...item
                 };
               })
@@ -56,6 +56,8 @@ class AutoComplete extends Component {
                 key: index,
                 value: item[this.props.selector.dataSource.valueField],
                 text: item[this.props.selector.dataSource.textField],
+                content:
+                  _templtate === undefined ? undefined : _templtate(item),
                 ...item
               };
             });
@@ -64,7 +66,7 @@ class AutoComplete extends Component {
         data: _data,
         loader: false
       });
-      //}
+
       if (props.selector.value !== this.props.selector.value) {
         this.setState({
           value: props.selector.value,
@@ -104,7 +106,12 @@ class AutoComplete extends Component {
       this.props.selector.dataSource.data === undefined
         ? []
         : this.props.selector.dataSource.data;
-
+    const _templtate =
+      typeof that.props.selector.template === "function"
+        ? item => {
+            return that.props.selector.template(item);
+          }
+        : undefined;
     const _data =
       this.props.selector.sort === null ||
       this.props.selector.sort === undefined
@@ -119,6 +126,8 @@ class AutoComplete extends Component {
                 key: index,
                 value: item[that.props.selector.dataSource.valueField],
                 text: item[that.props.selector.dataSource.textField],
+                content:
+                  _templtate === undefined ? undefined : _templtate(item),
                 ...item
               };
             })
@@ -127,6 +136,7 @@ class AutoComplete extends Component {
               key: index,
               value: item[that.props.selector.dataSource.valueField],
               text: item[that.props.selector.dataSource.textField],
+              content: _templtate === undefined ? undefined : _templtate(item),
               ...item
             };
           });
@@ -205,6 +215,7 @@ class AutoComplete extends Component {
       this.props.label !== undefined && this.props.label.isImp !== undefined
         ? { algaeh_required: "" + this.props.label.isImp }
         : {};
+
     return (
       <Dropdown
         disabled={isDisable}
