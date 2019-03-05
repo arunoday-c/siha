@@ -99,60 +99,74 @@ export default class ActivityFeed extends Component {
         <div className="row">
           <div className="col-8">
             <div className="activity-feed">
-              {regz.map((data, index) => (
-                <div
-                  key={data.hims_f_attendance_regularize_id}
-                  className="feed-item"
-                >
-                  <div className="feedCntr">
-                    <div className="dateUser">
-                      {moment(data.updated_date).format("MMM DD , hh:mm a")} by{" "}
-                      <i>{data.updated_by}</i>
+              {regz.length > 0 || abzs.length > 0 ? (
+                <React.Fragment>
+                  {regz.map((data, index) => (
+                    <div
+                      key={data.hims_f_attendance_regularize_id}
+                      className="feed-item"
+                    >
+                      <div className="feedCntr">
+                        <div className="dateUser">
+                          {moment(data.updated_date).format("MMM DD , hh:mm a")}{" "}
+                          by <i>{data.updated_by}</i>
+                        </div>
+                        <div className="text">
+                          Request to{" "}
+                          <a
+                            onClick={this.skipTab.bind(
+                              this,
+                              "AttendanceRegularization",
+                              data
+                            )}
+                          >
+                            Regularize Attendance{" "}
+                          </a>{" "}
+                          for{" "}
+                          <span className="reqDate">
+                            {moment(data.attendance_date).format("DD MMM YYYY")}{" "}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text">
-                      Request to{" "}
-                      <a
-                        onClick={this.skipTab.bind(
-                          this,
-                          "AttendanceRegularization",
-                          data
-                        )}
-                      >
-                        Regularize Attendance{" "}
-                      </a>{" "}
-                      for{" "}
-                      <span className="reqDate">
-                        {moment(data.attendance_date).format("DD MMM YYYY")}{" "}
-                      </span>
+                  ))}
+                  {abzs.map((data, index) => (
+                    <div key={data.hims_f_absent_id} className="feed-item">
+                      <div className="feedCntr">
+                        <div className="dateUser">
+                          {moment(data.updated_date).format("MMM DD , hh:mm a")}{" "}
+                          by <i>{data.updated_by}</i>
+                        </div>
+                        <div className="text">
+                          Request to
+                          <a onClick={this.skipTab.bind(this, "absent", data)}>
+                            Regularize Attendance{" "}
+                          </a>
+                          or
+                          <a
+                            onClick={this.skipTab.bind(
+                              this,
+                              "ApplyLeave",
+                              data
+                            )}
+                          >
+                            Apply Leave Attendance{" "}
+                          </a>
+                          for
+                          <span className="reqDate">
+                            {" "}
+                            {moment(data.absent_date).format(
+                              "DD MMM YYYY"
+                            )}{" "}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-              {abzs.map((data, index) => (
-                <div key={data.hims_f_absent_id} className="feed-item">
-                  <div className="feedCntr">
-                    <div className="dateUser">
-                      {moment(data.updated_date).format("MMM DD , hh:mm a")} by{" "}
-                      <i>{data.updated_by}</i>
-                    </div>
-                    <div className="text">
-                      Request to
-                      <a onClick={this.skipTab.bind(this, "absent", data)}>
-                        Regularize Attendance{" "}
-                      </a>
-                      or
-                      <a onClick={this.skipTab.bind(this, "ApplyLeave", data)}>
-                        Apply Leave Attendance{" "}
-                      </a>
-                      for
-                      <span className="reqDate">
-                        {" "}
-                        {moment(data.absent_date).format("DD MMM YYYY")}{" "}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}{" "}
+                  ))}{" "}
+                </React.Fragment>
+              ) : (
+                "NO DATA IN ACTIVITY FEED"
+              )}
             </div>
           </div>
         </div>

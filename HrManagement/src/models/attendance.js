@@ -3722,7 +3722,7 @@ module.exports = {
                         } else {
                           req.records = {
                             invalid_data: true,
-                            message: "no punches exist"
+                            message: "Biometric Data Not Available"
                           };
                           _mysql.releaseConnection();
 
@@ -3736,7 +3736,7 @@ module.exports = {
                   //no matchimg data
                   req.records = {
                     invalid_data: true,
-                    message: "biometric database or Employees not found "
+                    message: "Biometric Database or Employees not found "
                   };
                   _mysql.releaseConnection();
 
@@ -3756,7 +3756,7 @@ module.exports = {
       } else {
         req.records = {
           invalid_input: true,
-          message: "Please select a branch and  date"
+          message: "Please select a branch and date"
         };
         next();
       }

@@ -75,7 +75,9 @@ export default class EmployeeShiftRostering extends Component {
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
       year: moment().year(),
-      month: moment(new Date()).format("M")
+      month: moment(new Date()).format("M"),
+      hims_d_employee_id: null,
+      emp_name: null
     });
   }
 
@@ -259,7 +261,6 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   plotEmployeeDates(row, holidays, leaves, shifts) {
-    
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 

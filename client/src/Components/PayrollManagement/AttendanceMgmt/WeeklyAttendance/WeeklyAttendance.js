@@ -429,6 +429,42 @@ export default class WeeklyAttendance extends Component {
     });
   }
 
+  getExcessShortage(data) {
+    return data.actual_hours - data.worked_hours > 0 ? (
+      <React.Fragment>
+        Shortage Time:
+        <b className="lateTime">
+          {Math.floor(data.actual_hours - data.worked_hours) + " Hrs: "}
+          {60 - data.minutes + " Mins"}
+        </b>
+        <br />
+        Working Hours:
+        <b className="lateTime">
+          {data.actual_hours +
+            ":" +
+            (data.actual_minutes ? data.actual_minutes : "00") +
+            " Hrs"}
+        </b>
+      </React.Fragment>
+    ) : (
+      <React.Fragment>
+        Excess Time
+        <b className="OverTime">
+          {Math.abs(parseInt(data.actual_hours - data.worked_hours)) + " Hrs"}
+          {data.minutes + " Mins"}
+        </b>{" "}
+        <br />
+        Working Hours:
+        <b className="lateTime">
+          {data.actual_hours +
+            ":" +
+            (data.actual_minutes ? data.actual_minutes : "00") +
+            " Hrs"}
+        </b>
+      </React.Fragment>
+    );
+  }
+
   dropDownHandler(value) {
     switch (value.name) {
       case "month":
@@ -867,33 +903,7 @@ export default class WeeklyAttendance extends Component {
                           </b>
                         </span>
                         <span className="totalHr animated bounceIn faster">
-                          {data.actual_hours - data.worked_hours > 0 ? (
-                            <React.Fragment>
-                              Shortage Time:
-                              <b className="lateTime">
-                                {/* {Math.abs(
-                                  data.actual_hours - data.hours
-                                ).toFixed(2)}{" "} */}
-
-                                {Math.floor(
-                                  data.actual_hours - data.worked_hours
-                                ) + " Hrs: "}
-                                {60 - data.minutes + " Mins"}
-                              </b>
-                            </React.Fragment>
-                          ) : (
-                            <React.Fragment>
-                              Excess Time
-                              <b className="OverTime">
-                                {Math.abs(
-                                  parseInt(
-                                    data.actual_hours - data.worked_hours
-                                  )
-                                ) + " Hrs"}
-                                {data.minutes + " Mins"}
-                              </b>
-                            </React.Fragment>
-                          )}
+                          {this.getExcessShortage(data)}
                         </span>
                         <span className="checkOut animated bounceIn faster">
                           <i> Check Out </i>
