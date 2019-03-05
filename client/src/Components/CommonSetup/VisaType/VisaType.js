@@ -61,13 +61,15 @@ class VisaType extends Component {
       alertTypeIcon: "warning",
       onSuccess: () => {
         algaehApiCall({
-          uri: "/masters/set/add/visa",
+          uri: "/visaType/addVisa",
+          module: "masterSettings",
           data: this.state,
           onSuccess: response => {
             if (response.data.success === true) {
               //Handle Successful Add here
               this.props.getVisatypes({
-                uri: "/masters/get/visa",
+                uri: "/visaType/getVisaMaster",
+                module: "masterSettings",
                 method: "GET",
                 redux: {
                   type: "VISA_GET_DATA",
@@ -97,7 +99,8 @@ class VisaType extends Component {
   updateVisaTypes(data) {
     data.updated_by = getCookie("UserID");
     algaehApiCall({
-      uri: "/masters/set/update/visa",
+      uri: "/visaType/updateVisa",
+      module: "masterSettings",
       data: data,
       method: "PUT",
       onSuccess: response => {
@@ -108,7 +111,8 @@ class VisaType extends Component {
           });
 
           this.props.getVisatypes({
-            uri: "/masters/get/visa",
+            uri: "/visaType/getVisaMaster",
+            module: "masterSettings",
             method: "GET",
             redux: {
               type: "VISA_GET_DATA",
@@ -136,7 +140,8 @@ class VisaType extends Component {
       this.props.visatypes.length === 0
     ) {
       this.props.getVisatypes({
-        uri: "/masters/get/visa",
+        uri: "/visaType/getVisaMaster",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "VISA_GET_DATA",
@@ -183,7 +188,8 @@ class VisaType extends Component {
       if (willDelete.value) {
         let data = { hims_d_visa_type_id: id };
         algaehApiCall({
-          uri: "/masters/set/delete/visa",
+          uri: "/visaType/deleteVisa",
+          module: "masterSettings",
           data: data,
           method: "DELETE",
           onSuccess: response => {
@@ -194,7 +200,8 @@ class VisaType extends Component {
               });
 
               this.props.getVisatypes({
-                uri: "/masters/get/visa",
+                uri: "/visaType/getVisaMaster",
+                module: "masterSettings",
                 method: "GET",
                 redux: {
                   type: "VISA_GET_DATA",
