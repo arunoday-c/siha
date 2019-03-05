@@ -165,7 +165,10 @@ export default class ActivityFeed extends Component {
                   ))}{" "}
                 </React.Fragment>
               ) : (
-                "NO DATA IN ACTIVITY FEED"
+                <div className="noActivityData">
+                  <h1>Relax! You don't have any activity</h1>
+                  <i className="fas fa-tasks" />
+                </div>
               )}
             </div>
           </div>

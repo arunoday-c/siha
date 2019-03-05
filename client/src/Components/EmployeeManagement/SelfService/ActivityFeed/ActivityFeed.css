@@ -40,3 +40,18 @@
           margin-left: 5px;
           color: #4183c4 !important;
           cursor: pointer !important; }
+  .ActivityFeedScreen .activity-feed .noActivityData {
+    text-align: center;
+    color: rgba(0, 0, 0, 0.1);
+    width: 100%;
+    background: #fff;
+    padding: 30px;
+    border-radius: 5px;
+    border: 1px solid #dcdcdc;
+    width: 100%; }
+    .ActivityFeedScreen .activity-feed .noActivityData h1 {
+      margin-top: 30px; }
+    .ActivityFeedScreen .activity-feed .noActivityData i {
+      font-size: 16em;
+      margin: 4vh 0 6vh;
+      color: rgba(0, 0, 0, 0.04); }
