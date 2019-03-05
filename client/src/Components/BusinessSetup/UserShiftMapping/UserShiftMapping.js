@@ -52,6 +52,7 @@ class UserShiftMapping extends Component {
   getShifts() {
     algaehApiCall({
       uri: "/shiftAndCounter/getShiftMaster",
+      module: "masterSettings",
       method: "GET",
       data: { shift_status: "A" },
       onSuccess: response => {
@@ -73,6 +74,7 @@ class UserShiftMapping extends Component {
   getCashiers() {
     algaehApiCall({
       uri: "/shiftAndCounter/getCashiers",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -94,6 +96,7 @@ class UserShiftMapping extends Component {
   getMappedUsers() {
     algaehApiCall({
       uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -118,6 +121,7 @@ class UserShiftMapping extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/shiftAndCounter/addCashierToShift",
+          module: "masterSettings",
           method: "POST",
           data: {
             cashier_id: this.state.cashier_id,
@@ -149,6 +153,7 @@ class UserShiftMapping extends Component {
   updateCashiersAndShiftMAP(data) {
     algaehApiCall({
       uri: "/shiftAndCounter/updateCashiersAndShiftMAP",
+      module: "masterSettings",
       method: "PUT",
       data: {
         hims_m_cashier_shift_id: data.hims_m_cashier_shift_id,
@@ -185,6 +190,7 @@ class UserShiftMapping extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/shiftAndCounter/deleteCashiersAndShiftMAP",
+          module: "masterSettings",
           data: {
             hims_m_cashier_shift_id: data.hims_m_cashier_shift_id
           },

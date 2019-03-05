@@ -24,6 +24,7 @@ class Currency extends Component {
   getCurrency() {
     algaehApiCall({
       uri: "/currency/getCurrencyMaster",
+      module: "masterSettings",
       method: "GET",
       data: {},
       onSuccess: response => {
@@ -53,6 +54,7 @@ class Currency extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/currency/deleteCurrencyMaster",
+          module: "masterSettings",
           data: {
             hims_d_currency_id: data.hims_d_currency_id
           },
@@ -86,6 +88,7 @@ class Currency extends Component {
   updateCurrency(data) {
     algaehApiCall({
       uri: "/currency/updateCurrencyMaster",
+      module: "masterSettings",
       data: {
         currency_code: data.currency_code,
         currency_description: data.currency_description,
@@ -95,6 +98,7 @@ class Currency extends Component {
         thousand_separator: data.thousand_separator,
         decimal_separator: data.decimal_separator,
         negative_separator: data.negative_separator,
+        currency_symbol: data.currency_symbol,
         hims_d_currency_id: data.hims_d_currency_id
       },
       method: "PUT",
@@ -155,6 +159,7 @@ class Currency extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/currency/addCurrencyMaster",
+          module: "masterSettings",
           method: "POST",
           data: {
             currency_code: this.state.currency_code,

@@ -28,6 +28,7 @@ const departmenttexthandle = ($this, ctrl, e) => {
     () => {
       $this.props.getEmpSpeciality({
         uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
+        module: "masterSettings",
         method: "GET",
         data: {
           sub_department_id: $this.state.sub_department,
@@ -49,6 +50,7 @@ const specialitytexthandle = ($this, ctrl, e) => {
 
   $this.props.getEmployeeCategory({
     uri: "/specialityAndCategory/getCategorySpecialityMap",
+    module: "masterSettings",
     method: "GET",
     data: {
       category_speciality_status: "A",

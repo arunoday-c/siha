@@ -1,5 +1,6 @@
 import algaehMysql from "algaeh-mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
+import appsettings from "algaeh-utilities/appsettings.json";
 import { LINQ } from "node-linq";
 import math from "mathjs";
 import extend from "extend";
@@ -1202,7 +1203,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             }
           })
             .then(policydtls => {
-              utilities.logger().log("policydtls: ");
+              utilities.logger().log("policydtls: ", policydtls);
               if (
                 covered == "N" ||
                 (pre_approval == "Y" && apprv_status == "RJ")

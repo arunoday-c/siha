@@ -41,6 +41,7 @@ class Shift extends Component {
   getShifts() {
     algaehApiCall({
       uri: "/shiftAndCounter/getShiftMaster",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -68,6 +69,7 @@ class Shift extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/shiftAndCounter/addShiftMaster",
+          module: "masterSettings",
           method: "POST",
           data: {
             shift_code: this.state.shift_code,
@@ -118,6 +120,7 @@ class Shift extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/shiftAndCounter/updateShiftMaster",
+          module: "masterSettings",
           data: {
             shift_code: data.shift_code,
             record_status: "I",
@@ -157,6 +160,7 @@ class Shift extends Component {
   updateShifts(data) {
     algaehApiCall({
       uri: "/shiftAndCounter/updateShiftMaster",
+      module: "masterSettings",
       data: {
         shift_code: data.shift_code,
         record_status: "A",
@@ -199,7 +203,6 @@ class Shift extends Component {
   }
 
   changeChecks(e) {
-    
     this.setState({
       [e.target.name]: e.target.value
     });

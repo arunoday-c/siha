@@ -56,6 +56,7 @@ export default class EmployeeShiftRostering extends Component {
   getShifts() {
     algaehApiCall({
       uri: "/shiftAndCounter/getShiftMaster",
+      module: "masterSettings",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {

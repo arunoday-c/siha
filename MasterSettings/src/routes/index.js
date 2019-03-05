@@ -6,6 +6,9 @@ import identity from "../controllers/identity";
 import patientType from "../controllers/patientType";
 import vendor from "../controllers/vendor";
 import serviceType from "../controllers/serviceTypes";
+import specialityAndCategory from "../controllers/specialityAndCategory";
+import shiftAndCounter from "../controllers/shiftAndCounter";
+import currency from "../controllers/currency";
 
 const router = express();
 router.use("/department", department());
@@ -15,5 +18,8 @@ router.use("/identity", identity());
 router.use("/patientType", patientType());
 router.use("/vendor", vendor());
 router.use("/serviceType", serviceType());
+router.use("/specialityAndCategory", specialityAndCategory());
+router.use("/shiftAndCounter", shiftAndCounter());
+router.use("/currency", currency());
 
 export default router;
