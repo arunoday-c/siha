@@ -5,7 +5,7 @@ import moment from "moment";
 import { LINQ } from "node-linq";
 //import utilities from "algaeh-utilities";
 import algaehUtilities from "algaeh-utilities/utilities";
-import { KinesisVideoArchivedMedia } from "aws-sdk";
+
 //import { getMaxAuth } from "../../../src/utils";
 // import Sync from "sync";
 module.exports = {

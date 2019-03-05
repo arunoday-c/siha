@@ -862,7 +862,7 @@ module.exports = {
       .executeQuery({
         query:
           "INSERT INTO `hims_f_shift_roster` (employee_id,sub_department_id,shift_date,shift_id,shift_end_date,\
-          shift_start_time,shift_end_time,shift_time,weekoff,holiday) values(?,?,?,?,?,?,?,?,?,?)\
+          shift_start_time,shift_end_time,shift_time,weekoff,holiday,hospital_id) values(?,?,?,?,?,?,?,?,?,?,?)\
            ON DUPLICATE KEY UPDATE shift_id=?, sub_department_id=?,shift_end_date=?,\
           shift_start_time=?,shift_end_time=?,shift_time=?,weekoff=?,holiday=?",
         values: [
@@ -876,6 +876,7 @@ module.exports = {
           input.shift_time,
           input.weekoff,
           input.holiday,
+          input.hospital_id,
 
           input.shift_id,
           input.sub_department_id,
