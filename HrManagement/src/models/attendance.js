@@ -3334,7 +3334,9 @@ module.exports = {
                                 .split(".")[0];
                               actual_mins = shiftData.shift_time
                                 .toString()
-                                .split(".")[1];
+                                .split(".")[1]>0?shiftData.shift_time
+                                .toString()
+                                .split(".")[1]:0;
                             } else {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
@@ -4952,7 +4954,7 @@ module.exports = {
 
                     utilities.logger().log("excptions: ", excptions);
 
-                    if (excptions.length > 0) {
+                    if (excptions.length >40) {
                       req.records = {
                         invalid_input: true,
                         employees: excptions,
@@ -4972,6 +4974,12 @@ module.exports = {
                           let total_minutes =
                             parseInt(AttenResult[i]["actual_hours"] * 60) +
                             parseInt(AttenResult[i]["actual_minutes"]);
+                            utilities.logger().log("actual_hours: ", AttenResult[i]["actual_hours"]);
+                            utilities.logger().log("actual_minutes: ", AttenResult[i]["actual_minutes"]);
+                            utilities.logger().log("total_minutes: ", total_minutes);
+
+
+
                           let worked_minutes =
                             parseInt(AttenResult[i]["hours"] * 60) +
                             parseInt(AttenResult[i]["minutes"]);
@@ -4991,13 +4999,17 @@ module.exports = {
                             );
                             ot_min = parseInt(Math.abs(diff)) % parseInt(60);
                           }
+
+
+                         
+                          utilities.logger().log("worked_minutes: ", worked_minutes);
+                          utilities.logger().log("diff: ", diff);
+                          utilities.logger().log("ot_time: ", ot_time);
+                          utilities.logger().log("shortage_time: ", shortage_time);
+                          utilities.logger().log("================: ");
                         }
-                        // utilities.logger().log("total_minutes: ", total_minutes);
-                        // utilities.logger().log("worked_minutes: ", worked_minutes);
-                        // utilities.logger().log("diff: ", diff);
-                        // utilities.logger().log("ot_time: ", ot_time);
-                        // utilities.logger().log("shortage_time: ", shortage_time);
-                        // utilities.logger().log("================: ");
+                       
+
                         dailyAttendance.push({
                           employee_id: AttenResult[i]["employee_id"],
                           hospital_id: AttenResult[i]["hospital_id"],
@@ -5464,6 +5476,15 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
                                 utilities
                                   .logger()
                                   .log("pending_leaves: ", pending_leaves);
+                            
+                            
+                            
+                                  utilities
+                                  .logger()
+                                  .log("shortage_hourss: ", attResult[i]["shortage_hourss"]);
+                                  utilities
+                                  .logger()
+                                  .log("ot_hourss: ", attResult[i]["ot_hourss"]);
 
                                 insertArray.push({
                                   ...attResult[i],
