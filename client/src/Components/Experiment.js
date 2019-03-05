@@ -140,7 +140,6 @@ class Experiment extends Component {
                 others: { responseType: "blob" },
                 module: "hrManagement",
                 onSuccess: response => {
-                  debugger;
                   let reader = new FileReader();
                   reader.onloadend = () => {
                     var anchor = document.createElement("a");

@@ -444,7 +444,7 @@ export function numberFormater(value, options) {
 
 export function SetBulkState(options) {
   if (options.querySelector === undefined) options.querySelector = "input";
-  debugger;
+
   const _allControls = document.querySelectorAll(options.querySelector);
   let _objectCreation = {};
   for (let i = 0; i < _allControls.length; i++) {

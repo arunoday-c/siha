@@ -16,7 +16,6 @@ const TreeTable = treeTableHOC(ReactTable);
 class AttendanceRegularization extends Component {
   constructor(props) {
     super(props);
-    debugger;
     this.state = {
       regularization_list: [],
       login_date: props.regularize.login_date
@@ -31,10 +30,11 @@ class AttendanceRegularization extends Component {
         : null,
       punch_in_time: props.regularize.punch_in_time
         ? moment(props.regularize.punch_in_time, "HH:mm:ss").format("hh:mm a")
-        : "Not Exist",
+        : null,
       punch_out_time: props.regularize.punch_out_time
         ? moment(props.regularize.punch_out_time, "HH:mm:ss").format("hh:mm a")
-        : "Not Exist"
+        : null,
+      absent_id: props.regularize.absent_id
     };
   }
 
@@ -65,15 +65,16 @@ class AttendanceRegularization extends Component {
 
   getRegularizationRequests() {
     algaehApiCall({
-      uri: "/leave/getEmployeeAttendReg",
+      uri: "/attendance/getEmployeeAttendReg",
       method: "GET",
       data: {
         employee_id: this.state.hims_d_employee_id
       },
+      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            regularization_list: res.data.records
+            regularization_list: res.data.result
           });
         }
       },
@@ -111,19 +112,35 @@ class AttendanceRegularization extends Component {
           });
         } else {
           algaehApiCall({
-            uri: "/attendance/addAttendanceRegularization",
-            method: "POST",
+            uri: this.state.hims_f_attendance_regularize_id
+              ? "/attendance/requestAttndncReglztion"
+              : "/attendance/addAttendanceRegularization",
+            method: this.state.hims_f_attendance_regularize_id ? "PUT" : "POST",
             module: "hrManagement",
             data: {
+              absent_id: this.state.absent_id,
               attendance_date: this.state.login_date,
               employee_id: this.state.hims_d_employee_id,
               login_date: this.state.login_date,
               logout_date: this.state.logout_date,
-              punch_in_time: this.state.punch_in_time,
-              punch_out_time: this.state.punch_out_time,
+              punch_in_time:
+                this.state.punch_in_time !== null
+                  ? moment(this.state.punch_in_time, "hh:mm a").format(
+                      "HH:mm:ss"
+                    )
+                  : null,
+              punch_out_time:
+                this.state.punch_out_time !== null
+                  ? moment(this.state.punch_out_time, "hh:mm a").format(
+                      "HH:mm:ss"
+                    )
+                  : null,
               regularize_in_time: this.state.regularize_in_time,
               regularize_out_time: this.state.regularize_out_time,
-              regularization_reason: this.state.regularization_reason
+              regularization_reason: this.state.regularization_reason,
+              regularize_status: "PEN",
+              hims_f_attendance_regularize_id: this.state
+                .hims_f_attendance_regularize_id
             },
             onSuccess: res => {
               if (res.data.success) {
@@ -212,7 +229,11 @@ class AttendanceRegularization extends Component {
                       forceLabel: "Old In-Time"
                     }}
                   />
-                  <h6>{this.state.punch_in_time}</h6>
+                  <h6>
+                    {this.state.punch_in_time !== null
+                      ? this.state.punch_in_time
+                      : "Not Exists"}
+                  </h6>
                 </div>{" "}
                 <div className="col-6">
                   <AlgaehLabel
@@ -220,7 +241,11 @@ class AttendanceRegularization extends Component {
                       forceLabel: "Old Out-Time"
                     }}
                   />
-                  <h6>{this.state.punch_out_time}</h6>
+                  <h6>
+                    {this.state.punch_out_time !== null
+                      ? this.state.punch_out_time
+                      : "Not Exists"}
+                  </h6>
                 </div>
                 {/* Need to fetch the old in time and old out time from API */}
                 <AlagehFormGroup
@@ -284,7 +309,9 @@ class AttendanceRegularization extends Component {
                     style={{ marginTop: 21 }}
                     onClick={this.requestRegularization.bind(this)}
                   >
-                    Request
+                    {this.state.hims_f_attendance_regularize_id
+                      ? "Update"
+                      : "Request"}
                   </button>
                 </div>
               </div>
@@ -347,10 +374,10 @@ class AttendanceRegularization extends Component {
                             accessor: d =>
                               moment(d.created_date).format("DD-MM-YYYY")
                           },
-                          {
-                            Header: <b>Code</b>,
-                            accessor: "regularization_code"
-                          },
+                          // {
+                          //   Header: <b>Code</b>,
+                          //   accessor: "regularization_code"
+                          // },
                           {
                             Header: <b>Reason</b>,
                             accessor: "regularization_reason"

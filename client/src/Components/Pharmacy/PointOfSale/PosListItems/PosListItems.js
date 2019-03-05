@@ -104,7 +104,6 @@ class PosListItems extends Component {
   }
 
   // onKeyPress(e) {
-  //   debugger;
   //   if (e.ctrlKey && e.keyCode === 9) {
   //     this.attReg.focus();
   //     // const element = ReactDOM.findDOMNode("root").querySelector(
@@ -137,7 +136,7 @@ class PosListItems extends Component {
                           <div className="row">
                             <AlgaehAutoSearch
                               div={{ className: "col-3" }}
-                              label={{ forceLabel: "Item Name" }}
+                              label={{ forceLabel: "Item Name (Ctrl + i)" }}
                               title="Search Items"
                               id="item_id_search"
                               template={result => {
@@ -341,7 +340,7 @@ class PosListItems extends Component {
                             </button>
 
                             <div>
-                              {this.state.case_type === "O" ? null : (
+                              {this.state.insured === "N" ? null : (
                                 <button
                                   className="btn btn-default"
                                   onClick={ViewInsurance.bind(this, this)}
@@ -603,6 +602,10 @@ class PosListItems extends Component {
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
+                                            number: {
+                                              allowNegative: false,
+                                              thousandSeparator: ","
+                                            },
                                             value: row.quantity,
                                             className: "txt-fld",
                                             name: "quantity",
@@ -1217,7 +1220,9 @@ class PosListItems extends Component {
                                 others: {
                                   placeholder: "0.00",
                                   disabled:
-                                    this.state.case_type === "O" ? true : false
+                                    this.state.pos_customer_type === "OT"
+                                      ? true
+                                      : false
                                 }
                               }}
                             />

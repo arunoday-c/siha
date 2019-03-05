@@ -170,7 +170,6 @@ class AddAdvanceModal extends PureComponent {
           onSuccess: response => {
             AlgaehLoader({ show: false });
             if (response.data.success) {
-              debugger;
               let data = response.data.records;
               $this.setState({
                 receipt_number: data.receipt_number

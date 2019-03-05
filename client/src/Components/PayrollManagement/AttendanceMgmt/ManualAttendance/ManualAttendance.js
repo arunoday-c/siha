@@ -24,7 +24,6 @@ import { swalMessage } from "../../../../utils/algaehApiCall";
 
 class ManualAttendance extends Component {
   constructor(props) {
-    debugger;
     super(props);
     this.state = {
       selectedLang: this.props.SelectLanguage,
@@ -54,7 +53,6 @@ class ManualAttendance extends Component {
   }
 
   getOptions() {
-    debugger;
     ManualAttendanceEvents()
       .getOptions(this)
       .then(res => {
@@ -108,7 +106,6 @@ class ManualAttendance extends Component {
   }
 
   datehandle(ctrl, e) {
-    debugger;
     ManualAttendanceEvents().datehandle(this, ctrl, e);
   }
 
@@ -117,7 +114,6 @@ class ManualAttendance extends Component {
   }
 
   gridtimehandle(row, e) {
-    debugger;
     ManualAttendanceEvents().gdtimehandle(this, row, e);
   }
 
@@ -148,7 +144,6 @@ class ManualAttendance extends Component {
   }
 
   render() {
-    debugger;
     const timesheet_entry =
       this.state.manual_timesheet_entry === "D"
         ? "sub_department_id"

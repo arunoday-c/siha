@@ -201,7 +201,7 @@ class SelfPersonalDetails extends Component {
     });
   }
   updateEmployeeWorkExperience(data) {
-    debugger;
+    
     algaehApiCall({
       uri: "/employee/updateEmployeeWorkExperience",
       module: "hrManagement",
@@ -217,7 +217,7 @@ class SelfPersonalDetails extends Component {
         hims_d_employee_experience_id: data.hims_d_employee_experience_id
       },
       onSuccess: res => {
-        debugger;
+        
         if (res.data.success) {
           swalMessage({
             title: "Record updated successfully",
@@ -675,7 +675,7 @@ class SelfPersonalDetails extends Component {
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
-        debugger;
+        
         if (res.data.success) {
           this.setState({
             family_details: res.data.records
@@ -714,6 +714,7 @@ class SelfPersonalDetails extends Component {
   getIdTypes() {
     algaehApiCall({
       uri: "/identity/get",
+      module: "masterSettings",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
@@ -1350,7 +1351,10 @@ class SelfPersonalDetails extends Component {
                                     tabIndex: "3"
                                   },
                                   events: {
-                                    onChange: this.changeGridEditors.bind(this,row )
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
                                   }
                                 }}
                               />

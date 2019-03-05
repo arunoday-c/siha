@@ -130,6 +130,11 @@ export default class WeeklyAttendance extends Component {
           this.setState({
             disableNotify: true
           });
+        } else if (!res.data.success) {
+          swalMessage({
+            title: res.data.message,
+            type: "warning"
+          });
         }
       },
       onFailure: err => {
@@ -405,7 +410,7 @@ export default class WeeklyAttendance extends Component {
         this.state.sub_department_id !== null &&
         this.state.sub_department_id !== undefined
           ? "sub_department_id = " + this.state.sub_department_id
-          : "sub_department_id > 1",
+          : "sub_department_id > 0",
       searchName: "employee",
       uri: "/gloabelSearch/get",
       onContainsChange: (text, serchBy, callBack) => {
@@ -880,9 +885,6 @@ export default class WeeklyAttendance extends Component {
                             <React.Fragment>
                               Excess Time
                               <b className="OverTime">
-                                {/* {Math.abs(
-                                  data.actual_hours - data.worked_hours
-                                ).toFixed(2)}{" "} */}
                                 {Math.abs(
                                   parseInt(
                                     data.actual_hours - data.worked_hours

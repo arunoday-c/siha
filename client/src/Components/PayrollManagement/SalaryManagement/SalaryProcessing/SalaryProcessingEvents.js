@@ -35,14 +35,12 @@ const SalaryProcess = ($this, e) => {
         inputObj.sub_department_id = $this.state.sub_department_id;
       }
 
-      debugger;
       algaehApiCall({
         uri: "/salary/processSalary",
         module: "hrManagement",
         data: inputObj,
         method: "GET",
         onSuccess: response => {
-          debugger;
           if (response.data.result.length > 0) {
             let data = response.data.result[0];
             let finalizeBtn = true;
@@ -123,7 +121,6 @@ const ClearData = $this => {
 };
 
 const FinalizeSalary = $this => {
-  debugger;
   AlgaehLoader({ show: true });
 
   const salary_header_id = _.map($this.state.salaryprocess_header, o => {
@@ -147,7 +144,6 @@ const FinalizeSalary = $this => {
     data: inputObj,
     method: "PUT",
     onSuccess: response => {
-      debugger;
       $this.setState({
         finalizeBtn: true
       });
@@ -209,7 +205,6 @@ const openSalaryComponents = ($this, row) => {
     .where(w => w.salary_header_id === row.hims_f_salary_id)
     .toArray();
 
-  debugger;
   $this.setState({
     isOpen: !$this.state.isOpen,
     salaryprocess_Earning: salaryprocess_Earning,

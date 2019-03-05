@@ -23,7 +23,12 @@ export default {
       net_total: 0,
       copay_amount: 0,
       patient_responsibility: 0,
-      case_type: "O",
+      pos_customer_type: "OT",
+
+      patient_name: null,
+      referal_doctor: null,
+      mobile_number: null,
+
       mode_of_pay: "1",
       patient_tax: 0,
       patient_payable: 0,
@@ -96,6 +101,7 @@ export default {
 
       addItemButton: true,
       item_id: null,
+      item_description: "",
       uom_id: null,
       batchno: null,
       expiry_date: null,

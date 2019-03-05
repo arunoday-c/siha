@@ -3,11 +3,11 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import {
-  addVendorMaster,
-  getVendorMaster,
-  updateVendorMaster,
-  deleteVendorMaster,
-  makeVendorMasterInActive
+  addVendorMaster, //Done
+  getVendorMaster, //Done
+  updateVendorMaster, //Done
+  deleteVendorMaster, //Done
+  makeVendorMasterInActive //Not In Use
 } from "../model/vendor";
 
 export default ({ config, db }) => {

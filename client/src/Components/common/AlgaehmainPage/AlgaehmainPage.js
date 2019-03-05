@@ -67,7 +67,7 @@ class PersistentDrawer extends React.Component {
               }
             }
           });
-          debugger;
+
           const HRActive = Enumarable.from(dataResponse.data.records)
             .where(w => w.module_code === "HRMNGMT")
             .toArray();
@@ -94,7 +94,7 @@ class PersistentDrawer extends React.Component {
               }
             });
           }
-          debugger;
+
           that.setState({
             menuList: dataResponse.data.records
           });
@@ -162,13 +162,13 @@ class PersistentDrawer extends React.Component {
         }
         // ,
         // () => {
-        //   debugger;
+        //
         //   this.setState(
         //     {
         //       renderComponent: renderComp
         //     },
         //     () => {
-        //       debugger;
+        //
         //     }
         //   );
         // }
@@ -299,7 +299,6 @@ class PersistentDrawer extends React.Component {
   }
 
   createSideMenuItemList() {
-    debugger;
     const { onlyToggeleMenu, activeNode, searchModules, menuList } = this.state;
 
     const _isEnglish = this.state.Language !== "en" ? false : true;

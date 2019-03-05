@@ -33,7 +33,7 @@ const getLeaveSalaryProcess = ($this, e) => {
     onSuccess: response => {
       AlgaehLoader({ show: false });
       let data = response.data.result;
-      debugger;
+
       if (Object.keys(data).length > 0) {
         data.ProcessBtn = false;
       }
@@ -121,82 +121,90 @@ const LeaveSalProcess = $this => {
     data: inputObj,
     onSuccess: response => {
       if (response.data.success) {
-        let salaryObj = [];
-        // let data = response.data.result;
+        if (response.data.result.length > 0) {
+          let salaryObj = [];
+          // let data = response.data.result;
 
-        let leave_salary_detail = $this.state.leave_salary_detail;
-        // let data = response.data.result;
+          let leave_salary_detail = $this.state.leave_salary_detail;
+          // let data = response.data.result;
 
-        for (let i = 0; i < leave_salary_detail.length; i++) {
-          salaryObj = Enumerable.from(response.data.result[0])
-            .where(
-              w =>
-                w.month === leave_salary_detail[i].month &&
-                w.year === leave_salary_detail[i].year
-            )
-            .toArray();
+          for (let i = 0; i < leave_salary_detail.length; i++) {
+            salaryObj = Enumerable.from(response.data.result[0])
+              .where(
+                w =>
+                  w.month === leave_salary_detail[i].month &&
+                  w.year === leave_salary_detail[i].year
+              )
+              .toArray();
 
-          leave_salary_detail[i].salary_no = salaryObj[0].salary_number;
-          leave_salary_detail[i].salary_date = salaryObj[0].salary_date;
-          leave_salary_detail[i].gross_amount = salaryObj[0].gross_salary;
-          leave_salary_detail[i].net_amount = salaryObj[0].net_salary;
-          leave_salary_detail[i].salary_header_id =
-            salaryObj[0].hims_f_salary_id;
-        }
+            leave_salary_detail[i].salary_no = salaryObj[0].salary_number;
+            leave_salary_detail[i].salary_date = salaryObj[0].salary_date;
+            leave_salary_detail[i].gross_amount = salaryObj[0].gross_salary;
+            leave_salary_detail[i].net_amount = salaryObj[0].net_salary;
+            leave_salary_detail[i].salary_header_id =
+              salaryObj[0].hims_f_salary_id;
+          }
 
-        let leave_amount = getAmountFormart(
-          response.data.result[1][0].leave_amount
-        );
-        let airfare_amount = getAmountFormart(
-          response.data.result[1][0].airfare_amount
-        );
-        debugger;
-        let x = leave_amount.split(" ");
-        leave_amount = x[1];
-
-        x = airfare_amount.split(" ");
-        airfare_amount = x[1];
-
-        let salary_amount = Enumerable.from(leave_salary_detail).sum(s =>
-          parseFloat(s.net_amount)
-        );
-
-        salary_amount = getAmountFormart(salary_amount);
-        x = salary_amount.split(" ");
-        salary_amount = x[1];
-
-        AlgaehLoader({ show: false });
-
-        let total_amount =
-          parseFloat(salary_amount) +
-          parseFloat(leave_amount) +
-          parseFloat(airfare_amount);
-
-        total_amount = getAmountFormart(total_amount);
-        x = total_amount.split(" ");
-        total_amount = x[1];
-
-        $this.setState({
-          leave_salary_detail: leave_salary_detail,
-          salary_amount: salary_amount,
-          leave_amount: leave_amount,
-          airfare_amount: airfare_amount,
-          total_amount: total_amount,
-          SaveBtn: false,
-          ProcessBtn: true,
-          dis_salary_amount: getAmountFormart(salary_amount),
-          dis_leave_amount: getAmountFormart(
+          let leave_amount = getAmountFormart(
             response.data.result[1][0].leave_amount
-          ),
-          dis_airfare_amount: getAmountFormart(
+          );
+          let airfare_amount = getAmountFormart(
             response.data.result[1][0].airfare_amount
-          ),
-          dis_total_amount: getAmountFormart(total_amount)
-        });
-        swalMessage({
-          title: "Processed succesfully..",
-          type: "success"
-        });
+          );
+
+          let x = leave_amount.split(" ");
+          leave_amount = x[1];
+
+          x = airfare_amount.split(" ");
+          airfare_amount = x[1];
+
+          let salary_amount = Enumerable.from(leave_salary_detail).sum(s =>
+            parseFloat(s.net_amount)
+          );
+
+          salary_amount = getAmountFormart(salary_amount);
+          x = salary_amount.split(" ");
+          salary_amount = x[1];
+
+          AlgaehLoader({ show: false });
+
+          let total_amount =
+            parseFloat(salary_amount) +
+            parseFloat(leave_amount) +
+            parseFloat(airfare_amount);
+
+          total_amount = getAmountFormart(total_amount);
+          x = total_amount.split(" ");
+          total_amount = x[1];
+
+          $this.setState({
+            leave_salary_detail: leave_salary_detail,
+            salary_amount: salary_amount,
+            leave_amount: leave_amount,
+            airfare_amount: airfare_amount,
+            total_amount: total_amount,
+            SaveBtn: false,
+            ProcessBtn: true,
+            dis_salary_amount: getAmountFormart(salary_amount),
+            dis_leave_amount: getAmountFormart(
+              response.data.result[1][0].leave_amount
+            ),
+            dis_airfare_amount: getAmountFormart(
+              response.data.result[1][0].airfare_amount
+            ),
+            dis_total_amount: getAmountFormart(total_amount)
+          });
+          swalMessage({
+            title: "Processed succesfully..",
+            type: "success"
+          });
+        } else {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: "Please, Process the time sheet.",
+            type: "error"
+          });
+        }
       } else if (!response.data.success) {
         AlgaehLoader({ show: false });
         swalMessage({
@@ -216,7 +224,6 @@ const LeaveSalProcess = $this => {
 };
 
 const SaveLeaveSalary = $this => {
-  debugger;
   AlgaehLoader({ show: true });
   algaehApiCall({
     uri: "/leavesalaryprocess/InsertLeaveSalary",
@@ -224,7 +231,6 @@ const SaveLeaveSalary = $this => {
     data: $this.state,
     method: "POST",
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         AlgaehLoader({ show: false });
         let data = response.data.result;
@@ -267,7 +273,6 @@ const getLeaveSalary = $this => {
     method: "GET",
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         let data = response.data.result;
 
         AlgaehLoader({ show: false });
@@ -321,7 +326,6 @@ const LoadLeaveSalary = $this => {
 };
 
 const openSalaryComponents = ($this, row) => {
-  debugger;
   let inputObj = {
     year: row.year,
     month: row.month,
@@ -335,7 +339,6 @@ const openSalaryComponents = ($this, row) => {
     method: "GET",
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         let data = response.data.result;
         let header = data[0]["salaryprocess_header"][0];
         const salaryprocess_Earning = Enumerable.from(

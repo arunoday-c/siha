@@ -258,7 +258,7 @@ const PostInitialStock = $this => {
 
     // $this.state.pharmacy_stock_detail[i].operation = "+";
   }
-  debugger;
+
   algaehApiCall({
     uri: "/initialstock/updatePharmacyInitialStock",
     module: "pharmacy",

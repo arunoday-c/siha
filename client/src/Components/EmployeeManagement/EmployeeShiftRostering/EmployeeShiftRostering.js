@@ -259,7 +259,7 @@ export default class EmployeeShiftRostering extends Component {
   }
 
   plotEmployeeDates(row, holidays, leaves, shifts) {
-    //debugger;
+    
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
 

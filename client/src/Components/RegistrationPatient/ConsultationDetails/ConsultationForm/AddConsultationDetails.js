@@ -6,7 +6,6 @@ import moment from "moment";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 
 const DeptselectedHandeler = ($this, context, e) => {
-  debugger;
   let dept = Enumerable.from($this.props.deptanddoctors.departmets)
     .where(w => w.sub_department_id === e.value)
     .firstOrDefault();
@@ -35,7 +34,6 @@ const selectedHandeler = ($this, context, e) => {
         alertTypeIcon: "warning",
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
-          debugger;
           $this.setState(
             {
               [e.name]: e.value,
@@ -81,7 +79,6 @@ const doctorselectedHandeler = ($this, context, e) => {
     }
     if ($this.state.hims_d_patient_id != null) {
       if (e.selected.services_id !== null) {
-        debugger;
         let intputObj = {
           sub_department_id: $this.state.sub_department_id,
           doctor_id: e.value,
@@ -93,7 +90,6 @@ const doctorselectedHandeler = ($this, context, e) => {
           method: "get",
           data: intputObj,
           onSuccess: response => {
-            debugger;
             if (response.data.success === true) {
               if (response.data.records.length > 0) {
                 swalMessage({
@@ -251,14 +247,13 @@ const generateBillDetails = ($this, context) => {
     }
   ];
   AlgaehLoader({ show: true });
-  debugger;
+
   algaehApiCall({
     uri: "/billing/getBillDetails",
     module: "billing",
     method: "POST",
     data: serviceInput,
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         if (context !== null) {
           context.updateState({ ...response.data.records });

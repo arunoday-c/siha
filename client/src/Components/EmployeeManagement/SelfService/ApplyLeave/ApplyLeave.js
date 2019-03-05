@@ -23,10 +23,22 @@ class ApplyLeave extends Component {
       emp_leaves_data: [],
       leave_his: [],
       available_balance: 0.0,
-      total_applied_days: 0.0
+      total_applied_days: 0.0,
+      from_date: props.leave.from_date ? props.leave.from_date : null,
+      to_date: props.leave.to_date ? props.leave.to_date : null,
+      from_leave_session: props.leave.from_session
+        ? props.leave.from_session
+        : null,
+      to_leave_session: props.leave.to_session ? props.leave.to_session : null,
+      absent_id: props.leave.absent_id ? props.leave.absent_id : null,
+      leave_from: props.leave.leave_from ? props.leave.leave_from : null
     };
     this.getLeaveTypes();
     this.getEmployees();
+  }
+
+  componentWillUnmount() {
+    this.clearState();
   }
 
   getDateRange(startDate, endDate) {
@@ -416,6 +428,8 @@ class ApplyLeave extends Component {
             to_leave_session: this.state.to_leave_session,
             total_applied_days: this.state.total_applied_days,
             remarks: this.state.remarks,
+            absent_id: this.state.absent_id,
+            leave_from: this.state.leave_from,
             ...this.state.extra
           },
           onSuccess: res => {
@@ -938,24 +952,6 @@ class ApplyLeave extends Component {
                             );
                           }
                         },
-                        // {
-                        //   fieldName: "total_approved_days",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Approved Days" }}
-                        //     />
-                        //   ),
-
-                        //   displayTemplate: row => {
-                        //     return (
-                        //       <span>
-                        //         {row.total_approved_days !== null
-                        //           ? row.total_approved_days
-                        //           : 0}
-                        //       </span>
-                        //     );
-                        //   }
-                        // },
                         {
                           fieldName: "remarks",
 

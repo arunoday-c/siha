@@ -124,8 +124,6 @@ class EmployeeDocuments extends Component {
     }
   }
   onHandleDocumentForClick(item, e) {
-    debugger;
-
     this.setState(
       {
         selected_id: item.hims_d_employee_dependents_id

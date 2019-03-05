@@ -77,7 +77,6 @@ const Validations = $this => {
   }
 };
 const InsertLabTest = ($this, e) => {
-  debugger;
   const err = Validations($this);
 
   if (!err) {

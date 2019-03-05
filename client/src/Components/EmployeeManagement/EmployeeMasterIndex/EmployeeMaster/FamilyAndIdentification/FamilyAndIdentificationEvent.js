@@ -149,7 +149,6 @@ const deleteIdentifications = ($this, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-      debugger;
       let idDetails = $this.state.idDetails;
       let insertIdDetails = $this.state.insertIdDetails;
       let deleteIdDetails = $this.state.deleteIdDetails;
@@ -166,16 +165,11 @@ const deleteIdentifications = ($this, row) => {
 
         idDetails.splice(row.rowIdx, 1);
       }
-      $this.setState(
-        {
-          idDetails: idDetails,
-          deleteIdDetails: deleteIdDetails,
-          insertIdDetails: insertIdDetails
-        },
-        () => {
-          debugger;
-        }
-      );
+      $this.setState({
+        idDetails: idDetails,
+        deleteIdDetails: deleteIdDetails,
+        insertIdDetails: insertIdDetails
+      });
 
       $this.props.EmpMasterIOputs.updateEmployeeTabs({
         idDetails: idDetails,

@@ -207,7 +207,6 @@ const sameAsPresent = ($this, e) => {
     permanent_city_id = "";
   }
 
-  debugger;
   // if (this.state.personalDetails.present_country_id === null) return;
   // if (
   //   this.state.personalDetails.present_country_id !==

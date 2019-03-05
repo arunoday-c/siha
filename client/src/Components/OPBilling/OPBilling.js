@@ -78,6 +78,7 @@ class OPBilling extends Component {
     ) {
       this.props.getPatientType({
         uri: "/patientType/getPatientType",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",
@@ -144,7 +145,6 @@ class OPBilling extends Component {
             )
             .toArray();
 
-          debugger;
           todayDate.setDate(todayDate.getDate() - 7);
           if (x !== undefined && x.length > 0) {
             data.patientRegistration.patient_type = x[0].patitent_type_desc;
@@ -159,7 +159,7 @@ class OPBilling extends Component {
                 w.visit_status === "O"
             )
             .toArray();
-          debugger;
+
           data.patientRegistration.visitDetails = visitDetails;
           data.patientRegistration.patient_id =
             data.patientRegistration.hims_d_patient_id;
@@ -204,7 +204,6 @@ class OPBilling extends Component {
       method: "GET",
       data: { bill_number: billcode },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           let data = response.data.records;
 
@@ -322,7 +321,6 @@ class OPBilling extends Component {
   SaveBill(e) {
     const err = Validations(this);
     if (!err) {
-      debugger;
       if (this.state.unbalanced_amount === 0) {
         this.GenerateReciept($this => {
           let Inputobj = $this.state;

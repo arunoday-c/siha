@@ -51,6 +51,7 @@ class FamilyAndIdentification extends Component {
     if (this.props.idtypes === undefined || this.props.idtypes.length === 0) {
       this.props.getIDTypes({
         uri: "/identity/get",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "IDTYPE_GET_DATA",
@@ -61,7 +62,6 @@ class FamilyAndIdentification extends Component {
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-employee-form popRightDiv">

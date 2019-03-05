@@ -199,7 +199,7 @@ class Shift extends Component {
   }
 
   changeChecks(e) {
-    debugger;
+    
     this.setState({
       [e.target.name]: e.target.value
     });

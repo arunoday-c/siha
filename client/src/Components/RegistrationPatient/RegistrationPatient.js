@@ -339,7 +339,6 @@ class RegistrationPatient extends PureComponent {
       method: "GET",
       data: { patient_code: patcode },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           let data = response.data.records;
 
@@ -409,7 +408,6 @@ class RegistrationPatient extends PureComponent {
   //Render Page Start Here
 
   render() {
-    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}

@@ -41,6 +41,7 @@ class PatientType extends Component {
     ) {
       this.props.getPatienttypes({
         uri: "/patientType/getPatientType",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "PAT_TYP_GET_DATA",
@@ -71,6 +72,7 @@ class PatientType extends Component {
         let data = { hims_d_patient_type_id: id };
         algaehApiCall({
           uri: "/patientType/delete",
+          module: "masterSettings",
           data: data,
           method: "DELETE",
           onSuccess: response => {
@@ -82,6 +84,7 @@ class PatientType extends Component {
 
               this.props.getPatienttypes({
                 uri: "/patientType/getPatientType",
+                module: "masterSettings",
                 method: "GET",
                 redux: {
                   type: "PAT_TYP_GET_DATA",
@@ -125,11 +128,13 @@ class PatientType extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/patientType/add",
+          module: "masterSettings",
           data: this.state,
           onSuccess: response => {
             if (response.data.success === true) {
               this.props.getPatienttypes({
                 uri: "/patientType/getPatientType",
+                module: "masterSettings",
                 method: "GET",
                 redux: {
                   type: "PAT_TYP_GET_DATA",
@@ -159,6 +164,7 @@ class PatientType extends Component {
   updatePatientType(data) {
     algaehApiCall({
       uri: "/patientType/update",
+      module: "masterSettings",
       data: data,
       method: "PUT",
       onSuccess: response => {

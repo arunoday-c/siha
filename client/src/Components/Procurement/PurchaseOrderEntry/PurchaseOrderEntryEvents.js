@@ -196,7 +196,7 @@ const RequisitionSearch = ($this, e) => {
 
               for (let i = 0; i < data.po_entry_detail.length; i++) {
                 let purchase_cost = data.po_entry_detail[i].purchase_cost;
-                debugger;
+
                 if ($this.state.po_from === "PHR") {
                   data.po_entry_detail[i].pharmacy_requisition_id =
                     data.po_entry_detail[i].hims_f_pharmacy_material_detail_id;

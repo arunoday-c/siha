@@ -40,7 +40,6 @@ export default function ProjectMasterEvents() {
     },
 
     addProject: $this => {
-      debugger;
       //   let projects = $this.state.projects;
       algaehApiCall({
         uri: "/hrsettings/addProject",
@@ -72,7 +71,6 @@ export default function ProjectMasterEvents() {
       });
     },
     griddatehandle: ($this, row, ctrl, e) => {
-      debugger;
       let intFailure = false;
       if (e === "start_date") {
         if (Date.parse(row.end_date) < Date.parse(moment(ctrl)._d)) {
@@ -102,7 +100,6 @@ export default function ProjectMasterEvents() {
     },
 
     updateEmployeeGroups: ($this, data) => {
-      debugger;
       algaehApiCall({
         uri: "/hrsettings/updateProjects",
         module: "hrManagement",

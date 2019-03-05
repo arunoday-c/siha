@@ -31,7 +31,6 @@ const LocationchangeTexts = ($this, ctrl, e) => {
 };
 
 const getPurchaseOrderList = $this => {
-  debugger;
   let inpObj = {};
 
   if ($this.state.po_from === "PHR") {

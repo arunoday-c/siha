@@ -65,7 +65,6 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const employeeStatusHandler = ($this, e) => {
-  debugger;
   let _enable_active_status = "";
   let _date_of_releaving = "";
   let _other = {};
