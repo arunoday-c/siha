@@ -106,6 +106,7 @@ class DeptUserDetails extends Component {
     ) {
       this.props.getEmployeeCategory({
         uri: "/specialityAndCategory/getCategorySpecialityMap",
+        module: "masterSettings",
         method: "GET",
 
         redux: {
@@ -151,6 +152,7 @@ class DeptUserDetails extends Component {
     ) {
       this.props.getEmpSpeciality({
         uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "EMP_SPECILITY_GET_DATA",

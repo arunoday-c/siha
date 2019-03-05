@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import "./PatientDetails.css";
-import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import { PatientSearch } from "./DisPatientHandlers";
 
@@ -131,6 +131,39 @@ class DisPatientForm extends Component {
                           : "--------"}
                       </h6>
                     </div>
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-3" }}
+                      label={{
+                        fieldName: "select_service_type"
+                      }}
+                      selector={{
+                        name: "s_service_type",
+                        className: "select-fld",
+                        autoComplete: "off",
+                        value: this.state.s_service_type,
+                        dataSource: {
+                          textField: "visit_code",
+                          valueField: "visit_code",
+                          data: this.state.visitDetails
+                        },
+                        others: { disabled: this.state.Billexists },
+                        template: item => (
+                          <span>
+                            <p>
+                              {item.visit_code} <br />
+                              {item.visit_date}
+                              <br />
+                              {item.sub_department_name}
+                              <br />
+                              {item.full_name}
+                              <br />
+                            </p>
+                          </span>
+                        )
+                      }}
+                    />
+
                     <div className="col-lg-3">
                       {this.state.Billexists === true ? (
                         this.state.cancelled === "Y" ? (

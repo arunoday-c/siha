@@ -71,6 +71,7 @@ class Speciality extends Component {
   getSpeciality() {
     algaehApiCall({
       uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
+      module: "masterSettings",
       method: "GET",
       data: {},
       onSuccess: response => {
@@ -91,6 +92,7 @@ class Speciality extends Component {
     data.speciality_status === "I"
       ? algaehApiCall({
           uri: "/specialityAndCategory/makeEmployeeSpecialityInActive",
+          module: "masterSettings",
           data: {
             hims_d_employee_speciality_id: data.hims_d_employee_speciality_id
           },
@@ -119,6 +121,7 @@ class Speciality extends Component {
         })
       : algaehApiCall({
           uri: "/specialityAndCategory/updateEmployeeSpecialityMaster",
+          module: "masterSettings",
           data: {
             hims_d_employee_speciality_id: data.hims_d_employee_speciality_id,
             speciality_code: data.speciality_code,
@@ -160,6 +163,7 @@ class Speciality extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/specialityAndCategory/deleteEmployeeSpecialityMaster",
+          module: "masterSettings",
           data: {
             hims_d_employee_speciality_id: data.hims_d_employee_speciality_id
           },
@@ -203,6 +207,7 @@ class Speciality extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/specialityAndCategory/addEmployeeSpecialityMaster",
+          module: "masterSettings",
           method: "POST",
           data: {
             speciality_code: this.state.speciality_code,

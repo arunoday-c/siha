@@ -39,6 +39,7 @@ class CategorySpeciality extends Component {
   getCategories() {
     algaehApiCall({
       uri: "/specialityAndCategory/getEmployeeCategoryMaster",
+      module: "masterSettings",
       method: "GET",
       data: {
         employee_category_status: "A"
@@ -59,6 +60,7 @@ class CategorySpeciality extends Component {
   getSpecialities() {
     algaehApiCall({
       uri: "/specialityAndCategory/getEmployeeSpecialityMaster",
+      module: "masterSettings",
       method: "GET",
       data: {
         speciality_status: "A"
@@ -83,6 +85,7 @@ class CategorySpeciality extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/specialityAndCategory/addCategorySpecialityMappings",
+          module: "masterSettings",
           method: "POST",
           data: {
             category_id: this.state.category_id,
@@ -115,6 +118,7 @@ class CategorySpeciality extends Component {
   getCategorySpecialityMap() {
     algaehApiCall({
       uri: "/specialityAndCategory/getCategorySpecialityMap",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -143,6 +147,7 @@ class CategorySpeciality extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/specialityAndCategory/deleteCategorySpecialityMap",
+          module: "masterSettings",
           data: {
             hims_m_category_speciality_mappings_id:
               data.hims_m_category_speciality_mappings_id
@@ -183,6 +188,7 @@ class CategorySpeciality extends Component {
     data.category_speciality_status === "I"
       ? algaehApiCall({
           uri: "/specialityAndCategory/updateCategorySpecialityMap",
+          module: "masterSettings",
           data: {
             hims_m_category_speciality_mappings_id:
               data.hims_m_category_speciality_mappings_id
@@ -211,6 +217,7 @@ class CategorySpeciality extends Component {
         })
       : algaehApiCall({
           uri: "/specialityAndCategory/updateCategorySpecialityMap",
+          module: "masterSettings",
           data: {
             category_id: data.category_id,
             speciality_id: data.speciality_id,
@@ -351,6 +358,27 @@ class CategorySpeciality extends Component {
               id="currency-grid"
               columns={[
                 {
+                  fieldName: "action",
+                  label: <AlgaehLabel label={{ fieldName: "action" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        <i
+                          className="fas fa-trash-alt"
+                          aria-hidden="true"
+                          onClick={this.deleteCategorySpecialityMap.bind(
+                            this,
+                            row
+                          )}
+                        />
+                      </span>
+                    );
+                  },
+                  others: {
+                    maxWidth: 50
+                  }
+                },
+                {
                   fieldName: "speciality_id",
                   label: <AlgaehLabel label={{ fieldName: "speciality" }} />,
                   displayTemplate: row => {
@@ -469,7 +497,7 @@ class CategorySpeciality extends Component {
               dataSource={{
                 data: this.state.cat_specialities
               }}
-              isEditable={true}
+              isEditable={false}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onEdit: () => {},

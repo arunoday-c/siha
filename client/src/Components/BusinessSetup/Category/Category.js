@@ -51,6 +51,7 @@ class Category extends Component {
   getCategories() {
     algaehApiCall({
       uri: "/specialityAndCategory/getEmployeeCategoryMaster",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -67,9 +68,11 @@ class Category extends Component {
   }
 
   updateSpeciality(data) {
+    debugger;
     data.department_status === "I"
       ? algaehApiCall({
           uri: "/specialityAndCategory/makeEmployeeCategoryInActive",
+          module: "masterSettings",
           data: {
             hims_employee_category_id: data.hims_employee_category_id
           },
@@ -97,13 +100,15 @@ class Category extends Component {
         })
       : algaehApiCall({
           uri: "/specialityAndCategory/updateEmployeeCategoryMaster",
+          module: "masterSettings",
           data: {
             hims_employee_category_id: data.hims_employee_category_id,
             employee_category_code: data.employee_category_code,
             employee_category_name: data.employee_category_name,
             employee_category_desc: data.employee_category_name,
             effective_start_date: data.effective_start_date,
-            employee_category_status: data.employee_category_status
+            employee_category_status: data.employee_category_status,
+            arabic_name: data.arabic_name
           },
           method: "PUT",
           onSuccess: response => {
@@ -135,21 +140,24 @@ class Category extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
+        debugger;
         algaehApiCall({
           uri: "/specialityAndCategory/deleteEmployeeCategoryMaster",
+          module: "masterSettings",
           data: {
             hims_employee_category_id: data.hims_employee_category_id
           },
           method: "DELETE",
           onSuccess: response => {
-            if (response.data.records.success) {
+            debugger;
+            if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",
                 type: "success"
               });
 
               this.getCategories();
-            } else if (!response.data.records.success) {
+            } else if (!response.data.success) {
               swalMessage({
                 title: response.data.records.message,
                 type: "error"
@@ -180,6 +188,7 @@ class Category extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/specialityAndCategory/addEmployeeCategoryMaster",
+          module: "masterSettings",
           method: "POST",
           data: {
             employee_category_code: this.state.employee_category_code,

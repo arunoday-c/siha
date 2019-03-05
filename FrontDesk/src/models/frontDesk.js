@@ -41,16 +41,23 @@ module.exports = {
           if (patient_details.length > 0) {
             let hims_d_patient_id = patient_details[0]["hims_d_patient_id"];
 
+            // "SELECT 0 radioselect, `hims_f_patient_visit_id`, `patient_id`,`visit_code`,`visit_status`\
+            //   , `visit_type`, `visit_date`, `department_id`, `sub_department_id`\
+            //   , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
+            //   , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`, `no_free_visit`,\
+            //   `visit_expiery_date`,`visit_status`\
+            //    FROM `hims_f_patient_visit` WHERE `record_status`='A' AND \
+            //    patient_id=? ORDER BY hims_f_patient_visit_id desc ",
             _mysql
               .executeQuery({
                 query:
-                  "SELECT 0 radioselect, `hims_f_patient_visit_id`, `patient_id`,`visit_code`,`visit_status`\
-              , `visit_type`, `visit_date`, `department_id`, `sub_department_id`\
-              , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
-              , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`, `no_free_visit`,\
-              `visit_expiery_date`,`visit_status`\
-               FROM `hims_f_patient_visit` WHERE `record_status`='A' AND \
-               patient_id=? ORDER BY hims_f_patient_visit_id desc ",
+                  "SELECT 0 radioselect,`hims_f_patient_visit_id`, `patient_id`,`visit_code`,`visit_status`\
+                , `visit_type`, `visit_date`, hims_f_patient_visit.`department_id`, hims_f_patient_visit.`sub_department_id`\
+                , `doctor_id`, `maternity_patient`, `is_mlc`, `mlc_accident_reg_no`\
+                , `mlc_police_station`, `mlc_wound_certified_date`, `insured`, `sec_insured`, `no_free_visit`,\
+                `visit_expiery_date`,`visit_status`,`sub_department_name`,`full_name`\
+                FROM `hims_f_patient_visit`, hims_d_sub_department SD, hims_d_employee E  WHERE hims_f_patient_visit.`record_status`='A' AND hims_f_patient_visit.sub_department_id = SD.hims_d_sub_department_id AND\
+                 doctor_id =E.hims_d_employee_id AND patient_id=?  ORDER BY hims_f_patient_visit_id desc",
                 values: [hims_d_patient_id],
                 printQuery: true
               })
