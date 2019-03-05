@@ -162,8 +162,6 @@ class ValidateBills extends PureComponent {
         callBack(text);
       },
       onRowSelect: row => {
-        
-
         this.setState({
           icd_code: row.icd_code,
           hims_d_icd_id: row.hims_d_icd_id
@@ -220,6 +218,7 @@ class ValidateBills extends PureComponent {
   // getServices(id) {
   //   algaehApiCall({
   //     uri: "/serviceType/getService",
+  //     module: "masterSettings",
   //     method: "GET",
   //     data: { service_type_id: id },
   //     onSuccess: res => {
@@ -241,6 +240,7 @@ class ValidateBills extends PureComponent {
   // getServiceType() {
   //   algaehApiCall({
   //     uri: "/serviceType",
+  //     module: "masterSettings",
   //     method: "GET",
   //     onSuccess: res => {
   //       if (res.data.success) {

@@ -321,6 +321,7 @@ const getUnitCost = ($this, context, serviceid) => {
   if ($this.state.insured === "N") {
     $this.props.getServicesCost({
       uri: "/serviceType/getService",
+      module: "masterSettings",
       method: "GET",
       data: { hims_d_services_id: serviceid },
       redux: {

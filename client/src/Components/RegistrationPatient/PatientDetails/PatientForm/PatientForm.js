@@ -117,7 +117,8 @@ class AddPatientForm extends PureComponent {
       this.props.visatypes.length === 0
     ) {
       this.props.getVisatypes({
-        uri: "/masters/get/visa",
+        uri: "/visaType/getVisaMaster",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "VISA_GET_DATA",

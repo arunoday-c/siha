@@ -14,7 +14,7 @@ const texthandle = ($this, e) => {
 
 const getHospotalServices = $this => {
   let inputObj = {};
-  
+
   if ($this.state.service_name !== null) {
     inputObj = { hims_d_services_id: $this.state.service_name };
   }
@@ -31,6 +31,7 @@ const getHospotalServices = $this => {
 
   $this.props.getServices({
     uri: "/serviceType/getService",
+    module: "masterSettings",
     method: "GET",
     data: inputObj,
     redux: {

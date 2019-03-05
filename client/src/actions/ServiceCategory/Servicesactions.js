@@ -9,6 +9,7 @@ export function getServices(dataValue) {
           ? "/serviceType/getService?service_type_id=" + dataValue
           : "/serviceType/getService",
       method: "GET",
+      module: "masterSettings",
       onSuccess: response => {
         if (response.data.success === true) {
           dispatch({

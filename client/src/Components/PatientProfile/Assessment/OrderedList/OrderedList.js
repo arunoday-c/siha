@@ -44,9 +44,7 @@ class OrderedList extends PureComponent {
             type: "ORDER_SERVICES_GET_DATA",
             mappingName: "orderedList"
           },
-          afterSuccess: data => {
-            
-          }
+          afterSuccess: data => {}
         });
       }
     );
@@ -65,6 +63,7 @@ class OrderedList extends PureComponent {
     ) {
       this.props.getServiceTypes({
         uri: "/serviceType",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVIES_TYPES_GET_DATA",
@@ -79,6 +78,7 @@ class OrderedList extends PureComponent {
     ) {
       this.props.getServices({
         uri: "/serviceType/getService",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "SERVICES_GET_DATA",
@@ -97,9 +97,7 @@ class OrderedList extends PureComponent {
         type: "ORDER_SERVICES_GET_DATA",
         mappingName: "orderedList"
       },
-      afterSuccess: data => {
-        
-      }
+      afterSuccess: data => {}
     });
   }
 
@@ -165,7 +163,6 @@ class OrderedList extends PureComponent {
                     fieldName: "services_id",
                     label: <AlgaehLabel label={{ fieldName: "services_id" }} />,
                     displayTemplate: row => {
-                      
                       let display =
                         this.props.serviceslist === undefined
                           ? []

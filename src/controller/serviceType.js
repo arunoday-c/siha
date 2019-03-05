@@ -2,10 +2,10 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import {
-  getServiceType,
-  getServices,
-  addServices,
-  updateServices
+  getServiceType, //Done
+  getServices, //Done
+  addServices, //Done
+  updateServices //Done
 } from "../model/serviceTypes";
 export default ({ config, db }) => {
   let api = Router();

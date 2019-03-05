@@ -140,6 +140,7 @@ export default class AlgaehAutoSearch extends Component {
           value={value}
           name={this.props.name}
           resultRenderer={this.generateTemplate.bind(this)}
+          {...this.props.others}
         />
       </div>
     );
