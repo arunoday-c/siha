@@ -20,7 +20,6 @@ const LoadSalaryPayment = ($this, e) => {
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadSalary'",
     onSuccess: () => {
-      debugger;
       AlgaehLoader({ show: true });
       let inputObj = {
         year: $this.state.year,
@@ -34,14 +33,13 @@ const LoadSalaryPayment = ($this, e) => {
       if ($this.state.sub_department_id !== null) {
         inputObj.sub_department_id = $this.state.sub_department_id;
       }
-      debugger;
+
       algaehApiCall({
         uri: "/salary/getSalaryProcessToPay",
         module: "hrManagement",
         data: inputObj,
         method: "GET",
         onSuccess: response => {
-          debugger;
           if (response.data.result.length > 0) {
             $this.setState({
               salary_payment: response.data.result
@@ -111,8 +109,6 @@ const ClearData = $this => {
 };
 
 const PaySalary = $this => {
-  debugger;
-
   let _salarypayment = Enumerable.from($this.state.salary_payment)
     .where(w => w.select_to_pay === "Y")
     .toArray();
@@ -129,7 +125,6 @@ const PaySalary = $this => {
     data: inputObj,
     method: "PUT",
     onSuccess: response => {
-      debugger;
       $this.setState({
         paysalaryBtn: true
       });
@@ -150,7 +145,6 @@ const PaySalary = $this => {
 };
 
 const selectToPay = ($this, row, e) => {
-  debugger;
   let _salarypayment = $this.state.salary_payment;
   let paysalaryBtn = true;
   if (e.target.checked === true) {

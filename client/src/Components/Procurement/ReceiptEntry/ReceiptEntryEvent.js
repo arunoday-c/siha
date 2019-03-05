@@ -429,7 +429,6 @@ const getData = $this => {
 };
 
 const PostReceiptEntry = $this => {
-  debugger;
   $this.state.posted = "Y";
   $this.state.transaction_type = "REC";
   $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;

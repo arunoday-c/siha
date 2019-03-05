@@ -22,7 +22,6 @@ const getCtrlCode = ($this, docNumber) => {
     data: { sales_return_number: docNumber },
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         let data = response.data.records;
         data.saveEnable = true;
         data.patient_payable_h = data.patient_payable;

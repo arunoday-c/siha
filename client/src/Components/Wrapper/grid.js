@@ -569,7 +569,7 @@ class DataGrid extends Component {
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
-    // debugger;
+    
     if (nextProps.uiUpdate !== undefined) {
       return nextState.uiUpdate;
     }

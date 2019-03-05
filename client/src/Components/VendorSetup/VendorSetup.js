@@ -77,6 +77,7 @@ class VendorSetup extends Component {
   getAllVendors() {
     algaehApiCall({
       uri: "/vendor/getVendorMaster",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -132,6 +133,7 @@ class VendorSetup extends Component {
 
         algaehApiCall({
           uri: uri,
+          module: "masterSettings",
           method: method,
           data: sen_data,
           onSuccess: response => {
@@ -213,6 +215,7 @@ class VendorSetup extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/vendor/deleteVendorMaster",
+          module: "masterSettings",
           data: {
             hims_d_vendor_id: data.hims_d_vendor_id
           },
@@ -607,7 +610,8 @@ class VendorSetup extends Component {
                 className="btn btn-primary btn-circle active"
                 onClick={() => {
                   this.setState({
-                    openModal: true
+                    openModal: true,
+                    btn_txt: "ADD"
                   });
                 }}
               >

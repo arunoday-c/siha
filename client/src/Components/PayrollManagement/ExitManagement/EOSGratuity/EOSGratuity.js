@@ -147,7 +147,6 @@ class EOSGratuity extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            debugger;
             if (res.data.result.endofServexit) {
               this.setState({
                 loading: false,

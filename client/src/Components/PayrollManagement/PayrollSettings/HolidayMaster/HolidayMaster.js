@@ -207,7 +207,6 @@ export default class HolidayMaster extends Component {
             holiday_description: this.state.holiday_description
           },
           onSuccess: res => {
-            debugger;
             if (res.data.success) {
               this.clearHolidayState();
               swalMessage({

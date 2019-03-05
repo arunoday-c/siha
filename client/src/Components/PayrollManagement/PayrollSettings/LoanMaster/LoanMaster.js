@@ -146,7 +146,6 @@ class LoanMaster extends Component {
           },
           method: "PUT",
           onSuccess: response => {
-            debugger;
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",

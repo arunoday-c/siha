@@ -18,7 +18,6 @@ class ProjectAssign extends Component {
   }
 
   projectHandler(data, e) {
-    debugger;
     this.setState(data);
   }
 

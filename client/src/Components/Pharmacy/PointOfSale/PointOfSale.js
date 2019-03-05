@@ -8,7 +8,7 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
+// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   ClearData,
@@ -107,8 +107,6 @@ class PointOfSale extends Component {
       },
       method: "GET",
       onSuccess: response => {
-        debugger;
-
         if (response.data.records.selectedValue !== undefined) {
           IOputs.location_id = response.data.records.selectedValue;
         }
@@ -120,8 +118,6 @@ class PointOfSale extends Component {
           },
           method: "GET",
           onSuccess: response => {
-            debugger;
-
             if (response.data.records.selectedValue !== undefined) {
               IOputs.location_type = response.data.records.selectedValue;
             }
@@ -179,7 +175,6 @@ class PointOfSale extends Component {
   // }
 
   onKeyPress(e) {
-    debugger;
     if (e.ctrlKey && e.keyCode === 9) {
       const element = ReactDOM.findDOMNode(
         document.getElementById("root")

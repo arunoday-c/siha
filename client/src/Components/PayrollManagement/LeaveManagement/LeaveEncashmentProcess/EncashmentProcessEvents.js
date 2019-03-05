@@ -26,14 +26,13 @@ const LoadEncashment = ($this, e) => {
         employee_id: $this.state.employee_id,
         year: $this.state.year
       };
-      debugger;
+
       algaehApiCall({
         uri: "/encashmentprocess/getEncashmentToProcess",
         module: "hrManagement",
         data: inputObj,
         method: "GET",
         onSuccess: response => {
-          debugger;
           if (response.data.result.length > 0) {
             let data = response.data.result[0];
             if (data.Exists) {

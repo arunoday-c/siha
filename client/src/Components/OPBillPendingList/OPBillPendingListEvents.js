@@ -16,7 +16,6 @@ const getBillPatientList = $this => {
   if ($this.state.patient_id !== null) {
     inputobj.patient_id = $this.state.patient_id;
   }
-  debugger;
 
   $this.props.getBillPatientList({
     uri: "/opBilling/getPednigBills",

@@ -17,7 +17,6 @@ const texthandle = ($this, e) => {
 };
 
 const timetexthandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let diff_hour = null;
@@ -119,7 +118,6 @@ const getOvertimeGroups = $this => {
     },
     method: "GET",
     onSuccess: res => {
-      debugger;
       if (res.data.success) {
         $this.setState({
           ot_calc_value: res.data.records[0].working_day_hour,
@@ -145,7 +143,6 @@ const getOptions = $this => {
     module: "hrManagement",
     onSuccess: res => {
       if (res.data.success) {
-        debugger;
         $this.setState({ overtime_type: res.data.result[0].overtime_type });
       }
     },
@@ -159,8 +156,6 @@ const getOptions = $this => {
 };
 
 const CalculateAdd = $this => {
-  debugger;
-
   if (
     $this.state.d_ot_hours === null &&
     $this.state.d_weekoff_ot_hours === null &&
@@ -295,7 +290,6 @@ const getHolidayMaster = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  debugger;
   let overtime_date = moment(ctrl).format("YYYY-MM-DD");
   let type = null;
   let holiday_data = Enumerable.from($this.state.holidays)
@@ -335,7 +329,7 @@ const InsertOTManagement = ($this, e) => {
   //   querySelector: "data-validate='processData'",
   //   onSuccess: () => {
   AlgaehLoader({ show: true });
-  debugger;
+
   let inputObj = $this.state;
   delete inputObj.holidays;
   algaehApiCall({

@@ -131,7 +131,7 @@ class SalaryProcessing extends Component {
         .format("DD-MM-YYYY");
 
     let allYears = getYears();
-    // debugger;
+    
     return (
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">

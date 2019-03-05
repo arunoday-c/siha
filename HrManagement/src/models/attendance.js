@@ -966,9 +966,9 @@ module.exports = {
             query:
               "INSERT INTO `hims_f_attendance_regularize` (regularization_code,employee_id,attendance_date,\
             login_date,logout_date,\
-            punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
+            punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason, regularize_status,\
             created_by,created_date,updated_by,updated_date)\
-            VALUE(?,?,date(?),date(?),date(?),?,?,?,?,?,?,?,?,?)",
+            VALUE(?,?,date(?),date(?),date(?),?,?,?,?,?,?,?,?,?,?)",
             values: [
               numGenReg[0],
               input.employee_id,
@@ -980,6 +980,7 @@ module.exports = {
               input.regularize_in_time,
               input.regularize_out_time,
               input.regularization_reason,
+              input.regularize_status ? input.regularize_status : "NFD" ,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -1027,7 +1028,7 @@ module.exports = {
             login_date,logout_date,\
             punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
             created_by,created_date,updated_by,updated_date)\
-            VALUE(?,date(?),date(?),date(?),?,?,?,?,?,?,?,?,?)",
+            VALUE(?,date(?),?,date(?),date(?),?,?,?,?,?,?,?,?,?)",
             values: [
               
               input.employee_id,
@@ -3624,6 +3625,8 @@ module.exports = {
                             let actual_hours = 0;
                             let actual_mins = 0;
 
+
+
                             if (shiftData["shift_time"] > 0) {
                               actual_hours = shiftData.shift_time
                                 .toString()
@@ -3635,6 +3638,8 @@ module.exports = {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
                             }
+                            
+
 
                             utilities.logger().log("i ", date_range[i]);
 
@@ -3700,9 +3705,7 @@ module.exports = {
                                 })
                             );
                           }
-                          // utilities
-                          //   .logger()
-                          //   .log("biometricData single emp", biometricData);
+                        
                           insertTimeSheet(
                             returnQry,
                             biometricData,
@@ -4275,7 +4278,7 @@ module.exports = {
           query: `select employee_id,attendance_date,attendance_date as login_date,\
             out_date as logout_date,in_time as punch_in_time,\
             out_time as punch_out_time,status from hims_f_daily_time_sheet where hospital_id=? and  \
-             date(attendance_date)>=date(?) and date(out_date) <=date(?) \
+             date(attendance_date)>=date(?) and date(attendance_date) <=date(?) \
              and (status='EX' or status='AB') ${employee_id};`,
           values: [input.hospital_id, input.from_date, input.to_date],
           printQuery: true
@@ -4564,7 +4567,7 @@ module.exports = {
                 });
               }
 
-              utilities.logger().log("dailyAttendance: ", dailyAttendance);
+             
 
               const insurtColumns = [
                 "employee_id",

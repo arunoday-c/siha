@@ -83,7 +83,7 @@ const datehandle = ($this, ctrl, e) => {
 
 const getSampleCollectionDetails = $this => {
   let inputobj = {};
-  debugger;
+
   if ($this.state.from_date !== null) {
     inputobj.from_date = moment($this.state.from_date).format(
       Options.dateFormatYear
@@ -104,16 +104,14 @@ const getSampleCollectionDetails = $this => {
   if ($this.state.proiorty !== null) {
     inputobj.test_type = $this.state.proiorty;
   }
-  debugger;
+
   algaehApiCall({
     uri: "/laboratory/getLabOrderedServices",
     module: "laboratory",
     method: "GET",
     data: inputobj,
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
-        debugger;
         let sample_collection = Enumerable.from(response.data.records)
           .groupBy("$.visit_id", null, (k, g) => {
             let firstRecordSet = Enumerable.from(g).firstOrDefault();
@@ -154,7 +152,7 @@ const getSampleCollectionDetails = $this => {
   //     mappingName: "samplecollection"
   //   },
   //   afterSuccess: data => {
-  //     debugger;
+  //
   //     let sample_collection = Enumerable.from(data)
   //       .groupBy("$.visit_id", null, (k, g) => {
   //         let firstRecordSet = Enumerable.from(g).firstOrDefault();

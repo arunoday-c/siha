@@ -14,7 +14,6 @@ export default function ProjectMappingEvents() {
     },
 
     addDivisionProjectEvent: $this => {
-      debugger;
       const data_exit = Enumerable.from($this.state.division_project)
         .where(
           w =>
@@ -118,7 +117,6 @@ function getDivisionProjectApi($this) {
     method: "GET",
     onSuccess: res => {
       if (res.data.success) {
-        debugger;
         $this.setState({
           division_project: res.data.records
         });

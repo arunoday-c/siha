@@ -1295,7 +1295,7 @@ class Dental extends Component {
   }
 
   loadDentalTreatment(data) {
-    debugger;
+    
     data !== undefined
       ? this.setState(
           {

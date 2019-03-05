@@ -29,7 +29,9 @@ class ApplyLeave extends Component {
       from_leave_session: props.leave.from_session
         ? props.leave.from_session
         : null,
-      to_leave_session: props.leave.to_session ? props.leave.to_session : null
+      to_leave_session: props.leave.to_session ? props.leave.to_session : null,
+      absent_id: props.leave.absent_id ? props.leave.absent_id : null,
+      leave_from: props.leave.leave_from ? props.leave.leave_from : null
     };
     this.getLeaveTypes();
     this.getEmployees();
@@ -426,6 +428,8 @@ class ApplyLeave extends Component {
             to_leave_session: this.state.to_leave_session,
             total_applied_days: this.state.total_applied_days,
             remarks: this.state.remarks,
+            absent_id: this.state.absent_id,
+            leave_from: this.state.leave_from,
             ...this.state.extra
           },
           onSuccess: res => {

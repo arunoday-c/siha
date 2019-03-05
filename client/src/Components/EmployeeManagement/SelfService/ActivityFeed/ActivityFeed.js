@@ -60,13 +60,24 @@ export default class ActivityFeed extends Component {
             pageDisplay: type,
             regularize: data
           }
+        : type === "absent"
+        ? {
+            pageDisplay: "AttendanceRegularization",
+            regularize: {
+              login_date: data.absent_date,
+              logout_date: data.absent_date,
+              absent_id: data.hims_f_absent_id
+            }
+          }
         : {
             pageDisplay: type,
             leave: {
               from_date: data.absent_date,
               to_date: data.absent_date,
               from_session: "FD",
-              to_session: "FD"
+              to_session: "FD",
+              absent_id: data.hims_f_absent_id,
+              leave_from: "AB"
             }
           };
 
@@ -78,6 +89,7 @@ export default class ActivityFeed extends Component {
     this.setState({ ...this.state, ...InputOutput });
     this.getActivityFeed();
   }
+
   render() {
     const regz = this.state.regularization_list;
     const abzs = this.state.absent_list;
@@ -120,92 +132,27 @@ export default class ActivityFeed extends Component {
                 <div key={data.hims_f_absent_id} className="feed-item">
                   <div className="feedCntr">
                     <div className="dateUser">
-                      Feb 06, 11:45 AM by <i>Shwetha - HR Administrator</i>
+                      {moment(data.updated_date).format("MMM DD , hh:mm a")} by{" "}
+                      <i>{data.updated_by}</i>
                     </div>
                     <div className="text">
                       Request to
-                      <a
-                        onClick={this.skipTab.bind(
-                          this,
-                          "AttendanceRegularization",
-                          data
-                        )}
-                      >
-                        Regularize Attendance
+                      <a onClick={this.skipTab.bind(this, "absent", data)}>
+                        Regularize Attendance{" "}
                       </a>
                       or
                       <a onClick={this.skipTab.bind(this, "ApplyLeave", data)}>
-                        Apply Leave Attendance
+                        Apply Leave Attendance{" "}
                       </a>
                       for
-                      <span className="reqDate"> 05 Feb 2019</span>
+                      <span className="reqDate">
+                        {" "}
+                        {moment(data.absent_date).format("DD MMM YYYY")}{" "}
+                      </span>
                     </div>
                   </div>
                 </div>
               ))}{" "}
-              {/*               
-              <div className="feed-item">
-                <div className="feedCntr">
-                  <div className="dateUser">
-                    Sep 27, 03:48 PM by <i>Aboobacker Sidhiqe - Manager</i>
-                  </div>
-                  <div className="text">
-                    Sick Leave Approved for
-                    <a
-                      onClick={this.skipTab.bind(
-                        this,
-                        "AttendanceRegularization"
-                      )}
-                    >
-                      16 Jan 2018
-                    </a>
-                  </div>
-                </div>
-              </div>
-              <div className="feed-item">
-                <div className="feedCntr">
-                  <div className="dateUser">
-                    Sep 25, 10:32 AM by <i>Shwetha - HR Administrator</i>
-                  </div>
-                  <div className="text">
-                    Company Employee Policy Document Uploaded
-                    <a href="#">Employee Privacy Policy.pdf</a>
-                  </div>
-                </div>
-              </div>
-              <div className="feed-item">
-                <div className="feedCntr">
-                  <div className="dateUser">
-                    Feb 06, 11:45 AM by <i>Shwetha - HR Administrator</i>
-                  </div>
-                  <div className="text">
-                    Request to Regularize Attendance for
-                    <a href="#">05 Feb 2019</a>
-                  </div>
-                </div>
-              </div>
-              <div className="feed-item">
-                <div className="feedCntr">
-                  <div className="dateUser">
-                    Sep 27, 03:48 PM by <i>Aboobacker Sidhiqe - Manager</i>
-                  </div>
-                  <div className="text">
-                    Sick Leave Approved for<a href="#">26 Dec 2018</a>
-                  </div>
-                </div>
-              </div>
-              <div className="feed-item">
-                <div className="feedCntr">
-                  <div className="dateUser">
-                    Sep 25, 10:32 AM by <i>Shwetha - HR Administrator</i>
-                  </div>
-                  <div className="text">
-                    Company Employee Policy Document Uploaded
-                    <a href="#">Employee Privacy Policy.pdf</a>
-                  </div>
-                </div>
-              </div>
-             */}
             </div>
           </div>
         </div>

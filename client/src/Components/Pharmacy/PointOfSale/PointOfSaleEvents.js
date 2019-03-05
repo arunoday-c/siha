@@ -2,6 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import ReactDOM from "react-dom";
 // import Enumerable from "linq";
 import POSIOputs from "../../../Models/POS";
 import {
@@ -133,7 +134,6 @@ const getPatientDetails = ($this, output) => {
 };
 
 const ClearData = ($this, e) => {
-  debugger;
   let IOputs = POSIOputs.inputParam();
 
   IOputs.patient_payable_h = 0;
@@ -162,7 +162,6 @@ const ClearData = ($this, e) => {
     },
     method: "GET",
     onSuccess: response => {
-      debugger;
       if (response.data.records.selectedValue !== undefined) {
         IOputs.location_id = response.data.records.selectedValue;
       }
@@ -174,11 +173,15 @@ const ClearData = ($this, e) => {
         },
         method: "GET",
         onSuccess: response => {
-          debugger;
           if (response.data.records.selectedValue !== undefined) {
             IOputs.location_type = response.data.records.selectedValue;
           }
-          $this.setState(IOputs);
+          $this.setState(IOputs, () => {
+            const element = ReactDOM.findDOMNode(
+              document.getElementById("root")
+            ).querySelector("input[name='item_id']");
+            element.focus();
+          });
         },
         onFailure: error => {
           swalMessage({
@@ -646,7 +649,6 @@ const LocationchangeTexts = ($this, ctrl, e) => {
   $this.setState(
     { [name]: value, location_type: e.selected.location_type },
     () => {
-      debugger;
       let _screenName = getCookie("ScreenName").replace("/", "");
       algaehApiCall({
         uri: "/userPreferences/save",

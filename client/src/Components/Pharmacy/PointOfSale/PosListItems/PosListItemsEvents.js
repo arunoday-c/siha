@@ -145,7 +145,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e, ctrl) => {
-  debugger;
   let name = ctrl;
   if ($this.state.location_id !== null) {
     if (e.service_id !== null) {
@@ -196,7 +195,8 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   qtyhand: data.locationResult[0].qtyhand,
                   ItemUOM: data.uomResult,
                   Batch_Items: data.locationResult,
-                  addItemButton: false
+                  addItemButton: false,
+                  item_description: e.item_description
                 });
               }
             } else {
@@ -387,7 +387,6 @@ const getUnitCost = ($this, context, serviceid) => {
   }
 };
 const AddItems = ($this, context) => {
-  debugger;
   let itemData = Enumerable.from($this.state.pharmacy_stock_detail)
     .where(
       w =>
@@ -477,6 +476,7 @@ const AddItems = ($this, context) => {
               if (context !== null) {
                 context.updateState({
                   pharmacy_stock_detail: existingservices,
+                  item_description: "",
                   item_id: null,
                   uom_id: null,
                   batchno: null,
@@ -749,119 +749,115 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   //
 
   e = e || ctrl;
-  if (e.target.value !== e.target.oldvalue) {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  // if (e.target.value !== e.target.oldvalue) {
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
-    row[e.target.name] = parseFloat(e.target.value);
-    let inputParam = [
-      {
-        hims_d_services_id: row.service_id,
-        vat_applicable: "Y",
-        unit_cost: row.unit_cost,
-        pharmacy_item: "Y",
-        quantity: row.quantity,
-        discount_amout:
-          e.target.name === "discount_percentage" ||
-          e.target.name === "quantity"
-            ? 0
-            : row.discount_amount,
-        discount_percentage:
-          e.target.name === "discount_amount" ? 0 : row.discount_percentage,
+  row[e.target.name] = parseFloat(e.target.value);
+  let inputParam = [
+    {
+      hims_d_services_id: row.service_id,
+      vat_applicable: "Y",
+      unit_cost: row.unit_cost,
+      pharmacy_item: "Y",
+      quantity: row.quantity,
+      discount_amout:
+        e.target.name === "discount_percentage" || e.target.name === "quantity"
+          ? 0
+          : row.discount_amount,
+      discount_percentage:
+        e.target.name === "discount_amount" ? 0 : row.discount_percentage,
 
-        insured: $this.state.insured,
-        primary_insurance_provider_id: $this.state.insurance_provider_id,
-        primary_network_office_id:
-          $this.state.hims_d_insurance_network_office_id,
-        primary_network_id: $this.state.network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
-      }
-    ];
+      insured: $this.state.insured,
+      primary_insurance_provider_id: $this.state.insurance_provider_id,
+      primary_network_office_id: $this.state.hims_d_insurance_network_office_id,
+      primary_network_id: $this.state.network_id,
+      sec_insured: $this.state.sec_insured,
+      secondary_insurance_provider_id:
+        $this.state.secondary_insurance_provider_id,
+      secondary_network_id: $this.state.secondary_network_id,
+      secondary_network_office_id: $this.state.secondary_network_office_id
+    }
+  ];
 
-    algaehApiCall({
-      uri: "/billing/getBillDetails",
-      module: "billing",
-      method: "POST",
-      cancelRequestId: "getPosDetails",
-      data: inputParam,
-      onSuccess: response => {
-        if (response.data.success) {
-          let data = response.data.records;
+  algaehApiCall({
+    uri: "/billing/getBillDetails",
+    module: "billing",
+    method: "POST",
+    cancelRequestId: "getPosDetails",
+    data: inputParam,
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
 
-          data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
-          data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
+        data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
+        data.billdetails[0].net_extended_cost = data.billdetails[0].net_amout;
 
-          data.billdetails[0].item_id = row.item_id;
-          data.billdetails[0].item_category = row.item_category;
-          data.billdetails[0].expiry_date = row.expiry_date;
-          data.billdetails[0].batchno = row.batchno;
-          data.billdetails[0].uom_id = row.uom_id;
-          data.billdetails[0].discount_amount =
-            data.billdetails[0].discount_amout;
-          extend(row, data.billdetails[0]);
-          pharmacy_stock_detail[row.rowIdx] = row;
+        data.billdetails[0].item_id = row.item_id;
+        data.billdetails[0].item_category = row.item_category;
+        data.billdetails[0].expiry_date = row.expiry_date;
+        data.billdetails[0].batchno = row.batchno;
+        data.billdetails[0].uom_id = row.uom_id;
+        data.billdetails[0].discount_amount =
+          data.billdetails[0].discount_amout;
+        extend(row, data.billdetails[0]);
+        pharmacy_stock_detail[row.rowIdx] = row;
 
-          $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+        $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
-          algaehApiCall({
-            uri: "/billing/billingCalculations",
-            module: "billing",
-            method: "POST",
-            data: { billdetails: pharmacy_stock_detail },
-            onSuccess: response => {
-              if (response.data.success) {
-                let data = response.data.records;
+        algaehApiCall({
+          uri: "/billing/billingCalculations",
+          module: "billing",
+          method: "POST",
+          data: { billdetails: pharmacy_stock_detail },
+          onSuccess: response => {
+            if (response.data.success) {
+              let data = response.data.records;
 
-                data.patient_payable_h =
-                  data.patient_payable || $this.state.patient_payable;
-                data.sub_total = data.sub_total_amount || $this.state.sub_total;
-                data.patient_responsibility =
-                  data.patient_res || $this.state.patient_responsibility;
-                data.company_responsibility =
-                  data.company_res || $this.state.company_responsibility;
+              data.patient_payable_h =
+                data.patient_payable || $this.state.patient_payable;
+              data.sub_total = data.sub_total_amount || $this.state.sub_total;
+              data.patient_responsibility =
+                data.patient_res || $this.state.patient_responsibility;
+              data.company_responsibility =
+                data.company_res || $this.state.company_responsibility;
 
-                data.company_payable =
-                  data.company_payble || $this.state.company_payable;
-                data.sec_company_responsibility =
-                  data.sec_company_res ||
-                  $this.state.sec_company_responsibility;
-                data.sec_company_payable =
-                  data.sec_company_paybale || $this.state.sec_company_payable;
+              data.company_payable =
+                data.company_payble || $this.state.company_payable;
+              data.sec_company_responsibility =
+                data.sec_company_res || $this.state.sec_company_responsibility;
+              data.sec_company_payable =
+                data.sec_company_paybale || $this.state.sec_company_payable;
 
-                data.copay_amount =
-                  data.copay_amount || $this.state.copay_amount;
-                data.sec_copay_amount =
-                  data.sec_copay_amount || $this.state.sec_copay_amount;
-                data.addItemButton = false;
-                data.saveEnable = false;
-                if (context !== null) {
-                  context.updateState({
-                    ...data,
-                    pharmacy_stock_detail: pharmacy_stock_detail
-                  });
-                }
+              data.copay_amount = data.copay_amount || $this.state.copay_amount;
+              data.sec_copay_amount =
+                data.sec_copay_amount || $this.state.sec_copay_amount;
+              data.addItemButton = false;
+              data.saveEnable = false;
+              if (context !== null) {
+                context.updateState({
+                  ...data,
+                  pharmacy_stock_detail: pharmacy_stock_detail
+                });
               }
-            },
-            onFailure: error => {
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
             }
-          });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
         });
       }
-    });
-  }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+  // }
 };
 
 const adjustadvance = ($this, context, ctrl, e) => {
@@ -1017,6 +1013,7 @@ const onchangegridcol = ($this, context, row, e) => {
 const qtyonchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
   if (value <= 0) {
     swalMessage({
       title: "Quantity cannot be less than or equal to Zero",

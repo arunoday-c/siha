@@ -201,7 +201,7 @@ class SelfPersonalDetails extends Component {
     });
   }
   updateEmployeeWorkExperience(data) {
-    debugger;
+    
     algaehApiCall({
       uri: "/employee/updateEmployeeWorkExperience",
       module: "hrManagement",
@@ -217,7 +217,7 @@ class SelfPersonalDetails extends Component {
         hims_d_employee_experience_id: data.hims_d_employee_experience_id
       },
       onSuccess: res => {
-        debugger;
+        
         if (res.data.success) {
           swalMessage({
             title: "Record updated successfully",
@@ -675,7 +675,7 @@ class SelfPersonalDetails extends Component {
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
-        debugger;
+        
         if (res.data.success) {
           this.setState({
             family_details: res.data.records

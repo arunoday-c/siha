@@ -57,7 +57,7 @@ const AddEarnComponent = ($this, e) => {
     onSuccess: () => {
       let earningComponents = $this.state.earningComponents;
       let insertearnComp = $this.state.insertearnComp;
-      debugger;
+
       const _earnComponent = Enumerable.from(earningComponents)
         .where(w => w.earnings_id === $this.state.earning_id)
         .any();
@@ -273,7 +273,6 @@ const deleteEarningComponent = ($this, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-      debugger;
       let deleteearnComp = $this.state.deleteearnComp;
       let insertearnComp = $this.state.insertearnComp;
       let earningComponents = $this.state.earningComponents;
@@ -319,7 +318,7 @@ const updateEarningComponent = ($this, row) => {
   let insertearnComp = $this.state.insertearnComp;
   let earningComponents = $this.state.earningComponents;
   let Updateobj = {};
-  debugger;
+
   if (row.hims_d_employee_earnings_id !== undefined) {
     Updateobj = {
       hims_d_employee_earnings_id: row.hims_d_employee_earnings_id,
@@ -376,7 +375,6 @@ const deleteDeductionComponent = ($this, row) => {
     cancelButtonText: "No"
   }).then(willDelete => {
     if (willDelete.value) {
-      debugger;
       let insertDeductionComp = $this.state.insertDeductionComp;
       let deductioncomponents = $this.state.deductioncomponents;
       let deleteDeductionComp = $this.state.deleteDeductionComp;

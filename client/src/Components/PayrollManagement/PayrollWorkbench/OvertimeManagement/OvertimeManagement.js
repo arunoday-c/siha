@@ -41,7 +41,6 @@ class OvertimeManagement extends Component {
     getOptions(this, this);
   }
   render() {
-    debugger;
     let allYears = getYears();
     return (
       <div className="ot_mgmt">
@@ -113,7 +112,8 @@ class OvertimeManagement extends Component {
               isImp: true
             }}
             selector={{
-              sort:"off",name: "month",
+              sort: "off",
+              name: "month",
               className: "select-fld",
               value: this.state.month,
               dataSource: {

@@ -91,7 +91,6 @@ const getAnalytes = $this => {
     method: "GET",
     data: { order_id: $this.state.hims_f_lab_order_id },
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         let data = response.data.records;
         for (let i = 0; i < data.length; i++) {
