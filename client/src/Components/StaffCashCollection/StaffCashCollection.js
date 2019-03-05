@@ -253,6 +253,7 @@ class StaffCashCollection extends Component {
   getShifts() {
     algaehApiCall({
       uri: "/shiftAndCounter/getShiftMaster",
+      module: "masterSettings",
       data: { shift_status: "A" },
       cancelRequestId: "getShiftMaster1",
       method: "GET",

@@ -177,6 +177,7 @@ const getCashiersAndShiftMAP = $this => {
 
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",
+    module: "masterSettings",
     method: "GET",
     data: { year: year, month: month, for: "T" },
     onSuccess: response => {

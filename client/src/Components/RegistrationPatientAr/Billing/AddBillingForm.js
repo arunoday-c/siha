@@ -59,6 +59,7 @@ class AddBillingForm extends Component {
     if (this.props.shifts === undefined || this.props.shifts.length === 0) {
       this.props.getShifts({
         uri: "/shiftAndCounter/getShiftMaster",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "CTRY_GET_DATA",
@@ -70,6 +71,7 @@ class AddBillingForm extends Component {
     if (this.props.counters === undefined || this.props.counters.length === 0) {
       this.props.getCounters({
         uri: "/shiftAndCounter/getCounterMaster",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "CTRY_GET_DATA",

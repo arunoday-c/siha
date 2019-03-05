@@ -30,6 +30,7 @@ class Counter extends Component {
   getCounters() {
     algaehApiCall({
       uri: "/shiftAndCounter/getCounterMaster",
+      module: "masterSettings",
       method: "GET",
       data: {},
       onSuccess: response => {
@@ -59,6 +60,7 @@ class Counter extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/shiftAndCounter/addCounterMaster",
+          module: "masterSettings",
           method: "POST",
           data: {
             counter_code: this.state.counter_code,
@@ -100,6 +102,7 @@ class Counter extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/shiftAndCounter/updateCounterMaster",
+          module: "masterSettings",
           data: {
             counter_code: data.counter_code,
             record_status: "I",
@@ -138,6 +141,7 @@ class Counter extends Component {
   updatecounters(data) {
     algaehApiCall({
       uri: "/shiftAndCounter/updateCounterMaster",
+      module: "masterSettings",
       data: {
         counter_code: data.counter_code,
         record_status: "A",
