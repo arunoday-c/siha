@@ -493,14 +493,22 @@ class LeaveAuthDetail extends Component {
                               displayTemplate: row => {
                                 return (
                                   <span>
-                                    {row.authorized === "Y" ? "Yes" : "No"}
+                                    {row.authorized3 === "Y" &&
+                                    row.authorized2 === "Y" &&
+                                    row.authorized1 === "Y"
+                                      ? "Yes"
+                                      : "No"}
                                   </span>
                                 );
                               },
                               editorTemplate: row => {
                                 return (
                                   <span>
-                                    {row.authorized === "Y" ? "Yes" : "No"}
+                                    {row.authorized3 === "Y" &&
+                                    row.authorized2 === "Y" &&
+                                    row.authorized1 === "Y"
+                                      ? "Yes"
+                                      : "No"}
                                   </span>
                                 );
                               }

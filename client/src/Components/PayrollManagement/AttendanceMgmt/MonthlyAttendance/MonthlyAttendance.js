@@ -542,6 +542,21 @@ export default class MonthlyAttendance extends Component {
                     }
                   },
                   {
+                    fieldName: "shortage_hours",
+                    label: (
+                      <AlgaehLabel label={{ forceLabel: "Shortage Hours" }} />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.shortage_hours
+                            ? row.shortage_hours + " Hrs"
+                            : "00:00 Hrs"}
+                        </span>
+                      );
+                    }
+                  },
+                  {
                     fieldName: "ot_weekoff_hours",
                     label: (
                       <AlgaehLabel label={{ forceLabel: "Week Off OT" }} />
@@ -564,21 +579,6 @@ export default class MonthlyAttendance extends Component {
                         <span>
                           {row.ot_holiday_hours
                             ? row.ot_holiday_hours + " Hrs"
-                            : "00:00 Hrs"}
-                        </span>
-                      );
-                    }
-                  },
-                  {
-                    fieldName: "shortage_hours",
-                    label: (
-                      <AlgaehLabel label={{ forceLabel: "Shortage Hours" }} />
-                    ),
-                    displayTemplate: row => {
-                      return (
-                        <span>
-                          {row.shortage_hours
-                            ? row.shortage_hours + " Hrs"
                             : "00:00 Hrs"}
                         </span>
                       );

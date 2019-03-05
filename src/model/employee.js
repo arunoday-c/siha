@@ -2921,12 +2921,10 @@ let updateEmployeeEducation = (req, res, next) => {
     ) {
       db.getConnection((error, connection) => {
         connection.query(
-          "update hims_d_employee_education set  hims_d_employee_education_id=?,\
+          "update hims_d_employee_education set \
           employee_id=?,qualification=?,qualitfication_type=?,year=?,university=?,\
-          updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_education_id = ?",
-
+          updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_employee_education_id=?",
           [
-            input.hims_d_employee_education_id,
             input.employee_id,
             input.qualification,
             input.qualitfication_type,
@@ -2936,6 +2934,7 @@ let updateEmployeeEducation = (req, res, next) => {
             input.updated_by,
             input.hims_d_employee_education_id
           ],
+         
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {

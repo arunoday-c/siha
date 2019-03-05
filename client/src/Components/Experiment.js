@@ -6,7 +6,6 @@ import AlgaehReport from "./Wrapper/printReports";
 import _ from "lodash";
 import FrontDesk from "../Search/FrontDesk.json";
 import AlgaehAutoSearch from "./Wrapper/autoSearch";
-import moment from "moment";
 const services = [
   { service_name: "Consultation", sl_no: 1 },
   { service_name: "Procedure", sl_no: 2 }
@@ -22,6 +21,11 @@ class Experiment extends Component {
     };
 
     console.log("Chunk:", _.chunk(services, 1));
+  }
+
+  clikk(e) {
+    debugger;
+    e.ctrlKey === true ? alert("Under Controll") : alert("Not under Controll");
   }
 
   texthandle(e) {
@@ -155,6 +159,7 @@ class Experiment extends Component {
             Generate Excel File
           </button>
         </div>
+        <button onClick={this.clikk.bind(this)}>TEST</button>
       </div>
     );
   }

@@ -756,8 +756,9 @@ module.exports = {
               input.university,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
-              input.hims_d_employee_experience_id
-            ]
+              input.hims_d_employee_education_id
+            ],
+            printQuery: true
           })
           .then(result => {
             _mysql.releaseConnection();

@@ -23,6 +23,7 @@ export default class EmployeeShiftRostering extends Component {
       hospitals: [],
       copyData: null,
       sendDate: null,
+      sels: [],
       sendRow: null,
       openShiftAssign: false,
       shifts: [],
@@ -40,11 +41,15 @@ export default class EmployeeShiftRostering extends Component {
 
   showModal(row, e) {
     if (e.target.tagName === "TD") {
-      this.setState({
-        sendRow: row,
-        openShiftAssign: true,
-        sendDate: e.currentTarget.getAttribute("date")
-      });
+      if (e.ctrlKey) {
+        e.currentTarget.lastElementChild.firstElementChild.click();
+      } else {
+        this.setState({
+          sendRow: row,
+          openShiftAssign: true,
+          sendDate: e.currentTarget.getAttribute("date")
+        });
+      }
     } else return;
   }
 
@@ -369,6 +374,9 @@ export default class EmployeeShiftRostering extends Component {
                   Paste as Holiday / WeekOff
                 </li>
               ) : null}
+              <li shift={shift} onClick={this.deleteShift.bind(this, shift)}>
+                Delete Shift
+              </li>
             </ul>
             <span>
               {shift.shift_id === 100
@@ -739,7 +747,8 @@ export default class EmployeeShiftRostering extends Component {
         shift_time: this.state.copyData.shift_time,
         sub_department_id: data.sub_id,
         weekoff: this.state.copyData.weekoff,
-        holiday: this.state.copyData.holiday
+        holiday: this.state.copyData.holiday,
+        hospital_id: this.state.hospital_id
       };
 
       algaehApiCall({
