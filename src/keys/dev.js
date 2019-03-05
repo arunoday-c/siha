@@ -23,7 +23,9 @@ export default {
     dateStrings: true,
     insecureAuth: true,
     waitForConnections: true, // Default value.
-    queueLimit: 0 // Unlimited - default value.
+    queueLimit: 0, // Unlimited - default value.
+    supportBigNumbers: true,
+    bigNumberStrings: true
   },
 
   // mysqlDb: {

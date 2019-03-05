@@ -3204,9 +3204,18 @@ module.exports = {
                   standard_hours = options[0]["standard_working_hours"]
                     .toString()
                     .split(".")[0];
-                  standard_mins = options[0]["standard_working_hours"]
+
+                    if (options[0]["standard_working_hours"]
                     .toString()
-                    .split(".")[1];
+                    .split(".")[1] != undefined) {
+                standard_mins = options[0]["standard_working_hours"]
+                .toString()
+                .split(".")[1] ;
+
+                utilities.logger().log("ACT MINS: ", standard_mins);
+                    }
+
+                 
 
                   var sql = require("mssql");
 
@@ -3328,15 +3337,22 @@ module.exports = {
 
                             let actual_hours = 0;
                             let actual_mins = 0;
+                            utilities.logger().log("shiftData: ", shiftData);
                             if (shiftData["shift_time"] > 0) {
                               actual_hours = shiftData.shift_time
                                 .toString()
                                 .split(".")[0];
-                              actual_mins = shiftData.shift_time
-                                .toString()
-                                .split(".")[1]>0?shiftData.shift_time
-                                .toString()
-                                .split(".")[1]:0;
+
+                                if (shiftData.shift_time
+                                  .toString()
+                                  .split(".")[1] != undefined) {
+                                    actual_mins = shiftData.shift_time
+                                    .toString()
+                                    .split(".")[1] ;
+                                   
+                                }
+                               
+                             
                             } else {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
@@ -3441,7 +3457,7 @@ module.exports = {
                                     AllEmployees[i]["date_of_joining"],
                                   exit_date: AllEmployees[i]["exit_date"],
                                   actual_hours: actual_hours,
-                                  actual_minutes: actual_mins,
+                                  actual_minutes: actual_mins ? actual_mins : 0,
                                   expected_out_date: shiftData.shift_end_date,
                                   expected_out_time: shiftData.shift_end_time,
                                   hospital_id: AllEmployees[i]["hospital_id"],
@@ -3472,7 +3488,7 @@ module.exports = {
                                     AllEmployees[i]["date_of_joining"],
                                   exit_date: AllEmployees[i]["exit_date"],
                                   actual_hours: actual_hours,
-                                  actual_minutes: actual_mins,
+                                  actual_minutes: actual_mins ? actual_mins : 0,
                                   expected_out_date: shiftData.shift_end_date,
                                   expected_out_time: shiftData.shift_end_time,
                                   hospital_id: AllEmployees[i]["hospital_id"],
@@ -3515,7 +3531,7 @@ module.exports = {
                                         AllEmployees[i]["date_of_joining"],
                                       exit_date: AllEmployees[i]["exit_date"],
                                       actual_hours: actual_hours,
-                                      actual_minutes: actual_mins,
+                                      actual_minutes: actual_mins ? actual_mins : 0,
                                       expected_out_date:
                                         shiftData.shift_end_date,
                                       expected_out_time:
@@ -3546,7 +3562,7 @@ module.exports = {
                                       AllEmployees[i]["date_of_joining"],
                                     exit_date: AllEmployees[i]["exit_date"],
                                     actual_hours: actual_hours,
-                                    actual_minutes: actual_mins,
+                                    actual_minutes: actual_mins ? actual_mins : 0,
                                     expected_out_date: shiftData.shift_end_date,
                                     expected_out_time: shiftData.shift_end_time,
                                     hospital_id: AllEmployees[i]["hospital_id"],
@@ -3633,9 +3649,18 @@ module.exports = {
                               actual_hours = shiftData.shift_time
                                 .toString()
                                 .split(".")[0];
-                              actual_mins = shiftData.shift_time
-                                .toString()
-                                .split(".")[1];
+
+                                if (shiftData.shift_time
+                                  .toString()
+                                  .split(".")[1] !== undefined) {
+
+                                    actual_mins = shiftData.shift_time
+                                    .toString()
+                                    .split(".")[1] 
+                                }
+                                utilities.logger().log("actual_miadadns:", actual_mins);
+                                utilities.logger().log("shiftData:", shiftData);
+                           
                             } else {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
@@ -3670,7 +3695,7 @@ module.exports = {
                                       AllEmployees[0]["date_of_joining"],
                                     exit_date: AllEmployees[0]["exit_date"],
                                     actual_hours: actual_hours,
-                                    actual_minutes: actual_mins,
+                                    actual_minutes: actual_mins ? actual_mins : 0,
                                     expected_out_date: shiftData.shift_end_date,
                                     expected_out_time: shiftData.shift_end_time,
                                     hospital_id: AllEmployees[0]["hospital_id"],
@@ -3696,7 +3721,7 @@ module.exports = {
                                     AllEmployees[0]["date_of_joining"],
                                   exit_date: AllEmployees[0]["exit_date"],
                                   actual_hours: actual_hours,
-                                  actual_minutes: actual_mins,
+                                  actual_minutes: actual_mins ? actual_mins : 0,
                                   expected_out_date: shiftData.shift_end_date,
                                   expected_out_time: shiftData.shift_end_time,
                                   hospital_id: AllEmployees[0]["hospital_id"],
