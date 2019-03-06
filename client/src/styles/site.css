@@ -576,6 +576,14 @@ body {
   padding-top: 6px;
   right: 0; }
 
+:global .style_Label + h4 {
+  font-size: 1.5em;
+  margin-top: 3px;
+  margin-bottom: 7px; }
+
+:global .style_Label + h6 {
+  font-size: 1.1em; }
+
 label {
   margin-bottom: 0px;
   font-size: 0.8em;
