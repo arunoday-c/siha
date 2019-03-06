@@ -5987,7 +5987,8 @@ function insertTimeSheet(
 
   //ST-whole month ot,shortage calculate
 
-            let month_work_hours=0;
+            let month_actual_hours=0;
+            let month_worked_hours=0;
             let month_shortage_hour=0;
             let month_ot_hour=0;
 
@@ -6038,9 +6039,14 @@ function insertTimeSheet(
 
 
 
-            let month_hr = parseInt(parseInt(total_min) / parseInt(60));
-            let month_min = parseInt(total_min) % parseInt(60);
-            month_work_hours=month_hr+"."+month_min;
+            let month_actual_hr = parseInt(parseInt(total_min) / parseInt(60));
+            let month_actual_min = parseInt(total_min) % parseInt(60);
+            month_actual_hours=month_actual_hr+"."+month_actual_min;
+
+
+            let month_worked_hr = parseInt(parseInt(worked_min) / parseInt(60));
+            let month_worked_min = parseInt(worked_min) % parseInt(60);
+            month_worked_hours=month_worked_hr+"."+month_worked_min;
 
 
 
@@ -6086,7 +6092,8 @@ function insertTimeSheet(
      _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = {outputArray,
-                 month_shortage_hour,month_ot_hour,month_work_hours
+                 month_shortage_hour,month_ot_hour,  month_actual_hours,
+                month_worked_hours
               }
               next();
             });
