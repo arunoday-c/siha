@@ -11,7 +11,8 @@ const CollectSample = ($this, context, row) => {
     sample_id: row.sample_id,
     collected: "Y",
     status: "N",
-    hims_d_hospital_id: 1,
+    hims_d_hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+      .hims_d_hospital_id,
     service_id: row.service_id
   };
 

@@ -341,6 +341,7 @@ class LocationPermission extends Component {
                   onEdit: row => {},
                   onDone: updateLocationPermission.bind(this, this)
                 }}
+                filter={true}
               />
             </div>
           </div>

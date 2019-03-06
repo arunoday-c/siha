@@ -134,6 +134,7 @@ export default class Login extends Component {
     this.setState({ item_id: selector.value });
 
     setCookie("HospitalName", selector.selected.hospital_name);
+    setCookie("HospitalId", selector.value);
   }
   onHospitalClear(name) {
     this.setState({ item_id: null });

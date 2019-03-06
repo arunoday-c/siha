@@ -21,8 +21,8 @@ let getOrganization = (req, res, next) => {
           hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
           CUR.hims_d_currency_id=default_currency " +
           _stringData,
-        values: inputValues,
-        printQuery: true
+        values: inputValues
+        // printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
