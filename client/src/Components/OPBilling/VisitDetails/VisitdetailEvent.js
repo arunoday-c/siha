@@ -13,6 +13,7 @@ const handleChange = ($this, row, context, e) => {
 
   let doctor_name = "";
 
+  debugger;
   let employee_list = Enumerable.from($this.props.deptanddoctors.doctors)
     .where(w => w.employee_id === row.doctor_id)
     .toArray();

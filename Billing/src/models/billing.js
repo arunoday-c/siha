@@ -1,5 +1,5 @@
 import algaehMysql from "algaeh-mysql";
-import algaehUtilities from "algaeh-utilities/utilities";
+// import algaehUtilities from "algaeh-utilities/utilities";
 import appsettings from "algaeh-utilities/appsettings.json";
 import { LINQ } from "node-linq";
 import math from "mathjs";
@@ -11,8 +11,8 @@ module.exports = {
     try {
       let inputParam = { ...req.body };
 
-      const utilities = new algaehUtilities();
-      utilities.logger().log("inputParam Receipt: ", inputParam);
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("inputParam Receipt: ", inputParam);
 
       _mysql
         .executeQuery({
@@ -34,7 +34,7 @@ module.exports = {
           printQuery: true
         })
         .then(headerRcptResult => {
-          utilities.logger().log("headerRcptResult: ", headerRcptResult);
+          // utilities.logger().log("headerRcptResult: ", headerRcptResult);
           if (
             headerRcptResult.insertId != null &&
             headerRcptResult.insertId != ""
@@ -64,10 +64,7 @@ module.exports = {
                 printQuery: true
               })
               .then(RcptDetailsRecords => {
-                utilities
-                  .logger()
-                  .log("RcptDetailsRecords: ", RcptDetailsRecords);
-                if (req.mySQl == null) {
+                if (req.connection == null) {
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
                   req.records = headerRcptResult;
@@ -128,8 +125,8 @@ module.exports = {
         });
       }
 
-      const utilities = new algaehUtilities();
-      utilities.logger().log("inputParam Bill: ", inputParam);
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("inputParam Bill: ", inputParam);
 
       _mysql
         .executeQuery({
@@ -183,7 +180,7 @@ module.exports = {
           printQuery: true
         })
         .then(headerResult => {
-          utilities.logger().log("headerResult Bill: ", headerResult);
+          // utilities.logger().log("headerResult Bill: ", headerResult);
           if (
             headerResult.insertId != null &&
             headerResult.insertId != "" &&
@@ -318,8 +315,8 @@ module.exports = {
               printQuery: true
             })
             .then(detailsRecords => {
-              utilities.logger().log("detailsRecords Bill: ", detailsRecords);
-              if (req.mySQl == null) {
+              // utilities.logger().log("detailsRecords Bill: ", detailsRecords);
+              if (req.connection == null) {
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
                 req.records = headerResult;
@@ -349,10 +346,10 @@ module.exports = {
 
   billingCalculations: (req, res, next) => {
     try {
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       let decimal_places = req.userIdentity.decimal_places;
-      utilities.logger().log("decimal_places: ", decimal_places);
+      // utilities.logger().log("decimal_places: ", decimal_places);
       let hasCalculateall =
         req.body.intCalculateall == undefined ? true : req.body.intCalculateall;
       let inputParam =
@@ -368,66 +365,73 @@ module.exports = {
       let sendingObject = {};
 
       if (hasCalculateall == true) {
-        sendingObject.sub_total_amount = new LINQ(inputParam).Sum(
-          d => d.gross_amount
+        sendingObject.sub_total_amount = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.gross_amount)
         );
-        sendingObject.net_total = new LINQ(inputParam).Sum(d => d.net_amout);
-        sendingObject.discount_amount = new LINQ(inputParam).Sum(
-          d => d.discount_amout
+        sendingObject.net_total = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.net_amout)
         );
-        sendingObject.gross_total = new LINQ(inputParam).Sum(
-          d => d.patient_payable
+        sendingObject.discount_amount = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.discount_amout)
+        );
+        sendingObject.gross_total = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.patient_payable)
         );
 
         // Primary Insurance
-        sendingObject.copay_amount = new LINQ(inputParam).Sum(
-          d => d.copay_amount
+        sendingObject.copay_amount = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.copay_amount)
         );
-        sendingObject.deductable_amount = new LINQ(inputParam).Sum(
-          d => d.deductable_amount
+        sendingObject.deductable_amount = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.deductable_amount)
         );
 
         // Secondary Insurance
-        sendingObject.sec_copay_amount = new LINQ(inputParam).Sum(
-          d => d.sec_copay_amount
+        sendingObject.sec_copay_amount = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.sec_copay_amount)
         );
-        sendingObject.sec_deductable_amount = new LINQ(inputParam).Sum(
-          d => d.sec_deductable_amount
+        sendingObject.sec_deductable_amount = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.sec_deductable_amount)
         );
 
         // Responsibilities
-        sendingObject.patient_res = new LINQ(inputParam).Sum(
-          d => d.patient_resp
+        sendingObject.patient_res = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.patient_resp)
         );
-        sendingObject.company_res = new LINQ(inputParam).Sum(
-          d => d.comapany_resp
+        sendingObject.company_res = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.comapany_resp)
         );
-        sendingObject.sec_company_res = new LINQ(inputParam).Sum(
-          d => d.sec_company_res
+        sendingObject.sec_company_res = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.sec_company_res)
         );
 
         // Tax Calculation
-        sendingObject.total_tax = new LINQ(inputParam).Sum(d => d.total_tax);
-        sendingObject.patient_tax = new LINQ(inputParam).Sum(
-          d => d.patient_tax
+        sendingObject.total_tax = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.total_tax)
         );
-        sendingObject.company_tax = new LINQ(inputParam).Sum(
-          d => d.company_tax
+
+        sendingObject.patient_tax = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.patient_tax)
         );
-        sendingObject.sec_company_tax = new LINQ(inputParam).Sum(
-          d => d.sec_company_tax
+
+        sendingObject.company_tax = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.company_tax)
+        );
+
+        sendingObject.sec_company_tax = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.sec_company_tax)
         );
 
         // Payables
-        sendingObject.patient_payable = new LINQ(inputParam).Sum(
-          d => d.patient_payable
+        sendingObject.patient_payable = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.patient_payable)
         );
 
-        sendingObject.company_payble = new LINQ(inputParam).Sum(
-          d => d.company_payble
+        sendingObject.company_payble = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.company_payble)
         );
-        sendingObject.sec_company_paybale = new LINQ(inputParam).Sum(
-          d => d.sec_company_paybale
+        sendingObject.sec_company_paybale = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.sec_company_paybale)
         );
         // Sheet Level Discount Nullify
         sendingObject.sheet_discount_amount = 0;
@@ -544,8 +548,8 @@ module.exports = {
     try {
       let inputParam = { ...req.body };
 
-      const utilities = new algaehUtilities();
-      utilities.logger().log("inputParam Receipt: ", inputParam);
+      // const utilities = new algaehUtilities();
+      // utilities.logger().log("inputParam Receipt: ", inputParam);
 
       if (
         inputParam.receiptdetails == null ||
@@ -565,13 +569,12 @@ module.exports = {
       } else if (inputParam.pay_type == "P") {
         Module_Name = "REFUND";
       }
-      utilities.logger().log("inputParam pay_type: ", inputParam.pay_type);
+
       _mysql
         .generateRunningNumber({
           modules: [Module_Name]
         })
         .then(generatedNumbers => {
-          utilities.logger().log("generatedNumbers: ", generatedNumbers[0]);
           _mysql
             .executeQuery({
               query:
@@ -593,7 +596,6 @@ module.exports = {
               printQuery: true
             })
             .then(headerRcptResult => {
-              utilities.logger().log("headerRcptResult: ", headerRcptResult);
               if (
                 headerRcptResult.insertId != null &&
                 headerRcptResult.insertId != ""
@@ -621,9 +623,6 @@ module.exports = {
                     printQuery: true
                   })
                   .then(RcptDetailsRecords => {
-                    utilities
-                      .logger()
-                      .log("RcptDetailsRecords: ", RcptDetailsRecords);
                     _mysql
                       .executeQuery({
                         query:
@@ -644,16 +643,8 @@ module.exports = {
                         printQuery: true
                       })
                       .then(Insert_Advance => {
-                        utilities
-                          .logger()
-                          .log("Insert_Advance: ", Insert_Advance[1]);
-
                         let existingAdvance =
                           Insert_Advance[1][0].advance_amount;
-
-                        utilities
-                          .logger()
-                          .log("existingAdvance: ", existingAdvance);
 
                         if (existingAdvance != null) {
                           if (inputParam.transaction_type == "AD") {
@@ -725,11 +716,11 @@ module.exports = {
   },
   getBillDetails: (req, res, next) => {
     try {
-      const utilities = new algaehUtilities();
+      // const utilities = new algaehUtilities();
 
       new Promise((resolve, reject) => {
         try {
-          utilities.logger().log("getBillDetails: ");
+          // utilities.logger().log("getBillDetails: ");
           getBillDetailsFunctionality(req, res, next, resolve);
         } catch (e) {
           reject(e);
@@ -747,13 +738,13 @@ module.exports = {
     console.log("addCashHandover");
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
-    const utilities = new algaehUtilities();
-    utilities.logger().log("addCashHandover ");
+    // const utilities = new algaehUtilities();
+    // utilities.logger().log("addCashHandover ");
 
     try {
       let inputParam = { ...req.body };
 
-      utilities.logger().log("inputParam Cash: ", inputParam);
+      // utilities.logger().log("inputParam Cash: ", inputParam);
       if (
         inputParam.receiptdetails == null ||
         inputParam.receiptdetails.length == 0
@@ -764,8 +755,6 @@ module.exports = {
         );
         next(genErr);
       }
-
-      utilities.logger().log("group_type Cash: ", req.userIdentity.group_type);
 
       if (
         req.userIdentity.group_type == "C" ||
@@ -781,7 +770,6 @@ module.exports = {
             printQuery: true
           })
           .then(checkShiftStatus => {
-            utilities.logger().log("checkShiftStatus: ", checkShiftStatus);
             if (checkShiftStatus.length > 0) {
               hims_f_cash_handover_detail_id =
                 checkShiftStatus[0].hims_f_cash_handover_detail_id;
@@ -809,9 +797,6 @@ module.exports = {
                       printQuery: true
                     })
                     .then(headerCashHandover => {
-                      utilities
-                        .logger()
-                        .log("headerCashHandover: ", headerCashHandover);
                       if (
                         headerCashHandover.insertId != null &&
                         headerCashHandover.insertId != ""
@@ -925,7 +910,7 @@ module.exports = {
                       printQuery: true
                     })
                     .then(updateResult => {
-                      if (req.mySQl == null) {
+                      if (req.connection == null) {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = updateResult;
@@ -954,8 +939,7 @@ module.exports = {
             });
           });
       } else {
-        utilities.logger().log("cahsier: ", "cahsier");
-        if (req.mySQl == null) {
+        if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
             req.records = { mesage: "not a cahsier" };
@@ -986,8 +970,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
     let service_ids = null;
     let questions = "?";
 
-    const utilities = new algaehUtilities();
-    utilities.logger().log("req.body: ", req.body);
+    // const utilities = new algaehUtilities();
 
     if (Array.isArray(req.body)) {
       let len = req.body.length;
@@ -997,7 +980,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
         questions += ",?";
       }
     }
-    utilities.logger().log("service_ids: ", service_ids);
+
     _mysql
       .executeQuery({
         query:
@@ -1010,14 +993,13 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
       })
       .then(result => {
         _mysql.releaseConnection();
-        utilities.logger().log("result: ", result);
+
         let outputArray = [];
         for (let m = 0; m < result.length; m++) {
           let servicesDetails = { ...req.body[m] };
 
           let records = result[m];
 
-          utilities.logger().log("records: ", records);
           req.body[m].service_type_id = result[m].service_type_id;
           req.body[m].services_id = servicesDetails.hims_d_services_id;
 
@@ -1128,7 +1110,6 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
               ? 0
               : servicesDetails.preapp_limit_amount;
 
-          utilities.logger().log("zeroBill: ", zeroBill);
           if (zeroBill === true) {
             let out = {
               hims_f_billing_details_id: null,
@@ -1171,11 +1152,10 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             return;
           }
 
-          utilities.logger().log("Promise: ");
           new Promise((resolve, reject) => {
             try {
-              utilities.logger().log("insured: ", insured);
-              utilities.logger().log("sec_insured: ", sec_insured);
+              // utilities.logger().log("insured: ", insured);
+              // utilities.logger().log("sec_insured: ", sec_insured);
               if (insured == "Y") {
                 // let callInsurance =
 
@@ -1203,14 +1183,14 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             }
           })
             .then(policydtls => {
-              utilities.logger().log("policydtls: ", policydtls);
+              // utilities.logger().log("policydtls: ", policydtls);
               if (
                 covered == "N" ||
                 (pre_approval == "Y" && apprv_status == "RJ")
               ) {
                 insured = "N";
               }
-              utilities.logger().log("policydtls1: ");
+
               if (approval_limit_yesno == "Y") {
                 pre_approval = "Y";
               }
@@ -1219,14 +1199,14 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 pre_approval =
                   policydtls !== null ? policydtls.pre_approval : "N";
               }
-              utilities.logger().log("policydtls2: ");
+
               covered = policydtls !== null ? policydtls.covered : "Y";
 
               icd_code =
                 policydtls.cpt_code !== null
                   ? policydtls.cpt_code
                   : records.cpt_code;
-              utilities.logger().log("policydtls3: ");
+
               if (insured == "Y" && policydtls.covered == "Y") {
                 ser_net_amount = policydtls.net_amount;
                 ser_gross_amt = policydtls.gross_amt;
@@ -1251,15 +1231,14 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 }
                 net_amout = gross_amount - discount_amout;
 
-                utilities.logger().log("policydtls: ", policydtls);
                 //Patient And Company
                 if (policydtls.copay_status == "Y") {
                   copay_amount = policydtls.copay_amt;
                   copay_percentage = (copay_amount / net_amout) * 100;
                 } else {
-                  utilities
-                    .logger()
-                    .log("service_type_id: ", records.service_type_id);
+                  // utilities
+                  //   .logger()
+                  //   .log("service_type_id: ", records.service_type_id);
                   if (
                     appsettings.hims_d_service_type.service_type_id
                       .Consultation == records.service_type_id
@@ -1389,7 +1368,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                     preapp_limit_exceed = "Y";
                   }
                 }
-                utilities.logger().log("patient_payable: ", patient_payable);
+                // utilities.logger().log("patient_payable: ", patient_payable);
                 //If primary and secondary exists
                 if (sec_insured == "Y") {
                   req.body[m].insurance_id =
@@ -1415,14 +1394,13 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                   });
                 }
               } else {
-                utilities.logger().log("policydtls4: ");
                 if (FollowUp === true) {
                   unit_cost =
                     unit_cost != 0 ? unit_cost : records.followup_free_fee;
                 } else {
                   unit_cost = unit_cost != 0 ? unit_cost : records.standard_fee;
                 }
-                utilities.logger().log("policydtls5: ");
+
                 if (conversion_factor != 0) {
                   unit_cost = unit_cost * conversion_factor;
                 }
@@ -1436,7 +1414,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 }
                 net_amout = gross_amount - discount_amout;
                 patient_resp = net_amout;
-                utilities.logger().log("policydtls6: ");
+
                 if (vat_applicable == "Y" && records.vat_applicable == "Y") {
                   patient_tax = math.round(
                     (patient_resp * records.vat_percent) / 100,
@@ -1447,7 +1425,6 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
 
                 // patient_payable = net_amout + patient_tax;
                 patient_payable = math.round(patient_resp + patient_tax, 2);
-                utilities.logger().log("policydtls7: ");
               }
             })
             .then(secpolicydtls => {
@@ -1694,8 +1671,7 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
   try {
     let input = { ...body };
 
-    const utilities = new algaehUtilities();
-    utilities.logger().log("input Insurance: ", input);
+    // const utilities = new algaehUtilities();
 
     _mysql
       .executeQuery({
@@ -1707,7 +1683,6 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
         printQuery: true
       })
       .then(resultOffic => {
-        utilities.logger().log("resultOffic: ", resultOffic);
         if (resultOffic != null && resultOffic[0].price_from == "S") {
           _mysql
             .executeQuery({
@@ -1724,7 +1699,6 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
               printQuery: true
             })
             .then(result_s => {
-              utilities.logger().log("result_s: ", result_s);
               let result = { ...result_s[0], ...resultOffic[0] };
               return resolve(result);
             })
@@ -1751,7 +1725,6 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
               printQuery: true
             })
             .then(result_p => {
-              utilities.logger().log("result_p: ", result_p);
               let result = { ...result_p, ...resultOffic };
               return resolve(result);
             })

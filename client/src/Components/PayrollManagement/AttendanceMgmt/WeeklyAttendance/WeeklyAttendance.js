@@ -12,6 +12,7 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
 import _ from "lodash";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import Enumerable from "linq";
 
 export default class WeeklyAttendance extends Component {
   constructor(props) {
@@ -96,19 +97,33 @@ export default class WeeklyAttendance extends Component {
   }
 
   notifyExceptions() {
-    let _fromDate = this.state.from_date;
-    let _toDate = this.state.to_date;
+    // let _fromDate = this.state.from_date;
+    // let _toDate = this.state.to_date;
 
-    if (this.state.attendance_type === "MW") {
-      let date = this.state.year + "-" + this.state.month + "-01";
+    let a = Enumerable.from(this.state.time_sheet)
+      .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
+      .toArray();
 
-      _fromDate = moment(date)
-        .startOf("month")
-        .format("YYYY-MM-DD");
-      _toDate = moment(date)
-        .endOf("month")
-        .format("YYYY-MM-DD");
-    }
+    let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
+    let _toDate = moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD");
+
+    console.log("DAtes Arary", a);
+    console.log(
+      "from ",
+      moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD")
+    );
+    console.log("to ", moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD"));
+
+    // if (this.state.attendance_type === "MW") {
+    //   let date = this.state.year + "-" + this.state.month + "-01";
+
+    //   _fromDate = moment(date)
+    //     .startOf("month")
+    //     .format("YYYY-MM-DD");
+    //   _toDate = moment(date)
+    //     .endOf("month")
+    //     .format("YYYY-MM-DD");
+    // }
 
     algaehApiCall({
       uri: "/attendance/notifyException",
@@ -789,15 +804,19 @@ export default class WeeklyAttendance extends Component {
               <input type="checkbox" /> <span className="checkmark" />{" "}
             </label>
             <div className="actions">
-              <span className="legendValue bg-shortage">
-                Shortage Hour<b>04.23 Hr</b>
-              </span>
-              <span className="legendValue bg-success">
-                Excess Hour<b>16.45 Hr</b>
-              </span>
-              <span className="legendValue bg-default">
-                Total Working Hour<b>146.00 Hr</b>
-              </span>
+              {this.state.employee_name ? (
+                <React.Fragment>
+                  <span className="legendValue bg-shortage">
+                    Shortage Hour<b>04.23 Hr</b>
+                  </span>
+                  <span className="legendValue bg-success">
+                    Excess Hour<b>16.45 Hr</b>
+                  </span>
+                  <span className="legendValue bg-default">
+                    Total Working Hour<b>146.00 Hr</b>
+                  </span>
+                </React.Fragment>
+              ) : null}
               {/*             
               <div className="weekdaysDiv">
                 <i className="fas fa-arrow-circle-left" />

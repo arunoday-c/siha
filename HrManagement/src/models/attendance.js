@@ -980,7 +980,7 @@ module.exports = {
               input.regularize_in_time,
               input.regularize_out_time,
               input.regularization_reason,
-              input.regularize_status ? input.regularize_status : "NFD" ,
+              input.regularize_status ? input.regularize_status : "NFD",
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -1022,82 +1022,69 @@ module.exports = {
     const _mysql = new algaehMysql();
     let input = req.body;
     _mysql
-          .executeQueryWithTransaction({
-            query:
-              "INSERT INTO `hims_f_attendance_regularize` (employee_id,attendance_date,regularize_status,\
+      .executeQueryWithTransaction({
+        query:
+          "INSERT INTO `hims_f_attendance_regularize` (employee_id,attendance_date,regularize_status,\
             login_date,logout_date,\
             punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
             created_by,created_date,updated_by,updated_date)\
             VALUE(?,date(?),?,date(?),date(?),?,?,?,?,?,?,?,?,?)",
-            values: [
-              
-              input.employee_id,
-              input.attendance_date,
-              input.regularize_status,
-              input.login_date,
-              input.logout_date,
-              input.punch_in_time,
-              input.punch_out_time,
-              input.regularize_in_time,
-              input.regularize_out_time,
-              input.regularization_reason,
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date(),
-              req.userIdentity.algaeh_d_app_user_id,
-              new Date()
-            ]
-          })
-          .then(result => {
-
-            if(input.absent_id>0){
-
-              _mysql
-              .executeQuery({
-                query:
-                  "update hims_f_absent  set status='CPR' where hims_f_absent_id=?;",
-                values: [input.absent_id
-                ]       
-          
-              })
-              .then(result2 => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = result2;
-                  next();
-                });
-              })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
-              });
-
-
-
-
-
-            }else{
-        
+        values: [
+          input.employee_id,
+          input.attendance_date,
+          input.regularize_status,
+          input.login_date,
+          input.logout_date,
+          input.punch_in_time,
+          input.punch_out_time,
+          input.regularize_in_time,
+          input.regularize_out_time,
+          input.regularization_reason,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date()
+        ]
+      })
+      .then(result => {
+        if (input.absent_id > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "update hims_f_absent  set status='CPR' where hims_f_absent_id=?;",
+              values: [input.absent_id]
+            })
+            .then(result2 => {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
-                req.records = result;
+                req.records = result2;
                 next();
               });
-           
-
-            }
-
-            // _mysql.commitTransaction(() => {
-            //   _mysql.releaseConnection();
-            //   req.records = result;
-            //   next();
-            // });
-          })
-          .catch(e => {
-            _mysql.rollBackTransaction(() => {
-              next(e);
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
             });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
           });
+        }
+
+        // _mysql.commitTransaction(() => {
+        //   _mysql.releaseConnection();
+        //   req.records = result;
+        //   next();
+        // });
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
   },
 
   //created by irfan:
@@ -1105,7 +1092,11 @@ module.exports = {
     let input = req.body;
     const utilities = new algaehUtilities();
     utilities.logger().log("regularizeAttendance: ");
-    if (input.regularize_status == "REJ" || input.regularize_status == "APR"||input.regularize_status == "PEN" ) {
+    if (
+      input.regularize_status == "REJ" ||
+      input.regularize_status == "APR" ||
+      input.regularize_status == "PEN"
+    ) {
       const _mysql = new algaehMysql();
       _mysql
         .executeQueryWithTransaction({
@@ -1121,7 +1112,6 @@ module.exports = {
         })
         .then(result => {
           if (result.affectedRows > 0) {
-            
             if (input.regularize_status == "APR") {
               _mysql
                 .executeQuery({
@@ -1140,7 +1130,7 @@ module.exports = {
                   ],
                   printQuery: true
                 })
-                .then(result2 => {                 
+                .then(result2 => {
                   _mysql.commitTransaction(() => {
                     _mysql.releaseConnection();
                     req.records = result2;
@@ -1153,17 +1143,11 @@ module.exports = {
                   });
                 });
             } else {
-
-
-
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = result;
                 next();
               });
-
-
-              
             }
           } else {
             _mysql.releaseConnection();
@@ -1226,12 +1210,10 @@ module.exports = {
     } else {
       const _mysql = new algaehMysql();
 
-      let stringData= " regularize_status <>'NFD' ";
+      let stringData = " regularize_status <>'NFD' ";
 
-      if(req.query.type=="auth"){
-
-        stringData="regularize_status='PEN' ";
-
+      if (req.query.type == "auth") {
+        stringData = "regularize_status='PEN' ";
       }
 
       _mysql
@@ -1242,13 +1224,14 @@ module.exports = {
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
           from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
-           AR.employee_id=E.hims_d_employee_id and record_status='A' where "+stringData+" and " +
+           AR.employee_id=E.hims_d_employee_id and record_status='A' where " +
+            stringData +
+            " and " +
             employee +
             "" +
             dateRange +
             " order by\
-          hims_f_attendance_regularize_id desc ;",
-         
+          hims_f_attendance_regularize_id desc ;"
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -1265,6 +1248,7 @@ module.exports = {
 
   //created by irfan:
   processAttendance: (req, res, next) => {
+    // console.log("req.connection", req.connection)
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
     return new Promise((resolve, reject) => {
@@ -1838,7 +1822,7 @@ module.exports = {
                       //utilities.logger().log("allEmployees: ", allEmployees);
                     }
                   } else {
-                    if (req.connection == null ) {
+                    if (req.connection == null) {
                       _mysql.releaseConnection();
                       req.records = {
                         invalid_input: true,
@@ -3206,17 +3190,17 @@ module.exports = {
                     .toString()
                     .split(".")[0];
 
-                    if (options[0]["standard_working_hours"]
-                    .toString()
-                    .split(".")[1] != undefined) {
-                standard_mins = options[0]["standard_working_hours"]
-                .toString()
-                .split(".")[1] ;
+                  if (
+                    options[0]["standard_working_hours"]
+                      .toString()
+                      .split(".")[1] != undefined
+                  ) {
+                    standard_mins = options[0]["standard_working_hours"]
+                      .toString()
+                      .split(".")[1];
 
-                utilities.logger().log("ACT MINS: ", standard_mins);
-                    }
-
-                 
+                    utilities.logger().log("ACT MINS: ", standard_mins);
+                  }
 
                   var sql = require("mssql");
 
@@ -3330,8 +3314,8 @@ module.exports = {
                               })
                               .FirstOrDefault({
                                 shift_end_day: null,
-                                shift_date: null,
-                                shift_end_date: null,
+                                shift_date: from_date,
+                                shift_end_date: from_date,
                                 shift_time: 0.0,
                                 shift_end_time: 0
                               });
@@ -3344,16 +3328,14 @@ module.exports = {
                                 .toString()
                                 .split(".")[0];
 
-                                if (shiftData.shift_time
+                              if (
+                                shiftData.shift_time.toString().split(".")[1] !=
+                                undefined
+                              ) {
+                                actual_mins = shiftData.shift_time
                                   .toString()
-                                  .split(".")[1] != undefined) {
-                                    actual_mins = shiftData.shift_time
-                                    .toString()
-                                    .split(".")[1] ;
-                                   
-                                }
-                               
-                             
+                                  .split(".")[1];
+                              }
                             } else {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
@@ -3501,6 +3483,7 @@ module.exports = {
                               }
                             } else {
                               utilities.logger().log("same day", "same day");
+
                               biometricData.push(
                                 new LINQ(attendcResult)
                                   .Where(
@@ -3532,7 +3515,9 @@ module.exports = {
                                         AllEmployees[i]["date_of_joining"],
                                       exit_date: AllEmployees[i]["exit_date"],
                                       actual_hours: actual_hours,
-                                      actual_minutes: actual_mins ? actual_mins : 0,
+                                      actual_minutes: actual_mins
+                                        ? actual_mins
+                                        : 0,
                                       expected_out_date:
                                         shiftData.shift_end_date,
                                       expected_out_time:
@@ -3541,14 +3526,14 @@ module.exports = {
                                         AllEmployees[i]["hospital_id"],
                                       hours: s.Duration.split(".")[0],
                                       minutes: s.Duration.split(".")[1],
-                                      year: moment(date_range[i]).format(
+                                      year: moment(from_date).format(
                                         "YYYY"
                                       ),
-                                      month: moment(date_range[i]).format("M")
+                                      month: moment(from_date).format("M")
                                     };
                                   })
                                   .FirstOrDefault({
-                                    biometric_id: null,
+                                    biometric_id: AllEmployees[i]["biometric_id"],
                                     attendance_date: from_date,
                                     out_date: from_date,
                                     in_time: null,
@@ -3563,23 +3548,25 @@ module.exports = {
                                       AllEmployees[i]["date_of_joining"],
                                     exit_date: AllEmployees[i]["exit_date"],
                                     actual_hours: actual_hours,
-                                    actual_minutes: actual_mins ? actual_mins : 0,
+                                    actual_minutes: actual_mins
+                                      ? actual_mins
+                                      : 0,
                                     expected_out_date: shiftData.shift_end_date,
                                     expected_out_time: shiftData.shift_end_time,
                                     hospital_id: AllEmployees[i]["hospital_id"],
                                     hours: 0,
                                     minutes: 0,
-                                    year: moment(date_range[i]).format("YYYY"),
-                                    month: moment(date_range[i]).format("M")
+                                    year: moment(from_date).format("YYYY"),
+                                    month: moment(from_date).format("M")
                                   })
                               );
                             }
                           }
 
                           ///----end logic
-                          // utilities
-                          //   .logger()
-                          //   .log("biometricData", biometricData);
+                          utilities
+                            .logger()
+                            .log("biometricData", biometricData);
 
                           insertTimeSheet(
                             returnQry,
@@ -3603,11 +3590,9 @@ module.exports = {
 
                           // utilities.logger().log("date_range:", "date_range");
 
-
-                          let fr_date=from_date;
-                          if(AllEmployees[0]["date_of_joining"]>from_date){
-                            fr_date=AllEmployees[0]["date_of_joining"];
-
+                          let fr_date = from_date;
+                          if (AllEmployees[0]["date_of_joining"] > from_date) {
+                            fr_date = AllEmployees[0]["date_of_joining"];
                           }
 
                           let date_range = getDays(
@@ -3622,7 +3607,7 @@ module.exports = {
                                 w =>
                                   w.employee_id ==
                                     AllEmployees[0]["hims_d_employee_id"] &&
-                                  w.shift_date ==  date_range[i]
+                                  w.shift_date == date_range[i]
                               )
                               .Select(s => {
                                 return {
@@ -3644,30 +3629,28 @@ module.exports = {
                             let actual_hours = 0;
                             let actual_mins = 0;
 
-
-
                             if (shiftData["shift_time"] > 0) {
                               actual_hours = shiftData.shift_time
                                 .toString()
                                 .split(".")[0];
 
-                                if (shiftData.shift_time
+                              if (
+                                shiftData.shift_time
                                   .toString()
-                                  .split(".")[1] !== undefined) {
-
-                                    actual_mins = shiftData.shift_time
-                                    .toString()
-                                    .split(".")[1] 
-                                }
-                                utilities.logger().log("actual_miadadns:", actual_mins);
-                                utilities.logger().log("shiftData:", shiftData);
-                           
+                                  .split(".")[1] !== undefined
+                              ) {
+                                actual_mins = shiftData.shift_time
+                                  .toString()
+                                  .split(".")[1];
+                              }
+                              utilities
+                                .logger()
+                                .log("actual_miadadns:", actual_mins);
+                              utilities.logger().log("shiftData:", shiftData);
                             } else {
                               actual_hours = standard_hours;
                               actual_mins = standard_mins;
                             }
-                            
-
 
                             utilities.logger().log("i ", date_range[i]);
 
@@ -3696,7 +3679,9 @@ module.exports = {
                                       AllEmployees[0]["date_of_joining"],
                                     exit_date: AllEmployees[0]["exit_date"],
                                     actual_hours: actual_hours,
-                                    actual_minutes: actual_mins ? actual_mins : 0,
+                                    actual_minutes: actual_mins
+                                      ? actual_mins
+                                      : 0,
                                     expected_out_date: shiftData.shift_end_date,
                                     expected_out_time: shiftData.shift_end_time,
                                     hospital_id: AllEmployees[0]["hospital_id"],
@@ -3733,7 +3718,7 @@ module.exports = {
                                 })
                             );
                           }
-                        
+
                           insertTimeSheet(
                             returnQry,
                             biometricData,
@@ -4595,8 +4580,6 @@ module.exports = {
                 });
               }
 
-             
-
               const insurtColumns = [
                 "employee_id",
                 "hospital_id",
@@ -4685,8 +4668,20 @@ module.exports = {
                           total_hours: attResult[i]["total_hours"],
                           total_working_hours:
                             attResult[i]["total_working_hours"],
-                          shortage_hours: attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]>=0?attResult[i]["shortage_hourss"]-attResult[i]["ot_hourss"]:0,
-                          ot_work_hours: attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]>=0?attResult[i]["ot_hourss"]-attResult[i]["shortage_hourss"]:0
+                          shortage_hours:
+                            attResult[i]["shortage_hourss"] -
+                              attResult[i]["ot_hourss"] >=
+                            0
+                              ? attResult[i]["shortage_hourss"] -
+                                attResult[i]["ot_hourss"]
+                              : 0,
+                          ot_work_hours:
+                            attResult[i]["ot_hourss"] -
+                              attResult[i]["shortage_hourss"] >=
+                            0
+                              ? attResult[i]["ot_hourss"] -
+                                attResult[i]["shortage_hourss"]
+                              : 0
                         });
                       }
 
@@ -4916,7 +4911,7 @@ module.exports = {
                         ( date(?)>=date(from_date) and   date(?)<=date(to_date))   or (date(from_date)>= date(?)\
                         and date(from_date)<=date(?) ) or \
                         (date(to_date)>=date(?) and date(to_date)<= date(?) )\
-                        )and employee_id=504 and (`status`='APR' or `status`='PEN') ;\
+                        )and employee_id=? and (`status`='APR' or `status`='PEN') ;\
                         select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
                         religion_id from hims_d_holiday where record_status='A' and date(holiday_date)\
                         between date(?) and date(?) and hospital_id=?",
@@ -4945,6 +4940,8 @@ module.exports = {
                     to_date,
                     next_dayOf_cutoff,
                     to_date,
+                    input.hims_d_employee_id ,
+
                     next_dayOf_cutoff,
                     to_date,
                     input.hospital_id
@@ -5093,7 +5090,7 @@ module.exports = {
  //workin here
 for (let i = 0; i < roster_Date_range.length; i++) {
   let whichLeave = 0;
-  // checking which leave is on puerticular date
+  // checking which leave is on particular date
   for (let k = 0; k < leave_Date_range.length; k++) {
     let leavData = leave_Date_range[k]["dates"].includes(roster_Date_range[i]);
 
@@ -5103,8 +5100,6 @@ for (let i = 0; i < roster_Date_range.length; i++) {
       whichLeave = leave_Date_range[k]["leave_type"];
       break;
     }
-   
-
   }
 
   utilities.logger().log("roster_Date_range: ", roster_Date_range);
@@ -5639,101 +5634,98 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
   },
   getActivityFeed: (req, res, next) => {
     const _mysql = new algaehMysql();
-   
+
     try {
-   
       if (req.query.employee_id > 0) {
-   
-      _mysql
-        .executeQuery({
-          query: "select hims_f_attendance_regularize_id,regularization_code,employee_id,AR.updated_date,user_display_name as updated_by,attendance_date,regularize_status,login_date,\
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_f_attendance_regularize_id,regularization_code,employee_id,AR.updated_date,user_display_name as updated_by,attendance_date,regularize_status,login_date,\
           logout_date,punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason\
           from hims_f_attendance_regularize AR left  join algaeh_d_app_user U on AR.updated_by= U.algaeh_d_app_user_id \
           where  AR.employee_id=? and regularize_status='NFD';\
           select hims_f_absent_id,employee_id,A.updated_date,user_display_name as updated_by,absent_date,\
           from_session,to_session,absent_reason,absent_duration,status,cancel from hims_f_absent A left  join algaeh_d_app_user U on\
           A.updated_by= U.algaeh_d_app_user_id  where employee_id=? and status='NFD' and cancel='N';",
-        values: [req.query.employee_id,req.query.employee_id],
-          printQuery: true
+            values: [req.query.employee_id, req.query.employee_id],
+            printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = {
+              exceptions: result[0],
+              absents: result[1]
+            };
+            next();
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid input"
+        };
+        next();
+      }
+    } catch (e) {
+      next(e);
+    }
+  },
+  //created by irfan:
+  requestAttndncReglztion: (req, res, next) => {
+    let input = req.body;
+    const utilities = new algaehUtilities();
+
+    if (
+      input.regularize_status == "PEN" &&
+      input.hims_f_attendance_regularize_id > 0
+    ) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_f_attendance_regularize SET regularize_status = ?,regularization_reason=?,regularize_in_time=?,regularize_out_time=?,\
+                updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
+          values: [
+            input.regularize_status,
+            input.regularization_reason,
+            input.regularize_in_time,
+            input.regularize_out_time,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_f_attendance_regularize_id
+          ]
         })
         .then(result => {
-          _mysql.releaseConnection();
-          req.records = {
-           exceptions: result[0],
-          absents:  result[1],
-          };
-          next();
+          if (result.affectedRows > 0) {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Please provide valid input"
+            };
+            next();
+          }
         })
         .catch(e => {
           _mysql.releaseConnection();
           next(e);
         });
-      }
-        else {
-          req.records = {
-            invalid_input: true,
-            message: "Please provide valid input"
-          };
-          next();
-        }
-    } catch (e) {
-      next(e);
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide valid input"
+      };
+      next();
+      return;
     }
-  },
-    //created by irfan:
-  requestAttndncReglztion: (req, res, next) => {
-        let input = req.body;
-        const utilities = new algaehUtilities();
-      
-        if (input.regularize_status == "PEN" &&   input.hims_f_attendance_regularize_id>0) {
-          const _mysql = new algaehMysql();
-          _mysql
-            .executeQuery({
-              query:
-                "UPDATE hims_f_attendance_regularize SET regularize_status = ?,regularization_reason=?,regularize_in_time=?,regularize_out_time=?,\
-                updated_date=?, updated_by=?  WHERE hims_f_attendance_regularize_id = ?",
-              values: [
-                input.regularize_status,
-                input.regularization_reason,
-                input.regularize_in_time,
-                input.regularize_out_time,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                input.hims_f_attendance_regularize_id
-              ]
-            })
-            .then(result => {
-              if (result.affectedRows > 0) {
-                
-                _mysql.releaseConnection();
-              req.records = result;
-              next();
-              } else {
-                _mysql.releaseConnection();
-                req.records = {
-                  invalid_input: true,
-                  message: "Please provide valid input"
-                };
-                next();
-              }
-            })
-            .catch(e => {
-              _mysql.releaseConnection();
-                next(e);
-              
-            });
-        } else {
-          req.records = {
-            invalid_input: true,
-            message: "Please provide valid input"
-          };  
-          next();
-          return;
-        }
-      },
-
-
-  };
+  }
+};
 
 //created by irfan: to insert timesheet
 function insertTimeSheet(
@@ -5864,12 +5856,14 @@ function insertTimeSheet(
           //Exception
           insertArray.push({ ...biometricData[i], status: "EX" });
         } else if (biometricData[i]["biometric_id"] == null) {
+          
+
           let leave = new LINQ(AllLeaves)
             .Where(
               w =>
-                w.employee_id == biometricData[i]["hims_d_employee_id"] &&
+                w.employee_id == biometricData[i]["employee_id"] &&
                 w.from_date <= biometricData[i]["attendance_date"] &&
-                w.from_date >= biometricData[i]["attendance_date"]
+                w.to_date >= biometricData[i]["attendance_date"]
             )
             .Select(s => {
               return {
@@ -5887,6 +5881,8 @@ function insertTimeSheet(
             })
             .ToArray();
 
+
+
           let holidayweekoff = new LINQ(empHolidayweekoff)
             .Where(w => w.holiday_date == biometricData[i]["attendance_date"])
             .Select(s => {
@@ -5900,27 +5896,33 @@ function insertTimeSheet(
           utilities.logger().log("holidayweekoff: ", holidayweekoff);
           if (leave.length > 0) {
             //check leave
-            utilities.logger().log("apple: ", "APPLE");
+           
 
             insertArray.push({
               ...biometricData[i],
-              status: leave[0]["leave_type"] + "L"
+              status: leave[0]["leave_type"] + "L",
+              actual_hours:0 ,
+              actual_minutes:0
             });
           } else if (
             holidayweekoff.length > 0 &&
             holidayweekoff[0].weekoff == "Y"
           ) {
-            utilities.logger().log("BALL: ", "BAAL");
+        
             //check weekoff
-            insertArray.push({ ...biometricData[i], status: "WO" });
+            insertArray.push({ ...biometricData[i], status: "WO",
+            actual_hours:0 ,
+            actual_minutes:0 });
           } else if (
             holidayweekoff.length > 0 &&
             holidayweekoff[0].holiday == "Y"
           ) {
             //check holiday
 
-            utilities.logger().log("CAT: ", "CAT");
-            insertArray.push({ ...biometricData[i], status: "HO" });
+         
+            insertArray.push({ ...biometricData[i], status: "HO",
+            actual_hours:0 ,
+            actual_minutes:0 });
           } else {
             utilities.logger().log("DOG: ", "DOG");
             //else mark absent
