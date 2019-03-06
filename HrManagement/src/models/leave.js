@@ -303,11 +303,39 @@ module.exports = {
                                               }
 
 
+                                              let convertToLeave="";
+                                              if(input.leave_from=="AB"&&input.absent_id>0){
+                                                  let paid=0
+                                                  let unpaid=0
+
+                                                  if(input.leave_type=="P"){
+                                                    paid=1;
+
+                                                  }else if(input.leave_type=="U"){
+                                                    unpaid=1;
+                                                  }
+
+                                               let leave="";
+                                                if(input.leave_type=="P"){
+                                                    leave=`, paid_leave=paid_leave+1 `;
+
+                                                }else if(input.leave_type=="U"){
+                                                  leave=`, unpaid_leave=unpaid_leave+1 `;
+                                                }
+
+                                                convertToLeave=` update hims_f_daily_time_sheet set status=${input.leave_type+"L"}, actual_hours=0,actual_minutes=0 where hospital_id=${input.hospital_id}  and employee_id=${input.employee_id} and attendance_date=${input.from_date};
+                                                update hims_f_daily_attendance set absent_days=0 ,paid_leave=${paid},unpaid_leave=${unpaid} where hospital_id=${input.hospital_id} and employee_id=${input.employee_id} and attendance_date=${input.from_date};                                              
+                                                update hims_f_attendance_monthly set absent_days=absent_days-1,total_leave=total_leave+1 ${leave}
+                                                where hospital_id=${input.hospital_id} and employee_id=${input.employee_id} and year=${input.year} and month=${month_number};
+                                                update hims_f_absent set status='CTL' ,processed='Y' where hims_f_absent_id=${input.absent_id};`
+                                              }
+
+
 
                                             _mysql
                                             .executeQuery({
                                               query:
-                                              " update hims_f_leave_application set status='APR',approved_by=" +req.userIdentity.algaeh_d_app_user_id+", approved_date='"+moment().format("YYYY-MM-DD")+"' where record_status='A' \
+                                              convertToLeave+" update hims_f_leave_application set status='APR',approved_by=" +req.userIdentity.algaeh_d_app_user_id+", approved_date='"+moment().format("YYYY-MM-DD")+"' where record_status='A' \
                                               and hims_f_leave_application_id=" +
                                                   input.hims_f_leave_application_id +
                                                   ";update hims_f_employee_monthly_leave set ?  where \
@@ -2843,7 +2871,7 @@ getLeaveApllication: (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.employee_id,\
+          "SELECT hims_f_leave_application_id,LA.leave_application_code,LA.hospital_id,LA.employee_id,\
         LA.application_date,LA.sub_department_id,LA.leave_id,LA.from_leave_session,\
         LA.from_date,LA.to_date,LA.to_leave_session,LA.leave_applied_from,\
         LA.total_applied_days,LA.leave_from,LA.absent_id,LA.total_approved_days,LA.`status`\
@@ -3583,270 +3611,290 @@ cancelLeave: (req, res, next) => {
   const utilities = new algaehUtilities();
   let input = req.body;
 
-  getMaxAuth({
-    mysql: _mysql
-  })
-    .then(result => {
-      if (req.userIdentity.leave_authorize_privilege == result.MaxLeave) {
-        _mysql
-          .executeQuery({
-            query:
-              "select hims_f_leave_application_id,leave_application_code ,`status`\
-           from hims_f_leave_application where hims_f_leave_application_id=? ",
-            values: [input.hims_f_leave_application_id],
+  if(input.leave_from=="AB"){
+    req.records = {
+      invalid_input: true,
+      message: "You Can't Cancel Regularized Leave"
+    };
 
-            printQuery: true
-          })
-          .then(leaveStaus => {
-            
-          if(leaveStaus.length>0){
-            if (leaveStaus[0]["status"] == "APR") {
-              const month_number = moment(input.from_date).format("M");
-              _mysql
-                .executeQuery({
-                  query:
-                    "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid from \
-                    hims_f_salary where `month`=? and `year`=? and employee_id=? ",
-                  values: [month_number, input.year, input.employee_id],
+    next();
+    return;
 
-                  printQuery: true
-                })
-                .then(salResult => {
-                  utilities.logger().log("salResult: ", salResult);
-
-                  if (
-                    salResult.length < 1 ||
-                    (salResult.length > 0 &&
-                      salResult[0]["salary_processed"] == "N" &&
-                      salResult[0]["salary_paid"] == "N")
-                  ) {
-                    //YOU CAN CANCEL 
-
-                    //------------------------------------------------------------------
-
-                    calc(_mysql, {...req.body,cancel:"Y"})
-                      .then(deductionResult => {
-                        if (deductionResult.invalid_input == true) {
-                          _mysql.releaseConnection();
-
-
-                          req.records = deductionResult;
-                          next();
-                          return;
-                        } else {
-                          utilities.logger().log("deductionResult: ", deductionResult);
-                          return deductionResult;
-                          
-                        }
-                      })
-                      .then(deductionResult => {
-                        utilities.logger().log("deductionResult 55: ", deductionResult);
-                        let monthArray = new LINQ(
-                          deductionResult.monthWiseCalculatedLeaveDeduction
-                        )
-                          .Select(s => s.month_name)
-                          .ToArray();
-
-                        if (monthArray.length > 0) {
-                          _mysql
-                            .executeQuery({
-                              query: `select hims_f_employee_monthly_leave_id, total_eligible,close_balance, ${monthArray} ,availed_till_date
-                               from hims_f_employee_monthly_leave where
-                              employee_id=? and year=? and leave_id=?`,
-                              values: [
-                                input.employee_id,
-                                input.year,
-                                input.leave_id
-                              ],
-
-                              printQuery: true
-                            })
-                            .then(monthlyLeaveData => {
-                              let updateMonths = {};
-                              let newCloseBal =
-                                parseFloat(
-                                  monthlyLeaveData[0]["close_balance"]
-                                ) +
-                                parseFloat(deductionResult.calculatedLeaveDays);
-                              let newAvailTillDate =
-                                parseFloat(
-                                  monthlyLeaveData[0]["availed_till_date"]
-                                ) -
-                                parseFloat(deductionResult.calculatedLeaveDays);
-                              for (
-                                let i = 0;
-                                i <
-                                deductionResult
-                                  .monthWiseCalculatedLeaveDeduction.length;
-                                i++
-                              ) {
-                                Object.keys(monthlyLeaveData[0]).map(key => {
-                                  // debugLog("ke:",key);
-                                  // debugLog("m name",deductionResult.monthWiseCalculatedLeaveDeduction[i]["month_name"]);
-                                  if (
-                                    key ==
-                                    deductionResult
-                                      .monthWiseCalculatedLeaveDeduction[i][
-                                      "month_name"
-                                    ]
-                                  ) {
-                                    updateMonths = {
-                                      ...updateMonths,
-                                      [key]:
-                                        parseFloat(monthlyLeaveData[0][key]) -
-                                        parseFloat(
-                                          deductionResult
-                                            .monthWiseCalculatedLeaveDeduction[
-                                            i
-                                          ]["finalLeave"]
-                                        )
-                                    };
-                                  }
-                                });
-                              }
-
-                              //oooooooooooooooooooo
-                              let anualLeave="";
-                              if (input.leave_category=="A"){
-                                anualLeave= " update hims_f_employee_annual_leave set cancelled='Y' where leave_application_id="+input.hims_f_leave_application_id+"; ";
-                              }
-
-                              _mysql
-                                .executeQueryWithTransaction({
-                                  query:
-                                  anualLeave+" update hims_f_leave_application set status='CAN',cancelled_date='" +
-                                    moment().format("YYYY-MM-DD") +
-                                    "',\
-                                    cancelled_by=" +
-                                    req.userIdentity.algaeh_d_app_user_id +
-                                    ",cancelled_remarks='" +
-                                    input.cancelled_remarks +
-                                    "' where record_status='A' \
-                                     and hims_f_leave_application_id=" +
-                                    input.hims_f_leave_application_id +
-                                    ";update hims_f_employee_monthly_leave set ?  where \
-                                      hims_f_employee_monthly_leave_id='" +
-                                    monthlyLeaveData[0]
-                                      .hims_f_employee_monthly_leave_id +
-                                    "'",
-                                  values: [
-                                    {
-                                      ...updateMonths,
-                                      close_balance: newCloseBal,
-                                      availed_till_date: newAvailTillDate
-                                    }
-                                  ],
-
-                                  printQuery: true
-                                })
-                                .then(finalRes => {
-                                  _mysql.commitTransaction(() => {
-                                    _mysql.releaseConnection();
-                                    req.records = finalRes;
-                                    next();
-                                  });
-                                })
-                                .catch(e => {
-                                  reject(error);
-                                  _mysql.rollBackTransaction(() => {
-                                    next(error);
-                                  });
-                                });
-                              //oooooooooooooooooooo
-                            })
-                            .catch(e => {
-                              _mysql.releaseConnection();
-                              next(e);
-                            });
-                        } else {
-                          _mysql.releaseConnection();
-                          req.records = {
-                            invalid_input: true,
-                            message: "leaves not found"
-                          };
-                          next();
-                          return;
-                        }
-                      })
-                      .catch(e => {
-                        _mysql.rollBackTransaction(() => {
-                          next(e);
-                        });
-                        reject(e);
-                      });
-
-                    //------------------------------------------------------------------
-                  } else {
-                    //salary is proceesd
-
-                    _mysql.releaseConnection();
-                    req.records = {
-                      invalid_input: true,
-                      message: "salary is already processed"
-                    };
-                    next();
-                    return;
-                  }
-                })
-                .catch(e => {
-                  _mysql.releaseConnection();
-                  next(e);
-                });
-            } else if (leaveStaus[0]["status"] == "CAN") {
-              // already cancelled
-              _mysql.releaseConnection();
-              req.records = {
-                invalid_input: true,
-                message: "leave already cancelled"
-              };
-              next();
-              return;
-            } else {
-              // already cancelled
-              _mysql.releaseConnection();
-              req.records = {
-                invalid_input: true,
-                message: "cant cancel,leave is not Approved yet"
-              };
-              next();
-              return;
-            }
-
-          }
-          else{
-
-            _mysql.releaseConnection();
-            req.records = {
-              invalid_input: true,
-              message: "please send valid input"
-            };
-            next();
-            return;
-
-
-          }
+  }else{
 
 
 
-          })
-          .catch(e => {
-            _mysql.releaseConnection();
-            next(e);
-          });
-      } else {
-        _mysql.releaseConnection();
-        req.records = {
-          invalid_input: true,
-          message: "you dont have privilege"
-        };
-        next();
-        return;
-      }
+    getMaxAuth({
+      mysql: _mysql
     })
-    .catch(e => {
-      _mysql.releaseConnection();
-      next(e);
-    });
+      .then(result => {
+        if (req.userIdentity.leave_authorize_privilege == result.MaxLeave) {
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_f_leave_application_id,leave_application_code ,`status`\
+             from hims_f_leave_application where hims_f_leave_application_id=? ",
+              values: [input.hims_f_leave_application_id],
+  
+              printQuery: true
+            })
+            .then(leaveStaus => {
+              
+            if(leaveStaus.length>0){
+              if (leaveStaus[0]["status"] == "APR") {
+                const month_number = moment(input.from_date).format("M");
+                _mysql
+                  .executeQuery({
+                    query:
+                      "select hims_f_salary_id ,`month`,`year`,employee_id, salary_processed,salary_paid from \
+                      hims_f_salary where `month`=? and `year`=? and employee_id=? ",
+                    values: [month_number, input.year, input.employee_id],
+  
+                    printQuery: true
+                  })
+                  .then(salResult => {
+                    utilities.logger().log("salResult: ", salResult);
+  
+                    if (
+                      salResult.length < 1 ||
+                      (salResult.length > 0 &&
+                        salResult[0]["salary_processed"] == "N" &&
+                        salResult[0]["salary_paid"] == "N")
+                    ) {
+                      //YOU CAN CANCEL 
+  
+                      //------------------------------------------------------------------
+  
+                      calc(_mysql, {...req.body,cancel:"Y"})
+                        .then(deductionResult => {
+                          if (deductionResult.invalid_input == true) {
+                            _mysql.releaseConnection();
+  
+  
+                            req.records = deductionResult;
+                            next();
+                            return;
+                          } else {
+                            utilities.logger().log("deductionResult: ", deductionResult);
+                            return deductionResult;
+                            
+                          }
+                        })
+                        .then(deductionResult => {
+                          utilities.logger().log("deductionResult 55: ", deductionResult);
+                          let monthArray = new LINQ(
+                            deductionResult.monthWiseCalculatedLeaveDeduction
+                          )
+                            .Select(s => s.month_name)
+                            .ToArray();
+  
+                          if (monthArray.length > 0) {
+                            _mysql
+                              .executeQuery({
+                                query: `select hims_f_employee_monthly_leave_id, total_eligible,close_balance, ${monthArray} ,availed_till_date
+                                 from hims_f_employee_monthly_leave where
+                                employee_id=? and year=? and leave_id=?`,
+                                values: [
+                                  input.employee_id,
+                                  input.year,
+                                  input.leave_id
+                                ],
+  
+                                printQuery: true
+                              })
+                              .then(monthlyLeaveData => {
+                                let updateMonths = {};
+                                let newCloseBal =
+                                  parseFloat(
+                                    monthlyLeaveData[0]["close_balance"]
+                                  ) +
+                                  parseFloat(deductionResult.calculatedLeaveDays);
+                                let newAvailTillDate =
+                                  parseFloat(
+                                    monthlyLeaveData[0]["availed_till_date"]
+                                  ) -
+                                  parseFloat(deductionResult.calculatedLeaveDays);
+                                for (
+                                  let i = 0;
+                                  i <
+                                  deductionResult
+                                    .monthWiseCalculatedLeaveDeduction.length;
+                                  i++
+                                ) {
+                                  Object.keys(monthlyLeaveData[0]).map(key => {
+                                    // debugLog("ke:",key);
+                                    // debugLog("m name",deductionResult.monthWiseCalculatedLeaveDeduction[i]["month_name"]);
+                                    if (
+                                      key ==
+                                      deductionResult
+                                        .monthWiseCalculatedLeaveDeduction[i][
+                                        "month_name"
+                                      ]
+                                    ) {
+                                      updateMonths = {
+                                        ...updateMonths,
+                                        [key]:
+                                          parseFloat(monthlyLeaveData[0][key]) -
+                                          parseFloat(
+                                            deductionResult
+                                              .monthWiseCalculatedLeaveDeduction[
+                                              i
+                                            ]["finalLeave"]
+                                          )
+                                      };
+                                    }
+                                  });
+                                }
+  
+                                //oooooooooooooooooooo
+                                let anualLeave="";
+                                if (input.leave_category=="A"){
+                                  anualLeave= " update hims_f_employee_annual_leave set cancelled='Y' where leave_application_id="+input.hims_f_leave_application_id+"; ";
+                                }
+  
+                                _mysql
+                                  .executeQueryWithTransaction({
+                                    query:
+                                    anualLeave+" update hims_f_leave_application set status='CAN',cancelled_date='" +
+                                      moment().format("YYYY-MM-DD") +
+                                      "',\
+                                      cancelled_by=" +
+                                      req.userIdentity.algaeh_d_app_user_id +
+                                      ",cancelled_remarks='" +
+                                      input.cancelled_remarks +
+                                      "' where record_status='A' \
+                                       and hims_f_leave_application_id=" +
+                                      input.hims_f_leave_application_id +
+                                      ";update hims_f_employee_monthly_leave set ?  where \
+                                        hims_f_employee_monthly_leave_id='" +
+                                      monthlyLeaveData[0]
+                                        .hims_f_employee_monthly_leave_id +
+                                      "'",
+                                    values: [
+                                      {
+                                        ...updateMonths,
+                                        close_balance: newCloseBal,
+                                        availed_till_date: newAvailTillDate
+                                      }
+                                    ],
+  
+                                    printQuery: true
+                                  })
+                                  .then(finalRes => {
+                                    _mysql.commitTransaction(() => {
+                                      _mysql.releaseConnection();
+                                      req.records = finalRes;
+                                      next();
+                                    });
+                                  })
+                                  .catch(e => {
+                                    reject(error);
+                                    _mysql.rollBackTransaction(() => {
+                                      next(error);
+                                    });
+                                  });
+                                //oooooooooooooooooooo
+                              })
+                              .catch(e => {
+                                _mysql.releaseConnection();
+                                next(e);
+                              });
+                          } else {
+                            _mysql.releaseConnection();
+                            req.records = {
+                              invalid_input: true,
+                              message: "leaves not found"
+                            };
+                            next();
+                            return;
+                          }
+                        })
+                        .catch(e => {
+                          _mysql.rollBackTransaction(() => {
+                            next(e);
+                          });
+                          reject(e);
+                        });
+  
+                      //------------------------------------------------------------------
+                    } else {
+                      //salary is proceesd
+  
+                      _mysql.releaseConnection();
+                      req.records = {
+                        invalid_input: true,
+                        message: "salary is already processed"
+                      };
+                      next();
+                      return;
+                    }
+                  })
+                  .catch(e => {
+                    _mysql.releaseConnection();
+                    next(e);
+                  });
+              } else if (leaveStaus[0]["status"] == "CAN") {
+                // already cancelled
+                _mysql.releaseConnection();
+                req.records = {
+                  invalid_input: true,
+                  message: "leave already cancelled"
+                };
+                next();
+                return;
+              } else {
+                // already cancelled
+                _mysql.releaseConnection();
+                req.records = {
+                  invalid_input: true,
+                  message: "cant cancel,leave is not Approved yet"
+                };
+                next();
+                return;
+              }
+  
+            }
+            else{
+  
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "please send valid input"
+              };
+              next();
+              return;
+  
+  
+            }
+  
+  
+  
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = {
+            invalid_input: true,
+            message: "you dont have privilege"
+          };
+          next();
+          return;
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  }
+
+
+    
+ 
+
+
 }
 
 };
