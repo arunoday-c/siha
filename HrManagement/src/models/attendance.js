@@ -5978,11 +5978,100 @@ function insertTimeSheet(
             printQuery: true
           })
           .then(result => {
-            _mysql.commitTransaction(() => {
+            // _mysql.commitTransaction(() => {
+            //   _mysql.releaseConnection();
+            //   req.records = result;
+            //   next();
+            // });
+
+
+  //ST-whole month ot,shortage calculate
+            let sum_actual_hour=0;
+            let sum_actual_min=0;
+            let sum_work_hour=0;
+            let sum_work_min=0;
+
+            sum_actual_hour=new LINQ(result).Sum(s => s.actual_hours);
+            sum_actual_min=new LINQ(result).Sum(s => s.actual_minutes);
+
+
+            sum_work_hour=new LINQ(result).Sum(s => s.hours);
+            sum_work_min=new LINQ(result).Sum(s => s.minutes);
+
+
+
+            let total_min =
+            parseInt(sum_actual_hour * 60) +
+            parseInt(sum_actual_min);
+          let worked_min =
+            parseInt(sum_work_hour * 60) +
+            parseInt(sum_work_min);
+
+            let diff = total_min - worked_min;
+            let month_shortage_hour=0;
+            let month_ot_hour=0;
+
+            if (diff > 0) {
+              //calculating shortage
+            let shortage_hr = parseInt(parseInt(diff) / parseInt(60));
+            let shortage_min = parseInt(diff) % parseInt(60);
+            month_shortage_hour=shortage_hr+"."+shortage_min;
+            } else if (diff < 0) {
+              //calculating over time
+              let ot_hr = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
+              let ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+              month_ot_hour=ot_hr+"."+ot_min;
+            }
+
+  //EN-whole month ot,shortage calculate
+
+            //ST-indivisual date ot,shortage calculate
+            let outputArray=[];
+              for(let i=0;i<result.length;i++){
+        
+                    let total_minutes =
+                      parseInt(result[i]["actual_hours"] * 60) +
+                      parseInt(result[i]["actual_minutes"]);
+                    let worked_minutes =
+                      parseInt(result[i]["hours"] * 60) +
+                      parseInt(result[i]["minutes"]);
+
+                    let diff = total_minutes - worked_minutes;
+
+                    let shortage_hour=0;
+                    let ot_hour=0;
+                  
+
+                    if (diff > 0) {
+                      //calculating shortage
+                    let shortage_hr = parseInt(parseInt(diff) / parseInt(60));
+                    let shortage_min = parseInt(diff) % parseInt(60);
+                    shortage_hour=shortage_hr+"."+shortage_min;
+                    } else if (diff < 0) {
+                      //calculating over time
+                      let ot_hr = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
+                      let ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+                      ot_hour=ot_hr+"."+ot_min;
+                    }
+
+
+                    outputArray.push({...result[i],shortage_hour,ot_hour
+                    });
+
+
+            }
+            //EN-indivisual date ot,shortage calculate
+
+     _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
-              req.records = result;
+              req.records = {outputArray,
+                 month_shortage_hour,month_ot_hour
+              }
               next();
             });
+
+
+
           })
           .catch(e => {
             _mysql.releaseConnection();
