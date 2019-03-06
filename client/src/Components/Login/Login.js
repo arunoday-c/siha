@@ -223,7 +223,7 @@ export default class Login extends Component {
                       <AlagehAutoComplete
                         div={{ className: "col-12 form-group" }}
                         label={{
-                          forceLabel: "Select Hospital Location",
+                          forceLabel: "Select Division/Branch",
                           isImp: true
                         }}
                         selector={{

@@ -278,7 +278,7 @@ class DeptUserDetails extends Component {
                 </div> */}
               </div>
               <h5>
-                <span>Define Group & Hospital</span>
+                <span>Define Group & Division/Branch</span>
               </h5>
               <div className="row">
                 <AlagehAutoComplete
@@ -334,7 +334,7 @@ class DeptUserDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
-                    forceLabel: "Assign Hospital/Clinic",
+                    forceLabel: "Assign Division/Branch",
                     isImp: true
                   }}
                   selector={{

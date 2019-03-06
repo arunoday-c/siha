@@ -6,7 +6,7 @@
   "cpt_code": "CPT Code",
   "service_name": "Service Name",
   "sub_department_id": "Department",
-  "hospital_id": "Hospital",
+  "hospital_id": "Division/Branch",
   "service_type_id": "Service Type",
   "standard_fee": "Standard Fee",
   "vat_applicable": "Vat Applicable",
