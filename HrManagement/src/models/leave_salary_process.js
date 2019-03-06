@@ -171,12 +171,12 @@ module.exports = {
           utilities.logger().log("hrms_options: ", hrms_options);
 
           if (employee_leave_salary == undefined) {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = { message: "No Leave exists" };
-              req.flag = 1;
-              next();
-            });
+            // _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = { message: "No Leave exists" };
+            req.flag = 1;
+            next();
+            // });
             return;
           }
 
@@ -188,7 +188,7 @@ module.exports = {
             employee_result[0].airfare_process === "N"
               ? 0
               : employee_leave_salary.balance_airticket_amount;
-
+          let intValue = 0;
           if (balance_leave_days > 0) {
             for (let k = 0; k < annual_leave_result.length; k++) {
               let per_day_sal = 0;
@@ -234,9 +234,17 @@ module.exports = {
                     _attandance = await processAttendance(req, res, next);
                     _sarary = await newProcessSalary(req, res, next);
                   } else {
-                    utilities.logger().log("attendance_type else: ");
-                    _sarary = await newProcessSalary(req, res, next);
-                    _attandance = Promise.resolve();
+                    if (intValue == 0) {
+                      utilities
+                        .logger()
+                        .log("attendance_type else: ", intValue);
+                      _sarary = await newProcessSalary(req, res, next);
+                      _attandance = Promise.resolve();
+                    } else {
+                      utilities.logger().log("attendance else: ", intValue);
+                      _attandance = await processAttendance(req, res, next);
+                      _sarary = await newProcessSalary(req, res, next);
+                    }
                   }
 
                   // let _sarary = await newProcessSalary(req, res, next);
@@ -263,6 +271,7 @@ module.exports = {
                     next(e);
                   });
                 }
+                intValue++;
               }
 
               utilities.logger().log("strGetdataQry: ", strGetdataQry);
@@ -294,9 +303,9 @@ module.exports = {
                       leave_amount: leave_amount,
                       airfare_amount: airfare_amount
                     });
-
+                    _mysql.releaseConnection();
                     final_result.push(result_data, amount_data);
-
+                    delete req.connection;
                     req.records = final_result;
                     next();
                   });
@@ -309,12 +318,12 @@ module.exports = {
             };
             syscCall();
           } else {
-            _mysql.commitTransaction(() => {
-              _mysql.releaseConnection();
-              req.records = { message: "Dont have enough leaves" };
-              req.flag = 1;
-              next();
-            });
+            // _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = { message: "Dont have enough leaves" };
+            req.flag = 1;
+            next();
+            // });
           }
         })
         .catch(e => {
@@ -531,3 +540,37 @@ module.exports = {
     }
   }
 };
+
+function attendanceProcess(req, res, next) {
+  return new Promise((resolve, reject) => {
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "select LSD.year,LSD.month,LSD.start_date,LSD.end_date,LSD.leave_start_date,LSD.leave_end_date,LSD.leave_category,\
+              LSD.leave_period,LSD.gross_amount, LSD.net_amount,SL.salary_number as salary_no,SL.salary_date from \
+              hims_f_leave_salary_detail LSD, hims_f_salary SL where  LSD.salary_header_id=SL.hims_f_salary_id\
+              and  leave_salary_header_id= ?;",
+          values: [leave_salary_header_id],
+          printQuery: true
+        })
+        .then(leave_salary_detail => {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = {
+              ...leaveSalary_header,
+              ...{ leave_salary_detail }
+            };
+            next();
+          });
+        })
+        .catch(e => {
+          next(e);
+        });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    next(e);
+  });
+}

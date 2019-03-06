@@ -6,7 +6,9 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   newProcessSalary: (req, res, next) => {
+    // console.log("req.connection: ", req.connection);
     const _options = req.connection == null ? {} : req.connection;
+
     const _mysql = new algaehMysql(_options);
     return new Promise((resolve, reject) => {
       try {
@@ -16,44 +18,79 @@ module.exports = {
         const input = req.query;
         const month_number = input.month;
         const year = input.year;
-        let inputValues = [input.year, input.month, input.hospital_id];
+        let inputValues = [input.year, input.month];
         let _stringData = "";
-        if (input.employee_id != null) {
-          _stringData += " and A.employee_id=?";
-          inputValues.push(input.employee_id);
-        }
-        if (input.sub_department_id != null) {
-          _stringData += " and A.sub_department_id=? ";
-          inputValues.push(input.sub_department_id);
-        }
+
         utilities.logger().log("_stringData: ");
 
+        let strQuery = "";
+        if (input.leave_salary == null || input.leave_salary == undefined) {
+          inputValues.push(input.year);
+          inputValues.push(input.month);
+          inputValues.push(input.hospital_id);
+
+          if (input.employee_id != null) {
+            _stringData += " and A.employee_id=?";
+            inputValues.push(input.employee_id);
+          }
+          if (input.sub_department_id != null) {
+            _stringData += " and A.sub_department_id=? ";
+            inputValues.push(input.sub_department_id);
+          }
+
+          strQuery =
+            "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
+            A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
+            A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
+            A.total_paid_days,A.ot_work_hours, A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
+            E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
+            from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
+            on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
+            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month`\
+            and S.employee_id = A.employee_id left join hims_f_employee_annual_leave AL on E.hims_d_employee_id=AL.employee_id \
+            and  AL.year=? and AL.month=? and AL.cancelled='N'  where \
+            A.`year`=? and A.`month`=? and A.hospital_id=?" +
+            _stringData +
+            " and hims_f_employee_annual_leave_id is null and (S.salary_processed is null or  S.salary_processed='N');";
+        } else {
+          inputValues.push(input.hospital_id);
+          if (input.employee_id != null) {
+            _stringData += " and A.employee_id=?";
+            inputValues.push(input.employee_id);
+          }
+
+          strQuery =
+            "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
+            A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
+            A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
+            A.total_paid_days,A.ot_work_hours, A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
+            E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
+            from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
+            on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
+            left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month`\
+            and S.employee_id = A.employee_id   where A.`year`=? and A.`month`=? and A.hospital_id=?" +
+            _stringData +
+            " and  (S.salary_processed is null or  S.salary_processed='N');";
+        }
+
+        utilities.logger().log("strQuery: ", strQuery);
         _mysql
           .executeQuery({
-            query:
-              "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, A.sub_department_id, \
-          A.total_days,A.present_days, A.absent_days, A.total_work_days, A.total_weekoff_days, \
-          A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, A.total_paid_days,A.ot_work_hours, \
-          A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,E.employee_code,E.gross_salary, \
-          S.hims_f_salary_id,S.salary_processed \
-          from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
-          on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
-          left join hims_f_salary as S on  S.`year`=A.`year` and S.`month` = A.`month` \
-          and S.employee_id = A.employee_id where \
-          A.`year`=? and A.`month`=? and A.hospital_id=? and (S.salary_processed is null or S.salary_processed= 'N') " +
-              _stringData,
+            query: strQuery,
             values: inputValues,
             printQuery: true
           })
           .then(empResult => {
             if (empResult.length == 0) {
               utilities.logger().log("empResult reslove: ", empResult.length);
-
+              // console.log("connection: ", req.connection);
               if (req.connection == null) {
+                utilities.logger().log("req.connection : ");
                 _mysql.releaseConnection();
                 req.records = empResult;
                 next();
               } else {
+                utilities.logger().log("req.connection Else : ");
                 resolve(empResult);
               }
               return;
