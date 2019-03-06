@@ -111,12 +111,12 @@ class ScreenAssignment extends Component {
     return (
       <div className="screen_assignment">
         <div className="row">
-          <div className="col-12">
+          <div className="col-4">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col" }}
+                    div={{ className: "col-12 form-group" }}
                     label={{ forceLabel: "Select a Group", isImp: true }}
                     selector={{
                       name: "app_group_id",
@@ -133,7 +133,7 @@ class ScreenAssignment extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col" }}
+                    div={{ className: "col-12 form-group" }}
                     label={{ forceLabel: "Select a Role", isImp: true }}
                     selector={{
                       name: "role_id",
@@ -152,7 +152,7 @@ class ScreenAssignment extends Component {
             </div>
           </div>
 
-          <div className="col-12">
+          <div className="col-8">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
@@ -191,9 +191,20 @@ class ScreenAssignment extends Component {
                     </div>
                   </div>
                 </div>
-
-                <button className="btn btn-primary">APPLY</button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button type="button" className="btn btn-primary">
+                <AlgaehLabel label={{ forceLabel: "Assign" }} />
+              </button>
+              <button type="button" className="btn btn-default">
+                <AlgaehLabel label={{ forceLabel: "Clear" }} />
+              </button>
             </div>
           </div>
         </div>

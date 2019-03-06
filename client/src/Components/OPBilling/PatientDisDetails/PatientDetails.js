@@ -9,6 +9,7 @@ import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import { PatientSearch, selectVisit } from "./DisPatientHandlers";
 
+import moment from "moment";
 class DisPatientForm extends Component {
   constructor(props) {
     super(props);
@@ -108,7 +109,7 @@ class DisPatientForm extends Component {
                 </div>
                 <div className="col-lg-9">
                   <div className="row">
-                    <div className="col-lg-3">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "full_name"
@@ -121,7 +122,7 @@ class DisPatientForm extends Component {
                       </h6>
                     </div>
 
-                    <div className="col-lg-3">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "patient_type"
@@ -134,7 +135,7 @@ class DisPatientForm extends Component {
                       </h6>
                     </div>
 
-                    <div className="col-lg-3">
+                    <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "mode_of_pay"
@@ -148,7 +149,7 @@ class DisPatientForm extends Component {
                     </div>
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col" }}
                       label={{
                         fieldName: "select_visit"
                       }}
@@ -166,26 +167,33 @@ class DisPatientForm extends Component {
                         onChange: selectVisit.bind(this, this, context),
                         template: item => (
                           <div className="multiInfoList">
-                            <h5>{item.visit_code}</h5>
-                            <h6>Date: {item.visit_date}</h6>
-                            <p>Doctor.: {item.full_name}</p>
-                            <p>Dept.: {item.sub_department_name}</p>
+                            <h5>
+                              {item.visit_date
+                                ? moment(item.visit_date).format(
+                                    "DD/MM/YYYY, hh:mm A"
+                                  )
+                                : "DD/MM/YYYY"}
+                            </h5>
+                            <h6>{item.visit_code}</h6>
+                            <p>{item.full_name}</p>
+                            <p>{item.sub_department_name}</p>
                           </div>
                         )
                       }}
                     />
 
-                    <div className="col-lg-3">
-                      {this.state.Billexists === true ? (
-                        this.state.cancelled === "Y" ? (
-                          <h5 style={{ color: "red" }}> Cancelled </h5>
+                    {this.state.Billexists === true ? (
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Bill Status" }} />
+                        {this.state.cancelled === "Y" ? (
+                          <h6 style={{ color: "red" }}> Cancelled </h6>
                         ) : this.state.balance_credit > 0 ? (
-                          <h5 style={{ color: "red" }}> Not Settled </h5>
+                          <h6 style={{ color: "red" }}> Not Settled </h6>
                         ) : (
-                          <h5 style={{ color: "green" }}> Settled </h5>
-                        )
-                      ) : null}
-                    </div>
+                          <h6 style={{ color: "green" }}> Settled </h6>
+                        )}
+                      </div>
+                    ) : null}
                   </div>
                 </div>
               </div>
