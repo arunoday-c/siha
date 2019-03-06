@@ -302,7 +302,7 @@ module.exports = {
 
                                               }
 
-
+                                              //if he is regularizing absent to leave
                                               let convertToLeave="";
                                               if(input.leave_from=="AB"&&input.absent_id>0){
                                                   let paid=0
