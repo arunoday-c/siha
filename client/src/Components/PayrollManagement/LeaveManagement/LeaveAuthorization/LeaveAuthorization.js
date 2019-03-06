@@ -93,7 +93,8 @@ export default class LeaveAuthorization extends Component {
       to_date: data.to_date,
       leave_category: data.leave_category,
       leave_from: data.leave_from,
-      absent_id: data.absent_id
+      absent_id: data.absent_id,
+      hospital_id: this.state.hospital_id
     };
 
     //console.log("Send Data:", JSON.stringify(send_data));

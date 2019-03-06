@@ -323,8 +323,8 @@ module.exports = {
                                                   leave=`, unpaid_leave=unpaid_leave+1 `;
                                                 }
 
-                                                convertToLeave=` update hims_f_daily_time_sheet set status=${input.leave_type+"L"}, actual_hours=0,actual_minutes=0 where hospital_id=${input.hospital_id}  and employee_id=${input.employee_id} and attendance_date=${input.from_date};
-                                                update hims_f_daily_attendance set absent_days=0 ,paid_leave=${paid},unpaid_leave=${unpaid} where hospital_id=${input.hospital_id} and employee_id=${input.employee_id} and attendance_date=${input.from_date};                                              
+                                                convertToLeave=` update hims_f_daily_time_sheet set status='${input.leave_type+"L"}', actual_hours=0,actual_minutes=0 where hospital_id=${input.hospital_id}  and employee_id=${input.employee_id} and attendance_date='${input.from_date}';
+                                                update hims_f_daily_attendance set absent_days=0 ,paid_leave=${paid},unpaid_leave=${unpaid} where hospital_id=${input.hospital_id} and employee_id=${input.employee_id} and attendance_date='${input.from_date}';                                              
                                                 update hims_f_attendance_monthly set absent_days=absent_days-1,total_leave=total_leave+1 ${leave}
                                                 where hospital_id=${input.hospital_id} and employee_id=${input.employee_id} and year=${input.year} and month=${month_number};
                                                 update hims_f_absent set status='CTL' ,processed='Y' where hims_f_absent_id=${input.absent_id};`
@@ -1078,6 +1078,7 @@ module.exports = {
       let allLeaves = [];
       let allHolidays = [];
   
+      
       //ST OF-------calculate Half-day or Full-day from session
       if (input.from_date == input.to_date) {
         if (input.from_session == "FH" && input.to_session == "FH") {
@@ -1200,9 +1201,11 @@ module.exports = {
         .then(result => {
           allLeaves = result[0];
           allHolidays = result[1];
-          currentClosingBal = allLeaves[0].close_balance;
+         
   
           if (allLeaves.length > 0) {
+
+            currentClosingBal = allLeaves[0].close_balance;
             let isHoliday = new LINQ(allHolidays)
               .Where(
                 w =>
@@ -4561,13 +4564,14 @@ function saveF  (_mysql,req,  next,  input, msg){
     _mysql
     .executeQuery({
       query:
-      "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,application_date,sub_department_id,leave_id,leave_type,\
+      "INSERT INTO `hims_f_leave_application` (leave_application_code,employee_id,hospital_id,application_date,sub_department_id,leave_id,leave_type,\
         from_date,to_date,from_leave_session,to_leave_session,leave_applied_from,total_applied_days,remarks,weekoff_included,holiday_included,\
         weekoff_days,holidays,leave_from,absent_id, created_date, created_by, updated_date, updated_by)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       values: [
         numGenLeave[0],
         input.employee_id,
+       input.hospital_id,
         new Date(),
         input.sub_department_id,
         input.leave_id,

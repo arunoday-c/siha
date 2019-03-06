@@ -87,6 +87,7 @@ class Encounters extends Component {
       data: {
         episode_id: episode_id
       },
+      module: "MRD",
       cancelRequestId: "getPatientChiefComplaint",
       onSuccess: response => {
         algaehLoader({ show: false });
@@ -182,6 +183,7 @@ class Encounters extends Component {
       data: {
         patient_id: Window.global["mrd_patient"]
       },
+      module: "MRD",
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
