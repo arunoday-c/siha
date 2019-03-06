@@ -87,5 +87,5 @@
   "edit_option": "Action",
   "currency": "Currency",
   "Cannotbeblank": "Cannot be blank.",
-  "hospital_id": "Hospital"
+  "hospital_id": "Division/Branch"
 }
