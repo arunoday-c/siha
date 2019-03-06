@@ -64,7 +64,7 @@ module.exports = {
                 printQuery: true
               })
               .then(RcptDetailsRecords => {
-                if (req.mySQl == null) {
+                if (req.connection == null) {
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
                   req.records = headerRcptResult;
@@ -316,7 +316,7 @@ module.exports = {
             })
             .then(detailsRecords => {
               // utilities.logger().log("detailsRecords Bill: ", detailsRecords);
-              if (req.mySQl == null) {
+              if (req.connection == null) {
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
                 req.records = headerResult;
@@ -910,7 +910,7 @@ module.exports = {
                       printQuery: true
                     })
                     .then(updateResult => {
-                      if (req.mySQl == null) {
+                      if (req.connection == null) {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = updateResult;
@@ -939,7 +939,7 @@ module.exports = {
             });
           });
       } else {
-        if (req.mySQl == null) {
+        if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
             req.records = { mesage: "not a cahsier" };

@@ -81,7 +81,7 @@ module.exports = {
 
   addsalesReturn: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
-    const _mysql = new algaehMysql(_options); //req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _mysql = new algaehMysql(_options);
 
     try {
       let input = { ...req.body };
@@ -273,7 +273,7 @@ module.exports = {
 
   updatesalesReturn: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
-    const _mysql = new algaehMysql(_options); //req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _mysql = new algaehMysql(_options);
 
     try {
       req.body.hims_f_pharmcy_sales_return_header_id =
@@ -317,7 +317,7 @@ module.exports = {
 
   updatePOSDetail: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
-    const _mysql = new algaehMysql(_options); //req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _mysql = new algaehMysql(_options);
 
     try {
       let inputParam = { ...req.body };

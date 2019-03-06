@@ -2,6 +2,8 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
+import mysql from "mysql";
+import moment from "moment";
 
 module.exports = {
   addOpBIlling: (req, res, next) => {
@@ -68,8 +70,15 @@ module.exports = {
         })
         .ToArray();
 
+      let qry = "";
       if (OrderServices.length > 0) {
         for (let i = 0; i < OrderServices.length; i++) {
+          utilities.logger().log("billed: ", OrderServices[i].billed);
+          utilities.logger().log("updated_by: ", OrderServices[i].updated_by);
+          utilities
+            .logger()
+            .log("billed: ", OrderServices[i].hims_f_ordered_services_id);
+
           qry += mysql.format(
             "UPDATE `hims_f_ordered_services` SET billed=?,\
               updated_date=?,updated_by=? where hims_f_ordered_services_id=?;",
@@ -82,18 +91,17 @@ module.exports = {
           );
         }
 
+        utilities.logger().log("qry: ", qry);
+
         _mysql
           .executeQuery({
             query: qry,
             printQuery: true
           })
           .then(updateOrder => {
-            if (req.mySQl == null) {
-              // _mysql.commitTransaction(() => {
-              // _mysql.releaseConnection();
+            if (req.connection == null) {
               req.records = updateOrder;
               next();
-              // });
             } else {
               next();
             }
@@ -109,7 +117,7 @@ module.exports = {
       }
     } catch (e) {
       _mysql.rollBackTransaction(() => {
-        next(error);
+        next(e);
       });
     }
   },

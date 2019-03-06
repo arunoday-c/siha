@@ -268,7 +268,7 @@ module.exports = {
                             printQuery: true
                           })
                           .then(ord_analytes => {
-                            if (req.mySQl == null) {
+                            if (req.connection == null) {
                               // _mysql.commitTransaction(() => {
                               //   _mysql.releaseConnection();
                               req.records = ord_analytes;

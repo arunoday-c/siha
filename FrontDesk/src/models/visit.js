@@ -198,7 +198,7 @@ module.exports = {
                   printQuery: true
                 })
                 .then(resultData => {
-                  if (req.mySQl == null) {
+                  if (req.connection == null) {
                     _mysql.commitTransaction(() => {
                       _mysql.visitresult();
                       req.records = result;
@@ -266,7 +266,7 @@ module.exports = {
                   })
                   .then(record => {
                     if (record.length == 0) {
-                      if (req.mySQl == null) {
+                      if (req.connection == null) {
                         _mysql.rollBackTransaction(() => {
                           next(
                             utilities
@@ -398,7 +398,7 @@ module.exports = {
               printQuery: true
             })
             .then(patAppointment => {
-              // if (req.mySQl == null) {
+              // if (req.connection == null) {
               //   _mysql.commitTransaction(() => {
               //     _mysql.releaseConnection();
               //     req.records = result;
@@ -494,7 +494,7 @@ module.exports = {
             printQuery: true
           })
           .then(patient_insurance => {
-            if (req.mySQl == null) {
+            if (req.connection == null) {
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
                 req.records = patient_insurance;
