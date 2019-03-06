@@ -5870,7 +5870,7 @@ function insertTimeSheet(
               w =>
                 w.employee_id == biometricData[i]["hims_d_employee_id"] &&
                 w.from_date <= biometricData[i]["attendance_date"] &&
-                w.from_date >= biometricData[i]["attendance_date"]
+                w.to_date >= biometricData[i]["attendance_date"]
             )
             .Select(s => {
               return {
