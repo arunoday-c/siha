@@ -3175,11 +3175,11 @@ module.exports = {
                 AllEmployees = result[2];
                 AllShifts = result[3];
 
-                // utilities.logger().log("options: ", options);
-                // utilities.logger().log("allHolidays: ", allHolidays);
-                // utilities.logger().log("AllLeaves: ", AllLeaves);
-                // utilities.logger().log("AllEmployees: ", AllEmployees);
-                // utilities.logger().log("AllShifts: ", AllShifts);
+                utilities.logger().log("options: ", options);
+                utilities.logger().log("allHolidays: ", allHolidays);
+                utilities.logger().log("AllLeaves: ", AllLeaves);
+                utilities.logger().log("AllEmployees: ", AllEmployees);
+                utilities.logger().log("AllShifts: ", AllShifts);
 
                 if (
                   AllEmployees.length > 0 &&
@@ -3289,9 +3289,9 @@ module.exports = {
                           return;
                         }
 
-                        // utilities
-                        //   .logger()
-                        //   .log("attResult", attResult["recordset"]);
+                        utilities
+                          .logger()
+                          .log("attResult", attResult["recordset"]);
                         attendcResult = attResult["recordset"];
 
                         if (attendcResult.length > 0 && from_date == to_date) {
@@ -3314,8 +3314,8 @@ module.exports = {
                               })
                               .FirstOrDefault({
                                 shift_end_day: null,
-                                shift_date: null,
-                                shift_end_date: null,
+                                shift_date: from_date,
+                                shift_end_date: from_date,
                                 shift_time: 0.0,
                                 shift_end_time: 0
                               });
@@ -3483,6 +3483,7 @@ module.exports = {
                               }
                             } else {
                               utilities.logger().log("same day", "same day");
+
                               biometricData.push(
                                 new LINQ(attendcResult)
                                   .Where(
@@ -3525,14 +3526,14 @@ module.exports = {
                                         AllEmployees[i]["hospital_id"],
                                       hours: s.Duration.split(".")[0],
                                       minutes: s.Duration.split(".")[1],
-                                      year: moment(date_range[i]).format(
+                                      year: moment(from_date).format(
                                         "YYYY"
                                       ),
-                                      month: moment(date_range[i]).format("M")
+                                      month: moment(from_date).format("M")
                                     };
                                   })
                                   .FirstOrDefault({
-                                    biometric_id: null,
+                                    biometric_id: AllEmployees[i]["biometric_id"],
                                     attendance_date: from_date,
                                     out_date: from_date,
                                     in_time: null,
@@ -3555,17 +3556,17 @@ module.exports = {
                                     hospital_id: AllEmployees[i]["hospital_id"],
                                     hours: 0,
                                     minutes: 0,
-                                    year: moment(date_range[i]).format("YYYY"),
-                                    month: moment(date_range[i]).format("M")
+                                    year: moment(from_date).format("YYYY"),
+                                    month: moment(from_date).format("M")
                                   })
                               );
                             }
                           }
 
                           ///----end logic
-                          // utilities
-                          //   .logger()
-                          //   .log("biometricData", biometricData);
+                          utilities
+                            .logger()
+                            .log("biometricData", biometricData);
 
                           insertTimeSheet(
                             returnQry,
@@ -4872,12 +4873,14 @@ module.exports = {
                 .logger()
                 .log("lastMonth_end_date: ", lastMonth_end_date);
 
-              //  let  standard_hours = options[0]["standard_working_hours"]
-              //     .toString()
-              //     .split(".")[0];
-              //   let standard_mins = options[0]["standard_working_hours"]
-              //     .toString()
-              //     .split(".")[1];
+
+
+            //  let  standard_hours = options[0]["standard_working_hours"]
+            //     .toString()
+            //     .split(".")[0];
+            //   let standard_mins = options[0]["standard_working_hours"]
+            //     .toString()
+            //     .split(".")[1];
 
               _mysql
                 .executeQuery({
@@ -4908,7 +4911,7 @@ module.exports = {
                         ( date(?)>=date(from_date) and   date(?)<=date(to_date))   or (date(from_date)>= date(?)\
                         and date(from_date)<=date(?) ) or \
                         (date(to_date)>=date(?) and date(to_date)<= date(?) )\
-                        )and employee_id=504 and (`status`='APR' or `status`='PEN') ;\
+                        )and employee_id=? and (`status`='APR' or `status`='PEN') ;\
                         select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
                         religion_id from hims_d_holiday where record_status='A' and date(holiday_date)\
                         between date(?) and date(?) and hospital_id=?",
@@ -4937,9 +4940,12 @@ module.exports = {
                     to_date,
                     next_dayOf_cutoff,
                     to_date,
+                    input.hims_d_employee_id ,
+
                     next_dayOf_cutoff,
                     to_date,
                     input.hospital_id
+
                   ],
 
                   printQuery: true
@@ -4971,7 +4977,7 @@ module.exports = {
 
                     utilities.logger().log("excptions: ", excptions);
 
-                    if (excptions.length > 0) {
+                    if (excptions.length >0) {
                       req.records = {
                         invalid_input: true,
                         employees: excptions,
@@ -4991,21 +4997,11 @@ module.exports = {
                           let total_minutes =
                             parseInt(AttenResult[i]["actual_hours"] * 60) +
                             parseInt(AttenResult[i]["actual_minutes"]);
-                          utilities
-                            .logger()
-                            .log(
-                              "actual_hours: ",
-                              AttenResult[i]["actual_hours"]
-                            );
-                          utilities
-                            .logger()
-                            .log(
-                              "actual_minutes: ",
-                              AttenResult[i]["actual_minutes"]
-                            );
-                          utilities
-                            .logger()
-                            .log("total_minutes: ", total_minutes);
+                            utilities.logger().log("actual_hours: ", AttenResult[i]["actual_hours"]);
+                            utilities.logger().log("actual_minutes: ", AttenResult[i]["actual_minutes"]);
+                            utilities.logger().log("total_minutes: ", total_minutes);
+
+
 
                           let worked_minutes =
                             parseInt(AttenResult[i]["hours"] * 60) +
@@ -5027,16 +5023,15 @@ module.exports = {
                             ot_min = parseInt(Math.abs(diff)) % parseInt(60);
                           }
 
-                          utilities
-                            .logger()
-                            .log("worked_minutes: ", worked_minutes);
+
+                         
+                          utilities.logger().log("worked_minutes: ", worked_minutes);
                           utilities.logger().log("diff: ", diff);
                           utilities.logger().log("ot_time: ", ot_time);
-                          utilities
-                            .logger()
-                            .log("shortage_time: ", shortage_time);
+                          utilities.logger().log("shortage_time: ", shortage_time);
                           utilities.logger().log("================: ");
                         }
+                       
 
                         dailyAttendance.push({
                           employee_id: AttenResult[i]["employee_id"],
@@ -5054,7 +5049,7 @@ module.exports = {
                           present_days:
                             AttenResult[i]["status"] == "PR" ? 1 : 0,
                           absent_days: AttenResult[i]["status"] == "AB" ? 1 : 0,
-                          total_work_days: 1,
+                          total_work_days:1,
                           weekoff_days:
                             AttenResult[i]["status"] == "WO" ? 1 : 0,
                           holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
@@ -5075,169 +5070,133 @@ module.exports = {
                         });
                       }
 
-                      let leave_Date_range = [];
+
+
+
+                      let leave_Date_range =[];
+                      
 
                       //calculating leave date range
-                      for (let m = 0; m < LeaveResult.length; m++) {
-                        leave_Date_range.push({
-                          leave_type: LeaveResult[m]["leave_type"],
-                          dates: getDays(
-                            new Date(LeaveResult[m]["from_date"]),
-                            new Date(LeaveResult[m]["to_date"])
-                          )
-                        });
+                      for (let m = 0; m < LeaveResult.length; m++){
+                        leave_Date_range.push( {leave_type:LeaveResult[m]["leave_type"], dates:getDays(new Date(LeaveResult[m]["from_date"]),new Date(LeaveResult[m]["to_date"]))});
                       }
 
-                      utilities
-                        .logger()
-                        .log("leave_Date_range: ", leave_Date_range);
+                      utilities.logger().log("leave_Date_range: ", leave_Date_range);
 
-                      let roster_Date_range = getDays(
-                        new Date(next_dayOf_cutoff),
-                        new Date(to_date)
-                      );
-                      utilities
-                        .logger()
-                        .log("roster_Date_range: ", roster_Date_range);
-                      //workin here
-                      for (let i = 0; i < roster_Date_range.length; i++) {
-                        let whichLeave = 0;
-                        // checking which leave is on puerticular date
-                        for (let k = 0; k < leave_Date_range.length; k++) {
-                          let leavData = leave_Date_range[k]["dates"].includes(
-                            roster_Date_range[i]
-                          );
 
-                          utilities.logger().log("leavData: ", leavData);
-                          utilities
-                            .logger()
-                            .log(
-                              "roster_Date_range[i]: ",
-                              roster_Date_range[i]
-                            );
-                          if (leavData == true) {
-                            whichLeave = leave_Date_range[k]["leave_type"];
-                            break;
-                          }
-                        }
 
-                        utilities
-                          .logger()
-                          .log("roster_Date_range: ", roster_Date_range);
+                      let roster_Date_range =getDays(new Date(next_dayOf_cutoff),new Date(to_date));
+                      utilities.logger().log("roster_Date_range: ", roster_Date_range);
+ //workin here
+for (let i = 0; i < roster_Date_range.length; i++) {
+  let whichLeave = 0;
+  // checking which leave is on particular date
+  for (let k = 0; k < leave_Date_range.length; k++) {
+    let leavData = leave_Date_range[k]["dates"].includes(roster_Date_range[i]);
 
-                        let holiday_or_weekOff = new LINQ(HolidayResult)
-                          .Where(
-                            w =>
-                              w.holiday_date == roster_Date_range[i] &&
-                              (w.weekoff == "Y" ||
-                                (w.holiday == "Y" && w.holiday_type == "RE") ||
-                                (w.holiday == "Y" &&
-                                  w.holiday_type == "RS" &&
-                                  w.religion_id ==
-                                    RosterResult[0]["religion_id"]))
-                          )
-                          .Select(s => {
-                            return {
-                              holiday: s.holiday,
-                              weekoff: s.weekoff
-                            };
-                          })
-                          .FirstOrDefault({
-                            holiday: "N",
-                            weekoff: "N"
-                          });
-                        utilities
-                          .logger()
-                          .log("holiday_or_weekOff: ", holiday_or_weekOff);
+    utilities.logger().log("leavData: ", leavData);
+    utilities.logger().log("roster_Date_range[i]: ", roster_Date_range[i]);
+    if (leavData == true) {
+      whichLeave = leave_Date_range[k]["leave_type"];
+      break;
+    }
+  }
 
-                        RosterAttendance.push(
-                          new LINQ(RosterResult)
-                            .Where(w => roster_Date_range[i] == w.shift_date)
-                            .Select(s => {
-                              return {
-                                employee_id: s.employee_id,
-                                hospital_id: s.hospital_id,
-                                sub_department_id: s.sub_department_id,
-                                attendance_date: s.shift_date,
-                                year: moment(s.shift_date).format("YYYY"),
-                                month: moment(s.shift_date).format("M"),
-                                total_days: 1,
+  utilities.logger().log("roster_Date_range: ", roster_Date_range);
 
-                                weekoff_days:
-                                  whichLeave == 0 && s.weekoff == "Y" ? 1 : 0,
-                                holidays:
-                                  whichLeave == 0 && s.holiday == "Y" ? 1 : 0,
-                                present_days:
-                                  whichLeave == 0 &&
-                                  s.weekoff == "N" &&
-                                  s.holiday == "N"
-                                    ? 1
-                                    : 0,
-                                absent_days: 0,
-                                total_work_days: 1,
-                                paid_leave: whichLeave == "P" ? 1 : 0,
-                                unpaid_leave: whichLeave == "U" ? 1 : 0,
-                                total_hours: s.shift_time,
+  let holiday_or_weekOff = new LINQ(HolidayResult)
+    .Where(
+      w =>
+        w.holiday_date == roster_Date_range[i] &&
+        (w.weekoff == "Y" ||
+          (w.holiday == "Y" && w.holiday_type == "RE") ||
+          (w.holiday == "Y" &&
+            w.holiday_type == "RS" &&
+            w.religion_id == RosterResult[0]["religion_id"]))
+    )
+    .Select(s => {
+      return {
+        holiday: s.holiday,
+        weekoff: s.weekoff
+      };
+    })
+    .FirstOrDefault({
+      holiday: "N",
+      weekoff: "N"
+    });
+  utilities.logger().log("holiday_or_weekOff: ", holiday_or_weekOff);
 
-                                hours: parseInt(s.shift_time),
-                                minutes: (parseFloat(s.shift_time) % 1) * 100,
-                                working_hours: s.shift_time,
-                                shortage_hours: 0,
-                                shortage_minutes: 0,
-                                ot_work_hours: 0,
-                                ot_minutes: 0
-                              };
-                            })
-                            .FirstOrDefault({
-                              employee_id: RosterResult[0].employee_id,
-                              hospital_id: RosterResult[0].hospital_id,
-                              sub_department_id:
-                                RosterResult[0].sub_department_id,
-                              attendance_date: roster_Date_range[i],
-                              year: moment(roster_Date_range[i]).format("YYYY"),
-                              month: moment(roster_Date_range[i]).format("M"),
-                              total_days: 1,
+  RosterAttendance.push(
+    new LINQ(RosterResult)
+      .Where(w => roster_Date_range[i] == w.shift_date)
+      .Select(s => {
+        return {
+          employee_id: s.employee_id,
+          hospital_id: s.hospital_id,
+          sub_department_id: s.sub_department_id,
+          attendance_date: s.shift_date,
+          year: moment(s.shift_date).format("YYYY"),
+          month: moment(s.shift_date).format("M"),
+          total_days: 1,
 
-                              weekoff_days:
-                                whichLeave == 0 &&
-                                holiday_or_weekOff.weekoff == "Y"
-                                  ? 1
-                                  : 0,
-                              holidays:
-                                whichLeave == 0 &&
-                                holiday_or_weekOff.holiday == "Y"
-                                  ? 1
-                                  : 0,
-                              present_days:
-                                whichLeave == 0 &&
-                                holiday_or_weekOff.weekoff == "N" &&
-                                holiday_or_weekOff.holiday == "N"
-                                  ? 1
-                                  : 0,
-                              absent_days: 0,
-                              total_work_days: 1,
-                              paid_leave: whichLeave == "P" ? 1 : 0,
-                              unpaid_leave: whichLeave == "U" ? 1 : 0,
-                              total_hours: 0,
+          weekoff_days: whichLeave == 0 && s.weekoff == "Y" ? 1 : 0,
+          holidays: whichLeave == 0 && s.holiday == "Y" ? 1 : 0,
+          present_days:
+            whichLeave == 0 && s.weekoff == "N" && s.holiday == "N" ? 1 : 0,
+          absent_days: 0,
+          total_work_days: 1,
+          paid_leave: whichLeave == "P" ? 1 : 0,
+          unpaid_leave: whichLeave == "U" ? 1 : 0,
+          total_hours: s.shift_time,
 
-                              hours: 0,
-                              minutes: 0,
-                              working_hours:
-                                whichLeave != 0 ||
-                                holiday_or_weekOff.weekoff == "Y" ||
-                                holiday_or_weekOff.holiday == "Y"
-                                  ? 0
-                                  : options[0]["standard_working_hours"],
-                              shortage_hours: 0,
-                              shortage_minutes: 0,
-                              ot_work_hours: 0,
-                              ot_minutes: 0
-                            })
-                        );
-                      }
-                      utilities
-                        .logger()
-                        .log("RosterAttendance: ", RosterAttendance);
+          hours: parseInt(s.shift_time),
+          minutes: (parseFloat(s.shift_time) % 1) * 100,
+          working_hours: s.shift_time,
+          shortage_hours: 0,
+          shortage_minutes: 0,
+          ot_work_hours: 0,
+          ot_minutes: 0
+        };
+      })
+      .FirstOrDefault({
+        employee_id: RosterResult[0].employee_id,
+        hospital_id: RosterResult[0].hospital_id,
+        sub_department_id: RosterResult[0].sub_department_id,
+        attendance_date: roster_Date_range[i],
+        year: moment(roster_Date_range[i]).format("YYYY"),
+        month: moment(roster_Date_range[i]).format("M"),
+        total_days: 1,
+
+        weekoff_days:
+          whichLeave == 0 && holiday_or_weekOff.weekoff == "Y" ? 1 : 0,
+        holidays: whichLeave == 0 && holiday_or_weekOff.holiday == "Y" ? 1 : 0,
+        present_days:
+          whichLeave == 0 &&
+          holiday_or_weekOff.weekoff == "N" &&
+          holiday_or_weekOff.holiday == "N"
+            ? 1
+            : 0,
+        absent_days: 0,
+        total_work_days:1,
+        paid_leave: whichLeave == "P" ? 1 : 0,
+        unpaid_leave: whichLeave == "U" ? 1 : 0,
+        total_hours: 0,
+
+        hours: 0,
+        minutes: 0,
+        working_hours:   whichLeave != 0 ||
+        holiday_or_weekOff.weekoff == "Y" ||
+        holiday_or_weekOff.holiday == "Y"? 0  :options[0]["standard_working_hours"],
+        shortage_hours: 0,
+        shortage_minutes: 0,
+        ot_work_hours: 0,
+        ot_minutes: 0
+      })
+  );
+
+ 
+}
+utilities.logger().log("RosterAttendance: ", RosterAttendance);
 
                       //ST---present month roster 10 days
                       // for (let j = 0; j < RosterResult.length; j++) {
@@ -5245,16 +5204,18 @@ module.exports = {
                       //   let whichLeave=0;
                       //   // checking which leave is on puerticular date
                       //   for (let k = 0; k < leave_Date_range.length; k++){
-                      //     let leavData=leave_Date_range[k]["dates"].includes(RosterResult[j]["shift_date"]);
+                      //     let leavData=leave_Date_range[k]["dates"].includes(RosterResult[j]["shift_date"]);                      
                       //     if (leavData==true){
                       //       whichLeave=leave_Date_range[k]["leave_type"];
                       //       break;
                       //     }
-
+                          
                       //   }
                       //   utilities.logger().log("shift_date ", RosterResult[j]["shift_date"]);
                       //   utilities.logger().log("whichLeave: ", whichLeave);
-
+                       
+                        
+                       
                       //   RosterAttendance.push({
                       //     employee_id: RosterResult[j]["employee_id"],
                       //     hospital_id: RosterResult[j]["hospital_id"],
@@ -5268,6 +5229,7 @@ module.exports = {
                       //       "M"
                       //     ),
                       //     total_days: 1,
+
 
                       //     weekoff_days:
                       //     whichLeave==0  &&RosterResult[j]["weekoff"] == "Y" ? 1 : 0,
@@ -5298,8 +5260,8 @@ module.exports = {
                       //     ot_minutes: 0
                       //   });
                       // }
-                      //--ENDpresent month roster 10 days
-
+//--ENDpresent month roster 10 days
+                    
                       //last month 10 days
                       for (let i = 0; i < LastTenDaysResult.length; i++) {
                         let shortage_time = 0;
@@ -5384,7 +5346,7 @@ module.exports = {
                         .log("RosterAttendance: ", RosterAttendance);
 
                       mergedArray = dailyAttendance.concat(RosterAttendance);
-
+                      
                       utilities.logger().log("mergedArray: ", mergedArray);
 
                       const insurtColumns = [
@@ -5535,28 +5497,22 @@ module.exports = {
                                 utilities
                                   .logger()
                                   .log("pending_leaves: ", pending_leaves);
-
-                                utilities
+                            
+                            
+                            
+                                  utilities
                                   .logger()
-                                  .log(
-                                    "shortage_hourss: ",
-                                    attResult[i]["shortage_hourss"]
-                                  );
-                                utilities
+                                  .log("shortage_hourss: ", attResult[i]["shortage_hourss"]);
+                                  utilities
                                   .logger()
-                                  .log(
-                                    "ot_hourss: ",
-                                    attResult[i]["ot_hourss"]
-                                  );
+                                  .log("ot_hourss: ", attResult[i]["ot_hourss"]);
 
                                 insertArray.push({
                                   ...attResult[i],
                                   total_paid_days:
-                                    parseFloat(attResult[i]["present_days"]) +
+                                   parseFloat( attResult[i]["present_days"]) +
                                     parseFloat(attResult[i]["paid_leave"]) +
-                                    parseFloat(
-                                      attResult[i]["total_weekoff_days"]
-                                    ) +
+                                    parseFloat(attResult[i]["total_weekoff_days"]) +
                                     parseFloat(attResult[i]["total_holidays"]),
                                   total_leave:
                                     parseFloat(attResult[i]["paid_leave"]) +
@@ -5564,9 +5520,8 @@ module.exports = {
                                   total_hours: attResult[i]["total_hours"],
                                   total_working_hours:
                                     attResult[i]["total_working_hours"],
-                                  shortage_hours:
-                                    attResult[i]["shortage_hourss"],
-                                  ot_work_hours: attResult[i]["ot_hourss"],
+                                    shortage_hours: attResult[i]["shortage_hourss"],
+                                    ot_work_hours: attResult[i]["ot_hourss"],
                                   pending_unpaid_leave: pending_leaves,
 
                                   prev_month_shortage_hr: short_hrs,
@@ -5941,23 +5896,29 @@ function insertTimeSheet(
 
             insertArray.push({
               ...biometricData[i],
-              status: leave[0]["leave_type"] + "L"
+              status: leave[0]["leave_type"] + "L",
+              actual_hours:0 ,
+              actual_minutes:0
             });
           } else if (
             holidayweekoff.length > 0 &&
             holidayweekoff[0].weekoff == "Y"
           ) {
-            utilities.logger().log("BALL: ", "BAAL");
+        
             //check weekoff
-            insertArray.push({ ...biometricData[i], status: "WO" });
+            insertArray.push({ ...biometricData[i], status: "WO",
+            actual_hours:0 ,
+            actual_minutes:0 });
           } else if (
             holidayweekoff.length > 0 &&
             holidayweekoff[0].holiday == "Y"
           ) {
             //check holiday
 
-            utilities.logger().log("CAT: ", "CAT");
-            insertArray.push({ ...biometricData[i], status: "HO" });
+         
+            insertArray.push({ ...biometricData[i], status: "HO",
+            actual_hours:0 ,
+            actual_minutes:0 });
           } else {
             utilities.logger().log("DOG: ", "DOG");
             //else mark absent
