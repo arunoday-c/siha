@@ -201,7 +201,6 @@ class SelfPersonalDetails extends Component {
     });
   }
   updateEmployeeWorkExperience(data) {
-    
     algaehApiCall({
       uri: "/employee/updateEmployeeWorkExperience",
       module: "hrManagement",
@@ -217,7 +216,6 @@ class SelfPersonalDetails extends Component {
         hims_d_employee_experience_id: data.hims_d_employee_experience_id
       },
       onSuccess: res => {
-        
         if (res.data.success) {
           swalMessage({
             title: "Record updated successfully",
@@ -675,7 +673,6 @@ class SelfPersonalDetails extends Component {
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
-        
         if (res.data.success) {
           this.setState({
             family_details: res.data.records
@@ -2574,6 +2571,84 @@ class SelfPersonalDetails extends Component {
                         }
                       }
                     />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Change Password</h3>
+                </div>
+                {/* <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i className="fas fa-pen" />
+                  </a>
+                </div> */}
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      forceLabel: "Enter Old Password",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "",
+                      value: "",
+                      events: {},
+                      option: {
+                        type: "password"
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      forceLabel: "New Password",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "",
+                      value: "",
+                      events: {},
+                      option: {
+                        type: "password"
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      forceLabel: "Confirm New Password",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "",
+                      value: "",
+                      events: {},
+                      option: {
+                        type: "password"
+                      }
+                    }}
+                  />
+                  <div className="col-12">
+                    <button
+                      className="btn btn-primary"
+                      style={{ float: "right", marginLeft: 15 }}
+                    >
+                      Update
+                    </button>
+                    <button
+                      className="btn btn-default"
+                      style={{ float: "right", marginLeft: 15 }}
+                    >
+                      Clear
+                    </button>
                   </div>
                 </div>
               </div>

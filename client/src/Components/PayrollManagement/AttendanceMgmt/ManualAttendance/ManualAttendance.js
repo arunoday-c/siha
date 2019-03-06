@@ -133,7 +133,6 @@ class ManualAttendance extends Component {
 
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
-      projects: [],
       employee_details: [],
       worked_hours: null,
       in_time: null,
@@ -455,7 +454,8 @@ class ManualAttendance extends Component {
                         },
                         updateRecords: data => {
                           this.setState({
-                            employee_details: data
+                            employee_details: data,
+                            process_attend: false
                           });
                         }
                       }}

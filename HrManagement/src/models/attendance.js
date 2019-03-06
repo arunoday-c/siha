@@ -4211,7 +4211,7 @@ module.exports = {
           values: _values,
           printQuery: true
         })
-        .then(result => {
+        .then (result => {
           if (result.length > 0) {
             let _query = "";
 

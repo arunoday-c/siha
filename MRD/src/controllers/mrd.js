@@ -9,25 +9,20 @@ import {
   getPatientInvestigation,
   getPatientPaymentDetails,
   getPatientTreatments
-} from "../model/mrd";
+} from "../models/mrd";
 
-export default ({ config, db }) => {
+export default () => {
   let api = Router();
 
   // created by irfan :to get Patient Mrd List
-  api.get(
-    "/getPatientMrdList",
-    getPatientMrdList,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
+  api.get("/getPatientMrdList", getPatientMrdList, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
 
   // created by irfan :to get Patient Encounter Details
   api.get(
@@ -40,8 +35,7 @@ export default ({ config, db }) => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
   );
 
   // created by irfan :to get Patient Chief Complaint
@@ -55,39 +49,28 @@ export default ({ config, db }) => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
   );
 
   // created by irfan :to getPatientDiagnosis
-  api.get(
-    "/getPatientDiagnosis",
-    getPatientDiagnosis,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
+  api.get("/getPatientDiagnosis", getPatientDiagnosis, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
 
   // created by irfan :to getPatientMedication
-  api.get(
-    "/getPatientMedication",
-    getPatientMedication,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
+  api.get("/getPatientMedication", getPatientMedication, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
 
   // created by irfan :to get Patient Investigation
   api.get(
@@ -100,8 +83,7 @@ export default ({ config, db }) => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
   );
 
   // created by irfan :to  getPatientPaymentDetails
@@ -115,23 +97,17 @@ export default ({ config, db }) => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
   );
   // created by irfan :to  getPatientTreatments
-  api.get(
-    "/getPatientTreatments",
-    getPatientTreatments,
-    (req, res, next) => {
-      let result = req.records;
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: result
-      });
-      next();
-    },
-    releaseConnection
-  );
+  api.get("/getPatientTreatments", getPatientTreatments, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
 
   return api;
 };

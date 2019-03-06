@@ -738,5 +738,69 @@ module.exports = {
         next(e);
       });
     }
+  },
+
+  updateLabOrderedBilled: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updateLabOrderedBilled: ");
+    try {
+      let OrderServices = new LINQ(req.body.billdetails)
+        .Where(
+          w =>
+            w.hims_f_ordered_services_id != null &&
+            w.service_type_id ==
+              appsettings.hims_d_service_type.service_type_id.Lab
+        )
+        .Select(s => {
+          return {
+            ordered_services_id: s.hims_f_ordered_services_id,
+            billed: "Y",
+            updated_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id
+          };
+        })
+        .ToArray();
+
+      if (OrderServices.length > 0) {
+        let qry = "";
+
+        for (let i = 0; i < OrderServices.length; i++) {
+          qry += mysql.format(
+            "UPDATE `hims_f_lab_order` SET billed=?,\
+          updated_date=?,updated_by=? where ordered_services_id=?;",
+            [
+              OrderServices[i].billed,
+              moment().format("YYYY-MM-DD HH:mm"),
+              OrderServices[i].updated_by,
+              OrderServices[i].ordered_services_id
+            ]
+          );
+        }
+        utilities.logger().log("qry: ", qry);
+        _mysql
+          .executeQuery({
+            query: qry,
+            printQuery: true
+          })
+          .then(result => {
+            req.records = { LAB: false };
+            next();
+          })
+          .catch(e => {
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      } else {
+        req.records = { LAB: true };
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
   }
 };

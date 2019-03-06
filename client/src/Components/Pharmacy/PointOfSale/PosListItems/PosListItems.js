@@ -832,26 +832,52 @@ class PosListItems extends Component {
                           </div>
                         </div>
                       </div>
-                      <div className="col" />
-                      {/* <div
-                    className="col-lg-2"
-                    style={{
-                      border: "1px solid #cccccc",
-                      background: "f7f7f7",
-                      marginBottom: 10
-                    }}
-                  >
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Quantity in Hand"
-                      }}
-                    />
-                    <h6>
-                      {this.state.total_quantity
-                        ? this.state.total_quantity + " nos"
-                        : "0 nos"}
-                    </h6>
-                  </div> */}
+                      <div className="col-lg-7">
+                        <div className="row">
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Patient Responsibility"
+                              }}
+                            />
+                            <h6>
+                              {getAmountFormart(
+                                this.state.patient_responsibility
+                              )}
+                            </h6>
+                          </div>
+
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Patient Tax"
+                              }}
+                            />
+                            <h6>{getAmountFormart(this.state.patient_tax)}</h6>
+                          </div>
+
+                          <div className="col">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Patient Payable"
+                              }}
+                            />
+                            <h6>
+                              {getAmountFormart(this.state.patient_payable_h)}
+                            </h6>
+                          </div>
+
+                          {/* <div className="col-lg-12 patientRespo">
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Patient"
+                              }}
+                            />
+                            <div className="row insurance-details" />
+                          </div> */}
+                          {/* <div className="col-lg-1"> &nbsp; </div> */}
+                        </div>
+                      </div>
                       <div className="col-lg-5" style={{ textAlign: "right" }}>
                         <div className="row">
                           <div className="col-lg-4">
@@ -900,15 +926,6 @@ class PosListItems extends Component {
                                 {getAmountFormart(this.state.copay_amount)}
                               </h6>
                             </div>
-                            {/* <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Deductable Amount"
-                            }}
-                          />
-                          <h6>{getAmountFormart(this.state.deductable_amount)}</h6>
-                         
-                        </div> */}
                             <div className="col-lg-6">
                               <AlgaehLabel
                                 label={{
@@ -919,65 +936,8 @@ class PosListItems extends Component {
                                 {getAmountFormart(this.state.sec_copay_amount)}
                               </h6>
                             </div>
-                            {/* <div className="col-lg-6">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Sec Deductable Amount"
-                            }}
-                          />
-                          <h6>
-                            {getAmountFormart(this.state.sec_deductable_amount)}
-                          </h6>                          
-                        </div> */}
                           </div>
                           <div className="row">
-                            <div className="col-lg-12 patientRespo">
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Patient"
-                                }}
-                              />
-                              <div className="row insurance-details">
-                                <div className="col-5">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Responsibility"
-                                    }}
-                                  />
-                                  <h6>
-                                    {getAmountFormart(
-                                      this.state.patient_responsibility
-                                    )}
-                                  </h6>
-                                </div>
-
-                                <div className="col-3">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Tax"
-                                    }}
-                                  />
-                                  <h6>
-                                    {getAmountFormart(this.state.patient_tax)}
-                                  </h6>
-                                </div>
-
-                                <div className="col-4">
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Payable"
-                                    }}
-                                  />
-                                  <h6>
-                                    {getAmountFormart(
-                                      this.state.patient_payable_h
-                                    )}
-                                  </h6>
-                                </div>
-                              </div>
-                            </div>
-                            {/* <div className="col-lg-1"> &nbsp; </div> */}
-
                             <div className="col-lg-12">
                               <AlgaehLabel
                                 label={{

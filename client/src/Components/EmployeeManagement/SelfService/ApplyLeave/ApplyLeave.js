@@ -31,7 +31,9 @@ class ApplyLeave extends Component {
         : null,
       to_leave_session: props.leave.to_session ? props.leave.to_session : null,
       absent_id: props.leave.absent_id ? props.leave.absent_id : null,
-      leave_from: props.leave.leave_from ? props.leave.leave_from : null
+      leave_from: props.leave.leave_from ? props.leave.leave_from : null,
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id
     };
     this.getLeaveTypes();
     this.getEmployees();
@@ -429,7 +431,8 @@ class ApplyLeave extends Component {
             total_applied_days: this.state.total_applied_days,
             remarks: this.state.remarks,
             absent_id: this.state.absent_id,
-            leave_from: this.state.leave_from,
+            leave_from: this.state.leave_from ? this.state.leave_from : "SS",
+            hospital_id: this.state.hospital_id,
             ...this.state.extra
           },
           onSuccess: res => {

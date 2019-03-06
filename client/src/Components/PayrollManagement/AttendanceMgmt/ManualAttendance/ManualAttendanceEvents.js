@@ -90,6 +90,7 @@ export default function ManualAttendanceEvents() {
         data: InputObj,
         onSuccess: res => {
           if (res.data.success) {
+            debugger;
             $this.setState({
               employee_details: res.data.records.result,
               dataExist: res.data.records.dataExist,
