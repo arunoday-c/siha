@@ -216,15 +216,16 @@ class OPBilling extends Component {
           } else {
             data.patient_type = "Not Selected";
           }
+          debugger;
 
           let visitDetails = data;
 
-          visitDetails.radioselect = 1;
+          // visitDetails.radioselect = 1;
           data.visitDetails = [visitDetails];
           data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
           data.Billexists = true;
           data.saveEnable = true;
-
+          // data.visit_id = data.hims_f_patient_visit_id;
           if (data.receiptdetails.length !== 0) {
             for (let i = 0; i < data.receiptdetails.length; i++) {
               if (data.receiptdetails[i].pay_type === "CA") {
@@ -469,7 +470,7 @@ class OPBilling extends Component {
             }}
           >
             <PatientDetails BillingIOputs={this.state} />
-            <DisplayVisitDetails BillingIOputs={this.state} />
+            {/* <DisplayVisitDetails BillingIOputs={this.state} /> */}
             {/* <DisplayInsuranceDetails BillingIOputs={this.state} /> */}
             <OPBillingDetails BillingIOputs={this.state} />
           </MyContext.Provider>

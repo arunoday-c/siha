@@ -7,7 +7,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import "./PatientDetails.css";
 import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
-import { PatientSearch } from "./DisPatientHandlers";
+import { PatientSearch, selectVisit } from "./DisPatientHandlers";
 
 class DisPatientForm extends Component {
   constructor(props) {
@@ -35,6 +35,20 @@ class DisPatientForm extends Component {
         }
       });
     }
+
+    if (
+      this.props.deptanddoctors === undefined ||
+      this.props.deptanddoctors.length === 0
+    ) {
+      this.props.getDepartmentsandDoctors({
+        uri: "/department/get/get_All_Doctors_DepartmentWise",
+        method: "GET",
+        redux: {
+          type: "DEPT_DOCTOR_GET_DATA",
+          mappingName: "deptanddoctors"
+        }
+      });
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -42,6 +56,7 @@ class DisPatientForm extends Component {
   }
 
   render() {
+    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -135,19 +150,20 @@ class DisPatientForm extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
                       label={{
-                        fieldName: "select_service_type"
+                        fieldName: "select_visit"
                       }}
                       selector={{
-                        name: "s_service_type",
+                        name: "visit_id",
                         className: "select-fld",
                         autoComplete: "off",
-                        value: this.state.s_service_type,
+                        value: this.state.visit_id,
                         dataSource: {
                           textField: "visit_code",
-                          valueField: "visit_code",
+                          valueField: "hims_f_patient_visit_id",
                           data: this.state.visitDetails
                         },
                         others: { disabled: this.state.Billexists },
+                        onChange: selectVisit.bind(this, this, context),
                         template: item => (
                           <div className="multiInfoList">
                             <h5>{item.visit_code}</h5>
@@ -183,14 +199,16 @@ class DisPatientForm extends Component {
 
 function mapStateToProps(state) {
   return {
-    patienttype: state.patienttype
+    patienttype: state.patienttype,
+    deptanddoctors: state.deptanddoctors
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPatientType: AlgaehActions
+      getPatientType: AlgaehActions,
+      getDepartmentsandDoctors: AlgaehActions
     },
     dispatch
   );

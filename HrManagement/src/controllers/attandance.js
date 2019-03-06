@@ -124,19 +124,27 @@ export default () => {
       });
     }
   });
-  api.get("/processAttendance", processAttendance, (req, res, next) => {
-    if (req.records.invalid_input == true) {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: false,
-        result: req.records
-      });
-    } else {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records
-      });
+  api.get(
+    "/processAttendance",
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
+    processAttendance,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
     }
-  });
+  );
 
   api.get(
     "/getEmployeeToManualTimeSheet",

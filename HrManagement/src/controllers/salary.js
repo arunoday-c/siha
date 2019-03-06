@@ -14,6 +14,10 @@ export default () => {
   api.get(
     "/processSalary",
     // processSalary,
+    (req, res, next) => {
+      delete req.connection;
+      next();
+    },
     newProcessSalary,
     getSalaryProcess,
     (req, res, next) => {
