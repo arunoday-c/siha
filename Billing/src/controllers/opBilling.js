@@ -10,10 +10,10 @@ import {
 import { getReceiptEntry } from "../models/receiptentry";
 
 import algaehPath from "algaeh-module-bridge";
-const { insertLadOrderedServices } = algaehPath(
+const { insertLadOrderedServices, updateLabOrderedBilled } = algaehPath(
   "algaeh-laboratory/src/models/laboratory"
 );
-const { insertRadOrderedServices } = algaehPath(
+const { insertRadOrderedServices, updateRadOrderedBilled } = algaehPath(
   "algaeh-radiology/src/models/radiology"
 );
 
@@ -26,9 +26,22 @@ export default () => {
     newReceiptData,
     addBillData,
     updateOrderedServicesBilled,
-    insertLadOrderedServices,
-    insertRadOrderedServices,
-
+    updateLabOrderedBilled,
+    (req, res, next) => {
+      if (req.records.LAB != null && req.records.LAB == true) {
+        insertLadOrderedServices(req, res, next);
+      } else {
+        next();
+      }
+    },
+    updateRadOrderedBilled,
+    (req, res, next) => {
+      if (req.records.RAD != null && req.records.RAD == true) {
+        insertRadOrderedServices(req, res, next);
+      } else {
+        next();
+      }
+    },
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
