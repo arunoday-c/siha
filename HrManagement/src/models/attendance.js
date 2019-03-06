@@ -5856,10 +5856,12 @@ function insertTimeSheet(
           //Exception
           insertArray.push({ ...biometricData[i], status: "EX" });
         } else if (biometricData[i]["biometric_id"] == null) {
+          
+
           let leave = new LINQ(AllLeaves)
             .Where(
               w =>
-                w.employee_id == biometricData[i]["hims_d_employee_id"] &&
+                w.employee_id == biometricData[i]["employee_id"] &&
                 w.from_date <= biometricData[i]["attendance_date"] &&
                 w.to_date >= biometricData[i]["attendance_date"]
             )
@@ -5879,6 +5881,8 @@ function insertTimeSheet(
             })
             .ToArray();
 
+
+
           let holidayweekoff = new LINQ(empHolidayweekoff)
             .Where(w => w.holiday_date == biometricData[i]["attendance_date"])
             .Select(s => {
@@ -5892,7 +5896,7 @@ function insertTimeSheet(
           utilities.logger().log("holidayweekoff: ", holidayweekoff);
           if (leave.length > 0) {
             //check leave
-            utilities.logger().log("apple: ", "APPLE");
+           
 
             insertArray.push({
               ...biometricData[i],
