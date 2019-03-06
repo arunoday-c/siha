@@ -5986,14 +5986,25 @@ function insertTimeSheet(
 
 
   //ST-whole month ot,shortage calculate
+
+            let month_work_hours=0;
+            let month_shortage_hour=0;
+            let month_ot_hour=0;
+
+
             let sum_actual_hour=0;
             let sum_actual_min=0;
             let sum_work_hour=0;
             let sum_work_min=0;
 
+           
+        
+
             sum_actual_hour=new LINQ(result).Sum(s => s.actual_hours);
             sum_actual_min=new LINQ(result).Sum(s => s.actual_minutes);
 
+
+        
 
             sum_work_hour=new LINQ(result).Sum(s => s.hours);
             sum_work_min=new LINQ(result).Sum(s => s.minutes);
@@ -6003,13 +6014,14 @@ function insertTimeSheet(
             let total_min =
             parseInt(sum_actual_hour * 60) +
             parseInt(sum_actual_min);
+
+
           let worked_min =
             parseInt(sum_work_hour * 60) +
             parseInt(sum_work_min);
 
             let diff = total_min - worked_min;
-            let month_shortage_hour=0;
-            let month_ot_hour=0;
+           
 
             if (diff > 0) {
               //calculating shortage
@@ -6022,6 +6034,15 @@ function insertTimeSheet(
               let ot_min = parseInt(Math.abs(diff)) % parseInt(60);
               month_ot_hour=ot_hr+"."+ot_min;
             }
+
+
+
+
+            let month_hr = parseInt(parseInt(total_min) / parseInt(60));
+            let month_min = parseInt(total_min) % parseInt(60);
+            month_work_hours=month_hr+"."+month_min;
+
+
 
   //EN-whole month ot,shortage calculate
 
@@ -6065,7 +6086,7 @@ function insertTimeSheet(
      _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = {outputArray,
-                 month_shortage_hour,month_ot_hour
+                 month_shortage_hour,month_ot_hour,month_work_hours
               }
               next();
             });
