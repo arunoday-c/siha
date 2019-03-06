@@ -3191,11 +3191,11 @@ module.exports = {
                 AllEmployees = result[2];
                 AllShifts = result[3];
 
-                // utilities.logger().log("options: ", options);
-                // utilities.logger().log("allHolidays: ", allHolidays);
-                // utilities.logger().log("AllLeaves: ", AllLeaves);
-                // utilities.logger().log("AllEmployees: ", AllEmployees);
-                // utilities.logger().log("AllShifts: ", AllShifts);
+                utilities.logger().log("options: ", options);
+                utilities.logger().log("allHolidays: ", allHolidays);
+                utilities.logger().log("AllLeaves: ", AllLeaves);
+                utilities.logger().log("AllEmployees: ", AllEmployees);
+                utilities.logger().log("AllShifts: ", AllShifts);
 
                 if (
                   AllEmployees.length > 0 &&
@@ -3305,9 +3305,9 @@ module.exports = {
                           return;
                         }
 
-                        // utilities
-                        //   .logger()
-                        //   .log("attResult", attResult["recordset"]);
+                        utilities
+                          .logger()
+                          .log("attResult", attResult["recordset"]);
                         attendcResult = attResult["recordset"];
 
                         if (attendcResult.length > 0 && from_date == to_date) {
@@ -3330,8 +3330,8 @@ module.exports = {
                               })
                               .FirstOrDefault({
                                 shift_end_day: null,
-                                shift_date: null,
-                                shift_end_date: null,
+                                shift_date: from_date,
+                                shift_end_date: from_date,
                                 shift_time: 0.0,
                                 shift_end_time: 0
                               });
@@ -3501,6 +3501,7 @@ module.exports = {
                               }
                             } else {
                               utilities.logger().log("same day", "same day");
+
                               biometricData.push(
                                 new LINQ(attendcResult)
                                   .Where(
@@ -3541,14 +3542,14 @@ module.exports = {
                                         AllEmployees[i]["hospital_id"],
                                       hours: s.Duration.split(".")[0],
                                       minutes: s.Duration.split(".")[1],
-                                      year: moment(date_range[i]).format(
+                                      year: moment(from_date).format(
                                         "YYYY"
                                       ),
-                                      month: moment(date_range[i]).format("M")
+                                      month: moment(from_date).format("M")
                                     };
                                   })
                                   .FirstOrDefault({
-                                    biometric_id: null,
+                                    biometric_id: AllEmployees[i]["biometric_id"],
                                     attendance_date: from_date,
                                     out_date: from_date,
                                     in_time: null,
@@ -3569,17 +3570,17 @@ module.exports = {
                                     hospital_id: AllEmployees[i]["hospital_id"],
                                     hours: 0,
                                     minutes: 0,
-                                    year: moment(date_range[i]).format("YYYY"),
-                                    month: moment(date_range[i]).format("M")
+                                    year: moment(from_date).format("YYYY"),
+                                    month: moment(from_date).format("M")
                                   })
                               );
                             }
                           }
 
                           ///----end logic
-                          // utilities
-                          //   .logger()
-                          //   .log("biometricData", biometricData);
+                          utilities
+                            .logger()
+                            .log("biometricData", biometricData);
 
                           insertTimeSheet(
                             returnQry,
@@ -4916,7 +4917,7 @@ module.exports = {
                         ( date(?)>=date(from_date) and   date(?)<=date(to_date))   or (date(from_date)>= date(?)\
                         and date(from_date)<=date(?) ) or \
                         (date(to_date)>=date(?) and date(to_date)<= date(?) )\
-                        )and employee_id=504 and (`status`='APR' or `status`='PEN') ;\
+                        )and employee_id=? and (`status`='APR' or `status`='PEN') ;\
                         select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
                         religion_id from hims_d_holiday where record_status='A' and date(holiday_date)\
                         between date(?) and date(?) and hospital_id=?",
@@ -4945,6 +4946,8 @@ module.exports = {
                     to_date,
                     next_dayOf_cutoff,
                     to_date,
+                    input.hims_d_employee_id ,
+
                     next_dayOf_cutoff,
                     to_date,
                     input.hospital_id
@@ -5093,7 +5096,7 @@ module.exports = {
  //workin here
 for (let i = 0; i < roster_Date_range.length; i++) {
   let whichLeave = 0;
-  // checking which leave is on puerticular date
+  // checking which leave is on particular date
   for (let k = 0; k < leave_Date_range.length; k++) {
     let leavData = leave_Date_range[k]["dates"].includes(roster_Date_range[i]);
 
@@ -5103,8 +5106,6 @@ for (let i = 0; i < roster_Date_range.length; i++) {
       whichLeave = leave_Date_range[k]["leave_type"];
       break;
     }
-   
-
   }
 
   utilities.logger().log("roster_Date_range: ", roster_Date_range);
