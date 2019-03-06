@@ -5904,23 +5904,29 @@ function insertTimeSheet(
 
             insertArray.push({
               ...biometricData[i],
-              status: leave[0]["leave_type"] + "L"
+              status: leave[0]["leave_type"] + "L",
+              actual_hours:0 ,
+              actual_minutes:0
             });
           } else if (
             holidayweekoff.length > 0 &&
             holidayweekoff[0].weekoff == "Y"
           ) {
-            utilities.logger().log("BALL: ", "BAAL");
+        
             //check weekoff
-            insertArray.push({ ...biometricData[i], status: "WO" });
+            insertArray.push({ ...biometricData[i], status: "WO",
+            actual_hours:0 ,
+            actual_minutes:0 });
           } else if (
             holidayweekoff.length > 0 &&
             holidayweekoff[0].holiday == "Y"
           ) {
             //check holiday
 
-            utilities.logger().log("CAT: ", "CAT");
-            insertArray.push({ ...biometricData[i], status: "HO" });
+         
+            insertArray.push({ ...biometricData[i], status: "HO",
+            actual_hours:0 ,
+            actual_minutes:0 });
           } else {
             utilities.logger().log("DOG: ", "DOG");
             //else mark absent
