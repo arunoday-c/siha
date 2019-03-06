@@ -3175,11 +3175,11 @@ module.exports = {
                 AllEmployees = result[2];
                 AllShifts = result[3];
 
-                utilities.logger().log("options: ", options);
-                utilities.logger().log("allHolidays: ", allHolidays);
-                utilities.logger().log("AllLeaves: ", AllLeaves);
-                utilities.logger().log("AllEmployees: ", AllEmployees);
-                utilities.logger().log("AllShifts: ", AllShifts);
+                // utilities.logger().log("options: ", options);
+                // utilities.logger().log("allHolidays: ", allHolidays);
+                // utilities.logger().log("AllLeaves: ", AllLeaves);
+                // utilities.logger().log("AllEmployees: ", AllEmployees);
+                // utilities.logger().log("AllShifts: ", AllShifts);
 
                 if (
                   AllEmployees.length > 0 &&
@@ -3289,9 +3289,9 @@ module.exports = {
                           return;
                         }
 
-                        utilities
-                          .logger()
-                          .log("attResult", attResult["recordset"]);
+                        // utilities
+                        //   .logger()
+                        //   .log("attResult", attResult["recordset"]);
                         attendcResult = attResult["recordset"];
 
                         if (attendcResult.length > 0 && from_date == to_date) {
