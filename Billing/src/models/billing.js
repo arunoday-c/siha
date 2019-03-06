@@ -368,7 +368,9 @@ module.exports = {
         sendingObject.sub_total_amount = new LINQ(inputParam).Sum(d =>
           parseFloat(d.gross_amount)
         );
-        sendingObject.net_total = new LINQ(inputParam).Sum(d => d.net_amout);
+        sendingObject.net_total = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.net_amout)
+        );
         sendingObject.discount_amount = new LINQ(inputParam).Sum(d =>
           parseFloat(d.discount_amout)
         );
