@@ -76,7 +76,7 @@ module.exports = {
 
   addPosEntry: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
-    const _mysql = new algaehMysql(_options); //req.mySQl == null ? new algaehMysql() : req.mySQl;
+    const _mysql = new algaehMysql(_options);
 
     try {
       let input = { ...req.body };

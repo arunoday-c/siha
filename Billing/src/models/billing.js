@@ -64,7 +64,7 @@ module.exports = {
                 printQuery: true
               })
               .then(RcptDetailsRecords => {
-                if (req.mySQl == null) {
+                if (req.connection == null) {
                   // _mysql.commitTransaction(() => {
                   //   _mysql.releaseConnection();
                   req.records = headerRcptResult;
@@ -316,7 +316,7 @@ module.exports = {
             })
             .then(detailsRecords => {
               // utilities.logger().log("detailsRecords Bill: ", detailsRecords);
-              if (req.mySQl == null) {
+              if (req.connection == null) {
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
                 req.records = headerResult;
@@ -368,7 +368,9 @@ module.exports = {
         sendingObject.sub_total_amount = new LINQ(inputParam).Sum(d =>
           parseFloat(d.gross_amount)
         );
-        sendingObject.net_total = new LINQ(inputParam).Sum(d => d.net_amout);
+        sendingObject.net_total = new LINQ(inputParam).Sum(d =>
+          parseFloat(d.net_amout)
+        );
         sendingObject.discount_amount = new LINQ(inputParam).Sum(d =>
           parseFloat(d.discount_amout)
         );
@@ -908,7 +910,7 @@ module.exports = {
                       printQuery: true
                     })
                     .then(updateResult => {
-                      if (req.mySQl == null) {
+                      if (req.connection == null) {
                         _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = updateResult;
@@ -937,7 +939,7 @@ module.exports = {
             });
           });
       } else {
-        if (req.mySQl == null) {
+        if (req.connection == null) {
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
             req.records = { mesage: "not a cahsier" };

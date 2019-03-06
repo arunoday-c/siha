@@ -71,7 +71,7 @@ module.exports = {
         .then(result => {
           req.body.patient_id = result.insertId;
 
-          if (req.mySQl == null) {
+          if (req.connection == null) {
             _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = result;
