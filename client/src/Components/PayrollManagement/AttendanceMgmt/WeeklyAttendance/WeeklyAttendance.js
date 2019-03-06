@@ -10,7 +10,6 @@ import {
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getYears } from "../../../../utils/GlobalFunctions";
-import _ from "lodash";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
@@ -28,6 +27,10 @@ export default class WeeklyAttendance extends Component {
       weeks: [],
       sub_depts: [],
       time_sheet: [],
+      month_ot_hour: "00.00",
+      month_shortage_hour: "00.00",
+      month_actual_hours: "00.00",
+      month_worked_hours: "00.00",
       loader: false,
       hims_d_employee_id: null,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
@@ -291,10 +294,14 @@ export default class WeeklyAttendance extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            if (Array.isArray(res.data.result)) {
+            if (Array.isArray(res.data.result.outputArray)) {
               this.setState({
-                time_sheet: res.data.result,
-                loader: false
+                time_sheet: res.data.result.outputArray,
+                loader: false,
+                month_shortage_hour: res.data.result.month_shortage_hour,
+                month_ot_hour: res.data.result.month_ot_hour,
+                month_actual_hours: res.data.result.month_actual_hours,
+                month_worked_hours: res.data.result.month_worked_hours
               });
             } else {
               swalMessage({
@@ -445,12 +452,14 @@ export default class WeeklyAttendance extends Component {
   }
 
   getExcessShortage(data) {
-    return data.actual_hours - data.worked_hours > 0 ? (
+    debugger;
+    return data.shortage_hour > 0 ? (
       <React.Fragment>
         Shortage Time:
         <b className="lateTime">
-          {Math.floor(data.actual_hours - data.worked_hours) + " Hrs: "}
-          {60 - data.minutes + " Mins"}
+          {/* {Math.floor(data.actual_hours - data.worked_hours) + " Hrs: "}
+          {60 - data.minutes + " Mins"} */}
+          {data.shortage_hour + " Hrs"}
         </b>
         <br />
         Working Hours:
@@ -465,8 +474,9 @@ export default class WeeklyAttendance extends Component {
       <React.Fragment>
         Excess Time
         <b className="OverTime">
-          {Math.abs(parseInt(data.actual_hours - data.worked_hours)) + " Hrs"}
-          {data.minutes + " Mins"}
+          {/* {Math.abs(parseInt(data.actual_hours - data.worked_hours)) + " Hrs"}
+          {data.minutes + " Mins"} */}
+          {data.ot_hour + " Hrs"}
         </b>{" "}
         <br />
         Working Hours:
@@ -807,13 +817,17 @@ export default class WeeklyAttendance extends Component {
               {this.state.employee_name ? (
                 <React.Fragment>
                   <span className="legendValue bg-shortage">
-                    Shortage Hour<b>04.23 Hr</b>
+                    Shortage Hours<b>{this.state.month_shortage_hour} Hr</b>
                   </span>
                   <span className="legendValue bg-success">
-                    Excess Hour<b>16.45 Hr</b>
+                    Excess Hours<b>{this.state.month_ot_hour} Hr</b>
                   </span>
                   <span className="legendValue bg-default">
-                    Total Working Hour<b>146.00 Hr</b>
+                    Total Worked Hours<b>{this.state.month_worked_hours} Hr</b>
+                  </span>
+                  <span className="legendValue bg-default">
+                    Actual Working Hours
+                    <b>{this.state.month_actual_hours} Hr</b> 
                   </span>
                 </React.Fragment>
               ) : null}

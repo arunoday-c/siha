@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
-// import { setCookie } from "../../utils/algaehApiCall.js";
+import { getCookie } from "../../utils/algaehApiCall.js";
 
 const AdmissionsReadmissionData = {
   datasets: [
@@ -412,10 +412,15 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
+    debugger;
+    let HospitalId =
+      getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
     this.props.getHospitalDetails({
       uri: "/organization/getOrganization",
       method: "GET",
-      data: { hims_d_hospital_id: 1 },
+      data: {
+        hims_d_hospital_id: HospitalId
+      },
       redux: {
         type: "HOSPITAL_DETAILS_GET_DATA",
         mappingName: "hospitaldetails"

@@ -158,7 +158,10 @@ const getHospitalDetails = $this => {
   $this.props.getHospitalDetails({
     uri: "/organization/getOrganization",
     method: "GET",
-    data: { hims_d_hospital_id: 1 },
+    data: {
+      hims_d_hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id
+    },
     redux: {
       type: "HOSPITAL_DETAILS_GET_DATA",
       mappingName: "hospitaldetails"
