@@ -40,11 +40,17 @@
       margin: 0 10px;
     }
   }
-  .bg-default {
-    background-color: #e7ecef !important;
+  .bg-working {
+    background-color: #52a3ff !important;
+  }
+  .bg-worked {
+    background-color: #628ed1 !important;
+  }
+  .bg-excess {
+    background-color: #39c9a9 !important;
   }
   .bg-shortage {
-    background-color: #e6d926 !important;
+    background-color: #d1c844 !important;
   }
 
   .timeCheckCntr {

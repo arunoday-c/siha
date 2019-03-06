@@ -463,7 +463,7 @@ export default class WeeklyAttendance extends Component {
         </b>
         <br />
         Working Hours:
-        <b className="lateTime">
+        <b>
           {data.actual_hours +
             ":" +
             (data.actual_minutes ? data.actual_minutes : "00") +
@@ -816,18 +816,18 @@ export default class WeeklyAttendance extends Component {
             <div className="actions">
               {this.state.employee_name ? (
                 <React.Fragment>
-                  <span className="legendValue bg-shortage">
-                    Shortage Hours<b>{this.state.month_shortage_hour} Hr</b>
+                  <span className="legendValue bg-working">
+                    Working Hours
+                    <b>{this.state.month_actual_hours} Hr</b>
                   </span>
-                  <span className="legendValue bg-success">
+                  <span className="legendValue bg-worked">
+                    Worked Hours<b>{this.state.month_worked_hours} Hr</b>
+                  </span>
+                  <span className="legendValue bg-excess">
                     Excess Hours<b>{this.state.month_ot_hour} Hr</b>
                   </span>
-                  <span className="legendValue bg-default">
-                    Total Worked Hours<b>{this.state.month_worked_hours} Hr</b>
-                  </span>
-                  <span className="legendValue bg-default">
-                    Actual Working Hours
-                    <b>{this.state.month_actual_hours} Hr</b> 
+                  <span className="legendValue bg-shortage">
+                    Shortage Hours<b>{this.state.month_shortage_hour} Hr</b>
                   </span>
                 </React.Fragment>
               ) : null}

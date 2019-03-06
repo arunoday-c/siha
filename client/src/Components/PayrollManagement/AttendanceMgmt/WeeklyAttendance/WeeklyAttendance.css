@@ -29,10 +29,14 @@
       color: #34b8bc; }
   .hrTimeSheet .weekdaysDiv span {
     margin: 0 10px; }
-  .hrTimeSheet .bg-default {
-    background-color: #e7ecef !important; }
+  .hrTimeSheet .bg-working {
+    background-color: #52a3ff !important; }
+  .hrTimeSheet .bg-worked {
+    background-color: #628ed1 !important; }
+  .hrTimeSheet .bg-excess {
+    background-color: #39c9a9 !important; }
   .hrTimeSheet .bg-shortage {
-    background-color: #e6d926 !important; }
+    background-color: #d1c844 !important; }
   .hrTimeSheet .timeCheckCntr {
     position: absolute;
     top: -2px;
