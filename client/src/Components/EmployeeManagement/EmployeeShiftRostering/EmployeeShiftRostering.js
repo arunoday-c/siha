@@ -923,7 +923,7 @@ export default class EmployeeShiftRostering extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col form-group" }}
+            div={{ className: "col-2 form-group" }}
             label={{ forceLabel: "Select Department", isImp: true }}
             selector={{
               name: "sub_department_id",

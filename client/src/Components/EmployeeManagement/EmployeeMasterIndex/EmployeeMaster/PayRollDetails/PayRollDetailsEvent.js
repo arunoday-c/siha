@@ -9,12 +9,17 @@ const earntexthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   let amount = e.selected.calculation_method === "FO" ? 0 : null;
+  let formula =
+    e.selected.calculation_method === "FO" ? e.selected.formula : null;
+
   $this.setState({
     [name]: value,
     earn_amount: amount,
     earn_disable: e.selected.calculation_method === "FO" ? true : false,
     earn_calculation_method: e.selected.calculation_method,
-    earn_calculation_type: e.selected.calculation_type
+    earn_calculation_type: e.selected.calculation_type,
+    earn_short_desc: e.selected.short_desc,
+    earn_formula: formula
   });
 };
 
@@ -23,24 +28,34 @@ const deducttexthandle = ($this, e) => {
   let value = e.value || e.target.value;
 
   let amount = e.selected.calculation_method === "FO" ? 0 : null;
+  let formula =
+    e.selected.calculation_method === "FO" ? e.selected.formula : null;
+
   $this.setState({
     [name]: value,
     dedection_amount: amount,
     deduct_calculation_method: e.selected.calculation_method,
-    deduct_calculation_type: e.selected.calculation_type
+    deduct_calculation_type: e.selected.calculation_type,
+    deduct_short_desc: e.selected.short_desc,
+    deduct_formula: formula
   });
 };
 
 const contributtexthandle = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   let amount = e.selected.calculation_method === "FO" ? 0 : null;
+  let formula =
+    e.selected.calculation_method === "FO" ? e.selected.formula : null;
   $this.setState({
     [name]: value,
     contribution_amount: amount,
     contribut_calculation_method: e.selected.calculation_method,
-    contribut_calculation_type: e.selected.calculation_type
+    contribut_calculation_type: e.selected.calculation_type,
+    contribut_short_desc: e.selected.short_desc,
+    contribut_formula: formula
   });
 };
 
@@ -75,7 +90,9 @@ const AddEarnComponent = ($this, e) => {
         amount: $this.state.earn_amount,
         allocate: $this.state.allocate,
         calculation_method: $this.state.earn_calculation_method,
-        calculation_type: $this.state.earn_calculation_type
+        calculation_type: $this.state.earn_calculation_type,
+        formula: $this.state.earn_formula,
+        short_desc: $this.state.earn_short_desc
       });
 
       insertearnComp.push({
@@ -84,7 +101,9 @@ const AddEarnComponent = ($this, e) => {
         amount: $this.state.earn_amount,
         allocate: $this.state.allocate,
         calculation_method: $this.state.earn_calculation_method,
-        calculation_type: $this.state.earn_calculation_type
+        calculation_type: $this.state.earn_calculation_type,
+        formula: $this.state.earn_formula,
+        short_desc: $this.state.earn_short_desc
       });
 
       $this.setState(
@@ -131,7 +150,9 @@ const AddDeductionComponent = ($this, e) => {
         amount: $this.state.dedection_amount,
         allocate: $this.state.allocate,
         calculation_method: $this.state.deduct_calculation_method,
-        calculation_type: $this.state.deduct_calculation_type
+        calculation_type: $this.state.deduct_calculation_type,
+        formula: $this.state.deduct_formula,
+        short_desc: $this.state.deduct_short_desc
       });
 
       insertDeductionComp.push({
@@ -140,7 +161,9 @@ const AddDeductionComponent = ($this, e) => {
         amount: $this.state.dedection_amount,
         allocate: $this.state.allocate,
         calculation_method: $this.state.deduct_calculation_method,
-        calculation_type: $this.state.deduct_calculation_type
+        calculation_type: $this.state.deduct_calculation_type,
+        formula: $this.state.deduct_formula,
+        short_desc: $this.state.deduct_short_desc
       });
 
       $this.setState(
@@ -187,7 +210,9 @@ const AddContributionComponent = ($this, e) => {
         amount: $this.state.contribution_amount,
         allocate: $this.state.allocate,
         calculation_method: $this.state.contribut_calculation_method,
-        calculation_type: $this.state.contribut_calculation_type
+        calculation_type: $this.state.contribut_calculation_type,
+        formula: $this.state.contribut_formula,
+        short_desc: $this.state.contribut_short_desc
       });
 
       insertContributeComp.push({
@@ -196,7 +221,9 @@ const AddContributionComponent = ($this, e) => {
         amount: $this.state.contribution_amount,
         allocate: $this.state.allocate,
         calculation_method: $this.state.contribut_calculation_method,
-        calculation_type: $this.state.contribut_calculation_type
+        calculation_type: $this.state.contribut_calculation_type,
+        formula: $this.state.contribut_formula,
+        short_desc: $this.state.contribut_short_desc
       });
 
       $this.setState(
@@ -676,6 +703,105 @@ const getEmpContibuteComponents = $this => {
   });
 };
 
+const CalculateBasedonFormula = $this => {
+  let earningComponents = $this.state.earningComponents;
+  let deductioncomponents = $this.state.deductioncomponents;
+  let contributioncomponents = $this.state.contributioncomponents;
+
+  const earn_comp = Enumerable.from(earningComponents)
+    .where(w => w.calculation_method === "FO")
+    .toArray();
+
+  const deduct_comp = Enumerable.from(deductioncomponents)
+    .where(w => w.calculation_method === "FO")
+    .toArray();
+  const contribute_comp = Enumerable.from(contributioncomponents)
+    .where(w => w.calculation_method === "FO")
+    .toArray();
+
+  // let $this = this;
+
+  if (earn_comp.length > 0) {
+    for (let x = 0; x < earn_comp.length; x++) {
+      let formulaCal = earn_comp[x].formula;
+
+      // let strFormula = earn_comp[x].formula;
+      const _index = earningComponents.indexOf(earn_comp[x]);
+
+      earningComponents.map(menu => {
+        if (formulaCal.indexOf(menu.short_desc) > -1) {
+          let earn_short_desc = menu.short_desc;
+          const expression = new RegExp(earn_short_desc, "g");
+          formulaCal = formulaCal.replace(expression, menu.amount);
+        }
+      });
+      const expression = new RegExp("Gross Salary", "g");
+      formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+
+      formulaCal = eval(formulaCal);
+      earn_comp[x].amount = formulaCal;
+      earningComponents[_index] = earn_comp[x];
+    }
+  }
+
+  if (deduct_comp.length > 0) {
+    for (let y = 0; y < deduct_comp.length; y++) {
+      let formulaCal = deduct_comp[y].formula;
+
+      const _index = deductioncomponents.indexOf(deduct_comp[y]);
+
+      earningComponents.map(menu => {
+        if (formulaCal.indexOf(menu.short_desc) > -1) {
+          let ded_short_desc = menu.short_desc;
+          const expression = new RegExp(ded_short_desc, "g");
+          formulaCal = formulaCal.replace(expression, menu.amount);
+        }
+      });
+
+      const expression = new RegExp("Gross Salary", "g");
+      formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+
+      // formulaCal = `${formulaCal}`;
+      formulaCal = eval(formulaCal);
+      deduct_comp[y].amount = formulaCal;
+      deductioncomponents[_index] = deduct_comp[y];
+    }
+  }
+
+  if (contribute_comp.length > 0) {
+    for (let z = 0; z < contribute_comp.length; z++) {
+      let formulaCal = contribute_comp[z].formula;
+
+      // let strFormula = contribute_comp[z].formula;
+      const _index = contributioncomponents.indexOf(contribute_comp[z]);
+
+      earningComponents.map(menu => {
+        if (formulaCal.indexOf(menu.short_desc) > -1) {
+          const expression = new RegExp(menu.short_desc, "g");
+          formulaCal = formulaCal.replace(expression, menu.amount);
+        }
+      });
+      const expression = new RegExp("Gross Salary", "g");
+      formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+
+      formulaCal = eval(formulaCal);
+      contribute_comp[z].amount = formulaCal;
+      contributioncomponents[_index] = contribute_comp[z];
+    }
+  }
+
+  $this.setState(
+    {
+      deductioncomponents: deductioncomponents,
+      contributioncomponents: contributioncomponents,
+      earningComponents: earningComponents
+    },
+    () => {
+      calculationTotals($this);
+    }
+  );
+};
+
 export {
   earntexthandle,
   deducttexthandle,
@@ -693,5 +819,6 @@ export {
   updateContibuteComponent,
   getEmpEarningComponents,
   getEmpDeductionComponents,
-  getEmpContibuteComponents
+  getEmpContibuteComponents,
+  CalculateBasedonFormula
 };

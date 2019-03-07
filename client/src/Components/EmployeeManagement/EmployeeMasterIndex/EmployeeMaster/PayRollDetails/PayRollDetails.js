@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -32,11 +32,12 @@ import {
   updateContibuteComponent,
   getEmpEarningComponents,
   getEmpDeductionComponents,
-  getEmpContibuteComponents
+  getEmpContibuteComponents,
+  CalculateBasedonFormula
 } from "./PayRollDetailsEvent.js";
 import Enumerable from "linq";
 
-class PayRollDetails extends PureComponent {
+class PayRollDetails extends Component {
   constructor(props) {
     super(props);
 
@@ -91,6 +92,100 @@ class PayRollDetails extends PureComponent {
       });
     }
   }
+
+  // CalculateBasedonFormula(e) {
+  //   let earningComponents = this.state.earningComponents;
+  //   let deductioncomponents = this.state.deductioncomponents;
+  //   let contributioncomponents = this.state.contributioncomponents;
+
+  //   const earn_comp = Enumerable.from(earningComponents)
+  //     .where(w => w.calculation_method === "FO")
+  //     .toArray();
+
+  //   const deduct_comp = Enumerable.from(deductioncomponents)
+  //     .where(w => w.calculation_method === "FO")
+  //     .toArray();
+  //   const contribute_comp = Enumerable.from(contributioncomponents)
+  //     .where(w => w.calculation_method === "FO")
+  //     .toArray();
+
+  //   let $this = this;
+
+  //   if (earn_comp.length > 0) {
+  //     for (let x = 0; x < earn_comp.length; x++) {
+  //       let formulaCal = earn_comp[x].formula;
+
+  //       // let strFormula = earn_comp[x].formula;
+  //       const _index = earningComponents.indexOf(earn_comp[x]);
+
+  //       earningComponents.map(menu => {
+  //         if (formulaCal.indexOf(menu.short_desc) > -1) {
+  //           let earn_short_desc = menu.short_desc;
+  //           const expression = new RegExp(earn_short_desc, "g");
+  //           formulaCal = formulaCal.replace(expression, menu.amount);
+  //         }
+  //       });
+  //       const expression = new RegExp("Gross Salary", "g");
+  //       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+
+  //       formulaCal = eval(formulaCal);
+  //       earn_comp[x].amount = formulaCal;
+  //       earningComponents[_index] = earn_comp[x];
+  //     }
+  //   }
+
+  //   if (deduct_comp.length > 0) {
+  //     for (let y = 0; y < deduct_comp.length; y++) {
+  //       let formulaCal = deduct_comp[y].formula;
+
+  //       const _index = deductioncomponents.indexOf(deduct_comp[y]);
+
+  //       earningComponents.map(menu => {
+  //         if (formulaCal.indexOf(menu.short_desc) > -1) {
+  //           let ded_short_desc = menu.short_desc;
+  //           const expression = new RegExp(ded_short_desc, "g");
+  //           formulaCal = formulaCal.replace(expression, menu.amount);
+  //         }
+  //       });
+
+  //       const expression = new RegExp("Gross Salary", "g");
+  //       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+
+  //       // formulaCal = `${formulaCal}`;
+  //       formulaCal = eval(formulaCal);
+  //       deduct_comp[y].amount = formulaCal;
+  //       deductioncomponents[_index] = deduct_comp[y];
+  //     }
+  //   }
+
+  //   if (contribute_comp.length > 0) {
+  //     for (let z = 0; z < contribute_comp.length; z++) {
+  //       let formulaCal = contribute_comp[z].formula;
+
+  //       // let strFormula = contribute_comp[z].formula;
+  //       const _index = contributioncomponents.indexOf(contribute_comp[z]);
+
+  //       earningComponents.map(menu => {
+  //         if (formulaCal.indexOf(menu.short_desc) > -1) {
+  //           const expression = new RegExp(menu.short_desc, "g");
+  //           formulaCal = formulaCal.replace(expression, menu.amount);
+  //         }
+  //       });
+  //       const expression = new RegExp("Gross Salary", "g");
+  //       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+
+  //       formulaCal = eval(formulaCal);
+  //       contribute_comp[z].amount = formulaCal;
+  //       contributioncomponents[_index] = contribute_comp[z];
+  //     }
+  //   }
+
+  //   this.setState({
+  //     deductioncomponents: deductioncomponents,
+  //     contributioncomponents: contributioncomponents,
+  //     earningComponents: earningComponents
+  //   });
+  // }
 
   render() {
     const earnings = Enumerable.from(this.props.payrollcomponents)
@@ -360,6 +455,12 @@ class PayRollDetails extends PureComponent {
                     },
                     events: {
                       onChange: numberSet.bind(this, this)
+                    },
+                    others: {
+                      disabled:
+                        this.state.deduct_calculation_method === "FO"
+                          ? true
+                          : false
                     }
                   }}
                 />
@@ -509,6 +610,12 @@ class PayRollDetails extends PureComponent {
                     },
                     events: {
                       onChange: numberSet.bind(this, this)
+                    },
+                    others: {
+                      disabled:
+                        this.state.contribut_calculation_method === "FO"
+                          ? true
+                          : false
                     }
                   }}
                 />
@@ -664,6 +771,13 @@ class PayRollDetails extends PureComponent {
                   />
                   <h6>{getAmountFormart(this.state.cost_to_company)}</h6>
                 </div>
+
+                <input
+                  type="button"
+                  className="col-2"
+                  value="Process"
+                  onClick={CalculateBasedonFormula.bind(this, this)}
+                />
               </div>
               {/* <div className="row padding-bottom-5">
                 <div className="col-10" />
