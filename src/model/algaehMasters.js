@@ -434,10 +434,11 @@ let addAlgaehModule = (req, res, next) => {
         req.userIdentity.group_type == "SU"
       ) {
         connection.query(
-          "INSERT INTO `algaeh_d_app_module` (module_code, module_name, licence_key, access_by, icons, other_language,  created_date, created_by, updated_date, updated_by, record_status)\
-            VALUE(?,?,?,?,?,?, ?,?,?,?,md5(?))",
+          "INSERT INTO `algaeh_d_app_module` (module_code,display_order, module_name, licence_key, access_by, icons, other_language,  created_date, created_by, updated_date, updated_by, record_status)\
+            VALUE(?,?,?,?,?,?,?, ?,?,?,?,md5(?))",
           [
             input.module_code,
+            input.display_order,
             input.module_name,
             input.licence_key,
             input.access_by,
@@ -488,7 +489,7 @@ let getAlgaehModules = (req, res, next) => {
     db.getConnection((error, connection) => {
       if (req.userIdentity.role_type != "GN") {
         connection.query(
-          "select algaeh_d_module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
+          "select algaeh_d_module_id, module_name,module_code,display_order, icons,other_language  from algaeh_d_app_module\
               where  record_status=md5('A') " +
             superUser +
             " order by algaeh_d_module_id desc",
@@ -504,7 +505,7 @@ let getAlgaehModules = (req, res, next) => {
       } else {
         req.records = {
           validUser: false,
-          message: "you dont have admin privilege"
+          message: "You don't have admin Privilege"
         };
         next();
       }

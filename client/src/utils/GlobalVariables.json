@@ -884,5 +884,13 @@
   "MANUAL_TIME_TYPE": [
     { "name": "Department", "value": "D" },
     { "name": "Project", "value": "P" }
+  ],
+  "USER_TYPE": [
+    { "name": "Admin", "value": "AD" },
+    { "name": "Doctor", "value": "D" },
+    { "name": "Nurse", "value": "N" },
+    { "name": "Cashier", "value": "C" },
+    { "name": "Lab Technician", "value": "L" },
+    { "name": "Others", "value": "O" }
   ]
 }
