@@ -537,6 +537,12 @@ class EarningsDeductions extends Component {
                   value="C.L.A"
                   onClick={this.onChangeCalculatorInput.bind(this)}
                 />
+                <input
+                  type="button"
+                  className="col-3"
+                  value="Gross"
+                  onClick={this.onChangeCalculatorInput.bind(this)}
+                />
               </div>
               <div className="col-12 submitBtn">
                 {" "}

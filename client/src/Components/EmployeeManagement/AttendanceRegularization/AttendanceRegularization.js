@@ -163,7 +163,7 @@ export default class AttendanceRegularization extends Component {
               className: "txt-fld",
               name: "from_date",
               others: {
-                tabIndex: "6"
+                tabIndex: "1"
               }
             }}
             events={{
@@ -186,7 +186,7 @@ export default class AttendanceRegularization extends Component {
               className: "txt-fld",
               name: "to_date",
               others: {
-                tabIndex: "6"
+                tabIndex: "2"
               }
             }}
             events={{

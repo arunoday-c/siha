@@ -533,10 +533,9 @@ export default class WeeklyAttendance extends Component {
     return (
       <div className="hrTimeSheet">
         <div className="row inner-top-search">
-          <div className="col-2">
-            <label />
+          <div className="col">
             <div className="customRadio">
-              <label className="radio inline">
+              <label className="radio inline" style={{ marginTop: 5 }}>
                 <input
                   type="radio"
                   value="MW"
@@ -547,7 +546,10 @@ export default class WeeklyAttendance extends Component {
                 <span>Month Wise</span>
               </label>
 
-              <label className="radio inline">
+              <label
+                className="radio inline"
+                style={{ marginLeft: 0, marginTop: 5 }}
+              >
                 <input
                   type="radio"
                   value="DR"
@@ -712,9 +714,9 @@ export default class WeeklyAttendance extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2" }}
             label={{
-              forceLabel: "Select a Dept..",
+              forceLabel: "Select a Dept.",
               isImp: false
             }}
             selector={{
@@ -735,7 +737,7 @@ export default class WeeklyAttendance extends Component {
             }}
           />
 
-          <div className="col-3" style={{ marginTop: 10 }}>
+          <div className="col-2" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{

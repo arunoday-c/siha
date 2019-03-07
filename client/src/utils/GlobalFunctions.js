@@ -336,7 +336,7 @@ export function AlgaehValidation(options) {
                 .toLowerCase()
                 .replace(/^\w/, c => {
                   return c.toUpperCase();
-                }) + "-cannot be blank"
+                }) + "- Can not be empty"
             : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
       }
       swalMessage({
