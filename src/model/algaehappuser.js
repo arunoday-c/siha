@@ -268,7 +268,7 @@ let createUserLogin = (req, res, next) => {
               });
             }
             connection.query(
-              "INSERT INTO `algaeh_d_app_user` (username,user_display_name,user_type,effective_start_date, created_date, created_by, updated_date, updated_by)\
+              "INSERT INTO `algaeh_d_app_user` (username, user_display_name, user_type, effective_start_date, created_date, created_by, updated_date, updated_by)\
           VALUE(?,?,?,?,?,?,?,?)",
               [
                 input.username,
@@ -288,19 +288,13 @@ let createUserLogin = (req, res, next) => {
                   });
                 }
 
-                if (
-                  result.insertId != null &&
-                  result.insertId != undefined &&
-                  (input.password != null &&
-                    input.password != undefined &&
-                    input.password != " ")
-                ) {
+                if (result.insertId != null && result.insertId != undefined) {
                   connection.query(
                     "INSERT INTO `algaeh_d_app_password` ( userid,password,created_date, created_by, updated_date, updated_by)\
                 VALUE(?,md5(?),?,?,?,?)",
                     [
                       result.insertId,
-                      input.password,
+                      generatePwd(),
                       new Date(),
                       input.created_by,
                       new Date(),
@@ -358,7 +352,7 @@ let createUserLogin = (req, res, next) => {
                         });
                         req.records = {
                           validUser: false,
-                          message: "please select role"
+                          message: "Please Select a Role"
                         };
                         next();
                       }
@@ -371,7 +365,7 @@ let createUserLogin = (req, res, next) => {
                   });
                   req.records = {
                     validUser: false,
-                    message: "please valid enter password "
+                    message: "Please enter valid password"
                   };
                   next();
                 }
@@ -381,14 +375,14 @@ let createUserLogin = (req, res, next) => {
         } else {
           req.records = {
             validUser: false,
-            message: "you dont have admin privilege"
+            message: "You don't have Admin Privilege"
           };
           next();
         }
       } else {
         req.records = {
           validUser: false,
-          message: "you dont have  rights to add this user"
+          message: "You don't have rights to add this user"
         };
         next();
       }
@@ -405,3 +399,9 @@ module.exports = {
   createUserLogin,
   getLoginUserMaster
 };
+
+function generatePwd() {
+  return Math.random()
+    .toString(36)
+    .slice(-8);
+}

@@ -7,8 +7,11 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
+import AlgaehAutoSearch from "../../Wrapper/autoSearch";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { USER_TYPE } from "../../../utils/GlobalVariables.json";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
 
 class LoginUsers extends Component {
   constructor(props) {
@@ -20,6 +23,12 @@ class LoginUsers extends Component {
     this.getLoginUsers();
   }
 
+  searchSelect(data) {
+    this.setState({
+      hims_d_employee_id: data.hims_d_employee_id
+    });
+  }
+
   resetSaveState() {
     this.setState({
       username: "",
@@ -28,7 +37,10 @@ class LoginUsers extends Component {
       password: "",
       confirm_password: "",
       app_group_id: null,
-      role_id: null
+      role_id: null,
+      hims_d_employee_id: null,
+      user_type: "",
+      full_name: ""
     });
   }
 
@@ -134,7 +146,8 @@ class LoginUsers extends Component {
             effective_start_date: this.state.effective_start_date,
             password: this.state.password,
             app_group_id: this.state.app_group_id,
-            role_id: this.state.role_id
+            role_id: this.state.role_id,
+            user_type: this.state.user_type
           },
           onSuccess: response => {
             if (response.data.success) {
@@ -145,6 +158,11 @@ class LoginUsers extends Component {
 
               this.getLoginUsers();
               this.resetSaveState();
+            } else if (!response.data.success) {
+              swalMessage({
+                title: response.data.records.message,
+                type: "warning"
+              });
             }
           },
           onError: error => {}
@@ -174,7 +192,34 @@ class LoginUsers extends Component {
                   }
                 }}
               />
-              <AlagehFormGroup
+
+              <AlgaehAutoSearch
+                div={{ className: "col-lg-2" }}
+                label={{ forceLabel: "Employees" }}
+                title="Search Employees"
+                id="item_id_search"
+                template={result => {
+                  return (
+                    <section className="resultSecStyles">
+                      <div className="row">
+                        <div className="col-8">
+                          <h4 className="title">{result.employee_code}</h4>
+                          <small>{result.full_name}</small>
+                        </div>
+                        <div className="col-4" />
+                      </div>
+                    </section>
+                  );
+                }}
+                name="employee_id"
+                columns={spotlightSearch.Employee_details.employee}
+                displayField="full_name"
+                value={this.state.full_name}
+                searchName="employee"
+                onClick={this.searchSelect.bind(this)}
+              />
+
+              {/* <AlagehFormGroup
                 div={{ className: "col" }}
                 label={{
                   fieldName: "password",
@@ -212,7 +257,7 @@ class LoginUsers extends Component {
                     type: "Password"
                   }
                 }}
-              />
+              /> */}
 
               <AlagehFormGroup
                 div={{ className: "col" }}
@@ -230,6 +275,24 @@ class LoginUsers extends Component {
                 }}
               />
 
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "User Type",
+                  isImp: true
+                }}
+                selector={{
+                  name: "user_type",
+                  className: "select-fld",
+                  value: this.state.user_type,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: USER_TYPE
+                  },
+                  onChange: this.dropDownHandler.bind(this)
+                }}
+              />
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
@@ -299,6 +362,18 @@ class LoginUsers extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "add_to_list"
+                    }}
+                  />
+                </button>
+                <button
+                  style={{ marginTop: 21 }}
+                  onClick={this.resetSaveState.bind(this)}
+                  type="button"
+                  className="btn btn-default"
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Clear"
                     }}
                   />
                 </button>

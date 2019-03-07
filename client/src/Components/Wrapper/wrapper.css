@@ -155,5 +155,8 @@
   border-radius: 0.28571429rem; }
 
 .ui.search .results {
+  max-height: 40vh;
   margin-top: 0;
-  width: 100%; }
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden; }

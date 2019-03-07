@@ -44,7 +44,8 @@ class Modules extends Component {
       licence_key: "",
       access_by: "",
       icons: "",
-      other_language: ""
+      other_language: "",
+      display_order: ""
     });
   }
 
@@ -73,7 +74,8 @@ class Modules extends Component {
         licence_key: this.state.licence_key,
         access_by: this.state.access_by,
         icons: this.state.icons,
-        other_language: this.state.other_language
+        other_language: this.state.other_language,
+        display_order: this.state.display_order
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -195,7 +197,7 @@ class Modules extends Component {
             />
 
             <AlagehFormGroup
-              div={{ className: "col-lg-1" }}
+              div={{ className: "col-lg-2" }}
               label={{
                 forceLabel: "Display Order",
                 isImp: true

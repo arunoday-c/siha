@@ -79,7 +79,7 @@ export default class AbsenceManagement extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            absents: res.data.records
+            absents: res.data.result
           });
         }
       },
