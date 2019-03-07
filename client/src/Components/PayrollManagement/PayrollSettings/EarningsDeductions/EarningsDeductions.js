@@ -10,6 +10,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
+import Enumerable from "linq";
 
 class EarningsDeductions extends Component {
   constructor(props) {
@@ -49,7 +50,8 @@ class EarningsDeductions extends Component {
       general_ledger: null,
       allow_round_off: false,
       round_off_type: null,
-      round_off_amount: null
+      round_off_amount: null,
+      formula: null
     });
   }
 
@@ -201,7 +203,8 @@ class EarningsDeductions extends Component {
             general_ledger: this.state.general_ledger,
             allow_round_off: this.state.allow_round_off === true ? "Y" : "N",
             round_off_type: this.state.round_off_type,
-            round_off_amount: this.state.round_off_amount
+            round_off_amount: this.state.round_off_amount,
+            formula: this.state.formula
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -348,6 +351,17 @@ class EarningsDeductions extends Component {
   render() {
     let i = 10;
 
+    let earn_component = Enumerable.from(this.state.earning_deductions)
+      .where(
+        w =>
+          w.component_category === "E" &&
+          w.calculation_method === "FI" &&
+          w.miscellaneous_component === "N"
+      )
+      .toArray();
+
+    earn_component.push({ short_desc: "Gross Salary" });
+
     return (
       <div className="earnings_deductions">
         {/* {i < 5 ? ( */}
@@ -489,7 +503,20 @@ class EarningsDeductions extends Component {
                 />
               </div>
               <div className="col-12 ComponentsFormula">
-                <input
+                {earn_component.length !== 0
+                  ? earn_component.map((menu, index) => {
+                      return (
+                        <input
+                          type="button"
+                          className="col-3"
+                          value={menu.short_desc}
+                          onClick={this.onChangeCalculatorInput.bind(this)}
+                        />
+                      );
+                    })
+                  : null}
+
+                {/* <input
                   type="button"
                   className="col-3"
                   value="Basic"
@@ -536,7 +563,7 @@ class EarningsDeductions extends Component {
                   className="col-3"
                   value="C.L.A"
                   onClick={this.onChangeCalculatorInput.bind(this)}
-                />
+                /> */}
               </div>
               <div className="col-12 submitBtn">
                 {" "}

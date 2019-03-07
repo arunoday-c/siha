@@ -819,7 +819,7 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_earnings_id,employee_id,earnings_id,amount,formula,allocate,\
+              "SELECT hims_d_employee_earnings_id,employee_id,earnings_id,short_desc,amount,formula,allocate,\
         calculation_method from hims_d_employee_earnings where employee_id = ?;",
             values: [input.employee_id],
             printQuery: true
@@ -852,7 +852,7 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,amount,formula,allocate,\
+              "SELECT hims_d_employee_deductions_id,employee_id,deductions_id,short_desc,amount,formula,allocate,\
           calculation_method from hims_d_employee_deductions where employee_id = ?;",
             values: [input.employee_id],
             printQuery: true
@@ -885,7 +885,7 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,amount,formula,allocate,\
+              "SELECT hims_d_employee_contributions_id,employee_id,contributions_id,short_desc,amount,formula,allocate,\
           calculation_method from hims_d_employee_contributions where employee_id = ?;",
             values: [input.employee_id],
             printQuery: true
@@ -1349,6 +1349,7 @@ function InsertEmployeeEarnings(options) {
         const insurtColumns = [
           "employee_id",
           "earnings_id",
+          "short_desc",
           "amount",
           "formula",
           "allocate",
@@ -1488,6 +1489,7 @@ function InsertEmployeeDeduction(options) {
         const insurtColumns = [
           "employee_id",
           "deductions_id",
+          "short_desc",
           "amount",
           "formula",
           "allocate",
@@ -1626,6 +1628,7 @@ function InsertEmployeeContributions(options) {
         const insurtColumns = [
           "employee_id",
           "contributions_id",
+          "short_desc",
           "amount",
           "formula",
           "allocate",
