@@ -100,33 +100,12 @@ export default class WeeklyAttendance extends Component {
   }
 
   notifyExceptions() {
-    // let _fromDate = this.state.from_date;
-    // let _toDate = this.state.to_date;
-
     let a = Enumerable.from(this.state.time_sheet)
       .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
       .toArray();
 
     let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
     let _toDate = moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD");
-
-    console.log("DAtes Arary", a);
-    console.log(
-      "from ",
-      moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD")
-    );
-    console.log("to ", moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD"));
-
-    // if (this.state.attendance_type === "MW") {
-    //   let date = this.state.year + "-" + this.state.month + "-01";
-
-    //   _fromDate = moment(date)
-    //     .startOf("month")
-    //     .format("YYYY-MM-DD");
-    //   _toDate = moment(date)
-    //     .endOf("month")
-    //     .format("YYYY-MM-DD");
-    // }
 
     algaehApiCall({
       uri: "/attendance/notifyException",
@@ -298,8 +277,10 @@ export default class WeeklyAttendance extends Component {
               this.setState({
                 time_sheet: res.data.result.outputArray,
                 loader: false,
-                month_shortage_hour: res.data.result.month_shortage_hour,
-                month_ot_hour: res.data.result.month_ot_hour,
+                month_shortage_hour: this.getTotalShortage(
+                  res.data.result.outputArray
+                ),
+                month_ot_hour: this.getTotalOT(res.data.result.outputArray),
                 month_actual_hours: res.data.result.month_actual_hours,
                 month_worked_hours: res.data.result.month_worked_hours
               });
@@ -452,14 +433,13 @@ export default class WeeklyAttendance extends Component {
   }
 
   getExcessShortage(data) {
-    debugger;
-    return data.shortage_hour > 0 ? (
+    return data.shortage_Time > 0 ? (
       <React.Fragment>
         Shortage Time:
         <b className="lateTime">
-          {/* {Math.floor(data.actual_hours - data.worked_hours) + " Hrs: "}
-          {60 - data.minutes + " Mins"} */}
-          {data.shortage_hour + " Hrs"}
+          {data.shortage_hr + " Hrs: "}
+          {data.shortage_min + " Mins"}
+          {/* {data.shortage_Time + " Hrs"} */}
         </b>
         <br />
         Working Hours:
@@ -474,10 +454,10 @@ export default class WeeklyAttendance extends Component {
       <React.Fragment>
         Excess Time
         <b className="OverTime">
-          {/* {Math.abs(parseInt(data.actual_hours - data.worked_hours)) + " Hrs"}
-          {data.minutes + " Mins"} */}
-          {data.ot_hour + " Hrs"}
-        </b>{" "}
+          {data.ot_hr + " Hrs"}
+          {data.ot_min + " Mins"}
+          {/* {data.ot_Time + " Hrs"} */}
+        </b>
         <br />
         Working Hours:
         <b className="">
@@ -516,15 +496,74 @@ export default class WeeklyAttendance extends Component {
     }
   }
 
+  getTotalShortage(data) {
+    let total_hrs = Enumerable.from(data).sum(s => s.shortage_hr);
+    let total_mins = Enumerable.from(data).sum(s => s.shortage_min);
+    let cumulative_mins = total_hrs * 60 + total_mins;
+
+    return parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
+  }
+
+  getTotalOT(data) {
+    let total_hrs = Enumerable.from(data).sum(s => s.ot_hr);
+    let total_mins = Enumerable.from(data).sum(s => s.ot_min);
+    let cumulative_mins = total_hrs * 60 + total_mins;
+
+    return parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
+  }
+
   textHandler(e) {
     this.setState({
       [e.target.name]: e.target.value
     });
   }
 
-  changeChecks(e) {
-    this.setState({
-      [e.target.name]: e.target.checked ? e.target.value : null
+  changeChecks(data, e) {
+    let a = Enumerable.from(this.state.time_sheet)
+      .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
+      .toArray();
+
+    let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
+    let _toDate = moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD");
+
+    algaehApiCall({
+      uri: "/attendance/considerOverTimeOrShortage",
+      method: "PUT",
+      data: {
+        time_sheet_ids: [data.hims_f_daily_time_sheet_id],
+        consider_ot_shrtg: e.target.checked ? "Y" : "N",
+        from_date: _fromDate,
+        to_date: _toDate,
+        sub_department_id: this.state.sub_department_id,
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id
+      },
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            time_sheet: res.data.result.outputArray,
+            month_shortage_hour: this.getTotalShortage(
+              res.data.result.outputArray
+            ),
+            month_ot_hour: this.getTotalOT(res.data.result.outputArray),
+            month_actual_hours: res.data.result.month_actual_hours,
+            month_worked_hours: res.data.result.month_worked_hours
+          });
+
+          // this.getDailyTimeSheet();
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
   }
 
@@ -809,12 +848,14 @@ export default class WeeklyAttendance extends Component {
               <br />
               {this.state.employee_name ? this.state.employee_name : "All"}
             </div>{" "}
-            <label
-              className="timeCheckCntr"
-              style={{ marginLeft: "41.33%", top: "8px" }}
-            >
-              <input type="checkbox" /> <span className="checkmark" />{" "}
-            </label>
+            {this.state.time_sheet.length > 0 ? (
+              <label
+                className="timeCheckCntr"
+                style={{ marginLeft: "41.3%", top: "8px" }}
+              >
+                <input type="checkbox" /> <span className="checkmark" />{" "}
+              </label>
+            ) : null}
             <div className="actions">
               {this.state.employee_name ? (
                 <React.Fragment>
@@ -923,7 +964,13 @@ export default class WeeklyAttendance extends Component {
                         {/* Project Name Come Here */}
                       </span>
                       <label className="timeCheckCntr">
-                        <input type="checkbox" /> <span className="checkmark" />{" "}
+                        <input
+                          type="checkbox"
+                          name="consider_ot_shrtg"
+                          onChange={this.changeChecks.bind(this, data)}
+                          checked={data.consider_ot_shrtg === "Y"}
+                        />
+                        <span className="checkmark" />
                       </label>
 
                       <div className="tooltipDetails">
