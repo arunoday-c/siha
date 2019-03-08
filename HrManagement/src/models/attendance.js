@@ -5740,7 +5740,7 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
 
   considerOverTimeOrShortage: (req, res, next) => {
     let input = req.body;
-    const utilities = new algaehUtilities();
+   // const utilities = new algaehUtilities();
 
     if (
       input.time_sheet_ids.length> 0
@@ -5752,7 +5752,7 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
             "update hims_f_daily_time_sheet set consider_ot_shrtg=?  where hims_f_daily_time_sheet_id in (?)",
           values: [
             input.consider_ot_shrtg,
-            input.employees
+            input.time_sheet_ids
           ]
         })
         .then(result => {

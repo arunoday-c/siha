@@ -452,13 +452,13 @@ export default class WeeklyAttendance extends Component {
   }
 
   getExcessShortage(data) {
-    return data.shortage_hour > 0 ? (
+    return data.shortage_Time > 0 ? (
       <React.Fragment>
         Shortage Time:
         <b className="lateTime">
-          {/* {Math.floor(data.actual_hours - data.worked_hours) + " Hrs: "}
-          {60 - data.minutes + " Mins"} */}
-          {data.shortage_hour + " Hrs"}
+          {data.shortage_hr + " Hrs: "}
+          {data.shortage_min + " Mins"}
+          {/* {data.shortage_Time + " Hrs"} */}
         </b>
         <br />
         Working Hours:
@@ -473,10 +473,10 @@ export default class WeeklyAttendance extends Component {
       <React.Fragment>
         Excess Time
         <b className="OverTime">
-          {/* {Math.abs(parseInt(data.actual_hours - data.worked_hours)) + " Hrs"}
-          {data.minutes + " Mins"} */}
-          {data.ot_hour + " Hrs"}
-        </b>{" "}
+          {data.ot_hr + " Hrs"}
+          {data.ot_min + " Mins"}
+          {/* {data.ot_Time + " Hrs"} */}
+        </b>
         <br />
         Working Hours:
         <b className="lateTime">
@@ -522,9 +522,52 @@ export default class WeeklyAttendance extends Component {
   }
 
   changeChecks(data, e) {
-    debugger;
-    this.setState({
-      [e.target.name]: e.target.checked
+    // debugger;
+    // this.setState({
+    //   [e.target.name]: e.target.checked
+    // });
+    let _fromDate = this.state.from_date;
+    let _toDate = this.state.to_date;
+
+    if (this.state.attendance_type === "MW") {
+      let date = this.state.year + "-" + this.state.month + "-01";
+
+      _fromDate = moment(date)
+        .startOf("month")
+        .format("YYYY-MM-DD");
+      _toDate = moment(date)
+        .endOf("month")
+        .format("YYYY-MM-DD");
+    }
+
+    algaehApiCall({
+      uri: "/attendance/considerOverTimeOrShortage",
+      method: "PUT",
+      data: {
+        time_sheet_ids: [data.hims_f_daily_time_sheet_id],
+        consider_ot_shrtg: e.target.checked ? "Y" : "N",
+        from_date: _fromDate,
+        to_date: _toDate,
+        sub_department_id: this.state.sub_department_id,
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id
+      },
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.getDailyTimeSheet();
+          swalMessage({
+            title: "Record Updated Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
   }
 
@@ -809,12 +852,14 @@ export default class WeeklyAttendance extends Component {
               <br />
               {this.state.employee_name ? this.state.employee_name : "All"}
             </div>{" "}
-            <label
-              className="timeCheckCntr"
-              style={{ marginLeft: "41.3%", top: "8px" }}
-            >
-              <input type="checkbox" /> <span className="checkmark" />{" "}
-            </label>
+            {this.state.time_sheet.length > 0 ? (
+              <label
+                className="timeCheckCntr"
+                style={{ marginLeft: "41.3%", top: "8px" }}
+              >
+                <input type="checkbox" /> <span className="checkmark" />{" "}
+              </label>
+            ) : null}
             <div className="actions">
               {this.state.employee_name ? (
                 <React.Fragment>
