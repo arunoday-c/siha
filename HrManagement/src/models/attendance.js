@@ -3220,12 +3220,14 @@ module.exports = {
                     .Select(s => s.hims_d_employee_id)
                     .ToArray();
 
-                  let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, employee_id,TS.biometric_id, attendance_date, \
+                  let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
                 in_time, out_date, out_time, year, month, status,\
                  posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
-                 expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name\
-                 from  hims_f_daily_time_sheet TS \
+                 expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
+                 P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
                 inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+                left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date
+              left join hims_d_project P on PR.project_id=P.hims_d_project_id
                 where  TS.hospital_id=${input.hospital_id} and  attendance_date between ('${from_date}') and ('${to_date}') and employee_id in (${employee_ids})`;
 
                   //---------------------------------------------------
@@ -5775,12 +5777,15 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
 
             }
 
-            let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, employee_id,TS.biometric_id, attendance_date, \
+            let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
             in_time, out_date, out_time, year, month, status,\
              posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
-             expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name\
-             from  hims_f_daily_time_sheet TS \
+             expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
+             P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
             inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+
+            left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id and TS.attendance_date=PR.attendance_date
+            left join hims_d_project P on PR.project_id=P.hims_d_project_id
             where  TS.hospital_id=${input.hospital_id} and   attendance_date between ('${input.from_date}') and ('${input.to_date}') ${sub_department} ${employee_ids}`;
 
             _mysql
