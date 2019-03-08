@@ -73,6 +73,11 @@
   background-color: "lightgray";
   cursor: pointer; }
 
+.EmpShiftRost_Screen .time_cell_disable {
+  background: #f9f9f9 !important;
+  border: none !important;
+  pointer-events: none; }
+
 .EmpShiftRost_Screen .editAction {
   position: relative; }
   .EmpShiftRost_Screen .editAction span {
