@@ -480,7 +480,7 @@ export default class WeeklyAttendance extends Component {
         </b>{" "}
         <br />
         Working Hours:
-        <b className="lateTime">
+        <b className="">
           {data.actual_hours +
             ":" +
             (data.actual_minutes ? data.actual_minutes : "00") +
@@ -811,7 +811,7 @@ export default class WeeklyAttendance extends Component {
             </div>{" "}
             <label
               className="timeCheckCntr"
-              style={{ marginLeft: "41.3%", top: "8px" }}
+              style={{ marginLeft: "41.33%", top: "8px" }}
             >
               <input type="checkbox" /> <span className="checkmark" />{" "}
             </label>
@@ -881,7 +881,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress weekOffCntr"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
                     <div className="col-3">
                       {data.employee_name ? data.employee_name : "------"}
@@ -909,7 +909,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
                     <div className="col-3">
                       {data.employee_name ? data.employee_name : "------"}
@@ -919,6 +919,9 @@ export default class WeeklyAttendance extends Component {
                     </div>
 
                     <div className="col-7 dayTypeCntr">
+                      <span className="projectName">
+                        {/* Project Name Come Here */}
+                      </span>
                       <label className="timeCheckCntr">
                         <input type="checkbox" /> <span className="checkmark" />{" "}
                       </label>
@@ -977,7 +980,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
                     <div className="col-3">
                       {data.employee_name ? data.employee_name : "------"}
@@ -1002,7 +1005,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress "
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
                     <div className="col-3">
                       {data.employee_name ? data.employee_name : "------"}
@@ -1027,7 +1030,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
                     <div className="col-3">
                       {data.employee_name ? data.employee_name : "------"}
@@ -1052,7 +1055,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
                     <div className="col-3">
                       {data.employee_name ? data.employee_name : "------"}
@@ -1123,7 +1126,7 @@ export default class WeeklyAttendance extends Component {
                     className="row dailyTimeProgress"
                   >
                     <div className="col-1">
-                      {moment(data.attendance_date).format("MMM Do,(ddd)")}
+                      {moment(data.attendance_date).format("MMM Do, ddd")}
                     </div>
                     <div className="col-3">
                       {data.employee_name ? data.employee_name : "------"}

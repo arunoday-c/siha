@@ -404,6 +404,15 @@ class PayRollDetails extends Component {
                   />
                 </div>
               </div>
+              <div className="col-12">
+                {" "}
+                <button
+                  className="btn btn-default"
+                  onClick={CalculateBasedonFormula.bind(this, this)}
+                >
+                  Process
+                </button>
+              </div>
             </div>
             <div className="col-lg-6 secondary-details">
               <h5>
@@ -771,13 +780,6 @@ class PayRollDetails extends Component {
                   />
                   <h6>{getAmountFormart(this.state.cost_to_company)}</h6>
                 </div>
-
-                <input
-                  type="button"
-                  className="col-2"
-                  value="Process"
-                  onClick={CalculateBasedonFormula.bind(this, this)}
-                />
               </div>
               {/* <div className="row padding-bottom-5">
                 <div className="col-10" />
