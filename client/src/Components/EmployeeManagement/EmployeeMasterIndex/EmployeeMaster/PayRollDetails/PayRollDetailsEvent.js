@@ -737,6 +737,8 @@ const CalculateBasedonFormula = $this => {
       });
       const expression = new RegExp("Gross Salary", "g");
       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+      const perexpression = new RegExp("%", "g");
+      formulaCal = formulaCal.replace(perexpression, "/100");
 
       formulaCal = eval(formulaCal);
       earn_comp[x].amount = formulaCal;
@@ -760,6 +762,8 @@ const CalculateBasedonFormula = $this => {
 
       const expression = new RegExp("Gross Salary", "g");
       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+      const perexpression = new RegExp("%", "g");
+      formulaCal = formulaCal.replace(perexpression, "/100");
 
       // formulaCal = `${formulaCal}`;
       formulaCal = eval(formulaCal);
@@ -769,6 +773,7 @@ const CalculateBasedonFormula = $this => {
   }
 
   if (contribute_comp.length > 0) {
+    debugger;
     for (let z = 0; z < contribute_comp.length; z++) {
       let formulaCal = contribute_comp[z].formula;
 
@@ -783,6 +788,8 @@ const CalculateBasedonFormula = $this => {
       });
       const expression = new RegExp("Gross Salary", "g");
       formulaCal = formulaCal.replace(expression, $this.state.gross_salary);
+      const perexpression = new RegExp("%", "g");
+      formulaCal = formulaCal.replace(perexpression, "/100");
 
       formulaCal = eval(formulaCal);
       contribute_comp[z].amount = formulaCal;
