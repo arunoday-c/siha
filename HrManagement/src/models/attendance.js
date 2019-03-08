@@ -6137,15 +6137,21 @@ function insertTimeSheet(
                     let ot_Time=0;
                   
 
+                    let shortage_hr=0;
+                    let shortage_min =0;
+
+                    let ot_hr=0;
+                    let ot_min=0;
+
                     if (diff > 0) {
                       //calculating shortage
-                    let shortage_hr = parseInt(parseInt(diff) / parseInt(60));
-                    let shortage_min = parseInt(diff) % parseInt(60);
+                   shortage_hr = parseInt(parseInt(diff) / parseInt(60));
+                   shortage_min = parseInt(diff) % parseInt(60);
                     shortage_Time=shortage_hr+"."+shortage_min;
                     } else if (diff < 0) {
                       //calculating over time
-                      let ot_hr = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
-                      let ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+                       ot_hr = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
+                       ot_min = parseInt(Math.abs(diff)) % parseInt(60);
                       ot_Time=ot_hr+"."+ot_min;
                     }
 
