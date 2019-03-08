@@ -1029,11 +1029,6 @@ class Experiment extends Component {
     // }));
   }
 
-  OTSTCAL() {
-    alert("OT HR:" + Enumerable.from(outputArray).sum(s => s.ot_hr));
-    alert("OT MIN:" + Enumerable.from(outputArray).sum(s => s.ot_min));
-  }
-
   render() {
     return (
       <div style={{ textAlign: "center" }}>

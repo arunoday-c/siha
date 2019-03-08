@@ -100,33 +100,12 @@ export default class WeeklyAttendance extends Component {
   }
 
   notifyExceptions() {
-    // let _fromDate = this.state.from_date;
-    // let _toDate = this.state.to_date;
-
     let a = Enumerable.from(this.state.time_sheet)
       .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
       .toArray();
 
     let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
     let _toDate = moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD");
-
-    console.log("DAtes Arary", a);
-    console.log(
-      "from ",
-      moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD")
-    );
-    console.log("to ", moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD"));
-
-    // if (this.state.attendance_type === "MW") {
-    //   let date = this.state.year + "-" + this.state.month + "-01";
-
-    //   _fromDate = moment(date)
-    //     .startOf("month")
-    //     .format("YYYY-MM-DD");
-    //   _toDate = moment(date)
-    //     .endOf("month")
-    //     .format("YYYY-MM-DD");
-    // }
 
     algaehApiCall({
       uri: "/attendance/notifyException",
@@ -298,8 +277,10 @@ export default class WeeklyAttendance extends Component {
               this.setState({
                 time_sheet: res.data.result.outputArray,
                 loader: false,
-                month_shortage_hour: res.data.result.month_shortage_hour,
-                month_ot_hour: res.data.result.month_ot_hour,
+                month_shortage_hour: this.getTotalShortage(
+                  res.data.result.outputArray
+                ),
+                month_ot_hour: this.getTotalOT(res.data.result.outputArray),
                 month_actual_hours: res.data.result.month_actual_hours,
                 month_worked_hours: res.data.result.month_worked_hours
               });
@@ -515,6 +496,22 @@ export default class WeeklyAttendance extends Component {
     }
   }
 
+  getTotalShortage(data) {
+    let total_hrs = Enumerable.from(data).sum(s => s.shortage_hr);
+    let total_mins = Enumerable.from(data).sum(s => s.shortage_min);
+    let cumulative_mins = total_hrs * 60 + total_mins;
+
+    return parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
+  }
+
+  getTotalOT(data) {
+    let total_hrs = Enumerable.from(data).sum(s => s.ot_hr);
+    let total_mins = Enumerable.from(data).sum(s => s.ot_min);
+    let cumulative_mins = total_hrs * 60 + total_mins;
+
+    return parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
+  }
+
   textHandler(e) {
     this.setState({
       [e.target.name]: e.target.value
@@ -522,23 +519,12 @@ export default class WeeklyAttendance extends Component {
   }
 
   changeChecks(data, e) {
-    // debugger;
-    // this.setState({
-    //   [e.target.name]: e.target.checked
-    // });
-    let _fromDate = this.state.from_date;
-    let _toDate = this.state.to_date;
+    let a = Enumerable.from(this.state.time_sheet)
+      .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
+      .toArray();
 
-    if (this.state.attendance_type === "MW") {
-      let date = this.state.year + "-" + this.state.month + "-01";
-
-      _fromDate = moment(date)
-        .startOf("month")
-        .format("YYYY-MM-DD");
-      _toDate = moment(date)
-        .endOf("month")
-        .format("YYYY-MM-DD");
-    }
+    let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
+    let _toDate = moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD");
 
     algaehApiCall({
       uri: "/attendance/considerOverTimeOrShortage",
@@ -555,7 +541,17 @@ export default class WeeklyAttendance extends Component {
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.getDailyTimeSheet();
+          this.setState({
+            time_sheet: res.data.result.outputArray,
+            month_shortage_hour: this.getTotalShortage(
+              res.data.result.outputArray
+            ),
+            month_ot_hour: this.getTotalOT(res.data.result.outputArray),
+            month_actual_hours: res.data.result.month_actual_hours,
+            month_worked_hours: res.data.result.month_worked_hours
+          });
+
+          // this.getDailyTimeSheet();
           swalMessage({
             title: "Record Updated Successfully",
             type: "success"
