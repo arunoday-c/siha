@@ -108,6 +108,7 @@
           display: inline-block;
           position: absolute;
           top: -2px;
+          background: rgba(0, 0, 0, 0.7);
           right: 30px;
           color: #fff; }
         .hrTimeSheet .WeeklyTimeProgress .dailyTimeProgress .dayTypeCntr .progress {

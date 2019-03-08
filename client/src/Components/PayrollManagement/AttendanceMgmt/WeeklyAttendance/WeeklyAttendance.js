@@ -567,6 +567,58 @@ export default class WeeklyAttendance extends Component {
     });
   }
 
+  selectAll(e) {
+    let a = Enumerable.from(this.state.time_sheet)
+      .select(w => parseInt(moment(w.attendance_date).format("YYYYMMDD"), 10))
+      .toArray();
+
+    let _fromDate = moment(Math.min(...a), "YYYYMMDD").format("YYYY-MM-DD");
+    let _toDate = moment(Math.max(...a), "YYYYMMDD").format("YYYY-MM-DD");
+    let time_sheet_ids = Enumerable.from(this.state.time_sheet)
+      .select(s => s.hims_f_daily_time_sheet_id)
+      .toArray();
+    // debugger;
+    algaehApiCall({
+      uri: "/attendance/considerOverTimeOrShortage",
+      method: "PUT",
+      data: {
+        time_sheet_ids: time_sheet_ids,
+        consider_ot_shrtg: e.target.checked ? "Y" : "N",
+        from_date: _fromDate,
+        to_date: _toDate,
+        sub_department_id: this.state.sub_department_id,
+        hims_d_employee_id: this.state.hims_d_employee_id,
+        hospital_id: this.state.hospital_id
+      },
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            time_sheet: res.data.result.outputArray,
+            month_shortage_hour: this.getTotalShortage(
+              res.data.result.outputArray
+            ),
+            month_ot_hour: this.getTotalOT(res.data.result.outputArray),
+            month_actual_hours: res.data.result.month_actual_hours,
+            month_worked_hours: res.data.result.month_worked_hours
+          });
+
+          // this.getDailyTimeSheet();
+          swalMessage({
+            title: "Records Updated Successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
   render() {
     let allYears = getYears();
     return (
@@ -853,7 +905,8 @@ export default class WeeklyAttendance extends Component {
                 className="timeCheckCntr"
                 style={{ marginLeft: "41.3%", top: "8px" }}
               >
-                <input type="checkbox" /> <span className="checkmark" />{" "}
+                <input onChange={this.selectAll.bind(this)} type="checkbox" />{" "}
+                <span className="checkmark" />{" "}
               </label>
             ) : null}
             <div className="actions">
@@ -960,9 +1013,12 @@ export default class WeeklyAttendance extends Component {
                     </div>
 
                     <div className="col-7 dayTypeCntr">
-                      <span className="projectName">
-                        {/* Project Name Come Here */}
-                      </span>
+                      {data.project_desc ? (
+                        <span className="projectName">
+                          {/* Project Name Come Here */}
+                          {data.project_desc}
+                        </span>
+                      ) : null}
                       <label className="timeCheckCntr">
                         <input
                           type="checkbox"
