@@ -452,7 +452,6 @@ export default class WeeklyAttendance extends Component {
   }
 
   getExcessShortage(data) {
-    debugger;
     return data.shortage_hour > 0 ? (
       <React.Fragment>
         Shortage Time:
@@ -522,9 +521,10 @@ export default class WeeklyAttendance extends Component {
     });
   }
 
-  changeChecks(e) {
+  changeChecks(data, e) {
+    debugger;
     this.setState({
-      [e.target.name]: e.target.checked ? e.target.value : null
+      [e.target.name]: e.target.checked
     });
   }
 
@@ -920,7 +920,13 @@ export default class WeeklyAttendance extends Component {
 
                     <div className="col-8 dayTypeCntr">
                       <label className="timeCheckCntr">
-                        <input type="checkbox" /> <span className="checkmark" />{" "}
+                        <input
+                          type="checkbox"
+                          name="consider_ot_shrtg"
+                          onChange={this.changeChecks.bind(this, data)}
+                          checked={data.consider_ot_shrtg === "Y"}
+                        />
+                        <span className="checkmark" />
                       </label>
 
                       <div className="tooltipDetails">

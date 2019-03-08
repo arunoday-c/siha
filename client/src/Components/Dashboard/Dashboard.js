@@ -412,7 +412,6 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    debugger;
     let HospitalId =
       getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
     this.props.getHospitalDetails({
