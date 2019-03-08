@@ -147,10 +147,8 @@ class DoctorCommission extends Component {
               <AlgaehDateHandler
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: (
-                    <AlgaehLabel label={{ forceLabel: "Commission Date" }} />
-                  ),
-                  className: "internal-label"
+                  forceLabel: "Commision Date",
+                  isImp: true
                 }}
                 textBox={{
                   className: "txt-fld",

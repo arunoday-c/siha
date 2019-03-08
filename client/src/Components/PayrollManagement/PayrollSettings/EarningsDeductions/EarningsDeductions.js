@@ -1627,8 +1627,9 @@ class EarningsDeductions extends Component {
                     dataSource={{
                       data: this.state.earning_deductions
                     }}
+                    filter={true}
                     isEditable={true}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 20 }}
                     events={{
                       onEdit: () => {},
                       onDelete: this.deleteEarningsDeductions.bind(this),
