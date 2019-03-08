@@ -41,7 +41,8 @@ export default class EmployeeShiftRostering extends Component {
 
   showModal(row, e) {
     if (e.target.tagName === "TD") {
-      if (e.ctrlKey) {
+      debugger;
+      if (e.ctrlKey || e.metaKey) {
         e.currentTarget.lastElementChild.firstElementChild.click();
       } else {
         this.setState({
