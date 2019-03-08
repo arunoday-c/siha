@@ -4963,8 +4963,11 @@ module.exports = {
                     .logger()
                     .log("LastTenDaysResult: ", LastTenDaysResult);
 
-                  if (AttenResult.length > 0) {
-                    let excptions = new LINQ(AttenResult)
+
+
+                    let total_biom_attend=AttenResult.concat(LastTenDaysResult);
+                  if (total_biom_attend.length > 0) {
+                    let excptions = new LINQ(total_biom_attend)
                       .Where(w => w.status == "EX")
                       .Select(s => {
                         return {
