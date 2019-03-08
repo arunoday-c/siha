@@ -5342,10 +5342,7 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
                             working_hours:
                             LastTenDaysResult[i]["actual_hours"] +
                               "." +
-                              LastTenDaysResult[i]["actual_minutes"],
-                           
-                           
-                           
+                              LastTenDaysResult[i]["actual_minutes"],                       
                             shortage_hours: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?shortage_time:0,
                             shortage_minutes: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?shortage_min:0,
                             ot_work_hours: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?ot_time:0,
@@ -6136,24 +6133,24 @@ function insertTimeSheet(
 
                     let diff = total_minutes - worked_minutes;
 
-                    let shortage_hour=0;
-                    let ot_hour=0;
+                    let shortage_Time=0;
+                    let ot_Time=0;
                   
 
                     if (diff > 0) {
                       //calculating shortage
                     let shortage_hr = parseInt(parseInt(diff) / parseInt(60));
                     let shortage_min = parseInt(diff) % parseInt(60);
-                    shortage_hour=shortage_hr+"."+shortage_min;
+                    shortage_Time=shortage_hr+"."+shortage_min;
                     } else if (diff < 0) {
                       //calculating over time
                       let ot_hr = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
                       let ot_min = parseInt(Math.abs(diff)) % parseInt(60);
-                      ot_hour=ot_hr+"."+ot_min;
+                      ot_Time=ot_hr+"."+ot_min;
                     }
 
 
-                    outputArray.push({...result[i],shortage_hour,ot_hour
+                    outputArray.push({...result[i],shortage_Time,shortage_hr,shortage_min,ot_Time,ot_hr,ot_min
                     });
 
 
