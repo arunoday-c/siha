@@ -3222,7 +3222,7 @@ module.exports = {
 
                   let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, employee_id,TS.biometric_id, attendance_date, \
                 in_time, out_date, out_time, year, month, status,\
-                 posted, hours, minutes, actual_hours, actual_minutes, worked_hours,\
+                 posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
                  expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name\
                  from  hims_f_daily_time_sheet TS \
                 inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
@@ -4984,7 +4984,7 @@ module.exports = {
                       req.records = {
                         invalid_input: true,
                         employees: excptions,
-                        message: "PLease Notify Exceptions to proceed"
+                        message: "Please Notify Exceptions to proceed"
                       };
                       next();
                       return;
@@ -5000,9 +5000,9 @@ module.exports = {
                           let total_minutes =
                             parseInt(AttenResult[i]["actual_hours"] * 60) +
                             parseInt(AttenResult[i]["actual_minutes"]);
-                            utilities.logger().log("actual_hours: ", AttenResult[i]["actual_hours"]);
-                            utilities.logger().log("actual_minutes: ", AttenResult[i]["actual_minutes"]);
-                            utilities.logger().log("total_minutes: ", total_minutes);
+                            // utilities.logger().log("actual_hours: ", AttenResult[i]["actual_hours"]);
+                            // utilities.logger().log("actual_minutes: ", AttenResult[i]["actual_minutes"]);
+                            // utilities.logger().log("total_minutes: ", total_minutes);
 
 
 
@@ -5028,11 +5028,11 @@ module.exports = {
 
 
                          
-                          utilities.logger().log("worked_minutes: ", worked_minutes);
-                          utilities.logger().log("diff: ", diff);
-                          utilities.logger().log("ot_time: ", ot_time);
-                          utilities.logger().log("shortage_time: ", shortage_time);
-                          utilities.logger().log("================: ");
+                          // utilities.logger().log("worked_minutes: ", worked_minutes);
+                          // utilities.logger().log("diff: ", diff);
+                          // utilities.logger().log("ot_time: ", ot_time);
+                          // utilities.logger().log("shortage_time: ", shortage_time);
+                          // utilities.logger().log("================: ");
                         }
                        
 
