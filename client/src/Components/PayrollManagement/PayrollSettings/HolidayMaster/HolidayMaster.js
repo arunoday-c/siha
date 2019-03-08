@@ -284,7 +284,7 @@ export default class HolidayMaster extends Component {
                 <div className="col-12">
                   <div className="row">
                     <div data-validate="weekoff-div">
-                      <div className="col slctYearBranchSec">
+                      <div className=" slctYearBranchSec">
                         <div className="row">
                           <AlagehFormGroup
                             div={{ className: "col mandatory" }}
@@ -447,7 +447,10 @@ export default class HolidayMaster extends Component {
                             value={this.state.date}
                           />
 
-                          <div className="col-6 restrictedCntr">
+                          <div
+                            className="col-6 restrictedCntr"
+                            style={{ marginTop: 15, marginBottom: 15 }}
+                          >
                             <label>Restricted Holiday</label>
                             <div className="customCheckbox">
                               <label className="checkbox inline">
