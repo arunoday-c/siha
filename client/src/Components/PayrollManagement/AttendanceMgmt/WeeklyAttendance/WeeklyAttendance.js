@@ -905,7 +905,11 @@ export default class WeeklyAttendance extends Component {
                 className="timeCheckCntr"
                 style={{ marginLeft: "41.3%", top: "8px" }}
               >
-                <input onChange={this.selectAll.bind(this)} type="checkbox" />{" "}
+                <input
+                  defaultChecked={true}
+                  onChange={this.selectAll.bind(this)}
+                  type="checkbox"
+                />{" "}
                 <span className="checkmark" />{" "}
               </label>
             ) : null}
