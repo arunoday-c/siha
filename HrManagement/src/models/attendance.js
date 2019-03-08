@@ -5786,7 +5786,7 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
 
             left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id and TS.attendance_date=PR.attendance_date
             left join hims_d_project P on PR.project_id=P.hims_d_project_id
-            where  TS.hospital_id=${input.hospital_id} and   TS.attendance_date between ('${input.from_date}') and ('${input.to_date}') ${sub_department} ${employee_ids}`;
+            where  TS.hospital_id=${input.hospital_id} and   TS.attendance_date between ('${input.from_date}') and ('${input.to_date}') ${sub_department} ${employees}`;
 
             _mysql
             .executeQuery({
