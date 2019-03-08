@@ -3220,13 +3220,15 @@ module.exports = {
                     .Select(s => s.hims_d_employee_id)
                     .ToArray();
 
-                  let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, employee_id,TS.biometric_id, attendance_date, \
+                  let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
                 in_time, out_date, out_time, year, month, status,\
                  posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
-                 expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name\
-                 from  hims_f_daily_time_sheet TS \
+                 expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
+                 P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
                 inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
-                where attendance_date between ('${from_date}') and ('${to_date}') and employee_id in (${employee_ids})`;
+                left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id  and TS.attendance_date=PR.attendance_date
+              left join hims_d_project P on PR.project_id=P.hims_d_project_id
+                where  TS.hospital_id=${input.hospital_id} and  attendance_date between ('${from_date}') and ('${to_date}') and employee_id in (${employee_ids})`;
 
                   //---------------------------------------------------
                   // connect to your database
@@ -5755,11 +5757,161 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
             input.employees
           ]
         })
-        .then(result => {
-          if (result.affectedRows > 0) {
-            _mysql.releaseConnection();
-            req.records = result;
+        .then(results => {
+          if (results.affectedRows > 0) {
+           
+
+
+
+
+
+            let employees="";
+            if(input.hims_d_employee_id>0){
+              employees=" and TS.employee_id ="+input.hims_d_employee_id;
+            }
+
+            let sub_department="";
+            if(input.sub_department_id>0){
+
+              sub_department=" and TS.sub_department_id ="+input.sub_department_id;
+
+            }
+
+            let returnQry = `  select hims_f_daily_time_sheet_id,TS.sub_department_id, TS.employee_id,TS.biometric_id, TS.attendance_date, \
+            in_time, out_date, out_time, year, month, status,\
+             posted, hours, minutes, actual_hours, actual_minutes, worked_hours,consider_ot_shrtg,\
+             expected_out_date, expected_out_time ,TS.hospital_id,hims_d_employee_id,employee_code,full_name as employee_name,\
+             P.project_code,P.project_desc from  hims_f_daily_time_sheet TS \
+            inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
+
+            left join hims_f_project_roster PR on TS.employee_id=PR.employee_id and TS.hospital_id=PR.hospital_id and TS.attendance_date=PR.attendance_date
+            left join hims_d_project P on PR.project_id=P.hims_d_project_id
+            where  TS.hospital_id=${input.hospital_id} and   attendance_date between ('${input.from_date}') and ('${input.to_date}') ${sub_department} ${employee_ids}`;
+
+            _mysql
+            .executeQuery({
+              query: returnQry,
+              printQuery: true
+            })
+            .then(result => {
+
+
+
+
+
+
+  //ST-whole month ot,shortage calculate
+
+  let month_actual_hours=0;
+  let month_worked_hours=0;
+  // let month_shortage_hour=0;
+  // let month_ot_hour=0;
+
+
+  let sum_actual_hour=0;
+  let sum_actual_min=0;
+  let sum_work_hour=0;
+  let sum_work_min=0;
+
+ 
+
+//ST----total_min
+  sum_actual_hour=new LINQ(result).Sum(s => s.actual_hours);
+  sum_actual_min=new LINQ(result).Sum(s => s.actual_minutes);
+
+  let total_min =
+  parseInt(sum_actual_hour * 60) +
+  parseInt(sum_actual_min);
+  
+  let month_actual_hr = parseInt(parseInt(total_min) / parseInt(60));
+  let month_actual_min = parseInt(total_min) % parseInt(60);
+  month_actual_hours=month_actual_hr+"."+month_actual_min;
+
+//EN----total_min
+
+
+
+//ST----worked_min
+  sum_work_hour=new LINQ(result).Sum(s => s.hours);
+  sum_work_min=new LINQ(result).Sum(s => s.minutes);     
+
+
+let worked_min =
+  parseInt(sum_work_hour * 60) +
+  parseInt(sum_work_min);
+
+
+  let month_worked_hr = parseInt(parseInt(worked_min) / parseInt(60));
+  let month_worked_min = parseInt(worked_min) % parseInt(60);
+  month_worked_hours=month_worked_hr+"."+month_worked_min;
+//EN----worked_min
+
+
+
+
+//EN-whole month ot,shortage calculate
+
+  //ST-indivisual date ot,shortage calculate
+  let outputArray=[];
+    for(let i=0;i<result.length;i++){
+
+          let total_minutes =
+            parseInt(result[i]["actual_hours"] * 60) +
+            parseInt(result[i]["actual_minutes"]);
+          let worked_minutes =
+            parseInt(result[i]["hours"] * 60) +
+            parseInt(result[i]["minutes"]);
+
+          let diff = total_minutes - worked_minutes;
+
+          let shortage_Time=0;
+          let ot_Time=0;
+        
+
+          let shortage_hr=0;
+          let shortage_min =0;
+
+          let ot_hr=0;
+          let ot_min=0;
+
+          if (diff > 0) {
+            //calculating shortage
+         shortage_hr = parseInt(parseInt(diff) / parseInt(60));
+         shortage_min = parseInt(diff) % parseInt(60);
+          shortage_Time=shortage_hr+"."+shortage_min;
+          } else if (diff < 0) {
+            //calculating over time
+             ot_hr = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
+             ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+            ot_Time=ot_hr+"."+ot_min;
+          }
+
+
+          outputArray.push({...result[i],shortage_Time,shortage_hr,shortage_min,ot_Time,ot_hr,ot_min
+          });
+
+
+  }
+  //EN-indivisual date ot,shortage calculate
+
+
+
+
+ _mysql.releaseConnection();
+            req.records = {outputArray,
+              month_actual_hours,
+              month_worked_hours
+            };
             next();
+
+
+
+
+            })   .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+
           } else {
             _mysql.releaseConnection();
             req.records = {
