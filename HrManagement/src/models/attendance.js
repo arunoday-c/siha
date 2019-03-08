@@ -4887,7 +4887,7 @@ module.exports = {
                   query:
                     "select hims_f_daily_time_sheet_id,employee_id,employee_code,full_name,TS.sub_department_id,TS.biometric_id,\
                   attendance_date,in_time,out_date,out_time,year,month,status,posted,hours,minutes,actual_hours,\
-                  actual_minutes,worked_hours,expected_out_date,expected_out_time,TS.hospital_id\
+                  actual_minutes,worked_hours,consider_ot_shrtg,expected_out_date,expected_out_time,TS.hospital_id\
                   from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                   where TS.hospital_id=? and year=? and month=? and TS.sub_department_id=? " +
                     stringData +
@@ -4900,7 +4900,7 @@ module.exports = {
                   between date(?) and  date(?); \
                   select hims_f_daily_time_sheet_id,employee_id,employee_code,full_name,TS.sub_department_id,TS.biometric_id,\
                   attendance_date,in_time,out_date,out_time,year,month,status,posted,hours,minutes,actual_hours,\
-                  actual_minutes,worked_hours,expected_out_date,expected_out_time,TS.hospital_id\
+                  actual_minutes,worked_hours,consider_ot_shrtg,expected_out_date,expected_out_time,TS.hospital_id\
                   from hims_f_daily_time_sheet TS inner join hims_d_employee E on TS.employee_id=E.hims_d_employee_id\
                   where TS.hospital_id=? and year=? and month=? and TS.sub_department_id=? " +
                     stringData +
@@ -5058,18 +5058,24 @@ module.exports = {
                           holidays: AttenResult[i]["status"] == "HO" ? 1 : 0,
                           paid_leave: AttenResult[i]["status"] == "PL" ? 1 : 0,
                           unpaid_leave:
-                            AttenResult[i]["status"] == "UL" ? 1 : 0,
-                          total_hours: AttenResult[i]["worked_hours"],
-                          hours: AttenResult[i]["hours"],
-                          minutes: AttenResult[i]["minutes"],
+                         
+                         
+                          AttenResult[i]["status"] == "UL" ? 1 : 0,
+                          total_hours:AttenResult[i]["consider_ot_shrtg"]=="Y"? AttenResult[i]["worked_hours"]: AttenResult[i]["actual_hours"] +
+                          "." +
+                          AttenResult[i]["actual_minutes"],
+                          hours: AttenResult[i]["consider_ot_shrtg"]=="Y"?AttenResult[i]["hours"]:AttenResult[i]["actual_hours"],
+                          minutes: AttenResult[i]["consider_ot_shrtg"]=="Y"?AttenResult[i]["minutes"]:AttenResult[i]["actual_minutes"],
                           working_hours:
                             AttenResult[i]["actual_hours"] +
                             "." +
                             AttenResult[i]["actual_minutes"],
-                          shortage_hours: shortage_time,
-                          shortage_minutes: shortage_min,
-                          ot_work_hours: ot_time,
-                          ot_minutes: ot_min
+                         
+                         
+                            shortage_hours: AttenResult[i]["consider_ot_shrtg"]=="Y"?shortage_time:0,
+                          shortage_minutes: AttenResult[i]["consider_ot_shrtg"]=="Y"?shortage_min:0,
+                          ot_work_hours: AttenResult[i]["consider_ot_shrtg"]=="Y"?ot_time:0,
+                          ot_minutes: AttenResult[i]["consider_ot_shrtg"]=="Y"?ot_min:0
                         });
                       }
 
@@ -5327,17 +5333,23 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
                             LastTenDaysResult[i]["status"] == "PL" ? 1 : 0,
                           unpaid_leave:
                             LastTenDaysResult[i]["status"] == "UL" ? 1 : 0,
-                          total_hours: LastTenDaysResult[i]["worked_hours"],
-                          hours: LastTenDaysResult[i]["hours"],
-                          minutes: LastTenDaysResult[i]["minutes"],
-                          working_hours:
-                            LastTenDaysResult[i]["actual_hours"] +
+                         
+                            total_hours:LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"? LastTenDaysResult[i]["worked_hours"]: LastTenDaysResult[i]["actual_hours"] +
                             "." +
                             LastTenDaysResult[i]["actual_minutes"],
-                          shortage_hours: shortage_time,
-                          shortage_minutes: shortage_min,
-                          ot_work_hours: ot_time,
-                          ot_minutes: ot_min
+                            hours: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?LastTenDaysResult[i]["hours"]:LastTenDaysResult[i]["actual_hours"],
+                            minutes: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?LastTenDaysResult[i]["minutes"]:LastTenDaysResult[i]["actual_minutes"],
+                            working_hours:
+                            LastTenDaysResult[i]["actual_hours"] +
+                              "." +
+                              LastTenDaysResult[i]["actual_minutes"],
+                           
+                           
+                           
+                            shortage_hours: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?shortage_time:0,
+                            shortage_minutes: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?shortage_min:0,
+                            ot_work_hours: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?ot_time:0,
+                            ot_minutes: LastTenDaysResult[i]["consider_ot_shrtg"]=="Y"?ot_min:0
                         });
                       }
 
@@ -5727,7 +5739,56 @@ utilities.logger().log("RosterAttendance: ", RosterAttendance);
       next();
       return;
     }
+  },
+
+  considerOverTimeOrShortage: (req, res, next) => {
+    let input = req.body;
+    const utilities = new algaehUtilities();
+
+    if (
+      input.time_sheet_ids.length> 0
+    ) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "update hims_f_daily_time_sheet set consider_ot_shrtg=?  where hims_f_daily_time_sheet_id in (?)",
+          values: [
+            input.consider_ot_shrtg,
+            input.employees
+          ]
+        })
+        .then(result => {
+          if (result.affectedRows > 0) {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          } else {
+            _mysql.releaseConnection();
+            req.records = {
+              invalid_input: true,
+              message: "Please provide valid input"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide valid input"
+      };
+      next();
+      return;
+    }
   }
+
+
+
+
 };
 
 //created by irfan: to insert timesheet
@@ -5992,8 +6053,8 @@ function insertTimeSheet(
 
             let month_actual_hours=0;
             let month_worked_hours=0;
-            let month_shortage_hour=0;
-            let month_ot_hour=0;
+            // let month_shortage_hour=0;
+            // let month_ot_hour=0;
 
 
             let sum_actual_hour=0;
@@ -6003,53 +6064,60 @@ function insertTimeSheet(
 
            
         
-
+//ST----total_min
             sum_actual_hour=new LINQ(result).Sum(s => s.actual_hours);
             sum_actual_min=new LINQ(result).Sum(s => s.actual_minutes);
-
-
-        
-
-            sum_work_hour=new LINQ(result).Sum(s => s.hours);
-            sum_work_min=new LINQ(result).Sum(s => s.minutes);
-
-
 
             let total_min =
             parseInt(sum_actual_hour * 60) +
             parseInt(sum_actual_min);
+            
+            let month_actual_hr = parseInt(parseInt(total_min) / parseInt(60));
+            let month_actual_min = parseInt(total_min) % parseInt(60);
+            month_actual_hours=month_actual_hr+"."+month_actual_min;
+        
+//EN----total_min
+
+
+
+//ST----worked_min
+            sum_work_hour=new LINQ(result).Sum(s => s.hours);
+            sum_work_min=new LINQ(result).Sum(s => s.minutes);     
 
 
           let worked_min =
             parseInt(sum_work_hour * 60) +
             parseInt(sum_work_min);
 
-            let diff = total_min - worked_min;
-           
-
-            if (diff > 0) {
-              //calculating shortage
-            let shortage_hr = parseInt(parseInt(diff) / parseInt(60));
-            let shortage_min = parseInt(diff) % parseInt(60);
-            month_shortage_hour=shortage_hr+"."+shortage_min;
-            } else if (diff < 0) {
-              //calculating over time
-              let ot_hr = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
-              let ot_min = parseInt(Math.abs(diff)) % parseInt(60);
-              month_ot_hour=ot_hr+"."+ot_min;
-            }
-
-
-
-
-            let month_actual_hr = parseInt(parseInt(total_min) / parseInt(60));
-            let month_actual_min = parseInt(total_min) % parseInt(60);
-            month_actual_hours=month_actual_hr+"."+month_actual_min;
-
 
             let month_worked_hr = parseInt(parseInt(worked_min) / parseInt(60));
             let month_worked_min = parseInt(worked_min) % parseInt(60);
             month_worked_hours=month_worked_hr+"."+month_worked_min;
+//EN----worked_min
+
+
+
+           // let diff = total_min - worked_min;
+           
+
+            // if (diff > 0) {
+            //   //calculating shortage
+            // let shortage_hr = parseInt(parseInt(diff) / parseInt(60));
+            // let shortage_min = parseInt(diff) % parseInt(60);
+            // month_shortage_hour=shortage_hr+"."+shortage_min;
+            // } else if (diff < 0) {
+            //   //calculating over time
+            //   let ot_hr = parseInt(parseInt(Math.abs(diff)) / parseInt(60));
+            //   let ot_min = parseInt(Math.abs(diff)) % parseInt(60);
+            //   month_ot_hour=ot_hr+"."+ot_min;
+            // }
+
+
+
+
+
+
+        
 
 
 
@@ -6095,7 +6163,7 @@ function insertTimeSheet(
      _mysql.commitTransaction(() => {
               _mysql.releaseConnection();
               req.records = {outputArray,
-                 month_shortage_hour,month_ot_hour,  month_actual_hours,
+                month_actual_hours,
                 month_worked_hours
               }
               next();
