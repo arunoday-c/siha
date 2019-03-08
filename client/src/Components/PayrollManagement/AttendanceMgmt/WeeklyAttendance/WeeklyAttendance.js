@@ -906,7 +906,11 @@ export default class WeeklyAttendance extends Component {
                 style={{ marginLeft: "41.3%", top: "8px" }}
               >
                 <input
-                  defaultChecked={true}
+                  defaultChecked={
+                    !Enumerable.from(this.state.time_sheet)
+                      .where(w => w.consider_ot_shrtg === "N")
+                      .toArray().length > 0
+                  }
                   onChange={this.selectAll.bind(this)}
                   type="checkbox"
                 />{" "}

@@ -373,9 +373,9 @@ class EmployeeProjectRoster extends Component {
         searchGrid: {
           columns: Employee
         },
-        searchName: "users",
+        searchName: "employee",
         uri: "/gloabelSearch/get",
-        inputs: " E.sub_department_id=" + this.state.sub_department_id,
+        inputs: " sub_department_id=" + this.state.sub_department_id,
         onContainsChange: (text, serchBy, callBack) => {
           callBack(text);
         },
