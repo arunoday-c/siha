@@ -454,6 +454,9 @@
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
     width: 100%; }
+    :global .customRadio .block {
+      display: block;
+      margin-top: 5px; }
     :global .customRadio .inline {
       display: inline-block; }
     :global .customRadio .inline + .inline {
