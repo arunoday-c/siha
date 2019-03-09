@@ -18,14 +18,18 @@ import moment from "moment";
 import Options from "../../../../Options.json";
 import {
   AlgaehValidation,
-  AlgaehOpenContainer
+  AlgaehOpenContainer,
+  getYears
 } from "../../../../utils/GlobalFunctions";
 import { swalMessage } from "../../../../utils/algaehApiCall";
+import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
 class ManualAttendance extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
       selectedLang: this.props.SelectLanguage,
       employee_group_id: null,
       project_id: null,
@@ -43,9 +47,13 @@ class ManualAttendance extends Component {
       apply_all: true,
       manual_timesheet_entry: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
-      ).manual_timesheet_entry
-      // JSON.parse(sessionStorage.getItem("hrOptions"))
-      //   .manual_timesheet_entry
+      ).manual_timesheet_entry,
+      month_wise: true,
+      select_wise: "M",
+      employee_id: null,
+      employee_name: null,
+      attendance_date: null,
+      date_range: false
     };
     ManualAttendanceEvents().getSubDepartment(this);
     ManualAttendanceEvents().getProjects(this);
@@ -125,6 +133,27 @@ class ManualAttendance extends Component {
     ManualAttendanceEvents().ProcessAttendanceEvent(this);
   }
 
+  employeeSearch() {
+    ManualAttendanceEvents().employeeSearch(this);
+  }
+
+  selectData(e) {
+    debugger;
+    if (e.target.name === "month_wise") {
+      this.setState({
+        select_wise: "M",
+        month_wise: true,
+        date_range: false
+      });
+    } else if (e.target.name === "date_range") {
+      this.setState({
+        select_wise: "D",
+        date_range: true,
+        month_wise: false
+      });
+    }
+  }
+
   clearState() {
     this.setState({
       selectedLang: this.props.SelectLanguage,
@@ -138,7 +167,13 @@ class ManualAttendance extends Component {
       in_time: null,
       out_time: null,
       process_attend: true,
-      apply_all: true
+      apply_all: true,
+      month_wise: true,
+      select_wise: "M",
+      employee_id: null,
+      employee_name: null,
+      attendance_date: null,
+      date_range: false
     });
   }
 
@@ -164,26 +199,35 @@ class ManualAttendance extends Component {
       this.state.manual_timesheet_entry === "D"
         ? "Select a Dept."
         : "Select Project";
-
+    let allYears = getYears();
     return (
       <div id="ManualAttendanceScreen">
         <div className="row inner-top-search" data-validate="loadEmployee">
-          {" "}
-          <div className="col-2">
+          <div className="col">
             <div className="customRadio">
               <label className="radio block">
-                <input type="radio" value="" name="attendance_type" />
+                <input
+                  type="radio"
+                  checked={this.state.month_wise}
+                  name="month_wise"
+                  onClick={this.selectData.bind(this)}
+                />
                 <span>Month Wise</span>
               </label>
 
               <label className="radio block">
-                <input type="radio" value="" name="attendance_type" />
+                <input
+                  type="radio"
+                  checked={this.state.date_range}
+                  name="date_range"
+                  onClick={this.selectData.bind(this)}
+                />
                 <span>Date Range</span>
               </label>
             </div>
           </div>
           <AlagehAutoComplete
-            div={{ className: "col-2" }}
+            div={{ className: "col" }}
             label={{
               forceLabel: "Select a Branch.",
               isImp: true
@@ -206,7 +250,7 @@ class ManualAttendance extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col-2" }}
+            div={{ className: "col" }}
             label={{
               forceLabel: drop_Down_Label,
               isImp: true
@@ -233,32 +277,76 @@ class ManualAttendance extends Component {
               }
             }}
           />
-          {/* <AlagehAutoComplete
-            div={{ className: "col-2" }}
-            label={{
-              forceLabel: "Select Month",
-              isImp: true
-            }}
-            selector={{
-              name: timesheet_entry,
-              className: "select-fld",
-              value: "",
-              dataSource: ""
-            }}
-          /> */}
-          <AlgaehDateHandler
-            div={{ className: "col-2" }}
-            label={{ forceLabel: "Select Date", isImp: true }}
-            textBox={{
-              className: "txt-fld",
-              name: "attendance_date"
-            }}
-            maxDate={new Date()}
-            events={{
-              onChange: this.datehandle.bind(this)
-            }}
-            value={this.state.attendance_date}
-          />
+
+          {this.state.select_wise === "M" ? (
+            <div className="col">
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Select a Year.",
+                  isImp: this.state.select_wise === "M" ? true : false
+                }}
+                selector={{
+                  name: "year",
+                  className: "select-fld",
+                  value: this.state.year,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: allYears
+                  },
+                  onChange: this.eventHandaler.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      year: null
+                    });
+                  }
+                }}
+              />
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Select a Month.",
+                  isImp: this.state.select_wise === "M" ? true : false
+                }}
+                selector={{
+                  sort: "off",
+                  name: "month",
+                  className: "select-fld",
+                  value: this.state.month,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GlobalVariables.MONTHS
+                  },
+                  onChange: this.eventHandaler.bind(this),
+                  onClear: () => {
+                    this.setState({
+                      month: null
+                    });
+                  }
+                }}
+              />
+            </div>
+          ) : (
+            <AlgaehDateHandler
+              div={{ className: "col" }}
+              label={{
+                forceLabel: "Select Date",
+                isImp: this.state.select_wise === "D" ? true : false
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "attendance_date"
+              }}
+              maxDate={new Date()}
+              events={{
+                onChange: this.datehandle.bind(this)
+              }}
+              value={this.state.attendance_date}
+            />
+          )}
+
           <div className="col-2" style={{ marginTop: 10 }}>
             <div
               className="row"
@@ -270,7 +358,11 @@ class ManualAttendance extends Component {
             >
               <div className="col">
                 <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                <h6 className="textEllipsis">Employee Name</h6>
+                <h6 className="textEllipsis">
+                  {this.state.employee_name
+                    ? this.state.employee_name
+                    : "------"}
+                </h6>
               </div>
               <div
                 className="col-lg-3"
@@ -283,7 +375,7 @@ class ManualAttendance extends Component {
                     paddingLeft: 3,
                     cursor: "pointer"
                   }}
-                  //            onClick={this.employeeSearch.bind(this)}
+                  onClick={this.employeeSearch.bind(this)}
                 />
               </div>
             </div>
