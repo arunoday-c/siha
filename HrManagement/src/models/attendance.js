@@ -1960,7 +1960,7 @@ module.exports = {
     });
   },
 
-  getEmployeeToManualTimeSheet: (req, res, next) => {
+  getEmployeeToManualTimeSheetOLD: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     const utilities = new algaehUtilities();
@@ -6028,6 +6028,105 @@ if(req.userIdentity.edit_monthly_attendance=="Y"){
 }
 
   
+},
+
+
+
+getEmployeeToManualTimeSheet: (req, res, next) => {
+  const _mysql = new algaehMysql();
+
+  const utilities = new algaehUtilities();
+
+  utilities.logger().log("getEmployeeToManualTimeSheet: ");
+
+  try {
+    const input = req.query;
+
+    utilities
+      .logger()
+      .log("manual_timesheet_entry: ", input.manual_timesheet_entry);
+
+    if (input.manual_timesheet_entry == "D") {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,\
+            E.full_name,E.sub_department_id FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
+            TS.employee_id=E.hims_d_employee_id and (TS.status = 'AB' or TS.status = 'EX') and\
+            TS.attendance_date=? and E.sub_department_id=? and E.hospital_id=?;",
+          values: [
+            input.attendance_date,
+            input.sub_department_id,
+            input.branch_id
+          ],
+          printQuery: true
+        })
+        .then(time_sheet => {
+          _mysql.releaseConnection();
+          req.records = { result: time_sheet, dataExist: true };
+          next();
+        })
+        .catch(e => {
+          next(e);
+        });
+    } else if (input.manual_timesheet_entry == "P") {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,E.full_name,E.sub_department_id FROM \
+            algaeh_hims_db.hims_f_daily_time_sheet TS, algaeh_hims_db.hims_d_employee E, hims_f_project_roster PR where \
+            TS.employee_id=E.hims_d_employee_id and PR.employee_id = TS.employee_id and\
+            TS.attendance_date=? and E.hospital_id=? and PR.project_id=?;",
+          values: [input.attendance_date, input.branch_id, input.project_id],
+          printQuery: true
+        })
+        .then(time_sheet => {
+          if (time_sheet.length > 0) {
+            _mysql.releaseConnection();
+            req.records = { result: time_sheet, dataExist: true };
+            next();
+          } else {
+            let _strDate = "";
+            let intValues = [input.branch_id];
+            let strQuery = "";
+            if (input.attendance_date != null) {
+              _strDate += "and attendance_date=?";
+              intValues.push(input.attendance_date);
+            }
+
+            if (input.project_id != null) {
+              _strDate += "and project_id=?";
+              intValues.push(input.project_id);
+            }
+
+            strQuery = {
+              query:
+                "select PR.employee_id, E.employee_code,E.full_name,E.sub_department_id,PR.attendance_date from hims_f_project_roster PR , \
+              hims_d_employee E where E.hims_d_employee_id=PR.employee_id and E.hospital_id=? " +
+                _strDate,
+              values: intValues,
+              printQuery: true
+            };
+
+            _mysql
+              .executeQuery(strQuery)
+              .then(result => {
+                _mysql.releaseConnection();
+                req.records = { result, dataExist: false };
+                next();
+              })
+              .catch(e => {
+                next(e);
+              });
+          }
+        })
+        .catch(e => {
+          next(e);
+        });
+    }
+  } catch (e) {
+    next(e);
+  }
 }
 
 

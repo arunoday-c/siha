@@ -403,38 +403,61 @@ let changePassword = (req, res, next) => {
     db.getConnection((error, connection) => {
       if (req.userIdentity.algaeh_d_app_user_id > 0) {
         connection.query(
-          "update algaeh_d_app_password set password=md5(?),updated_by=?,\
-          updated_date=? where userid=?",
-          [
-            req.body.password,
-            req.userIdentity.algaeh_d_app_user_id,
-            new Date(),
-            req.userIdentity.algaeh_d_app_user_id
-          ],
+          "select algaeh_d_app_password_id from algaeh_d_app_password  where userid=? and  password=md5(?);",
+          [req.userIdentity.algaeh_d_app_user_id, req.body.password],
           (error, result) => {
-            releaseDBConnection(db, connection);
             if (error) {
+              releaseDBConnection(db, connection);
               next(error);
             }
             // req.records = result;
             // next();
+            if (result.length > 0) {
+              connection.query(
+                "update algaeh_d_app_password set password=md5(?),updated_by=?,\
+                updated_date=? where userid=?",
+                [
+                  req.body.password,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id
+                ],
+                (error, result) => {
+                  releaseDBConnection(db, connection);
+                  if (error) {
+                    next(error);
+                  }
+                  // req.records = result;
+                  // next();
 
-            if (result.affectedRows > 0) {
-              req.records = result;
-              next();
+                  if (result.affectedRows > 0) {
+                    req.records = result;
+                    next();
+                  } else {
+                    req.records = {
+                      validUser: false,
+                      message: "Please Provide valid user id"
+                    };
+                    next();
+                  }
+                }
+              );
             } else {
+              releaseDBConnection(db, connection);
               req.records = {
                 validUser: false,
-                message: "Please Provide valid user id"
+                message: "Current password doesn't match"
               };
               next();
             }
           }
         );
+
+        ///------------------
       } else {
         req.records = {
           validUser: false,
-          message: "Please Provide valid user id"
+          message: "You are not a valid user id"
         };
         next();
       }
