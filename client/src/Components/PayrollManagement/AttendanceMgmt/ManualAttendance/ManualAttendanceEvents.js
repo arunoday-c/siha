@@ -1,7 +1,8 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import _ from "lodash";
-import Enumerable from "linq";
+import AlgaehSearch from "../../../Wrapper/globalSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 export default function ManualAttendanceEvents() {
   return {
@@ -70,42 +71,62 @@ export default function ManualAttendanceEvents() {
     },
 
     LoadEmployee: $this => {
-      let InputObj = {
-        branch_id: $this.state.hospital_id,
-        attendance_date: moment($this.state.attendance_date).format(
-          "YYYY-MM-DD"
-        ),
-        manual_timesheet_entry: $this.state.manual_timesheet_entry
-      };
-      if ($this.state.manual_timesheet_entry === "D") {
-        InputObj.sub_department_id = $this.state.sub_department_id;
+      if ($this.state.select_wise === "M" && $this.state.employee_id === null) {
+        swalMessage({
+          title: "Pease select the employee",
+          type: "warning"
+        });
       } else {
-        InputObj.project_id = $this.state.project_id;
-      }
+        let InputObj = {
+          branch_id: $this.state.hospital_id,
 
-      algaehApiCall({
-        uri: "/attendance/getEmployeeToManualTimeSheet",
-        module: "hrManagement",
-        method: "GET",
-        data: InputObj,
-        onSuccess: res => {
-          if (res.data.success) {
-            debugger;
-            $this.setState({
-              employee_details: res.data.records.result,
-              dataExist: res.data.records.dataExist,
-              apply_all: false,
-              process_attend: false
+          manual_timesheet_entry: $this.state.manual_timesheet_entry
+        };
+        if ($this.state.manual_timesheet_entry === "D") {
+          InputObj.sub_department_id = $this.state.sub_department_id;
+        } else {
+          InputObj.project_id = $this.state.project_id;
+        }
+
+        if ($this.state.employee_id !== null) {
+          InputObj.employee_id = $this.state.employee_id;
+        }
+
+        if ($this.state.select_wise === "M") {
+          InputObj.yearAndMonth =
+            $this.state.year + "-" + $this.state.month + "-01";
+
+          InputObj.select_wise = $this.state.select_wise;
+        } else {
+          InputObj.attendance_date = moment($this.state.attendance_date).format(
+            "YYYY-MM-DD"
+          );
+        }
+
+        algaehApiCall({
+          uri: "/attendance/getEmployeeToManualTimeSheet",
+          module: "hrManagement",
+          method: "GET",
+          data: InputObj,
+          onSuccess: res => {
+            if (res.data.success) {
+              debugger;
+              $this.setState({
+                employee_details: res.data.records.result,
+                dataExist: res.data.records.dataExist,
+                apply_all: false,
+                process_attend: false
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
             });
           }
-        },
-        onFailure: err => {
-          swalMessage({
-            title: err.message,
-            type: "error"
-          });
-        }
-      });
+        });
+      }
     },
 
     datehandle: ($this, ctrl, e) => {
@@ -176,7 +197,7 @@ export default function ManualAttendanceEvents() {
       let worked_hours = null;
 
       if (name === "in_time") {
-        if (row.out_time !== undefined) {
+        if (row.out_time !== undefined && row.out_time !== null) {
           //   diff_time = row.in_time - row.out_time;
 
           let start = value.split(":");
@@ -193,7 +214,7 @@ export default function ManualAttendanceEvents() {
           worked_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
         }
       } else if (name === "out_time") {
-        if (row.in_time === undefined) {
+        if (row.in_time === undefined && row.in_time === null) {
           swalMessage({
             title: "Please enter From Time",
             type: "warning"
@@ -220,7 +241,9 @@ export default function ManualAttendanceEvents() {
       row["hours"] = diff_hour;
       row["minutes"] = diff_munite;
 
-      employee_details[row.rowIdx] = row;
+      const _index = employee_details.indexOf(row);
+
+      employee_details[_index] = row;
       $this.setState({
         employee_details: employee_details
       });
@@ -321,6 +344,29 @@ export default function ManualAttendanceEvents() {
         //  ws["G" + i] = { ...ws["G" + i],  hidden: true  };
       }
       callBack();
+    },
+
+    employeeSearch: $this => {
+      AlgaehSearch({
+        searchGrid: {
+          columns: spotlightSearch.Employee_details.employee
+        },
+        searchName: "employee",
+        uri: "/gloabelSearch/get",
+        inputs:
+          $this.state.sub_department_id !== null
+            ? "sub_department_id = " + $this.state.sub_department_id
+            : "1=1",
+        onContainsChange: (text, serchBy, callBack) => {
+          callBack(text);
+        },
+        onRowSelect: row => {
+          $this.setState({
+            employee_name: row.full_name,
+            employee_id: row.hims_d_employee_id
+          });
+        }
+      });
     }
   };
 }
