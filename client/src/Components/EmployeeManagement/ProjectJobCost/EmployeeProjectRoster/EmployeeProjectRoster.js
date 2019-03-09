@@ -23,6 +23,7 @@ class EmployeeProjectRoster extends Component {
       employees: [],
       hospitals: [],
       projects: [],
+      designations: [],
       loading: false,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
@@ -33,6 +34,28 @@ class EmployeeProjectRoster extends Component {
     this.getSubDepartments();
     this.getHospitals();
     this.getProjects();
+    this.getDesignations();
+  }
+
+  getDesignations() {
+    algaehApiCall({
+      uri: "/hrsettings/getDesignations",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            designations: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   getProjects() {
@@ -107,19 +130,15 @@ class EmployeeProjectRoster extends Component {
           type: "warning"
         })
       : algaehApiCall({
-          uri: "/shift_roster/pasteRoster",
+          uri: "/projectjobcosting/pasteProjectRoster",
           method: "POST",
           module: "hrManagement",
           data: {
             employee_id: data.id,
-            shift_date: data.date,
-            shift_id: this.state.copyData.hims_d_shift_id,
-            shift_end_date: this.state.copyData.shift_end_date,
-            shift_start_time: this.state.copyData.shift_start_time,
-            shift_end_time: this.state.copyData.shift_end_time,
-            shift_time: this.state.copyData.shift_time,
-            weekoff: this.state.copyData.weekoff,
-            holiday: this.state.copyData.holiday
+            attendance_date: data.attendance_date,
+            shift_id: this.state.copyData.shift_id,
+            project_id: this.state.copyData.project_id,
+            hospital_id: this.state.hospital_id
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -196,7 +215,7 @@ class EmployeeProjectRoster extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForProjectRoster();
+            // this.getEmployeesForProjectRoster();
           }
         );
         break;
@@ -207,7 +226,7 @@ class EmployeeProjectRoster extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForProjectRoster();
+            // this.getEmployeesForProjectRoster();
           }
         );
         break;
@@ -302,7 +321,7 @@ class EmployeeProjectRoster extends Component {
                 Delete Project
               </li>
             </ul>
-            <span>{project.project_code}</span>
+            <span>{project.abbreviation}</span>
           </td>
         ) : (
           <td
@@ -462,7 +481,8 @@ class EmployeeProjectRoster extends Component {
         hospital_id: this.state.hospital_id,
         sub_department_id: this.state.sub_department_id,
         fromDate: fromDate,
-        toDate: toDate
+        toDate: toDate,
+        designation_id: this.state.designation_id
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -604,26 +624,26 @@ class EmployeeProjectRoster extends Component {
             }}
           />
 
-          {/* <AlagehAutoComplete
+          <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Project", isImp: true }}
+            label={{ forceLabel: "Select Designation", isImp: true }}
             selector={{
-              name: "project_id",
-              value: this.state.project_id,
+              name: "designation_id",
+              value: this.state.designation_id,
               className: "select-fld",
               dataSource: {
-                textField: "shift_description",
-                valueField: "hims_d_shift_id",
-                data: this.state.projects
+                textField: "designation",
+                valueField: "hims_d_designation_id",
+                data: this.state.designations
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  project_id: null
+                  designation_id: null
                 });
               }
             }}
-          /> */}
+          />
 
           <div className="col-3" style={{ marginTop: 10 }}>
             <div

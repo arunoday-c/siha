@@ -228,6 +228,7 @@ module.exports = {
                   project_id: s.project_id,
                   project_desc: s.project_desc,
                   project_code: s.project_code,
+                  abbreviation: s.abbreviation,
                   start_date: s.start_date,
                   end_date: s.end_date
                 };
