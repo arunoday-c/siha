@@ -5885,7 +5885,14 @@ let worked_min =
              ot_min = parseInt(Math.abs(diff)) % parseInt(60);
             ot_Time=ot_hr+"."+ot_min;
           }
-
+          if (result[i].consider_ot_shrtg=="N"){
+            shortage_Time=0;
+          shortage_hr=0;
+          shortage_min=0;
+          ot_Time=0;
+          ot_hr=0;
+          ot_min=0;
+          }
 
           outputArray.push({...result[i],shortage_Time,shortage_hr,shortage_min,ot_Time,ot_hr,ot_min
           });
@@ -6308,6 +6315,16 @@ function insertTimeSheet(
                     }
 
 
+
+
+                    if (result[i].consider_ot_shrtg=="N"){
+                      shortage_Time=0;
+                    shortage_hr=0;
+                    shortage_min=0;
+                    ot_Time=0;
+                    ot_hr=0;
+                    ot_min=0;
+                    }
                     outputArray.push({...result[i],shortage_Time,shortage_hr,shortage_min,ot_Time,ot_hr,ot_min
                     });
 
