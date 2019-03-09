@@ -408,7 +408,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select hims_d_project_id, project_code,project_desc,project_desc_arabic,\
+            "select hims_d_project_id, project_code,abbreviation,project_desc,project_desc_arabic,\
             start_date, end_date, pjoject_status, inactive_date from hims_d_project\
             where record_status='A'" +
             _strQuery +
@@ -436,11 +436,12 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT  INTO hims_d_project(project_code,project_desc,project_desc_arabic,start_date,end_date,\
+            "INSERT  INTO hims_d_project(project_code,abbreviation,project_desc,project_desc_arabic,start_date,end_date,\
             created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?)",
+            values(?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.project_code,
+            input.abbreviation,
             input.project_desc,
             input.project_desc_arabic,
             input.start_date,
