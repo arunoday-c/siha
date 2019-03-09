@@ -99,6 +99,7 @@ module.exports = {
     const utilities = new algaehUtilities();
     let subdept = "";
     let employee = "";
+    let designation = "";
     let fromDate = moment(req.query.fromDate).format("YYYY-MM-DD");
     let toDate = moment(req.query.toDate).format("YYYY-MM-DD");
     let allEmployees = [];
@@ -112,6 +113,11 @@ module.exports = {
     }
     if (req.query.hims_d_employee_id > 0) {
       employee = ` and E.hims_d_employee_id=${req.query.hims_d_employee_id} `;
+    }
+    if (req.query.designation_id > 0) {
+      designation = ` and E.employee_designation_id=${
+        req.query.designation_id
+      } `;
     }
 
     if (
@@ -127,7 +133,7 @@ module.exports = {
            date_of_joining,exit_date ,religion_id, SD.sub_department_code,SD.sub_department_name ,D.designation_code,D.designation\
            from hims_d_employee E inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
            left join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
-           where E.record_status='A' and E.employee_status='A' and E.hospital_id=? ${subdept} ${employee} ;\
+           where E.record_status='A' and E.employee_status='A' and E.hospital_id=? ${subdept} ${designation} ${employee} ;\
            select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,\
           weekoff, holiday, holiday_type, religion_id from \
           hims_d_holiday where record_status='A' and   date(holiday_date) between date(?) and date(?) \
