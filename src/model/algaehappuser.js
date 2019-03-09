@@ -391,13 +391,67 @@ let createUserLogin = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan: to
+let changePassword = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (req.userIdentity.algaeh_d_app_user_id > 0) {
+        connection.query(
+          "update algaeh_d_app_password set password=md5(?),updated_by=?,\
+          updated_date=? where userid=?",
+          [
+            req.body.password,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            // req.records = result;
+            // next();
+
+            if (result.affectedRows > 0) {
+              req.records = result;
+              next();
+            } else {
+              req.records = {
+                validUser: false,
+                message: "Please Provide valid user id"
+              };
+              next();
+            }
+          }
+        );
+      } else {
+        req.records = {
+          validUser: false,
+          message: "Please Provide valid user id"
+        };
+        next();
+      }
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   selectAppUsers,
   selectLoginUser,
   selectAppGroup,
   selectRoles,
   createUserLogin,
-  getLoginUserMaster
+  getLoginUserMaster,
+  changePassword
 };
 
 function generatePwd() {

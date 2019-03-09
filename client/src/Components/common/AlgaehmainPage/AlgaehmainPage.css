@@ -362,3 +362,31 @@ header {
     .loginProfileInfo span:first-child {
       font-weight: 600;
       text-transform: uppercase; }
+
+.passwordCntr {
+  background: #fff;
+  padding: 0 15px 15px;
+  border-radius: 5px;
+  width: 300px;
+  margin: 10vh auto 0;
+  box-shadow: 0 10px 10px #999999 !important;
+  position: absolute;
+  z-index: 99999;
+  border: 1px solid #666666 !important;
+  left: 35vw;
+  top: 15vh;
+  display: none; }
+  .passwordCntr h4 {
+    border-bottom: 1px solid #08463d !important;
+    padding-bottom: 15px;
+    width: 100%;
+    background: #12a28d;
+    line-height: 40px;
+    height: 42px;
+    color: #fff;
+    text-transform: uppercase;
+    text-shadow: 0 1px 1px darken #12a28d, 20% !important;
+    text-align: center; }
+  .passwordCntr .footerBtn button {
+    float: right;
+    margin-left: 15px; }

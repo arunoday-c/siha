@@ -12,24 +12,31 @@ import {
   getYears,
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
+import MonthlyDetail from "./MonthlyDetail/MonthlyDetail";
+import MonthModify from "./MonthlyModify/MonthlyModify";
 const _options = AlgaehOpenContainer(sessionStorage.getItem("hrOptions"));
+
 export default class MonthlyAttendance extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      openMonthlyDetail: false,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       sub_departments: [],
+      monthly_detail: [],
       loader: false,
       displayLoader: false,
       data: [],
+      currEmp: null,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
       formatingString: this.monthFormatorString(moment().startOf("month")),
-      attendance_type: JSON.parse(_options).attendance_type
+      attendance_type: JSON.parse(_options).attendance_type,
+      currMt: {}
     };
     this.getSubDepts();
     this.getOrganization();
@@ -265,10 +272,75 @@ export default class MonthlyAttendance extends Component {
     );
   }
 
+  showEditModal(data) {
+    this.setState({
+      openMonthlyEdit: true,
+      currMt: data
+    });
+  }
+
+  showDailyModal(data) {
+    algaehApiCall({
+      uri: "/attendance/getDailyAttendance",
+      method: "GET",
+      data: {
+        hospital_id: data.hospital_id,
+        year: data.year,
+        month: data.month,
+        employee_id: data.employee_id
+      },
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            monthly_detail: res.data.result
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+
+    this.setState({
+      openMonthlyDetail: true,
+      currEmp: data.employee_name
+    });
+  }
+
+  closeMonthlyDetail() {
+    this.setState({
+      openMonthlyDetail: false
+    });
+    this.loadAttendance();
+  }
+  closeMonthlyEdit() {
+    this.setState({
+      openMonthlyEdit: false
+    });
+    this.loadAttendance();
+  }
+
   render() {
     let allYears = getYears();
     return (
       <div className="monthly_attendance">
+        <MonthlyDetail
+          data={this.state.monthly_detail}
+          open={this.state.openMonthlyDetail}
+          onClose={this.closeMonthlyDetail.bind(this)}
+          employee_name={this.state.currEmp}
+        />
+
+        <MonthModify
+          open={this.state.openMonthlyEdit}
+          onClose={this.closeMonthlyEdit.bind(this)}
+          data={this.state.currMt}
+        />
+
         <div className="row inner-top-search">
           <AlagehAutoComplete
             div={{ className: "col" }}
@@ -410,6 +482,29 @@ export default class MonthlyAttendance extends Component {
                 id="monthlyAttendenceGrid"
                 noDataText="Attendance process has no records"
                 columns={[
+                  {
+                    fieldName: "actions",
+                    label: <AlgaehLabel label={{ forceLabel: "Actions" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <React.Fragment>
+                          <i
+                            className="fas fa-eye"
+                            onClick={this.showDailyModal.bind(this, row)}
+                          />
+                          <i
+                            className="fas fa-pen"
+                            onClick={this.showEditModal.bind(this, row)}
+                          />
+                        </React.Fragment>
+                      );
+                    },
+                    others: {
+                      maxWidth: 105,
+                      filterable: false,
+                      fixed: "left"
+                    }
+                  },
                   {
                     fieldName: "employee_name",
 
