@@ -23,6 +23,7 @@ class EmployeeProjectRoster extends Component {
       employees: [],
       hospitals: [],
       projects: [],
+      designations: [],
       loading: false,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
@@ -33,6 +34,42 @@ class EmployeeProjectRoster extends Component {
     this.getSubDepartments();
     this.getHospitals();
     this.getProjects();
+    this.getDesignations();
+  }
+
+  getDesignations() {
+    algaehApiCall({
+      uri: "/hrsettings/getDesignations",
+      method: "GET",
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            designations: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  clearState() {
+    this.setState({
+      employees: [],
+      sub_department_id: null,
+      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+        .hims_d_hospital_id,
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
+      hims_d_employee_id: null,
+      emp_name: null,
+      designation_id: null
+    });
   }
 
   getProjects() {
@@ -66,11 +103,16 @@ class EmployeeProjectRoster extends Component {
 
   showModal(row, e) {
     if (e.target.tagName === "TD") {
-      this.setState({
-        sendRow: row,
-        openProjectAssign: true,
-        sendDate: e.currentTarget.getAttribute("date")
-      });
+      debugger;
+      if (e.ctrlKey || e.metaKey) {
+        e.currentTarget.lastElementChild.firstElementChild.click();
+      } else {
+        this.setState({
+          sendRow: row,
+          openProjectAssign: true,
+          sendDate: e.currentTarget.getAttribute("date")
+        });
+      }
     } else return;
   }
 
@@ -107,19 +149,15 @@ class EmployeeProjectRoster extends Component {
           type: "warning"
         })
       : algaehApiCall({
-          uri: "/shift_roster/pasteRoster",
+          uri: "/projectjobcosting/pasteProjectRoster",
           method: "POST",
           module: "hrManagement",
           data: {
             employee_id: data.id,
-            shift_date: data.date,
-            shift_id: this.state.copyData.hims_d_shift_id,
-            shift_end_date: this.state.copyData.shift_end_date,
-            shift_start_time: this.state.copyData.shift_start_time,
-            shift_end_time: this.state.copyData.shift_end_time,
-            shift_time: this.state.copyData.shift_time,
-            weekoff: this.state.copyData.weekoff,
-            holiday: this.state.copyData.holiday
+            attendance_date: data.date,
+            shift_id: this.state.copyData.shift_id,
+            project_id: this.state.copyData.project_id,
+            hospital_id: this.state.hospital_id
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -196,7 +234,7 @@ class EmployeeProjectRoster extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForProjectRoster();
+            // this.getEmployeesForProjectRoster();
           }
         );
         break;
@@ -207,7 +245,7 @@ class EmployeeProjectRoster extends Component {
           },
           () => {
             this.getStartandMonthEnd();
-            this.getEmployeesForProjectRoster();
+            // this.getEmployeesForProjectRoster();
           }
         );
         break;
@@ -266,8 +304,29 @@ class EmployeeProjectRoster extends Component {
 
       let data =
         leave !== undefined && leave !== null ? (
-          <td className="leave_cell" key={now}>
-            {leave.leave_description}
+          <td
+            className={
+              leave.status === "APR" ? "leave_cell_auth" : "leave_cell_unauth"
+            }
+            key={now}
+          >
+            <span className="leaveAction">
+              {/* Shift MoreInfo Tooltip start*/}
+              {leave.status === "APR" ? "LV" : "LA"}
+              <p className="leaveInfo animated fadeInDown faster">
+                <span>
+                  Leave:
+                  <b>{leave.leave_description}</b>
+                </span>
+                <span>
+                  Status :
+                  <b>
+                    {leave.status === "APR" ? "Approved" : "Pending Approval"}
+                  </b>
+                </span>
+              </p>
+              {/* Shift MoreInfo Tooltip end */}
+            </span>
           </td>
         ) : holiday !== undefined && holiday.weekoff === "Y" ? (
           <td className="week_off_cell" key={now}>
@@ -302,7 +361,7 @@ class EmployeeProjectRoster extends Component {
                 Delete Project
               </li>
             </ul>
-            <span>{project.project_code}</span>
+            <span>{project.abbreviation}</span>
           </td>
         ) : (
           <td
@@ -315,10 +374,10 @@ class EmployeeProjectRoster extends Component {
             <i className="fas fa-ellipsis-v" />
             <ul>
               <li
-              // onClick={this.pasteShift.bind(this, {
-              //   id: id,
-              //   date: now.format("YYYY-MM-DD")
-              // })}
+                onClick={this.pasteProject.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD")
+                })}
               >
                 Paste
               </li>
@@ -440,56 +499,75 @@ class EmployeeProjectRoster extends Component {
   }
 
   getEmployeesForProjectRoster() {
-    this.setState({
-      loading: true
-    });
+    if (
+      this.state.sub_department_id === null ||
+      this.state.sub_department_id === undefined
+    ) {
+      swalMessage({
+        title: "Please Select a Department to View Roster",
+        type: "warning"
+      });
+    } else if (
+      this.state.designation_id === null ||
+      this.state.designation_id === undefined
+    ) {
+      swalMessage({
+        title: "Please Select a Designation to View Roster",
+        type: "warning"
+      });
+    } else {
+      this.setState({
+        loading: true
+      });
 
-    let yearMonth = this.state.year + "-" + this.state.month + "-01";
+      let yearMonth = this.state.year + "-" + this.state.month + "-01";
 
-    var fromDate = moment(yearMonth)
-      .startOf("month")
-      .format("YYYY-MM-DD");
-    var toDate = moment(yearMonth)
-      .endOf("month")
-      .format("YYYY-MM-DD");
+      var fromDate = moment(yearMonth)
+        .startOf("month")
+        .format("YYYY-MM-DD");
+      var toDate = moment(yearMonth)
+        .endOf("month")
+        .format("YYYY-MM-DD");
 
-    algaehApiCall({
-      uri: "/projectjobcosting/getEmployeesForProjectRoster",
-      method: "GET",
-      module: "hrManagement",
-      data: {
-        hims_d_employee_id: this.state.hims_d_employee_id,
-        hospital_id: this.state.hospital_id,
-        sub_department_id: this.state.sub_department_id,
-        fromDate: fromDate,
-        toDate: toDate
-      },
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            employees: res.data.records,
-            loading: false
-          });
-        } else if (!res.data.success) {
+      algaehApiCall({
+        uri: "/projectjobcosting/getEmployeesForProjectRoster",
+        method: "GET",
+        module: "hrManagement",
+        data: {
+          hims_d_employee_id: this.state.hims_d_employee_id,
+          hospital_id: this.state.hospital_id,
+          sub_department_id: this.state.sub_department_id,
+          fromDate: fromDate,
+          toDate: toDate,
+          designation_id: this.state.designation_id
+        },
+        onSuccess: res => {
+          if (res.data.success) {
+            this.setState({
+              employees: res.data.records,
+              loading: false
+            });
+          } else if (!res.data.success) {
+            swalMessage({
+              title: res.data.records.message,
+              type: "warning"
+            });
+            this.setState({
+              loading: false
+            });
+          }
+        },
+        onFailure: err => {
           swalMessage({
-            title: res.data.records.message,
-            type: "warning"
+            title: err.message,
+            type: "error"
           });
           this.setState({
             loading: false
           });
         }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-        this.setState({
-          loading: false
-        });
-      }
-    });
+      });
+    }
   }
 
   render() {
@@ -604,26 +682,26 @@ class EmployeeProjectRoster extends Component {
             }}
           />
 
-          {/* <AlagehAutoComplete
+          <AlagehAutoComplete
             div={{ className: "col form-group" }}
-            label={{ forceLabel: "Select Project", isImp: true }}
+            label={{ forceLabel: "Select Designation", isImp: true }}
             selector={{
-              name: "project_id",
-              value: this.state.project_id,
+              name: "designation_id",
+              value: this.state.designation_id,
               className: "select-fld",
               dataSource: {
-                textField: "shift_description",
-                valueField: "hims_d_shift_id",
-                data: this.state.projects
+                textField: "designation",
+                valueField: "hims_d_designation_id",
+                data: this.state.designations
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
                 this.setState({
-                  project_id: null
+                  designation_id: null
                 });
               }
             }}
-          /> */}
+          />
 
           <div className="col-3" style={{ marginTop: 10 }}>
             <div
@@ -668,6 +746,7 @@ class EmployeeProjectRoster extends Component {
               )}
             </button>
             <button
+              onClick={this.clearState.bind(this)}
               style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >

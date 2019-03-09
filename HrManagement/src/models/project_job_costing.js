@@ -228,6 +228,7 @@ module.exports = {
                   project_id: s.project_id,
                   project_desc: s.project_desc,
                   project_code: s.project_code,
+                  abbreviation: s.abbreviation,
                   start_date: s.start_date,
                   end_date: s.end_date
                 };
@@ -531,11 +532,11 @@ module.exports = {
       .executeQuery({
         query:
           "INSERT INTO `hims_f_project_roster` (`employee_id`,\
-          `attendance_date`,`project_id`,`hims_f_leave_application_id`,hospital_id) values(?,?,?,?,?)\
+          `attendance_date`,`project_id`,`hims_f_leave_application_id`,`hospital_id`) values(?,?,?,?,?)\
           ON DUPLICATE KEY UPDATE project_id=?, hims_f_leave_application_id=?",
         values: [
           input.employee_id,
-          moment(attendance_date)._d,
+          moment(input.attendance_date)._d,
           input.project_id,
           input.hims_f_leave_application_id,
           input.hospital_id,

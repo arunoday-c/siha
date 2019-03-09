@@ -118,6 +118,23 @@ class EmployeeGroups extends Component {
                 }
               }}
             />
+            <AlagehFormGroup
+              div={{
+                className: "col"
+              }}
+              label={{
+                forceLabel: "Project Abbreviation",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "abbreviation",
+                value: this.state.abbreviation,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                }
+              }}
+            />
 
             <AlgaehDateHandler
               div={{ className: "col" }}
@@ -228,6 +245,36 @@ class EmployeeGroups extends Component {
                           },
                           others: {
                             errormessage: "Arabic Description cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "abbreviation",
+                  label: (
+                    <AlgaehLabel
+                      label={{ forceLabel: "Project Abbreviation" }}
+                    />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "abbreviation",
+                          value: row.abbreviation,
+                          events: {
+                            onChange: this.changeGridEditorsEvent.bind(
+                              this,
+                              row
+                            )
+                          },
+                          others: {
+                            errormessage: "Abbrevation cannot be blank",
                             required: true
                           }
                         }}

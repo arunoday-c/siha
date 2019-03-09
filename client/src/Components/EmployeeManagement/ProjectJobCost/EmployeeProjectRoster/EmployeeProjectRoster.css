@@ -5,6 +5,70 @@
   font-size: 0.7em;
   border-radius: 6px; }
 
+.EmployeeProjectRoster .leave_cell_auth {
+  background: #879c3f;
+  color: white;
+  position: relative; }
+  .EmployeeProjectRoster .leave_cell_auth span {
+    display: block;
+    width: 80%;
+    position: relative; }
+    .EmployeeProjectRoster .leave_cell_auth span:hover .leaveInfo {
+      display: block; }
+  .EmployeeProjectRoster .leave_cell_auth .leaveInfo {
+    font-size: 0.7rem;
+    width: 150px;
+    padding: 2px 5px;
+    position: absolute;
+    z-index: 9;
+    top: 15px;
+    right: 30px;
+    font-weight: normal;
+    display: none;
+    background: rgba(255, 255, 255, 0.95);
+    text-align: left;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); }
+    .EmployeeProjectRoster .leave_cell_auth .leaveInfo span {
+      width: 100%;
+      color: #000; }
+      .EmployeeProjectRoster .leave_cell_auth .leaveInfo span b {
+        text-align: right;
+        float: right; }
+
+.EmployeeProjectRoster .leave_cell_unauth {
+  background: #9c7d3f;
+  color: white;
+  position: relative; }
+  .EmployeeProjectRoster .leave_cell_unauth span {
+    display: block;
+    width: 80%;
+    position: relative; }
+    .EmployeeProjectRoster .leave_cell_unauth span:hover .leaveInfo {
+      display: block; }
+  .EmployeeProjectRoster .leave_cell_unauth .leaveInfo {
+    font-size: 0.7rem;
+    width: 150px;
+    padding: 2px 5px;
+    position: absolute;
+    z-index: 9;
+    top: 15px;
+    right: 30px;
+    font-weight: normal;
+    display: none;
+    background: rgba(255, 255, 255, 0.95);
+    text-align: left;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); }
+    .EmployeeProjectRoster .leave_cell_unauth .leaveInfo span {
+      width: 100%;
+      color: #000; }
+      .EmployeeProjectRoster .leave_cell_unauth .leaveInfo span b {
+        text-align: right;
+        float: right; }
+
 .EmployeeProjectRoster .time_cell {
   background-color: "lightgray";
   cursor: pointer; }
@@ -65,6 +129,7 @@
   background-color: #58b9c0; }
 
 .EmployeeProjectRoster #projectRosterTable {
+  min-height: 54vh;
   overflow: auto;
   border: 1px solid #d2d2d2; }
   .EmployeeProjectRoster #projectRosterTable .noTimeSheetData {
@@ -82,7 +147,7 @@
     box-sizing: border-box;
     table-layout: fixed;
     min-height: 20vh;
-    max-height: 55vh; }
+    max-height: 52vh; }
     .EmployeeProjectRoster #projectRosterTable table thead th {
       padding: 3px;
       text-align: center;
@@ -90,12 +155,15 @@
       border-bottom: 1px solid #d2d2d2;
       color: #000 !important;
       background: #dff6f6 !important;
-      width: 55px; }
+      width: 45px;
+      font-size: 0.7em; }
       .EmployeeProjectRoster #projectRosterTable table thead th:nth-child(1) {
         text-align: left;
-        width: 200px; }
+        width: 200px;
+        font-size: 1em; }
       .EmployeeProjectRoster #projectRosterTable table thead th:last-child, .EmployeeProjectRoster #projectRosterTable table thead th:nth-last-child(2) {
-        width: 100px; }
+        width: 100px;
+        font-size: 1em; }
     .EmployeeProjectRoster #projectRosterTable table tbody {
       overflow: auto;
       min-height: 60vh;
@@ -105,7 +173,8 @@
         text-align: center;
         border-right: 1px solid #ececec;
         border-top: 1px solid #ececec;
-        width: 75px; }
+        width: 45px;
+        font-size: 0.8em; }
         .EmployeeProjectRoster #projectRosterTable table tbody tr td:nth-child(1) {
           text-align: left;
           width: 200px; }

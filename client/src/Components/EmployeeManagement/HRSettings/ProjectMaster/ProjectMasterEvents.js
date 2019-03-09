@@ -49,6 +49,7 @@ export default function ProjectMasterEvents() {
           project_code: $this.state.project_code,
           project_desc: $this.state.project_desc,
           project_desc_arabic: $this.state.project_desc_arabic,
+          abbreviation: $this.state.abbreviation,
           start_date: moment($this.state.start_date).format("YYYY-MM-DD"),
           end_date: moment($this.state.end_date).format("YYYY-MM-DD")
         },
@@ -109,6 +110,7 @@ export default function ProjectMasterEvents() {
           project_code: data.project_code,
           project_desc: data.project_desc,
           project_desc_arabic: data.project_desc_arabic,
+          abbreviation: data.abbreviation,
           start_date: moment(data.start_date).format("YYYY-MM-DD"),
           end_date: moment(data.end_date).format("YYYY-MM-DD"),
           pjoject_status: data.pjoject_status,
@@ -234,6 +236,7 @@ function clearState($this) {
     project_desc: null,
     project_desc_arabic: null,
     start_date: null,
-    end_date: null
+    end_date: null,
+    abbreviation: null
   });
 }
