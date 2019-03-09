@@ -1,5 +1,6 @@
 import React from "react";
 import "./AlgaehmainPage.css";
+import { AlagehFormGroup, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import {
   swalMessage,
   algaehApiCall,
@@ -460,13 +461,80 @@ class PersistentDrawer extends React.Component {
                 &nbsp; عربي
               </a>
               <div className="dropdown-divider" />
+              <a className="dropdown-item">
+                <i className="fas fa-key" /> Change Password
+              </a>
               <a className="dropdown-item" onClick={this.logoutLink.bind(this)}>
                 <i className="fas fa-sign-out-alt" /> Logout
               </a>
             </div>
           </div>
         </nav>
-
+        <div className="passwordCntr animated slideInDown faster">
+          <div className="row">
+            <h4>Change Password</h4>
+            <div className="col-12">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "User Name"
+                }}
+              />
+              <h6>Username</h6>
+            </div>
+            <AlagehFormGroup
+              div={{ className: "col-12 form-group" }}
+              label={{
+                forceLabel: "Current Password",
+                isImp: false
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "",
+                value: "",
+                events: {},
+                option: {
+                  type: "password"
+                }
+              }}
+            />{" "}
+            <AlagehFormGroup
+              div={{ className: "col-12 form-group" }}
+              label={{
+                forceLabel: "New Password",
+                isImp: false
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "",
+                value: "",
+                events: {},
+                option: {
+                  type: "password"
+                }
+              }}
+            />{" "}
+            <AlagehFormGroup
+              div={{ className: "col-12 form-group" }}
+              label={{
+                forceLabel: "Confirm New Password",
+                isImp: false
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "",
+                value: "",
+                events: {},
+                option: {
+                  type: "password"
+                }
+              }}
+            />
+            <div className="col footerBtn">
+              <button className="btn btn-primary">Change Password</button>
+              <button className="btn btn-default">Cancel</button>
+            </div>
+          </div>
+        </div>
         {/* Side Bar Functionality */}
         {this.state.sideopen === true ? (
           <div
