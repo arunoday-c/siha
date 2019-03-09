@@ -13,6 +13,7 @@ import {
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 import MonthlyDetail from "./MonthlyDetail/MonthlyDetail";
+import MonthModify from "./MonthlyModify/MonthlyModify";
 const _options = AlgaehOpenContainer(sessionStorage.getItem("hrOptions"));
 
 export default class MonthlyAttendance extends Component {
@@ -34,7 +35,8 @@ export default class MonthlyAttendance extends Component {
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
       formatingString: this.monthFormatorString(moment().startOf("month")),
-      attendance_type: JSON.parse(_options).attendance_type
+      attendance_type: JSON.parse(_options).attendance_type,
+      currMt: {}
     };
     this.getSubDepts();
     this.getOrganization();
@@ -270,9 +272,14 @@ export default class MonthlyAttendance extends Component {
     );
   }
 
-  showModal(data) {
-    debugger;
+  showEditModal(data) {
+    this.setState({
+      openMonthlyEdit: true,
+      currMt: data
+    });
+  }
 
+  showDailyModal(data) {
     algaehApiCall({
       uri: "/attendance/getDailyAttendance",
       method: "GET",
@@ -309,6 +316,11 @@ export default class MonthlyAttendance extends Component {
       openMonthlyDetail: false
     });
   }
+  closeMonthlyEdit() {
+    this.setState({
+      openMonthlyEdit: false
+    });
+  }
 
   render() {
     let allYears = getYears();
@@ -319,6 +331,12 @@ export default class MonthlyAttendance extends Component {
           open={this.state.openMonthlyDetail}
           onClose={this.closeMonthlyDetail.bind(this)}
           employee_name={this.state.currEmp}
+        />
+
+        <MonthModify
+          open={this.state.openMonthlyEdit}
+          onClose={this.closeMonthlyEdit.bind(this)}
+          data={this.state.currMt}
         />
 
         <div className="row inner-top-search">
@@ -470,9 +488,12 @@ export default class MonthlyAttendance extends Component {
                         <React.Fragment>
                           <i
                             className="fas fa-eye"
-                            onClick={this.showModal.bind(this, row)}
+                            onClick={this.showDailyModal.bind(this, row)}
                           />
-                          <i className="fas fa-pen" onClick={() => {}} />
+                          <i
+                            className="fas fa-pen"
+                            onClick={this.showEditModal.bind(this, row)}
+                          />
                         </React.Fragment>
                       );
                     },

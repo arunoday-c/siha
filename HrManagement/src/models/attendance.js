@@ -5980,7 +5980,7 @@ let worked_min =
  //created by irfan:
  updateMonthlyAttendance: (req, res, next) => {
   const _mysql = new algaehMysql();
-  let input = req.query;
+  let input = req.body;
 
 if(req.userIdentity.edit_monthly_attendance=="Y"){
 
@@ -6022,7 +6022,7 @@ if(req.userIdentity.edit_monthly_attendance=="Y"){
 
   req.records = {
     invalid_input: true,
-    message: "You dont have previlege"
+    message: "You don't have previlege"
   };
   next();
 }
