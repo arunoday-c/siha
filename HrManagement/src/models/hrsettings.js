@@ -472,11 +472,12 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "UPDATE hims_d_project SET project_code = ?,project_desc = ?, project_desc_arabic = ?, \
+            "UPDATE hims_d_project SET project_code = ?,abbreviation=?,project_desc = ?, project_desc_arabic = ?, \
             start_date = ?, end_date = ?, pjoject_status = ?, record_status=?\
           ,updated_date=?, updated_by=?  WHERE hims_d_project_id = ?",
           values: [
             input.project_code,
+            input.abbreviation,
             input.project_desc,
             input.project_desc_arabic,
             input.start_date,
