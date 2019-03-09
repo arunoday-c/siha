@@ -52,7 +52,7 @@ export default class UploadCsv extends Component {
         for (let i = 0; i < workbook.SheetNames.length; i++) {
           const ws = workbook.Sheets[workbook.SheetNames[i]];
           const data = XLSX.utils.sheet_to_json(ws, {
-            raw: true,
+            raw: false,
             defval: null
           });
           _jsonRecords.push(data);
