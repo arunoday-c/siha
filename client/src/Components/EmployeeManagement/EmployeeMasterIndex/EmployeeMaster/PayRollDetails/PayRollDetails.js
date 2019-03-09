@@ -274,7 +274,7 @@ class PayRollDetails extends Component {
 
                 <div className="col" style={{ paddingTop: "21px" }}>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-default"
                     onClick={AddEarnComponent.bind(this, this)}
                   >
                     Add
@@ -404,14 +404,17 @@ class PayRollDetails extends Component {
                   />
                 </div>
               </div>
-              <div className="col-12">
+              <div className="row">
                 {" "}
-                <button
-                  className="btn btn-default"
-                  onClick={CalculateBasedonFormula.bind(this, this)}
-                >
-                  Process
-                </button>
+                <div className="col-12">
+                  <button
+                    className="btn btn-primary"
+                    style={{ float: "right", marginTop: 10 }}
+                    onClick={CalculateBasedonFormula.bind(this, this)}
+                  >
+                    Process
+                  </button>
+                </div>
               </div>
             </div>
             <div className="col-lg-6 secondary-details">
@@ -475,7 +478,7 @@ class PayRollDetails extends Component {
                 />
                 <div className="col" style={{ paddingTop: "21px" }}>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-default"
                     onClick={AddDeductionComponent.bind(this, this)}
                   >
                     Add
@@ -630,7 +633,7 @@ class PayRollDetails extends Component {
                 />
                 <div className="col" style={{ paddingTop: "21px" }}>
                   <button
-                    className="btn btn-primary"
+                    className="btn btn-default"
                     onClick={AddContributionComponent.bind(this, this)}
                   >
                     Add

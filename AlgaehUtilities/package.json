@@ -16,6 +16,7 @@
     "graceful-fs": "^4.1.15",
     "jsonwebtoken": "^8.4.0",
     "moment": "^2.23.0",
+    "nodemailer": "^5.1.1",
     "winston": "^3.1.0",
     "winston-daily-rotate-file": "^3.5.1"
   }

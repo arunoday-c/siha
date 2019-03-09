@@ -1979,7 +1979,7 @@ module.exports = {
           .executeQuery({
             query:
               "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,\
-              E.full_name FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
+              E.full_name,E.sub_department_id FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
               TS.employee_id=E.hims_d_employee_id and (TS.status = 'AB' or TS.status = 'EX') and\
               TS.attendance_date=? and E.sub_department_id=? and E.hospital_id=?;",
             values: [
@@ -2001,7 +2001,7 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,E.full_name FROM \
+              "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,E.full_name,E.sub_department_id FROM \
               algaeh_hims_db.hims_f_daily_time_sheet TS, algaeh_hims_db.hims_d_employee E, hims_f_project_roster PR where \
               TS.employee_id=E.hims_d_employee_id and PR.employee_id = TS.employee_id and\
               TS.attendance_date=? and E.hospital_id=? and PR.project_id=?;",
@@ -2029,7 +2029,7 @@ module.exports = {
 
               strQuery = {
                 query:
-                  "select PR.employee_id, E.employee_code,E.full_name,PR.attendance_date from hims_f_project_roster PR , \
+                  "select PR.employee_id, E.employee_code,E.full_name,E.sub_department_id,PR.attendance_date from hims_f_project_roster PR , \
                 hims_d_employee E where E.hims_d_employee_id=PR.employee_id and E.hospital_id=? " +
                   _strDate,
                 values: intValues,
@@ -2085,7 +2085,8 @@ module.exports = {
             "out_time",
             "hours",
             "minutes",
-            "worked_hours"
+            "worked_hours",
+            "sub_department_id"
           ];
 
           _mysql
@@ -5974,9 +5975,60 @@ let worked_min =
         _mysql.releaseConnection();
         next(e);
       });
-  }
+  },
+
+ //created by irfan:
+ updateMonthlyAttendance: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  let input = req.query;
+
+if(req.userIdentity.edit_monthly_attendance=="Y"){
+
+  _mysql
+  .executeQuery({
+    query:
+      "update hims_f_attendance_monthly set shortage_hours= ?,ot_work_hours=? where hims_f_attendance_monthly_id=?",
+    values: [
+      input.shortage_hours,        
+      input.ot_work_hours,     
+      input.hims_f_attendance_monthly_id
+    ],
+    printQuery: true
+  })
+  .then(result => {
+     _mysql.releaseConnection();
+    // req.records = result;
+    // next();
 
 
+    if (result.affectedRows > 0) {
+      req.records = result;
+      next();
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide valid hims_f_attendance_monthly_id"
+      };
+      next();
+    }
+  })
+  .catch(e => {
+    _mysql.releaseConnection();
+    next(e);
+  });
+
+}else{
+
+
+  req.records = {
+    invalid_input: true,
+    message: "You dont have previlege"
+  };
+  next();
+}
+
+  
+}
 
 
 };
