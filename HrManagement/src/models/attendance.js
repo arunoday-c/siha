@@ -1551,7 +1551,8 @@ module.exports = {
                               w.employee_id ==
                               allEmployees[i]["hims_d_employee_id"]
                           )
-                          .Sum(s => s.absent_duration);
+                          .Sum(s =>parseFloat( s.absent_duration));
+
 
                         //EN---- adding employee absent days
 

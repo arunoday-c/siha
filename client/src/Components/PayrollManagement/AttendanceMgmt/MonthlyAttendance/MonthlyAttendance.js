@@ -28,6 +28,7 @@ export default class MonthlyAttendance extends Component {
       loader: false,
       displayLoader: false,
       data: [],
+      currEmp: null,
       hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
       hims_d_employee_id: null,
@@ -272,8 +273,34 @@ export default class MonthlyAttendance extends Component {
   showModal(data) {
     debugger;
 
+    algaehApiCall({
+      uri: "/attendance/getDailyAttendance",
+      method: "GET",
+      data: {
+        hospital_id: data.hospital_id,
+        year: data.year,
+        month: data.month,
+        employee_id: data.employee_id
+      },
+      module: "hrManagement",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            monthly_detail: res.data.result
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+
     this.setState({
-      openMonthlyDetail: true
+      openMonthlyDetail: true,
+      currEmp: data.employee_name
     });
   }
 
@@ -291,6 +318,7 @@ export default class MonthlyAttendance extends Component {
           data={this.state.monthly_detail}
           open={this.state.openMonthlyDetail}
           onClose={this.closeMonthlyDetail.bind(this)}
+          employee_name={this.state.currEmp}
         />
 
         <div className="row inner-top-search">
