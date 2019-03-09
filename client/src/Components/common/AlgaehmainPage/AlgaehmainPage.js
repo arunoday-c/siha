@@ -150,7 +150,6 @@ class PersistentDrawer extends React.Component {
   }
 
   changePassword() {
-    debugger;
     if (
       this.state.current_pwd.length === 0 ||
       this.state.pwd.length === 0 ||
@@ -594,7 +593,7 @@ class PersistentDrawer extends React.Component {
                 events: {
                   onChange: this.changeTexts.bind(this)
                 },
-                option: {
+                others: {
                   type: "password"
                 }
               }}
@@ -612,7 +611,7 @@ class PersistentDrawer extends React.Component {
                 events: {
                   onChange: this.changeTexts.bind(this)
                 },
-                option: {
+                others: {
                   type: "password"
                 }
               }}
@@ -630,7 +629,7 @@ class PersistentDrawer extends React.Component {
                 events: {
                   onChange: this.changeTexts.bind(this)
                 },
-                option: {
+                others: {
                   type: "password"
                 }
               }}
