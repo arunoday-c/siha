@@ -315,11 +315,13 @@ export default class MonthlyAttendance extends Component {
     this.setState({
       openMonthlyDetail: false
     });
+    this.loadAttendance();
   }
   closeMonthlyEdit() {
     this.setState({
       openMonthlyEdit: false
     });
+    this.loadAttendance();
   }
 
   render() {
