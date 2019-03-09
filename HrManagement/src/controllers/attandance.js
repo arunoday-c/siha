@@ -330,7 +330,7 @@ export default () => {
     }
   });
 
-  api.get(
+  api.put(
     "/updateMonthlyAttendance",
     updateMonthlyAttendance,
     (req, res, next) => {
