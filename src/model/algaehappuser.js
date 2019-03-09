@@ -404,7 +404,7 @@ let changePassword = (req, res, next) => {
       if (req.userIdentity.algaeh_d_app_user_id > 0) {
         connection.query(
           "select algaeh_d_app_password_id from algaeh_d_app_password  where userid=? and  password=md5(?);",
-          [req.userIdentity.algaeh_d_app_user_id, req.body.password],
+          [req.userIdentity.algaeh_d_app_user_id, req.body.oldPassword],
           (error, result) => {
             if (error) {
               releaseDBConnection(db, connection);
