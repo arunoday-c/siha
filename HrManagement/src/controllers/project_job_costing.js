@@ -6,7 +6,8 @@ import {
   deleteDivisionProject,
   getEmployeesForProjectRoster,
   deleteProjectRoster,
-  addProjectRoster
+  addProjectRoster,
+  pasteProjectRoster
 } from "../models/project_job_costing";
 
 export default () => {
@@ -61,6 +62,12 @@ export default () => {
     }
   );
   api.post("/addProjectRoster", addProjectRoster, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+  api.post("/pasteProjectRoster", pasteProjectRoster, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
