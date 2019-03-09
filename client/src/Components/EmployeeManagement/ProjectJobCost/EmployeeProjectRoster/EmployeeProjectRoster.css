@@ -5,6 +5,70 @@
   font-size: 0.7em;
   border-radius: 6px; }
 
+.EmployeeProjectRoster .leave_cell_auth {
+  background: #879c3f;
+  color: white;
+  position: relative; }
+  .EmployeeProjectRoster .leave_cell_auth span {
+    display: block;
+    width: 80%;
+    position: relative; }
+    .EmployeeProjectRoster .leave_cell_auth span:hover .leaveInfo {
+      display: block; }
+  .EmployeeProjectRoster .leave_cell_auth .leaveInfo {
+    font-size: 0.7rem;
+    width: 150px;
+    padding: 2px 5px;
+    position: absolute;
+    z-index: 9;
+    top: 15px;
+    right: 30px;
+    font-weight: normal;
+    display: none;
+    background: rgba(255, 255, 255, 0.95);
+    text-align: left;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); }
+    .EmployeeProjectRoster .leave_cell_auth .leaveInfo span {
+      width: 100%;
+      color: #000; }
+      .EmployeeProjectRoster .leave_cell_auth .leaveInfo span b {
+        text-align: right;
+        float: right; }
+
+.EmployeeProjectRoster .leave_cell_unauth {
+  background: #9c7d3f;
+  color: white;
+  position: relative; }
+  .EmployeeProjectRoster .leave_cell_unauth span {
+    display: block;
+    width: 80%;
+    position: relative; }
+    .EmployeeProjectRoster .leave_cell_unauth span:hover .leaveInfo {
+      display: block; }
+  .EmployeeProjectRoster .leave_cell_unauth .leaveInfo {
+    font-size: 0.7rem;
+    width: 150px;
+    padding: 2px 5px;
+    position: absolute;
+    z-index: 9;
+    top: 15px;
+    right: 30px;
+    font-weight: normal;
+    display: none;
+    background: rgba(255, 255, 255, 0.95);
+    text-align: left;
+    border-radius: 4px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5); }
+    .EmployeeProjectRoster .leave_cell_unauth .leaveInfo span {
+      width: 100%;
+      color: #000; }
+      .EmployeeProjectRoster .leave_cell_unauth .leaveInfo span b {
+        text-align: right;
+        float: right; }
+
 .EmployeeProjectRoster .time_cell {
   background-color: "lightgray";
   cursor: pointer; }
