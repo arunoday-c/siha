@@ -418,3 +418,35 @@ header {
     }
   }
 }
+.passwordCntr {
+  background: $color-white;
+  padding: 0 15px 15px;
+  border-radius: 5px;
+  width: 300px;
+  margin: 10vh auto 0;
+  box-shadow: 0 10px 10px lighten($color-black, 60%) !important;
+  position: absolute;
+  z-index: 99999;
+  border: 1px solid lighten($color-black, 40%) !important;
+  left: 35vw;
+  top: 15vh;
+  display: none;
+  h4 {
+    border-bottom: 1px solid darken($primary-color, 20%) !important;
+    padding-bottom: 15px;
+    width: 100%;
+    background: $primary-color;
+    line-height: 40px;
+    height: 42px;
+    color: $color-white;
+    text-transform: uppercase;
+    text-shadow: 0 1px 1px darken ($primary-color, 20%) !important;
+    text-align: center;
+  }
+  .footerBtn {
+    button {
+      float: right;
+      margin-left: 15px;
+    }
+  }
+}

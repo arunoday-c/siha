@@ -282,7 +282,7 @@ class DeptUserDetails extends Component {
               </h5>
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col" }}
                   label={{
                     forceLabel: "Employee Group",
                     isImp: true
@@ -309,7 +309,7 @@ class DeptUserDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
                     forceLabel: "Overtime Group",
                     isImp: true
@@ -332,7 +332,7 @@ class DeptUserDetails extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
                     forceLabel: "Assign Division/Branch",
                     isImp: true
@@ -363,7 +363,7 @@ class DeptUserDetails extends Component {
               </h5>
               <div className="row" data-validate="deptUserdtl">
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
                     fieldName: "sub_department_id",
                     isImp: true
@@ -392,7 +392,7 @@ class DeptUserDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
                     fieldName: "speciality_id",
                     isImp: true
@@ -418,7 +418,7 @@ class DeptUserDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
                     fieldName: "category_id",
                     isImp: true
@@ -444,9 +444,9 @@ class DeptUserDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
-                    forceLabel: "Employee Designation",
+                    forceLabel: "Emp. Designation",
                     isImp: true
                   }}
                   selector={{
@@ -470,7 +470,7 @@ class DeptUserDetails extends Component {
                   }}
                 />
                 <AlagehAutoComplete
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
                     forceLabel: "Reporting to",
                     isImp: true
@@ -547,7 +547,7 @@ class DeptUserDetails extends Component {
                 />
 
                 <AlgaehDateHandler
-                  div={{ className: "col mandatory" }}
+                  div={{ className: "col " }}
                   label={{
                     fieldName: "from_date",
                     isImp: true
