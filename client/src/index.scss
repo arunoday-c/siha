@@ -689,6 +689,10 @@
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
     width: 100%;
+    .block {
+      display: block;
+      margin-top: 5px;
+    }
     .inline {
       display: inline-block;
     }

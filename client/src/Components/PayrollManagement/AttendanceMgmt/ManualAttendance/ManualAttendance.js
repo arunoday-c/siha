@@ -168,8 +168,22 @@ class ManualAttendance extends Component {
     return (
       <div id="ManualAttendanceScreen">
         <div className="row inner-top-search" data-validate="loadEmployee">
+          {" "}
+          <div className="col-2">
+            <div className="customRadio">
+              <label className="radio block">
+                <input type="radio" value="" name="attendance_type" />
+                <span>Month Wise</span>
+              </label>
+
+              <label className="radio block">
+                <input type="radio" value="" name="attendance_type" />
+                <span>Date Range</span>
+              </label>
+            </div>
+          </div>
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2" }}
             label={{
               forceLabel: "Select a Branch.",
               isImp: true
@@ -191,9 +205,8 @@ class ManualAttendance extends Component {
               }
             }}
           />
-
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2" }}
             label={{
               forceLabel: drop_Down_Label,
               isImp: true
@@ -220,28 +233,21 @@ class ManualAttendance extends Component {
               }
             }}
           />
-
           {/* <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2" }}
             label={{
-              forceLabel: "Select Employee Group",
+              forceLabel: "Select Month",
               isImp: true
             }}
             selector={{
-              name: "employee_group_id",
+              name: timesheet_entry,
               className: "select-fld",
-              value: this.state.employee_group_id,
-              dataSource: {
-                textField: "group_description",
-                valueField: "hims_d_employee_group_id",
-                data: this.props.emp_groups
-              },
-              onChange: this.eventHandaler.bind(this)
+              value: "",
+              dataSource: ""
             }}
           /> */}
-
           <AlgaehDateHandler
-            div={{ className: "col" }}
+            div={{ className: "col-2" }}
             label={{ forceLabel: "Select Date", isImp: true }}
             textBox={{
               className: "txt-fld",
@@ -253,7 +259,35 @@ class ManualAttendance extends Component {
             }}
             value={this.state.attendance_date}
           />
-
+          <div className="col-2" style={{ marginTop: 10 }}>
+            <div
+              className="row"
+              style={{
+                border: "1px solid #ced4d9",
+                borderRadius: 5,
+                marginLeft: 0
+              }}
+            >
+              <div className="col">
+                <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                <h6 className="textEllipsis">Employee Name</h6>
+              </div>
+              <div
+                className="col-lg-3"
+                style={{ borderLeft: "1px solid #ced4d8" }}
+              >
+                <i
+                  className="fas fa-search fa-lg"
+                  style={{
+                    paddingTop: 17,
+                    paddingLeft: 3,
+                    cursor: "pointer"
+                  }}
+                  //            onClick={this.employeeSearch.bind(this)}
+                />
+              </div>
+            </div>
+          </div>
           <div className="col form-group">
             <button
               style={{ marginTop: 21 }}
