@@ -5940,6 +5940,39 @@ let worked_min =
       next();
       return;
     }
+  },
+
+
+
+
+   //created by irfan:
+   getDailyAttendance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+
+
+    _mysql
+      .executeQuery({
+        query:
+          "select * from hims_f_daily_attendance  where hospital_id=? and year=? and month=? and employee_id=?;",
+        values: [
+          input.hospital_id,        
+          input.year,
+          input.month,
+          input.employee_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 
 
