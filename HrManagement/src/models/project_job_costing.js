@@ -477,13 +477,16 @@ module.exports = {
                   });
                   insertData += _mysql.mysqlQueryFormat(
                     "insert into hims_f_project_roster(`employee_id`,\
-                  `attendance_date`,`project_id`,`hims_f_leave_application_id`) \
-                  values(?,?,?,?);",
+                  `attendance_date`,`project_id`,`hims_f_leave_application_id`,hospital_id) \
+                  values(?,?,?,?,?);",
                     [
                       employee["hims_d_employee_id"],
                       moment(date)._d,
                       input.project_id,
-                      _leave != null ? _leave.hims_f_leave_application_id : null
+                      _leave != null
+                        ? _leave.hims_f_leave_application_id
+                        : null,
+                      input.hospital_id
                     ]
                   );
                 }
@@ -517,6 +520,39 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  //created by irfan:
+  pasteProjectRoster: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_f_project_roster` (`employee_id`,\
+          `attendance_date`,`project_id`,`hims_f_leave_application_id`,hospital_id) values(?,?,?,?,?)\
+          ON DUPLICATE KEY UPDATE project_id=?, hims_f_leave_application_id=?",
+        values: [
+          input.employee_id,
+          moment(attendance_date)._d,
+          input.project_id,
+          input.hims_f_leave_application_id,
+          input.hospital_id,
+          input.project_id,
+          input.hims_f_leave_application_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 
