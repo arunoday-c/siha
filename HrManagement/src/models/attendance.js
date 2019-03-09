@@ -5940,9 +5940,93 @@ let worked_min =
       next();
       return;
     }
-  }
+  },
 
 
+
+
+   //created by irfan:
+   getDailyAttendance: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+
+
+    _mysql
+      .executeQuery({
+        query:
+          "select * from hims_f_daily_attendance  where hospital_id=? and year=? and month=? and employee_id=?;",
+        values: [
+          input.hospital_id,        
+          input.year,
+          input.month,
+          input.employee_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+ //created by irfan:
+ updateMonthlyAttendance: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  let input = req.query;
+
+if(req.userIdentity.edit_monthly_attendance=="Y"){
+
+  _mysql
+  .executeQuery({
+    query:
+      "update hims_f_attendance_monthly set shortage_hours= ?,ot_work_hours=? where hims_f_attendance_monthly_id=?",
+    values: [
+      input.shortage_hours,        
+      input.ot_work_hours,     
+      input.hims_f_attendance_monthly_id
+    ],
+    printQuery: true
+  })
+  .then(result => {
+     _mysql.releaseConnection();
+    // req.records = result;
+    // next();
+
+
+    if (result.affectedRows > 0) {
+      req.records = result;
+      next();
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please provide valid hims_f_attendance_monthly_id"
+      };
+      next();
+    }
+  })
+  .catch(e => {
+    _mysql.releaseConnection();
+    next(e);
+  });
+
+}else{
+
+
+  req.records = {
+    invalid_input: true,
+    message: "You dont have previlege"
+  };
+  next();
+}
+
+  
+}
 
 
 };

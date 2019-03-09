@@ -14,8 +14,8 @@ exports.default = {
     user: "algaeh_root",
     password: "medteam2013",
     // database: "algaeh_hims_db",
-    // database: "hims_test_db",
-    database: "algaeh_hrms_oman_db",
+    database: "hims_test_db",
+    // database: "algaeh_hrms_oman_db",
 
     multipleStatements: true,
     acquireTimeout: 20000,

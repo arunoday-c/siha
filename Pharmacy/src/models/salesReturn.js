@@ -328,7 +328,7 @@ module.exports = {
           "UPDATE hims_f_pharmacy_pos_detail SET `return_quantity`=?,`return_extended_cost` = ?,\
         `return_discount_amt`=?, `return_net_extended_cost`=?, `return_pat_responsibility`=?, \
         `return_company_responsibility`=?, `return_sec_company_responsibility`=?, `return_done`='Y' \
-        where `pharmacy_pos_header_id`=? and `item_id`=?",
+        where `pharmacy_pos_header_id`=? and `item_id`=?;",
           [
             newDtls[i].return_quantity,
             newDtls[i].return_extended_cost,
