@@ -189,7 +189,20 @@ class ItemMomentEnquiry extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Transaction Type" }}
                         />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return row.transaction_type === "MR"
+                          ? "Material Requisition"
+                          : row.transaction_type === "ST"
+                          ? "Stock Transfer"
+                          : row.transaction_type === "POS"
+                          ? "Point of Sale"
+                          : row.transaction_type === "SRT"
+                          ? "Sales Return"
+                          : row.transaction_type === "SRT"
+                          ? "Opening Stock"
+                          : "";
+                      }
                     },
                     {
                       fieldName: "transaction_date",

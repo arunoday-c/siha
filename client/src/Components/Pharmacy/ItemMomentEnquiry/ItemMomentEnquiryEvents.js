@@ -10,7 +10,7 @@ const changeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
-const dateFormater = ({ value }) => {
+const dateFormater = value => {
   if (value !== null) {
     return moment(value).format(Options.dateFormat);
   }
