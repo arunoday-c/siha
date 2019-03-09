@@ -167,6 +167,7 @@ export default function ManualAttendanceEvents() {
     },
 
     gdtimehandle: ($this, row, e) => {
+      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let diff_hour = null;
@@ -177,15 +178,17 @@ export default function ManualAttendanceEvents() {
       if (name === "in_time") {
         if (row.out_time !== undefined) {
           //   diff_time = row.in_time - row.out_time;
-          diff_hour = moment(row.out_time, "HH").diff(
-            moment(value, "HH"),
-            "hours"
-          );
-          diff_munite = moment
-            .utc(
-              moment(row.out_time, "HH:mm:ss").diff(moment(value, "HH:mm:ss"))
-            )
-            .format("mm");
+
+          let start = value.split(":");
+          let end = row.out_time.split(":");
+          var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+          var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+          var diff = endDate.getTime() - startDate.getTime();
+
+          diff_hour = Math.floor(diff / 1000 / 60 / 60);
+
+          diff -= diff_hour * 1000 * 60 * 60;
+          diff_munite = Math.floor(diff / 1000 / 60);
 
           worked_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
         }
@@ -196,15 +199,17 @@ export default function ManualAttendanceEvents() {
             type: "warning"
           });
         } else {
-          diff_hour = moment(value, "HH").diff(
-            moment(row.in_time, "HH"),
-            "hours"
-          );
-          diff_munite = moment
-            .utc(
-              moment(value, "HH:mm:ss").diff(moment(row.in_time, "HH:mm:ss"))
-            )
-            .format("mm");
+          debugger;
+          let start = row.in_time.split(":");
+          let end = value.split(":");
+          var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+          var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+          var diff = endDate.getTime() - startDate.getTime();
+
+          diff_hour = Math.floor(diff / 1000 / 60 / 60);
+
+          diff -= diff_hour * 1000 * 60 * 60;
+          diff_munite = Math.floor(diff / 1000 / 60);
 
           worked_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
         }
@@ -243,60 +248,60 @@ export default function ManualAttendanceEvents() {
     ProcessAttendanceEvent: $this => {
       // const notEntered = _.
 
-      const notEntered = Enumerable.from($this.state.employee_details)
-        .where(w => w.in_time === null || w.out_time === null)
-        .toArray();
+      // const notEntered = Enumerable.from($this.state.employee_details)
+      //   .where(w => w.in_time === null || w.out_time === null)
+      //   .toArray();
 
-      if (notEntered.length === 0) {
-        if ($this.state.dataExist === true) {
-          algaehApiCall({
-            uri: "/attendance/updateToDailyTimeSheet",
-            module: "hrManagement",
-            method: "PUT",
-            data: $this.state.employee_details,
-            onSuccess: res => {
-              if (res.data.success) {
-                swalMessage({
-                  title: "Processed Succesfully...",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: err => {
+      // if (notEntered.length === 0) {
+      if ($this.state.dataExist === true) {
+        algaehApiCall({
+          uri: "/attendance/updateToDailyTimeSheet",
+          module: "hrManagement",
+          method: "PUT",
+          data: $this.state.employee_details,
+          onSuccess: res => {
+            if (res.data.success) {
               swalMessage({
-                title: err.message,
-                type: "error"
+                title: "Processed Succesfully...",
+                type: "success"
               });
             }
-          });
-        } else {
-          algaehApiCall({
-            uri: "/attendance/addToDailyTimeSheet",
-            module: "hrManagement",
-            method: "POST",
-            data: $this.state.employee_details,
-            onSuccess: res => {
-              if (res.data.success) {
-                swalMessage({
-                  title: "Processed Succesfully...",
-                  type: "success"
-                });
-              }
-            },
-            onFailure: err => {
-              swalMessage({
-                title: err.message,
-                type: "error"
-              });
-            }
-          });
-        }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
+        });
       } else {
-        swalMessage({
-          title: "Please enter In-time and Out-time to all employees.",
-          type: "warning"
+        algaehApiCall({
+          uri: "/attendance/addToDailyTimeSheet",
+          module: "hrManagement",
+          method: "POST",
+          data: $this.state.employee_details,
+          onSuccess: res => {
+            if (res.data.success) {
+              swalMessage({
+                title: "Processed Succesfully...",
+                type: "success"
+              });
+            }
+          },
+          onFailure: err => {
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
+          }
         });
       }
+      // } else {
+      //   swalMessage({
+      //     title: "Please enter In-time and Out-time to all employees.",
+      //     type: "warning"
+      //   });
+      // }
     },
     validateDateTime: dateTime => {
       if (new Date(dateTime).toString() !== "Invalid Date") {
@@ -308,6 +313,7 @@ export default function ManualAttendanceEvents() {
     formulazone: (rowsLength, ws, callBack) => {
       ws["!cols"] = [];
       ws["!cols"][6] = { hidden: true };
+      ws["!cols"][7] = { hidden: true };
 
       for (let i = 2; i <= rowsLength + 1; i++) {
         const _cells = "E" + i + "-D" + i;
