@@ -315,7 +315,7 @@ export default () => {
     }
   );
 
-  api.put("/getDailyAttendance", getDailyAttendance, (req, res, next) => {
+  api.get("/getDailyAttendance", getDailyAttendance, (req, res, next) => {
     if (req.records.invalid_input == true) {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
