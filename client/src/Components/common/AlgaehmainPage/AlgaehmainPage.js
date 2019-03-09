@@ -11,14 +11,19 @@ import DirectRoutes from "../../../Dynamicroutes";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
+import swal from "sweetalert2";
+
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       sideopen: false,
       class: "",
+      current_pwd: "",
+      pwd: "",
+      cf_pwd: "",
       anchor: "left",
-
+      pwdDisplay: "none",
       onlyToggeleMenu: "",
       renderComponent: "Dashboard",
       title: "Dashboard",
@@ -119,6 +124,93 @@ class PersistentDrawer extends React.Component {
         title: "لوحة القيادة",
         arlabl: "لوحة القيادة",
         enlabl: "Dashboard"
+      });
+    }
+  }
+
+  showPwdModal() {
+    this.setState({
+      pwdDisplay: null
+    });
+  }
+
+  closePwdModal() {
+    this.setState({
+      pwdDisplay: "none",
+      cf_pwd: "",
+      pwd: "",
+      current_pwd: ""
+    });
+  }
+
+  changeTexts(e) {
+    this.setState({
+      [e.target.name]: e.target.value
+    });
+  }
+
+  changePassword() {
+    debugger;
+    if (
+      this.state.current_pwd.length === 0 ||
+      this.state.pwd.length === 0 ||
+      this.state.cf_pwd.length === 0
+    ) {
+      swalMessage({
+        title: "Please Enter all the Fields",
+        type: "warning"
+      });
+    } else if (this.state.pwd !== this.state.cf_pwd) {
+      swalMessage({
+        title: "Passwords Do not Match",
+        type: "warning"
+      });
+    } else {
+      swal({
+        title:
+          "Changing Password may require to Re-login, Do you want to change password?",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes!",
+        confirmButtonColor: "#44b8bd",
+        cancelButtonColor: "#d33",
+        cancelButtonText: "No"
+      }).then(willDelete => {
+        if (willDelete.value) {
+          algaehApiCall({
+            uri: "/algaehappuser/changePassword",
+            method: "PUT",
+            data: {
+              password: this.state.pwd,
+              oldPassword: this.state.current_pwd
+            },
+            onSuccess: res => {
+              if (res.data.success) {
+                swalMessage({
+                  title: "Password Changed Successfully",
+                  type: "success"
+                });
+                window.location.href = window.location.origin + "/#";
+              } else if (!res.data.success) {
+                swalMessage({
+                  title: res.data.records.message,
+                  type: "warning"
+                });
+              }
+            },
+            onFailure: err => {
+              swalMessage({
+                title: err.message,
+                type: "error"
+              });
+            }
+          });
+        } else {
+          swalMessage({
+            title: "Delete request cancelled",
+            type: "error"
+          });
+        }
       });
     }
   }
@@ -461,7 +553,10 @@ class PersistentDrawer extends React.Component {
                 &nbsp; عربي
               </a>
               <div className="dropdown-divider" />
-              <a className="dropdown-item">
+              <a
+                className="dropdown-item"
+                onClick={this.showPwdModal.bind(this)}
+              >
                 <i className="fas fa-key" /> Change Password
               </a>
               <a className="dropdown-item" onClick={this.logoutLink.bind(this)}>
@@ -470,7 +565,12 @@ class PersistentDrawer extends React.Component {
             </div>
           </div>
         </nav>
-        <div className="passwordCntr animated slideInDown faster">
+        <div
+          className="passwordCntr animated slideInDown faster"
+          style={{
+            display: this.state.pwdDisplay
+          }}
+        >
           <div className="row">
             <h4>Change Password</h4>
             <div className="col-12">
@@ -489,9 +589,11 @@ class PersistentDrawer extends React.Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "",
-                value: "",
-                events: {},
+                name: "current_pwd",
+                value: this.state.current_pwd,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
                 option: {
                   type: "password"
                 }
@@ -505,9 +607,11 @@ class PersistentDrawer extends React.Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "",
-                value: "",
-                events: {},
+                name: "pwd",
+                value: this.state.pwd,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
                 option: {
                   type: "password"
                 }
@@ -521,17 +625,29 @@ class PersistentDrawer extends React.Component {
               }}
               textBox={{
                 className: "txt-fld",
-                name: "",
-                value: "",
-                events: {},
+                name: "cf_pwd",
+                value: this.state.cf_pwd,
+                events: {
+                  onChange: this.changeTexts.bind(this)
+                },
                 option: {
                   type: "password"
                 }
               }}
             />
             <div className="col footerBtn">
-              <button className="btn btn-primary">Change Password</button>
-              <button className="btn btn-default">Cancel</button>
+              <button
+                className="btn btn-primary"
+                onClick={this.changePassword.bind(this)}
+              >
+                Change Password
+              </button>
+              <button
+                className="btn btn-default"
+                onClick={this.closePwdModal.bind(this)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
