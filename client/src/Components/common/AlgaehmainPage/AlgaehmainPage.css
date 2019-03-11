@@ -374,8 +374,7 @@ header {
   z-index: 99999;
   border: 1px solid #666666 !important;
   left: 35vw;
-  top: 15vh;
-  display: none; }
+  top: 15vh; }
   .passwordCntr h4 {
     border-bottom: 1px solid #08463d !important;
     padding-bottom: 15px;

@@ -3,21 +3,21 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import {
-  addEmployeeSpecialityMaster,
-  getEmployeeSpecialityMaster,
-  addEmployeeCategoryMaster,
-  getEmployeeCategoryMaster,
-  deleteEmployeeCategoryMaster,
-  deleteEmployeeSpecialityMaster,
-  updateEmployeeSpecialityMaster,
-  updateEmployeeCategoryMaster,
-  makeEmployeeCategoryInActive,
-  addCategorySpecialityMappings,
-  makeEmployeeSpecialityInActive,
-  getCategorySpecialityMap,
-  updateCategorySpecialityMap,
-  deleteCategorySpecialityMap,
-  makeCategorySpecialityMapInActive
+  addEmployeeSpecialityMaster, //Done
+  getEmployeeSpecialityMaster, //Done
+  addEmployeeCategoryMaster, //Done
+  getEmployeeCategoryMaster, //Done
+  deleteEmployeeCategoryMaster, //Done
+  deleteEmployeeSpecialityMaster, //Done
+  updateEmployeeSpecialityMaster, //Done
+  updateEmployeeCategoryMaster, //Done
+  makeEmployeeCategoryInActive, //Done
+  addCategorySpecialityMappings, //Done
+  makeEmployeeSpecialityInActive, //Done
+  getCategorySpecialityMap, //Done
+  updateCategorySpecialityMap, //Done
+  deleteCategorySpecialityMap, //Done
+  makeCategorySpecialityMapInActive //Done
 } from "../model/specialityAndCategory";
 
 export default ({ config, db }) => {

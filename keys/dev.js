@@ -12,10 +12,10 @@ exports.default = {
     host: "49.206.18.38",
     port: 3306,
     user: "algaeh_root",
-    password: "medteam2013",
+    password: "alg_hea2018",
     // database: "algaeh_hims_db",
-    // database: "hims_test_db",
-    database: "algaeh_hrms_oman_db",
+    database: "hims_test_db",
+    // database: "algaeh_hrms_oman_db",
 
     multipleStatements: true,
     acquireTimeout: 20000,

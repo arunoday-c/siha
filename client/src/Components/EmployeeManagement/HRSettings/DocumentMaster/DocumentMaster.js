@@ -183,7 +183,7 @@ class DocumentMaster extends Component {
 
   render() {
     return (
-      <div className="doc_master">
+      <div className="doc_master margin-top-15">
         <div className="col-lg-12">
           <div className="row">
             <AlagehFormGroup

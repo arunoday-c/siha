@@ -383,7 +383,7 @@ class EmployeeReceipts extends Component {
         </div>
         <div className="row">
           <div className="col-12">
-            <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
+            <div className="portlet portlet-bordered margin-bottom-15 ">
               <div className="portlet-body">
                 <div className="row">
                   <div className="col">

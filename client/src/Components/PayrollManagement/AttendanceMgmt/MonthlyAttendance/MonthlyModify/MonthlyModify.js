@@ -24,8 +24,10 @@ class MonthlyModify extends Component {
       uri: "/attendance/updateMonthlyAttendance",
       method: "PUT",
       data: {
-        shortage_hours: this.state.shortage_hours,
-        ot_work_hours: this.state.ot_work_hours,
+        shortage_hours: this.state.shortage_hours
+          ? this.state.shortage_hours
+          : 0,
+        ot_work_hours: this.state.ot_work_hours ? this.state.ot_work_hours : 0,
         hims_f_attendance_monthly_id: this.state.hims_f_attendance_monthly_id
       },
       module: "hrManagement",

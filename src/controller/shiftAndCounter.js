@@ -3,17 +3,17 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import {
-  addShiftMaster,
-  addCounterMaster,
-  getCounterMaster,
-  getShiftMaster,
-  updateShiftMaster,
-  updateCounterMaster,
-  getCashiers,
-  addCashierToShift,
-  getCashiersAndShiftMAP,
-  updateCashiersAndShiftMAP,
-  deleteCashiersAndShiftMAP
+  addShiftMaster, //Done
+  addCounterMaster, //Done
+  getCounterMaster, //Done
+  getShiftMaster, //Done
+  updateShiftMaster, //Done
+  updateCounterMaster, //Done
+  getCashiers, //Done
+  addCashierToShift, //Done
+  getCashiersAndShiftMAP, //Done
+  updateCashiersAndShiftMAP, //Done
+  deleteCashiersAndShiftMAP //Done
 } from "../model/shiftAndCounter";
 
 export default ({ config, db }) => {
