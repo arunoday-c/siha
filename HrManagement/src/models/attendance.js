@@ -6101,7 +6101,6 @@ module.exports = {
 //created by irfan:
 getEmployeeToManualTimeSheet: (req, res, next) => {
   const _mysql = new algaehMysql();
-
   const utilities = new algaehUtilities();
 
   try {
@@ -6157,21 +6156,18 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
       }
 
       utilities.logger().log("employee: ", employee);
-
       utilities.logger().log("TSEmployee: ", TSEmployee);
-
       utilities.logger().log("from_date: ", from_date);
-
       utilities.logger().log("to_date: ", to_date);
 
       _mysql
         .executeQuery({
           query: ` select hims_f_daily_time_sheet_id,TS.employee_id,TS.attendance_date,in_time,out_time,worked_hours,\
-    PR.hims_f_project_roster_id ,PR.project_id,E.employee_code,E.full_name,E.sub_department_id , E.date_of_joining    \ 
-    from hims_f_daily_time_sheet TS  inner join  hims_f_project_roster PR  on TS.employee_id=PR.employee_id \
-    and date(TS.attendance_date)=date(PR.attendance_date) and PR.project_id=?\
-    inner join hims_d_employee E on PR.employee_id=E.hims_d_employee_id\
-    where TS.hospital_id=? and TS.attendance_date between date(?) and date(?) ${TSEmployee};  `,
+                PR.hims_f_project_roster_id ,PR.project_id,E.employee_code,E.full_name,E.sub_department_id , E.date_of_joining    \ 
+                from hims_f_daily_time_sheet TS  inner join  hims_f_project_roster PR  on TS.employee_id=PR.employee_id \
+                and date(TS.attendance_date)=date(PR.attendance_date) and PR.project_id=?\
+                inner join hims_d_employee E on PR.employee_id=E.hims_d_employee_id\
+                where TS.hospital_id=? and TS.attendance_date between date(?) and date(?) ${TSEmployee};  `,
           values: [input.project_id, input.branch_id, from_date, to_date],
           printQuery: true
         })
@@ -6187,16 +6183,16 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
             _mysql
               .executeQuery({
                 query: `select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,E.religion_id, E.date_of_joining\ 
-            from hims_f_project_roster PR  inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id\
-            and PR.hospital_id=? and PR.attendance_date between date(?) and date(?)  ${employee}; 
-            select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,L.leave_type,from_date,to_leave_session,\
-            to_date from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id \
-           where status='APR' and ((  date('${from_date}')>=date(from_date) and date('${from_date}')<=date(to_date)) or\
-           ( date('${to_date}')>=date(from_date) and   date('${to_date}')<=date(to_date)) \
-            or (date(from_date)>= date('${from_date}') and date(from_date)<=date('${to_date}') ) or \
-            (date(to_date)>=date('${from_date}') and date(to_date)<= date('${to_date}') )) ${employee};\
-           select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
-           from hims_d_holiday H where date(holiday_date) between date('${from_date}') and date('${to_date}');    `,
+                  from hims_f_project_roster PR  inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id\
+                  and PR.hospital_id=? and PR.attendance_date between date(?) and date(?)  ${employee}; 
+                  select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,L.leave_type,from_date,to_leave_session,\
+                  to_date from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id \
+                where status='APR' and ((  date('${from_date}')>=date(from_date) and date('${from_date}')<=date(to_date)) or\
+                ( date('${to_date}')>=date(from_date) and   date('${to_date}')<=date(to_date)) \
+                  or (date(from_date)>= date('${from_date}') and date(from_date)<=date('${to_date}') ) or \
+                  (date(to_date)>=date('${from_date}') and date(to_date)<= date('${to_date}') )) ${employee};\
+                select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
+                from hims_d_holiday H where date(holiday_date) between date('${from_date}') and date('${to_date}');    `,
                 values: [input.branch_id, from_date, to_date],
                 printQuery: true
               })
@@ -6222,8 +6218,7 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                 // .logger()
                 // .log("allHolidays: ", allHolidays);
 
-                if (
-                  All_Project_Roster.length > 0 &&
+                if (                 
                   input.select_wise == "M" &&
                   input.employee_id > 0
                 ) {
