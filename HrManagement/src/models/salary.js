@@ -2501,6 +2501,10 @@ function getOtManagement(options) {
               ot_hours != 0 &&
               leave_salary != "Y"
             ) {
+              utilities
+                .logger()
+                .log("salary_calendar: ", hrms_option[0].salary_calendar);
+
               let earn_amount = _.chain(current_earning_amt_array)
                 .filter(f => {
                   if (f.earnings_id == obj.earnings_id) {
@@ -2509,15 +2513,23 @@ function getOtManagement(options) {
                 })
                 .value();
 
-              let _per_day_salary = parseFloat(
-                parseFloat(earn_amount[0].amount) /
-                  parseFloat(empResult["total_days"])
-              );
+              let _per_day_salary = 0;
+              let per_hour_salary = 0;
 
-              let per_hour_salary = _per_day_salary / Noof_Working_Hours;
+              if (hrms_option[0].salary_calendar == "F") {
+                _per_day_salary = parseFloat(
+                  parseFloat(earn_amount[0].amount) /
+                    parseFloat(hrms_option[0].salary_calendar_fixed_days)
+                );
+              } else {
+                _per_day_salary = parseFloat(
+                  parseFloat(earn_amount[0].amount) /
+                    parseFloat(empResult["total_days"])
+                );
+              }
+              per_hour_salary = _per_day_salary / Noof_Working_Hours;
 
               per_hour_salary = per_hour_salary * ot_hours;
-
               if (per_hour_salary > 0) {
                 current_ot_amt_array.push({
                   earnings_id: over_time_comp[0].hims_d_earning_deduction_id,

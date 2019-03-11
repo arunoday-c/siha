@@ -1,4 +1,8 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./earnings_deductions.css";
 import {
   AlagehAutoComplete,
@@ -11,6 +15,7 @@ import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import Enumerable from "linq";
+import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class EarningsDeductions extends Component {
   constructor(props) {
@@ -25,7 +30,10 @@ class EarningsDeductions extends Component {
       allow_round_off: false,
       overtime_applicable: false,
       selectCalculate: "d-none",
-      calculator_values: ""
+      calculator_values: "",
+      displayNationality: false,
+      specific_nationality: false,
+      nationality_id: null
     };
     this.getEarningDeductions();
   }
@@ -51,11 +59,14 @@ class EarningsDeductions extends Component {
       allow_round_off: false,
       round_off_type: null,
       round_off_amount: null,
-      formula: null
+      formula: null,
+      specific_nationality: "N",
+      nationality_id: null
     });
   }
 
   updateEarningsDeductions(data) {
+    debugger;
     algaehApiCall({
       // uri: "/employee/updateEarningDeduction",
       uri: "/payrollsettings/updateEarningDeduction",
@@ -81,6 +92,8 @@ class EarningsDeductions extends Component {
         allow_round_off: data.allow_round_off,
         round_off_type: data.round_off_type,
         round_off_amount: data.round_off_amount,
+        specific_nationality: data.specific_nationality,
+        nationality_id: data.nationality_id,
         record_status: "A"
       },
       onSuccess: response => {
@@ -204,7 +217,10 @@ class EarningsDeductions extends Component {
             allow_round_off: this.state.allow_round_off === true ? "Y" : "N",
             round_off_type: this.state.round_off_type,
             round_off_amount: this.state.round_off_amount,
-            formula: this.state.formula
+            formula: this.state.formula,
+            specific_nationality:
+              this.state.specific_nationality === "true" ? "Y" : "N",
+            nationality_id: this.state.nationality_id
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -251,6 +267,27 @@ class EarningsDeductions extends Component {
     });
   }
 
+  SpecificChecks(e) {
+    this.setState({
+      specific_nationality: !this.state.specific_nationality,
+      displayNationality: !this.state.displayNationality
+    });
+  }
+  componentDidMount() {
+    if (
+      this.props.nationalities === undefined ||
+      this.props.nationalities.length === 0
+    ) {
+      this.props.getNationalities({
+        uri: "/masters/get/nationality",
+        method: "GET",
+        redux: {
+          type: "NAT_GET_DATA",
+          mappingName: "nationalities"
+        }
+      });
+    }
+  }
   changeChecks(e) {
     switch (e.target.name) {
       case "shortage_deduction_applicable":
@@ -315,6 +352,7 @@ class EarningsDeductions extends Component {
   }
 
   changeGridEditors(row, e) {
+    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;
@@ -566,7 +604,6 @@ class EarningsDeductions extends Component {
                 /> */}
               </div>
               <div className="col-12 submitBtn">
-                {" "}
                 <input
                   type="button"
                   className="col-4"
@@ -694,7 +731,7 @@ class EarningsDeductions extends Component {
                       },
                       onChange: this.dropDownHandler.bind(this)
                     }}
-                  />{" "}
+                  />
                   <div className="col-8">
                     <label>Allow Round off</label>
                     <div className="customCheckbox">
@@ -731,7 +768,7 @@ class EarningsDeductions extends Component {
                             disabled: !this.state.allow_round_off
                           }
                         }}
-                      />{" "}
+                      />
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
@@ -868,7 +905,40 @@ class EarningsDeductions extends Component {
                     />
                   </div>
                   <div className="col-4">
-                    {" "}
+                    <div className="customCheckbox">
+                      <label className="checkbox inline">
+                        <input
+                          type="checkbox"
+                          name="specific_nationality"
+                          checked={this.state.specific_nationality}
+                          onChange={this.SpecificChecks.bind(this)}
+                        />
+                        <span>Specific Nationality</span>
+                      </label>
+                    </div>
+
+                    {this.state.displayNationality === true ? (
+                      <AlagehAutoComplete
+                        div={{ className: "col mandatory" }}
+                        label={{
+                          forceLabel: "Nationality",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "nationality_id",
+                          className: "select-fld",
+                          value: this.state.nationality_id,
+                          dataSource: {
+                            textField: "nationality",
+                            valueField: "hims_d_nationality_id",
+                            data: this.props.nationalities
+                          },
+                          onChange: this.dropDownHandler.bind(this)
+                        }}
+                      />
+                    ) : null}
+                  </div>
+                  <div className="col-4">
                     <label>Shortage Deduction Applicable</label>
                     <div className="customCheckbox">
                       <label className="checkbox inline">
@@ -914,7 +984,6 @@ class EarningsDeductions extends Component {
                     </div>
                   </div>
                   <div className="col-4">
-                    {" "}
                     <label>Calculation Type</label>
                     <div className="customRadio">
                       <label className="radio inline">
@@ -1621,6 +1690,90 @@ class EarningsDeductions extends Component {
                             />
                           );
                         }
+                      },
+
+                      //
+                      {
+                        fieldName: "specific_nationality",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Specific Nationality" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.specific_nationality === "Y" ? "Yes" : "No"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "specific_nationality",
+                                className: "select-fld",
+                                value: row.specific_nationality,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO
+                                },
+                                others: {
+                                  errormessage:
+                                    "Specific Nationality cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "nationality_id",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Nationality" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.nationalities === undefined
+                              ? []
+                              : this.props.nationalities.filter(
+                                  f =>
+                                    f.hims_d_nationality_id ===
+                                    row.nationality_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? display[0].nationality
+                                : ""}
+                            </span>
+                          );
+                        },
+
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "nationality_id",
+                                className: "select-fld",
+                                value: row.nationality_id,
+                                dataSource: {
+                                  textField: "nationality",
+                                  valueField: "hims_d_nationality_id",
+                                  data: this.props.nationalities
+                                },
+
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
                       }
                     ]}
                     keyId="hims_d_employee_group_id"
@@ -1646,4 +1799,24 @@ class EarningsDeductions extends Component {
   }
 }
 
-export default EarningsDeductions;
+function mapStateToProps(state) {
+  return {
+    nationalities: state.nationalities
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getNationalities: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(EarningsDeductions)
+);

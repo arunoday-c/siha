@@ -112,7 +112,7 @@ export default function ManualAttendanceEvents() {
             if (res.data.success) {
               debugger;
               $this.setState({
-                employee_details: res.data.records.result,
+                employee_details: res.data.records,
                 dataExist: res.data.records.dataExist,
                 apply_all: false,
                 process_attend: false
