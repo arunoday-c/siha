@@ -6244,7 +6244,8 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                       )
                       .Select(s => {
                         return {
-                          employee_name: s.full_name,
+                          employee_id:s.employee_id,
+                          full_name: s.full_name,
                           employee_code: s.employee_code,
                           sub_department_id: s.sub_department_id,
                           attendance_date: s.attendance_date,
@@ -6269,7 +6270,9 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                         )
                         .Select(s => {
                           return {
-                            employee_name: All_Project_Roster[0].full_name,
+                           
+                            employee_id:All_Project_Roster[0].employee_id,                           
+                            full_name: All_Project_Roster[0].full_name,                         
                             sub_department_id: All_Project_Roster[0].sub_department_id,
                             employee_code: All_Project_Roster[0].employee_code,
                             attendance_date: moment(date_range[i]).format(
@@ -6301,7 +6304,9 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                       } else if (holiday_or_weekOff != undefined) {
                         if (holiday_or_weekOff.weekoff == "Y") {
                           outputArray.push({
-                            employee_name: All_Project_Roster[0].full_name,
+
+                            employee_id:All_Project_Roster[0].employee_id,                           
+                            full_name: All_Project_Roster[0].full_name, 
                             sub_department_id: All_Project_Roster[0].sub_department_id,
                             employee_code: All_Project_Roster[0].employee_code,
                             attendance_date: moment(date_range[i]).format(
@@ -6311,7 +6316,8 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                           });
                         } else if (holiday_or_weekOff.holiday == "Y") {
                           outputArray.push({
-                            employee_name: All_Project_Roster[0].full_name,
+                            employee_id:All_Project_Roster[0].employee_id,                           
+                            full_name: All_Project_Roster[0].full_name, 
                             sub_department_id: All_Project_Roster[0].sub_department_id,
                             employee_code: All_Project_Roster[0].employee_code,
                             attendance_date: moment(date_range[i]).format(
@@ -6322,7 +6328,8 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                         }
                       } else {
                         outputArray.push({
-                          employee_name: All_Project_Roster[0].full_name,
+                          employee_id:All_Project_Roster[0].employee_id,                           
+                          full_name: All_Project_Roster[0].full_name, 
                           sub_department_id: All_Project_Roster[0].sub_department_id,
                           employee_code: All_Project_Roster[0].employee_code,
                           attendance_date: moment(date_range[i]).format(
@@ -6361,7 +6368,34 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
   } catch (e) {
     next(e);
   }
+},
+
+ //created by irfan:
+ postManualTimeSheetMonthWise: (req, res, next) => {
+  const _mysql = new algaehMysql();
+  let input = req.query;
+
+  _mysql
+    .executeQuery({
+      query:
+        "select * from hims_f_daily_attendance  where hospital_id=? and year=? and month=? and employee_id=?;",
+      values: [input.hospital_id, input.year, input.month, input.employee_id],
+      printQuery: true
+    })
+    .then(result => {
+      _mysql.releaseConnection();
+      req.records = result;
+      next();
+    })
+    .catch(e => {
+      _mysql.releaseConnection();
+      next(e);
+    });
 }
+
+
+
+
 
 
 };
