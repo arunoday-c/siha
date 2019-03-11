@@ -6665,7 +6665,7 @@ postManualTimeSheetMonthWise: (req, res, next) => {
 
   let dailyAttendance = [];
 
-  utilities
+                             utilities
                                 .logger()
                                 .log("am here: ", "am here");
 if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input.to_date!=undefined){
@@ -6689,9 +6689,9 @@ if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input
     .then(AttenResult => {
       //present month
 
-      utilities
-      .logger()
-      .log("AttenResult: ", "AttenResult");
+      // utilities
+      // .logger()
+      // .log("AttenResult: ", AttenResult);
 
 
       if(AttenResult.length>0){
@@ -6811,6 +6811,12 @@ if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input
         });
       }
 
+
+      // utilities
+      // .logger()
+      // .log("dailyAttendance: ", dailyAttendance);
+
+
       const insurtColumns = [
         "employee_id",
         "hospital_id",
@@ -6871,10 +6877,10 @@ if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input
                     sum(holidays)as total_holidays,sum(paid_leave)as paid_leave,sum(unpaid_leave)as unpaid_leave,sum(hours)as hours,\
                     sum(minutes)as minutes,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) \
                     as total_hours,sum(working_hours)as total_working_hours ,\
-                    COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hourss ,\
-                    COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_hourss ,   \
-                    COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as weefoff_ot_hourss,\
-                    COALESCE(sum(ot_holiday_hours),0)+ COALESCE(concat(floor(sum(ot_holiday_minutes)/60)  ,'.',sum(ot_holiday_minutes)%60),0) as holiday_ot_hourss\
+                    COALESCE(sum(shortage_hours),0)+ COALESCE(concat(floor(sum(shortage_minutes)/60)  ,'.',sum(shortage_minutes)%60),0) as shortage_hours ,\
+                    COALESCE(sum(ot_work_hours),0)+ COALESCE(concat(floor(sum(ot_minutes)/60)  ,'.',sum(ot_minutes)%60),0) as ot_work_hours ,   \
+                    COALESCE(sum(ot_weekoff_hours),0)+ COALESCE(concat(floor(sum(ot_weekoff_minutes)/60)  ,'.',sum(ot_weekoff_minutes)%60),0) as ot_weekoff_hours,\
+                    COALESCE(sum(ot_holiday_hours),0)+ COALESCE(concat(floor(sum(ot_holiday_minutes)/60)  ,'.',sum(ot_holiday_minutes)%60),0) as ot_holiday_hours\
                     from hims_f_daily_attendance where      \
                     hospital_id=?  and year=? and month=?   and  employee_id=? and attendance_date between date(?) and\
                     date(?)  group by employee_id;",
@@ -6885,10 +6891,32 @@ if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input
                 input.employee_id,
                 from_date,
                 to_date
-              ],
-              printQuery: true
+              ]       
             })
-            .then(attResult => {
+            .then(DilayResult => {
+
+let attResult=[];
+
+for(let i=0; i<DilayResult.length;i++){
+
+  attResult.push({
+    ...DilayResult[i],
+    total_paid_days:
+    parseFloat(DilayResult[i]["present_days"]) +
+    parseFloat(DilayResult[i]["paid_leave"]) +
+    parseFloat(
+      DilayResult[i]["total_weekoff_days"]
+    ) +
+    parseFloat(DilayResult[i]["total_holidays"]),
+  total_leave:
+    parseFloat(DilayResult[i]["paid_leave"]) +
+    parseFloat(DilayResult[i]["unpaid_leave"])
+
+
+  })
+
+}
+
               const insurtColumns = [
                 "employee_id",
                 "year",
@@ -6908,10 +6936,7 @@ if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input
                 "total_hours",
                 "total_working_hours",
                 "shortage_hours",
-                "ot_work_hours",
-                "pending_unpaid_leave",
-                "prev_month_shortage_hr",
-                "prev_month_ot_hr",
+                "ot_work_hours",                
                 "ot_weekoff_hours",
                 "ot_holiday_hours"
               ];
@@ -6927,8 +6952,7 @@ if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input
                   total_weekoff_days=values(total_weekoff_days),total_holidays=values(total_holidays),total_leave=values(total_leave),\
                   paid_leave=values(paid_leave),unpaid_leave=values(unpaid_leave),total_paid_days=values(total_paid_days),\
                   total_hours=values(total_hours),total_working_hours=values(total_working_hours),shortage_hours=values(shortage_hours)\
-                  ,ot_work_hours=values(ot_work_hours),pending_unpaid_leave=values(pending_unpaid_leave),prev_month_shortage_hr=values(prev_month_shortage_hr)\
-                  ,prev_month_ot_hr=values(prev_month_ot_hr) , ot_weekoff_hours=values(ot_weekoff_hours),ot_holiday_hours=values(ot_holiday_hours)",
+                  ,ot_work_hours=values(ot_work_hours),ot_weekoff_hours=values(ot_weekoff_hours),ot_holiday_hours=values(ot_holiday_hours)",
                   values: attResult,
                   includeValues: insurtColumns,
                   extraValues: {
@@ -6937,8 +6961,7 @@ if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input
                     updated_date: new Date(),
                     updated_by: req.userIdentity.algaeh_d_app_user_id
                   },
-                  bulkInsertOrUpdate: true,
-                  printQuery: true
+                  bulkInsertOrUpdate: true
                 })
                 .then(result => {
                   _mysql.releaseConnection();
@@ -6946,6 +6969,11 @@ if(input.employee_id>0 && input.hospital_id>0&&input.from_date!=undefined&&input
                   next();
                 })
                 .catch(e => {
+
+
+                  utilities
+                  .logger()
+                  .log("error 6: ", e);
                   _mysql.releaseConnection();
                   next(e);
                 });
