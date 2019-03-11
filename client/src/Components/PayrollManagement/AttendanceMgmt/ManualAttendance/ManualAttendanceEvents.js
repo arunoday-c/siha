@@ -269,13 +269,13 @@ export default function ManualAttendanceEvents() {
       });
     },
     ProcessAttendanceEvent: $this => {
-      // const notEntered = _.
-
-      // const notEntered = Enumerable.from($this.state.employee_details)
-      //   .where(w => w.in_time === null || w.out_time === null)
-      //   .toArray();
-
-      // if (notEntered.length === 0) {
+      debugger;
+      for (let i = 0; i < $this.state.employee_details.length; i++) {
+        let strWorked_Hours = $this.state.employee_details[i].worked_hours;
+        strWorked_Hours = strWorked_Hours.split(".");
+        $this.state.employee_details[i].hours = strWorked_Hours[0];
+        $this.state.employee_details[i].minutes = strWorked_Hours[1];
+      }
       if ($this.state.dataExist === true) {
         algaehApiCall({
           uri: "/attendance/updateToDailyTimeSheet",
@@ -319,24 +319,24 @@ export default function ManualAttendanceEvents() {
           }
         });
       }
-      // } else {
-      //   swalMessage({
-      //     title: "Please enter In-time and Out-time to all employees.",
-      //     type: "warning"
-      //   });
-      // }
     },
     validateDateTime: dateTime => {
-      if (new Date(dateTime).toString() !== "Invalid Date") {
-        return moment(dateTime).format("HH:mm:ss");
-      } else {
-        return dateTime;
+      debugger;
+      if (dateTime === null) {
+        return null;
       }
+      if (moment(dateTime, "HH:mm").isValid()) {
+        return moment(dateTime, "HH:mm").format("HH:mm:ss");
+      }
+      return null;
     },
     formulazone: (rowsLength, ws, callBack) => {
       ws["!cols"] = [];
       ws["!cols"][6] = { hidden: true };
       ws["!cols"][7] = { hidden: true };
+      ws["!cols"][8] = { hidden: true };
+      ws["!cols"][9] = { hidden: true };
+      ws["!cols"][10] = { hidden: true };
 
       for (let i = 2; i <= rowsLength + 1; i++) {
         const _cells = "E" + i + "-D" + i;

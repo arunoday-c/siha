@@ -2126,7 +2126,11 @@ module.exports = {
             "hours",
             "minutes",
             "worked_hours",
-            "sub_department_id"
+            "sub_department_id",
+            "status",
+            "year",
+            "month",
+            "hospital_id",
           ];
 
           _mysql
