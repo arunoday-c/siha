@@ -9,7 +9,10 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
@@ -18,6 +21,7 @@ export default class WeeklyAttendance extends Component {
     super(props);
     const _yearAndMonth = moment(new Date()).format("YYYY-MM") + "01";
     let _fromDate = moment(_yearAndMonth, "YYYY-MM-DD").format("YYYY-MM-DD");
+    debugger;
     this.state = {
       attendance_type: "MW",
       year: moment().year(),
@@ -40,7 +44,10 @@ export default class WeeklyAttendance extends Component {
       // .format("YYYY-MM-DD"),
       to_date: moment(new Date())
         .subtract(1, "days")
-        .format("YYYY-MM-DD")
+        .format("YYYY-MM-DD"),
+      option_attendance_type: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).attendance_type
     };
     this.getSubDepts();
     this.getOrganization();
@@ -258,9 +265,12 @@ export default class WeeklyAttendance extends Component {
           .endOf("month")
           .format("YYYY-MM-DD");
       }
-
+      debugger;
       algaehApiCall({
-        uri: "/attendance/getDailyTimeSheet",
+        uri:
+          this.state.option_attendance_type === "DM"
+            ? "/attendance/loadManualTimeSheet"
+            : "/attendance/getDailyTimeSheet",
         method: "GET",
         module: "hrManagement",
         data: {
@@ -273,14 +283,16 @@ export default class WeeklyAttendance extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            if (Array.isArray(res.data.result.outputArray)) {
+            let data =
+              this.state.option_attendance_type === "DM"
+                ? res.data.result
+                : res.data.result.outputArray;
+            if (Array.isArray(data)) {
               this.setState({
-                time_sheet: res.data.result.outputArray,
+                time_sheet: data,
                 loader: false,
-                month_shortage_hour: this.getTotalShortage(
-                  res.data.result.outputArray
-                ),
-                month_ot_hour: this.getTotalOT(res.data.result.outputArray),
+                month_shortage_hour: this.getTotalShortage(data),
+                month_ot_hour: this.getTotalOT(data),
                 month_actual_hours: res.data.result.month_actual_hours,
                 month_worked_hours: res.data.result.month_worked_hours
               });
@@ -328,10 +340,12 @@ export default class WeeklyAttendance extends Component {
         .endOf("month")
         .format("YYYY-MM-DD");
     }
-
+    debugger;
     algaehApiCall({
       uri:
-        this.state.attendance_type === "MW"
+        this.state.option_attendance_type === "DM"
+          ? "/attendance/postManualTimeSheetMonthWise"
+          : this.state.attendance_type === "MW"
           ? "/attendance/postTimeSheetMonthWise"
           : "/attendance/postTimeSheet",
       method: "GET",
@@ -345,6 +359,7 @@ export default class WeeklyAttendance extends Component {
       },
       module: "hrManagement",
       onSuccess: res => {
+        debugger;
         if (res.data.success) {
           swalMessage({
             title: "Posted Successfully. . ",
