@@ -12,7 +12,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
-
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
@@ -58,6 +58,19 @@ class PersistentDrawer extends React.Component {
       method: "GET",
       onSuccess: dataResponse => {
         if (dataResponse.data.success) {
+          const _module = Enumarable.from(dataResponse.data.records)
+            .select(s => {
+              return {
+                algaeh_d_module_id: s.algaeh_d_module_id,
+                module_code: s.module_code
+              };
+            })
+            .toArray();
+          sessionStorage.removeItem("AlgaehOrbitaryData");
+          sessionStorage.setItem(
+            "AlgaehOrbitaryData",
+            AlgaehCloseContainer(JSON.stringify(_module))
+          );
           algaehApiCall({
             uri: "/algaehMasters/getRoleBaseInActiveComponents",
             method: "GET",

@@ -139,6 +139,7 @@ export default class Login extends Component {
   onHospitalClear(name) {
     this.setState({ item_id: null });
   }
+
   render() {
     return (
       <div className="login bg">
