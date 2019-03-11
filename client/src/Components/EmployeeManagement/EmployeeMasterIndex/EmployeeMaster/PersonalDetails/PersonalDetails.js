@@ -22,12 +22,17 @@ import variableJson from "../../../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
 import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
+import { AlgaehCloseContainer } from "../../../../../utils/GlobalFunctions";
 class PersonalDetails extends Component {
   constructor(props) {
     super(props);
+    const _activeModel = AlgaehCloseContainer(
+      JSON.parse(sessionStorage.getItem("AlgaehOrbitaryData"))
+    );
     this.state = {
       samechecked: "N",
-      selectedLang: getCookie("Language")
+      selectedLang: getCookie("Language"),
+      activeModel: _activeModel
     };
   }
 
