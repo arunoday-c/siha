@@ -13,7 +13,7 @@ export default {
     //host: "127.0.0.1",
     port: 3306,
     user: "algaeh_root",
-    password: "medteam2013",
+    password: "alg_hea2018",
 
     //database: "security_algaeh_hims_db",
     // database: "algaeh_hims_db",
