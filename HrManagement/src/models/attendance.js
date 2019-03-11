@@ -6251,6 +6251,7 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                         return {
                           employee_name: s.full_name,
                           employee_code: s.employee_code,
+                          sub_department_id: s.sub_department_id,
                           attendance_date: s.attendance_date,
                           status: "PR"
                         };
@@ -6274,6 +6275,7 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                         .Select(s => {
                           return {
                             employee_name: All_Project_Roster[0].full_name,
+                            sub_department_id: All_Project_Roster[0].sub_department_id,
                             employee_code: All_Project_Roster[0].employee_code,
                             attendance_date: moment(date_range[i]).format(
                               "YYYY-MM-DD"
@@ -6305,6 +6307,7 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                         if (holiday_or_weekOff.weekoff == "Y") {
                           outputArray.push({
                             employee_name: All_Project_Roster[0].full_name,
+                            sub_department_id: All_Project_Roster[0].sub_department_id,
                             employee_code: All_Project_Roster[0].employee_code,
                             attendance_date: moment(date_range[i]).format(
                               "YYYY-MM-DD"
@@ -6314,6 +6317,7 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                         } else if (holiday_or_weekOff.holiday == "Y") {
                           outputArray.push({
                             employee_name: All_Project_Roster[0].full_name,
+                            sub_department_id: All_Project_Roster[0].sub_department_id,
                             employee_code: All_Project_Roster[0].employee_code,
                             attendance_date: moment(date_range[i]).format(
                               "YYYY-MM-DD"
@@ -6324,6 +6328,7 @@ getEmployeeToManualTimeSheet: (req, res, next) => {
                       } else {
                         outputArray.push({
                           employee_name: All_Project_Roster[0].full_name,
+                          sub_department_id: All_Project_Roster[0].sub_department_id,
                           employee_code: All_Project_Roster[0].employee_code,
                           attendance_date: moment(date_range[i]).format(
                             "YYYY-MM-DD"
