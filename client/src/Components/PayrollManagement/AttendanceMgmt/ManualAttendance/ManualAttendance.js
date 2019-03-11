@@ -250,7 +250,7 @@ class ManualAttendance extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-2" }}
             label={{
               forceLabel: drop_Down_Label,
               isImp: true
@@ -279,8 +279,8 @@ class ManualAttendance extends Component {
           />
 
           {this.state.select_wise === "M" ? (
-            <div className="col">
-              <AlagehAutoComplete
+            <div className="">
+              {/* <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Select a Year.",
@@ -302,7 +302,7 @@ class ManualAttendance extends Component {
                     });
                   }
                 }}
-              />
+              /> */}
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
@@ -347,7 +347,7 @@ class ManualAttendance extends Component {
             />
           )}
 
-          <div className="col-2" style={{ marginTop: 10 }}>
+          <div className="col-3" style={{ marginTop: 10 }}>
             <div
               className="row"
               style={{
