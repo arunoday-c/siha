@@ -3,10 +3,10 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import {
-  addCurrencyMaster,
-  getCurrencyMaster,
-  deleteCurrencyMaster,
-  updateCurrencyMaster
+  addCurrencyMaster, //Done
+  getCurrencyMaster, //Done
+  deleteCurrencyMaster, //Done
+  updateCurrencyMaster //Done
 } from "../model/currency";
 
 export default ({ config, db }) => {

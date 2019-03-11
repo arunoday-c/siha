@@ -1,9 +1,9 @@
 import { Router } from "express";
 import {
-  addDepartment,
-  updateDepartment,
-  selectDepartment,
-  selectSubDepartment,
+  addDepartment, //Done
+  updateDepartment, //Done
+  selectDepartment, //Done
+  selectSubDepartment, //Done
   addSubDepartment,
   updateSubDepartment,
   deleteDepartment,
