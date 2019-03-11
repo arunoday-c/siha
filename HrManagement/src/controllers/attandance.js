@@ -22,7 +22,8 @@ import {
   requestAttndncReglztion,
   considerOverTimeOrShortage,
   getDailyAttendance,
-  updateMonthlyAttendance
+  updateMonthlyAttendance,
+  postManualTimeSheetMonthWise
 } from "../models/attendance";
 export default () => {
   const api = Router();
@@ -333,6 +334,24 @@ export default () => {
   api.put(
     "/updateMonthlyAttendance",
     updateMonthlyAttendance,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          result: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          result: req.records
+        });
+      }
+    }
+  );
+
+  api.get(
+    "/postManualTimeSheetMonthWise",
+    postManualTimeSheetMonthWise,
     (req, res, next) => {
       if (req.records.invalid_input == true) {
         res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
