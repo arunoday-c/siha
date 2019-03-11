@@ -5,9 +5,24 @@ import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 
 const earntexthandle = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
+  if (
+    e.selected.specific_nationality === "Y" &&
+    $this.state.nationality !== null
+  ) {
+    if (e.selected.nationality_id !== $this.state.nationality) {
+      swalMessage({
+        title: "This employee is not entitle for this component.",
+        type: "warning"
+      });
+      $this.setState({
+        [name]: null
+      });
+      return;
+    }
+  }
   let amount = e.selected.calculation_method === "FO" ? 0 : null;
   let formula =
     e.selected.calculation_method === "FO" ? e.selected.formula : null;
@@ -24,9 +39,24 @@ const earntexthandle = ($this, e) => {
 };
 
 const deducttexthandle = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-
+  if (
+    e.selected.specific_nationality === "Y" &&
+    $this.state.nationality !== null
+  ) {
+    if (e.selected.nationality_id !== $this.state.nationality) {
+      swalMessage({
+        title: "This employee is not entitle for this component.",
+        type: "warning"
+      });
+      $this.setState({
+        [name]: null
+      });
+      return;
+    }
+  }
   let amount = e.selected.calculation_method === "FO" ? 0 : null;
   let formula =
     e.selected.calculation_method === "FO" ? e.selected.formula : null;
@@ -45,6 +75,21 @@ const contributtexthandle = ($this, e) => {
   debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+  if (
+    e.selected.specific_nationality === "Y" &&
+    $this.state.nationality !== null
+  ) {
+    if (e.selected.nationality_id !== $this.state.nationality) {
+      swalMessage({
+        title: "This employee is not entitle for this component.",
+        type: "warning"
+      });
+      $this.setState({
+        [name]: null
+      });
+      return;
+    }
+  }
 
   let amount = e.selected.calculation_method === "FO" ? 0 : null;
   let formula =
@@ -671,7 +716,10 @@ const getEmpContibuteComponents = $this => {
     uri: "/employee/getEmpContibuteComponents",
     module: "hrManagement",
     method: "GET",
-    data: { employee_id: $this.state.hims_d_employee_id },
+    data: {
+      employee_id: $this.state.hims_d_employee_id,
+      nationality_id: $this.state.nationality_id
+    },
     onSuccess: response => {
       if (response.data.success) {
         let data = response.data.records;
