@@ -2542,7 +2542,7 @@ function getOtManagement(options) {
                 .logger()
                 .log("salary_calendar: ", hrms_option[0].salary_calendar);
 
-              let earn_amount = _.chain(current_earning_amt_array)
+              let earn_amount = _.chain(_earnings)
                 .filter(f => {
                   if (f.earnings_id == obj.earnings_id) {
                     return parseFloat(f.amount);
