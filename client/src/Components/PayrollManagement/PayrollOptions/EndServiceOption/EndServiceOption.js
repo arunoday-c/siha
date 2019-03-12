@@ -30,6 +30,7 @@ export default class EndServiceOption extends Component {
   }
 
   addServiceRange() {
+    debugger;
     AlgaehValidation({
       querySelector: "data-validate='addServRng'",
       alertTypeIcon: "warning",
@@ -114,29 +115,31 @@ export default class EndServiceOption extends Component {
   }
 
   addEarningComponent() {
+    let $this = this;
     AlgaehValidation({
       querySelector: "data-validate='addErndv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        if (this.state.earning_comp.length > 4) {
+        debugger;
+        if ($this.state.earning_comp.length > 4) {
           swalMessage({
             title: "Cannot Add More than 4 Components",
             type: "success"
           });
         } else {
-          let x = Enumerable.from(this.state.earning_comp)
+          let x = Enumerable.from($this.state.earning_comp)
             .where(
               w =>
                 w.hims_d_earning_deduction_id ===
-                this.state.comps.hims_d_earning_deduction_id
+                $this.state.comps.hims_d_earning_deduction_id
             )
             .firstOrDefault();
 
           if (x === undefined) {
-            let earn_cmp = this.state.earning_comp;
-            earn_cmp.push(this.state.comps);
+            let earn_cmp = $this.state.earning_comp;
+            earn_cmp.push($this.state.comps);
 
-            this.setState({
+            $this.setState({
               earning_id: null,
               earning_comp: earn_cmp
             });
@@ -258,11 +261,14 @@ export default class EndServiceOption extends Component {
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
+        debugger;
         if (res.data.success) {
-          this.setState({
-            ...res.data.result,
-            earning_comp: res.data.result.earning_comp
-          });
+          if (res.data.result.invalid_input !== true) {
+            this.setState({
+              ...res.data.result,
+              earning_comp: res.data.result.earning_comp
+            });
+          }
         }
       },
       onFailure: err => {
