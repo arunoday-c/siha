@@ -561,7 +561,8 @@
     { "name": "Final Settlement", "value": "FS" },
     { "name": "LOP Deduction", "value": "LOP" },
     { "name": "Notice Period", "value": "NP" },
-    { "name": "Airfare", "value": "AR" }
+    { "name": "Airfare", "value": "AR" },
+    { "name": "Overtime", "value": "OV" }
   ],
   "ROUND_OFF_TYPE": [
     { "name": "Floor", "value": "FL" },

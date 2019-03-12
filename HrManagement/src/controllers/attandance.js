@@ -23,7 +23,8 @@ import {
   considerOverTimeOrShortage,
   getDailyAttendance,
   updateMonthlyAttendance,
-  postManualTimeSheetMonthWise
+  postManualTimeSheetMonthWise,
+  loadManualTimeSheet
 } from "../models/attendance";
 export default () => {
   const api = Router();
@@ -366,6 +367,19 @@ export default () => {
       }
     }
   );
+  api.get("/loadManualTimeSheet", loadManualTimeSheet, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        result: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        result: req.records
+      });
+    }
+  });
 
   return api;
 };

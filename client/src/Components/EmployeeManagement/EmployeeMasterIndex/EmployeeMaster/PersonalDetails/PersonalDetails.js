@@ -11,7 +11,7 @@ import {
   isDoctorChange,
   sameAsPresent
 } from "./PersonalDetailsEvents.js";
-import MyContext from "../../../../../utils/MyContext.js";
+// import MyContext from "../../../../../utils/MyContext.js";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -19,15 +19,20 @@ import {
   AlagehAutoComplete
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
+import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
 class PersonalDetails extends Component {
   constructor(props) {
     super(props);
+    const _activeModel = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
+    );
     this.state = {
       samechecked: "N",
-      selectedLang: getCookie("Language")
+      selectedLang: getCookie("Language"),
+      activeModel: _activeModel
     };
   }
 
