@@ -1,6 +1,9 @@
 import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../../utils/algaehApiCall.js";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
@@ -96,7 +99,7 @@ const ClearData = $this => {
     finalizeBtn: true,
     employee_id: null,
     employee_name: null,
-    hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+    hospital_id: AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       .hims_d_hospital_id,
 
     total_days: null,

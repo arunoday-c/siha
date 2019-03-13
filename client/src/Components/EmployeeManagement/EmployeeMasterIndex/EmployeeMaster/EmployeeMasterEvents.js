@@ -1,6 +1,9 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // import EmpMasterIOputs from "../../../../Models/EmployeeMaster";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 
@@ -217,7 +220,9 @@ const InsertUpdateEmployee = $this => {
             activeDept[0].employee_designation_id;
         }
 
-        const hospital = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
+        const hospital = JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        );
         let inputObj = $this.state.personalDetails;
         inputObj.inactive_date =
           inputObj.inactive_date !== null

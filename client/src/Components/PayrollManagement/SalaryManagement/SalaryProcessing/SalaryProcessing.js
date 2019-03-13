@@ -10,7 +10,11 @@ import {
   AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  getAmountFormart,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 
 import {
   texthandle,
@@ -41,7 +45,7 @@ class SalaryProcessing extends Component {
       finalizeBtn: true,
       employee_id: null,
       employee_name: null,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+      hospital_id: AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
 
       total_days: null,
@@ -131,7 +135,7 @@ class SalaryProcessing extends Component {
         .format("DD-MM-YYYY");
 
     let allYears = getYears();
-    
+
     return (
       <React.Fragment>
         <div className="hptl-SalaryManagement-form">
@@ -143,7 +147,8 @@ class SalaryProcessing extends Component {
                 isImp: true
               }}
               selector={{
-                sort:"off",name: "month",
+                sort: "off",
+                name: "month",
                 className: "select-fld",
                 value: this.state.month,
                 dataSource: {
@@ -332,14 +337,9 @@ class SalaryProcessing extends Component {
                         </h3>
                       </div>
                       <div className="actions">
-
                         <div className="customCheckbox">
                           <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              value=""
-                              name=""
-                            />
+                            <input type="checkbox" value="" name="" />
                             <span>Select All</span>
                           </label>
                         </div>
@@ -435,10 +435,10 @@ class SalaryProcessing extends Component {
                                       No
                                     </span>
                                   ) : (
-                                      <span className="badge badge-success">
-                                        Yes
+                                    <span className="badge badge-success">
+                                      Yes
                                     </span>
-                                    );
+                                  );
                                 }
                               },
                               {
@@ -457,10 +457,10 @@ class SalaryProcessing extends Component {
                                       No
                                     </span>
                                   ) : (
-                                      <span className="badge badge-success">
-                                        Yes
+                                    <span className="badge badge-success">
+                                      Yes
                                     </span>
-                                    );
+                                  );
                                 }
                               },
                               {
@@ -590,9 +590,9 @@ class SalaryProcessing extends Component {
                             isEditable={false}
                             paging={{ page: 0, rowsPerPage: 20 }}
                             events={{
-                              onEdit: () => { },
-                              onDelete: () => { },
-                              onDone: () => { }
+                              onEdit: () => {},
+                              onDelete: () => {},
+                              onDone: () => {}
                             }}
                           />
                         </div>

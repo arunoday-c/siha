@@ -12,6 +12,7 @@ import Employee from "../../../../Search/Employee.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import LeaveAuthDetail from "./LeaveAuthDetail/LeaveAuthDetail";
 
 export default class LeaveAuthorization extends Component {
@@ -21,8 +22,9 @@ export default class LeaveAuthorization extends Component {
       open: false,
       leave_levels: [],
       leave_applns: [],
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       leave_status: "PEN",
       currLeavAppln: {}
     };

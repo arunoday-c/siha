@@ -35,11 +35,14 @@ module.exports = {
             left join hims_d_title T \
             on T.his_d_title_id = E.title_id \
             where hims_d_employee_id in(?) and employee_status not in('A','I');select * from hims_d_end_of_service_options;",
-            values: [_input.hims_d_employee_id]
+            values: [_input.hims_d_employee_id],
+            printQuery: true
           })
           .then(result => {
             const _result = result[0];
             const _options = result[1];
+
+            utilities.logger().log("_result: ", _result);
 
             if (_result.length == 0) {
               _mysql.releaseConnection();
@@ -53,6 +56,8 @@ module.exports = {
               );
               return;
             }
+
+            utilities.logger().log("_options: ", _options);
 
             if (_options.length == 0) {
               _mysql.releaseConnection();
@@ -176,6 +181,8 @@ module.exports = {
               ted = _eligibleDays;
             }
 
+            utilities.logger().log("_optionsDetals: ", _optionsDetals);
+
             let _componentsList_total = [];
             if (_optionsDetals.end_of_service_component1 != null) {
               _componentsList_total.push(
@@ -198,13 +205,19 @@ module.exports = {
               );
             }
 
+            utilities
+              .logger()
+              .log("_componentsList_total: ", _componentsList_total);
+
             _mysql
               .executeQuery({
                 query:
                   "select hims_d_employee_earnings_id,employee_id, earnings_id,earning_deduction_description,\
-         short_desc,amount from hims_d_employee_earnings EE, hims_d_earning_deduction ED where ED.hims_d_earning_deduction_id = EE.earnings_id \
-          and EE.employee_id=? and ED.hims_d_earning_deduction_id in(?) and ED.record_status='A'",
-                values: [_input.hims_d_employee_id, _componentsList_total]
+                  EE.short_desc, amount from hims_d_employee_earnings EE, hims_d_earning_deduction ED where \
+                  ED.hims_d_earning_deduction_id = EE.earnings_id \
+                  and EE.employee_id=? and ED.hims_d_earning_deduction_id in(?) and ED.record_status='A'",
+                values: [_input.hims_d_employee_id, _componentsList_total],
+                printQuery: true
               })
               .then(earnings => {
                 _mysql.releaseConnection();

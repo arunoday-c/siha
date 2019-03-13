@@ -156,25 +156,6 @@ module.exports = {
                     L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
               month_name +
               " > 0 and  employee_id in (?) and year=? ;";
-            // let strQuery =
-            //   "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
-            //   month_name +
-            //   " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
-            //       FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
-            //       and ML.leave_id=LR.leave_header_id and LR.calculation_type='SL'and L.hims_d_leave_id = LR.leave_header_id and\
-            //       L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
-            //   month_name +
-            //   " > 0 and (availed_till_date >= to_value   or availed_till_date >=from_value and availed_till_date <=to_value )\
-            //         and  employee_id in (?) and year=? union all	";
-            // strQuery +=
-            //   "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
-            //   month_name +
-            //   " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
-            //         FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
-            //         and ML.leave_id=LR.leave_header_id and LR.calculation_type='CO'and L.hims_d_leave_id = LR.leave_header_id and \
-            //         L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
-            //   month_name +
-            //   " > 0 and  employee_id in (?) and year=? ;";
 
             _mysql
               .executeQuery({
@@ -281,6 +262,29 @@ module.exports = {
                       const _LeaveRule = _.filter(results[17], f => {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
+
+                      utilities
+                        .logger()
+                        .log(
+                          "hrms_option.salary_calendar: ",
+                          results[8][0].salary_calendar
+                        );
+                      if (results[8][0].salary_calendar == "F") {
+                        utilities
+                          .logger()
+                          .log(
+                            "in_salary_calendar: ",
+                            results[8][0].salary_calendar
+                          );
+
+                        empResult[i]["total_days"] =
+                          results[8][0].salary_calendar_fixed_days;
+
+                        empResult[i]["total_paid_days"] =
+                          empResult[i]["total_days"] -
+                          empResult[i]["absent_days"] -
+                          empResult[i]["unpaid_leave"];
+                      }
                       getEarningComponents({
                         earnings: _earnings,
                         empResult: empResult[i],

@@ -1,5 +1,5 @@
 import algaehMysql from "algaeh-mysql";
-const keyPath = "../../keys/keys";
+const keyPath = require("algaeh-keys/keys");
 
 let getOrganization = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });

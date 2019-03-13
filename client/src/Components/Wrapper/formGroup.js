@@ -1,5 +1,8 @@
 import React, { PureComponent } from "react";
-import { checkSecurity } from "../../utils/GlobalFunctions";
+import {
+  checkSecurity,
+  AlgaehOpenContainer
+} from "../../utils/GlobalFunctions";
 import "./wrapper.css";
 import Label from "../Wrapper/label";
 import Cleave from "cleave.js/react";
@@ -74,7 +77,9 @@ export default class FormGroup extends PureComponent {
 
   getKeyCode(decimal) {
     decimal = decimal || false;
-    const settings = JSON.parse(sessionStorage.getItem("CurrencyDetail"));
+    const settings = AlgaehOpenContainer(
+      sessionStorage.getItem("CurrencyDetail")
+    );
     if (!decimal) {
       this.setState({
         decimal_separator_code: settings.decimal_separator.charCodeAt(0),
