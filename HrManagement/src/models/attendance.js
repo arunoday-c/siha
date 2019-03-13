@@ -2136,6 +2136,7 @@ module.exports = {
               "standard_working_hours: ",
               result[0]["standard_working_hours"]
             );
+
           const IncludeValues = [
             "employee_id",
             "attendance_date",
@@ -2152,15 +2153,45 @@ module.exports = {
             "hospital_id"
           ];
 
+          let _strQry = "";
+          for (let i = 0; i < input.length; i++) {
+            let actual_hours =
+              input[i].status == "PR" ? result[0]["standard_working_hours"] : 0;
+            _strQry += _mysql.mysqlQueryFormat(
+              "INSERT INTO `hims_f_daily_time_sheet` (employee_id,attendance_date,in_time,out_date,out_time,hours,\
+                minutes,worked_hours,sub_department_id,status,year,month,hospital_id, actual_hours) \
+                 VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `in_time`=?,`out_date`=?,`hours`=?,\
+                 `minutes`=?,`worked_hours`=?,`status`=?,`actual_hours`=?;",
+              [
+                input[i].employee_id,
+                input[i].attendance_date,
+                input[i].in_time,
+                input[i].out_date,
+                input[i].out_time,
+                input[i].hours,
+                input[i].minutes,
+                input[i].worked_hours,
+                input[i].sub_department_id,
+                input[i].status,
+                input[i].year,
+                input[i].month,
+                input[i].hospital_id,
+                actual_hours,
+
+                input[i].in_time,
+                input[i].out_date,
+                input[i].hours,
+                input[i].minutes,
+                input[i].worked_hours,
+                input[i].status,
+                actual_hours
+              ]
+            );
+          }
+
           _mysql
             .executeQuery({
-              query: "INSERT INTO hims_f_daily_time_sheet(??) VALUES ?",
-              values: input,
-              includeValues: IncludeValues,
-              extraValues: {
-                actual_hours: result[0]["standard_working_hours"]
-              },
-              bulkInsertOrUpdate: true,
+              query: _strQry,             
               printQuery: true
             })
             .then(result => {
@@ -6435,7 +6466,7 @@ module.exports = {
           .executeQuery({
             query:
               "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,\
-              E.full_name,E.sub_department_id FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
+              E.full_name,E.sub_department_id, year,month, FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
               TS.employee_id=E.hims_d_employee_id and (TS.status = 'AB' or TS.status = 'EX') and\
               E.sub_department_id=? and E.hospital_id=? " +
               strDQuery,
@@ -6483,8 +6514,8 @@ module.exports = {
 
         _mysql
           .executeQuery({
-            query: ` select hims_f_daily_time_sheet_id,TS.status, TS.employee_id,TS.attendance_date,in_time,out_time,worked_hours,\
-                PR.hims_f_project_roster_id ,PR.project_id,E.employee_code,E.full_name,E.sub_department_id , E.date_of_joining    \ 
+            query: ` select hims_f_daily_time_sheet_id, TS.employee_id,TS.attendance_date,in_time,out_time,worked_hours,\
+                PR.hims_f_project_roster_id ,PR.project_id,E.employee_code,E.full_name,E.sub_department_id , E.hospital_id,TS.year, TS.month, TS.status    \ 
                 from hims_f_daily_time_sheet TS  inner join  hims_f_project_roster PR  on TS.employee_id=PR.employee_id \
                 and date(TS.attendance_date)=date(PR.attendance_date) and PR.project_id=?\
                 inner join hims_d_employee E on PR.employee_id=E.hims_d_employee_id\
