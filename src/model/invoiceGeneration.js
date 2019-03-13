@@ -11,7 +11,6 @@ import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
 import { debugLog } from "../utils/logging";
 import Promise from "bluebird";
-import { debuglog } from "util";
 
 //created by irfan: to getVisitWiseBillDetailS
 let getVisitWiseBillDetailS_BACKUP = (req, res, next) => {
