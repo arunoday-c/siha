@@ -6483,7 +6483,7 @@ module.exports = {
 
         _mysql
           .executeQuery({
-            query: ` select hims_f_daily_time_sheet_id,TS.employee_id,TS.attendance_date,in_time,out_time,worked_hours,\
+            query: ` select hims_f_daily_time_sheet_id,TS.status, TS.employee_id,TS.attendance_date,in_time,out_time,worked_hours,\
                 PR.hims_f_project_roster_id ,PR.project_id,E.employee_code,E.full_name,E.sub_department_id , E.date_of_joining    \ 
                 from hims_f_daily_time_sheet TS  inner join  hims_f_project_roster PR  on TS.employee_id=PR.employee_id \
                 and date(TS.attendance_date)=date(PR.attendance_date) and PR.project_id=?\

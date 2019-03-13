@@ -6,8 +6,8 @@ import {
   addAlgaehGroupMAster,
   addAlgaehRoleMAster,
   addAlgaehModule,
-  getRoleBaseActiveModules,
-  getRoleBaseInActiveComponents,
+  getRoleBaseActiveModules, //Done
+  getRoleBaseInActiveComponents, //Done
   getAlgaehModules,
   getAlgaehScreens,
   addAlgaehScreen,
@@ -27,47 +27,37 @@ export default ({ config, db }) => {
   let api = Router();
 
   // created by irfan :to add
-  api.post(
-    "/addAlgaehGroupMAster",
-    addAlgaehGroupMAster,
-    (req, res, next) => {
-      let result = req.records;
-      if (result.validUser == false) {
-        res.status(httpStatus.ok).json({
-          success: false,
-          records: result
-        });
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
-      }
-      next();
-    },
-    releaseConnection
-  );
+  api.post("/addAlgaehGroupMAster", addAlgaehGroupMAster, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
   // created by irfan :to add
-  api.post(
-    "/addAlgaehRoleMAster",
-    addAlgaehRoleMAster,
-    (req, res, next) => {
-      let result = req.records;
-      if (result.validUser == false) {
-        res.status(httpStatus.ok).json({
-          success: false,
-          records: result
-        });
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
-      }
-      next();
-    },
-    releaseConnection
-  );
+  api.post("/addAlgaehRoleMAster", addAlgaehRoleMAster, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   // created by irfan :to add
   api.post(
@@ -102,8 +92,7 @@ export default ({ config, db }) => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
   );
 
   // created by irfan :to add
@@ -117,8 +106,7 @@ export default ({ config, db }) => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
   );
 
   // created by irfan :
