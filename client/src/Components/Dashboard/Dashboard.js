@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { getCookie } from "../../utils/algaehApiCall.js";
+import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
 
 const AdmissionsReadmissionData = {
   datasets: [
@@ -426,11 +427,18 @@ class Dashboard extends Component {
       },
       afterSuccess: data => {
         if (data.length > 0) {
-          let CurrencyDetail = data[0];
+          // let CurrencyDetail = data[0];
+
+          sessionStorage.removeItem("CurrencyDetail");
           sessionStorage.setItem(
             "CurrencyDetail",
-            JSON.stringify(CurrencyDetail)
+            AlgaehCloseContainer(JSON.stringify(data[0]))
           );
+
+          // sessionStorage.setItem(
+          //   "CurrencyDetail",
+          //   JSON.stringify(CurrencyDetail)
+          // );
         }
       }
     });

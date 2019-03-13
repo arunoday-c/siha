@@ -35,8 +35,9 @@ class ManualAttendance extends Component {
       project_id: null,
       sub_department_id: null,
 
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       projects: [],
       employee_details: [],
       subdepartment: [],
@@ -160,8 +161,9 @@ class ManualAttendance extends Component {
       employee_group_id: null,
       project_id: null,
 
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       employee_details: [],
       worked_hours: null,
       in_time: null,

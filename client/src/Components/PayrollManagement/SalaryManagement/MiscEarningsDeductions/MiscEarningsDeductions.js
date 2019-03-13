@@ -8,7 +8,11 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import { getYears, getAmountFormart } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  getAmountFormart,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import _ from "lodash";
 import Enumerable from "linq";
@@ -27,7 +31,7 @@ export default class MiscEarningsDeductions extends Component {
       isBulk: false,
       month: moment(new Date()).format("M"),
       yearAndMonth: new Date(),
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+      hospital_id: AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
       lockEarnings: false
     };
@@ -129,7 +133,7 @@ export default class MiscEarningsDeductions extends Component {
       isBulk: false,
       month: moment(new Date()).format("M"),
       yearAndMonth: new Date(),
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+      hospital_id: AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
         .hims_d_hospital_id,
       lockEarnings: false
     });

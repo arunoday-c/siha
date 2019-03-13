@@ -6,7 +6,7 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../Wrapper/globalSearch";
-import { getYears } from "../../../utils/GlobalFunctions";
+import { getYears, AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import Employee from "../../../Search/Employee.json";
 import moment from "moment";
@@ -28,8 +28,9 @@ export default class EmployeeShiftRostering extends Component {
       openShiftAssign: false,
       shifts: [],
       loading: false,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       formatingString: this.monthFormatorString(moment().startOf("month"))
@@ -79,8 +80,9 @@ export default class EmployeeShiftRostering extends Component {
     this.setState({
       employees: [],
       sub_department_id: null,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       hims_d_employee_id: null,

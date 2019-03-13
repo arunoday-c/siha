@@ -7,7 +7,10 @@ import {
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import swal from "sweetalert2";
 
@@ -25,8 +28,9 @@ export default class HolidayMaster extends Component {
       saturday: true,
       sunday: true,
       year: moment().year(),
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id
     };
 
     this.getHolidayMaster(this.state.hospital_id);

@@ -6,7 +6,10 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import ProjectAssign from "./ProjectAssign";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../../utils/GlobalVariables.json";
 import Employee from "../../../../Search/Employee.json";
 import moment from "moment";
@@ -25,8 +28,9 @@ class EmployeeProjectRoster extends Component {
       projects: [],
       designations: [],
       loading: false,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       formatingString: this.monthFormatorString(moment().startOf("month"))
@@ -62,8 +66,9 @@ class EmployeeProjectRoster extends Component {
     this.setState({
       employees: [],
       sub_department_id: null,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       hims_d_employee_id: null,
