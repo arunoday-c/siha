@@ -426,7 +426,7 @@ class Dashboard extends Component {
         mappingName: "hospitaldetails"
       },
       afterSuccess: data => {
-        if (data.length > 0) {
+        if (res.data.success) {
           // let CurrencyDetail = data[0];
 
           sessionStorage.removeItem("CurrencyDetail");
