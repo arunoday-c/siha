@@ -1,12 +1,7 @@
 "use strict";
 import extend from "extend";
-import {
-  whereCondition,
-  deleteRecord,
-  releaseDBConnection,
-  jsonArrayToObject
-} from "../utils";
-
+import { whereCondition, deleteRecord, releaseDBConnection } from "../utils";
+//import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
 import algaehMysql from "algaeh-mysql";
