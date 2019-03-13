@@ -6,6 +6,7 @@ import "./EOSGratuity.css";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
+import { parse } from "url";
 
 class EOSGratuity extends Component {
   constructor(props) {
@@ -364,7 +365,7 @@ class EOSGratuity extends Component {
                           </label>
                           <h6>
                             {EosData.endOfServiceYears
-                              ? EosData.endOfServiceYears.toFixed(3)
+                              ? parseFloat(EosData.endOfServiceYears).toFixed(3)
                               : 0}{" "}
                             yrs
                           </h6>
@@ -374,7 +375,7 @@ class EOSGratuity extends Component {
                           <h6>
                             {" "}
                             {EosData.eligible_day
-                              ? EosData.eligible_day.toFixed(3)
+                              ? parseFloat(EosData.eligible_day).toFixed(3)
                               : 0}{" "}
                             Day(s)
                           </h6>
