@@ -11,7 +11,7 @@ import {
   isDoctorChange,
   sameAsPresent
 } from "./PersonalDetailsEvents.js";
-import MyContext from "../../../../../utils/MyContext.js";
+// import MyContext from "../../../../../utils/MyContext.js";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
@@ -19,15 +19,16 @@ import {
   AlagehAutoComplete
 } from "../../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../../utils/GlobalVariables.json";
-import Enumerable from "linq";
+import Enumarable from "linq";
 import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
-import { AlgaehCloseContainer } from "../../../../../utils/GlobalFunctions";
+import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
 class PersonalDetails extends Component {
   constructor(props) {
     super(props);
-    const _activeModel = AlgaehCloseContainer(
-      JSON.parse(sessionStorage.getItem("AlgaehOrbitaryData"))
+    debugger;
+    const _activeModel = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
     );
     this.state = {
       samechecked: "N",
@@ -98,6 +99,11 @@ class PersonalDetails extends Component {
   }
 
   render() {
+    // let FrontDeskActive =
+    debugger;
+    const FrontDeskActive = Enumarable.from(this.state.activeModel)
+      .where(w => w.module_code === "FTDSK")
+      .toArray();
     return (
       <React.Fragment>
         {/* <MyContext.Consumer>
@@ -674,48 +680,55 @@ class PersonalDetails extends Component {
                       </div>
                     </div>
                   </div>
-                  <h5 style={{ marginTop: 20 }}>
-                    <span>If its a Doctor</span>
-                  </h5>
-                  <div className="row secondary-box-container">
-                    <div
-                      className="col-12 customCheckbox"
-                      style={{ border: "none" }}
-                    >
-                      <label className="checkbox inline">
-                        <input
-                          type="checkbox"
-                          name="isdoctor"
-                          value={this.state.isdoctor}
-                          checked={this.state.isdoctor === "Y" ? true : false}
-                          onChange={isDoctorChange.bind(this, this)}
+                  {FrontDeskActive.length > 0 ? (
+                    <div>
+                      <h5 style={{ marginTop: 20 }}>
+                        <span>If its a Doctor</span>
+                      </h5>
+                      <div className="row secondary-box-container">
+                        <div
+                          className="col-12 customCheckbox"
+                          style={{ border: "none" }}
+                        >
+                          <label className="checkbox inline">
+                            <input
+                              type="checkbox"
+                              name="isdoctor"
+                              value={this.state.isdoctor}
+                              checked={
+                                this.state.isdoctor === "Y" ? true : false
+                              }
+                              onChange={isDoctorChange.bind(this, this)}
+                            />
+                            <span>
+                              <AlgaehLabel label={{ fieldName: "isdoctor" }} />
+                            </span>
+                          </label>
+                        </div>
+
+                        <AlagehFormGroup
+                          div={{ className: "col-12" }}
+                          label={{
+                            fieldName: "license_number",
+                            isImp: this.state.isdoctor === "Y" ? true : false
+                          }}
+                          textBox={{
+                            value: this.state.license_number,
+                            className: "txt-fld",
+                            name: "license_number",
+
+                            events: {
+                              onChange: texthandle.bind(this, this)
+                            },
+                            others: {
+                              disabled:
+                                this.state.isdoctor === "Y" ? false : true
+                            }
+                          }}
                         />
-                        <span>
-                          <AlgaehLabel label={{ fieldName: "isdoctor" }} />
-                        </span>
-                      </label>
+                      </div>
                     </div>
-
-                    <AlagehFormGroup
-                      div={{ className: "col-12" }}
-                      label={{
-                        fieldName: "license_number",
-                        isImp: this.state.isdoctor === "Y" ? true : false
-                      }}
-                      textBox={{
-                        value: this.state.license_number,
-                        className: "txt-fld",
-                        name: "license_number",
-
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.isdoctor === "Y" ? false : true
-                        }
-                      }}
-                    />
-                  </div>
+                  ) : null}
                 </div>
               </div>
             </div>

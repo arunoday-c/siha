@@ -1,6 +1,7 @@
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
 import Enumerable from "linq";
 import Options from "../../../../Options.json";
@@ -275,8 +276,9 @@ const getHolidayMaster = $this => {
     method: "GET",
 
     data: {
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id
     },
     onSuccess: res => {
       if (res.data.success) {

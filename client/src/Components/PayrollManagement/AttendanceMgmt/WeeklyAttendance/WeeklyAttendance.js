@@ -9,7 +9,10 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 
@@ -18,6 +21,7 @@ export default class WeeklyAttendance extends Component {
     super(props);
     const _yearAndMonth = moment(new Date()).format("YYYY-MM") + "01";
     let _fromDate = moment(_yearAndMonth, "YYYY-MM-DD").format("YYYY-MM-DD");
+    debugger;
     this.state = {
       attendance_type: "MW",
       year: moment().year(),
@@ -33,14 +37,19 @@ export default class WeeklyAttendance extends Component {
       month_worked_hours: "00.00",
       loader: false,
       hims_d_employee_id: null,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      )
         .hims_d_hospital_id,
       from_date: _fromDate, //moment(new Date())
       // .subtract(1, "days")
       // .format("YYYY-MM-DD"),
       to_date: moment(new Date())
         .subtract(1, "days")
-        .format("YYYY-MM-DD")
+        .format("YYYY-MM-DD"),
+      option_attendance_type: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("hrOptions"))
+      ).attendance_type
     };
     this.getSubDepts();
     this.getOrganization();
@@ -202,6 +211,35 @@ export default class WeeklyAttendance extends Component {
       }
     });
   }
+  monthWiseHours(data) {
+    const _workHours = Enumerable.from(data).sum(s => {
+      return parseFloat(s.worked_hours);
+    });
+
+    let total_hrs = Enumerable.from(data).sum(s => s.actual_hours);
+    let total_mins = Enumerable.from(data).sum(s => s.actual_minutes);
+    let cumulative_mins = total_hrs * 60 + total_mins;
+    const _actualHours =
+      parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
+
+    debugger;
+    // let _exces = Enumerable.from(data).select(s => {
+    //   debugger;
+    //   let actTime = moment(s.actual_hours + ":" + s.actual_minutes);
+    //   let worked = moment(s.worked_hours, "HH.mm");
+    //   return worked.diff(actTime).format("HH.mm");
+    // });
+
+    let _exces = parseFloat(_workHours) - parseFloat(_actualHours);
+    let _shortage =
+      _exces < 0 ? parseFloat(_actualHours) - parseFloat(_workHours) : 0;
+    return {
+      month_worked_hours: parseFloat(_workHours).toFixed(2),
+      month_actual_hours: parseFloat(_actualHours).toFixed(2),
+      month_ot_hour: _exces < 0 ? 0 : parseFloat(_exces).toFixed(2),
+      month_shortage_hour: parseFloat(_shortage).toFixed(2)
+    };
+  }
 
   getDailyTimeSheet() {
     if (
@@ -258,9 +296,12 @@ export default class WeeklyAttendance extends Component {
           .endOf("month")
           .format("YYYY-MM-DD");
       }
-
+      debugger;
       algaehApiCall({
-        uri: "/attendance/getDailyTimeSheet",
+        uri:
+          this.state.option_attendance_type === "DM"
+            ? "/attendance/loadManualTimeSheet"
+            : "/attendance/getDailyTimeSheet",
         method: "GET",
         module: "hrManagement",
         data: {
@@ -273,17 +314,33 @@ export default class WeeklyAttendance extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            if (Array.isArray(res.data.result.outputArray)) {
-              this.setState({
-                time_sheet: res.data.result.outputArray,
-                loader: false,
-                month_shortage_hour: this.getTotalShortage(
-                  res.data.result.outputArray
-                ),
-                month_ot_hour: this.getTotalOT(res.data.result.outputArray),
-                month_actual_hours: res.data.result.month_actual_hours,
-                month_worked_hours: res.data.result.month_worked_hours
-              });
+            debugger;
+            let data =
+              this.state.option_attendance_type === "DM"
+                ? res.data.result
+                : res.data.result.outputArray;
+            if (Array.isArray(data)) {
+              if (this.state.option_attendance_type === "DM") {
+                //Do Calculation here
+                const _monthWiseHours = this.monthWiseHours(data);
+                this.setState({
+                  time_sheet: data,
+                  loader: false,
+                  month_shortage_hour: _monthWiseHours.month_shortage_hour,
+                  month_ot_hour: _monthWiseHours.month_ot_hour,
+                  month_actual_hours: _monthWiseHours.month_actual_hours,
+                  month_worked_hours: _monthWiseHours.month_worked_hours
+                });
+              } else {
+                this.setState({
+                  time_sheet: data,
+                  loader: false,
+                  month_shortage_hour: this.getTotalShortage(data),
+                  month_ot_hour: this.getTotalOT(data),
+                  month_actual_hours: res.data.result.month_actual_hours,
+                  month_worked_hours: res.data.result.month_worked_hours
+                });
+              }
             } else {
               swalMessage({
                 title: res.data.result.message,
@@ -328,10 +385,12 @@ export default class WeeklyAttendance extends Component {
         .endOf("month")
         .format("YYYY-MM-DD");
     }
-
+    debugger;
     algaehApiCall({
       uri:
-        this.state.attendance_type === "MW"
+        this.state.option_attendance_type === "DM"
+          ? "/attendance/postManualTimeSheetMonthWise"
+          : this.state.attendance_type === "MW"
           ? "/attendance/postTimeSheetMonthWise"
           : "/attendance/postTimeSheet",
       method: "GET",
@@ -345,6 +404,7 @@ export default class WeeklyAttendance extends Component {
       },
       module: "hrManagement",
       onSuccess: res => {
+        debugger;
         if (res.data.success) {
           swalMessage({
             title: "Posted Successfully. . ",
@@ -433,6 +493,19 @@ export default class WeeklyAttendance extends Component {
   }
 
   getExcessShortage(data) {
+    debugger;
+    let strWorking = data.worked_hours.split(".");
+    console.log("strWorking", strWorking);
+    console.log("strWorking", strWorking[0]);
+    console.log("strWorking", strWorking[1]);
+    let excess_hr = strWorking[0] - data.actual_hours;
+    excess_hr = excess_hr < 0 ? 0 : excess_hr;
+
+    let excess_min = strWorking[1] - data.actual_minutes;
+    excess_min = excess_min < 0 ? 0 : excess_min;
+
+    console.log("excess_hr", excess_hr);
+    console.log("excess_min", excess_min);
     return data.shortage_Time > 0 ? (
       <React.Fragment>
         Shortage Time:
@@ -454,9 +527,10 @@ export default class WeeklyAttendance extends Component {
       <React.Fragment>
         Excess Time
         <b className="OverTime">
-          {data.ot_hr + " Hrs"}
-          {data.ot_min + " Mins"}
-          {/* {data.ot_Time + " Hrs"} */}
+          {data.ot_hr === undefined ? excess_hr + " Hrs" : data.ot_hr + " Hrs"}
+          {data.ot_min === undefined
+            ? excess_min + " Mins"
+            : data.ot_min + " Mins"}
         </b>
         <br />
         Working Hours:
@@ -497,6 +571,7 @@ export default class WeeklyAttendance extends Component {
   }
 
   getTotalShortage(data) {
+    debugger;
     let total_hrs = Enumerable.from(data).sum(s => s.shortage_hr);
     let total_mins = Enumerable.from(data).sum(s => s.shortage_min);
     let cumulative_mins = total_hrs * 60 + total_mins;
@@ -505,6 +580,7 @@ export default class WeeklyAttendance extends Component {
   }
 
   getTotalOT(data) {
+    debugger;
     let total_hrs = Enumerable.from(data).sum(s => s.ot_hr);
     let total_mins = Enumerable.from(data).sum(s => s.ot_min);
     let cumulative_mins = total_hrs * 60 + total_mins;
@@ -1065,7 +1141,13 @@ export default class WeeklyAttendance extends Component {
                           </b>
                           <br />
                           Date:
-                          <b>{moment(data.out_date).format("MMM Do YYYY")}</b>
+                          <b>
+                            {data.out_date === null
+                              ? moment(data.attendance_date).format(
+                                  "MMM Do YYYY"
+                                )
+                              : moment(data.out_date).format("MMM Do YYYY")}
+                          </b>
                         </span>
                       </div>
                       <div className="progress">

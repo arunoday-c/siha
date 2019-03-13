@@ -77,6 +77,7 @@ export default function ManualAttendanceEvents() {
           type: "warning"
         });
       } else {
+        debugger;
         let InputObj = {
           branch_id: $this.state.hospital_id,
 
@@ -112,7 +113,7 @@ export default function ManualAttendanceEvents() {
             if (res.data.success) {
               debugger;
               $this.setState({
-                employee_details: res.data.records,
+                employee_details: res.data.records.result,
                 dataExist: res.data.records.dataExist,
                 apply_all: false,
                 process_attend: false

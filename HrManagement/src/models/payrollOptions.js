@@ -98,43 +98,6 @@ module.exports = {
         printQuery: true
       })
       .then(result => {
-        let componentArray = [];
-        let service_days = [];
-
-        componentArray.push(
-          result[0]["end_of_service_component1"],
-          result[0]["end_of_service_component2"],
-          result[0]["end_of_service_component3"],
-          result[0]["end_of_service_component4"]
-        );
-        let Obj = {};
-        if (result[0]["from_service_range1"] != null) {
-          Obj["service_range"] = 0;
-          Obj["from_service_range"] = result[0]["from_service_range1"];
-          Obj["eligible_days"] = result[0]["eligible_days1"];
-        }
-        service_days.push(Obj);
-        Obj = {};
-        if (result[0]["from_service_range2"] != null) {
-          Obj["service_range"] = result[0]["from_service_range1"];
-          Obj["from_service_range"] = result[0]["from_service_range2"];
-          Obj["eligible_days"] = result[0]["eligible_days2"];
-        }
-        service_days.push(Obj);
-        Obj = {};
-        if (result[0]["from_service_range3"] != null) {
-          Obj["service_range"] = result[0]["from_service_range2"];
-          Obj["from_service_range"] = result[0]["from_service_range3"];
-          Obj["eligible_days"] = result[0]["eligible_days3"];
-        }
-        service_days.push(Obj);
-        Obj = {};
-        if (result[0]["from_service_range4"] != null) {
-          Obj["service_range"] = result[0]["from_service_range3"];
-          Obj["from_service_range"] = result[0]["from_service_range4"];
-          Obj["eligible_days"] = result[0]["eligible_days4"];
-        }
-        service_days.push(Obj);
         // fromServiceArray.push(
         //   result[0]["from_service_range1"],
         //   result[0]["from_service_range2"],
@@ -151,7 +114,55 @@ module.exports = {
         //   result[0]["eligible_days5"]
         // );
 
+        const utilities = new algaehUtilities();
+
+        utilities.logger().log("result: ", result);
+
         if (result.length > 0) {
+          let componentArray = [];
+          let service_days = [];
+
+          componentArray.push(
+            result[0]["end_of_service_component1"],
+            result[0]["end_of_service_component2"],
+            result[0]["end_of_service_component3"],
+            result[0]["end_of_service_component4"]
+          );
+          let Obj = {};
+          if (result[0]["from_service_range1"] != null) {
+            Obj["service_range"] = 0;
+            Obj["from_service_range"] = result[0]["from_service_range1"];
+            Obj["eligible_days"] = result[0]["eligible_days1"];
+            service_days.push(Obj);
+          }
+
+          Obj = {};
+          if (result[0]["from_service_range2"] != null) {
+            Obj["service_range"] = result[0]["from_service_range1"];
+            Obj["from_service_range"] = result[0]["from_service_range2"];
+            Obj["eligible_days"] = result[0]["eligible_days2"];
+            service_days.push(Obj);
+          }
+
+          Obj = {};
+          if (result[0]["from_service_range3"] != null) {
+            Obj["service_range"] = result[0]["from_service_range2"];
+            Obj["from_service_range"] = result[0]["from_service_range3"];
+            Obj["eligible_days"] = result[0]["eligible_days3"];
+            service_days.push(Obj);
+          }
+
+          Obj = {};
+          if (result[0]["from_service_range4"] != null) {
+            Obj["service_range"] = result[0]["from_service_range3"];
+            Obj["from_service_range"] = result[0]["from_service_range4"];
+            Obj["eligible_days"] = result[0]["eligible_days4"];
+            service_days.push(Obj);
+          }
+
+          utilities.logger().log("componentArray: ", componentArray);
+          utilities.logger().log("service_days: ", service_days);
+
           _mysql
             .executeQuery({
               query:

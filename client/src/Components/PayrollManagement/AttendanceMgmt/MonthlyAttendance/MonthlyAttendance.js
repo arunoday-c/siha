@@ -30,8 +30,9 @@ export default class MonthlyAttendance extends Component {
       displayLoader: false,
       data: [],
       currEmp: null,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       hims_d_employee_id: null,
       yearAndMonth: moment().startOf("month")._d,
       formatingString: this.monthFormatorString(moment().startOf("month")),

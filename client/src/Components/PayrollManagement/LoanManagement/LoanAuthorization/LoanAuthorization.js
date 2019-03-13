@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "./loan-auth.css";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
@@ -19,8 +20,9 @@ class LoanAuthorization extends Component {
       to_date: "",
       selRow: {},
       loading: false,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       openAuth: false
     };
     this.getHospitals();

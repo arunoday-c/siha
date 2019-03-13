@@ -156,25 +156,6 @@ module.exports = {
                     L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
               month_name +
               " > 0 and  employee_id in (?) and year=? ;";
-            // let strQuery =
-            //   "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
-            //   month_name +
-            //   " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
-            //       FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
-            //       and ML.leave_id=LR.leave_header_id and LR.calculation_type='SL'and L.hims_d_leave_id = LR.leave_header_id and\
-            //       L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
-            //   month_name +
-            //   " > 0 and (availed_till_date >= to_value   or availed_till_date >=from_value and availed_till_date <=to_value )\
-            //         and  employee_id in (?) and year=? union all	";
-            // strQuery +=
-            //   "select hims_f_employee_monthly_leave_id, employee_id, year, leave_id,L.calculation_type, availed_till_date," +
-            //   month_name +
-            //   " as present_month,L.leave_type,LR.paytype,  LR.total_days,LR.from_value,LR.to_value, LR.earning_id,LR.value_type \
-            //         FROM hims_f_employee_monthly_leave ML,hims_d_leave L, hims_d_leave_rule LR where ML.leave_id=L.hims_d_leave_id \
-            //         and ML.leave_id=LR.leave_header_id and LR.calculation_type='CO'and L.hims_d_leave_id = LR.leave_header_id and \
-            //         L.calculation_type = LR.calculation_type and L.leave_type='P' and " +
-            //   month_name +
-            //   " > 0 and  employee_id in (?) and year=? ;";
 
             _mysql
               .executeQuery({
@@ -281,6 +262,29 @@ module.exports = {
                       const _LeaveRule = _.filter(results[17], f => {
                         return f.employee_id == empResult[i]["employee_id"];
                       });
+
+                      utilities
+                        .logger()
+                        .log(
+                          "hrms_option.salary_calendar: ",
+                          results[8][0].salary_calendar
+                        );
+                      if (results[8][0].salary_calendar == "F") {
+                        utilities
+                          .logger()
+                          .log(
+                            "in_salary_calendar: ",
+                            results[8][0].salary_calendar
+                          );
+
+                        empResult[i]["total_days"] =
+                          results[8][0].salary_calendar_fixed_days;
+
+                        empResult[i]["total_paid_days"] =
+                          empResult[i]["total_days"] -
+                          empResult[i]["absent_days"] -
+                          empResult[i]["unpaid_leave"];
+                      }
                       getEarningComponents({
                         earnings: _earnings,
                         empResult: empResult[i],
@@ -375,8 +379,13 @@ module.exports = {
                                   current_deduction_amt_array = current_deduction_amt_array.concat(
                                     advanceOutput.current_deduct_compoment
                                   );
-
-                                  //Miscellaneous Earning Deduction
+                                  utilities
+                                    .logger()
+                                    .log(
+                                      "employee_id: ",
+                                      empResult[i]["employee_id"]
+                                    );
+                                  //OT
                                   const _over_time = _.filter(
                                     results[10],
                                     f => {
@@ -386,6 +395,9 @@ module.exports = {
                                       );
                                     }
                                   );
+                                  utilities
+                                    .logger()
+                                    .log("_over_time: ", _over_time);
                                   getOtManagement({
                                     earnings: _earnings,
                                     current_earning_amt_array: current_earning_amt_array,
@@ -398,6 +410,13 @@ module.exports = {
                                     final_earning_amount =
                                       final_earning_amount +
                                       OTManagement.final_earning_amount;
+
+                                    utilities
+                                      .logger()
+                                      .log(
+                                        "OTManagement.current_ot_amt_array : ",
+                                        OTManagement.current_ot_amt_array
+                                      );
 
                                     utilities
                                       .logger()
@@ -2434,17 +2453,29 @@ function InsertEmployeeLeaveSalary(options) {
 function getOtManagement(options) {
   return new Promise((resolve, reject) => {
     try {
+      const utilities = new algaehUtilities();
+
+      utilities.logger().log("getOtManagement: ");
       const _earnings = options.earnings;
       const empResult = options.empResult;
 
       const hrms_option = options.hrms_option;
       const over_time_comp = options.over_time_comp;
-      const over_time = options.over_time;
+      const over_time = options.over_time[0];
       const current_earning_amt_array = options.current_earning_amt_array;
       const leave_salary = options.leave_salary;
 
       let final_earning_amount = 0;
       let current_ot_amt_array = [];
+
+      utilities.logger().log("over_time: ", options.over_time.length);
+      utilities.logger().log("ot_work_hours: ", empResult["ot_work_hours"]);
+      utilities
+        .logger()
+        .log("ot_weekoff_hours: ", empResult["ot_weekoff_hours"]);
+      utilities
+        .logger()
+        .log("ot_holiday_hours: ", empResult["ot_holiday_hours"]);
       if (options.over_time.length > 0) {
         let ot_hours =
           parseFloat(empResult["ot_work_hours"]) +
@@ -2454,9 +2485,15 @@ function getOtManagement(options) {
           parseFloat(hrms_option[0].standard_working_hours) -
           parseFloat(hrms_option[0].standard_break_hours);
 
+        utilities.logger().log("ot_hours: ", ot_hours);
+        utilities.logger().log("Noof_Working_Hours: ", Noof_Working_Hours);
+
+        utilities.logger().log("_earnings: ", _earnings);
         if (_earnings.length == 0) {
           resolve({ current_ot_amt_array, final_earning_amount });
         }
+
+        utilities.logger().log("payment_type: ", over_time["payment_type"]);
 
         if (over_time["payment_type"] === "RT") {
           let working_day_amt = 0;
@@ -2501,14 +2538,18 @@ function getOtManagement(options) {
               ot_hours != 0 &&
               leave_salary != "Y"
             ) {
+              let ot_hours =
+                parseFloat(empResult["ot_work_hours"]) +
+                parseFloat(empResult["ot_weekoff_hours"]) +
+                parseFloat(empResult["ot_holiday_hours"]);
               utilities
                 .logger()
                 .log("salary_calendar: ", hrms_option[0].salary_calendar);
 
-              let earn_amount = _.chain(current_earning_amt_array)
+              let earn_amount = _.chain(_earnings)
                 .filter(f => {
                   if (f.earnings_id == obj.earnings_id) {
-                    return f.amount;
+                    return parseFloat(f.amount);
                   }
                 })
                 .value();
@@ -2527,20 +2568,56 @@ function getOtManagement(options) {
                     parseFloat(empResult["total_days"])
                 );
               }
-              per_hour_salary = _per_day_salary / Noof_Working_Hours;
 
-              per_hour_salary = per_hour_salary * ot_hours;
-              if (per_hour_salary > 0) {
+              utilities.logger().log("_per_day_salary: ", _per_day_salary);
+              per_hour_salary = _per_day_salary / Noof_Working_Hours;
+              utilities.logger().log("per_hour_salary: ", per_hour_salary);
+
+              utilities
+                .logger()
+                .log("working_day_hour: ", over_time["working_day_hour"]);
+
+              utilities
+                .logger()
+                .log("ot_work_hours: ", empResult["ot_work_hours"]);
+
+              let ot_hour_price =
+                per_hour_salary * over_time["working_day_hour"];
+              ot_hour_price = ot_hour_price * empResult["ot_work_hours"];
+
+              utilities.logger().log("ot_hour_price: ", ot_hour_price);
+
+              let ot_weekoff_price =
+                per_hour_salary * over_time["weekoff_day_hour"];
+              ot_weekoff_price =
+                ot_weekoff_price * empResult["ot_weekoff_hours"];
+
+              utilities.logger().log("per_hour_salary: ", per_hour_salary);
+
+              let ot_holiday_price =
+                per_hour_salary * over_time["holiday_hour"];
+              ot_holiday_price =
+                ot_holiday_price * empResult["ot_holiday_hours"];
+
+              utilities.logger().log("ot_holiday_price: ", ot_holiday_price);
+
+              let final_price =
+                ot_hour_price + ot_weekoff_price + ot_holiday_price;
+
+              if (final_price > 0) {
                 current_ot_amt_array.push({
                   earnings_id: over_time_comp[0].hims_d_earning_deduction_id,
-                  amount: per_hour_salary
+                  amount: final_price
                 });
               }
+              utilities
+                .logger()
+                .log("current_ot_amt_array: ", current_ot_amt_array);
             }
           });
 
           final_earning_amount = _.sumBy(current_ot_amt_array, s => {
-            return s.amount;
+            return parseFloat(s.amount);
           });
 
           resolve({ current_ot_amt_array, final_earning_amount });

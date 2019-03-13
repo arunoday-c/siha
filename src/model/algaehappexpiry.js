@@ -6,7 +6,7 @@ import moment from "moment";
 import { debugLog } from "../utils/logging";
 
 import algaehMysql from "algaeh-mysql";
-const keyPath = "../../keys/keys";
+const keyPath = require("algaeh-keys/keys");
 
 //created by Nowshad: to Add Expiry off an App
 let addAppExxpiry = (req, res, next) => {

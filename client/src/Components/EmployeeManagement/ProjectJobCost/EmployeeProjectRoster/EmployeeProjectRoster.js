@@ -6,7 +6,10 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import ProjectAssign from "./ProjectAssign";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
-import { getYears } from "../../../../utils/GlobalFunctions";
+import {
+  getYears,
+  AlgaehOpenContainer
+} from "../../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../../utils/GlobalVariables.json";
 import Employee from "../../../../Search/Employee.json";
 import moment from "moment";
@@ -25,8 +28,9 @@ class EmployeeProjectRoster extends Component {
       projects: [],
       designations: [],
       loading: false,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       formatingString: this.monthFormatorString(moment().startOf("month"))
@@ -62,8 +66,9 @@ class EmployeeProjectRoster extends Component {
     this.setState({
       employees: [],
       sub_department_id: null,
-      hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       year: moment().year(),
       month: moment(new Date()).format("M"),
       hims_d_employee_id: null,
@@ -258,6 +263,47 @@ class EmployeeProjectRoster extends Component {
     }
   }
 
+  pasteWeekoffShift(data) {
+    if (this.state.copyData === null) {
+      swalMessage({
+        title: "Please copy the shift first",
+        type: "warning"
+      });
+    } else {
+      debugger;
+      let sendData = {
+        employee_id: data.id,
+        project_id: this.state.copyData.project_id,
+        attendance_date: data.date,
+        hospital_id: data.hospital_id,
+        weekoff: data.weekoff,
+        holiday: data.holiday
+      };
+
+      algaehApiCall({
+        uri: "/projectjobcosting/pasteProjectRoster",
+        method: "POST",
+        module: "hrManagement",
+        data: sendData,
+        onSuccess: res => {
+          if (res.data.success) {
+            swalMessage({
+              title: "Pasted Successfully . . ",
+              type: "success"
+            });
+            this.getEmployeesForProjectRoster();
+          }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+    }
+  }
+
   plotEmployeeDates(row, holidays, leaves, projects) {
     var Emp_Dates = [];
     let yearMonth = this.state.year + "-" + this.state.month + "-01";
@@ -328,17 +374,18 @@ class EmployeeProjectRoster extends Component {
               {/* Shift MoreInfo Tooltip end */}
             </span>
           </td>
-        ) : holiday !== undefined && holiday.weekoff === "Y" ? (
-          <td className="week_off_cell" key={now}>
-            {/* {holiday.holiday_description} */}
-            WO
-          </td>
-        ) : holiday !== undefined && holiday.holiday === "Y" ? (
-          <td className="holiday_cell" key={now}>
-            {/* {holiday.holiday_description} */}
-            HO
-          </td>
-        ) : project !== undefined && project !== null ? (
+        ) : // holiday !== undefined && holiday.weekoff === "Y" ? (
+        //   <td className="week_off_cell" key={now}>
+        //     {/* {holiday.holiday_description} */}
+        //     WO
+        //   </td>
+        // ) : holiday !== undefined && holiday.holiday === "Y" ? (
+        //   <td className="holiday_cell" key={now}>
+        //     {/* {holiday.holiday_description} */}
+        //     HO
+        //   </td>
+        // ) :
+        project !== undefined && project !== null ? (
           <td
             // onClick={this.showModal.bind(this, id)}
             key={now}
@@ -362,6 +409,56 @@ class EmployeeProjectRoster extends Component {
               </li>
             </ul>
             <span>{project.abbreviation}</span>
+          </td>
+        ) : // HOLIDAY / WEEKOFF FROM MASTER
+        holiday !== undefined ? (
+          <td
+            className={
+              holiday.weekoff === "Y"
+                ? "editAction week_off_cell"
+                : holiday.holiday === "Y"
+                ? "editAction holiday_cell"
+                : null
+            }
+            key={now}
+          >
+            <span>
+              {holiday.weekoff === "Y"
+                ? "WO"
+                : holiday.holiday === "Y"
+                ? "HO"
+                : holiday.holiday_description}
+            </span>
+
+            <i className="fas fa-ellipsis-v" />
+            <ul>
+              <li
+                onClick={this.pasteWeekoffShift.bind(this, {
+                  id: row.hims_d_employee_id,
+                  date: now.format("YYYY-MM-DD"),
+                  project_id: row.project_id,
+                  holiday: holiday.holiday,
+                  weekoff: holiday.weekoff
+                })}
+                style={{
+                  zIndex: 9999
+                }}
+              >
+                Paste As Week Off
+              </li>
+              <li
+                // onClick={this.pasteShift.bind(this, {
+                //   id: row.hims_d_employee_id,
+                //   date: now.format("YYYY-MM-DD"),
+                //   sub_id: row.sub_department_id
+                // })}
+                style={{
+                  zIndex: 9999
+                }}
+              >
+                Paste As Normal
+              </li>
+            </ul>
           </td>
         ) : (
           <td
@@ -543,6 +640,7 @@ class EmployeeProjectRoster extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
+            debugger;
             this.setState({
               employees: res.data.records,
               loading: false

@@ -3,9 +3,11 @@ import httpStatus from "../utils/httpStatus";
 import { releaseDBConnection } from "../utils";
 import { debugFunction, debugLog } from "../utils/logging";
 import mysql from "mysql";
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
 import _ from "lodash";
 let searchData = (req, res, next) => {
-  debugFunction("searchData");
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
     let inputParam = req.query;
     debugLog("Query based Parameters", inputParam);
@@ -25,10 +27,7 @@ let searchData = (req, res, next) => {
         )
       );
     }
-    let db = req.db;
-    if (db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
+
     let limit =
       req.query.pageSize == null || req.query.pageSize === 0
         ? 5
@@ -61,21 +60,23 @@ let searchData = (req, res, next) => {
       offSet +
       " ;" +
       " SELECT FOUND_ROWS() total_pages;";
-    debugLog("SQL Query : ", query);
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.query(query, (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+
+    _mysql
+      .executeQuery({
+        query: query,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
       });
-    });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };
@@ -101,11 +102,7 @@ const newSearch = (req, res, next) => {
     );
     return;
   }
-  let db = req.db;
-  if (db == null) {
-    next(httpStatus.dataBaseNotInitilizedError());
-    return;
-  }
+
   let limit =
     inputParam.pageSize == null || inputParam.pageSize === 0
       ? 10
@@ -145,22 +142,23 @@ const newSearch = (req, res, next) => {
   _values.push(offSet);
 
   const _query = mysql.format(_hasQuery, _values);
-  console.log("_query", _query);
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      connection.query(_query, (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+    _mysql
+      .executeQuery({
+        query: _query,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
         req.records = result;
-        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
       });
-    });
   } catch (error) {
+    _mysql.releaseConnection();
     next(error);
   }
 };

@@ -2,7 +2,7 @@ import { LINQ } from "node-linq";
 import algaehMysql from "algaeh-mysql";
 // import { debugLog } from "../utils/logging";
 
-const keyPath = "../../keys/keys";
+const keyPath = require("algaeh-keys/keys");
 
 let titleMaster = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
