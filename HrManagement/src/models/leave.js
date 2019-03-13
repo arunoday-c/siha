@@ -4552,7 +4552,8 @@ function calc(db, body) {
 //created by irfan: to save valid leave Application
 function saveF  (_mysql,req,  next,  input, msg){
 
- 
+  // const utilities = new algaehUtilities();
+
 
   _mysql
   .generateRunningNumber({
@@ -4599,6 +4600,8 @@ function saveF  (_mysql,req,  next,  input, msg){
     })
     .then(result => {
 
+
+     
       if(input.absent_id>0){
 
         _mysql
@@ -4636,6 +4639,8 @@ function saveF  (_mysql,req,  next,  input, msg){
   
     })
     .catch(e => {
+
+      // utilities.logger().log("error yy: ",e);
    
       _mysql.rollBackTransaction(() => {
         next(e);
@@ -4644,6 +4649,7 @@ function saveF  (_mysql,req,  next,  input, msg){
 
   })
   .catch(e => { 
+
     _mysql.rollBackTransaction(() => {
       next(e);
     });
