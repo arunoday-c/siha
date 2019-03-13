@@ -8,7 +8,7 @@ import {
 } from "../../utils/algaehApiCall.js";
 import extend from "extend";
 import moment from "moment";
-import { setGlobal } from "../../utils/GlobalFunctions";
+import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
@@ -159,8 +159,9 @@ const getHospitalDetails = $this => {
     uri: "/organization/getOrganization",
     method: "GET",
     data: {
-      hims_d_hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id
+      hims_d_hospital_id: AlgaehOpenContainer(
+        sessionStorage.getItem("CurrencyDetail")
+      ).hims_d_hospital_id
     },
     redux: {
       type: "HOSPITAL_DETAILS_GET_DATA",

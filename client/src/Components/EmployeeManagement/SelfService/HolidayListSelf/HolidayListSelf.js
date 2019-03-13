@@ -3,6 +3,7 @@ import "./HolidayListSelf.css";
 import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 
 export default class HolidayListSelf extends Component {
   constructor(props) {
@@ -20,8 +21,9 @@ export default class HolidayListSelf extends Component {
       method: "GET",
 
       data: {
-        hospital_id: JSON.parse(sessionStorage.getItem("CurrencyDetail"))
-          .hims_d_hospital_id,
+        hospital_id: JSON.parse(
+          AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+        ).hims_d_hospital_id,
         type: "H"
       },
       onSuccess: res => {

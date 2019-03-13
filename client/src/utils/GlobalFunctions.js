@@ -374,7 +374,7 @@ export function getAmountFormart(value, options) {
 
 export function numberFormater(value, options) {
   const settings = {
-    ...JSON.parse(sessionStorage.getItem("CurrencyDetail")),
+    ...AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail")),
     ...{ appendSymbol: true },
     ...options
   };
