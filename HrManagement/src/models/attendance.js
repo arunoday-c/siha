@@ -6742,6 +6742,7 @@ module.exports = {
       .then(AttenResult => {
         //present month
 
+      
         // utilities
         // .logger()
         // .log("AttenResult: ", AttenResult);
@@ -6915,7 +6916,7 @@ module.exports = {
 
               includeValues: insurtColumns,
               values: dailyAttendance,
-              bulkInsertOrUpdate: true
+              bulkInsertOrUpdate: true,printQuery:true
             })
             .then(insertResult => {
               // _mysql.releaseConnection();
@@ -6946,13 +6947,13 @@ module.exports = {
                     input.hospital_id,
                     year,
                     month,
-                    input.employee_id,
+                    input.hims_d_employee_id,
                     from_date,
                     to_date,
                     input.hospital_id,
                     year,
                     month,
-                    input.employee_id,
+                    input.hims_d_employee_id,
                     from_date,
                     to_date
                   ],
@@ -7088,6 +7089,8 @@ module.exports = {
         }
       })
       .catch(e => {
+       
+        utilities.logger().log("eee: ", e);
         _mysql.releaseConnection();
         next(e);
       });
