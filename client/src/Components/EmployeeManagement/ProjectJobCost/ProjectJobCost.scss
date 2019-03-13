@@ -1,3 +1,8 @@
 .tabMaster {
   margin-bottom: 0;
 }
+#projectPayrollGrid {
+  .ReactTable {
+    max-height: 49vh !important;
+  }
+}

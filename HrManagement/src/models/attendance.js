@@ -1974,18 +1974,37 @@ module.exports = {
         .log("manual_timesheet_entry: ", input.manual_timesheet_entry);
 
       if (input.manual_timesheet_entry == "D") {
+        let inputDValue = [input.branch_id, input.sub_department_id];
+        let strDQuery = "";
+        if (input.employee_id != null) {
+          strDQuery = " and TS.employee_id = ?";
+          inputDValue.push(input.employee_id);
+        }
+
+        if (input.select_wise == "M") {
+          const startOfMonth = moment(new Date(input.yearAndMonth))
+            .startOf("month")
+            .format("YYYY-MM-DD");
+
+          const endOfMonth = moment(new Date(input.yearAndMonth))
+            .endOf("month")
+            .format("YYYY-MM-DD");
+          strDQuery +=
+            " and date(TS.attendance_date) between date (?) and date(?) ";
+          inputDValue.push(startOfMonth, endOfMonth);
+        } else {
+          strDQuery += " and TS.attendance_date=? ";
+          inputDValue.push(input.attendance_date);
+        }
+
         _mysql
           .executeQuery({
             query:
               "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,\
               E.full_name,E.sub_department_id FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
               TS.employee_id=E.hims_d_employee_id and (TS.status = 'AB' or TS.status = 'EX') and\
-              TS.attendance_date=? and E.sub_department_id=? and E.hospital_id=?;",
-            values: [
-              input.attendance_date,
-              input.sub_department_id,
-              input.branch_id
-            ],
+              E.sub_department_id=? and E.hospital_id=?;",
+            values: strDQuery,
             printQuery: true
           })
           .then(time_sheet => {
@@ -6389,18 +6408,38 @@ module.exports = {
       utilities.logger().log("manual_timesheet_entry:input ", input);
 
       if (input.manual_timesheet_entry == "D") {
+        let inputDValue = [input.branch_id, input.sub_department_id];
+        let strDQuery = "";
+        if (input.employee_id != null) {
+          strDQuery = " and TS.employee_id = ?";
+          inputDValue.push(input.employee_id);
+        }
+
+        if (input.select_wise == "M") {
+          const startOfMonth = moment(new Date(input.yearAndMonth))
+            .startOf("month")
+            .format("YYYY-MM-DD");
+
+          const endOfMonth = moment(new Date(input.yearAndMonth))
+            .endOf("month")
+            .format("YYYY-MM-DD");
+          strDQuery +=
+            " and date(TS.attendance_date) between date (?) and date(?) ";
+          inputDValue.push(startOfMonth, endOfMonth);
+        } else {
+          strDQuery += " and TS.attendance_date=? ";
+          inputDValue.push(input.attendance_date);
+        }
+
         _mysql
           .executeQuery({
             query:
               "SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,\
               E.full_name,E.sub_department_id FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
               TS.employee_id=E.hims_d_employee_id and (TS.status = 'AB' or TS.status = 'EX') and\
-              TS.attendance_date=? and E.sub_department_id=? and E.hospital_id=?;",
-            values: [
-              input.attendance_date,
-              input.sub_department_id,
-              input.branch_id
-            ],
+              E.sub_department_id=? and E.hospital_id=? " +
+              strDQuery,
+            values: inputDValue,
             printQuery: true
           })
           .then(time_sheet => {
@@ -6879,7 +6918,7 @@ module.exports = {
                 includeValues: insurtColumns,
                 values: dailyAttendance,
                 bulkInsertOrUpdate: true,
-                printQuery:true
+                printQuery: true
               })
               .then(insertResult => {
                 utilities.logger().log("insertResult: ", insertResult);
@@ -6911,7 +6950,7 @@ module.exports = {
                       from_date,
                       to_date
                     ],
-                    printQuery:true
+                    printQuery: true
                   })
                   .then(DilayResult => {
                     utilities.logger().log("DilayResult: ", DilayResult);

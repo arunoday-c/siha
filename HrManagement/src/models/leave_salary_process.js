@@ -11,6 +11,9 @@ module.exports = {
       const _mysql = new algaehMysql();
       const _leaveSalary = req.query;
 
+      const utilities = new algaehUtilities();
+
+      utilities.logger().log("getLeaveSalaryProcess: ");
       _mysql
         .executeQuery({
           query:
@@ -44,6 +47,10 @@ module.exports = {
                   "M"
                 );
 
+                let from_date_month = moment(
+                  annul_leave_app[0].from_date
+                ).format("M");
+
                 let leave_start_date = moment(
                   annul_leave_app[0].from_date
                 ).format("YYYY-MM-DD");
@@ -64,12 +71,22 @@ module.exports = {
                     .endOf("month")
                     .format("YYYY-MM-DD");
 
+                  utilities.logger().log("to_date_month: ", to_date_month);
+                  utilities.logger().log("date_month: ", date_month);
                   if (to_date_month == date_month) {
-                    start_date = moment(fromDate_firstDate).add(-1, "days");
-                    no_of_days = moment(to_date).diff(
-                      moment(start_date),
-                      "days"
-                    );
+                    if (from_date_month == date_month) {
+                      start_date = moment(from_date).add(-1, "days");
+                      no_of_days = moment(to_date).diff(
+                        moment(start_date),
+                        "days"
+                      );
+                    } else {
+                      start_date = moment(fromDate_firstDate).add(-1, "days");
+                      no_of_days = moment(to_date).diff(
+                        moment(start_date),
+                        "days"
+                      );
+                    }
                   } else {
                     no_of_days = moment(fromDate_lastDate).diff(
                       moment(start_date),
@@ -80,6 +97,7 @@ module.exports = {
                     .add(1, "days")
                     .format("YYYY-MM-DD");
 
+                  utilities.logger().log("no_of_days: ", no_of_days);
                   leave_salary_detail.push({
                     year: date_year,
                     month: date_month,
@@ -153,7 +171,7 @@ module.exports = {
           hims_f_employee_leave_salary_header where employee_id=? and `year`=?; \
           SELECT EE.employee_id,EE.earnings_id,EE.amount FROM hims_d_earning_deduction ED, \
           hims_d_employee_earnings EE where EE.earnings_id=ED.hims_d_earning_deduction_id and \
-          ED.annual_salary_comp='Y' and EE.employee_id=?;select attendance_type from hims_test_db.hims_d_hrms_options;",
+          ED.annual_salary_comp='Y' and EE.employee_id=?;select attendance_type from hims_d_hrms_options;",
           values: [
             req.query.hims_d_employee_id,
             req.query.hims_d_employee_id,
