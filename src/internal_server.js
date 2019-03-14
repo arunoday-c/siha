@@ -17,7 +17,7 @@ import { decryption } from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
 const keys = algaehKeys.default;
 let app = express();
-const _port = process.env.PORT; //keys.port;
+const _port = process.env.PORT;
 app.use(compression());
 if (process.env.NODE_ENV == "production") {
   console.log("Running prod...." + _port);
