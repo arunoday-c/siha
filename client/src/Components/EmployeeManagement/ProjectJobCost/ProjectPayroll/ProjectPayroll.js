@@ -90,7 +90,7 @@ export default class ProjectPayroll extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
-                    Select Project - <b>Oman Air SES-156</b>
+                    Selected Project - <b>Oman Air SES-156</b>
                   </h3>
                 </div>
                 {/* <div className="actions">
@@ -127,14 +127,6 @@ export default class ProjectPayroll extends Component {
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Designation " }}
-                            />
-                          )
-                        },
-                        {
-                          fieldName: "EmployeeName",
-                          label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Employee Name" }}
                             />
                           )
                         },

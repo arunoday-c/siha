@@ -277,49 +277,49 @@ export default function ManualAttendanceEvents() {
         $this.state.employee_details[i].hours = strWorked_Hours[0];
         $this.state.employee_details[i].minutes = strWorked_Hours[1];
       }
-      if ($this.state.dataExist === true) {
-        algaehApiCall({
-          uri: "/attendance/updateToDailyTimeSheet",
-          module: "hrManagement",
-          method: "PUT",
-          data: $this.state.employee_details,
-          onSuccess: res => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Processed Succesfully...",
-                type: "success"
-              });
-            }
-          },
-          onFailure: err => {
+      // if ($this.state.dataExist === true) {
+      //   algaehApiCall({
+      //     uri: "/attendance/updateToDailyTimeSheet",
+      //     module: "hrManagement",
+      //     method: "PUT",
+      //     data: $this.state.employee_details,
+      //     onSuccess: res => {
+      //       if (res.data.success) {
+      //         swalMessage({
+      //           title: "Processed Succesfully...",
+      //           type: "success"
+      //         });
+      //       }
+      //     },
+      //     onFailure: err => {
+      //       swalMessage({
+      //         title: err.message,
+      //         type: "error"
+      //       });
+      //     }
+      //   });
+      // } else {
+      algaehApiCall({
+        uri: "/attendance/addToDailyTimeSheet",
+        module: "hrManagement",
+        method: "POST",
+        data: $this.state.employee_details,
+        onSuccess: res => {
+          if (res.data.success) {
             swalMessage({
-              title: err.message,
-              type: "error"
+              title: "Processed Succesfully...",
+              type: "success"
             });
           }
-        });
-      } else {
-        algaehApiCall({
-          uri: "/attendance/addToDailyTimeSheet",
-          module: "hrManagement",
-          method: "POST",
-          data: $this.state.employee_details,
-          onSuccess: res => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Processed Succesfully...",
-                type: "success"
-              });
-            }
-          },
-          onFailure: err => {
-            swalMessage({
-              title: err.message,
-              type: "error"
-            });
-          }
-        });
-      }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
+      // }
     },
     validateDateTime: dateTime => {
       debugger;
