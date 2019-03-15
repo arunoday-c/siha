@@ -6,6 +6,7 @@ import httpStatus from "../utils/httpStatus";
 import { debugLog, debugFunction } from "../utils/logging";
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
+import { LINQ } from "node-linq";
 
 //created by irfan: to add AlgaehGroupMAster
 let addAlgaehGroupMAster = (req, res, next) => {
@@ -99,7 +100,7 @@ let addAlgaehRoleMAster = (req, res, next) => {
 };
 
 //created by irfan: to get
-let getRoleBaseActiveModules = (req, res, next) => {
+let getRoleBaseActiveModulesOLD = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let superUser = "";
@@ -172,7 +173,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
             " select algaeh_m_module_role_privilage_mapping_id, module_id,module_code,module_name, icons,module_code,other_language,role_id, view_privilege\
           from algaeh_m_module_role_privilage_mapping MRP\
           inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
-          where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?",
+          where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?  order by display_order ",
           values: [req.userIdentity.role_id]
         })
         .then(result => {
@@ -217,6 +218,187 @@ let getRoleBaseActiveModules = (req, res, next) => {
           next(error);
         });
     });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+//created by irfan: to get
+let getRoleBaseActiveModules = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let superUser = "";
+    //for admin login
+    if (req.userIdentity.role_type == "AD") {
+      superUser = " and access_by <> 'SU'";
+    }
+
+    if (
+      (req.userIdentity.role_type == "SU" &&
+        req.userIdentity.user_type == "SU") ||
+      (req.userIdentity.role_type == "AD" && req.userIdentity.user_type == "AD")
+    ) {
+      _mysql
+        .executeQuery({
+          query: `select algaeh_d_module_id as module_id, module_name,module_code, icons,other_language  from algaeh_d_app_module\
+          where  record_status=md5('A') ${superUser} order by display_order;
+          select algaeh_app_screens_id, screen_code, screen_name, page_to_redirect,S.other_language, module_id
+          from algaeh_d_app_module M inner join algaeh_d_app_screens S on M.algaeh_d_module_id =S.module_id
+          where  M.record_status=md5('A') and S.record_status='A' ${superUser}  order by display_order `
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          let ResModules = result[0];
+          let ResScreen = result[1];
+
+          let outputArray = [];
+
+          //console.log("userIdentity:", req.userIdentity);
+          if (ResModules.length > 0) {
+            for (let i = 0; i < ResModules.length; i++) {
+              const obj = {
+                ...ResModules[i],
+                ScreenList: new LINQ(ResScreen)
+                  .Where(w => w.module_id == ResModules[i]["module_id"])
+                  .Select(s => {
+                    return {
+                      screen_id: s.algaeh_app_screens_id,
+                      screen_code: s.screen_code,
+                      screen_name: s.screen_name,
+                      page_to_redirect: s.page_to_redirect,
+                      other_language: s.other_language
+                    };
+                  })
+                  .ToArray()
+              };
+
+              outputArray.push(obj);
+            }
+            req.records = outputArray;
+            next();
+          } else {
+            req.records = [];
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      _mysql
+        .executeQuery({
+          query:
+            "  select  algaeh_m_module_role_privilage_mapping_id,module_id,module_code,module_name, \
+            icons,module_code,other_language from algaeh_m_module_role_privilage_mapping MRP\
+            inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
+            where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?  order by display_order;\
+            SELECT algaeh_m_screen_role_privilage_mapping_id, \
+                 module_role_map_id, screen_id,screen_code,screen_name,page_to_redirect,other_language \
+        from algaeh_m_module_role_privilage_mapping MRP inner join \
+                algaeh_m_screen_role_privilage_mapping SRM on MRP.algaeh_m_module_role_privilage_mapping_id=SRM.module_role_map_id\
+                 inner join algaeh_d_app_screens S on SRM.screen_id=S.algaeh_app_screens_id\
+        where MRP.record_status='A'  and SRM.record_status='A' and S.record_status='A' and  MRP.role_id =?",
+          values: [req.userIdentity.role_id, req.userIdentity.role_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          let ResModules = result[0];
+          let ResScreen = result[1];
+
+          let outputArray = [];
+          // console.log("userIdentity:", req.userIdentity);
+          if (ResModules.length > 0) {
+            for (let i = 0; i < ResModules.length; i++) {
+              const obj = {
+                ...ResModules[i],
+                ScreenList: new LINQ(ResScreen)
+                  .Where(
+                    w =>
+                      w.module_role_map_id ==
+                      ResModules[i]["algaeh_m_module_role_privilage_mapping_id"]
+                  )
+                  .Select(s => {
+                    return {
+                      screen_id: s.screen_id,
+                      screen_code: s.screen_code,
+                      screen_name: s.screen_name,
+                      page_to_redirect: s.page_to_redirect,
+                      other_language: s.other_language
+                    };
+                  })
+                  .ToArray()
+              };
+
+              outputArray.push(obj);
+            }
+
+            req.records = outputArray;
+            next();
+          } else {
+            req.records = [];
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+//created by irfan: to get
+let getRoleBaseInActiveComponentsOLD = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT  SERM.view_privilege, screen_element_id,screen_element_code,screen_element_name,component_code,\
+        screen_code, module_code from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
+        inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
+        inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
+        inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+        inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+         where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
+         and  S.record_status='A' and M.record_status=md5('A') and role_id=?",
+        values: [req.userIdentity.role_id]
+      })
+      .then(elementsHide => {
+        _mysql
+          .executeQuery({
+            query:
+              "SELECT module_code,\
+        component_code,screen_code from \
+        algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
+         on CRM.component_id=C.algaeh_d_app_component_id\
+         inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+         inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+         where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and \
+         S.record_status='A'  and role_id=?",
+            values: [req.userIdentity.role_id]
+          })
+          .then(componentHide => {
+            _mysql.releaseConnection();
+            req.records = {
+              listOfComponentsToHide: componentHide,
+              screenElementsToHide: elementsHide
+            };
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

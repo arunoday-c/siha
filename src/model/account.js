@@ -24,6 +24,7 @@ let apiAuth = (req, res, next) => {
     username: "",
     password: ""
   };
+
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let authHeader = req.headers["authorization"];

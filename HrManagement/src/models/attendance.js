@@ -6939,7 +6939,7 @@ module.exports = {
                       from hims_f_daily_attendance where      \
                       hospital_id=?  and year=? and month=?   and  employee_id=? and attendance_date between date(?) and\
                       date(?)  group by employee_id;\
-                      select employee_id,project_id,hospital_id,year,month,COALESCE(sum(hours),0)+ COALESCE(concat(floor(sum(minutes)/60)  ,'.',sum(minutes)%60),0) as worked_hours\
+                      select employee_id,project_id,hospital_id,year,month,sum(hours)as worked_hours, sum(minutes) as worked_minutes\
                       from hims_f_daily_attendance where      \
                       hospital_id=?  and year=? and month=?   and  employee_id=? and attendance_date between date(?) and\
                       date(?)  group by project_id;",
@@ -7035,6 +7035,7 @@ module.exports = {
                         "month",
                         "year",
                         "worked_hours",
+                        "worked_minutes",
                         "hospital_id"
                       ];
 
@@ -7044,6 +7045,7 @@ module.exports = {
                             " INSERT IGNORE INTO hims_f_project_wise_payroll(??) VALUES ? ",
                           values: projectWisePayroll,
                           includeValues: insertCol,
+                          printQuery:true,
 
                           bulkInsertOrUpdate: true
                         })
