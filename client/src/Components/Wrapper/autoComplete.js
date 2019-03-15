@@ -28,10 +28,9 @@ class AutoComplete extends Component {
       !_.isEqual(props.selector, this.props.selector) ||
       !_.isEqual(props.selector.dataSource.data, this.props.selector.dataSource)
     ) {
-      const _estData =
-        props.selector.dataSource.data === undefined
-          ? []
-          : props.selector.dataSource.data;
+      const _estData = !Array.isArray(props.selector.dataSource.data)
+        ? []
+        : props.selector.dataSource.data;
       const _data =
         this.props.selector.sort === null ||
         this.props.selector.sort === undefined

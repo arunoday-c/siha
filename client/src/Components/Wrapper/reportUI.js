@@ -492,9 +492,8 @@ export default class ReportUI extends Component {
               {this.props.plotui !== undefined ? this.props.plotui : null}
             </div>
             <div className="popupInner " ref={el => (this.algehPrintRef = el)}>
+              {" "}
               <div
-                className="print-body"
-                style={{ maxHeight: "68vh" }}
                 dangerouslySetInnerHTML={{
                   __html: this.state._htmlString
                 }}

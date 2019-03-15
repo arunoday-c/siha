@@ -124,7 +124,7 @@ class BreadCrumb extends PureComponent {
           // style={{ ...this.props.breadStyle }}
         >
           <div className="breadCrumb-Data row">
-            <div className="col-lg-3 text hdg_bredcrump">
+            <div className="col-3 text hdg_bredcrump">
               <h5 className="header">{this.props.title}</h5>
               <ul>
                 {this.props.pageNavPath !== undefined

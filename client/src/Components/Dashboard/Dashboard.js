@@ -9,7 +9,6 @@ import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { getCookie } from "../../utils/algaehApiCall.js";
 import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
-
 const AdmissionsReadmissionData = {
   datasets: [
     {
@@ -606,7 +605,7 @@ class Dashboard extends Component {
             <div className="row">
               <div className="col-12">
                 <div className="card animated fadeInUp faster">
-                  <h6>Admissions & 30-Day Readmission Rate</h6>
+                  <h6>Admissions and 30-Day Readmission Rate</h6>
                   <div className="dashboardChartsCntr">
                     <Bar
                       data={AdmissionsReadmissionData}

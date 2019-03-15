@@ -77,24 +77,32 @@ export default class FormGroup extends PureComponent {
 
   getKeyCode(decimal) {
     decimal = decimal || false;
-    const settings = AlgaehOpenContainer(
-      sessionStorage.getItem("CurrencyDetail")
-    );
-    if (!decimal) {
-      this.setState({
-        decimal_separator_code: settings.decimal_separator.charCodeAt(0),
-        thousand_separator_code: settings.thousand_separator.charCodeAt(0)
-      });
-    } else {
-      this.setState({
-        options: {
-          thousandSeparator: settings.thousand_separator,
-          decimalSeparator: settings.decimal_separator,
-          decimalScale: parseInt(settings.decimal_places, 10),
-          allowNegative: true,
-          ...this.props.textBox.decimal
-        }
-      });
+
+    try {
+      let settings = AlgaehOpenContainer(
+        sessionStorage.getItem("CurrencyDetail")
+      );
+      if (typeof settings == "string") {
+        settings = JSON.parse(settings);
+      }
+      if (!decimal) {
+        this.setState({
+          decimal_separator_code: settings.decimal_separator.charCodeAt(0),
+          thousand_separator_code: settings.thousand_separator.charCodeAt(0)
+        });
+      } else {
+        this.setState({
+          options: {
+            thousandSeparator: settings.thousand_separator,
+            decimalSeparator: settings.decimal_separator,
+            decimalScale: parseInt(settings.decimal_places, 10),
+            allowNegative: true,
+            ...this.props.textBox.decimal
+          }
+        });
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
   componentDidMount() {

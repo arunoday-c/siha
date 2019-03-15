@@ -7,11 +7,9 @@ import routes from "./routes";
 import passport from "passport";
 import cors from "cors";
 const LocalStrategy = require("passport-local").Strategy;
-// import morgan from "morgan";
+
 import fs from "fs";
 import path from "path";
-// import keys from "./keys/keys";
-import rfs from "rotating-file-stream";
 import httpStatus from "./utils/httpStatus";
 import { logger, requestTracking } from "./utils/logging";
 import jwtDecode from "jwt-decode";
@@ -19,7 +17,7 @@ import { decryption } from "./utils/cryptography";
 import algaehKeys from "algaeh-keys";
 const keys = algaehKeys.default;
 let app = express();
-const _port = process.env.PORT; //keys.port;
+const _port = process.env.PORT;
 app.use(compression());
 if (process.env.NODE_ENV == "production") {
   console.log("Running prod...." + _port);
