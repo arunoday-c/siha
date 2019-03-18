@@ -577,10 +577,12 @@ module.exports = {
     if (input.hospital_id > 0 && input.year > 0 && input.month > 0) {
       _mysql
         .executeQuery({
-          query: `select hims_f_project_wise_payroll_id,employee_id,E.employee_code,E.full_name,project_id,\
-          P.project_code,P.project_desc,month,year,sum(worked_hours) as worked_hours,sum(worked_minutes) as worked_minutes,sum(cost) as project_cost,PWP.hospital_id\
+          query: `select hims_f_project_wise_payroll_id,employee_id,E.employee_code,E.full_name,d.designation,project_id,\
+          P.project_code,P.project_desc,month,year,sum(worked_hours) as worked_hours,sum(worked_minutes) as worked_minutes,\
+          sum(cost) as project_cost,PWP.hospital_id, COALESCE(sum(worked_hours),0)+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours\
           from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id\
-          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id where PWP.hospital_id=? \
+          inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id \
+          where PWP.hospital_id=? \
           and year=? and month=?  ${employee} ${project} group by ${groupBy} ;`,
           values: [input.hospital_id, input.year, input.month],
           printQuery: true
@@ -592,36 +594,36 @@ module.exports = {
           let total_worked_hours = 0;
           let minutes = 0;
           let total_cost = 0;
-          if (input.project_id > 0) {
-            //ST---COST calculation
-            total_cost = new LINQ(result).Sum(s => parseFloat(s.project_cost));
+          // if (input.project_id > 0) {
+          //ST---COST calculation
+          total_cost = new LINQ(result).Sum(s => parseFloat(s.project_cost));
 
-            //ST---time calculation
+          //ST---time calculation
 
-            total_worked_hours = new LINQ(result).Sum(s =>
-              parseInt(s.worked_hours)
-            );
+          total_worked_hours = new LINQ(result).Sum(s =>
+            parseInt(s.worked_hours)
+          );
 
-            let worked_minutes = new LINQ(result).Sum(s =>
-              parseInt(s.worked_minutes)
-            );
+          let worked_minutes = new LINQ(result).Sum(s =>
+            parseInt(s.worked_minutes)
+          );
 
-            total_worked_hours += parseInt(worked_minutes / 60);
-            minutes = parseInt(worked_minutes % 60);
+          total_worked_hours += parseInt(worked_minutes / 60);
+          minutes = parseInt(worked_minutes % 60);
 
-            _mysql.releaseConnection();
-            req.records = {
-              result,
-              total_worked_hours: total_worked_hours + "." + minutes,
-              noEmployees: result.length,
-              total_cost: total_cost
-            };
-            next();
-          } else {
-            _mysql.releaseConnection();
-            req.records = result;
-            next();
-          }
+          _mysql.releaseConnection();
+          req.records = {
+            project_wise_payroll: result,
+            total_worked_hours: total_worked_hours + "." + minutes,
+            noEmployees: result.length,
+            total_cost: total_cost
+          };
+          next();
+          // } else {
+          //   _mysql.releaseConnection();
+          //   req.records = result;
+          //   next();
+          // }
         })
         .catch(e => {
           _mysql.releaseConnection();
@@ -632,6 +634,234 @@ module.exports = {
         invalid_input: true,
         message: "Please send valid input"
       };
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  addActivity: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (input.description != "null" && input.description != undefined) {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_activity` ( description,created_date,created_by,updated_date,updated_by) values(?,?,?,?,?)",
+          values: [
+            input.description,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  addSubActivity: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (
+      input.description != "null" &&
+      input.description != undefined &&
+      input.activity_id > 0
+    ) {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_sub_activity` (activity_id, description,created_date,created_by,updated_date,updated_by) values(?,?,?,?,?,?)",
+          values: [
+            input.activity_id,
+            input.description,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  getActivity: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    let activity_id = "";
+    if (input.hims_d_activity_id > 0) {
+      activity_id = " and hims_d_activity_id=" + input.hims_d_activity_id;
+    }
+
+    _mysql
+      .executeQuery({
+        query: `SELECT hims_d_activity_id,description FROM hims_d_activity where record_status='A' ${activity_id};`,
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  getSubActivity: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    let activity_id = "";
+    if (input.hims_d_activity_id > 0) {
+      activity_id = " and activity_id=" + input.hims_d_activity_id;
+    }
+
+    _mysql
+      .executeQuery({
+        query: `select hims_d_sub_activity_id,description from hims_d_sub_activity where record_status='A' ${activity_id};`,
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  updateActivity: (req, res, next) => {
+    //const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (input.hims_d_activity_id > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_activity SET description = ?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_activity_id = ?",
+          values: [
+            input.description,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_activity_id
+          ],
+
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "please provide valid id"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  updateSubActivity: (req, res, next) => {
+    //const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (input.hims_d_sub_activity_id > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_sub_activity SET activity_id=?,description = ?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_sub_activity_id = ?",
+          values: [
+            input.activity_id,
+            input.description,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_sub_activity_id
+          ],
+
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "please provide valid id"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
       next();
       return;
     }

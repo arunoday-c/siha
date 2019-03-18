@@ -152,6 +152,7 @@ const newSearch = (req, res, next) => {
       .then(result => {
         _mysql.releaseConnection();
         req.records = result;
+        next();
       })
       .catch(error => {
         _mysql.releaseConnection();

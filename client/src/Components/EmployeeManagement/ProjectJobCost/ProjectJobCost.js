@@ -10,7 +10,7 @@ class ProjectJobCost extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "EmployeeProjectRoster"
+      pageDisplay: "ProjectMapping"
     };
   }
   openTab(e) {
@@ -32,40 +32,14 @@ class ProjectJobCost extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"EmployeeProjectRoster"}
+                algaehtabs={"ProjectMapping"}
                 className={"nav-item tab-button active"}
                 onClick={this.openTab.bind(this)}
               >
                 {
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Employee Project Roster"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"ProjectMapping"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
                       forceLabel: "Project Mapping"
-                    }}
-                  />
-                }
-              </li>
-              <li
-                algaehtabs={"ProjectPayroll"}
-                className={"nav-item tab-button"}
-                onClick={this.openTab.bind(this)}
-              >
-                {
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Project Payroll"
                     }}
                   />
                 }
@@ -79,6 +53,33 @@ class ProjectJobCost extends Component {
                   <AlgaehLabel
                     label={{
                       forceLabel: "Project Activity Management"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"EmployeeProjectRoster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Employee Project Roster"
+                    }}
+                  />
+                }
+              </li>
+
+              <li
+                algaehtabs={"ProjectPayroll"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Project Payroll"
                     }}
                   />
                 }

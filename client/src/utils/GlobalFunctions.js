@@ -373,11 +373,15 @@ export function getAmountFormart(value, options) {
 }
 
 export function numberFormater(value, options) {
+  let CurrencyDetail = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  );
   const settings = {
-    ...AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail")),
+    ...CurrencyDetail,
     ...{ appendSymbol: true },
     ...options
   };
+  debugger;
   const precesions =
     settings.decimal_places !== undefined && settings.decimal_places !== ""
       ? parseFloat(settings.decimal_places)

@@ -99,8 +99,9 @@ const ClearData = $this => {
     finalizeBtn: true,
     employee_id: null,
     employee_name: null,
-    hospital_id: AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      .hims_d_hospital_id,
+    hospital_id: JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).hims_d_hospital_id,
 
     total_days: null,
     absent_days: null,
