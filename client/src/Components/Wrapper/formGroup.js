@@ -79,8 +79,11 @@ export default class FormGroup extends PureComponent {
     decimal = decimal || false;
 
     try {
-      let settings = AlgaehOpenContainer(
-        sessionStorage.getItem("CurrencyDetail")
+      // let settings = AlgaehOpenContainer(
+      //   sessionStorage.getItem("CurrencyDetail")
+      // );
+      let settings = JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       );
       if (typeof settings == "string") {
         settings = JSON.parse(settings);

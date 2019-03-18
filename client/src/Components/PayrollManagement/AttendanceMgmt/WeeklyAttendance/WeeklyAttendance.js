@@ -39,8 +39,7 @@ export default class WeeklyAttendance extends Component {
       hims_d_employee_id: null,
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      )
-        .hims_d_hospital_id,
+      ).hims_d_hospital_id,
       from_date: _fromDate, //moment(new Date())
       // .subtract(1, "days")
       // .format("YYYY-MM-DD"),

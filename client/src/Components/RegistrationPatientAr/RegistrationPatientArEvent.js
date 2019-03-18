@@ -159,8 +159,8 @@ const getHospitalDetails = $this => {
     uri: "/organization/getOrganization",
     method: "GET",
     data: {
-      hims_d_hospital_id: AlgaehOpenContainer(
-        sessionStorage.getItem("CurrencyDetail")
+      hims_d_hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id
     },
     redux: {

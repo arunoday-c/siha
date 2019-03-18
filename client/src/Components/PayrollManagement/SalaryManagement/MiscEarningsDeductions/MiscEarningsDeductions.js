@@ -31,8 +31,9 @@ export default class MiscEarningsDeductions extends Component {
       isBulk: false,
       month: moment(new Date()).format("M"),
       yearAndMonth: new Date(),
-      hospital_id: AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       lockEarnings: false
     };
     this.getEarnDed("E");
@@ -133,8 +134,9 @@ export default class MiscEarningsDeductions extends Component {
       isBulk: false,
       month: moment(new Date()).format("M"),
       yearAndMonth: new Date(),
-      hospital_id: AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-        .hims_d_hospital_id,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       lockEarnings: false
     });
   }
