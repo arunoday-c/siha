@@ -595,7 +595,6 @@ module.exports = {
           if (input.project_id > 0) {
             //ST---COST calculation
             total_cost = new LINQ(result).Sum(s => parseFloat(s.project_cost));
-
             //ST---time calculation
 
             total_worked_hours = new LINQ(result).Sum(s =>
