@@ -92,6 +92,14 @@ class ProjectPayroll extends Component {
 
   render() {
     let allYears = getYears();
+
+    const Project_name =
+      this.props.projects === undefined
+        ? []
+        : this.props.projects.filter(
+            f => f.hims_d_project_id === this.state.project_id
+          );
+    debugger;
     return (
       <div className="projectPayrollScreen">
         <div className="row  inner-top-search">
@@ -274,7 +282,12 @@ class ProjectPayroll extends Component {
               <div className="portlet-title">
                 <div className="caption">
                   <h3 className="caption-subject">
-                    Selected Project - <b>Oman Air SES-156</b>
+                    Selected Project -
+                    <b>
+                      {Project_name.length > 0
+                        ? Project_name[0].project_desc
+                        : ""}
+                    </b>
                   </h3>
                 </div>
                 {/* <div className="actions">
