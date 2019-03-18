@@ -827,7 +827,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "UPDATE hims_d_activity SET activity_id=?,description = ?,\
+            "UPDATE hims_d_sub_activity SET activity_id=?,description = ?,\
             updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_sub_activity_id = ?",
           values: [
             input.activity_id,
