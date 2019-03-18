@@ -4,6 +4,7 @@ import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import EmployeeProjectRoster from "./EmployeeProjectRoster/EmployeeProjectRoster";
 import ProjectMapping from "./ProjectMapping/ProjectMapping";
 import ProjectPayroll from "./ProjectPayroll/ProjectPayroll";
+import ProjectActivityMgmnt from "./ProjectActivityMgmnt/ProjectActivityMgmnt";
 
 class ProjectJobCost extends Component {
   constructor(props) {
@@ -69,6 +70,19 @@ class ProjectJobCost extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"ProjectActivityMgmnt"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Project Activity Management"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -79,6 +93,8 @@ class ProjectJobCost extends Component {
             <ProjectMapping />
           ) : this.state.pageDisplay === "ProjectPayroll" ? (
             <ProjectPayroll />
+          ) : this.state.pageDisplay === "ProjectActivityMgmnt" ? (
+            <ProjectActivityMgmnt />
           ) : null}
         </div>
       </div>
