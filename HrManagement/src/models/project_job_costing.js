@@ -637,6 +637,234 @@ module.exports = {
       next();
       return;
     }
+  },
+  //created by irfan:
+  addActivity: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (input.description != "null" && input.description != undefined) {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_activity` ( description,created_date,created_by,updated_date,updated_by) values(?,?,?,?,?)",
+          values: [
+            input.description,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  addSubActivity: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (
+      input.description != "null" &&
+      input.description != undefined &&
+      input.activity_id > 0
+    ) {
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO `hims_d_sub_activity` (activity_id, description,created_date,created_by,updated_date,updated_by) values(?,?,?,?,?,?)",
+          values: [
+            input.activity_id,
+            input.description,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  getActivity: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    let activity_id = "";
+    if (input.hims_d_activity_id > 0) {
+      activity_id = " and hims_d_activity_id=" + input.hims_d_activity_id;
+    }
+
+    _mysql
+      .executeQuery({
+        query: `SELECT hims_d_activity_id,description FROM hims_d_activity where record_status='A' ${activity_id};`,
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  getSubActivity: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    let activity_id = "";
+    if (input.hims_d_activity_id > 0) {
+      activity_id = " and activity_id=" + input.hims_d_activity_id;
+    }
+
+    _mysql
+      .executeQuery({
+        query: `select hims_d_sub_activity_id,description from hims_d_sub_activity where record_status='A' ${activity_id};`,
+
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan:
+  updateActivity: (req, res, next) => {
+    //const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (input.hims_d_activity_id > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_activity SET description = ?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_activity_id = ?",
+          values: [
+            input.description,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_activity_id
+          ],
+
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "please provide valid id"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
+      next();
+      return;
+    }
+  },
+  //created by irfan:
+  updateSubActivity: (req, res, next) => {
+    //const utilities = new algaehUtilities();
+    let input = req.body;
+
+    if (input.hims_d_sub_activity_id > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE hims_d_activity SET activity_id=?,description = ?,\
+            updated_date=?, updated_by=?  WHERE record_status='A' and  hims_d_sub_activity_id = ?",
+          values: [
+            input.activity_id,
+            input.description,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_sub_activity_id
+          ],
+
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          if (result.affectedRows > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "please provide valid id"
+            };
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide valid input"
+      };
+
+      next();
+      return;
+    }
   }
 };
 
