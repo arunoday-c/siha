@@ -201,30 +201,6 @@ export default class ProjectPayroll extends Component {
                   <div className="col-2">
                     <AlgaehLabel
                       label={{
-                        forceLabel: "Total OT Hr"
-                      }}
-                    />
-                    <h6>376 Hr</h6>
-                  </div>
-                  <div className="col-2">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Total WO OT Hr"
-                      }}
-                    />
-                    <h6>176 Hr</h6>
-                  </div>
-                  <div className="col-2">
-                    <AlgaehLabel
-                      label={{
-                        forceLabel: "Net Hr"
-                      }}
-                    />
-                    <h6>2228 Hr</h6>
-                  </div>
-                  <div className="col-2">
-                    <AlgaehLabel
-                      label={{
                         forceLabel: "Project Total Cost"
                       }}
                     />
