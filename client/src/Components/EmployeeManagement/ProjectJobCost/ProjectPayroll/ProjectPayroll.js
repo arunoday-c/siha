@@ -36,6 +36,7 @@ class ProjectPayroll extends Component {
       total_worked_hours: 0,
       project_id: null,
       employee_id: null,
+      employee_name: null,
       total_cost: 0,
       lbl_total: "Total Employees"
     };
@@ -245,34 +246,6 @@ class ProjectPayroll extends Component {
             </div>
           </div>
 
-          {/* <div className="col-3" style={{ marginTop: 10 }}>
-            <div
-              className="row"
-              style={{
-                border: " 1px solid #ced4d9",
-                borderRadius: 5,
-                marginLeft: 0
-              }}
-            >
-              <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                <h6>Employee Name</h6>
-              </div>
-              <div
-                className="col-lg-3"
-                style={{ borderLeft: "1px solid #ced4d8" }}
-              >
-                <i
-                  className="fas fa-search fa-lg"
-                  style={{
-                    paddingTop: 17,
-                    paddingLeft: 3,
-                    cursor: "pointer"
-                  }}
-                />
-              </div>
-            </div>
-          </div> */}
           <div className="col-2 form-group">
             <button
               style={{ marginTop: 21 }}
@@ -304,11 +277,6 @@ class ProjectPayroll extends Component {
                     </b>
                   </h3>
                 </div>
-                {/* <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
               </div>
               <div className="portlet-body">
                 <div className="row">
