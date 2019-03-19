@@ -1668,6 +1668,100 @@ let deleteModuleForRole = (req, res, next) => {
   // }
 };
 
+//created by irfan:
+let assignScreens = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let modules = req.body.inputs;
+    let execute_query = "";
+
+    if (modules != undefined && modules.length > 0) {
+      for (let i = 0; i < modules.length; i++) {
+        execute_query += _mysql.mysqlQueryFormat(
+          "INSERT INTO `algaeh_m_module_role_privilage_mapping` (module_id, role_id, privilege_description, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?,?); ",
+          [
+            modules[i]["module_id"],
+            req.body.role_id,
+            req.body.privilege_description,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ]
+        );
+      }
+
+      _mysql
+        .executeQueryWithTransaction({
+          query: execute_query
+        })
+        .then(headerResult => {
+          let execute_detail_query = "";
+          if (headerResult.length > 0) {
+            for (let k = 0; k < headerResult.length; k++) {
+              for (let m = 0; m < modules[k]["screen_ids"].length; m++) {
+                execute_detail_query += _mysql.mysqlQueryFormat(
+                  " INSERT INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
+                  [
+                    headerResult[k]["insertId"],
+                    modules[k]["screen_ids"][m],
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date()
+                  ]
+                );
+              }
+            }
+            _mysql
+              .executeQueryWithTransaction({
+                query: execute_detail_query
+              })
+              .then(detailResult => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = detailResult[0];
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            //inserion error
+
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+            req.records = {
+              invalid_input: true,
+              message: "insertion error ,send valid input"
+            };
+            next();
+            return;
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+      return;
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 module.exports = {
   addAlgaehGroupMAster,
   addAlgaehRoleMAster,
@@ -1686,5 +1780,6 @@ module.exports = {
   updateFormula,
   deleteFormula,
   deleteScreenForRole,
-  deleteModuleForRole
+  deleteModuleForRole,
+  assignScreens
 };
