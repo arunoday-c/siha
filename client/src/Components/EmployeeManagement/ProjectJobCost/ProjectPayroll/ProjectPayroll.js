@@ -36,8 +36,10 @@ class ProjectPayroll extends Component {
       total_worked_hours: 0,
       project_id: null,
       employee_id: null,
+      total_cost: 0,
       lbl_total: "Total Employees"
     };
+    this.baseState = this.state;
   }
 
   eventHandaler(e) {
@@ -45,6 +47,9 @@ class ProjectPayroll extends Component {
   }
   LoadData() {
     ProjectPayrollEvents().LoadProjectDetails(this);
+  }
+  clearState() {
+    this.setState(this.baseState);
   }
 
   componentDidMount() {
@@ -275,6 +280,13 @@ class ProjectPayroll extends Component {
               onClick={this.LoadData.bind(this)}
             >
               <span>Load</span>
+            </button>
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 21, marginLeft: 5 }}
+              className="btn btn-default"
+            >
+              Clear
             </button>
           </div>
         </div>
