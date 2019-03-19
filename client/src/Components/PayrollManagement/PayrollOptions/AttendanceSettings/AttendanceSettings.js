@@ -36,6 +36,7 @@ export default class AttendanceSettings extends Component {
   getEarnings() {
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
+      module: "hrManagement",
       method: "GET",
       data: {
         component_category: "E"

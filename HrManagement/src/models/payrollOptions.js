@@ -278,7 +278,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_d_earning_deduction_id,earning_deduction_description,earning_deduction_code,short_desc FROM algaeh_hims_db.hims_d_earning_deduction where component_category='E' and miscellaneous_component='N' and record_status='A';"
+            "SELECT hims_d_earning_deduction_id,earning_deduction_description,earning_deduction_code,short_desc FROM hims_d_earning_deduction where component_category='E' and miscellaneous_component='N' and record_status='A';"
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -297,7 +297,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT basic_earning_component,airfare_factor,annual_leave_process_separately,airfare_percentage FROM algaeh_hims_db.hims_d_hrms_options;"
+            "SELECT basic_earning_component,airfare_factor,annual_leave_process_separately,airfare_percentage FROM hims_d_hrms_options;"
         })
         .then(result => {
           _mysql.releaseConnection();
