@@ -34,6 +34,8 @@ class ProjectPayroll extends Component {
       project_wise_payroll: [],
       noEmployees: 0,
       total_worked_hours: 0,
+      project_id: null,
+      employee_id: null,
       lbl_total: "Total Employees"
     };
   }

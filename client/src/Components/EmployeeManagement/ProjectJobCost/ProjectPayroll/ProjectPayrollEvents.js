@@ -35,6 +35,7 @@ export default function ProjectPayrollEvents() {
       });
     },
     LoadProjectDetails: $this => {
+      debugger;
       let lbl_total = "Total Project";
       let inputObj = {
         hospital_id: $this.state.hospital_id,

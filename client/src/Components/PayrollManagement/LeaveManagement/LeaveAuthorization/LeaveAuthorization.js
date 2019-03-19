@@ -168,6 +168,7 @@ export default class LeaveAuthorization extends Component {
   getLeaveLevels() {
     algaehApiCall({
       uri: "/leave/getLeaveLevels",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {

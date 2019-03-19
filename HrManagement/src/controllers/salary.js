@@ -46,9 +46,15 @@ export default () => {
     "/finalizedSalaryProcess",
     finalizedSalaryProcess,
     (req, res, next) => {
+      let result = "";
+      if (req.flag == 1) {
+        result = "Monthly Accural days not defined please check and re-process";
+      } else {
+        result = req.records;
+      }
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        result: req.records
+        success: req.flag == 1 ? false : true,
+        result: result
       });
     }
   );

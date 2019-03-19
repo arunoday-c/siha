@@ -127,6 +127,7 @@ const ClearData = $this => {
 const FinalizeSalary = $this => {
   AlgaehLoader({ show: true });
 
+  debugger;
   const salary_header_id = _.map($this.state.salaryprocess_header, o => {
     return o.hims_f_salary_id;
   });
@@ -135,11 +136,17 @@ const FinalizeSalary = $this => {
     return o.employee_id;
   });
 
+  const net_salary = _.map($this.state.salaryprocess_header, o => {
+    return { net_salary: o.net_salary, employee_id: o.employee_id };
+  });
+
   let inputObj = {
     salary_header_id: salary_header_id,
     employee_id: employee_id,
     year: $this.state.year,
-    month: $this.state.month
+    month: $this.state.month,
+    hospital_id: $this.state.hospital_id,
+    net_salary: net_salary
   };
 
   algaehApiCall({
@@ -148,14 +155,22 @@ const FinalizeSalary = $this => {
     data: inputObj,
     method: "PUT",
     onSuccess: response => {
-      $this.setState({
-        finalizeBtn: true
-      });
-      AlgaehLoader({ show: false });
-      swalMessage({
-        title: "Finalized Successfully...",
-        type: "success"
-      });
+      if (response.data.success) {
+        $this.setState({
+          finalizeBtn: true
+        });
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: "Finalized Successfully...",
+          type: "success"
+        });
+      } else {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: response.data.result,
+          type: "error"
+        });
+      }
     },
     onFailure: error => {
       AlgaehLoader({ show: false });

@@ -95,6 +95,7 @@ class LoanAdjustment extends Component {
       });
       algaehApiCall({
         uri: "/loan/getLoanApplication",
+        module: "hrManagement",
         method: "GET",
         data: {
           employee_id: this.state.hims_d_employee_id,

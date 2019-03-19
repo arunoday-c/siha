@@ -1936,6 +1936,10 @@ module.exports = {
       const _mysql = new algaehMysql();
       const inputParam = { ...req.body };
 
+      const utilities = new algaehUtilities();
+
+      utilities.logger().log("employee_id: ", inputParam.employee_id);
+
       _mysql
         .generateRunningNumber({
           modules: ["LEAVE_ACCRUAL"]
@@ -1962,109 +1966,184 @@ module.exports = {
               printQuery: true
             })
             .then(leave_accrual_detail => {
-              let leave_salary_accrual_detail = leave_accrual_detail;
+              utilities
+                .logger()
+                .log("leave_accrual_detail: ", leave_accrual_detail);
+              if (leave_accrual_detail.length > 0) {
+                let leave_salary_accrual_detail = leave_accrual_detail;
 
-              const total_leave_salary = _.sumBy(
-                leave_salary_accrual_detail,
-                s => {
-                  return s.leave_salary;
-                }
-              );
+                const total_leave_salary = _.sumBy(
+                  leave_salary_accrual_detail,
+                  s => {
+                    return s.leave_salary;
+                  }
+                );
 
-              const total_airfare_amount = _.sumBy(
-                leave_salary_accrual_detail,
-                s => {
-                  return s.airfare_amount;
-                }
-              );
+                const total_airfare_amount = _.sumBy(
+                  leave_salary_accrual_detail,
+                  s => {
+                    return s.airfare_amount;
+                  }
+                );
 
-              _mysql
-                .executeQuery({
-                  query:
-                    "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year,month, total_leave_salary,total_airfare_amount\
-                    ,leave_salary_date ,created_date,created_by)\
-                    VALUE(?,?,?,?,?,?,?,?);",
-                  values: [
-                    leave_salary_number,
-                    inputParam.year,
-                    inputParam.month,
-                    total_leave_salary,
-                    total_airfare_amount,
-                    moment(new Date()).format("YYYY-MM-DD"),
-                    new Date(),
-                    req.userIdentity.algaeh_d_app_user_id
-                  ],
-                  printQuery: true
-                })
-                .then(accrual_header => {
-                  let leave_salary_header_id = accrual_header.insertId;
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO `hims_f_leave_salary_accrual_header` (leave_salary_number,year,month, total_leave_salary,total_airfare_amount\
+                      ,leave_salary_date ,created_date,created_by)\
+                      VALUE(?,?,?,?,?,?,?,?);",
+                    values: [
+                      leave_salary_number,
+                      inputParam.year,
+                      inputParam.month,
+                      total_leave_salary,
+                      total_airfare_amount,
+                      moment(new Date()).format("YYYY-MM-DD"),
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(accrual_header => {
+                    let leave_salary_header_id = accrual_header.insertId;
 
-                  let IncludeValues = [
-                    "employee_id",
-                    "year",
-                    "month",
-                    "leave_days",
-                    "leave_salary",
-                    "airfare_amount"
-                  ];
+                    let IncludeValues = [
+                      "employee_id",
+                      "year",
+                      "month",
+                      "leave_days",
+                      "leave_salary",
+                      "airfare_amount"
+                    ];
 
-                  _mysql
-                    .executeQuery({
-                      query:
-                        "INSERT INTO hims_f_leave_salary_accrual_detail(??) VALUES ?",
-                      values: leave_salary_accrual_detail,
-                      includeValues: IncludeValues,
-                      extraValues: {
-                        leave_salary_header_id: leave_salary_header_id
-                      },
-                      bulkInsertOrUpdate: true,
-                      printQuery: true
-                    })
-                    .then(leave_detail => {
-                      _mysql
-                        .executeQuery({
-                          query:
-                            "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
-                          values: [inputParam.salary_header_id],
-                          printQuery: true
-                        })
-                        .then(salary_process => {
-                          InsertEmployeeLeaveSalary({
-                            leave_salary_accrual_detail: leave_salary_accrual_detail,
-                            _mysql: _mysql
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO hims_f_leave_salary_accrual_detail(??) VALUES ?",
+                        values: leave_salary_accrual_detail,
+                        includeValues: IncludeValues,
+                        extraValues: {
+                          leave_salary_header_id: leave_salary_header_id
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: true
+                      })
+                      .then(leave_detail => {
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
+                            values: [inputParam.salary_header_id],
+                            printQuery: true
                           })
-                            .then(Employee_Leave_Salary => {
-                              _mysql.commitTransaction(() => {
-                                _mysql.releaseConnection();
-                                req.records = {
-                                  leave_salary_number: leave_salary_number
-                                };
-                                next();
-                              });
+                          .then(salary_process => {
+                            InsertEmployeeLeaveSalary({
+                              leave_salary_accrual_detail: leave_salary_accrual_detail,
+                              _mysql: _mysql
                             })
-                            .catch(e => {
-                              _mysql.rollBackTransaction(() => {
-                                next(e);
+                              .then(Employee_Leave_Salary => {
+                                _mysql
+                                  .executeQuery({
+                                    query:
+                                      "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes\
+                                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?); \
+                                      SELECT (standard_working_hours-standard_break_hours) as total_work_hrs FROM hims_d_hrms_options;",
+                                    values: [
+                                      inputParam.year,
+                                      inputParam.month,
+                                      inputParam.hospital_id,
+                                      inputParam.employee_id
+                                    ],
+                                    printQuery: true
+                                  })
+                                  .then(project_wise_payroll => {
+                                    utilities
+                                      .logger()
+                                      .log(
+                                        "project_wise_payroll: ",
+                                        project_wise_payroll[0]
+                                      );
+                                    utilities
+                                      .logger()
+                                      .log(
+                                        "project_wise_payroll: ",
+                                        project_wise_payroll[1]
+                                      );
+                                    if (project_wise_payroll[0].length > 0) {
+                                      UpdateProjectWisePayroll({
+                                        project_wise_payroll:
+                                          project_wise_payroll[0],
+                                        hrms_options: project_wise_payroll[1],
+                                        _mysql: _mysql,
+                                        net_salary: inputParam.net_salary
+                                      })
+                                        .then(Employee_Leave_Salary => {
+                                          _mysql.commitTransaction(() => {
+                                            _mysql.releaseConnection();
+                                            req.records = {
+                                              leave_salary_number: leave_salary_number
+                                            };
+                                            next();
+                                          });
+                                        })
+                                        .catch(e => {
+                                          _mysql.rollBackTransaction(() => {
+                                            next(e);
+                                          });
+                                        });
+                                    } else {
+                                      _mysql.commitTransaction(() => {
+                                        _mysql.releaseConnection();
+                                        req.records = {
+                                          leave_salary_number: leave_salary_number
+                                        };
+                                        next();
+                                      });
+                                    }
+                                  })
+                                  .catch(e => {
+                                    _mysql.rollBackTransaction(() => {
+                                      next(e);
+                                    });
+                                  });
+                                // _mysql.commitTransaction(() => {
+                                //   _mysql.releaseConnection();
+                                //   req.records = {
+                                //     leave_salary_number: leave_salary_number
+                                //   };
+                                //   next();
+                                // });
+                              })
+                              .catch(e => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(e);
+                                });
                               });
+                          })
+                          .catch(e => {
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
                             });
-                        })
-                        .catch(e => {
-                          _mysql.rollBackTransaction(() => {
-                            next(e);
                           });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
                         });
-                    })
-                    .catch(error => {
-                      _mysql.rollBackTransaction(() => {
-                        next(error);
                       });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
                     });
-                })
-                .catch(error => {
-                  _mysql.rollBackTransaction(() => {
-                    next(error);
                   });
+              } else {
+                utilities.logger().log("req.flag: ", "1");
+                _mysql.rollBackTransaction(() => {
+                  req.flag = 1;
+                  next();
                 });
+              }
             })
             .catch(e => {
               _mysql.rollBackTransaction(() => {
@@ -3322,6 +3401,64 @@ function getMiscellaneous(options) {
         final_earning_amount,
         final_deduction_amount
       });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    next(e);
+  });
+}
+
+function UpdateProjectWisePayroll(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let project_wise_payroll = options.project_wise_payroll;
+      let _mysql = options._mysql;
+      let net_salary = options.net_salary;
+      let hrms_options = options.hrms_options;
+      let strQry = "";
+
+      // const utilities = new algaehUtilities();
+
+      // utilities.logger().log("UpdateProjectWisePayroll: ");
+
+      for (let z = 0; z < project_wise_payroll.length; z++) {
+        let cost = 0;
+        let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
+
+        let worked_minutes = project_wise_payroll[z]["worked_minutes"];
+        complete_hours += parseInt(worked_minutes / 60);
+        let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
+        complete_hours = complete_hours + "." + mins;
+
+        let net_salary_amt = _.filter(net_salary, f => {
+          return f.employee_id == project_wise_payroll[z]["employee_id"];
+        });
+
+        cost = parseFloat(net_salary_amt[0].net_salary) / 365;
+
+        cost = cost / parseFloat(hrms_options[0].total_work_hrs);
+
+        cost = cost * complete_hours;
+
+        strQry += _mysql.mysqlQueryFormat(
+          "UPDATE hims_f_project_wise_payroll set cost=? where hims_f_project_wise_payroll_id=?; ",
+          [cost, project_wise_payroll[z].hims_f_project_wise_payroll_id]
+        );
+      }
+
+      _mysql
+        .executeQuery({
+          query: strQry,
+          printQuery: true
+        })
+        .then(project_wise_payroll => {
+          resolve();
+        })
+        .catch(e => {
+          reject(e);
+          next(e);
+        });
     } catch (e) {
       reject(e);
     }
