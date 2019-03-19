@@ -67,7 +67,7 @@ export default function ProjectPayrollEvents() {
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
-              title: "Invalid. Please process attendence",
+              title: "Please process attendance for selected month",
               type: "error"
             });
           }
