@@ -137,7 +137,11 @@ const FinalizeSalary = $this => {
   });
 
   const net_salary = _.map($this.state.salaryprocess_header, o => {
-    return { net_salary: o.net_salary, employee_id: o.employee_id };
+    return {
+      net_salary: o.net_salary,
+      total_paid_days: o.total_paid_days,
+      employee_id: o.employee_id
+    };
   });
 
   let inputObj = {

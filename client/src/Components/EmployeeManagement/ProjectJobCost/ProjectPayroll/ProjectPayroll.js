@@ -347,36 +347,34 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Total Working Hr" }}
                             />
-                          )
+                          ),
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         },
-                        // {
-                        //   fieldName: "otHr",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Total OT Hr" }}
-                        //     />
-                        //   )
-                        // },
-                        // {
-                        //   fieldName: "project",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Total WO OT Hr" }}
-                        //     />
-                        //   )
-                        // },
                         {
                           fieldName: "project_cost",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Project Cost" }}
                             />
-                          )
+                          ),
+
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         }
                       ]}
                       keyId="projectPayrollGrid"
                       dataSource={{ data: this.state.project_wise_payroll }}
                       isEditable={false}
+                      filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{}}
                       others={{}}

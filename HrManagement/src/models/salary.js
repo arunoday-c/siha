@@ -2047,8 +2047,14 @@ module.exports = {
                                     query:
                                       "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes\
                                       from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?); \
-                                      SELECT (standard_working_hours-standard_break_hours) as total_work_hrs FROM hims_d_hrms_options;",
+                                      Select employee_id,\
+                                      COALESCE(sum(worked_hours))+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours \
+                                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
                                     values: [
+                                      inputParam.year,
+                                      inputParam.month,
+                                      inputParam.hospital_id,
+                                      inputParam.employee_id,
                                       inputParam.year,
                                       inputParam.month,
                                       inputParam.hospital_id,
@@ -2057,23 +2063,12 @@ module.exports = {
                                     printQuery: true
                                   })
                                   .then(project_wise_payroll => {
-                                    utilities
-                                      .logger()
-                                      .log(
-                                        "project_wise_payroll: ",
-                                        project_wise_payroll[0]
-                                      );
-                                    utilities
-                                      .logger()
-                                      .log(
-                                        "project_wise_payroll: ",
-                                        project_wise_payroll[1]
-                                      );
                                     if (project_wise_payroll[0].length > 0) {
                                       UpdateProjectWisePayroll({
                                         project_wise_payroll:
                                           project_wise_payroll[0],
-                                        hrms_options: project_wise_payroll[1],
+                                        total_hours_project:
+                                          project_wise_payroll[1],
                                         _mysql: _mysql,
                                         net_salary: inputParam.net_salary
                                       })
@@ -3415,7 +3410,8 @@ function UpdateProjectWisePayroll(options) {
       let project_wise_payroll = options.project_wise_payroll;
       let _mysql = options._mysql;
       let net_salary = options.net_salary;
-      let hrms_options = options.hrms_options;
+
+      let total_hours_project = options.total_hours_project;
       let strQry = "";
 
       // const utilities = new algaehUtilities();
@@ -3434,10 +3430,17 @@ function UpdateProjectWisePayroll(options) {
         let net_salary_amt = _.filter(net_salary, f => {
           return f.employee_id == project_wise_payroll[z]["employee_id"];
         });
+        let total_hours = _.filter(total_hours_project, f => {
+          return f.employee_id == project_wise_payroll[z]["employee_id"];
+        });
 
-        cost = parseFloat(net_salary_amt[0].net_salary) / 365;
+        // utilities.logger().log("total_hours: ", total_hours);
 
-        cost = cost / parseFloat(hrms_options[0].total_work_hrs);
+        cost =
+          parseFloat(net_salary_amt[0].net_salary) /
+          parseFloat(total_hours[0].complete_hours);
+
+        // utilities.logger().log("cost: ", cost);
 
         cost = cost * complete_hours;
 
@@ -3457,7 +3460,6 @@ function UpdateProjectWisePayroll(options) {
         })
         .catch(e => {
           reject(e);
-          next(e);
         });
     } catch (e) {
       reject(e);
