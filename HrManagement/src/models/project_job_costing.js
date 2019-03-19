@@ -768,8 +768,8 @@ module.exports = {
 
     _mysql
       .executeQuery({
-        query: `select hims_d_sub_activity_id,description from hims_d_sub_activity where record_status='A' ${activity_id};`,
-
+        query: `select hims_d_sub_activity_id,activity_id,description from hims_d_sub_activity where \
+        record_status='A' ${activity_id};`,
         printQuery: true
       })
       .then(result => {
