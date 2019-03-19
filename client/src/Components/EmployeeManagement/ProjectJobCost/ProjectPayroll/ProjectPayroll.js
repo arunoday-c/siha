@@ -367,7 +367,7 @@ class ProjectPayroll extends Component {
                       keyId="projectPayrollGrid"
                       dataSource={{ data: this.state.project_wise_payroll }}
                       isEditable={false}
-                      filter={false}
+                      filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{}}
                       others={{}}
