@@ -624,7 +624,7 @@ module.exports = {
           );
 
           total_worked_hours += parseInt(worked_minutes / 60);
-          minutes = parseInt(worked_minutes % 60);
+          minutes = String("0" + parseInt(worked_minutes % 60)).slice(-2);
 
           req.records = {
             project_wise_payroll: outputArray,
