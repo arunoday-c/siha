@@ -573,13 +573,13 @@ module.exports = {
     if (input.project_id > 0) {
       project = " and project_id=" + input.project_id;
     }
-
+    // COALESCE(sum(worked_hours),0)+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours
     if (input.hospital_id > 0 && input.year > 0 && input.month > 0) {
       _mysql
         .executeQuery({
           query: `select hims_f_project_wise_payroll_id,employee_id,E.employee_code,E.full_name,d.designation,project_id,\
           P.project_code,P.project_desc,month,year,sum(worked_hours) as worked_hours,sum(worked_minutes) as worked_minutes,\
-          sum(cost) as project_cost,PWP.hospital_id, COALESCE(sum(worked_hours),0)+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours\
+          sum(cost) as project_cost,PWP.hospital_id\
           from hims_f_project_wise_payroll PWP inner join hims_d_employee  E on PWP.employee_id=E.hims_d_employee_id\
           inner join hims_d_project  P on PWP.project_id=P.hims_d_project_id left join hims_d_designation d on E.employee_designation_id = d.hims_d_designation_id \
           where PWP.hospital_id=? \
@@ -588,7 +588,7 @@ module.exports = {
           printQuery: true
         })
         .then(result => {
-          // _mysql.releaseConnection();
+          _mysql.releaseConnection();
           // req.records = result;
           // next();
           let total_worked_hours = 0;
@@ -596,6 +596,21 @@ module.exports = {
           let total_cost = 0;
           // if (input.project_id > 0) {
           //ST---COST calculation
+
+          let outputArray = [];
+          for (let i = 0; i < result.length; i++) {
+            let complete_hours = parseInt(result[i]["worked_hours"]);
+
+            let worked_minutes = result[i]["worked_minutes"];
+
+            complete_hours += parseInt(worked_minutes / 60);
+            let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
+            outputArray.push({
+              ...result[i],
+              complete_hours: complete_hours + "." + mins
+            });
+          }
+
           total_cost = new LINQ(result).Sum(s => parseFloat(s.project_cost));
 
           //ST---time calculation
@@ -611,9 +626,8 @@ module.exports = {
           total_worked_hours += parseInt(worked_minutes / 60);
           minutes = parseInt(worked_minutes % 60);
 
-          _mysql.releaseConnection();
           req.records = {
-            project_wise_payroll: result,
+            project_wise_payroll: outputArray,
             total_worked_hours: total_worked_hours + "." + minutes,
             noEmployees: result.length,
             total_cost: total_cost
