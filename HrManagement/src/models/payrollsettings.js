@@ -3,6 +3,44 @@ import _ from "lodash";
 
 import moment from "moment";
 module.exports = {
+  getMiscEarningDeductions: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let _stringData = " ";
+    let intValue = [];
+    if (req.query.component_category != null) {
+      _stringData = " and component_category=? ";
+      intValue.push(req.query.component_category);
+    } else if (req.query.miscellaneous_component != null) {
+      _stringData = " and miscellaneous_component=? ";
+      intValue.push(req.query.miscellaneous_component);
+    } else if (req.query.component_type != null) {
+      _stringData = " and component_type=? ";
+      intValue.push(req.query.component_type);
+    }
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_d_earning_deduction_id,earning_deduction_code,earning_deduction_description,\
+          short_desc,component_category,calculation_method,component_frequency,calculation_type,\
+          component_type,shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
+          process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
+          round_off_amount from hims_d_earning_deduction\
+          where record_status='A' " +
+          _stringData,
+        values: intValue,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
   getLoanMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
 

@@ -233,6 +233,7 @@ export default class EndServiceOption extends Component {
   getEarningDeducts() {
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {

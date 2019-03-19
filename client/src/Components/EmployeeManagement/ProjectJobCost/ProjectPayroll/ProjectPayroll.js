@@ -34,8 +34,13 @@ class ProjectPayroll extends Component {
       project_wise_payroll: [],
       noEmployees: 0,
       total_worked_hours: 0,
+      project_id: null,
+      employee_id: null,
+      employee_name: null,
+      total_cost: 0,
       lbl_total: "Total Employees"
     };
+    this.baseState = this.state;
   }
 
   eventHandaler(e) {
@@ -43,6 +48,9 @@ class ProjectPayroll extends Component {
   }
   LoadData() {
     ProjectPayrollEvents().LoadProjectDetails(this);
+  }
+  clearState() {
+    this.setState(this.baseState);
   }
 
   componentDidMount() {
@@ -238,34 +246,6 @@ class ProjectPayroll extends Component {
             </div>
           </div>
 
-          {/* <div className="col-3" style={{ marginTop: 10 }}>
-            <div
-              className="row"
-              style={{
-                border: " 1px solid #ced4d9",
-                borderRadius: 5,
-                marginLeft: 0
-              }}
-            >
-              <div className="col">
-                <AlgaehLabel label={{ forceLabel: "Select a Employee." }} />
-                <h6>Employee Name</h6>
-              </div>
-              <div
-                className="col-lg-3"
-                style={{ borderLeft: "1px solid #ced4d8" }}
-              >
-                <i
-                  className="fas fa-search fa-lg"
-                  style={{
-                    paddingTop: 17,
-                    paddingLeft: 3,
-                    cursor: "pointer"
-                  }}
-                />
-              </div>
-            </div>
-          </div> */}
           <div className="col-2 form-group">
             <button
               style={{ marginTop: 21 }}
@@ -273,6 +253,13 @@ class ProjectPayroll extends Component {
               onClick={this.LoadData.bind(this)}
             >
               <span>Load</span>
+            </button>
+            <button
+              onClick={this.clearState.bind(this)}
+              style={{ marginTop: 21, marginLeft: 5 }}
+              className="btn btn-default"
+            >
+              Clear
             </button>
           </div>
         </div>
@@ -290,11 +277,6 @@ class ProjectPayroll extends Component {
                     </b>
                   </h3>
                 </div>
-                {/* <div className="actions">
-                  <a className="btn btn-primary btn-circle active">
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
               </div>
               <div className="portlet-body">
                 <div className="row">
@@ -333,36 +315,34 @@ class ProjectPayroll extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Total Working Hr" }}
                             />
-                          )
+                          ),
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         },
-                        // {
-                        //   fieldName: "otHr",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Total OT Hr" }}
-                        //     />
-                        //   )
-                        // },
-                        // {
-                        //   fieldName: "project",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Total WO OT Hr" }}
-                        //     />
-                        //   )
-                        // },
                         {
                           fieldName: "project_cost",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Project Cost" }}
                             />
-                          )
+                          ),
+
+                          others: {
+                            maxWidth: 150,
+                            resizable: false,
+                            filterable: false,
+                            style: { textAlign: "center" }
+                          }
                         }
                       ]}
                       keyId="projectPayrollGrid"
                       dataSource={{ data: this.state.project_wise_payroll }}
                       isEditable={false}
+                      filter={true}
                       paging={{ page: 0, rowsPerPage: 20 }}
                       events={{}}
                       others={{}}
