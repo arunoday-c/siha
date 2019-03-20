@@ -13,7 +13,7 @@ module.exports = {
           query:
             "SELECT hims_f_final_settlement_header_id,total_amount,total_earnings,total_deductions,total_loans,total_salary,total_leave_encash as total_leave_encash_amount,\
             total_eos as gratuity_amount,forfiet,remarks \
-  FROM algaeh_hims_db.hims_f_final_settlement_header where employee_id=?; select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
+  FROM hims_f_final_settlement_header where employee_id=?; select  E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status,\
   E.employee_code,E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
     E.sub_department_id,E.employee_designation_id,E.date_of_birth,SD.sub_department_name,SD.arabic_sub_department_name \
     from hims_d_employee E Left join hims_d_sub_department SD \

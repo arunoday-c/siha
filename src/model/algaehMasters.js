@@ -223,6 +223,7 @@ let getRoleBaseActiveModulesOLD = (req, res, next) => {
     next(e);
   }
 };
+
 //created by irfan: to get
 let getRoleBaseActiveModules = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
@@ -233,10 +234,20 @@ let getRoleBaseActiveModules = (req, res, next) => {
       superUser = " and access_by <> 'SU'";
     }
 
+    let from_assignment = "N";
+    let role_id = req.userIdentity.role_id;
+    if (req.query.from_assignment == "Y" && req.query.role_id > 0) {
+      from_assignment == "Y";
+      role_id = req.query.role_id;
+    }
+
     if (
       (req.userIdentity.role_type == "SU" &&
-        req.userIdentity.user_type == "SU") ||
-      (req.userIdentity.role_type == "AD" && req.userIdentity.user_type == "AD")
+        req.userIdentity.user_type == "SU" &&
+        from_assignment == "N") ||
+      (req.userIdentity.role_type == "AD" &&
+        req.userIdentity.user_type == "AD" &&
+        from_assignment == "N")
     ) {
       _mysql
         .executeQuery({
@@ -299,7 +310,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
                 algaeh_m_screen_role_privilage_mapping SRM on MRP.algaeh_m_module_role_privilage_mapping_id=SRM.module_role_map_id\
                  inner join algaeh_d_app_screens S on SRM.screen_id=S.algaeh_app_screens_id\
         where MRP.record_status='A'  and SRM.record_status='A' and S.record_status='A' and  MRP.role_id =?",
-          values: [req.userIdentity.role_id, req.userIdentity.role_id]
+          values: [role_id, role_id]
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -412,42 +423,60 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT  SERM.view_privilege, screen_element_id,screen_element_code,screen_element_name,component_code,\
-        screen_code, module_code from algaeh_m_scrn_elmnt_role_privilage_mapping SERM\
-        inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
-        inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
-        inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
-        inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-         where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
-         and  S.record_status='A' and M.record_status=md5('A') and role_id=?",
-        values: [req.userIdentity.role_id]
+          "   SELECT algaeh_m_component_role_privilage_mapping_id,module_code,screen_code,component_code,view_privilege from\
+          algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
+              on CRM.component_id=C.algaeh_d_app_component_id\
+              inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+              inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+              where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and\
+              S.record_status='A'  and CRM.role_id=?;\
+              SELECT   component_role_map_id, screen_element_code,screen_element_name,component_code,\
+          screen_code, module_code from algaeh_m_component_role_privilage_mapping CRM   \
+          inner join algaeh_m_scrn_elmnt_role_privilage_mapping SERM on \
+          CRM.algaeh_m_component_role_privilage_mapping_id=SERM.component_role_map_id \
+              inner join algaeh_d_app_scrn_elements  SE on SERM.screen_element_id=SE.algaeh_d_app_scrn_elements_id\
+              inner join algaeh_d_app_component C on SE.component_id=C.algaeh_d_app_component_id  \
+              inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
+              inner join  algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
+          where SERM.record_status='A' and SE.record_status='A' and  C.record_status='A'\
+          and  S.record_status='A' and M.record_status=md5('A') and CRM.role_id=?",
+        values: [req.userIdentity.role_id, req.userIdentity.role_id]
       })
-      .then(elementsHide => {
-        _mysql
-          .executeQuery({
-            query:
-              "SELECT module_code,\
-        component_code,screen_code from \
-        algaeh_m_component_role_privilage_mapping CRM inner join algaeh_d_app_component C\
-         on CRM.component_id=C.algaeh_d_app_component_id\
-         inner join algaeh_d_app_screens S on C.screen_id=S.algaeh_app_screens_id\
-         inner join algaeh_d_app_module M on S.module_id=M.algaeh_d_module_id\
-         where  CRM.record_status='A' and C.record_status='A' and  M.record_status= md5('A') and \
-         S.record_status='A'  and role_id=?",
-            values: [req.userIdentity.role_id]
-          })
-          .then(componentHide => {
-            _mysql.releaseConnection();
-            req.records = {
-              listOfComponentsToHide: componentHide,
-              screenElementsToHide: elementsHide
-            };
-            next();
-          })
-          .catch(error => {
-            _mysql.releaseConnection();
-            next(error);
-          });
+      .then(result => {
+        _mysql.releaseConnection();
+        let components = result[0];
+        let elements = result[1];
+        let outputArray = [];
+        for (let i = 0; i < components.length; i++) {
+          if (components[i]["view_privilege"] == "Y") {
+            let screenElementsToHide = new LINQ(elements)
+              .Where(
+                w =>
+                  w.component_role_map_id ==
+                  components[i]["algaeh_m_component_role_privilage_mapping_id"]
+              )
+              .Select(s => {
+                return {
+                  screen_element_code: s.screen_element_code,
+                  screen_element_name: s.screen_element_name,
+                  component_code: s.component_code,
+                  screen_code: s.screen_code,
+                  module_code: s.module_code
+                };
+              })
+              .ToArray();
+
+            outputArray.push({
+              ...components[i],
+              screenElementsToHide: screenElementsToHide
+            });
+          } else {
+            outputArray.push(components[i]);
+          }
+        }
+
+        req.records = outputArray;
+        next();
       })
       .catch(error => {
         _mysql.releaseConnection();
@@ -511,6 +540,11 @@ let addAlgaehModule = (req, res, next) => {
 let getAlgaehModules = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
+    let superUser = "";
+    //for admin login
+    if (req.userIdentity.role_type == "AD") {
+      superUser = " and access_by <> 'SU'";
+    }
     if (req.userIdentity.role_type != "GN") {
       _mysql
         .executeQuery({
@@ -764,6 +798,10 @@ let getAlgaehScreens = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     if (req.userIdentity.role_type != "GN") {
+      let module_id = "";
+      if (req.query.module_id != undefined && req.query.module_id != null) {
+        module_id = ` and module_id=${req.query.module_id} `;
+      }
       _mysql
         .executeQuery({
           query:
@@ -1668,6 +1706,200 @@ let deleteModuleForRole = (req, res, next) => {
   // }
 };
 
+//created by irfan:
+let assignScreens = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let modules = req.body.inputs;
+    let execute_query = "";
+
+    if (modules != undefined && modules.length > 0) {
+      for (let i = 0; i < modules.length; i++) {
+        execute_query += _mysql.mysqlQueryFormat(
+          "INSERT INTO `algaeh_m_module_role_privilage_mapping` (module_id, role_id, privilege_description, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?,?); ",
+          [
+            modules[i]["module_id"],
+            req.body.role_id,
+            req.body.privilege_description,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ]
+        );
+      }
+
+      _mysql
+        .executeQueryWithTransaction({
+          query: execute_query
+        })
+        .then(headerResult => {
+          let execute_detail_query = "";
+          if (headerResult.length > 0) {
+            for (let k = 0; k < headerResult.length; k++) {
+              for (let m = 0; m < modules[k]["screen_ids"].length; m++) {
+                execute_detail_query += _mysql.mysqlQueryFormat(
+                  " INSERT INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
+                  [
+                    headerResult[k]["insertId"],
+                    modules[k]["screen_ids"][m],
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date()
+                  ]
+                );
+              }
+            }
+            _mysql
+              .executeQueryWithTransaction({
+                query: execute_detail_query
+              })
+              .then(detailResult => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = detailResult[0];
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            //inserion error
+
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+            req.records = {
+              invalid_input: true,
+              message: "insertion error ,send valid input"
+            };
+            next();
+            return;
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+      return;
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+//created by irfan:
+let assignComponents = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let components = req.body.inputs;
+    let execute_query = "";
+
+    if (components != undefined && components.length > 0) {
+      for (let i = 0; i < components.length; i++) {
+        execute_query += _mysql.mysqlQueryFormat(
+          "INSERT INTO `algaeh_m_component_role_privilage_mapping` (component_id,role_id,view_privilege, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?,?); ",
+          [
+            components[i]["component_id"],
+            req.body.role_id,
+            components[i]["view_privilege"],
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ]
+        );
+      }
+
+      _mysql
+        .executeQueryWithTransaction({
+          query: execute_query
+        })
+        .then(headerResult => {
+          let execute_detail_query = "";
+
+          if (headerResult.length > 0) {
+            for (let k = 0; k < headerResult.length; k++) {
+              if (components[k]["view_privilege"] == "Y") {
+                for (
+                  let m = 0;
+                  m < components[k]["screen_elements"].length;
+                  m++
+                ) {
+                  execute_detail_query += _mysql.mysqlQueryFormat(
+                    " INSERT INTO `algaeh_m_scrn_elmnt_role_privilage_mapping` (component_role_map_id, screen_element_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
+                    [
+                      headerResult[k]["insertId"],
+                      components[k]["screen_elements"][m],
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
+                    ]
+                  );
+                }
+              }
+            }
+            _mysql
+              .executeQueryWithTransaction({
+                query: execute_detail_query
+              })
+              .then(detailResult => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = detailResult[0];
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            //inserion error
+
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+            req.records = {
+              invalid_input: true,
+              message: "insertion error ,send valid input"
+            };
+            next();
+            return;
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+      return;
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 module.exports = {
   addAlgaehGroupMAster,
   addAlgaehRoleMAster,
@@ -1686,5 +1918,7 @@ module.exports = {
   updateFormula,
   deleteFormula,
   deleteScreenForRole,
-  deleteModuleForRole
+  deleteModuleForRole,
+  assignScreens,
+  assignComponents
 };

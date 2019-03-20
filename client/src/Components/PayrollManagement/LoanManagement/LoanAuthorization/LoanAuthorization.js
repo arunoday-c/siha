@@ -70,6 +70,7 @@ class LoanAuthorization extends Component {
 
     algaehApiCall({
       uri: "/loan/getLoanApplication",
+      module: "hrManagement",
       method: "GET",
       data: {
         auth_level: "L" + this.state.auth_level,

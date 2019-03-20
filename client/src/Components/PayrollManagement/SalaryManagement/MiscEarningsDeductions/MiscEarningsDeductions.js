@@ -306,6 +306,7 @@ export default class MiscEarningsDeductions extends Component {
 
     algaehApiCall({
       uri: "/payrollSettings/getMiscEarningDeductions",
+      module: "hrManagement",
       method: "GET",
       data: data,
       onSuccess: res => {
