@@ -237,6 +237,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
     let from_assignment = "N";
     let role_id = req.userIdentity.role_id;
     if (req.query.from_assignment == "Y" && req.query.role_id > 0) {
+      from_assignment == "Y";
       role_id = req.query.role_id;
     }
 
@@ -362,7 +363,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
 };
 
 //created by irfan: to get
-let getRoleBaseInActiveComponents = (req, res, next) => {
+let getRoleBaseInActiveComponentsOLD = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     _mysql
@@ -416,7 +417,7 @@ let getRoleBaseInActiveComponents = (req, res, next) => {
 };
 
 //created by irfan: to get
-let getRoleBaseInActiveComponentsNEW = (req, res, next) => {
+let getRoleBaseInActiveComponents = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     _mysql
