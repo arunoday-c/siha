@@ -1771,6 +1771,106 @@ let assignScreens = (req, res, next) => {
   }
 };
 
+//created by irfan:
+let assignComponents = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let components = req.body.inputs;
+    let execute_query = "";
+
+    if (components != undefined && components.length > 0) {
+      for (let i = 0; i < components.length; i++) {
+        execute_query += _mysql.mysqlQueryFormat(
+          "INSERT INTO `algaeh_m_component_role_privilage_mapping` (component_id,role_id,view_privilege, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?,?); ",
+          [
+            components[i]["component_id"],
+            req.body.role_id,
+            components[i]["view_privilege"],
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ]
+        );
+      }
+
+      _mysql
+        .executeQueryWithTransaction({
+          query: execute_query
+        })
+        .then(headerResult => {
+          let execute_detail_query = "";
+
+          if (headerResult.length > 0) {
+            for (let k = 0; k < headerResult.length; k++) {
+              if (components[k]["view_privilege"] == "Y") {
+                for (
+                  let m = 0;
+                  m < components[k]["screen_elements"].length;
+                  m++
+                ) {
+                  execute_detail_query += _mysql.mysqlQueryFormat(
+                    " INSERT INTO `algaeh_m_scrn_elmnt_role_privilage_mapping` (component_role_map_id, screen_element_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
+                    [
+                      headerResult[k]["insertId"],
+                      components[k]["screen_elements"][m],
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
+                    ]
+                  );
+                }
+              }
+            }
+            _mysql
+              .executeQueryWithTransaction({
+                query: execute_detail_query
+              })
+              .then(detailResult => {
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = detailResult[0];
+                  next();
+                });
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            //inserion error
+
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+            req.records = {
+              invalid_input: true,
+              message: "insertion error ,send valid input"
+            };
+            next();
+            return;
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please send valid input"
+      };
+      next();
+      return;
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 module.exports = {
   addAlgaehGroupMAster,
   addAlgaehRoleMAster,
@@ -1790,5 +1890,6 @@ module.exports = {
   deleteFormula,
   deleteScreenForRole,
   deleteModuleForRole,
-  assignScreens
+  assignScreens,
+  assignComponents
 };
