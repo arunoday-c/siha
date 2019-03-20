@@ -539,6 +539,11 @@ let addAlgaehModule = (req, res, next) => {
 let getAlgaehModules = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
+    let superUser = "";
+    //for admin login
+    if (req.userIdentity.role_type == "AD") {
+      superUser = " and access_by <> 'SU'";
+    }
     if (req.userIdentity.role_type != "GN") {
       _mysql
         .executeQuery({
@@ -792,6 +797,10 @@ let getAlgaehScreens = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     if (req.userIdentity.role_type != "GN") {
+      let module_id = "";
+      if (req.query.module_id != undefined && req.query.module_id != null) {
+        module_id = ` and module_id=${req.query.module_id} `;
+      }
       _mysql
         .executeQuery({
           query:
