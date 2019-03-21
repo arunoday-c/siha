@@ -252,17 +252,15 @@ module.exports = {
                     _attandance = await processAttendance(req, res, next);
                     _sarary = await newProcessSalary(req, res, next);
                   } else {
-                    if (intValue == 0) {
-                      utilities
-                        .logger()
-                        .log("attendance_type else: ", intValue);
-                      _sarary = await newProcessSalary(req, res, next);
-                      _attandance = Promise.resolve();
-                    } else {
-                      utilities.logger().log("attendance else: ", intValue);
-                      _attandance = await processAttendance(req, res, next);
-                      _sarary = await newProcessSalary(req, res, next);
-                    }
+                    // if (intValue == 0) {
+                    utilities.logger().log("attendance_type else: ", intValue);
+                    _sarary = await newProcessSalary(req, res, next);
+                    _attandance = Promise.resolve();
+                    // } else {
+                    //   utilities.logger().log("attendance else: ", intValue);
+                    //   _attandance = await processAttendance(req, res, next);
+                    //   _sarary = await newProcessSalary(req, res, next);
+                    // }
                   }
 
                   // let _sarary = await newProcessSalary(req, res, next);
