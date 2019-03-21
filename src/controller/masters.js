@@ -20,9 +20,18 @@ import { getCacheData, setCacheData } from "../utils/caching";
 import path from "path";
 import fs from "fs";
 import { LINQ } from "node-linq";
+import { getFormula } from "../model/algaeh_formulas";
 
 export default () => {
   const api = Router();
+
+  api.get("/algaehFormula", getFormula, (req, res, next) => {
+    const _recordds = req.records;
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: _recordds.length > 0 ? _recordds[0] : {}
+    });
+  });
 
   api.get(
     "/title",

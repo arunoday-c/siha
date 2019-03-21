@@ -137,7 +137,9 @@ class Reports extends Component {
                       AlgaehReport({
                         report: {
                           fileName: item.template_name,
-                          reportQuery: item.reportQuery
+                          reportQuery: item.reportQuery,
+                          reportUri: item.reportUri,
+                          module: item.module
                         },
                         plotUI: {
                           paramters: item.reportParameters

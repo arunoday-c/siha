@@ -170,7 +170,7 @@ class EOSGratuity extends Component {
         },
         onFailure: err => {
           swalMessage({
-            title: err,
+            title: err.response.data.message || err.message,
             type: "error"
           });
           this.setState({

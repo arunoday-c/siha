@@ -2,10 +2,12 @@ import React, { Component } from "react";
 import "./screen_assignment.css";
 import {
   AlgaehLabel,
-  AlagehAutoComplete,
-  AlgaehDataGrid
+  AlagehAutoComplete
+  // AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+// import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import _ from "lodash";
+import ScreenAssignmentEvents from "./ScreenAssignmentEvents";
 
 class ScreenAssignment extends Component {
   constructor(props) {
@@ -14,99 +16,36 @@ class ScreenAssignment extends Component {
       groups: [],
       roles: [],
       modules: [],
-      op_modules: []
+      main_modules: [],
+      sub_screens: [],
+      app_group_id: null,
+      role_id: null
     };
-    this.getGroups();
-    this.getRoleBaseActiveModules();
+    this.baseState = this.state;
+    // this.getGroups();
+    ScreenAssignmentEvents().getGroups(this);
+    ScreenAssignmentEvents().getRoleBaseActiveModules(this);
   }
 
-  getRoleBaseActiveModules() {
-    algaehApiCall({
-      uri: "/algaehMasters/getRoleBaseActiveModules",
-      method: "GET",
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            modules: res.data.records
-          });
-          console.log("Records:", res.data.records);
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
+  dropDownEvent(value) {
+    ScreenAssignmentEvents().dropDownHandler(this, value);
   }
 
-  getGroups() {
-    algaehApiCall({
-      uri: "/algaehappuser/selectAppGroup",
-      method: "GET",
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({ groups: response.data.records });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+  changeScreen(data, e) {
+    ScreenAssignmentEvents().changeScreen(this, data, e);
   }
 
-  getRoles(group_id) {
-    algaehApiCall({
-      uri: "/algaehappuser/selectRoles",
-      method: "GET",
-      data: {
-        algaeh_d_app_group_id: group_id
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          this.setState({ roles: response.data.records });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
+  changeModules(data, e) {
+    ScreenAssignmentEvents().changeModules(this, data, e);
   }
 
-  dropDownHandler(value) {
-    switch (value.name) {
-      case "app_group_id":
-        this.getRoles(value.value);
-        this.setState({
-          [value.name]: value.value
-        });
-
-        break;
-
-      default:
-        this.setState({
-          [value.name]: value.value
-        });
-    }
+  assignScreens() {
+    ScreenAssignmentEvents().assignScreens(this);
   }
 
-  changeModules(e) {
-    let val = parseInt(e.target.value, 10);
-
-    this.state.op_modules.includes(val)
-      ? this.state.op_modules.pop(val)
-      : this.state.op_modules.push(val);
-
-    this.setState(...this.state);
+  clearState() {
+    ScreenAssignmentEvents().clearState(this);
   }
-
   render() {
     return (
       <div className="screen_assignment">
@@ -127,7 +66,7 @@ class ScreenAssignment extends Component {
                         valueField: "algaeh_d_app_group_id",
                         data: this.state.groups
                       },
-                      onChange: this.dropDownHandler.bind(this),
+                      onChange: this.dropDownEvent.bind(this),
                       others: {}
                     }}
                   />
@@ -144,7 +83,7 @@ class ScreenAssignment extends Component {
                         valueField: "app_d_app_roles_id",
                         data: this.state.roles
                       },
-                      onChange: this.dropDownHandler.bind(this)
+                      onChange: this.dropDownEvent.bind(this)
                     }}
                   />
                 </div>
@@ -164,29 +103,47 @@ class ScreenAssignment extends Component {
                   <div className="col">
                     <div className="moduleList list-group-check">
                       <ul className="mainmenu" style={{ minHeight: "59vh" }}>
-                        {this.state.modules.map((data, index) => (
-                          <li key={data.algaeh_d_module_id}>
-                            <input
-                              type="checkbox"
-                              onChange={this.changeModules.bind(this)}
-                              name="modules"
-                              checked={this.state.op_modules.includes(
-                                data.algaeh_d_module_id
-                              )}
-                              value={data.algaeh_d_module_id}
-                            />
-                            <a>{data.module_name}</a>
+                        {this.state.modules.map((data, index) => {
+                          return (
+                            <li key={data.module_id}>
+                              <input
+                                type="checkbox"
+                                onChange={this.changeModules.bind(this, data)}
+                                name="modules"
+                                checked={
+                                  data.checked === undefined
+                                    ? false
+                                    : data.checked
+                                }
+                                value={data.module_id}
+                              />
+                              <a>{data.module_name}</a>
 
-                            <ul className="submenu">
-                              {data.ScreenList.map((sub_menu, index) => (
-                                <li key={sub_menu.algaeh_app_screens_id}>
-                                  <input type="checkbox" />
-                                  <a>{sub_menu.screen_name}</a>
-                                </li>
-                              ))}
-                            </ul>
-                          </li>
-                        ))}
+                              <ul className="submenu">
+                                {data.ScreenList.map((sub_menu, index) => {
+                                  return (
+                                    <li key={sub_menu.screen_id}>
+                                      <input
+                                        type="checkbox"
+                                        onChange={this.changeScreen.bind(
+                                          this,
+                                          data
+                                        )}
+                                        checked={
+                                          sub_menu.checked === undefined
+                                            ? false
+                                            : sub_menu.checked
+                                        }
+                                        value={sub_menu.screen_id}
+                                      />
+                                      <a>{sub_menu.screen_name}</a>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>
@@ -199,10 +156,18 @@ class ScreenAssignment extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.assignScreens.bind(this)}
+              >
                 <AlgaehLabel label={{ forceLabel: "Assign" }} />
               </button>
-              <button type="button" className="btn btn-default">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={this.clearState.bind(this)}
+              >
                 <AlgaehLabel label={{ forceLabel: "Clear" }} />
               </button>
             </div>

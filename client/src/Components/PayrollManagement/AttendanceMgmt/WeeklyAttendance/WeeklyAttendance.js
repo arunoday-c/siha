@@ -39,8 +39,7 @@ export default class WeeklyAttendance extends Component {
       hims_d_employee_id: null,
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-      )
-        .hims_d_hospital_id,
+      ).hims_d_hospital_id,
       from_date: _fromDate, //moment(new Date())
       // .subtract(1, "days")
       // .format("YYYY-MM-DD"),
@@ -495,13 +494,14 @@ export default class WeeklyAttendance extends Component {
   getExcessShortage(data) {
     debugger;
     let strWorking = data.worked_hours.split(".");
-    console.log("strWorking", strWorking);
-    console.log("strWorking", strWorking[0]);
-    console.log("strWorking", strWorking[1]);
-    let excess_hr = strWorking[0] - data.actual_hours;
+    // console.log("strWorking", strWorking);
+    // console.log("strWorking", strWorking[0]);
+    // console.log("strWorking", strWorking[1]);
+    let excess_hr = parseFloat(strWorking[0]) - parseFloat(data.actual_hours);
     excess_hr = excess_hr < 0 ? 0 : excess_hr;
 
-    let excess_min = strWorking[1] - data.actual_minutes;
+    let excess_min =
+      parseFloat(strWorking[1]) - parseFloat(data.actual_minutes);
     excess_min = excess_min < 0 ? 0 : excess_min;
 
     console.log("excess_hr", excess_hr);

@@ -3,6 +3,7 @@ import moment from "moment";
 import _ from "lodash";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 export default function ManualAttendanceEvents() {
   return {
@@ -273,32 +274,19 @@ export default function ManualAttendanceEvents() {
       debugger;
       for (let i = 0; i < $this.state.employee_details.length; i++) {
         let strWorked_Hours = $this.state.employee_details[i].worked_hours;
-        strWorked_Hours = strWorked_Hours.split(".");
-        $this.state.employee_details[i].hours = strWorked_Hours[0];
-        $this.state.employee_details[i].minutes = strWorked_Hours[1];
+        if (strWorked_Hours === null || strWorked_Hours === undefined) {
+          swalMessage({
+            title: "Please enter proper data...",
+            type: "warning"
+          });
+          return;
+        } else {
+          strWorked_Hours = strWorked_Hours.split(".");
+          $this.state.employee_details[i].hours = strWorked_Hours[0];
+          $this.state.employee_details[i].minutes = strWorked_Hours[1];
+        }
       }
-      // if ($this.state.dataExist === true) {
-      //   algaehApiCall({
-      //     uri: "/attendance/updateToDailyTimeSheet",
-      //     module: "hrManagement",
-      //     method: "PUT",
-      //     data: $this.state.employee_details,
-      //     onSuccess: res => {
-      //       if (res.data.success) {
-      //         swalMessage({
-      //           title: "Processed Succesfully...",
-      //           type: "success"
-      //         });
-      //       }
-      //     },
-      //     onFailure: err => {
-      //       swalMessage({
-      //         title: err.message,
-      //         type: "error"
-      //       });
-      //     }
-      //   });
-      // } else {
+      AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/attendance/addToDailyTimeSheet",
         module: "hrManagement",
@@ -306,6 +294,7 @@ export default function ManualAttendanceEvents() {
         data: $this.state.employee_details,
         onSuccess: res => {
           if (res.data.success) {
+            AlgaehLoader({ show: false });
             swalMessage({
               title: "Processed Succesfully...",
               type: "success"
@@ -313,6 +302,7 @@ export default function ManualAttendanceEvents() {
           }
         },
         onFailure: err => {
+          AlgaehLoader({ show: false });
           swalMessage({
             title: err.message,
             type: "error"

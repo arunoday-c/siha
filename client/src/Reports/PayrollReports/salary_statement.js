@@ -1,68 +1,50 @@
 import React, { Component } from "react";
 import { payrollHeader } from "./payrollHeader";
-import {
-  AlgaehDataGrid,
-  AlgaehLabel
-} from "../../Components/Wrapper/algaehWrapper";
-export default class PrintReport extends Component {
-  constructor(props) {
-    super(props);
-  }
+import "../report-style.css";
+export function printReport(data) {
+  return `
+  <div class="print-body">
+  <header> ${payrollHeader(data)} </header> 
+   
+<section>
+    <h2><span>Salary Details</span></h2><div class="tbl-header">
+    <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
+        <thead >
+            <tr>
+                <th>Employee Code</th>
+                <th>Employee Name</th>
+                <th>Total Earnings</th>
+                <th>Total Deductions</th>
+                <th>Total Contributions</th>
+                <th>Net Salary</th>
+                <th>Advance Due</th>
+                <th>Loan Due Amount</th>
+            </tr>
+        </thead></table></div><div class="tbl-content ">
+        <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
+        <tbody>
+  ${data
+    .map(
+      list =>
+        `
+    <tr>
+    <td>${list.employee_code}</td>
+    <td>${list.employee_name}</td>
+    <td>${list.total_earnings} </td>
+    <td>${list.total_deductions} </td>
+    <td>${list.total_contributions} </td>
+    <td>${list.net_salary} </td>
+    <td>${list.advance_due} </td>
+    <td>${list.loan_due_amount} </td>
 
-  render() {
-    const { data } = this.props;
-    return (
-      <div class="print-body">
-        <header dangerouslySetInnerHTML={{ __html: payrollHeader(data) }}>
-          {" "}
-        </header>
-        <h2>
-          <span>Salary Details</span>
-        </h2>
-        <AlgaehDataGrid
-          id="salary_statement"
-          columns={[
-            {
-              fieldName: "employee_code",
-              label: <AlgaehLabel label={{ forceLabel: "Employee Code" }} />
-            },
-            {
-              fieldName: "employee_name",
-              label: <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-            },
-            {
-              fieldName: "total_earnings",
-              label: <AlgaehLabel label={{ forceLabel: "Total Earnings" }} />
-            },
-            {
-              fieldName: "total_deductions",
-              label: <AlgaehLabel label={{ forceLabel: "Total Deductions" }} />
-            },
-            {
-              fieldName: "total_contributions",
-              label: (
-                <AlgaehLabel label={{ forceLabel: "Total Contributions" }} />
-              )
-            },
-            {
-              fieldName: "net_salary",
-              label: <AlgaehLabel label={{ forceLabel: "Net Salary" }} />
-            },
-            {
-              fieldName: "advance_due",
-              label: <AlgaehLabel label={{ forceLabel: "Advance Due" }} />
-            },
-            {
-              fieldName: "loan_due_amount",
-              label: <AlgaehLabel label={{ forceLabel: "Loan Due Amount" }} />
-            }
-          ]}
-          keyId="salary_statement"
-          dataSource={{
-            data: data
-          }}
-        />
-      </div>
-    );
-  }
+  
+</tr>
+    `
+    )
+    .join("")}
+  
+ 
+    </tbody></table></div>
+</section>
+  `;
 }
