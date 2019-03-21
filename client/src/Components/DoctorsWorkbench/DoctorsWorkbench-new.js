@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./doctor_workbench.css";
-
+// import io from "socket.io-client";
 const MyDaypanel = React.memo(React.lazy(() => import("./Myday")));
 const Loading = React.memo(React.lazy(() => import("../Wrapper/loading")));
 const PatientDashboad = React.memo(
@@ -18,6 +18,19 @@ class DoctorsWorkbench extends Component {
       ...data
     });
   }
+  // callTestSockets() {
+  //   const socket = io("http://localhost:3019", {
+  //     extraHeaders: { "x-api-key": "Hellouwyerweeiuow" }
+  //   });
+  //   socket.connect();
+  //   socket.on("connection", () => {
+  //     console.log("connection");
+  //   });
+  //   socket.emit("patientadded", { mydata: "Hello", you: "World" });
+  //   socket.on("patientadded", data => {
+  //     console.log("Client Data", data);
+  //   });
+  // }
   render() {
     return (
       <div className="row clinicalDeskScreen">

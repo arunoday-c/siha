@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { cancelRequest, swalMessage } from "../../../utils/algaehApiCall";
 import MyDayEvents from "./events";
 import _ from "lodash";
+
 export default class MyDayView extends Component {
   constructor(props) {
     super(props);
@@ -103,7 +104,7 @@ export default class MyDayView extends Component {
       })
       .catch(error => {
         swalMessage({
-          title: e.message,
+          title: error.message,
           type: "error"
         });
       });
