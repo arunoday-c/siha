@@ -132,10 +132,21 @@ export default class ReportUI extends Component {
 
     const that = this;
     let options = { ...this.props.options, ...{ getRaw: true } };
+    console.log("Report Options", options);
+    const uri =
+      typeof options.report.reportUri === "string"
+        ? options.report.reportUri
+        : "/generateReport/getReport";
+
+    const _module =
+      typeof options.report.module === "string"
+        ? { module: options.report.module }
+        : {};
     algaehApiCall({
-      uri: "/generateReport/getReport",
+      uri: uri,
       data: inputs,
       method: "GET",
+      ..._module,
       onSuccess: response => {
         if (response.data.success === true) {
           new Promise((resolve, reject) => {

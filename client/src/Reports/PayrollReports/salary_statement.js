@@ -19,7 +19,7 @@ export function printReport(data) {
                 <th>Advance Due</th>
                 <th>Loan Due Amount</th>
             </tr>
-        </thead></table></div><div class="tbl-header">
+        </thead></table></div><div class="tbl-content ">
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data

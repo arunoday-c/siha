@@ -1711,5 +1711,78 @@ export default [
         //reportParameters: () => <VatReports ui="vat_report_detailed" />
       }
     ]
+  },
+  {
+    name: "Project Payroll",
+    submenu: [
+      {
+        subitem: "Project wise Payroll",
+        template_name: "ProjectPayroll/projectWisePayroll",
+        reportQuery: "projectWisePayroll",
+        reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        module: "hrManagement",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "year",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "project_id",
+            initialLoad: true,
+            label: "Select Project",
+            link: {
+              uri: "/hrsettings/getProjects",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "project_desc",
+              valueField: "hims_d_project_id"
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          }
+        ]
+      }
+    ]
   }
 ];
