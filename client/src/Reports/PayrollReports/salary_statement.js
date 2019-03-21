@@ -1,14 +1,14 @@
 import { payrollHeader } from "./payrollHeader";
-
+import "../report-style.css";
 export function printReport(data) {
   return `
   <div class="print-body">
   <header> ${payrollHeader(data)} </header> 
    
 <section>
-    <h2><span>Salary Details</span></h2>
-    <table class="tableForData" cell-padding="0">
-        <thead>
+    <h2><span>Salary Details</span></h2><div class="tbl-header">
+    <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
+        <thead >
             <tr>
                 <th>Employee Code</th>
                 <th>Employee Name</th>
@@ -19,7 +19,8 @@ export function printReport(data) {
                 <th>Advance Due</th>
                 <th>Loan Due Amount</th>
             </tr>
-        </thead>
+        </thead></table></div><div class="tbl-header">
+        <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data
     .map(
@@ -42,8 +43,7 @@ export function printReport(data) {
     .join("")}
   
  
-        </tbody>
-    </table>
+    </tbody></table></div>
 </section>
   `;
 }
