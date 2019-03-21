@@ -202,54 +202,102 @@ let selectLoginUser = (req, res, next) => {
 
 //created by irfan: to
 let selectAppGroup = (req, res, next) => {
-  let selectWhere = {
-    algaeh_d_app_group_id: "ALL"
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-
-    let where = whereCondition(extend(selectWhere, req.query));
-
-    let adminUSer = "";
-
-    if (req.userIdentity.role_type == "AD") {
-      adminUSer = " and   group_type <> 'AD'  and group_type <>'SU' ";
-    }
-
-    db.getConnection((error, connection) => {
-      if (req.userIdentity.role_type != "GN") {
-        connection.query(
-          "select algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc,\
-        group_type, app_group_status  from algaeh_d_app_group where record_status='A'\
-          " +
-            adminUSer +
-            " AND" +
-            where.condition +
-            " order by algaeh_d_app_group_id desc",
-          where.values,
-          (error, result) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
-            }
-            req.records = result;
-            next();
-          }
-        );
-      } else {
-        req.records = {
-          validUser: false,
-          message: "you dont have admin privilege"
-        };
-        next();
+    if (req.userIdentity.role_type != "GN") {
+      let adminUSer = "";
+      if (req.userIdentity.role_type == "AD") {
+        adminUSer = " and   group_type <> 'AD'  and group_type <>'SU' ";
       }
-    });
+
+      let algaeh_d_app_group_id = "";
+      if (
+        req.query.algaeh_d_app_group_id != undefined &&
+        req.query.algaeh_d_app_group_id != null
+      ) {
+        algaeh_d_app_group_id = ` and algaeh_d_app_user_id=${
+          req.query.algaeh_d_app_group_id
+        } `;
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "select algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc,\
+          group_type, app_group_status  from algaeh_d_app_group where record_status='A'" +
+            adminUSer +
+            algaeh_d_app_group_id +
+            " order by algaeh_d_app_group_id desc",
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // let selectWhere = {
+  //   algaeh_d_app_group_id: "ALL"
+  // };
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+
+  //   let where = whereCondition(extend(selectWhere, req.query));
+
+  //   let adminUSer = "";
+
+  //   if (req.userIdentity.role_type == "AD") {
+  //     adminUSer = " and   group_type <> 'AD'  and group_type <>'SU' ";
+  //   }
+
+  //   db.getConnection((error, connection) => {
+  //     if (req.userIdentity.role_type != "GN") {
+  //       connection.query(
+  //         "select algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc,\
+  //       group_type, app_group_status  from algaeh_d_app_group where record_status='A'\
+  //         " +
+  //           adminUSer +
+  //           " AND" +
+  //           where.condition +
+  //           " order by algaeh_d_app_group_id desc",
+  //         where.values,
+  //         (error, result) => {
+  //           releaseDBConnection(db, connection);
+  //           if (error) {
+  //             next(error);
+  //           }
+  //           req.records = result;
+  //           next();
+  //         }
+  //       );
+  //     } else {
+  //       req.records = {
+  //         validUser: false,
+  //         message: "you dont have admin privilege"
+  //       };
+  //       next();
+  //     }
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by irfan: to

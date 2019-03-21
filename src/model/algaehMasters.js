@@ -237,9 +237,11 @@ let getRoleBaseActiveModules = (req, res, next) => {
     let from_assignment = "N";
     let role_id = req.userIdentity.role_id;
     if (req.query.from_assignment == "Y" && req.query.role_id > 0) {
-      from_assignment == "Y";
+      from_assignment = "Y";
       role_id = req.query.role_id;
     }
+
+    debugger;
 
     if (
       (req.userIdentity.role_type == "SU" &&
@@ -277,7 +279,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
                       screen_code: s.screen_code,
                       screen_name: s.screen_name,
                       page_to_redirect: s.page_to_redirect,
-                      other_language: s.other_language
+                      other_language: s.other_language,
+                      module_id: s.module_id
                     };
                   })
                   .ToArray()
@@ -300,16 +303,16 @@ let getRoleBaseActiveModules = (req, res, next) => {
       _mysql
         .executeQuery({
           query:
-            "  select  algaeh_m_module_role_privilage_mapping_id,module_id,module_code,module_name, \
-            icons,module_code,other_language from algaeh_m_module_role_privilage_mapping MRP\
+            "select  algaeh_m_module_role_privilage_mapping_id,module_id,module_code,module_name, \
+            icons,module_code,other_language, MRP.module_id from algaeh_m_module_role_privilage_mapping MRP\
             inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
             where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?  order by display_order;\
             SELECT algaeh_m_screen_role_privilage_mapping_id, \
-                 module_role_map_id, screen_id,screen_code,screen_name,page_to_redirect,other_language \
-        from algaeh_m_module_role_privilage_mapping MRP inner join \
-                algaeh_m_screen_role_privilage_mapping SRM on MRP.algaeh_m_module_role_privilage_mapping_id=SRM.module_role_map_id\
-                 inner join algaeh_d_app_screens S on SRM.screen_id=S.algaeh_app_screens_id\
-        where MRP.record_status='A'  and SRM.record_status='A' and S.record_status='A' and  MRP.role_id =?",
+            module_role_map_id, screen_id,screen_code,screen_name,page_to_redirect,other_language, SRM.screen_id \
+            from algaeh_m_module_role_privilage_mapping MRP inner join \
+            algaeh_m_screen_role_privilage_mapping SRM on MRP.algaeh_m_module_role_privilage_mapping_id=SRM.module_role_map_id\
+            inner join algaeh_d_app_screens S on SRM.screen_id=S.algaeh_app_screens_id\
+            where MRP.record_status='A'  and SRM.record_status='A' and S.record_status='A' and  MRP.role_id =?",
           values: [role_id, role_id]
         })
         .then(result => {

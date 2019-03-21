@@ -6535,7 +6535,7 @@ module.exports = {
             } else {
               _mysql
                 .executeQuery({
-                  query: `select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,E.religion_id, E.date_of_joining\ 
+                  query: `select PR.employee_id,PR.attendance_date,E.employee_code,E.full_name,E.sub_department_id,E.religion_id, E.date_of_joining, PR.project_id\ 
                   from hims_f_project_roster PR  inner join  hims_d_employee E on PR.employee_id=E.hims_d_employee_id\
                   and PR.hospital_id=? and PR.attendance_date between date(?) and date(?)  ${employee}; 
                   select hims_f_leave_application_id,employee_id,leave_application_code,from_leave_session,L.leave_type,from_date,to_leave_session,\

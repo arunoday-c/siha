@@ -273,9 +273,11 @@ export default function ManualAttendanceEvents() {
       debugger;
       for (let i = 0; i < $this.state.employee_details.length; i++) {
         let strWorked_Hours = $this.state.employee_details[i].worked_hours;
-        strWorked_Hours = strWorked_Hours.split(".");
-        $this.state.employee_details[i].hours = strWorked_Hours[0];
-        $this.state.employee_details[i].minutes = strWorked_Hours[1];
+        if (strWorked_Hours !== null) {
+          strWorked_Hours = strWorked_Hours.split(".");
+          $this.state.employee_details[i].hours = strWorked_Hours[0];
+          $this.state.employee_details[i].minutes = strWorked_Hours[1];
+        }
       }
       // if ($this.state.dataExist === true) {
       //   algaehApiCall({

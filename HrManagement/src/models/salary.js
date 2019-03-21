@@ -2612,10 +2612,10 @@ function getOtManagement(options) {
               ot_hours != 0 &&
               leave_salary != "Y"
             ) {
-              let ot_hours =
-                parseFloat(empResult["ot_work_hours"]) +
-                parseFloat(empResult["ot_weekoff_hours"]) +
-                parseFloat(empResult["ot_holiday_hours"]);
+              // let ot_hours =
+              //   parseFloat(empResult["ot_work_hours"]) +
+              //   parseFloat(empResult["ot_weekoff_hours"]) +
+              //   parseFloat(empResult["ot_holiday_hours"]);
               utilities
                 .logger()
                 .log("salary_calendar: ", hrms_option[0].salary_calendar);
@@ -2655,8 +2655,9 @@ function getOtManagement(options) {
                 .logger()
                 .log("ot_work_hours: ", empResult["ot_work_hours"]);
 
-              let ot_hour_price =
-                per_hour_salary * over_time["working_day_hour"];
+              let ot_work_hours = empResult["ot_work_hours"].split(".");
+
+              let ot_hour_price = per_hour_salary * ot_work_hours[0];
               ot_hour_price = ot_hour_price * empResult["ot_work_hours"];
 
               utilities.logger().log("ot_hour_price: ", ot_hour_price);

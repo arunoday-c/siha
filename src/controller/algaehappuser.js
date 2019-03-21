@@ -6,7 +6,8 @@ import {
   selectRoles,
   createUserLogin,
   getLoginUserMaster,
-  changePassword
+  changePassword,
+  addAppGroup
 } from "../model/algaehappuser";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
@@ -140,6 +141,28 @@ export default ({ config, db }) => {
   api.put(
     "/changePassword",
     changePassword,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by nowshad :
+  api.put(
+    "/addAppGroup",
+    addAppGroup,
     (req, res, next) => {
       let result = req.records;
       if (result.validUser == false) {
