@@ -180,6 +180,7 @@ class ManualAttendance extends Component {
   }
 
   render() {
+    debugger;
     const timesheet_entry =
       this.state.manual_timesheet_entry === "D"
         ? "sub_department_id"
@@ -201,7 +202,8 @@ class ManualAttendance extends Component {
       this.state.manual_timesheet_entry === "D"
         ? "Select a Dept."
         : "Select Project";
-    let allYears = getYears();
+
+    debugger;
     return (
       <div id="ManualAttendanceScreen">
         <div className="row inner-top-search" data-validate="loadEmployee">
@@ -254,114 +256,118 @@ class ManualAttendance extends Component {
 
           {this.state.select_wise === "M" ? (
             <div className="col">
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Select a Month.",
-                  isImp: this.state.select_wise === "M" ? true : false
-                }}
-                selector={{
-                  sort: "off",
-                  name: "month",
-                  className: "select-fld",
-                  value: this.state.month,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "value",
-                    data: GlobalVariables.MONTHS
-                  },
-                  onChange: this.eventHandaler.bind(this),
-                  onClear: () => {
-                    this.setState({
-                      month: null
-                    });
-                  }
-                }}
-              />
-              <div className="col" style={{ marginTop: 10 }}>
-                <div
-                  className="row"
-                  style={{
-                    border: "1px solid #ced4d9",
-                    borderRadius: 5,
-                    marginLeft: 0
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Select a Month.",
+                    isImp: this.state.select_wise === "M" ? true : false
                   }}
-                >
-                  <div className="col">
-                    <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
-                    <h6 className="textEllipsis">
-                      {this.state.employee_name
-                        ? this.state.employee_name
-                        : "------"}
-                    </h6>
-                  </div>
+                  selector={{
+                    sort: "off",
+                    name: "month",
+                    className: "select-fld",
+                    value: this.state.month,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.MONTHS
+                    },
+                    onChange: this.eventHandaler.bind(this),
+                    onClear: () => {
+                      this.setState({
+                        month: null
+                      });
+                    }
+                  }}
+                />
+                <div className="col" style={{ marginTop: 10 }}>
                   <div
-                    className="col-lg-3"
-                    style={{ borderLeft: "1px solid #ced4d8" }}
+                    className="row"
+                    style={{
+                      border: "1px solid #ced4d9",
+                      borderRadius: 5,
+                      marginLeft: 0
+                    }}
                   >
-                    <i
-                      className="fas fa-search fa-lg"
-                      style={{
-                        paddingTop: 17,
-                        paddingLeft: 3,
-                        cursor: "pointer"
-                      }}
-                      onClick={this.employeeSearch.bind(this)}
-                    />
+                    <div className="col">
+                      <AlgaehLabel label={{ forceLabel: "Employee Name" }} />
+                      <h6 className="textEllipsis">
+                        {this.state.employee_name
+                          ? this.state.employee_name
+                          : "------"}
+                      </h6>
+                    </div>
+                    <div
+                      className="col-lg-3"
+                      style={{ borderLeft: "1px solid #ced4d8" }}
+                    >
+                      <i
+                        className="fas fa-search fa-lg"
+                        style={{
+                          paddingTop: 17,
+                          paddingLeft: 3,
+                          cursor: "pointer"
+                        }}
+                        onClick={this.employeeSearch.bind(this)}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           ) : (
-            <div>
-              <AlagehAutoComplete
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: drop_Down_Label,
-                  isImp: this.state.select_wise === "D" ? true : false
-                }}
-                selector={{
-                  name: timesheet_entry,
-                  className: "select-fld",
-                  value:
-                    this.state.manual_timesheet_entry === "D"
-                      ? this.state.sub_department_id
-                      : this.state.project_id,
-                  dataSource: _dropDownDataSource,
-                  onChange: this.eventHandaler.bind(this),
-                  onClear: () => {
-                    {
+            <div className="col">
+              <div className="row">
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: drop_Down_Label,
+                    isImp: this.state.select_wise === "D" ? true : false
+                  }}
+                  selector={{
+                    name: timesheet_entry,
+                    className: "select-fld",
+                    value:
                       this.state.manual_timesheet_entry === "D"
-                        ? this.setState({
-                            sub_department_id: null
-                          })
-                        : this.setState({
-                            project_id: null
-                          });
+                        ? this.state.sub_department_id
+                        : this.state.project_id,
+                    dataSource: _dropDownDataSource,
+                    onChange: this.eventHandaler.bind(this),
+                    onClear: () => {
+                      {
+                        this.state.manual_timesheet_entry === "D"
+                          ? this.setState({
+                              sub_department_id: null
+                            })
+                          : this.setState({
+                              project_id: null
+                            });
+                      }
                     }
-                  }
-                }}
-              />
-              <AlgaehDateHandler
-                div={{ className: "col" }}
-                label={{
-                  forceLabel: "Select Date",
-                  isImp: this.state.select_wise === "D" ? true : false
-                }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "attendance_date"
-                }}
-                maxDate={new Date()}
-                events={{
-                  onChange: this.datehandle.bind(this)
-                }}
-                value={this.state.attendance_date}
-              />
+                  }}
+                />
+                <AlgaehDateHandler
+                  div={{ className: "col" }}
+                  label={{
+                    forceLabel: "Select Date",
+                    isImp: this.state.select_wise === "D" ? true : false
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "attendance_date"
+                  }}
+                  maxDate={new Date()}
+                  events={{
+                    onChange: this.datehandle.bind(this)
+                  }}
+                  value={this.state.attendance_date}
+                />
+              </div>
             </div>
           )}
 
-          <div className="col form-group">
+          <div className="col-1 form-group">
             <button
               style={{ marginTop: 21 }}
               className="btn btn-default"

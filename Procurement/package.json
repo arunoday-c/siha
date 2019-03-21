@@ -13,7 +13,7 @@
     "start": "cross-env PORT=3017 NODE_ENV=production pm2 start  -i 1 procurement_server.js"
   },
   "dependencies": {
-    "algaeh-mysql": "^1.1.13",
+    "algaeh-mysql": "^1.2.4",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",
@@ -21,9 +21,9 @@
     "cross-env": "^5.1.4",
     "cryptr": "^4.0.0",
     "express": "^4.16.3",
+    "node-linq": "0.0.5",
     "winston": "^2.4.2",
-    "winston-daily-rotate-file": "^3.1.4",
-    "node-linq": "0.0.5"
+    "winston-daily-rotate-file": "^3.1.4"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
