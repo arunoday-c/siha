@@ -2009,9 +2009,9 @@ module.exports = {
               input[i].status == "PR" ? result[0]["standard_working_hours"] : 0;
             _strQry += _mysql.mysqlQueryFormat(
               "INSERT INTO `hims_f_daily_time_sheet` (employee_id,attendance_date,in_time,out_date,out_time,hours,\
-                minutes,worked_hours,sub_department_id,status,year,month,hospital_id, actual_hours) \
-                 VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `in_time`=?,`out_date`=?,`hours`=?,\
-                 `minutes`=?,`worked_hours`=?,`status`=?,`actual_hours`=?;",
+                minutes,worked_hours,sub_department_id,status,year,month,hospital_id, actual_hours,project_id) \
+                 VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE `in_time`=?,`out_date`=?,`hours`=?,\
+                 `minutes`=?,`worked_hours`=?,`status`=?,`actual_hours`=?, `project_id`=?;",
               [
                 input[i].employee_id,
                 input[i].attendance_date,
@@ -2027,6 +2027,7 @@ module.exports = {
                 input[i].month,
                 input[i].hospital_id,
                 actual_hours,
+                input[i].project_id,
 
                 input[i].in_time,
                 input[i].out_date,
@@ -2034,7 +2035,8 @@ module.exports = {
                 input[i].minutes,
                 input[i].worked_hours,
                 input[i].status,
-                actual_hours
+                actual_hours,
+                input[i].project_id
               ]
             );
           }
