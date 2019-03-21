@@ -33,48 +33,38 @@ export default ({ config, db }) => {
   );
 
   // created by irfan :
-  api.get(
-    "/selectLoginUser",
-    selectLoginUser,
-    (req, res, next) => {
-      let result = req.records;
-      if (result.validUser == false) {
-        res.status(httpStatus.ok).json({
-          success: false,
-          records: result
-        });
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
-      }
-      next();
-    },
-    releaseConnection
-  );
+  api.get("/selectLoginUser", selectLoginUser, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   // created by irfan :
-  api.get(
-    "/selectAppGroup",
-    selectAppGroup,
-    (req, res, next) => {
-      let result = req.records;
-      if (result.validUser == false) {
-        res.status(httpStatus.ok).json({
-          success: false,
-          records: result
-        });
-      } else {
-        res.status(httpStatus.ok).json({
-          success: true,
-          records: result
-        });
-      }
-      next();
-    },
-    releaseConnection
-  );
+  api.get("/selectAppGroup", selectAppGroup, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   // created by irfan :
   api.get(
