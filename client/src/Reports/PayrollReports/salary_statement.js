@@ -1,3 +1,4 @@
+import React, { Component } from "react";
 import { payrollHeader } from "./payrollHeader";
 import "../report-style.css";
 export function printReport(data) {
