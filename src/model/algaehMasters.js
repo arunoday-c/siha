@@ -1824,28 +1824,55 @@ let assignScreens = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let execute_query = "";
+
+    let input = req.body;
     if (req.userIdentity.role_type != "GN") {
       new Promise((resolve, reject) => {
         try {
           if (
-            req.body.delete_modules.length > 0 ||
-            req.body.delete_screens.length > 0
+            input.delete_modules.length > 0 ||
+            input.delete_screens.length > 0 ||
+            input.update_screens.length > 0
           ) {
             let qry = "";
 
-            if (req.body.delete_screens.length > 0) {
+            if (input.delete_screens.length > 0) {
               qry += ` delete from algaeh_m_screen_role_privilage_mapping where algaeh_m_screen_role_privilage_mapping_id in (${
-                req.body.delete_screens
+                input.delete_screens
               });`;
             }
 
-            if (req.body.delete_modules.length > 0) {
+            if (input.delete_modules.length > 0) {
               qry += ` delete from algaeh_m_screen_role_privilage_mapping where module_role_map_id in ( ${
-                req.body.delete_modules
+                input.delete_modules
               });
               delete from algaeh_m_module_role_privilage_mapping where algaeh_m_module_role_privilage_mapping_id in (${
-                req.body.delete_modules
+                input.delete_modules
               });`;
+            }
+
+            if (input.update_screens.length > 0) {
+              for (let i = 0; i < input.update_screens.length; i++) {
+                for (
+                  let k = 0;
+                  k < input.update_screens[i]["insert_screens"].length;
+                  k++
+                ) {
+                  qry += _mysql.mysqlQueryFormat(
+                    " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
+                    [
+                      input.update_screens[i][
+                        "algaeh_m_module_role_privilage_mapping_id"
+                      ],
+                      input.update_screens[i]["insert_screens"][k],
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date(),
+                      req.userIdentity.algaeh_d_app_user_id,
+                      new Date()
+                    ]
+                  );
+                }
+              }
             }
 
             _mysql
@@ -1854,7 +1881,6 @@ let assignScreens = (req, res, next) => {
                 printQuery: true
               })
               .then(deleteResult => {
-                console.log("deleteResult:", deleteResult);
                 resolve(deleteResult);
               })
               .catch(error => {
@@ -1892,7 +1918,6 @@ let assignScreens = (req, res, next) => {
               query: execute_query
             })
             .then(firstRes => {
-              console.log("firstRes:", firstRes);
               let execute_detail_query = "";
               let headerResult = [];
               if (firstRes.affectedRows > 0) {
@@ -1900,7 +1925,7 @@ let assignScreens = (req, res, next) => {
               } else {
                 headerResult = firstRes;
               }
-              console.log("headerResult2:", headerResult);
+
               if (headerResult.length > 0) {
                 for (let k = 0; k < headerResult.length; k++) {
                   for (let m = 0; m < modules[k]["screen_ids"].length; m++) {
