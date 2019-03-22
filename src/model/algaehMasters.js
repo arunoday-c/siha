@@ -1823,7 +1823,6 @@ let assignScreensBAckup = (req, res, next) => {
 let assignScreens = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    let modules = req.body.inputs;
     let execute_query = "";
     if (req.userIdentity.role_type != "GN") {
       new Promise((resolve, reject) => {
@@ -1871,14 +1870,15 @@ let assignScreens = (req, res, next) => {
         }
       }).then(delRes => {
         //-------------------------
+
+        let modules = req.body.inputs;
         if (modules != undefined && modules.length > 0) {
           for (let i = 0; i < modules.length; i++) {
             execute_query += _mysql.mysqlQueryFormat(
-              "INSERT INTO `algaeh_m_module_role_privilage_mapping` (module_id, role_id, privilege_description, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?,?); ",
+              "INSERT  IGNORE INTO `algaeh_m_module_role_privilage_mapping` (module_id, role_id,  created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
               [
                 modules[i]["module_id"],
                 req.body.role_id,
-                req.body.privilege_description,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
@@ -1891,13 +1891,21 @@ let assignScreens = (req, res, next) => {
             .executeQueryWithTransaction({
               query: execute_query
             })
-            .then(headerResult => {
+            .then(firstRes => {
+              console.log("firstRes:", firstRes);
               let execute_detail_query = "";
+              let headerResult = [];
+              if (firstRes.affectedRows > 0) {
+                headerResult.push(firstRes);
+              } else {
+                headerResult = firstRes;
+              }
+              console.log("headerResult2:", headerResult);
               if (headerResult.length > 0) {
                 for (let k = 0; k < headerResult.length; k++) {
                   for (let m = 0; m < modules[k]["screen_ids"].length; m++) {
                     execute_detail_query += _mysql.mysqlQueryFormat(
-                      " INSERT INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
+                      " INSERT IGNORE INTO `algaeh_m_screen_role_privilage_mapping` (module_role_map_id, screen_id, created_by, created_date, updated_by, updated_date) VALUE(?,?,?,?,?,?); ",
                       [
                         headerResult[k]["insertId"],
                         modules[k]["screen_ids"][m],
@@ -1911,16 +1919,18 @@ let assignScreens = (req, res, next) => {
                 }
                 _mysql
                   .executeQueryWithTransaction({
-                    query: execute_detail_query
+                    query: execute_detail_query,
+                    printQuery: true
                   })
                   .then(detailResult => {
                     _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
-                      req.records = detailResult[0];
+                      req.records = detailResult;
                       next();
                     });
                   })
                   .catch(error => {
+                    console.log("error:", error);
                     _mysql.rollBackTransaction(() => {
                       next(error);
                     });
@@ -1929,6 +1939,7 @@ let assignScreens = (req, res, next) => {
                 //inserion error
 
                 _mysql.rollBackTransaction(() => {
+                  console.log("error3:", error);
                   next(error);
                 });
                 req.records = {
@@ -1940,18 +1951,26 @@ let assignScreens = (req, res, next) => {
               }
             })
             .catch(error => {
+              console.log("error4:", error);
               _mysql.rollBackTransaction(() => {
                 next(error);
               });
             });
         } else if (delRes !== null) {
           //commit
+
+          console.log("wwwww:", "wwwww");
           _mysql.commitTransaction(() => {
             _mysql.releaseConnection();
             req.records = delRes;
             next();
           });
         } else {
+          console.log("error99:", "error");
+          // _mysql.rollBackTransaction(() => {
+          //   next(error);
+          // });
+
           req.records = {
             invalid_input: true,
             message: "Please send valid input"

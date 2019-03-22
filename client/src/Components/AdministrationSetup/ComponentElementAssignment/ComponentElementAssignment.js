@@ -130,8 +130,19 @@ class ComponentElementAssignment extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-12 form-group" }}
+                    div={{ className: "col-6 form-group" }}
                     label={{ forceLabel: "Select Module", isImp: false }}
+                    selector={{
+                      name: "",
+                      className: "select-fld",
+                      dataSource: {},
+                      others: {}
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-6 form-group" }}
+                    label={{ forceLabel: "Select Screen", isImp: false }}
                     selector={{
                       name: "",
                       className: "select-fld",
