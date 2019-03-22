@@ -488,7 +488,7 @@ export default class ReportUI extends Component {
                 <div id="report_generation_interface">
                   {/* {this.props.options.plotUI.paramters()} */}
 
-                  <div className="col-lg-12">
+                  <div className="col-lg-12 margin-top-15">
                     <div className="row">{this.generateInputParameters()}</div>
                   </div>
                   <button

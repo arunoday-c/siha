@@ -9,7 +9,7 @@ let allYears = getYears();
 
 export default [
   {
-    name: "APPOINTMENT",
+    name: "Appointment",
     submenu: [
       {
         subitem: "Appointment Availability Report",
@@ -138,62 +138,14 @@ export default [
   },
 
   {
-    name: "INCOME",
+    name: "Income",
     submenu: [
       {
-        subitem: "Department Wise Income",
-        template_name: "departmentIncome",
-        reportQuery: "subDepartmentIncome",
-        reportParameters: [
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-      },
-      {
-        subitem: "OP Billing Summary",
-        template_name: "opBillSummary",
-        reportQuery: "OPBillSummary",
-        reportParameters: [
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-        ]
-      },
-      {
-        subitem: "OP Billing Detail",
-        template_name: "opBillDetails",
-        reportQuery: "OPBillDetails",
+        subitem: "Daily Transaction",
+        template_name: "Income/DailyTransaction",
+        reportQuery: "dailyTransaction",
+        // reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        module: "IncomeModule",
         reportParameters: [
           {
             type: "date",
@@ -215,26 +167,70 @@ export default [
           },
           {
             type: "dropdown",
-            name: "service_type_id",
+            name: "",
             initialLoad: true,
             isImp: true,
+            label: "Select Branch",
             link: {
-              uri: "/serviceType",
-              module: "masterSettings"
+              // uri: "/organization/getOrganization"
             },
             dataSource: {
-              textField: "service_type",
-              valueField: "hims_d_service_type_id",
-              data: undefined
+              textField: "",
+              valueField: ""
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Doctor",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
             }
           }
         ]
+        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Daily Cash Collection",
-        template_name: "dailyCashCollection",
-        reportQuery: "staffCashCollection",
+        subitem: "List of Receipt",
+        template_name: "Income/ReceiptList",
+        reportQuery: "receiptList",
+        // reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        module: "IncomeModule",
         reportParameters: [
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Receipt Type",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
+          },
           {
             type: "date",
             name: "from_date",
@@ -252,160 +248,148 @@ export default [
               maxDate: new Date(),
               minDate: null
             }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Branch",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Doctor",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
           }
         ]
+        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
-        subitem: "Service wise Income",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Doctor wise Income",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-
-      {
-        subitem: "Daily Bill List",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Credit Bills",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Refunds List",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Discount Given",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Discount Given - Invoice Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Invoices - Cash/Credit",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Reciepts",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "List of Sponsor Bills",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Outstanding Report - Patientwise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        ////reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Patient Outstanding",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Patient Outstanding Ageing Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Patient Outstanding Ageing Report - Department Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Revenue Analysis - Accumulated Summary",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Revenue Analysis - Category Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Revenue Analysis - Day Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Revenue Analysis - Doctor Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Revenue Analysis - Doctor Wise - Detailed",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Service Wise Income",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Service Wise Income - Detailed",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Service Wise Revenue - Doctor Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "Total Collection - Month - Doctor Wise",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
-      },
-      {
-        subitem: "WriteOff Details Report",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <RevenueCollection ui="asset_warty_exp_rep" />
+        subitem: "List of Payments",
+        template_name: "Income/PaymentList",
+        reportQuery: "receiptList",
+        // reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        module: "IncomeModule",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Payment Type",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
+          },
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Branch",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
+          },
+          {
+            type: "dropdown",
+            name: "",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Doctor",
+            link: {
+              // uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "",
+              valueField: ""
+            }
+          }
+        ]
+        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       }
     ]
   },
 
   {
-    name: "FINANCE",
+    name: "Finance",
     submenu: [
+      {
+        subitem: "List of Receipts",
+        template_name: "asset_war_exp",
+        reportParameters: []
+        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
+      },
       {
         subitem: "Balance Sheet Report",
         template_name: "asset_war_exp",
@@ -715,7 +699,7 @@ export default [
     ]
   },
   {
-    name: "PAYROLL REPORTS",
+    name: "Payroll Reports",
     submenu: [
       {
         subitem: "Leave Reports",
@@ -967,7 +951,7 @@ export default [
   },
 
   {
-    name: "INVENTORY",
+    name: "Inventory",
     submenu: [
       {
         subitem: " Inventory of Retail Products",
@@ -1152,7 +1136,7 @@ export default [
     ]
   },
   {
-    name: "PHARMACY",
+    name: "Pharmacy",
     submenu: [
       {
         subitem: "Daily Collection - Consolidated",
@@ -1319,7 +1303,7 @@ export default [
     ]
   },
   {
-    name: "INCENTIVES",
+    name: "Incentives",
     submenu: [
       {
         subitem: "Clinic - Doctor Invoices Summary",
@@ -1384,7 +1368,7 @@ export default [
     ]
   },
   {
-    name: "INSURANCE",
+    name: "Insurance",
     submenu: [
       {
         subitem: "Claim Rejection Reports",
@@ -1522,7 +1506,7 @@ export default [
   },
 
   {
-    name: "LABORATORY",
+    name: "Laboratory",
     submenu: [
       {
         subitem: " Accession TAT",
@@ -1696,7 +1680,7 @@ export default [
   },
 
   {
-    name: "TAX REPORTS",
+    name: "Tax Reports",
     submenu: [
       {
         subitem: "Tax Report Summary",
