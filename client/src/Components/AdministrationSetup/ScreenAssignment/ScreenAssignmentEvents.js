@@ -59,10 +59,11 @@ export default function ScreenAssignmentEvents() {
           const removed_screen_data = _.filter(exist_screen_data, f => {
             return f.checked === false;
           });
-
-          delete_screens = removed_screen_data.map(item => {
-            return item.algaeh_m_screen_role_privilage_mapping_id;
-          });
+          if (removed_screen_data.length > 0) {
+            delete_screens = removed_screen_data.map(item => {
+              return item.algaeh_m_screen_role_privilage_mapping_id;
+            });
+          }
         }
         // Update
         const update_module_data = _.filter(exist_module_data, f => {
@@ -141,7 +142,7 @@ export default function ScreenAssignmentEvents() {
               title: "Assigned Successfully.",
               type: "success"
             });
-            $this.setState($this.baseState);
+            $this.setState({ app_group_id: null, role_id: null, roles: [] });
             getRoleBaseActive($this);
           } else {
             swalMessage({
@@ -162,12 +163,25 @@ export default function ScreenAssignmentEvents() {
       getRoleBaseActive($this);
     },
     getGroups: $this => {
-      getGroupData($this);
+      algaehApiCall({
+        uri: "/algaehappuser/selectAppGroup",
+        method: "GET",
+        onSuccess: response => {
+          if (response.data.success) {
+            $this.setState({ groups: response.data.records });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
     },
     clearState: $this => {
-      $this.setState($this.baseState);
+      $this.setState({ app_group_id: null, role_id: null, roles: [] });
       getRoleBaseActive($this);
-      getGroupData($this);
     },
 
     changeScreen: ($this, data, e) => {
@@ -235,23 +249,23 @@ export default function ScreenAssignmentEvents() {
   };
 }
 
-function getGroupData($this) {
-  algaehApiCall({
-    uri: "/algaehappuser/selectAppGroup",
-    method: "GET",
-    onSuccess: response => {
-      if (response.data.success) {
-        $this.setState({ groups: response.data.records });
-      }
-    },
-    onFailure: error => {
-      swalMessage({
-        title: error.message,
-        type: "error"
-      });
-    }
-  });
-}
+// function getGroupData($this) {
+//   algaehApiCall({
+//     uri: "/algaehappuser/selectAppGroup",
+//     method: "GET",
+//     onSuccess: response => {
+//       if (response.data.success) {
+//         $this.setState({ groups: response.data.records });
+//       }
+//     },
+//     onFailure: error => {
+//       swalMessage({
+//         title: error.message,
+//         type: "error"
+//       });
+//     }
+//   });
+// }
 
 function getRoleBaseActive($this) {
   algaehApiCall({
