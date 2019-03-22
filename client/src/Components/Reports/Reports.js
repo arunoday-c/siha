@@ -43,7 +43,7 @@ class Reports extends Component {
           <form action="none" style={{ width: "100%" }}>
             <div className="row padding-10">
               <AlagehAutoComplete
-                div={{ className: "col form-group" }}
+                div={{ className: "col-3 form-group" }}
                 label={{ forceLabel: "Report Category", isImp: false }}
                 selector={{
                   name: "module",
@@ -77,7 +77,7 @@ class Reports extends Component {
                 }}
               /> */}
 
-              <AlagehFormGroup
+              {/* <AlagehFormGroup
                 div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "Filter by Reports",
@@ -96,7 +96,7 @@ class Reports extends Component {
                     onChange: () => {}
                   }
                 }}
-              />
+              /> */}
 
               {/* <AlagehFormGroup
                 div={{ className: "col" }}
