@@ -28,7 +28,7 @@
     }
   },
   "dependencies": {
-    "algaeh-mysql": "^1.1.20",
+    "algaeh-mysql": "^1.2.4",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",
@@ -40,7 +40,6 @@
     "moment": "^2.22.1",
     "mssql": "^4.3.2",
     "node-linq": "0.0.5",
-    "sync": "^0.2.5",
     "winston": "^2.4.2",
     "winston-daily-rotate-file": "^3.1.4"
   },

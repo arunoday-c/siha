@@ -17,6 +17,7 @@ class AutoComplete extends Component {
   }
 
   componentWillReceiveProps(props) {
+    debugger;
     if (this.state.hasSecurity) return;
     const _templtate =
       typeof props.selector.template === "function"
@@ -32,19 +33,18 @@ class AutoComplete extends Component {
         ? []
         : props.selector.dataSource.data;
       const _data =
-        this.props.selector.sort === null ||
-        this.props.selector.sort === undefined
+        props.selector.sort === null || props.selector.sort === undefined
           ? _estData
               .sort((a, b) => {
                 return (
-                  "" + a[this.props.selector.dataSource.textField]
-                ).localeCompare(b[this.props.selector.dataSource.textField]);
+                  "" + a[props.selector.dataSource.textField]
+                ).localeCompare(b[props.selector.dataSource.textField]);
               })
               .map((item, index) => {
                 return {
                   key: index,
-                  value: item[this.props.selector.dataSource.valueField],
-                  text: item[this.props.selector.dataSource.textField],
+                  value: item[props.selector.dataSource.valueField],
+                  text: item[props.selector.dataSource.textField],
                   content:
                     _templtate === undefined ? undefined : _templtate(item),
                   ...item
@@ -53,8 +53,8 @@ class AutoComplete extends Component {
           : _estData.map((item, index) => {
               return {
                 key: index,
-                value: item[this.props.selector.dataSource.valueField],
-                text: item[this.props.selector.dataSource.textField],
+                value: item[props.selector.dataSource.valueField],
+                text: item[props.selector.dataSource.textField],
                 content:
                   _templtate === undefined ? undefined : _templtate(item),
                 ...item

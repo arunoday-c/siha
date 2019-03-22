@@ -73,10 +73,10 @@ module.exports = {
         .executeQuery({
           query:
             "select PE.episode_id,PE.encounter_id , P.hims_d_patient_id,P.full_name,P.patient_code,P.vat_applicable,P.gender, \
-             P.date_of_birth,P.contact_number,N.nationality, \
+             P.date_of_birth,P.contact_number,N.nationality,PV.hims_f_patient_visit_id, \
              concat(PV.age_in_years,'Y')years,concat(PV.age_in_months,'M')months,\
              concat(PV.age_in_days,'D')days,case PE.payment_type when PE.payment_type ='S' then 'Self Paying' else 'Insurance' end payment_type ,\
-             PE.updated_date as Encounter_Date  from hims_f_patient_encounter PE ,\
+             PE.created_date as encounter_date  from hims_f_patient_encounter PE ,\
              hims_f_patient P ,hims_d_nationality N,hims_f_patient_visit PV \
              where P.hims_d_patient_id=PE.patient_id and N.hims_d_nationality_id=P.nationality_id \
              and PV.hims_f_patient_visit_id=PE.visit_id \
@@ -153,6 +153,39 @@ module.exports = {
         _mysql.releaseConnection();
         next(e);
       });
+    }
+  },
+  getPatientVisits: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = {
+      ...req.query,
+      sub_department_id: req.userIdentity.sub_department_id,
+      doctor_id: req.userIdentity.employee_id
+    };
+    try {
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT hims_f_patient_visit_id,visit_date,episode_id FROM hims_f_patient_visit \
+where patient_id=? and sub_department_id=? and doctor_id=? order by hims_f_patient_visit_id desc;",
+          values: [input.patient_id, input.sub_department_id, input.doctor_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result.unshift({
+            hims_f_patient_visit_id: undefined,
+            visit_date: "New Visit",
+            episode_id: 0
+          });
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
     }
   }
 };

@@ -7,16 +7,60 @@ import {
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import eventLogic from "./eventsLogic";
 import _ from "lodash";
-
+import { swalMessage } from "../../../utils/algaehApiCall";
 export default class PatientDashboard extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      allVitals: [],
+      episode_id: undefined
+    };
   }
-  render() {
+
+  /* method to get vitals for the patients */
+  getVitals(item) {
+    item = item || undefined;
+    debugger;
+    const { selectedPatientDetails } = this.props.dashboard_state;
+    eventLogic()
+      .getPatientVitials(item, selectedPatientDetails)
+      .then(result => {
+        this.setState({
+          allVitals: result,
+          episode_id: item.episode_id
+        });
+      })
+      .catch(error => {
+        swalMessage({
+          type: "error",
+          title: error.message
+        });
+      });
+  }
+
+  onViewVistChange(ele) {
+    this.setState({ episode_id: ele.value });
+  }
+
+  /* method to render with selected patent data*/
+  renderWithData() {
     const { selectedPatientDetails } = this.props.dashboard_state;
     const sortedDetails = eventLogic().patientDetails(selectedPatientDetails);
+
     const _internalPatientDetails =
       sortedDetails === undefined ? {} : sortedDetails;
+    let encounterVisits =
+      selectedPatientDetails === undefined
+        ? []
+        : eventLogic().visitsOrder(selectedPatientDetails);
+    encounterVisits.unshift({ encounter_date: "New Visit", episode_id: 0 });
+    const _valueEncounterDate =
+      encounterVisits.length > 1 && this.state.episode_id === undefined
+        ? encounterVisits[1].episode_id
+        : encounterVisits.length === 1 && this.state.episode_id === undefined
+        ? encounterVisits[0].episode_id
+        : this.state.episode_id;
+    this.getVitals(encounterVisits.length > 1 ? encounterVisits[1] : undefined);
     return (
       <React.Fragment>
         <div className="patientDetailSection">
@@ -62,7 +106,7 @@ export default class PatientDashboard extends Component {
                         {Date.parse(_internalPatientDetails.date_of_birth)
                           ? new Date(
                               _internalPatientDetails.date_of_birth
-                            ).toLocaleString()
+                            ).toLocaleDateString()
                           : ""}
                       </b>
                     </span>
@@ -80,9 +124,9 @@ export default class PatientDashboard extends Component {
                     <span>
                       Encounter:
                       <b>
-                        {Date.parse(_internalPatientDetails.Encounter_Date)
+                        {Date.parse(_internalPatientDetails.encounter_date)
                           ? new Date(
-                              _internalPatientDetails.Encounter_Date
+                              _internalPatientDetails.encounter_date
                             ).toLocaleString()
                           : ""}
                       </b>
@@ -92,42 +136,23 @@ export default class PatientDashboard extends Component {
                     </span>
                   </div>
                   <div className="PatientVitals">
-                    <span>
-                      Temp.: <b>70</b>
-                      <i>°C</i>
-                    </span>
-                    <span>
-                      O2 Sat: <b>32</b>
-                      <i>°C</i>
-                    </span>
-                    <span>
-                      Bp Systolic: <b>73</b>
-                      <i>cm</i>
-                    </span>
-                    <span>
-                      Bp Diastolic: <b>67</b>
-                      <i>cm</i>
-                    </span>
-                    <span>
-                      RR: <b>90</b>
-                      <i>bpm</i>
-                    </span>
-                    <span>
-                      HR: <b>76</b>
-                      <i>bpm</i>
-                    </span>
-                    <span>
-                      Weight: <b>76</b>
-                      <i>kg</i>
-                    </span>{" "}
-                    <span>
-                      Height: <b>189</b>
-                      <i>cm</i>
-                    </span>
-                    <span>
-                      BMI: <b>24.915</b>
-                      <i>cm</i>
-                    </span>
+                    {eventLogic()
+                      .getTopLevelVitals(this.state.allVitals)
+                      .map(vital => (
+                        <React.Fragment>
+                          <span>
+                            {vital.vital_short_name}:{" "}
+                            <b>{parseFloat(vital.vital_value).toFixed(2)}</b>
+                            <i>
+                              {vital.formula_value === "C" ||
+                              vital.formula_value === "F" ? (
+                                <sup>o</sup>
+                              ) : null}{" "}
+                              {vital.formula_value}
+                            </i>
+                          </span>
+                        </React.Fragment>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -272,19 +297,21 @@ export default class PatientDashboard extends Component {
                 <div className="col-6">
                   <AlagehAutoComplete
                     div={{ className: "col inline-formGroup" }}
-                    label={{ forceLabel: "View Visit", isImp: false }}
+                    label={{
+                      forceLabel: "View Visit",
+                      isImp: false
+                    }}
                     selector={{
-                      name: "",
+                      name: "view_visit",
                       className: "select-fld",
+                      value: _valueEncounterDate,
                       dataSource: {
-                        textField: "Encounter_Date",
+                        textField: "encounter_date",
                         valueField: "episode_id",
-                        data:
-                          selectedPatientDetails === undefined
-                            ? []
-                            : selectedPatientDetails
+                        data: encounterVisits
                       },
-                      others: {}
+
+                      onChange: this.onViewVistChange.bind(this)
                     }}
                   />
                 </div>
@@ -299,7 +326,7 @@ export default class PatientDashboard extends Component {
             </div>
           </div>
         </div>
-        ;
+
         <div className="clinicalDeskWrapper">
           <div className="clinicalDeskPopup animated slideInRight faster">
             <div className="HeaderSection">
@@ -314,5 +341,16 @@ export default class PatientDashboard extends Component {
         </div>
       </React.Fragment>
     );
+  }
+  /* method to render when no patient data avilabe */
+  renderWitOutdata() {
+    return <div>No patient selected</div>;
+  }
+  render() {
+    const { selectedPatientDetails } = this.props.dashboard_state;
+
+    return selectedPatientDetails === undefined
+      ? this.renderWitOutdata()
+      : this.renderWithData();
   }
 }

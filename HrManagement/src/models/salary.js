@@ -2655,9 +2655,10 @@ function getOtManagement(options) {
                 .logger()
                 .log("ot_work_hours: ", empResult["ot_work_hours"]);
 
-              let ot_work_hours = empResult["ot_work_hours"].split(".");
+              // let ot_work_hours = empResult["ot_work_hours"].split(".");
 
-              let ot_hour_price = per_hour_salary * ot_work_hours[0];
+              let ot_hour_price =
+                per_hour_salary * over_time["working_day_hour"];
               ot_hour_price = ot_hour_price * empResult["ot_work_hours"];
 
               utilities.logger().log("ot_hour_price: ", ot_hour_price);

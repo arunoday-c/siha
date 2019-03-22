@@ -208,7 +208,7 @@ module.exports = {
     let input = { ...req.body };
     if (Array.isArray(input.earning_comp)) {
       input.earning_comp.map((item, index) => {
-        input["end_of_service_component" + index + 1] =
+        input["end_of_service_component" + (index + 1)] =
           item.hims_d_earning_deduction_id;
       });
     }
