@@ -897,6 +897,8 @@
   "RECEIPT_TYPE": [
     { "name": "OP Billing", "value": "OP" },
     { "name": "POS", "value": "POS" },
-    { "name": "Advance", "value": "AD" }
+    { "name": "Advance", "value": "AD" },
+    { "name": "OP Creidt", "value": "OPC" },
+    { "name": "POS Creidt", "value": "POSC" }
   ]
 }

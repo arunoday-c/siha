@@ -241,7 +241,11 @@ export default [
                     : currentValue.value === "POS"
                     ? "posReceipt"
                     : currentValue.value === "AD"
-                    ? "opBillReceipt"
+                    ? "advanceReceipt"
+                    : currentValue.value === "OPC"
+                    ? "opCreditReceipt"
+                    : currentValue.value === "POSC"
+                    ? "posCreditReceipt"
                     : "";
                 callback({ reportQuery: reportQuery });
               }
