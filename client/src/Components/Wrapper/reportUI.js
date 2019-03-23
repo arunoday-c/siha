@@ -9,9 +9,10 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 export default class ReportUI extends Component {
   constructor(props) {
+    debugger;
     super(props);
     this.state = {
-      reportQuery: undefined,
+      reportQuery: props.options.report.reportQuery,
       pageDisplay: "",
       openPopup: true,
       hasError: false,
@@ -101,6 +102,7 @@ export default class ReportUI extends Component {
   }
 
   componentWillReceiveProps(props) {
+    debugger;
     this.setState({
       openPopup: true,
       reportQuery: props.options.report.reportQuery
@@ -123,6 +125,7 @@ export default class ReportUI extends Component {
     });
   }
   generateReport(e) {
+    debugger;
     const _reportQuery =
       this.state.reportQuery !== undefined
         ? this.state.reportQuery

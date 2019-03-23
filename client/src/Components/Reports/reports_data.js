@@ -142,6 +142,121 @@ export default [
     name: "Income",
     submenu: [
       {
+        subitem: "Department Wise Income",
+        template_name: "departmentIncome",
+        reportQuery: "subDepartmentIncome",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+      },
+      {
+        subitem: "OP Billing Summary",
+        template_name: "opBillSummary",
+        reportQuery: "OPBillSummary",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+      },
+      {
+        subitem: "OP Billing Detail",
+        template_name: "opBillDetails",
+        reportQuery: "OPBillDetails",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "dropdown",
+            name: "service_type_id",
+            initialLoad: true,
+            isImp: true,
+            link: {
+              uri: "/serviceType",
+              module: "masterSettings"
+            },
+            dataSource: {
+              textField: "service_type",
+              valueField: "hims_d_service_type_id",
+              data: undefined
+            }
+          }
+        ]
+      },
+      {
+        subitem: "Daily Cash Collection",
+        template_name: "dailyCashCollection",
+        reportQuery: "staffCashCollection",
+        reportParameters: [
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+      },
+      {
         subitem: "Daily Transaction",
         template_name: "Income/DailyTransaction",
         reportQuery: "dailyTransaction",
@@ -204,11 +319,16 @@ export default [
             isImp: true,
             label: "Select Doctor",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/employee/get",
+              module: "hrManagement",
+              data: {
+                isdoctor: "Y"
+              }
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "full_name",
+              valueField: "hims_d_employee_id",
+              data: undefined
             }
           }
         ]
@@ -327,21 +447,37 @@ export default [
         subitem: "List of Payments",
         template_name: "Income/PaymentList",
         reportQuery: "receiptList",
-        // reportUri: "/projectjobcosting/getProjectWiseJobCost",
         module: "IncomeModule",
         reportParameters: [
           {
             type: "dropdown",
-            name: "",
+            name: "receipt_type",
             initialLoad: true,
             isImp: true,
-            label: "Select Payment Type",
-            link: {
-              // uri: "/organization/getOrganization"
-            },
+            label: "Select Receipt Type",
+
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "name",
+              valueField: "value",
+              data: RECEIPT_TYPE
+            },
+            events: {
+              onChange: (reportState, currentValue, callback) => {
+                debugger;
+                let reportQuery =
+                  currentValue.value === "OP"
+                    ? "opBillReceipt"
+                    : currentValue.value === "POS"
+                    ? "posReceipt"
+                    : currentValue.value === "AD"
+                    ? "advanceReceipt"
+                    : currentValue.value === "OPC"
+                    ? "opCreditReceipt"
+                    : currentValue.value === "POSC"
+                    ? "posCreditReceipt"
+                    : "";
+                callback({ reportQuery: reportQuery });
+              }
             }
           },
           {
@@ -364,30 +500,33 @@ export default [
           },
           {
             type: "dropdown",
-            name: "",
+            name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "Select Branch",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/organization/getOrganization"
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
             }
           },
+
           {
             type: "dropdown",
-            name: "",
+            name: "V.sub_department_id",
             initialLoad: true,
             isImp: true,
             label: "Select Department",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/department/get/subdepartment"
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
             }
           },
           {
@@ -397,15 +536,20 @@ export default [
             isImp: true,
             label: "Select Doctor",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/employee/get",
+              // uri: "/employee/get?isdoctor='Y'",
+              module: "hrManagement",
+              data: {
+                isdoctor: "Y"
+              }
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "full_name",
+              valueField: "hims_d_employee_id",
+              data: undefined
             }
           }
         ]
-        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       }
     ]
   },

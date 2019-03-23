@@ -71,7 +71,11 @@ export function printReport(result) {
       <td>${moment(list.receipt_date).format("DD-MMM-YYYY")} </td>  
       <td>${list.patient_id === null ? "" : list.patient_code} </td>  
       <td>${
-        list.patient_id === null ? list.patient_name : list.full_name
+        list.patient_id === null
+          ? list.patient_name === null
+            ? ""
+            : list.patient_name
+          : list.full_name
       } </td>  
       <td>${
         list.sub_department_name === undefined ||
@@ -85,6 +89,8 @@ export function printReport(result) {
             ? list.referal_doctor
             : ""
           : list.doctor_name === undefined || list.doctor_name === null
+          ? ""
+          : list.doctor_name === null
           ? ""
           : list.doctor_name
       } </td>  

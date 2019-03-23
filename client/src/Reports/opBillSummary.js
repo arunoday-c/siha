@@ -5,6 +5,7 @@ export function printReport(data) {
   let AllTotal = Enumerable.from(data).sum(s => s.total_amount);
 
   return `
+  <div class="print-body">
     <header> ${revenueHeader(data)} </header> 
     <section>
     <h2><span>Patient Details</span></h2>
@@ -49,6 +50,7 @@ export function printReport(data) {
     </tr>
      </tbody>
     </table>
+    </div>
 </section>
 
   `;

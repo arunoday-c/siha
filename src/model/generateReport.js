@@ -1,11 +1,14 @@
 import { algaehReportConfig } from "../utils/reportMaker";
 import httpStatus from "../utils/httpStatus";
-import { releaseDBConnection } from "../utils";
-import { debugFunction, debugLog } from "../utils/logging";
+// import { releaseDBConnection } from "../utils";
+// import { debugFunction, debugLog } from "../utils/logging";
 import mysql from "mysql";
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
+
 let getReport = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    debugger;
     let inputParam = req.query;
 
     if (inputParam.reportName == null || inputParam.reportName == "")
@@ -26,21 +29,6 @@ let getReport = (req, res, next) => {
         )
       );
     }
-    let db = req.db;
-    if (db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    // let limit =
-    //   req.query.pageSize == null || req.query.pageSize === 0
-    //     ? 5
-    //     : req.query.pageSize;
-
-    // let offSet = req.query.pageNo;
-
-    // let whereCondition =
-    //   req.query.fieldName == null        ? " "        : " and upper(" +          req.query.fieldName +         ") like  upper('%" +
-    //       req.query.fieldContains +
-    //       "%')";
     let inputs = req.query.inputs == null ? "" : req.query.inputs;
 
     const _groupby =
@@ -60,22 +48,24 @@ let getReport = (req, res, next) => {
       });
     }
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      const _myQuery = mysql.format(query, inputData);
+    const _myQuery = mysql.format(query, inputData);
 
-      connection.query(_myQuery, (error, result) => {
-        releaseDBConnection(db, connection);
-        if (error) {
-          next(error);
-        }
+    _mysql
+      .executeQuery({
+        query: _myQuery,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
         req.records = result;
         next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
       });
-    });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };

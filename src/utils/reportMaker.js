@@ -30,14 +30,13 @@ let algaehReportConfig = reportName => {
         reportName: "OPBillDetails",
         reportQuery:
           "select BH.bill_date,BH.hims_f_billing_header_id,BH.bill_number,BD.services_id,sum(BD.net_amout) as total_amount,\
-  ST.service_type_code,ST.service_type,S.service_code,S.service_name\
-   from hims_f_billing_header BH inner join hims_f_billing_details BD on\
-   BH.hims_f_billing_header_id=BD.hims_f_billing_header_id  inner join hims_d_service_type ST\
-   on BD.service_type_id=ST.hims_d_service_type_id and ST.record_status='A'\
-   inner join hims_d_services S on  BD.services_id = S.hims_d_services_id and S.record_status='A'\
-   where    date(bill_date)   between    date(?) and  date(?) and  BD.service_type_id=?\
-   and   BH.record_status='A'  and BD.record_status='A'  group by BD.services_id ",
-
+          ST.service_type_code,ST.service_type,S.service_code,S.service_name\
+          from hims_f_billing_header BH inner join hims_f_billing_details BD on\
+          BH.hims_f_billing_header_id=BD.hims_f_billing_header_id  inner join hims_d_service_type ST\
+          on BD.service_type_id=ST.hims_d_service_type_id and ST.record_status='A'\
+          inner join hims_d_services S on  BD.services_id = S.hims_d_services_id and S.record_status='A'\
+          where    date(bill_date)   between    date(?) and  date(?) and  BD.service_type_id=?\
+          and   BH.record_status='A'  and BD.record_status='A'  group by BD.services_id ",
         questionOrder: ["from_date", "to_date", "service_type_id"]
       },
 
