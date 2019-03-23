@@ -5,6 +5,7 @@ import { debugFunction, debugLog } from "../utils/logging";
 import mysql from "mysql";
 let getReport = (req, res, next) => {
   try {
+    debugger;
     let inputParam = req.query;
 
     if (inputParam.reportName == null || inputParam.reportName == "")

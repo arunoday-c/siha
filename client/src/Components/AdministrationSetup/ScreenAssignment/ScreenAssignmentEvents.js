@@ -6,69 +6,158 @@ export default function ScreenAssignmentEvents() {
     dropDownHandler: ($this, value) => {
       switch (value.name) {
         case "app_group_id":
+          getRoleBaseActive($this);
           getRoles($this, value.value);
           $this.setState({
-            [value.name]: value.value
+            [value.name]: value.value,
+            roles: []
           });
           break;
 
         default:
+          getRoleBaseActive($this);
           getRoleActiveModules($this, value.value);
           $this.setState({
             [value.name]: value.value
           });
+          break;
       }
     },
     assignScreens: $this => {
       debugger;
+      //To build delete inputs
+      let inputObj = { role_id: $this.state.role_id };
+      let delete_modules = [];
+      let delete_screens = [];
+      let update_screens = [];
+      let inputs = [];
+      const exist_module_data = _.filter($this.state.modules, f => {
+        return f.algaeh_m_module_role_privilage_mapping_id !== undefined;
+      });
+
+      if (exist_module_data.length > 0) {
+        //Delete
+        const removed_module_data = _.filter(exist_module_data, f => {
+          return f.checked === false;
+        });
+        if (removed_module_data.length > 0) {
+          delete_modules = removed_module_data.map(item => {
+            return item.algaeh_m_module_role_privilage_mapping_id;
+          });
+        }
+
+        const check_module_data = _.filter(exist_module_data, f => {
+          return f.checked === true;
+        });
+        for (let y = 0; y < check_module_data.length; y++) {
+          const exist_screen_data = _.filter(
+            check_module_data[y].ScreenList,
+            f => {
+              return f.algaeh_m_screen_role_privilage_mapping_id !== undefined;
+            }
+          );
+          const removed_screen_data = _.filter(exist_screen_data, f => {
+            return f.checked === false;
+          });
+          if (removed_screen_data.length > 0) {
+            delete_screens = removed_screen_data.map(item => {
+              return item.algaeh_m_screen_role_privilage_mapping_id;
+            });
+          }
+        }
+        // Update
+        const update_module_data = _.filter(exist_module_data, f => {
+          return f.checked === true;
+        });
+        if (update_module_data.length > 0) {
+          let insert_screens = [];
+          for (let k = 0; k < update_module_data.length; k++) {
+            const insert_screen_data = _.filter(
+              update_module_data[k].ScreenList,
+              f => {
+                return (
+                  f.checked === true &&
+                  f.algaeh_m_screen_role_privilage_mapping_id === undefined
+                );
+              }
+            );
+            if (insert_screen_data.length > 0) {
+              let Obj = {
+                algaeh_m_module_role_privilage_mapping_id:
+                  update_module_data[k]
+                    .algaeh_m_module_role_privilage_mapping_id
+              };
+
+              insert_screens = insert_screen_data.map(item => {
+                return item.screen_id;
+              });
+
+              Obj.insert_screens = insert_screens;
+              update_screens.push(Obj);
+            }
+          }
+        }
+      }
+      //To build insert inputs
       const module_data = _.filter($this.state.modules, f => {
-        return f.checked == true;
+        return (
+          f.checked === true &&
+          f.algaeh_m_module_role_privilage_mapping_id === undefined
+        );
       });
       if (module_data.length > 0) {
-        debugger;
-        let inputObj = { role_id: $this.state.role_id };
-        let inputs = [];
         for (let i = 0; i < module_data.length; i++) {
           let Obj = {};
           let screen_ids = [];
           const screen_data = _.filter(module_data[i].ScreenList, f => {
-            return f.checked === true;
+            return (
+              f.checked === true &&
+              f.algaeh_m_screen_role_privilage_mapping_id === undefined
+            );
           });
-          Obj.module_id = module_data[i].module_id;
-          for (let i = 0; i < screen_data.length; i++) {
-            screen_ids.push(screen_data[i].screen_id);
+          if (screen_data.length > 0) {
+            Obj.module_id = module_data[i].module_id;
+            screen_ids = screen_data.map(item => {
+              return item.screen_id;
+            });
+            Obj.screen_ids = screen_ids;
+            inputs.push(Obj);
           }
-          Obj.screen_ids = screen_ids;
-          inputs.push(Obj);
         }
-        inputObj.inputs = inputs;
-        algaehApiCall({
-          uri: "/algaehMasters/assignScreens",
-          method: "POST",
-          data: inputObj,
-          onSuccess: res => {
-            if (res.data.success) {
-              swalMessage({
-                title: "Assigned Successfully.",
-                type: "error"
-              });
-              $this.setState($this.baseState);
-              getRoleBaseActive($this);
-            }
-          },
-          onFailure: err => {
+      }
+
+      inputObj.inputs = inputs;
+      inputObj.delete_modules = delete_modules;
+      inputObj.delete_screens = delete_screens;
+      inputObj.update_screens = update_screens;
+
+      debugger;
+      algaehApiCall({
+        uri: "/algaehMasters/assignScreens",
+        method: "POST",
+        data: inputObj,
+        onSuccess: res => {
+          if (res.data.success) {
             swalMessage({
-              title: err.message,
+              title: "Assigned Successfully.",
+              type: "success"
+            });
+            $this.setState({ app_group_id: null, role_id: null, roles: [] });
+            getRoleBaseActive($this);
+          } else {
+            swalMessage({
+              title: res.data.records.message,
               type: "error"
             });
           }
-        });
-      } else {
-        swalMessage({
-          title: "Please select the screens.",
-          type: "error"
-        });
-      }
+        },
+        onFailure: err => {
+          swalMessage({
+            title: err.message,
+            type: "error"
+          });
+        }
+      });
     },
     getRoleBaseActiveModules: $this => {
       getRoleBaseActive($this);
@@ -91,7 +180,8 @@ export default function ScreenAssignmentEvents() {
       });
     },
     clearState: $this => {
-      $this.setState($this.baseState);
+      $this.setState({ app_group_id: null, role_id: null, roles: [] });
+      getRoleBaseActive($this);
     },
 
     changeScreen: ($this, data, e) => {
@@ -159,9 +249,24 @@ export default function ScreenAssignmentEvents() {
   };
 }
 
-function resetState($this) {
-  $this.setState($this.baseState);
-}
+// function getGroupData($this) {
+//   algaehApiCall({
+//     uri: "/algaehappuser/selectAppGroup",
+//     method: "GET",
+//     onSuccess: response => {
+//       if (response.data.success) {
+//         $this.setState({ groups: response.data.records });
+//       }
+//     },
+//     onFailure: error => {
+//       swalMessage({
+//         title: error.message,
+//         type: "error"
+//       });
+//     }
+//   });
+// }
+
 function getRoleBaseActive($this) {
   algaehApiCall({
     uri: "/algaehMasters/getRoleBaseActiveModules",
@@ -222,7 +327,12 @@ function getRoleActiveModules($this, role_id) {
             m => m.module_id === item.module_id
           );
           const index = modules.indexOf(_findModule);
-          modules[index] = { ...modules[index], checked: true };
+          modules[index] = {
+            ...modules[index],
+            checked: true,
+            algaeh_m_module_role_privilage_mapping_id:
+              item.algaeh_m_module_role_privilage_mapping_id
+          };
 
           item.ScreenList.map(screen => {
             let _findScreen = _.find(
@@ -232,7 +342,9 @@ function getRoleActiveModules($this, role_id) {
             const indexS = modules[index]["ScreenList"].indexOf(_findScreen);
             modules[index]["ScreenList"][indexS] = {
               ...modules[index]["ScreenList"][indexS],
-              checked: true
+              checked: true,
+              algaeh_m_screen_role_privilage_mapping_id:
+                screen.algaeh_m_screen_role_privilage_mapping_id
             };
           });
         });

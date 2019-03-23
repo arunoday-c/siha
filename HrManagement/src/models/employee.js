@@ -58,9 +58,17 @@ module.exports = {
     const _mysql = new algaehMysql();
     return new Promise((resolve, reject) => {
       try {
+        let _strAppend = "";
+
+        if (req.query.isdoctor != null) {
+          _strAppend += " and isdoctor='Y'";
+        }
+
         _mysql
           .executeQuery({
-            query: "SELECT * FROM hims_d_employee WHERE record_status ='A'",
+            query:
+              "SELECT * FROM hims_d_employee WHERE record_status ='A'" +
+              _strAppend,
             printQuery: true
           })
           .then(result => {

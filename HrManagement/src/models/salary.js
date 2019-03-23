@@ -1939,37 +1939,40 @@ module.exports = {
       const utilities = new algaehUtilities();
 
       utilities.logger().log("employee_id: ", inputParam.employee_id);
-
       _mysql
-        .generateRunningNumber({
-          modules: ["LEAVE_ACCRUAL"]
+        .executeQuery({
+          query:
+            "select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
+            inputParam.year +
+            " as year," +
+            inputParam.month +
+            " as month, \
+      CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
+      sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
+      from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
+      where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
+      EE.earnings_id=ED.hims_d_earning_deduction_id and \
+      ED.annual_salary_comp='Y' and E.leave_salary_process = 'Y' and E.hims_d_employee_id in (?) group by EE.employee_id;",
+          values: [inputParam.employee_id],
+
+          printQuery: true
         })
-        .then(generatedNumbers => {
-          let leave_salary_number = generatedNumbers[0];
+        .then(leave_accrual_detail => {
+          utilities
+            .logger()
+            .log("leave_accrual_detail: ", leave_accrual_detail);
+          if (leave_accrual_detail.length > 0) {
+            _mysql
+              .generateRunningNumber({
+                modules: ["LEAVE_ACCRUAL"]
+              })
+              .then(generatedNumbers => {
+                let leave_salary_number = generatedNumbers[0];
 
-          _mysql
-            .executeQuery({
-              query:
-                "select E.hims_d_employee_id as employee_id,EG.monthly_accrual_days as leave_days, " +
-                inputParam.year +
-                " as year," +
-                inputParam.month +
-                " as month, \
-            CASE when airfare_factor = 'PB' then ((amount / 100)*airfare_percentage) else (airfare_amount/airfare_eligibility) end airfare_amount,\
-            sum((EE.amount *12)/365)* EG.monthly_accrual_days as leave_salary\
-            from hims_d_employee E, hims_d_employee_group EG,hims_d_hrms_options O, hims_d_employee_earnings EE ,hims_d_earning_deduction ED\
-            where E.employee_group_id = EG.hims_d_employee_group_id and EE.employee_id = E.hims_d_employee_id and \
-            EE.earnings_id=ED.hims_d_earning_deduction_id and \
-            ED.annual_salary_comp='Y' and E.hims_d_employee_id in (?) group by EE.employee_id;",
-              values: [inputParam.employee_id],
+                utilities
+                  .logger()
+                  .log("leave_accrual_detail: ", leave_accrual_detail);
 
-              printQuery: true
-            })
-            .then(leave_accrual_detail => {
-              utilities
-                .logger()
-                .log("leave_accrual_detail: ", leave_accrual_detail);
-              if (leave_accrual_detail.length > 0) {
                 let leave_salary_accrual_detail = leave_accrual_detail;
 
                 const total_leave_salary = _.sumBy(
@@ -2132,19 +2135,84 @@ module.exports = {
                       next(error);
                     });
                   });
-              } else {
-                utilities.logger().log("req.flag: ", "1");
+              })
+              .catch(e => {
                 _mysql.rollBackTransaction(() => {
-                  req.flag = 1;
-                  next();
+                  next(e);
                 });
-              }
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
               });
-            });
+          } else {
+            utilities.logger().log("else: ", leave_accrual_detail);
+            _mysql
+              .executeQuery({
+                query:
+                  "UPDATE hims_f_salary SET salary_processed = 'Y' where hims_f_salary_id in (?)",
+                values: [inputParam.salary_header_id],
+                printQuery: true
+              })
+              .then(salary_process => {
+                utilities.logger().log("salary_process: ");
+                _mysql
+                  .executeQuery({
+                    query:
+                      "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes\
+                                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?); \
+                                      Select employee_id,\
+                                      COALESCE(sum(worked_hours))+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours \
+                                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
+                    values: [
+                      inputParam.year,
+                      inputParam.month,
+                      inputParam.hospital_id,
+                      inputParam.employee_id,
+                      inputParam.year,
+                      inputParam.month,
+                      inputParam.hospital_id,
+                      inputParam.employee_id
+                    ],
+                    printQuery: true
+                  })
+                  .then(project_wise_payroll => {
+                    utilities.logger().log("project_wise_payroll: ");
+                    if (project_wise_payroll[0].length > 0) {
+                      UpdateProjectWisePayroll({
+                        project_wise_payroll: project_wise_payroll[0],
+                        total_hours_project: project_wise_payroll[1],
+                        _mysql: _mysql,
+                        net_salary: inputParam.net_salary
+                      })
+                        .then(Employee_Leave_Salary => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = Employee_Leave_Salary;
+                            next();
+                          });
+                        })
+                        .catch(e => {
+                          _mysql.rollBackTransaction(() => {
+                            next(e);
+                          });
+                        });
+                    } else {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = salary_process;
+                        next();
+                      });
+                    }
+                  })
+                  .catch(e => {
+                    _mysql.rollBackTransaction(() => {
+                      next(e);
+                    });
+                  });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          }
         })
         .catch(e => {
           _mysql.rollBackTransaction(() => {

@@ -11,6 +11,7 @@ export default class ReportUI extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      reportQuery: undefined,
       pageDisplay: "",
       openPopup: true,
       hasError: false,
@@ -99,9 +100,10 @@ export default class ReportUI extends Component {
     });
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(props) {
     this.setState({
-      openPopup: true
+      openPopup: true,
+      reportQuery: props.options.report.reportQuery
     });
   }
 
@@ -122,8 +124,8 @@ export default class ReportUI extends Component {
   }
   generateReport(e) {
     const _reportQuery =
-      this.props.options.report.reportQuery !== undefined
-        ? this.props.options.report.reportQuery
+      this.state.reportQuery !== undefined
+        ? this.state.reportQuery
         : this.props.options.report.fileName;
 
     let inputs = { ...this.state.parameterCollection };
@@ -170,7 +172,10 @@ export default class ReportUI extends Component {
       .firstOrDefault().events;
     if (_hasEvents !== undefined) {
       if (_hasEvents.onChange !== undefined) {
-        _hasEvents.onChange(this, e);
+        let that = this;
+        _hasEvents.onChange(this, e, options => {
+          that.setState(options);
+        });
       }
     } else {
       let _inputText = "";
@@ -488,7 +493,7 @@ export default class ReportUI extends Component {
                 <div id="report_generation_interface">
                   {/* {this.props.options.plotUI.paramters()} */}
 
-                  <div className="col-lg-12">
+                  <div className="col-lg-12 margin-top-15">
                     <div className="row">{this.generateInputParameters()}</div>
                   </div>
                   <button
@@ -502,7 +507,11 @@ export default class ReportUI extends Component {
               ) : null}
               {this.props.plotui !== undefined ? this.props.plotui : null}
             </div>
-            <div className="popupInner " ref={el => (this.algehPrintRef = el)}>
+            <div
+              className="popupInner "
+              ref={el => (this.algehPrintRef = el)}
+              style={{ minHeight: "30vh" }}
+            >
               {" "}
               <div
                 dangerouslySetInnerHTML={{

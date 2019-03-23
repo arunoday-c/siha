@@ -16,12 +16,11 @@ class ScreenAssignment extends Component {
       groups: [],
       roles: [],
       modules: [],
-      main_modules: [],
-      sub_screens: [],
+
       app_group_id: null,
       role_id: null
     };
-    this.baseState = this.state;
+
     // this.getGroups();
     ScreenAssignmentEvents().getGroups(this);
     ScreenAssignmentEvents().getRoleBaseActiveModules(this);
