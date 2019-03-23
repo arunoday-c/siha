@@ -173,6 +173,30 @@ let algaehReportConfig = reportName => {
           where PA.transaction_type='AD' and date(receipt_date) between date(?) and date(?) \
           and RH.record_status='A'  and RD.record_status='A'",
         questionOrder: ["from_date", "to_date"]
+      },
+      {
+        reportName: "posCreditReceipt",
+        reportQuery:
+          "select  PC.patient_id ,PC.reciept_header_id,\
+          RH.hims_f_receipt_header_id,RH.receipt_number,RH.pay_type, date(receipt_date)as receipt_date,\
+          RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,P.patient_code,P.full_name \
+          from hims_f_pos_credit_header PC inner join hims_f_receipt_header RH on PC.reciept_header_id=RH.hims_f_receipt_header_id\
+          inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id \
+          inner join hims_f_patient P on PC.patient_id=P.hims_d_patient_id where  RH.pay_type='R'and \
+          date(receipt_date) between date(?) and date(?) and RH.record_status='A'  and RD.record_status='A' ",
+        questionOrder: ["from_date", "to_date"]
+      },
+      {
+        reportName: "opCreditReceipt",
+        reportQuery:
+          "select  C.credit_number,C.patient_id ,C.reciept_header_id,\
+          RH.hims_f_receipt_header_id,RH.receipt_number,RH.pay_type, date(receipt_date)as receipt_date,\
+          RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,P.patient_code,P.full_name \
+          from hims_f_credit_header C inner join hims_f_receipt_header RH on C.reciept_header_id=RH.hims_f_receipt_header_id\
+          inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id \
+          inner join hims_f_patient P on C.patient_id=P.hims_d_patient_id where  RH.pay_type='R'and \
+          date(receipt_date)   between date(?) and date(?)  and RH.record_status='A'  and RD.record_status='A'",
+        questionOrder: ["from_date", "to_date"]
       }
     ]
   };
