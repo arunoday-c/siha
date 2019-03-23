@@ -239,7 +239,7 @@ export default [
                   currentValue.value === "OP"
                     ? "opBillReceipt"
                     : currentValue.value === "POS"
-                    ? "opBillReceipt"
+                    ? "posReceipt"
                     : currentValue.value === "AD"
                     ? "opBillReceipt"
                     : "";
@@ -283,7 +283,7 @@ export default [
 
           {
             type: "dropdown",
-            name: "sub_department_id",
+            name: "V.sub_department_id",
             initialLoad: true,
             isImp: true,
             label: "Select Department",

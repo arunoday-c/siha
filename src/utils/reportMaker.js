@@ -132,7 +132,7 @@ let algaehReportConfig = reportName => {
         reportQuery:
           "select hims_f_billing_header_id,BH.patient_id,BH.visit_id ,BH.incharge_or_provider ,date(bill_date) as bill_date,\
           RH.hims_f_receipt_header_id, RH.receipt_number,RH.pay_type ,RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,\
-          P.patient_code,P.full_name as patient_name,V.hims_f_patient_visit_id,SD.sub_department_code,SD.sub_department_name,\
+          P.patient_code,P.full_name,V.hims_f_patient_visit_id,SD.sub_department_code,SD.sub_department_name,\
           E.employee_code,E.full_name as doctor_name from  hims_f_billing_header BH\
           inner join hims_f_receipt_header RH on BH.receipt_header_id=RH.hims_f_receipt_header_id\
           inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id \
@@ -140,8 +140,25 @@ let algaehReportConfig = reportName => {
           inner join hims_f_patient_visit V on BH.visit_id=V.hims_f_patient_visit_id\
           inner join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id\
           inner join hims_d_employee E on V.doctor_id=E.hims_d_employee_id\
-          where date(bill_date) between date(?) and date(?) and RH.pay_type='R' and RH.record_status='A'\
+          where date(bill_date)  between date(?) and date(?) and RH.pay_type='R' and RH.record_status='A'\
           and RD.record_status='A' ",
+        questionOrder: ["from_date", "to_date"]
+      },
+      {
+        reportName: "posReceipt",
+        reportQuery:
+          "select PH.receipt_header_id,PH.patient_id,PH.patient_name,PH.referal_doctor,visit_id,date(pos_date) as pos_date ,\
+          RH.hims_f_receipt_header_id,RH.receipt_number,RH.pay_type, RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,\
+          P.patient_code,P.full_name,V.hims_f_patient_visit_id,SD.sub_department_code,\
+          SD.sub_department_name,E.employee_code,E.full_name as doctor_name from \
+          hims_f_pharmacy_pos_header PH inner join hims_f_receipt_header RH on PH.receipt_header_id=RH.hims_f_receipt_header_id\
+          inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id \
+          left join hims_f_patient P on PH.patient_id=P.hims_d_patient_id\
+          left join hims_f_patient_visit V on PH.visit_id=V.hims_f_patient_visit_id\
+          left join hims_d_sub_department SD on V.sub_department_id=SD.hims_d_sub_department_id\
+          left join hims_d_employee E on V.doctor_id=E.hims_d_employee_id\
+          where date(pos_date) between date(?) and date(?) and RH.pay_type='R' and\
+           RH.record_status='A'  and RD.record_status='A'",
         questionOrder: ["from_date", "to_date"]
       }
     ]
