@@ -379,7 +379,7 @@ class ManualAttendance extends Component {
         </div>
 
         <div className="row">
-          <div className="col-12" data-validate="loadEmployee">
+          {/* <div className="col-12" data-validate="loadEmployee">
             <div className="portlet portlet-bordered">
               <div className="portlet-body">
                 <div className="row">
@@ -444,7 +444,7 @@ class ManualAttendance extends Component {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -554,7 +554,7 @@ class ManualAttendance extends Component {
                       keyId="hims_f_daily_time_sheet_id"
                       dataSource={{ data: this.state.employee_details }}
                       isEditable={false}
-                      paging={{ page: 0, rowsPerPage: 10 }}
+                      paging={{ page: 0, rowsPerPage: 20 }}
                       tool={{
                         fileName: "Daily Time Sheet",
                         extraColumns: [],

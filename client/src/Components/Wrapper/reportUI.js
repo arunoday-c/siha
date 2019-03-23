@@ -507,7 +507,11 @@ export default class ReportUI extends Component {
               ) : null}
               {this.props.plotui !== undefined ? this.props.plotui : null}
             </div>
-            <div className="popupInner " ref={el => (this.algehPrintRef = el)}>
+            <div
+              className="popupInner "
+              ref={el => (this.algehPrintRef = el)}
+              style={{ minHeight: "30vh" }}
+            >
               {" "}
               <div
                 dangerouslySetInnerHTML={{
