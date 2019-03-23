@@ -17,7 +17,6 @@ class AutoComplete extends Component {
   }
 
   componentWillReceiveProps(props) {
-    debugger;
     if (this.state.hasSecurity) return;
     const _templtate =
       typeof props.selector.template === "function"

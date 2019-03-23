@@ -105,6 +105,9 @@
       .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection:hover {
         background: #8ef2e4;
         cursor: pointer; }
+    .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .active {
+      background: #12a28d !important;
+      color: #fff; }
     .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .noAppRecord {
       text-align: center;
       padding-top: 10vh; }

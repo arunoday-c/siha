@@ -10,6 +10,7 @@ export default class MyDayView extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      showPatientDashboard: false,
       fromDate: new Date(),
       toDate: new Date(),
       mydayList: [],
@@ -31,6 +32,10 @@ export default class MyDayView extends Component {
   }
   onDateChangeHandler(e) {
     cancelRequest("getMyDay");
+    /* cancel Vital requies is 
+added here because if any request to vitals 
+has same request  */
+    cancelRequest("ehr_vitals");
     this.setState({
       fromDate: e,
       toDate: e
@@ -48,6 +53,7 @@ export default class MyDayView extends Component {
       .then(res => {
         if (res.data.success) {
           this.setState({
+            showPatientDashboard: false,
             mydayList: res.data.records
           });
         } else {
@@ -76,6 +82,10 @@ export default class MyDayView extends Component {
     });
   }
   onClickMyDayHandler(patientID, e) {
+    /* cancel Vital requies is 
+    added here because if any request to vitals 
+    has same request  */
+    cancelRequest("ehr_vitals");
     MyDayEvents()
       .getPatientDetails({
         inputParam: {
@@ -87,10 +97,12 @@ export default class MyDayView extends Component {
         if (_result.success) {
           this.setState(
             {
+              showPatientDashboard: true,
               selectedPatinetId: patientID
             },
             () => {
               this.props.onupdatingdata({
+                showPatientDashboard: this.state.showPatientDashboard,
                 selectedPatientDetails: response.data.records
               });
             }

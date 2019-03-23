@@ -143,6 +143,10 @@
               cursor: pointer;
             }
           }
+          .active {
+            background: $primary-color !important;
+            color: $color-white;
+          }
           .noAppRecord {
             text-align: center;
             padding-top: 10vh;
