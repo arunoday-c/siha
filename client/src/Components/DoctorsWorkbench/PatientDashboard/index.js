@@ -295,6 +295,7 @@ export default class PatientDashboard extends Component {
                     ]}
                     keyId="dash_PatientDiagnosis"
                     dataSource={{ data: this.state.patientDiagnosis }}
+                    paging={{ page: 0, rowsPerPage: 10 }}
                     events={{}}
                     others={{}}
                   />
