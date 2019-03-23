@@ -166,7 +166,7 @@ let algaehReportConfig = reportName => {
         reportQuery:
           "select PA.hims_f_patient_id,PA.hims_f_receipt_header_id,PA.transaction_type,\
           RH.receipt_number,RH.pay_type, date(receipt_date)as receipt_date, RD.hims_f_receipt_details_id,RD.pay_type,RD.amount,\
-          P.patient_code,P.full_name as patient_name from hims_f_patient_advance PA \
+          P.patient_code,P.full_name  from hims_f_patient_advance PA \
           inner join hims_f_receipt_header RH on PA.hims_f_receipt_header_id=RH.hims_f_receipt_header_id\
           inner join hims_f_receipt_details RD  on RH.hims_f_receipt_header_id=RD.hims_f_receipt_header_id \
           inner join hims_f_patient P on PA.hims_f_patient_id=P.hims_d_patient_id\

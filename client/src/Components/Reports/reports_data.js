@@ -241,7 +241,7 @@ export default [
                     : currentValue.value === "POS"
                     ? "posReceipt"
                     : currentValue.value === "AD"
-                    ? "opBillReceipt"
+                    ? "advanceReceipt"
                     : "";
                 callback({ reportQuery: reportQuery });
               }

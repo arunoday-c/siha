@@ -5,28 +5,39 @@ import "../report-style.css";
 import moment from "moment";
 
 export function printReport(result) {
-  debugger;
-
   if (result === undefined) return null;
   const data = result;
 
   let allAmount = _.chain(data)
     .groupBy("pay_type")
     .map(function(items, key) {
-      debugger;
       return {
         key:
           key === "CA"
-            ? "Cash amount"
+            ? " Cash amount"
             : key === "CD"
-            ? "Card amount"
+            ? " Card amount"
             : key === "CH"
-            ? "Cheque amount"
+            ? " Cheque amount"
             : "",
+        type: key,
         amount: _.sumBy(items, s => parseFloat(s.amount))
       };
     })
     .value();
+  if (allAmount.length < 3) {
+    const _temp = [
+      { type: "CA", key: " Cash amount", amount: 0 },
+      { type: "CD", key: " Card amount", amount: 0 },
+      { type: "CH", key: " Cheque amount", amount: 0 }
+    ];
+    for (let i = 0; i < _temp.length; i++) {
+      const _exists = _.find(allAmount, f => f.type === _temp[i].type);
+      if (_exists === undefined) {
+        allAmount.push(_temp[i]);
+      }
+    }
+  }
 
   if (data === undefined) return null;
   return `
@@ -62,13 +73,36 @@ export function printReport(result) {
       <td>${
         list.patient_id === null ? list.patient_name : list.full_name
       } </td>  
-      <td>${list.sub_department_name} </td>  
       <td>${
-        list.patient_id === null ? list.referal_doctor : list.doctor_name
+        list.sub_department_name === undefined ||
+        list.sub_department_name === null
+          ? ""
+          : list.sub_department_name
       } </td>  
-      <td>${list.pay_type === "CA" ? getAmountFormart(list.amount) : 0} </td>  
-      <td>${list.pay_type === "CD" ? getAmountFormart(list.amount) : 0} </td>  
-      <td>${list.pay_type === "CH" ? getAmountFormart(list.amount) : 0} </td>  
+      <td>${
+        list.patient_id === null
+          ? list.referal_doctor === null
+            ? list.referal_doctor
+            : ""
+          : list.doctor_name === undefined || list.doctor_name === null
+          ? ""
+          : list.doctor_name
+      } </td>  
+      <td>${
+        list.pay_type === "CA"
+          ? getAmountFormart(list.amount)
+          : getAmountFormart("0")
+      } </td>  
+      <td>${
+        list.pay_type === "CD"
+          ? getAmountFormart(list.amount)
+          : getAmountFormart("0")
+      } </td>  
+      <td>${
+        list.pay_type === "CH"
+          ? getAmountFormart(list.amount)
+          : getAmountFormart("0")
+      } </td>  
     </tr>
     `
     )

@@ -2156,10 +2156,10 @@ module.exports = {
                   .executeQuery({
                     query:
                       "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes\
-                                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?); \
-                                      Select employee_id,\
-                                      COALESCE(sum(worked_hours))+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours \
-                                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
+                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?); \
+                      Select employee_id,\
+                      COALESCE(sum(worked_hours))+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours \
+                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
                     values: [
                       inputParam.year,
                       inputParam.month,
