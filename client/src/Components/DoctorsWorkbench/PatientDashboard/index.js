@@ -258,20 +258,32 @@ export default class PatientDashboard extends Component {
               <hr />
               <div className="row patientDiagnosis">
                 <div className="col-12">
-                  <h4 className="patientSecHdg">Patient Diagnosis</h4>
+                  <div className="row">
+                    {" "}
+                    <div className="col">
+                      <h4 className="patientSecHdg">Patient Diagnosis</h4>
+                    </div>{" "}
+                    <AlagehAutoComplete
+                      div={{ className: "col-3" }}
+                      // label={{ forceLabel: "", isImp: false }}
+                      selector={{
+                        name: "",
+                        className: "select-fld",
+                        dataSource: {},
+                        others: {}
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className="col-12" id="newMedicationGrid_Cntr">
                   <AlgaehDataGrid
                     id="dash_PatientDiagnosis"
                     columns={[
                       {
-                        fieldName: "final_daignosis",
-                        label: <AlgaehLabel label={{ forceLabel: " " }} />,
-                        displayTemplate: row => {
-                          return row.final_daignosis === "Y"
-                            ? "Final"
-                            : "Initial";
-                        }
+                        fieldName: "icd_description",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Description" }} />
+                        )
                       },
                       {
                         fieldName: "diagnosis_type",
@@ -284,18 +296,29 @@ export default class PatientDashboard extends Component {
                           return row.diagnosis_type === "P"
                             ? "Primary"
                             : "Secondary";
+                        },
+                        others: {
+                          maxWidth: 120
                         }
                       },
                       {
-                        fieldName: "icd_description",
+                        fieldName: "final_daignosis",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Description" }} />
-                        )
+                          <AlgaehLabel label={{ forceLabel: "Action " }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.final_daignosis === "Y"
+                            ? "Final"
+                            : "Initial";
+                        },
+                        others: {
+                          maxWidth: 80
+                        }
                       }
                     ]}
                     keyId="dash_PatientDiagnosis"
                     dataSource={{ data: this.state.patientDiagnosis }}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 5 }}
                     events={{}}
                     others={{}}
                   />
