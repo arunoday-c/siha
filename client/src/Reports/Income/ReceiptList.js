@@ -48,7 +48,7 @@ export function printReport(result) {
                 <th>Card</th>
                 <th>Cheque</th>
             </tr>
-        </thead></table></div><div class="tbl-content" style="height: 30vh">
+        </thead></table></div><div class="tbl-content" style="height: 23vh">
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data
@@ -66,9 +66,15 @@ export function printReport(result) {
       <td>${
         list.patient_id === null ? list.referal_doctor : list.doctor_name
       } </td>  
-      <td>${list.pay_type === "CA" ? getAmountFormart(list.amount) : 0} </td>  
-      <td>${list.pay_type === "CD" ? getAmountFormart(list.amount) : 0} </td>  
-      <td>${list.pay_type === "CH" ? getAmountFormart(list.amount) : 0} </td>  
+      <td  style="text-align:right">${
+        list.pay_type === "CA" ? getAmountFormart(list.amount) : 0
+      } </td>  
+      <td  style="text-align:right">${
+        list.pay_type === "CD" ? getAmountFormart(list.amount) : 0
+      } </td>  
+      <td  style="text-align:right">${
+        list.pay_type === "CH" ? getAmountFormart(list.amount) : 0
+      } </td>  
     </tr>
     `
     )
@@ -76,13 +82,21 @@ export function printReport(result) {
   
  
     </thead></table></div>
-   
+    <div class="row">
+    <div class="col-8"></div>
+    
  ${allAmount
    .map(
      amount =>
-       `<b>${amount.key}</b>: <span>${getAmountFormart(amount.amount)}</span>`
+       `<div class="col" style="text-align:right"><label>${
+         amount.key
+       }</label><h6>${getAmountFormart(amount.amount)}</h6></div>`
    )
    .join("")}
+
+   
+
+   </div>
 </section>
   `;
 }
