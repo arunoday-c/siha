@@ -2,9 +2,32 @@ import { incomeHeader } from "./incomeHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import "../report-style.css";
+import moment from "moment";
+
 export function printReport(result) {
+  debugger;
+
   if (result === undefined) return null;
-  const data = result.project_wise_payroll;
+  const data = result;
+
+  let allAmount = _.chain(data)
+    .groupBy("pay_type")
+    .map(function(items, key) {
+      debugger;
+      return {
+        key:
+          key === "CA"
+            ? "Cash amount"
+            : key === "CD"
+            ? "Card amount"
+            : key === "CH"
+            ? "Cheque amount"
+            : "",
+        amount: _.sumBy(items, s => parseFloat(s.amount))
+      };
+    })
+    .value();
+
   if (data === undefined) return null;
   return `
   <div class="print-body">
@@ -33,16 +56,16 @@ export function printReport(result) {
       list =>
         `
     <tr>
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-    <td>${getAmountFormart(list.project_cost)} </td>  
-</tr>
+      <td>${list.receipt_number} </td>  
+      <td>${moment(list.bill_date).format("DD-MMM-YYYY")} </td>  
+      <td>${list.patient_code} </td>  
+      <td>${list.patient_name} </td>  
+      <td>${list.sub_department_name} </td>  
+      <td>${list.doctor_name} </td>  
+      <td>${list.pay_type === "CA" ? getAmountFormart(list.amount) : 0} </td>  
+      <td>${list.pay_type === "CD" ? getAmountFormart(list.amount) : 0} </td>  
+      <td>${list.pay_type === "CH" ? getAmountFormart(list.amount) : 0} </td>  
+    </tr>
     `
     )
     .join("")}
@@ -50,7 +73,12 @@ export function printReport(result) {
  
     </thead></table></div>
    
-
+ ${allAmount
+   .map(
+     amount =>
+       `<b>${amount.key}</b>: <span>${getAmountFormart(amount.amount)}</span>`
+   )
+   .join("")}
 </section>
   `;
 }

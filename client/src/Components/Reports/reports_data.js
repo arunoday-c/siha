@@ -1,7 +1,8 @@
 import {
   APPT_TYPE,
   LEAVE_STATUS,
-  MONTHS
+  MONTHS,
+  RECEIPT_TYPE
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 
@@ -167,30 +168,33 @@ export default [
           },
           {
             type: "dropdown",
-            name: "",
+            name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "Select Branch",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/organization/getOrganization"
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
             }
           },
+
           {
             type: "dropdown",
-            name: "",
+            name: "sub_department_id",
             initialLoad: true,
             isImp: true,
             label: "Select Department",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/department/get/subdepartment"
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
             }
           },
           {
@@ -213,22 +217,34 @@ export default [
       {
         subitem: "List of Receipt",
         template_name: "Income/ReceiptList",
-        reportQuery: "receiptList",
-        // reportUri: "/projectjobcosting/getProjectWiseJobCost",
-        module: "IncomeModule",
+        reportQuery: "opBillReceipt",
+        // module: "IncomeModule",
         reportParameters: [
           {
             type: "dropdown",
-            name: "",
+            name: "receipt_type",
             initialLoad: true,
             isImp: true,
             label: "Select Receipt Type",
-            link: {
-              // uri: "/organization/getOrganization"
-            },
+
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "name",
+              valueField: "value",
+              data: RECEIPT_TYPE
+            },
+            events: {
+              onChange: (reportState, currentValue, callback) => {
+                debugger;
+                let reportQuery =
+                  currentValue.value === "OP"
+                    ? "opBillReceipt"
+                    : currentValue.value === "POS"
+                    ? "opBillReceipt"
+                    : currentValue.value === "AD"
+                    ? "opBillReceipt"
+                    : "";
+                callback({ reportQuery: reportQuery });
+              }
             }
           },
           {
@@ -251,30 +267,33 @@ export default [
           },
           {
             type: "dropdown",
-            name: "",
+            name: "hospital_id",
             initialLoad: true,
             isImp: true,
             label: "Select Branch",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/organization/getOrganization"
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
             }
           },
+
           {
             type: "dropdown",
-            name: "",
+            name: "sub_department_id",
             initialLoad: true,
             isImp: true,
             label: "Select Department",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/department/get/subdepartment"
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
             }
           },
           {
@@ -284,11 +303,17 @@ export default [
             isImp: true,
             label: "Select Doctor",
             link: {
-              // uri: "/organization/getOrganization"
+              uri: "/employee/get",
+              // uri: "/employee/get?isdoctor='Y'",
+              module: "hrManagement",
+              data: {
+                isdoctor: "Y"
+              }
             },
             dataSource: {
-              textField: "",
-              valueField: ""
+              textField: "full_name",
+              valueField: "hims_d_employee_id",
+              data: undefined
             }
           }
         ]

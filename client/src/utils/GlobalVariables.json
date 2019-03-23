@@ -893,5 +893,10 @@
     { "name": "Cashier", "value": "C" },
     { "name": "Lab Technician", "value": "L" },
     { "name": "Others", "value": "O" }
+  ],
+  "RECEIPT_TYPE": [
+    { "name": "OP Billing", "value": "OP" },
+    { "name": "POS", "value": "POS" },
+    { "name": "Advance", "value": "AD" }
   ]
 }
