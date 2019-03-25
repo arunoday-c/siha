@@ -819,7 +819,9 @@
     border-radius: 5px;
     line-height: 70px;
     color: #ccc;
-    text-align: center; }
+    text-align: center;
+    background: url("../src/assets/images/hospital_logo_reports.webp") no-repeat center;
+    background-size: 100%; }
   :global .cashReciptStyles .hospitalAddress {
     width: 250px;
     text-align: right;

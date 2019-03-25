@@ -6,7 +6,7 @@ export function printReport(data) {
   return `<div class="cashReciptStyles">
 <div class="col-lg-12 popRightDiv">
   <div class="row">
-    <div class="col-lg-4"><div class="hospitalLogo">Hospital Logo</div></div>
+    <div class="col-lg-4"><div class="hospitalLogo"></div></div>
     <div class="col-lg-4"><h3 class="receipt-header">Cash Receipt/إيصال نقدية</h3></div>
     <div class="col-lg-4">
       <p class="hospitalAddress">
