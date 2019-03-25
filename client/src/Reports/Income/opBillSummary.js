@@ -1,12 +1,12 @@
 import Enumerable from "linq";
-import { revenueHeader } from "./revenueHeader";
-
+import { incomeHeader } from "./incomeHeader";
+import "../report-style.css";
 export function printReport(data) {
   let AllTotal = Enumerable.from(data).sum(s => s.total_amount);
 
   return `
   <div class="print-body">
-    <header> ${revenueHeader(data)} </header> 
+    <header> ${incomeHeader(data)} </header> 
     <section>
     <h2><span>Patient Details</span></h2>
     <table class="tableForLabel" cell-padding="0">
@@ -53,5 +53,6 @@ export function printReport(data) {
     </div>
 </section>
 
+</div>
   `;
 }

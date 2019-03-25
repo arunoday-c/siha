@@ -110,7 +110,7 @@ export function printReport(result) {
     .join("")}
   
  
-    </thead></table></div>
+    </tbody></table></div>
     <div class="row">
     <div class="col-8"></div>
     
@@ -127,5 +127,6 @@ export function printReport(result) {
 
    </div>
 </section>
+</div>
   `;
 }

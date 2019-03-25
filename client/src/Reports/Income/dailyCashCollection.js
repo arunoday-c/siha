@@ -1,12 +1,12 @@
-import { revenueHeader } from "./revenueHeader";
+import { incomeHeader } from "./incomeHeader";
 import moment from "moment";
-import "./report-style.css";
+import "../report-style.css";
 
 export function printReport(data) {
   debugger;
   return `
   <div class="print-body">
-    <header> ${revenueHeader(data)} </header> 
+    <header> ${incomeHeader(data)} </header> 
     <section>
       <h2><span>Hospital Details</span></h2>
       <table class="tableForLabel" cell-padding="0">

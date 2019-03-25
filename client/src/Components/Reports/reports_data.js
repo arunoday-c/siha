@@ -143,7 +143,7 @@ export default [
     submenu: [
       {
         subitem: "Department Wise Income",
-        template_name: "departmentIncome",
+        template_name: "Income/departmentIncome",
         reportQuery: "subDepartmentIncome",
         reportParameters: [
           {
@@ -168,7 +168,7 @@ export default [
       },
       {
         subitem: "OP Billing Summary",
-        template_name: "opBillSummary",
+        template_name: "Income/opBillSummary",
         reportQuery: "OPBillSummary",
         reportParameters: [
           {
@@ -193,7 +193,7 @@ export default [
       },
       {
         subitem: "OP Billing Detail",
-        template_name: "opBillDetails",
+        template_name: "Income/opBillDetails",
         reportQuery: "OPBillDetails",
         reportParameters: [
           {
@@ -233,7 +233,7 @@ export default [
       },
       {
         subitem: "Daily Cash Collection",
-        template_name: "dailyCashCollection",
+        template_name: "Income/dailyCashCollection",
         reportQuery: "staffCashCollection",
         reportParameters: [
           {

@@ -49,6 +49,6 @@ export function printReport(result) {
     </thead></table></div>
    
 
-</section>
+</section></div>
   `;
 }
