@@ -1,4 +1,4 @@
-import { incomeHeader } from "./incomeHeader";
+import { financeHeader } from "./financeHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import "../report-style.css";
@@ -8,7 +8,7 @@ export function printReport(result) {
   if (data === undefined) return null;
   return `
   <div class="print-body">
-  <header> ${incomeHeader(data)} </header> 
+  <header> ${financeHeader(data)} </header> 
    
 <section>
     <h2><span>List of Payment Details</span></h2><div class="tbl-header">

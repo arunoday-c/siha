@@ -19,7 +19,7 @@ export function printReport(data) {
       </table>
     </section>
 <section>
-    <h2><span>Collection Report</span></h2>
+    <h2><span>Collection Report</span></h2><div class="tbl-header">
     <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <thead >
             <tr>
@@ -64,7 +64,7 @@ export function printReport(data) {
     )
     .join("")} 
     </thead></table></div>
-</section>
+</section></div>
 
   `;
 }

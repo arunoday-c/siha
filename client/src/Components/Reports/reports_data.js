@@ -442,12 +442,18 @@ export default [
           }
         ]
         //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
-      },
+      }
+    ]
+  },
+
+  {
+    name: "Finance",
+    submenu: [
       {
         subitem: "List of Payments",
-        template_name: "Income/PaymentList",
-        reportQuery: "receiptList",
-        module: "IncomeModule",
+        template_name: "Finance/paymentList",
+        reportQuery: "paymentList",
+        module: "FinanceModule",
         reportParameters: [
           {
             type: "dropdown",
@@ -550,18 +556,6 @@ export default [
             }
           }
         ]
-      }
-    ]
-  },
-
-  {
-    name: "Finance",
-    submenu: [
-      {
-        subitem: "List of Receipts",
-        template_name: "asset_war_exp",
-        reportParameters: []
-        //reportParameters: () => <Finance ui="asset_warty_exp_rep" />
       },
       {
         subitem: "Balance Sheet Report",
