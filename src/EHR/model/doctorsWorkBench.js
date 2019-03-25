@@ -13,7 +13,7 @@ import moment from "moment";
 import { debugFunction, debugLog } from "../../utils/logging";
 import formater from "../../keys/keys";
 import { decryption } from "../../utils/cryptography";
-
+import mysql from "mysql";
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
   let physicalExaminationHeaderModel = {
@@ -1834,36 +1834,6 @@ let addPatientVitals = (req, res, next) => {
         next(error);
       }
 
-      // connection.query(
-      //   "INSERT INTO `hims_f_patient_vitals` (patient_id, visit_id, visit_date, visit_time, case_type,\
-      //     vital_id, vital_value, vital_value_one, vital_value_two, formula_value,`created_date`, `created_by`, `updated_date`, `updated_by`)\
-      //   VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-      //   [
-      //     inputparam.patient_id,
-      //     inputparam.visit_id,
-      //     inputparam.visit_date,
-      //     inputparam.visit_time,
-      //     inputparam.case_type,
-      //     inputparam.vital_id,
-      //     inputparam.vital_value,
-      //     inputparam.vital_value_one,
-      //     inputparam.vital_value_two,
-      //     inputparam.formula_value,
-      //     new Date(),
-      //     inputparam.created_by,
-      //     new Date(),
-      //     inputparam.updated_by
-      //   ],
-      //   (error, result) => {
-      //     releaseDBConnection(db, connection);
-      //     if (error) {
-      //       next(error);
-      //     }
-      //     req.records = result;
-      //     next();
-      //   }
-      // );
-
       const insurtColumns = [
         "patient_id",
         "visit_id",
@@ -1879,7 +1849,7 @@ let addPatientVitals = (req, res, next) => {
         "updated_by"
       ];
 
-      connection.query(
+      const _query = mysql.format(
         "INSERT INTO hims_f_patient_vitals(" +
           insurtColumns.join(",") +
           ",created_date,updated_date) VALUES ?",
@@ -1890,8 +1860,21 @@ let addPatientVitals = (req, res, next) => {
             newFieldToInsert: [new Date(), new Date()],
             req: req
           })
-        ],
-
+        ]
+      );
+      connection.query(
+        _query,
+        // "INSERT INTO hims_f_patient_vitals(" +
+        //   insurtColumns.join(",") +
+        //   ",created_date,updated_date) VALUES ?",
+        // [
+        //   jsonArrayToObject({
+        //     sampleInputObject: insurtColumns,
+        //     arrayObj: inputparam,
+        //     newFieldToInsert: [new Date(), new Date()],
+        //     req: req
+        //   })
+        // ]
         (error, results) => {
           releaseDBConnection(db, connection);
           if (error) {
