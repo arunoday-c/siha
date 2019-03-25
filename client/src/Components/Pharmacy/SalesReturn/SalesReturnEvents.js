@@ -133,6 +133,7 @@ const GenerateReciept = ($this, callBack) => {
 };
 
 const SaveSalesReturn = $this => {
+  AlgaehLoader({ show: true });
   GenerateReciept($this, that => {
     let inputObj = $this.state;
     inputObj.posted = "Y";
@@ -179,6 +180,7 @@ const SaveSalesReturn = $this => {
       module: "pharmacy",
       data: inputObj,
       onSuccess: response => {
+        AlgaehLoader({ show: false });
         if (response.data.success === true) {
           $this.setState({
             sales_return_number: response.data.records.sales_return_number,
@@ -195,6 +197,13 @@ const SaveSalesReturn = $this => {
             type: "success"
           });
         }
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
   });

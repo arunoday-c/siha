@@ -8,7 +8,7 @@ import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import eventLogic from "./eventsLogic";
 import _ from "lodash";
 import { swalMessage, cancelRequest } from "../../../utils/algaehApiCall";
-import { Typography } from "@material-ui/core";
+import GLOBALVARIABLE from "../../../utils/GlobalVariables.json";
 export default class PatientDashboard extends Component {
   constructor(props) {
     super(props);
@@ -73,6 +73,10 @@ export default class PatientDashboard extends Component {
   /* onchange handler for visit date change */
   onViewVistChange(ele) {
     this.setState({ hims_f_patient_visit_id: ele.value });
+  }
+  /* on diagnosis icd change */
+  onChangeDiagnosis(e, item) {
+    debugger;
   }
 
   /* method to render with selected patent data*/
@@ -280,9 +284,39 @@ export default class PatientDashboard extends Component {
                     id="dash_PatientDiagnosis"
                     columns={[
                       {
+                        fieldName: "action_delete",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Action " }} />
+                        ),
+                        displayTemplate: row => (
+                          <i title="Delete row" className="fas fa-trash-alt" />
+                        ),
+                        others: {
+                          maxWidth: 60
+                        }
+                      },
+                      {
+                        fieldName: "slno",
+                        label: <AlgaehLabel label={{ forceLabel: "Sl No." }} />,
+                        others: {
+                          maxWidth: 60
+                        }
+                      },
+                      {
+                        fieldName: "icd_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "ICD Code" }} />
+                        ),
+                        others: {
+                          maxWidth: 100
+                        }
+                      },
+                      {
                         fieldName: "icd_description",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Description" }} />
+                          <AlgaehLabel
+                            label={{ forceLabel: "ICD Description" }}
+                          />
                         )
                       },
                       {
@@ -292,19 +326,29 @@ export default class PatientDashboard extends Component {
                             label={{ forceLabel: "Diagnosis Type" }}
                           />
                         ),
-                        displayTemplate: row => {
-                          return row.diagnosis_type === "P"
-                            ? "Primary"
-                            : "Secondary";
-                        },
+                        displayTemplate: row => (
+                          <AlagehAutoComplete
+                            selector={{
+                              name: "diagnosis_type",
+                              className: "select-fld",
+                              value: row.diagnosis_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GLOBALVARIABLE.FORMAT_DIG_TYPE
+                              },
+                              onChange: this.onChangeDiagnosis.bind(this, row)
+                            }}
+                          />
+                        ),
                         others: {
-                          maxWidth: 120
+                          maxWidth: 195
                         }
                       },
                       {
                         fieldName: "final_daignosis",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Action " }} />
+                          <AlgaehLabel label={{ forceLabel: "Status " }} />
                         ),
                         displayTemplate: row => {
                           return row.final_daignosis === "Y"
@@ -319,8 +363,6 @@ export default class PatientDashboard extends Component {
                     keyId="dash_PatientDiagnosis"
                     dataSource={{ data: this.state.patientDiagnosis }}
                     paging={{ page: 0, rowsPerPage: 5 }}
-                    events={{}}
-                    others={{}}
                   />
                 </div>
               </div>

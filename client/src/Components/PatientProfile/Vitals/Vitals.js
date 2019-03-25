@@ -119,6 +119,8 @@ class Vitals extends Component {
         const _elements = document.querySelectorAll("[vitalid]");
 
         for (let i = 0; i < _elements.length; i++) {
+          debugger;
+
           if (_elements[i].value !== "") {
             const _isDepended = _elements[i].getAttribute("dependent");
             bodyArray.push({
@@ -128,7 +130,7 @@ class Vitals extends Component {
               visit_time: this.state.recorded_time,
               case_type: Window.global["case_type"],
               vital_id: _elements[i].getAttribute("vitalid"),
-              vital_value: _elements[i].value,
+              vital_value: _elements[i].children[0].value,
               vital_value_one:
                 _isDepended !== null
                   ? document.getElementsByName(_isDepended)[0].value

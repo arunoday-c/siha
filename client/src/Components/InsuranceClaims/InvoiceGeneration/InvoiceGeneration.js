@@ -60,7 +60,10 @@ class InvoiceGeneration extends Component {
       insurance_provider_id: null,
       sub_insurance_id: null,
       network_id: null,
-      network_office_id: null
+      network_office_id: null,
+      select_invoice: "CH",
+      creidt_invoice: false,
+      cash_invoice: true
     };
   }
 
@@ -135,6 +138,23 @@ class InvoiceGeneration extends Component {
         });
   }
 
+  selectData(e) {
+    debugger;
+    if (e.target.name === "cash_invoice") {
+      this.setState({
+        select_invoice: "CH",
+        cash_invoice: true,
+        creidt_invoice: false
+      });
+    } else if (e.target.name === "creidt_invoice") {
+      this.setState({
+        select_invoice: "CD",
+        creidt_invoice: true,
+        cash_invoice: false
+      });
+    }
+  }
+
   //created by Adnan
   render() {
     return (
@@ -206,6 +226,30 @@ class InvoiceGeneration extends Component {
           style={{ marginTop: 76, paddingBottom: 10 }}
         >
           {/* Visit code */}
+
+          <div className="col-2">
+            <div className="customRadio">
+              <label className="radio block">
+                <input
+                  type="radio"
+                  checked={this.state.cash_invoice}
+                  name="cash_invoice"
+                  onClick={this.selectData.bind(this)}
+                />
+                <span>Cash Invoice</span>
+              </label>
+
+              <label className="radio block">
+                <input
+                  type="radio"
+                  checked={this.state.creidt_invoice}
+                  name="creidt_invoice"
+                  onClick={this.selectData.bind(this)}
+                />
+                <span>Creidt Invoice</span>
+              </label>
+            </div>
+          </div>
           <div className="col-4">
             <div className="row">
               <AlagehFormGroup
@@ -236,7 +280,7 @@ class InvoiceGeneration extends Component {
               </div>
             </div>
           </div>
-          <div className="col-8">
+          <div className="col-6">
             <div className="row">
               <div className="col-3">
                 <AlgaehLabel
@@ -262,7 +306,7 @@ class InvoiceGeneration extends Component {
               </div>
 
               <AlagehAutoComplete
-                div={{ className: "col-lg-3" }}
+                div={{ className: "col-lg-6" }}
                 label={{
                   forceLabel: "Invoice Type",
                   isImp: true
@@ -278,8 +322,10 @@ class InvoiceGeneration extends Component {
                   },
                   onChange: texthandle.bind(this, this),
                   others: {
-                    disabled: this.state.existingPatient,
-
+                    disabled:
+                      this.state.select_invoice === "CH"
+                        ? true
+                        : this.state.existingPatient,
                     tabIndex: "4"
                   }
                 }}
@@ -849,19 +895,20 @@ class InvoiceGeneration extends Component {
                   label={{ fieldName: "btn_cash", returnText: true }}
                 />
               </button>
-
-              <button
-                type="button"
-                className="btn btn-default"
-                //created by Adnan
-                onClick={this.generateInvoice.bind(this, "credit")}
-                //created by Adnan
-                disabled={this.state.generateVoice}
-              >
-                <AlgaehLabel
-                  label={{ fieldName: "btn_creidt", returnText: true }}
-                />
-              </button>
+              {this.state.select_invoice === "CD" ? (
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  //created by Adnan
+                  onClick={this.generateInvoice.bind(this, "credit")}
+                  //created by Adnan
+                  disabled={this.state.generateVoice}
+                >
+                  <AlgaehLabel
+                    label={{ fieldName: "btn_creidt", returnText: true }}
+                  />
+                </button>
+              ) : null}
             </div>
           </div>
         </div>
