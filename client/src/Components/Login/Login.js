@@ -1,16 +1,23 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
 import "./Login.css";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 // import { setSecure } from "../../utils/indexer";
 import {
   algaehApiCall,
   setCookie,
-  swalMessage
+  swalMessage,
+  getCookie
 } from "../../utils/algaehApiCall.js";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
+import { AlgaehActions } from "../../actions/algaehActions";
+import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
 
-export default class Login extends Component {
+class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,9 +38,32 @@ export default class Login extends Component {
     getTokenDetals(this);
   }
 
-  // componentWillUnmount() {
-  //   window.sessionStorage.removeItem("hospitalList");
-  // }
+  getHospitalDetails() {
+    debugger;
+    let HospitalId =
+      getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
+    this.props.getHospitalDetails({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      data: {
+        hims_d_hospital_id: HospitalId
+      },
+      redux: {
+        type: "HOSPITAL_DETAILS_GET_DATA",
+        mappingName: "hospitaldetails"
+      },
+      afterSuccess: data => {
+        if (data.length > 0) {
+          debugger;
+          sessionStorage.removeItem("CurrencyDetail");
+          sessionStorage.setItem(
+            "CurrencyDetail",
+            AlgaehCloseContainer(JSON.stringify(data[0]))
+          );
+        }
+      }
+    });
+  }
   componentWillMount() {
     this.deleteAllPreviousCookies();
     this.deleteAllPreviousLocalStorage();
@@ -77,6 +107,7 @@ export default class Login extends Component {
           window.onpopstate = function(event) {
             window.history.go(1);
           };
+          this.getHospitalDetails();
         }
       },
       onFailure: error => {
@@ -277,3 +308,25 @@ export default class Login extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    hospitaldetails: state.hospitaldetails
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getHospitalDetails: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(Login)
+);

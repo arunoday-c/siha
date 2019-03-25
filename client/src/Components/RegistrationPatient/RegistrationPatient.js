@@ -501,6 +501,7 @@ class RegistrationPatient extends PureComponent {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
+                    debugger;
                     AlgaehReport({
                       report: {
                         fileName: "printreceipt"
@@ -510,11 +511,10 @@ class RegistrationPatient extends PureComponent {
                         full_name: this.state.full_name,
                         advance_amount: this.state.advance_amount,
                         bill_date: moment(this.state.bill_date).format(
-                          Options.dateFormat
+                          Options.datetimeFormat
                         ),
                         receipt_number: this.state.receipt_number,
-                        doctor_name: document.getElementsByName("doctor_id")[0]
-                          .value,
+                        doctor_name: this.state.doctor_name,
                         bill_details: this.state.billdetails
                       }
                     });

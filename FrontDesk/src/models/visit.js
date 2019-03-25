@@ -460,7 +460,7 @@ module.exports = {
           `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.patient_id,
-              input.patient_visit_id,
+              input.visit_id,
               input.primary_insurance_provider_id,
               input.primary_sub_id,
               input.primary_network_id,

@@ -2,5 +2,6 @@
   "dateFormat": "DD-MM-YYYY",
   "timeFormat": "HH:mm:ss",
   "dateFormatYear": "YYYY-MM-DD",
-  "timeFormatHM": "HH:mm"
+  "timeFormatHM": "HH:mm",
+  "datetimeFormat": "DD-MM-YYYY HH:mm:ss"
 }

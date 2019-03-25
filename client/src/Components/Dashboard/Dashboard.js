@@ -8,7 +8,11 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { getCookie } from "../../utils/algaehApiCall.js";
-import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
+import {
+  AlgaehCloseContainer,
+  getAmountFormart
+} from "../../utils/GlobalFunctions";
+
 const AdmissionsReadmissionData = {
   datasets: [
     {
@@ -411,37 +415,31 @@ class Dashboard extends Component {
     });
   }
 
-  componentDidMount() {
-    let HospitalId =
-      getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
-    this.props.getHospitalDetails({
-      uri: "/organization/getOrganization",
-      method: "GET",
-      data: {
-        hims_d_hospital_id: HospitalId
-      },
-      redux: {
-        type: "HOSPITAL_DETAILS_GET_DATA",
-        mappingName: "hospitaldetails"
-      },
-      afterSuccess: data => {
-        if (data.length > 0) {
-          // let CurrencyDetail = data[0];
-
-          sessionStorage.removeItem("CurrencyDetail");
-          sessionStorage.setItem(
-            "CurrencyDetail",
-            AlgaehCloseContainer(JSON.stringify(data[0]))
-          );
-
-          // sessionStorage.setItem(
-          //   "CurrencyDetail",
-          //   JSON.stringify(CurrencyDetail)
-          // );
-        }
-      }
-    });
-  }
+  // componentDidMount() {
+  //   let HospitalId =
+  //     getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
+  //   this.props.getHospitalDetails({
+  //     uri: "/organization/getOrganization",
+  //     method: "GET",
+  //     data: {
+  //       hims_d_hospital_id: HospitalId
+  //     },
+  //     redux: {
+  //       type: "HOSPITAL_DETAILS_GET_DATA",
+  //       mappingName: "hospitaldetails"
+  //     },
+  //     afterSuccess: data => {
+  //       if (data.length > 0) {
+  //         debugger;
+  //         sessionStorage.removeItem("CurrencyDetail");
+  //         sessionStorage.setItem(
+  //           "CurrencyDetail",
+  //           AlgaehCloseContainer(JSON.stringify(data[0]))
+  //         );
+  //       }
+  //     }
+  //   });
+  // }
   SideMenuBarOpen(sidOpen) {
     this.setState({
       sidBarOpen: sidOpen
@@ -464,14 +462,16 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Operational Cost</p>
-                    &#8377; 150,378.00
+
+                    {getAmountFormart("150378.00")}
                   </div>
                 </div>
               </div>
               <div className="footer">
                 <hr />
                 <div className="stats">
-                  Avg. Cost per Patient - <span>&#8377; 500</span>
+                  Avg. Cost per Patient -
+                  <span>{getAmountFormart("500.00")} </span>
                 </div>
               </div>
             </div>
@@ -487,14 +487,15 @@ class Dashboard extends Component {
                 <div className="col-8">
                   <div className="numbers">
                     <p>Revenue by MTD</p>
-                    &#8377; 124,128.75
+                    {getAmountFormart("124128.75")}
                   </div>
                 </div>
               </div>
               <div className="footer">
                 <hr />
                 <div className="stats">
-                  Avg. Revenue per day- <span>&#8377; 4,128.75</span>
+                  Avg. Revenue per day-
+                  <span>{getAmountFormart("4128.75")} </span>
                   <b onClick={this.showDetailHandler.bind(this)}>
                     {this.state.showDetails === "d-block"
                       ? "Hide"
@@ -584,7 +585,7 @@ class Dashboard extends Component {
                 <HorizontalBar data={RevenuebyDepartment} />
               </div>
             </div>
-          </div>{" "}
+          </div>
           <div className={"col-4 " + this.state.showDetails}>
             <div className="card animated fadeInUp faster">
               <h6>Top 10 Doctor - Revenue</h6>
@@ -592,7 +593,7 @@ class Dashboard extends Component {
                 <HorizontalBar data={RevenuebyDoctor} />
               </div>
             </div>
-          </div>{" "}
+          </div>
           <div className={"col-4 " + this.state.showDetails}>
             <div className="card animated fadeInUp faster">
               <h6>Top 10 Service - Revenue</h6>
@@ -661,7 +662,6 @@ class Dashboard extends Component {
               </div>
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
-                  {" "}
                   <h6>Avg Waiting Time By Department</h6>
                   <div className="dashboardChartsCntr">
                     <HorizontalBar data={AvgWaitingTimeDep} />

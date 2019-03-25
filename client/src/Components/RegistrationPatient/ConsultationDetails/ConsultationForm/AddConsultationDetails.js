@@ -70,13 +70,9 @@ const selectedHandeler = ($this, context, e) => {
 
 const doctorselectedHandeler = ($this, context, e) => {
   if ($this.state.sub_department_id !== null) {
-    let employee_list = Enumerable.from($this.props.providers)
-      .where(w => w.hims_d_employee_id === e.value)
-      .toArray();
-    let doctor_name = "";
-    if (employee_list !== null && employee_list.length > 0) {
-      doctor_name = employee_list[0].full_name;
-    }
+    let doctor_name = e.selected.full_name;
+    debugger;
+
     if ($this.state.hims_d_patient_id != null) {
       if (e.selected.services_id !== null) {
         let intputObj = {
