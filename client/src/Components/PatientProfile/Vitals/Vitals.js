@@ -119,8 +119,6 @@ class Vitals extends Component {
         const _elements = document.querySelectorAll("[vitalid]");
 
         for (let i = 0; i < _elements.length; i++) {
-          debugger;
-
           if (_elements[i].value !== "") {
             const _isDepended = _elements[i].getAttribute("dependent");
             bodyArray.push({

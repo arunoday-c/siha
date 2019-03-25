@@ -333,6 +333,11 @@ class PatientProfile extends Component {
                   <b>{" : " + row.vital_value}</b>
                 </span>
               ))}
+              <span>
+                {" "}
+                Vital Entered Date :{" "}
+                {_Vitals[_Vitals.length - 1]["updated_Date"]}{" "}
+              </span>
             </div>
           ) : null}
           <div className="moreAction">
