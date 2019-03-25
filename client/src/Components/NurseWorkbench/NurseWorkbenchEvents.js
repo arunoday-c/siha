@@ -129,7 +129,7 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const BMICalculation = (weight, height, calculation) => {
-  if (height === "") return "";
+  if (height === "" || height === undefined) return "";
   let BMI = 0;
   weight = typeof weight === "string" ? parseFloat(weight) : weight;
   height = typeof height === "string" ? parseFloat(height) : height;
@@ -139,6 +139,8 @@ const BMICalculation = (weight, height, calculation) => {
 
 const getFormula = options => {
   if (options === undefined) return;
+
+  debugger;
 
   if (Window.global === undefined) {
     const _input = config.algaeh_d_formulas.BMI;

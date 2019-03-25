@@ -578,6 +578,7 @@ class NurseWorkbench extends Component {
           })
         );
         this.loadListofData();
+        this.resetSaveState();
       }
     );
   }
@@ -594,6 +595,7 @@ class NurseWorkbench extends Component {
   }
 
   moveToStation(data, e) {
+    this.resetSaveState();
     this.setState(
       {
         patient_name: data.full_name,
@@ -605,6 +607,7 @@ class NurseWorkbench extends Component {
       },
       () => {
         getPatientAllergies(this);
+        
         // else {
         let _allergies = Enumerable.from(this.props.patient_allergies)
           .groupBy("$.allergy_type", null, (k, g) => {

@@ -39,30 +39,41 @@ class Login extends Component {
   }
 
   getHospitalDetails() {
-    debugger;
-    let HospitalId =
-      getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
-    this.props.getHospitalDetails({
-      uri: "/organization/getOrganization",
-      method: "GET",
-      data: {
-        hims_d_hospital_id: HospitalId
-      },
-      redux: {
-        type: "HOSPITAL_DETAILS_GET_DATA",
-        mappingName: "hospitaldetails"
-      },
-      afterSuccess: data => {
-        if (data.length > 0) {
-          debugger;
-          sessionStorage.removeItem("CurrencyDetail");
-          sessionStorage.setItem(
-            "CurrencyDetail",
-            AlgaehCloseContainer(JSON.stringify(data[0]))
-          );
+    if (
+      this.props.hospitaldetails === undefined ||
+      this.props.hospitaldetails.length === 0
+    ) {
+      let HospitalId =
+        getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
+      this.props.getHospitalDetails({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        data: {
+          hims_d_hospital_id: HospitalId
+        },
+        redux: {
+          type: "HOSPITAL_DETAILS_GET_DATA",
+          mappingName: "hospitaldetails"
+        },
+        afterSuccess: data => {
+          if (data.length > 0) {
+            sessionStorage.removeItem("CurrencyDetail");
+            sessionStorage.setItem(
+              "CurrencyDetail",
+              AlgaehCloseContainer(JSON.stringify(data[0]))
+            );
+            window.location.hash = "/Home";
+          }
         }
-      }
-    });
+      });
+    } else {
+      sessionStorage.removeItem("CurrencyDetail");
+      sessionStorage.setItem(
+        "CurrencyDetail",
+        AlgaehCloseContainer(JSON.stringify(this.props.hospitaldetails[0]))
+      );
+      window.location.hash = "/Home";
+    }
   }
   componentWillMount() {
     this.deleteAllPreviousCookies();
@@ -102,7 +113,7 @@ class Login extends Component {
           setCookie("userName", response.data.records.username);
           setCookie("keyResources", response.data.records.keyResources, 30);
           // setSecure(response.data.records.secureModels);
-          window.location.hash = "/Home";
+
           window.history.pushState(null, null, window.location.href);
           window.onpopstate = function(event) {
             window.history.go(1);
