@@ -12,7 +12,8 @@ export default class ReportUI extends Component {
     debugger;
     super(props);
     this.state = {
-      reportQuery: props.options.report.reportQuery,
+      reportQuery:
+        props.options === undefined ? null : props.options.report.reportQuery,
       pageDisplay: "",
       openPopup: true,
       hasError: false,

@@ -1,9 +1,13 @@
+// getCookie("userName")
+
+import { getCookie } from "../utils/algaehApiCall";
+
 export function printReport(data) {
   return `<div class="cashReciptStyles">
 <div class="col-lg-12 popRightDiv">
   <div class="row">
     <div class="col-lg-4"><div class="hospitalLogo">Hospital Logo</div></div>
-    <div class="col-lg-4"><h3 class="receipt-header">Cash Receipt</h3></div>
+    <div class="col-lg-4"><h3 class="receipt-header">Cash Receipt/إيصال نقدية</h3></div>
     <div class="col-lg-4">
       <p class="hospitalAddress">
         # 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India
@@ -18,24 +22,24 @@ export function printReport(data) {
       <table class="table table-sm">
         <tbody>
           <tr>
-            <td>Patient Name:</td>
+            <td>Patient Name/ اسم المريض:</td>
             <td>${data.full_name}</td>
             <td class="col"></td>
-            <td>Cash Recepit:</td>
+            <td>Cash Receipt/ إيصال نقدية:</td>
             <td >${data.receipt_number}</td>
           </tr>
           <tr>
-            <td>Patient MRN:</td>
+            <td>Patient Code/ كود المريض:</td>
             <td >${data.patient_code}</td>
             <td></td>
             <td></td>
             <td></td>
           </tr>
           <tr>
-            <td>Doctor Name:</td>
+            <td>Doctor Name/ اسم الطبيب:</td>
             <td >${data.doctor_name}</td>
             <td></td>
-            <td>Recepit Date:</td>
+            <td>Receipt Date/ تاريخ استلام:</td>
             <td >${data.bill_date}</td>
           </tr>
         </tbody>
@@ -48,13 +52,12 @@ export function printReport(data) {
         <table class="table table-bordered table-striped">
           <thead>
             <tr>
-              <th>Service</th>
-              <th>Qty</th>
-              <th>Unit Price</th>
-              <th>Discount</th>
-              <th>Deduction</th>
-              <th>Tax</th>
-              <th>Net Price</th>
+              <th>Service/الخدمات</th>              
+              <th>Unit Price/سعر الوحده</th>
+              <th>Discount/خصم</th>
+              <th>Deduction/المستقطع</th>
+              <th>Vat/ضريبة</th>
+              <th>Net Price/السعر الصافي</th>
             </tr>
           </thead>
 
@@ -66,8 +69,7 @@ export function printReport(data) {
             .map(
               item => `
             <tr>
-              <td class="co-4"> ${item.service_name}</td>
-              <td class="co-4"> ${item.quantity}</td>
+              <td class="co-4"> ${item.service_name}</td>              
               <td class="co-4"> ${item.unit_cost}</td>
               <td class="co-4"> ${item.discount_amout}</td>
               <td class="co-4"> ${item.deductable_amount}</td>
@@ -86,8 +88,8 @@ export function printReport(data) {
       <table class="table table-sm">
         <tbody>
           <tr>
-            <td>Person In-Charge:</td>
-            <td>${data.doctor_name}</td>
+            <td>Printed By:</td>
+            <td>${getCookie("userName")}</td>
             <td class="col"></td>
             <td>Person In-Charge Sign/ Seal:</td>
             <td></td>

@@ -335,6 +335,7 @@ const ProcessInsurance = ($this, context, ctrl, e) => {
       }
     ];
 
+    AlgaehLoader({ show: true });
     algaehApiCall({
       uri: "/billing/getBillDetails",
       module: "billing",
