@@ -381,7 +381,7 @@ export function numberFormater(value, options) {
     ...{ appendSymbol: true },
     ...options
   };
-  debugger;
+
   const precesions =
     settings.decimal_places !== undefined && settings.decimal_places !== ""
       ? parseFloat(settings.decimal_places)

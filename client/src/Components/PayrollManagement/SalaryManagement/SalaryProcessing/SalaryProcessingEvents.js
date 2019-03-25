@@ -18,7 +18,7 @@ const texthandle = ($this, e) => {
   });
 };
 
-const SalaryProcess = ($this, e) => {
+const SalaryProcess = ($this, from) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
     querySelector: "data-validate='loadSalary'",
@@ -61,11 +61,13 @@ const SalaryProcess = ($this, e) => {
               finalizeBtn: finalizeBtn
             });
             AlgaehLoader({ show: false });
-
-            swalMessage({
-              title: strMessage,
-              type: "success"
-            });
+            debugger;
+            if (from === "load") {
+              swalMessage({
+                title: strMessage,
+                type: "success"
+              });
+            }
           } else {
             AlgaehLoader({ show: false });
             swalMessage({
@@ -160,6 +162,7 @@ const FinalizeSalary = $this => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
+        SalaryProcess($this, "finalize");
         $this.setState({
           finalizeBtn: true
         });

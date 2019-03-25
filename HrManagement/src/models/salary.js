@@ -292,7 +292,8 @@ module.exports = {
                         _mysql: _mysql,
                         input: input,
                         _LeaveRule: _LeaveRule,
-                        hrms_option: results[8]
+                        hrms_option: results[8],
+                        next: next
                       })
                         .then(earningOutput => {
                           current_earning_amt_array =
@@ -311,7 +312,8 @@ module.exports = {
                             deduction: _deduction,
                             empResult: empResult[i],
                             leave_salary: req.query.leave_salary,
-                            hrms_option: results[8]
+                            hrms_option: results[8],
+                            next: next
                           }).then(deductionOutput => {
                             current_deduction_amt_array =
                               deductionOutput.current_deduction_amt_array;
@@ -328,7 +330,8 @@ module.exports = {
                               contribution: _contrubutions,
                               empResult: empResult[i],
                               leave_salary: req.query.leave_salary,
-                              hrms_option: results[8]
+                              hrms_option: results[8],
+                              next: next
                             }).then(contributionOutput => {
                               current_contribution_amt_array =
                                 contributionOutput.current_contribution_amt_array;
@@ -349,7 +352,8 @@ module.exports = {
                               });
                               getLoanDueandPayable({
                                 loan: _loan,
-                                loanPayable: _loanPayable
+                                loanPayable: _loanPayable,
+                                next: next
                               }).then(loanOutput => {
                                 total_loan_due_amount =
                                   loanOutput.total_loan_due_amount;
@@ -367,7 +371,8 @@ module.exports = {
                                 });
                                 getAdvanceDue({
                                   advance: _advance,
-                                  dedcomponent: results[7]
+                                  dedcomponent: results[7],
+                                  next: next
                                 }).then(advanceOutput => {
                                   advance_due_amount =
                                     advanceOutput.advance_due_amount;
@@ -405,7 +410,8 @@ module.exports = {
                                     hrms_option: results[8],
                                     over_time_comp: results[9],
                                     over_time: _over_time,
-                                    leave_salary: req.query.leave_salary
+                                    leave_salary: req.query.leave_salary,
+                                    next: next
                                   }).then(OTManagement => {
                                     final_earning_amount =
                                       final_earning_amount +
@@ -435,7 +441,8 @@ module.exports = {
                                       current_earning_amt_array: current_earning_amt_array,
                                       shortage_comp: results[11],
                                       hrms_option: results[8],
-                                      leave_salary: req.query.leave_salary
+                                      leave_salary: req.query.leave_salary,
+                                      next: next
                                     }).then(ShortAge => {
                                       utilities
                                         .logger()
@@ -458,7 +465,8 @@ module.exports = {
                                         }
                                       );
                                       getMiscellaneous({
-                                        miscellaneous: _miscellaneous
+                                        miscellaneous: _miscellaneous,
+                                        next: next
                                       }).then(miscellaneousOutput => {
                                         current_earning_amt_array = current_earning_amt_array.concat(
                                           miscellaneousOutput.current_earn_compoment
@@ -1119,7 +1127,8 @@ module.exports = {
                             leave_salary: req.query.leave_salary,
                             _mysql: _mysql,
                             input: input,
-                            _LeaveRule: _LeaveRule
+                            _LeaveRule: _LeaveRule,
+                            next: next
                           })
                             .then(earningOutput => {
                               current_earning_amt_array =
@@ -1136,7 +1145,8 @@ module.exports = {
                               getDeductionComponents({
                                 deduction: _deduction,
                                 empResult: empResult[i],
-                                leave_salary: req.query.leave_salary
+                                leave_salary: req.query.leave_salary,
+                                next: next
                               })
                                 .then(deductionOutput => {
                                   current_deduction_amt_array =
@@ -1157,7 +1167,8 @@ module.exports = {
                                   getContrubutionsComponents({
                                     contribution: _contrubutions,
                                     empResult: empResult[i],
-                                    leave_salary: req.query.leave_salary
+                                    leave_salary: req.query.leave_salary,
+                                    next: next
                                   })
                                     .then(contributionOutput => {
                                       current_contribution_amt_array =
@@ -1186,7 +1197,8 @@ module.exports = {
 
                                       getLoanDueandPayable({
                                         loan: _loan,
-                                        loanPayable: _loanPayable
+                                        loanPayable: _loanPayable,
+                                        next: next
                                       })
                                         .then(loanOutput => {
                                           total_loan_due_amount =
@@ -1210,7 +1222,8 @@ module.exports = {
 
                                           getAdvanceDue({
                                             advance: _advance,
-                                            dedcomponent: results[7]
+                                            dedcomponent: results[7],
+                                            next: next
                                           })
                                             .then(advanceOutput => {
                                               advance_due_amount =
@@ -1243,7 +1256,8 @@ module.exports = {
                                                 over_time_comp: results[9],
                                                 over_time: _over_time,
                                                 leave_salary:
-                                                  req.query.leave_salary
+                                                  req.query.leave_salary,
+                                                  next: next
                                               })
                                                 .then(OTManagement => {
                                                   final_earning_amount =
@@ -1261,7 +1275,8 @@ module.exports = {
                                                     shortage_comp: results[11],
                                                     hrms_option: results[8],
                                                     leave_salary:
-                                                      req.query.leave_salary
+                                                      req.query.leave_salary,
+                                                      next: next
                                                   })
                                                     .then(ShortAge => {
                                                       utilities
@@ -1292,7 +1307,8 @@ module.exports = {
                                                       );
 
                                                       getMiscellaneous({
-                                                        miscellaneous: _miscellaneous
+                                                        miscellaneous: _miscellaneous,
+                                                        next: next
                                                       })
                                                         .then(
                                                           miscellaneousOutput => {
@@ -2042,38 +2058,35 @@ module.exports = {
                           .then(salary_process => {
                             InsertEmployeeLeaveSalary({
                               leave_salary_accrual_detail: leave_salary_accrual_detail,
-                              _mysql: _mysql
+                              _mysql: _mysql,
+                              next: next
                             })
                               .then(Employee_Leave_Salary => {
                                 _mysql
                                   .executeQuery({
                                     query:
-                                      "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes\
-                                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?); \
-                                      Select employee_id,\
-                                      COALESCE(sum(worked_hours))+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours \
-                                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
+                                      "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes,\
+                                    COALESCE(worked_hours) + COALESCE(concat(floor(worked_minutes/60)  ,'.',worked_minutes%60),0) as complete_hours\
+                                     from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
                                     values: [
                                       inputParam.year,
                                       inputParam.month,
                                       inputParam.hospital_id,
-                                      inputParam.employee_id,
-                                      inputParam.year,
-                                      inputParam.month,
-                                      inputParam.hospital_id,
                                       inputParam.employee_id
+                                      // inputParam.year,
+                                      // inputParam.month,
+                                      // inputParam.hospital_id,
+                                      // inputParam.employee_id
                                     ],
                                     printQuery: true
                                   })
                                   .then(project_wise_payroll => {
-                                    if (project_wise_payroll[0].length > 0) {
+                                    if (project_wise_payroll.length > 0) {
                                       UpdateProjectWisePayroll({
-                                        project_wise_payroll:
-                                          project_wise_payroll[0],
-                                        total_hours_project:
-                                          project_wise_payroll[1],
+                                        project_wise_payroll: project_wise_payroll,
                                         _mysql: _mysql,
-                                        net_salary: inputParam.net_salary
+                                        net_salary: inputParam.net_salary,
+                                        next: next
                                       })
                                         .then(Employee_Leave_Salary => {
                                           _mysql.commitTransaction(() => {
@@ -2155,31 +2168,31 @@ module.exports = {
                 _mysql
                   .executeQuery({
                     query:
-                      "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes\
-                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?); \
-                      Select employee_id,\
-                      COALESCE(sum(worked_hours))+ COALESCE(concat(floor(sum(worked_minutes)/60)  ,'.',sum(worked_minutes)%60),0) as complete_hours \
-                      from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
+                      "Select hims_f_project_wise_payroll_id,employee_id, worked_hours, worked_minutes,\
+                      COALESCE(worked_hours) + COALESCE(concat(floor(worked_minutes/60)  ,'.',worked_minutes%60),0) as complete_hours\
+                       from hims_f_project_wise_payroll where year=? and month=? and hospital_id=? and  employee_id in (?);",
                     values: [
                       inputParam.year,
                       inputParam.month,
                       inputParam.hospital_id,
-                      inputParam.employee_id,
-                      inputParam.year,
-                      inputParam.month,
-                      inputParam.hospital_id,
                       inputParam.employee_id
+                      // inputParam.year,
+                      // inputParam.month,
+                      // inputParam.hospital_id,
+                      // inputParam.employee_id
                     ],
                     printQuery: true
                   })
                   .then(project_wise_payroll => {
-                    utilities.logger().log("project_wise_payroll: ");
-                    if (project_wise_payroll[0].length > 0) {
+                    utilities
+                      .logger()
+                      .log("project_wise_payroll: ", project_wise_payroll);
+                    if (project_wise_payroll.length > 0) {
                       UpdateProjectWisePayroll({
-                        project_wise_payroll: project_wise_payroll[0],
-                        total_hours_project: project_wise_payroll[1],
+                        project_wise_payroll: project_wise_payroll,
                         _mysql: _mysql,
-                        net_salary: inputParam.net_salary
+                        net_salary: inputParam.net_salary,
+                        next: next
                       })
                         .then(Employee_Leave_Salary => {
                           _mysql.commitTransaction(() => {
@@ -2512,8 +2525,7 @@ function InsertEmployeeLeaveSalary(options) {
                   // resolve();
                 })
                 .catch(e => {
-                  reject(e);
-                  next(e);
+                  reject(e);                  
                 });
             } else {
               _mysql
@@ -2569,18 +2581,18 @@ function InsertEmployeeLeaveSalary(options) {
                     })
                     .catch(error => {
                       reject(error);
-                      next(error);
+                      
                     });
                 })
                 .catch(e => {
                   reject(e);
-                  next(e);
+                  
                 });
             }
           })
           .catch(e => {
             reject(e);
-            next(e);
+            
           });
       }
       resolve();
@@ -2588,7 +2600,7 @@ function InsertEmployeeLeaveSalary(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -2773,7 +2785,7 @@ function getOtManagement(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -2847,7 +2859,7 @@ function getShortAge(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -3113,7 +3125,7 @@ function getEarningComponents(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -3211,7 +3223,7 @@ function getDeductionComponents(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -3310,7 +3322,7 @@ function getContrubutionsComponents(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -3371,7 +3383,7 @@ function getLoanDueandPayable(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -3404,7 +3416,7 @@ function getAdvanceDue(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -3470,7 +3482,7 @@ function getMiscellaneous(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -3481,17 +3493,37 @@ function UpdateProjectWisePayroll(options) {
       let _mysql = options._mysql;
       let net_salary = options.net_salary;
 
-      let total_hours_project = options.total_hours_project;
+      // let total_hours_project = options.total_hours_project;
       let strQry = "";
 
-      // const utilities = new algaehUtilities();
+      const utilities = new algaehUtilities();
 
-      // utilities.logger().log("UpdateProjectWisePayroll: ");
+      utilities.logger().log("UpdateProjectWisePayroll: ");
 
+      let finalData = {};
+      _.chain(project_wise_payroll)
+        .groupBy(g => g.employee_id)
+        .map(item => {
+          finalData[
+            _.get(_.find(item, "employee_id"), "employee_id")
+          ] = _.sumBy(item, s => {
+            return s.complete_hours;
+          });
+        })
+        .value();
+
+      utilities.logger().log("finalData: ", finalData);
       for (let z = 0; z < project_wise_payroll.length; z++) {
+        utilities
+          .logger()
+          .log(
+            "total_complete_hours: ",
+            finalData[project_wise_payroll[z]["employee_id"]]
+          );
         let cost = 0;
         let complete_hours = parseInt(project_wise_payroll[z]["worked_hours"]);
-
+        let total_complete_hours =
+          finalData[project_wise_payroll[z]["employee_id"]];
         let worked_minutes = project_wise_payroll[z]["worked_minutes"];
         complete_hours += parseInt(worked_minutes / 60);
         let mins = String("0" + parseInt(worked_minutes % 60)).slice(-2);
@@ -3500,15 +3532,12 @@ function UpdateProjectWisePayroll(options) {
         let net_salary_amt = _.filter(net_salary, f => {
           return f.employee_id == project_wise_payroll[z]["employee_id"];
         });
-        let total_hours = _.filter(total_hours_project, f => {
-          return f.employee_id == project_wise_payroll[z]["employee_id"];
-        });
 
-        // utilities.logger().log("total_hours: ", total_hours);
+        utilities.logger().log("total_complete_hours: ", total_complete_hours);
 
         cost =
           parseFloat(net_salary_amt[0].net_salary) /
-          parseFloat(total_hours[0].complete_hours);
+          parseFloat(total_complete_hours);
 
         // utilities.logger().log("cost: ", cost);
 
@@ -3535,6 +3564,6 @@ function UpdateProjectWisePayroll(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
