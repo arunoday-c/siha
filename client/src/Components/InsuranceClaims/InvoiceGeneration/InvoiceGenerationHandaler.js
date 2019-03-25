@@ -5,13 +5,18 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
+  debugger;
+  let input =
+    $this.state.select_invoice === "CH"
+      ? "pv.invoice_generated='N'"
+      : "pv.insured = 'Y' and pv.invoice_generated='N'";
   AlgaehSearch({
     searchGrid: {
       columns: spotlightSearch.VisitDetails.VisitList
     },
     searchName: "visit",
     uri: "/gloabelSearch/get",
-    inputs: "pv.insured = 'Y' and pv.invoice_generated='N'",
+    inputs: input,
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -233,7 +238,10 @@ const ClearData = $this => {
       secondary_network_type: "---",
       secondary_policy_number: "---",
       secondary_card_number: "---",
-      secondary_effective_end_date: "---"
+      secondary_effective_end_date: "---",
+      select_invoice: "CH",
+      creidt_invoice: false,
+      cash_invoice: true
     },
     () => {
       $this.props.initialStateOrders({
