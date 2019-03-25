@@ -333,6 +333,7 @@ const SavePosEnrty = $this => {
   const err = Validations($this);
 
   if (!err) {
+    AlgaehLoader({ show: true });
     GenerateReciept($this, that => {
       $this.state.posted = "Y";
       $this.state.transaction_type = "POS";
@@ -375,12 +376,19 @@ const SavePosEnrty = $this => {
 
             swalMessage({
               type: "success",
-              title: "Saved successfully . ."
+              title: "Saved successfully ..."
             });
+            AlgaehLoader({ show: false });
           } else {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              type: "error",
+              title: response.data.records.message
+            });
           }
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
             type: "error"
