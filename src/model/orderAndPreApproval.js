@@ -89,7 +89,7 @@ let updatePreApproval = (req, res, next) => {
           "UPDATE `hims_f_service_approval` SET service_id=?, insurance_provider_id=?, insurance_network_office_id=?,\
           icd_code=?,insurance_service_name=?,doctor_id=?,patient_id=?,gross_amt=?,net_amount=?,requested_date=?,\
           requested_by=?, requested_mode=?,requested_quantity=?,submission_type=?,refer_no=?,approved_amount=?,\
-          apprv_remarks=?,apprv_date=?rejected_reason=?, apprv_status=?, updated_date=?, updated_by=? \
+          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, updated_date=?, updated_by=? \
           where hims_f_service_approval_id=?;",
           [
             inputParam[i].service_id,
