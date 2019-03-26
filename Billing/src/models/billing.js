@@ -1,5 +1,5 @@
 import algaehMysql from "algaeh-mysql";
-// import algaehUtilities from "algaeh-utilities/utilities";
+import algaehUtilities from "algaeh-utilities/utilities";
 import appsettings from "algaeh-utilities/appsettings.json";
 import { LINQ } from "node-linq";
 import math from "mathjs";
@@ -1004,6 +1004,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
           req.body[m].services_id = servicesDetails.hims_d_services_id;
 
           //Calculation Declarations
+          const utilities = new algaehUtilities();
+          utilities.logger().log("unit_cost: ", servicesDetails.unit_cost);
           let unit_cost =
             servicesDetails.unit_cost == undefined
               ? 0

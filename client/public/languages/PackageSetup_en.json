@@ -1,0 +1,18 @@
+{
+  "package_code": "Package Code",
+  "package_name": "Package Name",
+  "package_amount": "Package Amount",
+  "total_service_amount": "Total Services Amount",
+  "profit_loss": "Profit/Loss",
+  "pl_amount": "Profit/Loss Amount",
+
+  "select_service": "Select Service",
+  "select_service_type": "Select Service Type",
+  "service_amount": "Service Amount",
+
+  "service_type_id": "Service Type",
+  "services_id": "Service",
+
+  "btnSave": "Save",
+  "btnUpdate": "Update"
+}

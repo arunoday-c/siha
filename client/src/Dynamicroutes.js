@@ -362,6 +362,9 @@ const PageToPlot = {
   ),
   AppSetup: React.lazy(() =>
     retry(() => import("./Components/AppSetup/AppSetup"))
+  ),
+  PackageSetup: React.lazy(() =>
+    retry(() => import("./Components/PackageSetup/PackageSetup"))
   )
 };
 

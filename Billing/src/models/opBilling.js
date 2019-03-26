@@ -151,7 +151,9 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_billing_details where hims_f_billing_header_id=? and record_status='A'",
+                  "select * from hims_f_billing_details, hims_d_services where \
+                  hims_f_billing_details.services_id = hims_d_services.hims_d_services_id and \
+                  hims_f_billing_header_id=? and hims_f_billing_details.record_status='A'",
                 values: [headerResult[0].hims_f_billing_header_id],
                 printQuery: true
               })
