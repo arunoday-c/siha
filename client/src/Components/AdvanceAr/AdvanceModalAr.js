@@ -459,7 +459,7 @@ class AddAdvanceModalAr extends PureComponent {
                     />
                     <h5>
                       {this.state.total_amount
-                        ? "₹" + this.state.total_amount
+                        ? "SAR" + this.state.total_amount
                         : "₹0.00"}
                     </h5>
                   </div>

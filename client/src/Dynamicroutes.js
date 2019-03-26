@@ -359,6 +359,9 @@ const PageToPlot = {
     retry(() =>
       import("./Components/EmployeeManagement/ProjectJobCost/ProjectJobCost")
     )
+  ),
+  AppSetup: React.lazy(() =>
+    retry(() => import("./Components/AppSetup/AppSetup"))
   )
 };
 

@@ -306,7 +306,6 @@ class DayEndProcess extends Component {
                       margin: "10px"
                     }}
                   >
-                    {" "}
                     <button className="btn btn-primary">POST</button>
                   </div>
                 </div>
