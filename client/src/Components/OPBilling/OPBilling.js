@@ -224,7 +224,7 @@ class OPBilling extends Component {
           // visitDetails.radioselect = 1;
           data.visitDetails = [visitDetails];
           data.mode_of_pay = data.insured === "Y" ? "Insured" : "Self";
-          data.doctor_name = data.full_name;
+          // data.doctor_name = data.doctor_name;
           data.Billexists = true;
           data.saveEnable = true;
           // data.visit_id = data.hims_f_patient_visit_id;

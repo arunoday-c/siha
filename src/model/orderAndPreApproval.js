@@ -84,72 +84,105 @@ let updatePreApproval = (req, res, next) => {
 
       for (let i = 0; i < req.body.length; i++) {
         let _appDate =
-          inputParam[i].apprv_date != null
-            ? "'" + inputParam[i].apprv_date + "'"
-            : null;
-        qry +=
-          " UPDATE `hims_f_service_approval` SET service_id='" +
-          inputParam[i].service_id +
-          "',insurance_provider_id='" +
-          inputParam[i].insurance_provider_id +
-          "',insurance_network_office_id=\
-'" +
-          inputParam[i].insurance_network_office_id +
-          "', icd_code='" +
-          inputParam[i].icd_code +
-          "',insurance_service_name=\
-'" +
-          inputParam[i].insurance_service_name +
-          "',doctor_id='" +
-          inputParam[i].doctor_id +
-          "',patient_id='" +
-          inputParam[i].patient_id +
-          "'\
-,gross_amt='" +
-          inputParam[i].gross_amt +
-          "',net_amount='" +
-          inputParam[i].net_amount +
-          "',requested_date=\
-          '" +
-          inputParam[i].requested_date +
-          "',requested_by=\
-          '" +
-          req.userIdentity.algaeh_d_app_user_id +
-          "',requested_mode=\
-          '" +
-          inputParam[i].requested_mode +
-          "',requested_quantity=\
-          '" +
-          inputParam[i].requested_quantity +
-          "',submission_type=\
-          '" +
-          inputParam[i].submission_type +
-          "',refer_no=\
-          '" +
-          inputParam[i].refer_no +
-          "',approved_amount=\
-          '" +
-          inputParam[i].approved_amount +
-          "',apprv_remarks=\
-          '" +
-          inputParam[i].apprv_remarks +
-          "',apprv_date=\
-           " +
-          _appDate +
-          ",rejected_reason=\
-          '" +
-          inputParam[i].rejected_reason +
-          "',apprv_status=\
-          '" +
-          inputParam[i].apprv_status +
-          "',updated_date='" +
-          new Date().toLocaleString() +
-          "',updated_by='" +
-          req.userIdentity.algaeh_d_app_user_id +
-          "' WHERE hims_f_service_approval_id='" +
-          inputParam[i].hims_f_service_approval_id +
-          "';";
+          inputParam[i].apprv_date != null ? inputParam[i].apprv_date : null;
+        qry += mysql.format(
+          "UPDATE `hims_f_service_approval` SET service_id=?, insurance_provider_id=?, insurance_network_office_id=?,\
+          icd_code=?,insurance_service_name=?,doctor_id=?,patient_id=?,gross_amt=?,net_amount=?,requested_date=?,\
+          requested_by=?, requested_mode=?,requested_quantity=?,submission_type=?,refer_no=?,approved_amount=?,\
+          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, updated_date=?, updated_by=? \
+          where hims_f_service_approval_id=?;",
+          [
+            inputParam[i].service_id,
+            inputParam[i].insurance_provider_id,
+            inputParam[i].insurance_network_office_id,
+            inputParam[i].icd_code,
+            inputParam[i].insurance_service_name,
+            inputParam[i].doctor_id,
+            inputParam[i].patient_id,
+            inputParam[i].gross_amt,
+            inputParam[i].net_amount,
+            inputParam[i].requested_date,
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam[i].requested_mode,
+            inputParam[i].requested_quantity,
+            inputParam[i].submission_type,
+            inputParam[i].refer_no,
+            inputParam[i].approved_amount,
+            inputParam[i].apprv_remarks,
+            _appDate,
+            inputParam[i].rejected_reason,
+            inputParam[i].apprv_status,
+            moment().format("YYYY-MM-DD HH:mm"),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam[i].hims_f_service_approval_id
+          ]
+        );
       }
+
+      //       for (let i = 0; i < req.body.length; i++) {
+      //         qry +=
+      //           " UPDATE `hims_f_service_approval` SET service_id='" +
+      //           inputParam[i].service_id +
+      //           "',insurance_provider_id='" +
+      //           inputParam[i].insurance_provider_id +
+      //           "',insurance_network_office_id=\
+      // '" +
+      //           inputParam[i].insurance_network_office_id +
+      //           "', icd_code='" +
+      //           inputParam[i].icd_code +
+      //           "',insurance_service_name=\
+      // '" +
+      //           inputParam[i].insurance_service_name +
+      //           "',doctor_id='" +
+      //           inputParam[i].doctor_id +
+      //           "',patient_id='" +
+      //           inputParam[i].patient_id +
+      //           "'\
+      // ,gross_amt='" +
+      //           inputParam[i].gross_amt +
+      //           "',net_amount='" +
+      //           inputParam[i].net_amount +
+      //           "',requested_date=\
+      //           '" +
+      //           inputParam[i].requested_date +
+      //           "',requested_by=\
+      //           '" +
+      //           req.userIdentity.algaeh_d_app_user_id +
+      //           "',requested_mode=\
+      //           '" +
+      //           inputParam[i].requested_mode +
+      //           "',requested_quantity=\
+      //           '" +
+      //           inputParam[i].requested_quantity +
+      //           "',submission_type=\
+      //           '" +
+      //           inputParam[i].submission_type +
+      //           "',refer_no=\
+      //           '" +
+      //           inputParam[i].refer_no +
+      //           "',approved_amount=\
+      //           '" +
+      //           inputParam[i].approved_amount +
+      //           "',apprv_remarks=\
+      //           '" +
+      //           inputParam[i].apprv_remarks +
+      //           "',apprv_date=\
+      //            " +
+      //           _appDate +
+      //           ",rejected_reason=\
+      //           '" +
+      //           inputParam[i].rejected_reason +
+      //           "',apprv_status=\
+      //           '" +
+      //           inputParam[i].apprv_status +
+      //           "',updated_date='" +
+      //           new Date().toLocaleString() +
+      //           "',updated_by='" +
+      //           req.userIdentity.algaeh_d_app_user_id +
+      //           "' WHERE hims_f_service_approval_id='" +
+      //           inputParam[i].hims_f_service_approval_id +
+      //           "';";
+      //       }
 
       debugLog("qry: ", qry);
       connection.query(qry, (error, result) => {
