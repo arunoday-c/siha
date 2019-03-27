@@ -40,5 +40,63 @@ export default () => {
       });
     }
   });
+  api.put("/authorizeLoan", authorizeLoan, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+
+  api.get("/getLoanLevels", getLoanLevels, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.post("/addLoanReciept", addLoanReciept, (req, res, next) => {
+    if (req.records.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: req.records
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  });
+  api.get(
+    "/getEmployeeLoanReciept",
+    getEmployeeLoanReciept,
+    (req, res, next) => {
+      if (req.records.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: req.records
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: req.records
+        });
+      }
+    }
+  );
+
   return api;
 };

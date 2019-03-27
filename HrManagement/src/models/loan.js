@@ -37,14 +37,19 @@ module.exports = {
               };
               next();
               return;
-            } else if (
-              emp[0].date_of_joining > today ||
-              emp[0].exit_date != null
-            ) {
+            } else if (emp[0].date_of_joining > today) {
               _mysql.releaseConnection();
               req.records = {
                 invalid_input: true,
                 message: "Cant apply for loan before joining date"
+              };
+              next();
+              return;
+            } else if (emp[0].exit_date != null) {
+              _mysql.releaseConnection();
+              req.records = {
+                invalid_input: true,
+                message: "Cant apply for loan for resigned employee"
               };
               next();
               return;
@@ -150,7 +155,7 @@ module.exports = {
           } else {
             req.records = {
               invalid_input: true,
-              message: "please provide valid id"
+              message: "please provide valid loan application id"
             };
             next();
           }
@@ -272,6 +277,21 @@ module.exports = {
             { name: "Level 1", value: 1 }
           );
           break;
+        case "AL3":
+          auth_levels.push(
+            { name: "Level 3", value: 3 },
+            { name: "Level 2", value: 2 },
+            { name: "Level 1", value: 1 }
+          );
+          break;
+        case "AL4":
+          auth_levels.push(
+            { name: "Level 4", value: 4 },
+            { name: "Level 3", value: 3 },
+            { name: "Level 2", value: 2 },
+            { name: "Level 1", value: 1 }
+          );
+          break;
       }
 
       req.records = { auth_levels };
@@ -296,10 +316,172 @@ module.exports = {
             req.userIdentity.loan_authorize_privilege != maxAuth.MaxLoan ||
             input.auth_level != maxAuth.MaxLoan
           ) {
+            //for lower level authorize
+            getLoanAuthFields(input.auth_level).then(authFields => {
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "UPDATE hims_f_loan_application SET " +
+                    authFields +
+                    ",approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
+                  loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+                  values: [
+                    input.authorized,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    input.approved_amount,
+                    input.start_year,
+                    input.start_month,
+                    input.installment_amount,
+                    input.loan_tenure,
+                    input.loan_tenure,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    input.hims_f_loan_application_id
+                  ],
+                  printQuery: true
+                })
+                .then(result => {
+                  if (result.affectedRows > 0 && input.authorized == "R") {
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "update hims_f_loan_application set loan_authorized='REJ'\
+                          where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=?",
+                        values: [input.hims_f_loan_application_id],
+                        printQuery: true
+                      })
+                      .then(rejResult => {
+                        mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = rejResult;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else if (result.affectedRows > 0) {
+                    mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = result;
+                      next();
+                    });
+                  } else {
+                    req.records = {
+                      invalid_input: true,
+                      message: "Please provide valid loan application id "
+                    };
+                    _mysql.releaseConnection();
+                    next();
+                  }
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            });
           } else if (
             req.userIdentity.loan_authorize_privilege == maxAuth.MaxLoan &&
             input.auth_level == maxAuth.MaxLoan
           ) {
+            //if he has highest previlege
+            getLoanAuthFields(input.auth_level).then(authFields => {
+              _mysql
+                .executeQueryWithTransaction({
+                  query:
+                    "UPDATE hims_f_loan_application SET " +
+                    authFields +
+                    ",approved_amount=?,start_year=?,start_month=?,installment_amount=?,\
+                  loan_tenure=?,pending_tenure=?, updated_date=?, updated_by=?  WHERE hims_f_loan_application_id=?",
+                  values: [
+                    input.authorized,
+                    req.userIdentity.algaeh_d_app_user_id,
+                    new Date(),
+                    input.approved_amount,
+                    input.start_year,
+                    input.start_month,
+                    input.installment_amount,
+                    input.loan_tenure,
+                    input.loan_tenure,
+                    new Date(),
+                    req.userIdentity.algaeh_d_app_user_id,
+                    input.hims_f_loan_application_id
+                  ],
+                  printQuery: true
+                })
+                .then(result => {
+                  if (
+                    result.affectedRows > 0 &&
+                    (input.authorized == "R" || input.authorized == "A")
+                  ) {
+                    let qry = "";
+
+                    if (input.authorized == "R") {
+                      qry = `update hims_f_loan_application set loan_authorized='REJ'\
+                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
+                    input.hims_f_loan_application_id
+                  }`;
+                    } else if (input.authorized == "A") {
+                      qry = `update hims_f_loan_application set loan_authorized='APR',authorized_date='${moment().format(
+                        "YYYY-MM-DD"
+                      )}', authorized_by=${
+                        req.userIdentity.algaeh_d_app_user_id
+                      }\
+                  where record_status='A' and loan_authorized='PEN' and hims_f_loan_application_id=${
+                    input.hims_f_loan_application_id
+                  }`;
+                    }
+
+                    //---------------
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query: qry,
+                        printQuery: true
+                      })
+                      .then(rejResult => {
+                        mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = rejResult;
+                          next();
+                        });
+                      })
+                      .catch(error => {
+                        _mysql.rollBackTransaction(() => {
+                          next(error);
+                        });
+                      });
+                  } else if (result.affectedRows > 0) {
+                    mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = result;
+                      next();
+                    });
+                  } else {
+                    req.records = {
+                      invalid_input: true,
+                      message: "Please provide valid loan application id "
+                    };
+                    _mysql.releaseConnection();
+                    next();
+                  }
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
+                });
+            });
+          } else {
+            req.records = {
+              invalid_user: true,
+              message: "Please provide valid Auth level"
+            };
+            next();
           }
         })
         .catch(e => {
@@ -313,5 +495,198 @@ module.exports = {
       };
       next();
     }
+  },
+  //created by irfan: to
+  addLoanReciept: (req, res, next) => {
+    let input = req.body;
+
+    _mysql
+      .executeQueryWithTransaction({
+        query:
+          "INSERT INTO `hims_f_employee_reciepts` (employee_id,reciepts_type,recievable_amount,\
+            write_off_amount,loan_application_id,remarks,balance_amount,reciepts_mode,cheque_number, created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?,  ?,?,?,?)",
+        values: [
+          input.employee_id,
+          input.reciepts_type,
+          input.recievable_amount,
+          input.write_off_amount,
+          input.loan_application_id,
+          input.remarks,
+          input.balance_amount,
+          input.reciepts_mode,
+          input.cheque_number,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        if (result.insertId > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "select hims_f_loan_application_id,pending_loan from\
+              hims_f_loan_application where hims_f_loan_application_id=?",
+              values: [input.loan_application_id],
+              printQuery: true
+            })
+            .then(pendingResult => {
+              const cur_pending_loan =
+                parseFloat(pendingResult[0]["pending_loan"]) -
+                parseFloat(input.recievable_amount) -
+                parseFloat(input.write_off_amount);
+
+              let close_loan = "";
+              if (cur_pending_loan == parseFloat(0)) {
+                close_loan = ",loan_closed='Y'";
+              }
+
+              if (cur_pending_loan === parseFloat(input.balance_amount)) {
+                _mysql
+                  .executeQueryWithTransaction({
+                    query:
+                      "update hims_f_loan_application set pending_loan=?" +
+                      close_loan +
+                      " where hims_f_loan_application_id=?",
+                    values: [cur_pending_loan, input.loan_application_id],
+                    printQuery: true
+                  })
+                  .then(updateResult => {
+                    mysql.commitTransaction(() => {
+                      _mysql.releaseConnection();
+                      req.records = updateResult;
+                      next();
+                    });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              } else {
+                _mysql.rollBackTransaction(() => {
+                  req.records = {
+                    invalid_input: true,
+                    message: "calculation incorrect"
+                  };
+                  next();
+                });
+              }
+            })
+            .catch(error => {
+              _mysql.rollBackTransaction(() => {
+                next(error);
+              });
+            });
+        } else {
+          //roll back
+
+          _mysql.rollBackTransaction(() => {
+            req.records = {
+              invalid_input: true,
+              message: "Please provide valid input"
+            };
+            next();
+          });
+        }
+      })
+      .catch(error => {
+        _mysql.rollBackTransaction(() => {
+          next(error);
+        });
+      });
+  },
+
+  //created by irfan:
+  getEmployeeLoanReciept: (req, res, next) => {
+    const utilities = new algaehUtilities();
+
+    if (req.query.employee_id > 0) {
+      const _mysql = new algaehMysql();
+      _mysql
+        .executeQuery({
+          query:
+            "select hims_f_employee_reciepts_id,ER.employee_id,reciepts_type,\
+              recievable_amount,write_off_amount,loan_application_id,LA.loan_application_number,LA.application_reason,\
+              final_settlement_id,remarks,balance_amount,reciepts_mode,cheque_number,posted,posted_by,posted_date,\
+              L.loan_code,L.loan_description,E.employee_code,E.full_name as employee_name from hims_f_employee_reciepts ER inner join hims_f_loan_application LA on\
+              ER.loan_application_id=LA.hims_f_loan_application_id inner join hims_d_loan L on\
+              LA.loan_id=L.hims_d_loan_id inner join hims_d_employee E on ER.employee_id=E.hims_d_employee_id\
+                where ER.employee_id=? order by hims_f_employee_reciepts_id desc",
+          values: [req.query.employee_id],
+
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "please provide employee id"
+      };
+
+      next();
+      return;
+    }
   }
 };
+//created by irfan: to get database field for authorization
+function getLoanAuthFields(auth_level) {
+  return new Promise((resolve, reject) => {
+    let authFields;
+    switch (auth_level) {
+      case "AL1":
+        authFields = [
+          "authorized1=?",
+          "authorized1_by=?",
+          "authorized1_date=?"
+        ];
+        break;
+
+      case "AL2":
+        authFields = [
+          "authorized2=?",
+          "authorized2_by=?",
+          "authorized2_date=?"
+        ];
+        break;
+
+      case "AL3":
+        authFields = [
+          "authorized3=?",
+          "authorized3_by=?",
+          "authorized3_date=?"
+        ];
+        break;
+
+      case "AL4":
+        authFields = [
+          "authorized4=?",
+          "authorized4_by=?",
+          "authorized4_date=?"
+        ];
+        break;
+      case "AL5":
+        authFields = [
+          "authorized5=?",
+          "authorized5_by=?",
+          "authorized5_date=?"
+        ];
+        break;
+      default:
+    }
+
+    resolve(authFields);
+  });
+}
