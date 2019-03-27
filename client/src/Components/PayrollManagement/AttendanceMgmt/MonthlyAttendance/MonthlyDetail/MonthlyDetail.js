@@ -104,18 +104,7 @@ function MonthlyDetail(props) {
                       );
                     }
                   },
-                  //   {
-                  //     fieldName: "total_paid_days",
-                  //     label: <AlgaehLabel label={{ forceLabel: "Total Paid Days" }} />
-                  //   },
-                  //   {
-                  //     fieldName: "total_holidays",
-                  //     label: <AlgaehLabel label={{ forceLabel: "Total Holidays" }} />
-                  //   },
-                  //   {
-                  //     fieldName: "total_weekoff_days",
-                  //     label: <AlgaehLabel label={{ forceLabel: "Total Week Off Days" }} />
-                  //   },
+
                   {
                     fieldName: "total_working_hours",
                     label: (
@@ -126,8 +115,8 @@ function MonthlyDetail(props) {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {row.total_working_hours
-                            ? row.total_working_hours + " Hrs"
+                          {row.working_hours
+                            ? row.working_hours + " Hrs"
                             : "00:00 Hrs"}
                         </span>
                       );
@@ -156,8 +145,8 @@ function MonthlyDetail(props) {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {row.ot_work_hours
-                            ? row.ot_work_hours + " Hrs"
+                          {row.complete_ot_hr
+                            ? row.complete_ot_hr + " Hrs"
                             : "00:00 Hrs"}
                         </span>
                       );
@@ -171,8 +160,8 @@ function MonthlyDetail(props) {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {row.shortage_hours
-                            ? row.shortage_hours + " Hrs"
+                          {row.complete_shortage_hr
+                            ? row.complete_shortage_hr + " Hrs"
                             : "00:00 Hrs"}
                         </span>
                       );
@@ -186,8 +175,8 @@ function MonthlyDetail(props) {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {row.ot_weekoff_hours
-                            ? row.ot_weekoff_hours + " Hrs"
+                          {row.complete_weekoff_ot_hr
+                            ? row.complete_weekoff_ot_hr + " Hrs"
                             : "00:00 Hrs"}
                         </span>
                       );
@@ -199,8 +188,8 @@ function MonthlyDetail(props) {
                     displayTemplate: row => {
                       return (
                         <span>
-                          {row.ot_holiday_hours
-                            ? row.ot_holiday_hours + " Hrs"
+                          {row.complete_holiday_ot_hr
+                            ? row.complete_holiday_ot_hr + " Hrs"
                             : "00:00 Hrs"}
                         </span>
                       );
