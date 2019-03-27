@@ -19,7 +19,9 @@ import {
   getEmpContibuteComponents,
   getFamilyIdentification,
   getDoctorServiceCommission,
-  getDoctorServiceTypeCommission
+  getDoctorServiceTypeCommission,
+  getEmployeesForMisED,
+  addMisEarnDedcToEmployees
 } from "../models/employee";
 export default () => {
   const api = Router();
@@ -207,6 +209,41 @@ export default () => {
         success: true,
         records: req.records
       });
+    }
+  );
+
+  api.get("/getEmployeesForMisED", getEmployeesForMisED, (req, res, next) => {
+    let result = req.records;
+
+    if (result.invalid_input == true) {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+    }
+  });
+  api.post(
+    "/addMisEarnDedcToEmployees",
+    addMisEarnDedcToEmployees,
+    (req, res, next) => {
+      let result = req.records;
+
+      if (result.invalid_input == true) {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+          success: true,
+          records: result
+        });
+      }
     }
   );
 
