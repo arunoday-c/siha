@@ -3,7 +3,11 @@ import utlities from "algaeh-utilities";
 import {
   addLoanApplication,
   adjustLoanApplication,
-  getLoanApplication
+  getLoanApplication,
+  authorizeLoan,
+  getLoanLevels,
+  addLoanReciept,
+  getEmployeeLoanReciept
 } from "../models/loan";
 export default () => {
   const api = Router();
