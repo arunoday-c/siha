@@ -26,6 +26,7 @@ import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
+import Eye from "./Eye/Eye";
 let allergyPopUp;
 class PatientProfile extends Component {
   constructor(props) {
@@ -396,19 +397,28 @@ class PatientProfile extends Component {
             <li className="nav-item">
               <span
                 onClick={this.changeTabs}
-                algaehsoap="summary"
+                algaehsoap="dental"
                 className="nav-link"
               >
-                Summary
+                Dental
               </span>
             </li>
             <li className="nav-item">
               <span
                 onClick={this.changeTabs}
-                algaehsoap="dental"
+                algaehsoap="eye"
                 className="nav-link"
               >
-                Dental
+                Eye
+              </span>
+            </li>
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="summary"
+                className="nav-link"
+              >
+                Summary
               </span>
             </li>
             <ul className="float-right patient-quick-info">
@@ -494,6 +504,8 @@ class PatientProfile extends Component {
             <Summary />
           ) : this.state.pageDisplay === "dental" ? (
             <Dental />
+          ) : this.state.pageDisplay === "eye" ? (
+            <Eye />
           ) : null}
         </div>
       </div>
