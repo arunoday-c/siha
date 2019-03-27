@@ -1,3 +1,5 @@
+@import "../../styles/algaehCssVariables.scss";
+
 .patient-mrd {
   .patientProfile {
     .patientInfo-Top {
@@ -20,7 +22,6 @@
         button {
           height: 60px;
           border: 1px solid #e1e1e1;
-          
         }
         i {
           display: block;
@@ -53,33 +54,35 @@
         padding-right: 10px;
         min-height: 57px;
         h6 {
-          
           margin-bottom: 2px;
           color: #000;
           line-height: 1.2rem;
         }
         p {
-          
           margin: 0;
           padding: 0;
         }
       }
       .patientDemographic {
-        
         line-height: 1.3rem;
         border-right: 1px solid #e1e1e1;
         padding-left: 10px;
         padding-right: 10px;
-        min-height: 57px;
         span {
           display: block;
+          line-height: 1.7rem;
+          font-size: 0.9em;
+          font-weight: 700;
+          i {
+            text-align: center;
+            width: 20px;
+          }
           b {
-            color: #34b8bc;
+            color: $primary-color;
           }
         }
       }
       .patientHospitalDetail {
-        
         line-height: 1.3rem;
         border-right: 1px solid #e1e1e1;
         padding-left: 10px;
@@ -93,7 +96,6 @@
         }
       }
       .patientVital {
-        
         width: 210px;
         line-height: 1.3rem;
         padding-left: 10px;
@@ -115,7 +117,7 @@
         button {
           height: 60px;
           border: 1px solid #e1e1e1;
-          
+
           margin-left: 0;
         }
         i {
@@ -131,7 +133,7 @@
       padding: 0;
       width: 100%;
       color: #797979;
-      
+
       text-transform: uppercase;
       position: fixed;
       top: 123px;
@@ -150,7 +152,6 @@
             transform: scaleX(1);
           }
           span {
-            
             text-transform: uppercase;
             padding: 9px 15px 8px;
             color: #858585;
@@ -211,7 +212,6 @@
               border-bottom: 1px solid #3f9c90;
               margin-bottom: 10px;
               padding-bottom: 5px;
-              
             }
             .listofA-D-D {
               display: inline-block;
@@ -224,7 +224,6 @@
               margin-bottom: 3px;
               border-radius: 20px;
               background: #3f9c91;
-              
             }
             p {
               background: rgba(0, 0, 0, 0.05);
@@ -260,7 +259,6 @@
         padding-top: 10px;
         padding-bottom: 10px;
         h6 {
-          
           font-weight: bold;
         }
         span {
@@ -281,7 +279,7 @@
               span {
                 float: right;
                 text-transform: uppercase;
-                
+
                 color: #0066ff;
               }
             }
@@ -290,7 +288,7 @@
       }
       .smallh6 {
         color: #00bbbd;
-        
+
         margin-bottom: 5px;
         font-weight: normal;
       }
