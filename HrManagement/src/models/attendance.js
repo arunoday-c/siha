@@ -5949,7 +5949,25 @@ module.exports = {
       })
       .then(result => {
         _mysql.releaseConnection();
-        req.records = result;
+
+
+let outputArray=[];
+        for(let i=0;i<result.length;i++){
+
+
+
+
+
+          outputArray.push({...result[i],complete_shortage_hr:result[i]["shortage_hours"]+"."+ String("0" + parseInt(result[i]["shortage_minutes"])).slice(-2),
+          
+          complete_ot_hr:result[i]["ot_work_hours"]+"."+ String("0" + parseInt(result[i]["ot_minutes"])).slice(-2),
+          complete_weekoff_ot_hr:result[i]["ot_weekoff_hours"]+"."+ String("0" + parseInt(result[i]["ot_weekoff_minutes"])).slice(-2),
+          complete_holiday_ot_hr:result[i]["ot_holiday_hours"]+"."+ String("0" + parseInt(result[i]["ot_holiday_minutes"])).slice(-2)
+          })
+
+
+        }
+        req.records = outputArray;
         next();
       })
       .catch(e => {
