@@ -181,6 +181,44 @@ class NewPackage extends PureComponent {
                         }
                       }}
                     />
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "total_service_amount"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(this.state.total_service_amount)}
+                      </h6>
+                    </div>
+
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "profit_loss"
+                        }}
+                      />
+                      <h6>
+                        {this.state.profit_loss === null ? (
+                          "------"
+                        ) : this.state.profit_loss === "P" ? (
+                          <span class="badge badge-success">Profit</span>
+                        ) : (
+                          <span class="badge badge-danger">Loss</span>
+                        )}
+                      </h6>
+                    </div>
+
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "pl_amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.pl_amount)}</h6>
+                    </div>
+                  </div>
+                  <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col form-group" }}
                       label={{
@@ -209,7 +247,7 @@ class NewPackage extends PureComponent {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col form-group" }}
+                      div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "select_service",
                         isImp: true
@@ -231,7 +269,7 @@ class NewPackage extends PureComponent {
                         }
                       }}
                     />
-                    <div className="col form-group">
+                    <div className="col-2 form-group">
                       <button
                         className="btn btn-primary"
                         style={{ marginTop: 19 }}
@@ -239,42 +277,6 @@ class NewPackage extends PureComponent {
                       >
                         Add
                       </button>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-2 form-group">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "total_service_amount"
-                        }}
-                      />
-                      <h6>
-                        {getAmountFormart(this.state.total_service_amount)}
-                      </h6>
-                    </div>
-
-                    <div className="col-2 form-group">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "profit_loss"
-                        }}
-                      />
-                      <h6>
-                        {this.state.profit_loss === null
-                          ? "------"
-                          : this.state.profit_loss === "P"
-                          ? "Profit"
-                          : "Loss"}
-                      </h6>
-                    </div>
-
-                    <div className="col-2 form-group">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "pl_amount"
-                        }}
-                      />
-                      <h6>{getAmountFormart(this.state.pl_amount)}</h6>
                     </div>
                   </div>
                   <div className="portlet-body">
