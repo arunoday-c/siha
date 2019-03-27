@@ -292,6 +292,7 @@ export default class MonthlyAttendance extends Component {
       },
       module: "hrManagement",
       onSuccess: res => {
+        debugger;
         if (res.data.success) {
           this.setState({
             monthly_detail: res.data.result
@@ -514,7 +515,8 @@ export default class MonthlyAttendance extends Component {
                     ),
                     others: {
                       capitalize: true,
-                      maxWidth: 200
+                      maxWidth: 200,
+                      fixed: "left"
                     }
                   },
                   {
