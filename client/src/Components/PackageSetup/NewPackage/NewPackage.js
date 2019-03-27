@@ -22,6 +22,7 @@ class NewPackage extends PureComponent {
     super(props);
     this.state = {
       hims_d_package_header_id: null,
+      package_code: null,
       package_name: null,
       package_amount: 0,
       total_service_amount: 0,
@@ -30,6 +31,8 @@ class NewPackage extends PureComponent {
 
       open: false,
       PakageDetail: [],
+      deletePackage: [],
+      insertPackage: [],
       s_service_amount: null,
       s_service_type: null,
       s_service: null
@@ -67,6 +70,14 @@ class NewPackage extends PureComponent {
     }
   }
 
+  componentWillReceiveProps(newProps) {
+    debugger;
+    if (newProps.PackagesPop.hims_d_package_header_id !== undefined) {
+      let IOputs = newProps.PackagesPop;
+      this.setState({ ...this.state, ...IOputs });
+    }
+  }
+
   onClose = e => {
     this.props.onClose && this.props.onClose(false);
   };
@@ -78,12 +89,19 @@ class NewPackage extends PureComponent {
     NewPackageEvent().serviceHandeler(this, e);
   }
 
+  pakageamtHandaler(e) {
+    NewPackageEvent().pakageamtHandaler(this, e);
+  }
   AddToList() {
     NewPackageEvent().AddToList(this);
   }
 
   DeleteService(row) {
     NewPackageEvent().DeleteService(this, row);
+  }
+
+  InsertPackages(e) {
+    NewPackageEvent().AddPackages(this, e);
   }
 
   render() {
@@ -156,7 +174,7 @@ class NewPackage extends PureComponent {
                         className: "txt-fld",
                         name: "package_amount",
                         events: {
-                          onChange: this.eventHandaler.bind(this)
+                          onChange: this.pakageamtHandaler.bind(this)
                         },
                         others: {
                           placeholder: "0.00"
@@ -198,7 +216,8 @@ class NewPackage extends PureComponent {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
                       label={{
-                        fieldName: "select_service_type"
+                        fieldName: "select_service_type",
+                        isImp: true
                       }}
                       selector={{
                         name: "s_service_type",
@@ -224,7 +243,8 @@ class NewPackage extends PureComponent {
                     <AlagehAutoComplete
                       div={{ className: "col-lg-3" }}
                       label={{
-                        fieldName: "select_service"
+                        fieldName: "select_service",
+                        isImp: true
                       }}
                       selector={{
                         name: "s_service",
@@ -309,10 +329,10 @@ class NewPackage extends PureComponent {
                             }
                           },
                           {
-                            fieldName: "services_id",
+                            fieldName: "service_id",
                             label: (
                               <AlgaehLabel
-                                label={{ fieldName: "services_id" }}
+                                label={{ fieldName: "service_id" }}
                               />
                             ),
                             displayTemplate: row => {
@@ -321,7 +341,7 @@ class NewPackage extends PureComponent {
                                   ? []
                                   : this.props.displayservices.filter(
                                       f =>
-                                        f.hims_d_services_id === row.services_id
+                                        f.hims_d_services_id === row.service_id
                                     );
 
                               return (
@@ -362,7 +382,7 @@ class NewPackage extends PureComponent {
 
                     <div className="col-lg-8">
                       <button
-                        // onClick={InsertLabTest.bind(this, this)}
+                        onClick={this.InsertPackages.bind(this)}
                         type="button"
                         className="btn btn-primary"
                       >

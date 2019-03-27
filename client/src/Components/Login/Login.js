@@ -1,7 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
 
 import "./Login.css";
 import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
@@ -9,15 +6,14 @@ import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import {
   algaehApiCall,
   setCookie,
-  swalMessage,
-  getCookie
+  swalMessage
 } from "../../utils/algaehApiCall.js";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
 
-class Login extends Component {
+export default class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,43 +34,6 @@ class Login extends Component {
     getTokenDetals(this);
   }
 
-  getHospitalDetails() {
-    if (
-      this.props.hospitaldetails === undefined ||
-      this.props.hospitaldetails.length === 0
-    ) {
-      let HospitalId =
-        getCookie("HospitalId") !== undefined ? getCookie("HospitalId") : "";
-      this.props.getHospitalDetails({
-        uri: "/organization/getOrganization",
-        method: "GET",
-        data: {
-          hims_d_hospital_id: HospitalId
-        },
-        redux: {
-          type: "HOSPITAL_DETAILS_GET_DATA",
-          mappingName: "hospitaldetails"
-        },
-        afterSuccess: data => {
-          if (data.length > 0) {
-            sessionStorage.removeItem("CurrencyDetail");
-            sessionStorage.setItem(
-              "CurrencyDetail",
-              AlgaehCloseContainer(JSON.stringify(data[0]))
-            );
-            window.location.hash = "/Home";
-          }
-        }
-      });
-    } else {
-      sessionStorage.removeItem("CurrencyDetail");
-      sessionStorage.setItem(
-        "CurrencyDetail",
-        AlgaehCloseContainer(JSON.stringify(this.props.hospitaldetails[0]))
-      );
-      window.location.hash = "/Home";
-    }
-  }
   componentWillMount() {
     this.deleteAllPreviousCookies();
     this.deleteAllPreviousLocalStorage();
@@ -109,20 +68,31 @@ class Login extends Component {
       data: this.state,
       timeout: 10000,
       onSuccess: response => {
+        debugger;
         if (response.data.success === true) {
           setCookie("userName", response.data.records.username);
           setCookie("keyResources", response.data.records.keyResources, 30);
-          // setSecure(response.data.records.secureModels);
+
+          sessionStorage.setItem(
+            "CurrencyDetail",
+            AlgaehCloseContainer(
+              JSON.stringify(response.data.records.hospitalDetails)
+            )
+          );
 
           window.history.pushState(null, null, window.location.href);
           window.onpopstate = function(event) {
             window.history.go(1);
           };
-          this.getHospitalDetails();
+          window.location.hash = "/Home";
+          // setSecure(response.data.records.secureModels);
+
+          // this.getHospitalDetails();
         }
       },
       onFailure: error => {
         if (error) {
+          debugger;
           if (error.response) {
             if (
               error.response.status !== null &&
@@ -319,25 +289,3 @@ class Login extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    hospitaldetails: state.hospitaldetails
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getHospitalDetails: AlgaehActions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Login)
-);

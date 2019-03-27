@@ -1,5 +1,8 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { SetBulkState } from "../../../utils/GlobalFunctions";
+import {
+  SetBulkState,
+  AlgaehOpenContainer
+} from "../../../utils/GlobalFunctions";
 
 const Validations = $this => {
   let isError = false;
@@ -77,21 +80,25 @@ const InsertUpdateItems = $this => {
           $this.state.service_code = $this.state.item_code;
           $this.state.service_type_id = "12";
           $this.state.service_name = $this.state.item_description;
-
-          algaehApiCall({
-            uri: "/pharmacy/addItemMaster",
-            module: "pharmacy",
-            data: $this.state,
-            onSuccess: response => {
-              if (response.data.success === true) {
-                $this.props.onClose && $this.props.onClose(true);
-                swalMessage({
-                  type: "success",
-                  title: "Saved successfully . ."
-                });
+          $this.state.service_status = "A";
+          $this.state.standard_fee = $this.state.package_amount;
+          ($this.state.hospital_id = JSON.parse(
+            AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+          ).hims_d_hospital_id),
+            algaehApiCall({
+              uri: "/pharmacy/addItemMaster",
+              module: "pharmacy",
+              data: $this.state,
+              onSuccess: response => {
+                if (response.data.success === true) {
+                  $this.props.onClose && $this.props.onClose(true);
+                  swalMessage({
+                    type: "success",
+                    title: "Saved successfully . ."
+                  });
+                }
               }
-            }
-          });
+            });
         } else {
           $this.state.record_status = "A";
           algaehApiCall({

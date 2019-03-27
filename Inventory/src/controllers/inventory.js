@@ -1,5 +1,7 @@
 import { Router } from "express";
 import utlities from "algaeh-utilities";
+import algaehPath from "algaeh-module-bridge";
+
 import {
   addItemMaster,
   addItemCategory,
@@ -21,6 +23,10 @@ import {
   updateItemMasterAndUom,
   updateLocationPermission
 } from "../models/inventory";
+
+const { addServices } = algaehPath(
+  "algaeh-master-settings/src/models/serviceTypes"
+);
 
 export default () => {
   let api = Router();
@@ -78,7 +84,7 @@ export default () => {
     });
   });
 
-  api.post("/addItemMaster", addItemMaster, (req, res, next) => {
+  api.post("/addItemMaster", addServices, addItemMaster, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
       records: req.records
