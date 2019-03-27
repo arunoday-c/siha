@@ -11,7 +11,7 @@ import {
 export default class Eye extends Component {
   render() {
     return (
-      <div classNam="EyeScreen">
+      <div className="EyeScreen">
         <div className="row margin-top-15">
           <div className="col-12 margin-top-15">
             <div className="portlet portlet-bordered margin-bottom-15">
@@ -19,11 +19,11 @@ export default class Eye extends Component {
                 <div className="row">
                   <div className="col-6">
                     {" "}
-                    <table class="table table-bordered  table-striped table-light">
+                    <table class="table table-sm table-bordered customTable">
                       <thead>
                         <tr>
                           {" "}
-                          <th scope="col" />
+                          <th scope="col" width="60" />
                           <th scope="col" colSpan="4" className="text-center">
                             Right Eye
                           </th>
@@ -63,11 +63,11 @@ export default class Eye extends Component {
                     </table>
                   </div>
                   <div className="col-6">
-                    <table class="table table-bordered  table-striped table-light">
+                    <table class="table table-sm table-bordered customTable">
                       <thead>
                         <tr>
                           {" "}
-                          <th scope="col" />
+                          <th scope="col" width="60" />
                           <th scope="col" colSpan="4" className="text-center">
                             Left Eye
                           </th>
