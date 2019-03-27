@@ -1017,6 +1017,112 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     });
+  },
+  //created by irfan
+  getEmployeesForMisED: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.query;
+
+    if (input.sub_department_id > 0) {
+      sub_department = ` and AM.sub_department_id=${input.sub_department_id}`;
+    }
+
+    if (input.year > 0 && input.month > 0) {
+      _mysql
+        .executeQuery({
+          query:
+            "  select hims_f_attendance_monthly_id,AM.employee_id,E.employee_code,E.full_name as employee_name,\
+        AM.`year`,AM.`month`,AM.hospital_id,H.hospital_name,AM.sub_department_id,\
+        SD.sub_department_name,S.salary_processed,\
+        MED.amount,earning_deductions_id,hims_f_miscellaneous_earning_deduction_id\
+        from hims_f_attendance_monthly AM inner join  hims_d_employee E on AM.employee_id=E.hims_d_employee_id and E.record_status='A'\
+        inner join hims_d_hospital H on AM.hospital_id=H.hims_d_hospital_id  and H.record_status='A'\
+        left join hims_d_sub_department SD on AM.sub_department_id=SD.hims_d_sub_department_id  and SD.record_status='A' \
+        left join hims_f_salary S on AM.employee_id=S.employee_id and S.`year`=? and S.`month`=? \
+        left join hims_f_miscellaneous_earning_deduction MED on AM.employee_id=MED.employee_id and\
+        MED.`year`=? and MED.`month`=?  and earning_deductions_id=?  \
+       where AM.record_status='A' and AM.`year`=? \
+        and AM.`hospital_id`=? and AM.`month`=?  " +
+            sub_department,
+          values: [
+            input.year,
+            input.month,
+            input.year,
+            input.month,
+            input.earning_deductions_id,
+            input.year,
+            input.hospital_id,
+            input.month
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+
+          if (result.length > 0) {
+            req.records = result;
+            next();
+          } else {
+            req.records = {
+              invalid_input: true,
+              message: "please process Attendance first"
+            };
+            next();
+            return;
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = { invalid_input: true, message: "invalid input" };
+      next();
+      return;
+    }
+  },
+  //created by irfan
+  addMisEarnDedcToEmployees: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    if (input.employees != undefined && input.employees.length > 0) {
+      const insurtColumns = ["employee_id", "amount"];
+
+      _mysql
+        .executeQuery({
+          query:
+            "IINSERT INTO hims_f_miscellaneous_earning_deduction(??) VALUES ?  ON DUPLICATE KEY UPDATE\
+          employee_id=values(employee_id),amount=values(amount),earning_deductions_id=values(earning_deductions_id), \
+                    year=values(year),month=values(month),category=values(category),updated_date=values(updated_date),\
+          updated_by=values(updated_by)",
+          values: input.employees,
+          includeValues: insurtColumns,
+          extraValues: {
+            earning_deductions_id: input.earning_deduction_id,
+            year: input.year,
+            month: input.month,
+            category: input.category,
+            created_date: new Date(),
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = { invalid_input: true, message: "invalid input" };
+      next();
+      return;
+    }
   }
 };
 

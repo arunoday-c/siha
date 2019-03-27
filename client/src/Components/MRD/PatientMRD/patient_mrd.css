@@ -51,12 +51,17 @@
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
     padding-left: 10px;
-    padding-right: 10px;
-    min-height: 57px; }
+    padding-right: 10px; }
     .patient-mrd .patientProfile .patientInfo-Top .patientDemographic span {
-      display: block; }
+      display: block;
+      line-height: 1.7rem;
+      font-size: 0.9em;
+      font-weight: 700; }
+      .patient-mrd .patientProfile .patientInfo-Top .patientDemographic span i {
+        text-align: center;
+        width: 20px; }
       .patient-mrd .patientProfile .patientInfo-Top .patientDemographic span b {
-        color: #34b8bc; }
+        color: #12a28d; }
   .patient-mrd .patientProfile .patientInfo-Top .patientHospitalDetail {
     line-height: 1.3rem;
     border-right: 1px solid #e1e1e1;
