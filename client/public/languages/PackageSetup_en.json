@@ -11,7 +11,7 @@
   "service_amount": "Service Amount",
 
   "service_type_id": "Service Type",
-  "services_id": "Service",
+  "service_id": "Service",
 
   "btnSave": "Save",
   "btnUpdate": "Update"

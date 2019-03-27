@@ -19,5 +19,5 @@
 #invest_grid_cntr .ReactTable {
   height: 43vh !important; }
 
-#packageGridCntr .ReactTable {
-  max-height: 80vh !important; }
+#packagesGridCntr .ReactTable {
+  max-height: 75vh !important; }

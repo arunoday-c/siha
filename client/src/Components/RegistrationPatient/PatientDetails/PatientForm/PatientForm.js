@@ -37,7 +37,8 @@ class AddPatientForm extends PureComponent {
       DOBErrorMsg: "",
       DOBError: false,
       DOB: 0,
-      CurrentDate: new Date()
+      CurrentDate: new Date(),
+      patientImage: undefined
     };
     this.widthImg = "";
     this.widthDate = "";
@@ -203,7 +204,11 @@ class AddPatientForm extends PureComponent {
       }
     }
   }
-
+  imageDetails(context, type) {
+    if (context !== undefined) {
+      context.updateState({ ...this.state, [type]: this[type] });
+    }
+  }
   render() {
     return (
       <React.Fragment>
@@ -320,7 +325,10 @@ class AddPatientForm extends PureComponent {
                     </div>
                     <div className="row paddin-bottom-5">
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-3 mandatory", tabIndex: "5" }}
+                        div={{
+                          className: "col-lg-3 mandatory",
+                          tabIndex: "5"
+                        }}
                         label={{ fieldName: "date_of_birth", isImp: true }}
                         textBox={{
                           className: "txt-fld",
@@ -339,7 +347,10 @@ class AddPatientForm extends PureComponent {
                       />
 
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-3 mandatory", tabIndex: "6" }}
+                        div={{
+                          className: "col-lg-3 mandatory",
+                          tabIndex: "6"
+                        }}
                         label={{ fieldName: "hijiri_date", isImp: true }}
                         textBox={{ className: "txt-fld" }}
                         maxDate={new Date()}
@@ -687,46 +698,48 @@ class AddPatientForm extends PureComponent {
                       className="row secondary-box-container"
                       style={{ paddingTop: "5px" }}
                     >
-                      <div className="col-lg-5">
-                        <div className="image-drop-area">
-                          <AlgaehFileUploader
-                            name="attach_photo"
-                            accept="image/*"
-                            textAltMessage="Patient Image"
-                            serviceParameters={{
-                              uniqueID: this.state.patient_code,
-                              //   destinationName: this.state.patient_code,
-                              fileType: "Patients"
-                            }}
-                          />
-                          {/* <Dropzone
-                            onDrop={onDrop.bind(this, this, "filePreview")}
-                            id="attach-width"
-                            className="dropzone"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              alt="Algaeh"
-                              // className="preview-image"
-                              src={this.state.filePreview}
-                            />
-
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_photo",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                          </Dropzone> */}
-                        </div>
+                      <div className="col-lg-5 patientRegImg">
+                        <AlgaehFileUploader
+                          ref={patientImage => {
+                            this.patientImage = patientImage;
+                          }}
+                          name="patientImage"
+                          accept="image/*"
+                          textAltMessage="Patient Image"
+                          serviceParameters={{
+                            uniqueID: this.state.patient_code,
+                            //   destinationName: this.state.patient_code,
+                            fileType: "Patients",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              context,
+                              "patientImage"
+                            )
+                          }}
+                        />
                       </div>
-                      <div className="col-lg-7">
-                        <div className="image-drop-area">
-                          <Dropzone
+                      <div className="col-lg-7 patientRegId">
+                        <AlgaehFileUploader
+                          ref={patientIdCard => {
+                            this.patientIdCard = patientIdCard;
+                          }}
+                          noImage="ID-card"
+                          name="patientIdCard"
+                          accept="image/*"
+                          textAltMessage="ID Card"
+                          serviceParameters={{
+                            uniqueID: this.state.primary_id_no,
+                            //   destinationName: this.state.patient_code,
+                            fileType: "Patients",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              context,
+                              "patientIdCard"
+                            )
+                          }}
+                        />
+
+                        {/* <Dropzone
                             className="dropzone"
                             onDrop={onDrop.bind(
                               this,
@@ -751,8 +764,8 @@ class AddPatientForm extends PureComponent {
                                 }}
                               />
                             </div>
-                          </Dropzone>
-                        </div>
+                          </Dropzone> */}
+
                         <div />
                       </div>
                     </div>

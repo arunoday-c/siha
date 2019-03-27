@@ -9,7 +9,7 @@ import "../../styles/site.css";
 import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
-// import { getPackages, EditPackages } from "./PackageSetupEvent";
+import PackageSetupEvent from "./PackageSetupEvent";
 
 // import moment from "moment";
 // import Options from "../../Options.json";
@@ -21,15 +21,10 @@ class PackageSetup extends Component {
     this.state = {
       isOpen: false,
 
-      PackagesName: [],
-      test_id: null,
-      Packages_type: null,
-      category_id: null,
-      lab_section_id: null,
-      specimen_id: null,
-      hims_d_Packages_test_id: null,
-      PackagesPop: {}
+      PackagesPop: {},
+      all_packages: []
     };
+    PackageSetupEvent().getPackage(this);
   }
 
   ShowModel(e) {
@@ -47,11 +42,15 @@ class PackageSetup extends Component {
         isOpen: !this.state.isOpen
       },
       () => {
-        // if (e === true) {
-        //   getInvestigations(this, this);
-        // }
+        if (e === true) {
+          PackageSetupEvent().getPackage(this);
+        }
       }
     );
+  }
+
+  EditPackageMaster(row) {
+    PackageSetupEvent().OpenPackageMaster(this, row);
   }
 
   render() {
@@ -81,7 +80,7 @@ class PackageSetup extends Component {
                 }
                 open={this.state.isOpen}
                 onClose={this.CloseModel.bind(this)}
-                InvestigationPop={this.state.InvestigationPop}
+                PackagesPop={this.state.PackagesPop}
               />
             </div>
           </div>
@@ -89,7 +88,7 @@ class PackageSetup extends Component {
             <div className="row">
               <div className="col-lg-12" id="packagesGridCntr">
                 <AlgaehDataGrid
-                  id="packages_grid"
+                  id="packagesGrid"
                   columns={[
                     {
                       fieldName: "action",
@@ -99,11 +98,7 @@ class PackageSetup extends Component {
                           <span>
                             <i
                               className="fas fa-pen"
-                              // onClick={EditInvestigationTest.bind(
-                              //   this,
-                              //   this,
-                              //   row
-                              // )}
+                              onClick={this.EditPackageMaster.bind(this, row)}
                             />
                           </span>
                         );
@@ -157,11 +152,11 @@ class PackageSetup extends Component {
                   ]}
                   keyId="packages_code"
                   dataSource={{
-                    data: []
+                    data: this.state.all_packages
                   }}
                   // isEditable={true}
                   filter={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>
             </div>

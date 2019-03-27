@@ -9,6 +9,7 @@ import serviceType from "../controllers/serviceTypes";
 import specialityAndCategory from "../controllers/specialityAndCategory";
 import shiftAndCounter from "../controllers/shiftAndCounter";
 import currency from "../controllers/currency";
+import packagesetup from "../controllers/packagesetup";
 
 const router = express();
 router.use("/department", department());
@@ -21,5 +22,6 @@ router.use("/serviceType", serviceType());
 router.use("/specialityAndCategory", specialityAndCategory());
 router.use("/shiftAndCounter", shiftAndCounter());
 router.use("/currency", currency());
+router.use("/packagesetup", packagesetup());
 
 export default router;

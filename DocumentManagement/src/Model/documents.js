@@ -40,6 +40,7 @@ module.exports = db => {
                   success: false,
                   records: error
                 });
+                return;
               } else {
                 if (result == null) {
                   let _EmployeeDocModel = new EmployeeDocModel();
@@ -79,6 +80,7 @@ module.exports = db => {
                   success: false,
                   records: error
                 });
+                return;
               } else {
                 if (result == null) {
                   let _PatientDocModel = new PatientDocModel();
@@ -159,6 +161,7 @@ module.exports = db => {
                 success: false,
                 records: error
               });
+              return;
             } else {
               if (result != null) {
                 res.setHeader("content-type", result.fileExtention);
@@ -185,6 +188,7 @@ module.exports = db => {
                 success: false,
                 records: error
               });
+              return;
             } else {
               if (result != null) {
                 res.setHeader("content-type", result.fileExtention);

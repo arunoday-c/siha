@@ -22,6 +22,7 @@ class NewPackage extends PureComponent {
     super(props);
     this.state = {
       hims_d_package_header_id: null,
+      package_code: null,
       package_name: null,
       package_amount: 0,
       total_service_amount: 0,
@@ -30,6 +31,8 @@ class NewPackage extends PureComponent {
 
       open: false,
       PakageDetail: [],
+      deletePackage: [],
+      insertPackage: [],
       s_service_amount: null,
       s_service_type: null,
       s_service: null
@@ -67,6 +70,14 @@ class NewPackage extends PureComponent {
     }
   }
 
+  componentWillReceiveProps(newProps) {
+    debugger;
+    if (newProps.PackagesPop.hims_d_package_header_id !== undefined) {
+      let IOputs = newProps.PackagesPop;
+      this.setState({ ...this.state, ...IOputs });
+    }
+  }
+
   onClose = e => {
     this.props.onClose && this.props.onClose(false);
   };
@@ -78,12 +89,19 @@ class NewPackage extends PureComponent {
     NewPackageEvent().serviceHandeler(this, e);
   }
 
+  pakageamtHandaler(e) {
+    NewPackageEvent().pakageamtHandaler(this, e);
+  }
   AddToList() {
     NewPackageEvent().AddToList(this);
   }
 
   DeleteService(row) {
     NewPackageEvent().DeleteService(this, row);
+  }
+
+  InsertPackages(e) {
+    NewPackageEvent().AddPackages(this, e);
   }
 
   render() {
@@ -115,7 +133,7 @@ class NewPackage extends PureComponent {
                 <div className="col-12 popRightDiv">
                   <div className="row">
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col form-group" }}
                       label={{
                         fieldName: "package_code",
                         isImp: true
@@ -131,7 +149,7 @@ class NewPackage extends PureComponent {
                     />
 
                     <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col form-group" }}
                       label={{
                         fieldName: "package_name",
                         isImp: true
@@ -146,7 +164,7 @@ class NewPackage extends PureComponent {
                       }}
                     />
                     <AlagehFormGroup
-                      div={{ className: "col-3" }}
+                      div={{ className: "col form-group" }}
                       label={{
                         fieldName: "package_amount"
                       }}
@@ -156,49 +174,18 @@ class NewPackage extends PureComponent {
                         className: "txt-fld",
                         name: "package_amount",
                         events: {
-                          onChange: this.eventHandaler.bind(this)
+                          onChange: this.pakageamtHandaler.bind(this)
                         },
                         others: {
                           placeholder: "0.00"
                         }
                       }}
                     />
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "total_service_amount"
-                      }}
-                    />
-                    <h6>{getAmountFormart(this.state.total_service_amount)}</h6>
-
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "profit_loss"
-                        }}
-                      />
-                      <h6>
-                        {this.state.profit_loss === null
-                          ? "------"
-                          : this.state.profit_loss === "P"
-                          ? "Profit"
-                          : "Loss"}
-                      </h6>
-                    </div>
-
-                    <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "pl_amount"
-                        }}
-                      />
-                      <h6>{getAmountFormart(this.state.pl_amount)}</h6>
-                    </div>
-                  </div>
-                  <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col form-group" }}
                       label={{
-                        fieldName: "select_service_type"
+                        fieldName: "select_service_type",
+                        isImp: true
                       }}
                       selector={{
                         name: "s_service_type",
@@ -222,9 +209,10 @@ class NewPackage extends PureComponent {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-lg-3" }}
+                      div={{ className: "col form-group" }}
                       label={{
-                        fieldName: "select_service"
+                        fieldName: "select_service",
+                        isImp: true
                       }}
                       selector={{
                         name: "s_service",
@@ -243,113 +231,154 @@ class NewPackage extends PureComponent {
                         }
                       }}
                     />
-                    <div className="col-lg-4">
+                    <div className="col form-group">
                       <button
                         className="btn btn-primary"
-                        style={{ marginTop: "24px" }}
+                        style={{ marginTop: 19 }}
                         onClick={this.AddToList.bind(this)}
                       >
-                        Add To List
+                        Add
                       </button>
                     </div>
                   </div>
-                </div>
-                <div className="portlet-body">
                   <div className="row">
-                    <div className="col-lg-12" id="packagesGridCntr">
-                      <AlgaehDataGrid
-                        id="packages_detail_grid"
-                        columns={[
-                          {
-                            fieldName: "action",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "action" }} />
-                            ),
-                            displayTemplate: row => {
-                              return (
-                                <span>
-                                  <i
-                                    className="fas fa-trash-alt"
-                                    onClick={this.DeleteService.bind(this, row)}
-                                  />
-                                </span>
-                              );
-                            },
-                            others: {
-                              maxWidth: 65,
-                              resizable: false,
-                              filterable: false,
-                              style: { textAlign: "center" }
-                            }
-                          },
-                          {
-                            fieldName: "service_type_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "service_type_id" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.servicetype === undefined
-                                  ? []
-                                  : this.props.servicetype.filter(
-                                      f =>
-                                        f.hims_d_service_type_id ===
-                                        row.service_type_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== undefined && display.length !== 0
-                                    ? display[0].service_type
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "services_id",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "services_id" }}
-                              />
-                            ),
-                            displayTemplate: row => {
-                              let display =
-                                this.props.displayservices === undefined
-                                  ? []
-                                  : this.props.displayservices.filter(
-                                      f =>
-                                        f.hims_d_services_id === row.services_id
-                                    );
-
-                              return (
-                                <span>
-                                  {display !== null && display.length !== 0
-                                    ? display[0].service_name
-                                    : ""}
-                                </span>
-                              );
-                            }
-                          },
-                          {
-                            fieldName: "service_amount",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "service_amount" }}
-                              />
-                            )
-                          }
-                        ]}
-                        keyId="packages_detail_grid"
-                        dataSource={{
-                          data: this.state.PakageDetail
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "total_service_amount"
                         }}
-                        // isEditable={true}
-                        filter={true}
-                        paging={{ page: 0, rowsPerPage: 10 }}
                       />
+                      <h6>
+                        {getAmountFormart(this.state.total_service_amount)}
+                      </h6>
+                    </div>
+
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "profit_loss"
+                        }}
+                      />
+                      <h6>
+                        {this.state.profit_loss === null
+                          ? "------"
+                          : this.state.profit_loss === "P"
+                          ? "Profit"
+                          : "Loss"}
+                      </h6>
+                    </div>
+
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "pl_amount"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.pl_amount)}</h6>
+                    </div>
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-lg-12" id="packagesGridCntr">
+                        <AlgaehDataGrid
+                          id="packages_detail_grid"
+                          columns={[
+                            {
+                              fieldName: "action",
+                              label: (
+                                <AlgaehLabel label={{ fieldName: "action" }} />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      onClick={this.DeleteService.bind(
+                                        this,
+                                        row
+                                      )}
+                                    />
+                                  </span>
+                                );
+                              },
+                              others: {
+                                maxWidth: 65,
+                                resizable: false,
+                                filterable: false,
+                                style: { textAlign: "center" }
+                              }
+                            },
+                            {
+                              fieldName: "service_type_id",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "service_type_id" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                let display =
+                                  this.props.servicetype === undefined
+                                    ? []
+                                    : this.props.servicetype.filter(
+                                        f =>
+                                          f.hims_d_service_type_id ===
+                                          row.service_type_id
+                                      );
+
+                                return (
+                                  <span>
+                                    {display !== undefined &&
+                                    display.length !== 0
+                                      ? display[0].service_type
+                                      : ""}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "service_id",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "service_id" }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                let display =
+                                  this.props.displayservices === undefined
+                                    ? []
+                                    : this.props.displayservices.filter(
+                                        f =>
+                                          f.hims_d_services_id ===
+                                          row.service_id
+                                      );
+
+                                return (
+                                  <span>
+                                    {display !== null && display.length !== 0
+                                      ? display[0].service_name
+                                      : ""}
+                                  </span>
+                                );
+                              }
+                            },
+                            {
+                              fieldName: "service_amount",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ fieldName: "service_amount" }}
+                                />
+                              )
+                            }
+                          ]}
+                          keyId="packages_detail_grid"
+                          dataSource={{
+                            data: this.state.PakageDetail
+                          }}
+                          // isEditable={true}
+                          filter={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -362,7 +391,7 @@ class NewPackage extends PureComponent {
 
                     <div className="col-lg-8">
                       <button
-                        // onClick={InsertLabTest.bind(this, this)}
+                        onClick={this.InsertPackages.bind(this)}
                         type="button"
                         className="btn btn-primary"
                       >

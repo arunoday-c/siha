@@ -1,0 +1,18 @@
+.EyeScreen {
+  .customTable {
+    thead {
+      th {
+        background: #8c8c8c;
+        text-transform: uppercase;
+        min-width: auto !important;
+        color: #fff;
+        font-weight: normal;
+      }
+    }
+    tbody {
+      td {
+        min-width: auto !important;
+      }
+    }
+  }
+}

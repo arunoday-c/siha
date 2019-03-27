@@ -32,23 +32,28 @@ export default ({ config, db }) => {
     authUser,
     (req, res, next) => {
       let result = req.records;
-      if (result.length == 0) {
+      if (result[0].length == 0) {
         next(httpStatus.generateError(httpStatus.notFound, "No record found"));
       } else {
+        // console.log("result: ", result);
         if (result[0][0]["locked"] == "N") {
           let rowDetails = result[0][0];
           debugLog("rowDetails: ", rowDetails);
-          let encrypDetsil = { ...result[0][0], ...result[1][0] };
+          let encrypDetsil = { ...result[0][0] };
+          let hospitalDetails = { ...result[1][0] };
 
           debugLog("encrypDetsil: ", encrypDetsil);
           let keyData = encryption(encrypDetsil);
+          // let keyhospitalDetails = encryption(hospitalDetails);
+
           res.status(httpStatus.ok).json({
             success: true,
             records: {
               username: rowDetails["username"],
               user_displayname: rowDetails["user_displayname"],
               keyResources: keyData,
-              secureModels: req.secureModels
+              secureModels: req.secureModels,
+              hospitalDetails: hospitalDetails
             }
           });
           next();

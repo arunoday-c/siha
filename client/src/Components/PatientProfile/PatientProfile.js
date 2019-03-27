@@ -26,6 +26,7 @@ import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
+import Eye from "./Eye/Eye";
 let allergyPopUp;
 class PatientProfile extends Component {
   constructor(props) {
@@ -291,28 +292,16 @@ class PatientProfile extends Component {
             </p>
           </div>
           <div className="patientDemographic">
+            {" "}
             <span>
-              DOB:
+              DOB:{" "}
               <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
-            <span>
+            {/* <span>
               Mobile: <b>{_pat_profile.contact_number}</b>
-            </span>
+            </span> */}
             <span>
               Nationality: <b>{_pat_profile.nationality}</b>
-            </span>
-          </div>
-          <div className="patientHospitalDetail">
-            <span>
-              MRN: <b>{_pat_profile.patient_code}</b>
-            </span>
-            <span>
-              Encounter:{" "}
-              <b>
-                {moment(_pat_profile.Encounter_Date).format(
-                  "DD-MM-YYYY hh:mm a"
-                )}
-              </b>
             </span>
             <span>
               Payment:{" "}
@@ -325,19 +314,31 @@ class PatientProfile extends Component {
               </b>
             </span>
           </div>
+          <div className="patientHospitalDetail">
+            <span>
+              MRN: <b>{_pat_profile.patient_code}</b>
+            </span>
+            <span>
+              Encounter:{" "}
+              <b>
+                {moment(_pat_profile.Encounter_Date).format(
+                  "DD-MM-YYYY | hh:mm a"
+                )}
+              </b>
+            </span>
+          </div>
           {_Vitals.length > 0 ? (
             <div className="patientVital">
+              <span>
+                Vitals updated on:{" "}
+                <b>{_Vitals[_Vitals.length - 1]["updated_Date"]}</b>
+              </span>
+              <br />
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
-                  {row.vitals_name}
-                  <b>{" : " + row.vital_value}</b>
+                  {row.vitals_name}:<b> {row.vital_value}</b>
                 </span>
               ))}
-              <span>
-                {" "}
-                Vital Entered Date :{" "}
-                {_Vitals[_Vitals.length - 1]["updated_Date"]}{" "}
-              </span>
             </div>
           ) : null}
           <div className="moreAction">
@@ -396,19 +397,28 @@ class PatientProfile extends Component {
             <li className="nav-item">
               <span
                 onClick={this.changeTabs}
-                algaehsoap="summary"
+                algaehsoap="dental"
                 className="nav-link"
               >
-                Summary
+                Dental
               </span>
             </li>
             <li className="nav-item">
               <span
                 onClick={this.changeTabs}
-                algaehsoap="dental"
+                algaehsoap="eye"
                 className="nav-link"
               >
-                Dental
+                Eye
+              </span>
+            </li>
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="summary"
+                className="nav-link"
+              >
+                Summary
               </span>
             </li>
             <ul className="float-right patient-quick-info">
@@ -494,6 +504,8 @@ class PatientProfile extends Component {
             <Summary />
           ) : this.state.pageDisplay === "dental" ? (
             <Dental />
+          ) : this.state.pageDisplay === "eye" ? (
+            <Eye />
           ) : null}
         </div>
       </div>
