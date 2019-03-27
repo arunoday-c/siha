@@ -42,6 +42,7 @@ class LoanAdjustment extends Component {
   adjustLoan(data) {
     algaehApiCall({
       uri: "/loan/adjustLoanApplication",
+      module: "hrManagement",
       method: "PUT",
       data: {
         hims_f_loan_application_id: data.hims_f_loan_application_id,

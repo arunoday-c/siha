@@ -176,6 +176,7 @@ class LoanRequest extends Component {
         } else {
           algaehApiCall({
             uri: "/loan/addLoanApplication",
+            module: "hrManagement",
             method: "POST",
             data: {
               employee_id: this.state.hims_d_employee_id,
