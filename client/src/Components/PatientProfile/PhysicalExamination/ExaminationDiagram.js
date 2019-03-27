@@ -23,7 +23,7 @@ export default class ExaminationDiagram extends Component {
     return (
       <div className="">
         <Modal open={this.props.open}>
-          <div className="algaeh-modal">
+          <div className="algaeh-modal examDiagramPopup">
             <div className="popupHeader">
               <div className="row">
                 <div className="col-lg-8">
