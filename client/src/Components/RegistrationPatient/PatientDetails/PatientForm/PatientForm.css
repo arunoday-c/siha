@@ -29,3 +29,15 @@
       top: -1px;
       left: 15px;
       height: 101px; }
+
+.patientRegImg .image-drop-area img {
+  height: 169px; }
+
+.patientRegImg .Image-cropper {
+  top: 20vh; }
+
+.patientRegId .image-drop-area img {
+  height: 169px; }
+
+.patientRegId .Image-cropper {
+  top: 20vh; }
