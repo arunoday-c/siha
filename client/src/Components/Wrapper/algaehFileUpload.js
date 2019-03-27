@@ -36,6 +36,11 @@ export default class AlgaehFileUploader extends Component {
     };
   }
   componentWillReceiveProps(nextProps) {
+    if (this.props.renderPrevState !== undefined) {
+      this.setState({ ...this.props.renderPrevState.state });
+      return;
+    }
+
     if (nextProps.onlyDragDrop === undefined) {
       if (
         this.state.croppingDone === true &&

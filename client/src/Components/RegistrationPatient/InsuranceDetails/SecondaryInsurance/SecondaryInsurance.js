@@ -335,6 +335,7 @@ class AddSecInsuranceForm extends Component {
                                 "patSecInsuranceFrontImg"
                               )
                             }}
+                            renderPrevState={this.state.patSecInsuranceFrontImg}
                           />
 
                           {/* <Dropzone
@@ -384,6 +385,7 @@ class AddSecInsuranceForm extends Component {
                                 "patSecInsuranceBackImg"
                               )
                             }}
+                            renderPrevState={this.state.patSecInsuranceBackImg}
                           />
                           {/* <Dropzone
                             onDrop={this.onDrop.bind(this, "backSide")}
