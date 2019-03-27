@@ -12,8 +12,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
-  Tooltip
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
@@ -24,7 +23,7 @@ import {
   radioChange,
   enddatehandle
 } from "./InsuranceHandler";
-
+import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 class AddInsuranceForm extends Component {
   constructor(props) {
     super(props);
@@ -48,7 +47,14 @@ class AddInsuranceForm extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.PatRegIOputs);
   }
-
+  imageDetails(context, type) {
+    if (context !== undefined) {
+      context.updateState({
+        ...this.state,
+        [type]: this[type]
+      });
+    }
+  }
   render() {
     return (
       <React.Fragment>
@@ -269,7 +275,26 @@ class AddInsuranceForm extends Component {
                     <div className="row secondary-box-container">
                       <div className="col-lg-6">
                         <div className="image-drop-area">
-                          <Dropzone
+                          <AlgaehFileUploader
+                            ref={patInsuranceFrontImg => {
+                              this.patInsuranceFrontImg = patInsuranceFrontImg;
+                            }}
+                            noImage="insurance-card-front"
+                            name="patInsuranceFrontImg"
+                            accept="image/*"
+                            textAltMessage="Insurance Card Front Side"
+                            serviceParameters={{
+                              uniqueID:
+                                this.state.primary_card_number + "_front",
+                              fileType: "Patients",
+                              processDelay: this.imageDetails.bind(
+                                this,
+                                context,
+                                "patInsuranceFrontImg"
+                              )
+                            }}
+                          />
+                          {/* <Dropzone
                             onDrop={this.onDrop.bind(this, "frontSide")}
                             id="attach-primary-id"
                             className="dropzone"
@@ -291,13 +316,33 @@ class AddInsuranceForm extends Component {
                                 }}
                               />
                             </div>
-                          </Dropzone>
+                          </Dropzone> */}
                         </div>
                       </div>
 
                       <div className="col-lg-6">
                         <div className="image-drop-area">
-                          <Dropzone
+                          <AlgaehFileUploader
+                            ref={patInsuranceBackImg => {
+                              this.patInsuranceBackImg = patInsuranceBackImg;
+                            }}
+                            noImage="insurance-card-back"
+                            name="patInsuranceBackImg"
+                            accept="image/*"
+                            textAltMessage="Insurance Card Back Side"
+                            serviceParameters={{
+                              uniqueID:
+                                this.state.primary_card_number + "_back",
+                              fileType: "Patients",
+                              processDelay: this.imageDetails.bind(
+                                this,
+                                context,
+                                "patInsuranceBackImg"
+                              )
+                            }}
+                          />
+
+                          {/* <Dropzone
                             onDrop={this.onDrop.bind(this, "backSide")}
                             id="attach-width"
                             className="dropzone"
@@ -319,7 +364,7 @@ class AddInsuranceForm extends Component {
                                 }}
                               />
                             </div>
-                          </Dropzone>
+                          </Dropzone> */}
                         </div>
 
                         <div />

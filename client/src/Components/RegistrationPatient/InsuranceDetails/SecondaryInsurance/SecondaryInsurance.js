@@ -13,8 +13,7 @@ import {
   AlgaehDateHandler,
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete,
-  Tooltip
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import {
@@ -25,7 +24,7 @@ import {
   radioChange,
   enddatehandle
 } from "./SecInsuranceHandler";
-
+import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 class AddSecInsuranceForm extends Component {
   constructor(props) {
     super(props);
@@ -71,7 +70,14 @@ class AddSecInsuranceForm extends Component {
       });
     }
   }
-
+  imageDetails(context, type) {
+    if (context !== undefined) {
+      context.updateState({
+        ...this.state,
+        [type]: this[type]
+      });
+    }
+  }
   render() {
     return (
       <React.Fragment>
@@ -311,7 +317,27 @@ class AddSecInsuranceForm extends Component {
                     <div className="row secondary-box-container">
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
-                          <Dropzone
+                          <AlgaehFileUploader
+                            ref={patSecInsuranceFrontImg => {
+                              this.patSecInsuranceFrontImg = patSecInsuranceFrontImg;
+                            }}
+                            noImage="insurance-card-front"
+                            name="patSecInsuranceFrontImg"
+                            accept="image/*"
+                            textAltMessage="Sec. Insurance Card Front Side"
+                            serviceParameters={{
+                              uniqueID:
+                                this.state.secondary_card_number + "_sec_front",
+                              fileType: "Patients",
+                              processDelay: this.imageDetails.bind(
+                                this,
+                                context,
+                                "patSecInsuranceFrontImg"
+                              )
+                            }}
+                          />
+
+                          {/* <Dropzone
                             onDrop={this.onDrop.bind(this, "frontSide")}
                             className="dropzone"
                             id="attach-primary-id"
@@ -332,7 +358,7 @@ class AddSecInsuranceForm extends Component {
                                 }}
                               />
                             </div>
-                          </Dropzone>
+                          </Dropzone> */}
                         </div>
 
                         <div />
@@ -340,7 +366,26 @@ class AddSecInsuranceForm extends Component {
 
                       <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                         <div className="image-drop-area">
-                          <Dropzone
+                          <AlgaehFileUploader
+                            ref={patSecInsuranceBackImg => {
+                              this.patSecInsuranceBackImg = patSecInsuranceBackImg;
+                            }}
+                            noImage="insurance-card-back"
+                            name="patSecInsuranceBackImg"
+                            accept="image/*"
+                            textAltMessage="Sec. Insurance Card Back Side"
+                            serviceParameters={{
+                              uniqueID:
+                                this.state.secondary_card_number + "_sec_back",
+                              fileType: "Patients",
+                              processDelay: this.imageDetails.bind(
+                                this,
+                                context,
+                                "patSecInsuranceBackImg"
+                              )
+                            }}
+                          />
+                          {/* <Dropzone
                             onDrop={this.onDrop.bind(this, "backSide")}
                             className="dropzone"
                             id="attach-primary-id"
@@ -361,7 +406,7 @@ class AddSecInsuranceForm extends Component {
                                 }}
                               />
                             </div>
-                          </Dropzone>
+                          </Dropzone> */}
                         </div>
 
                         <div />

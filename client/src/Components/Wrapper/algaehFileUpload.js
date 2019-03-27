@@ -6,15 +6,23 @@ import {
   getCookie,
   swalMessage
 } from "../../utils/algaehApiCall";
-import noImage from "../../assets/images/images.webp";
+// import noImage from "../../assets/images/no-image.jpg";
+import SelectNoImage from "./images";
 import { displayFileFromServer } from "../../utils/GlobalFunctions";
 import Webcam from "react-webcam";
 export default class AlgaehFileUploader extends Component {
   constructor(props) {
     super(props);
+
+    this.noImage = SelectNoImage("no-image");
+    if (props.noImage !== undefined) {
+      this.noImage = SelectNoImage(props.noImage);
+    }
+
     this.state = {
+      processDelay: undefined,
       fileName: undefined,
-      filePreview: noImage,
+      filePreview: this.noImage,
       oldImage: undefined,
       showCropper: false,
       showProgress: false,
@@ -23,7 +31,8 @@ export default class AlgaehFileUploader extends Component {
       fileExtention: "",
       openWebCam: false,
       showLoader: true,
-      croppingDone: false
+      croppingDone: false,
+      outSaveFunction: undefined
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -33,9 +42,11 @@ export default class AlgaehFileUploader extends Component {
         nextProps.saveFile !== undefined
       ) {
         this.setState({
-          croppingDone: false
+          croppingDone: false,
+          processDelay: nextProps.serviceParameters.processDelay
         });
-        this.SavingImageOnServer();
+        if (nextProps.serviceParameters.processDelay === undefined)
+          this.SavingImageOnServer();
       }
       if (
         nextProps.serviceParameters.uniqueID !==
@@ -44,6 +55,14 @@ export default class AlgaehFileUploader extends Component {
         this.getDisplayImage(nextProps);
       }
     }
+    // if (
+    //   this.state.processDelay !== nextProps.serviceParameters.processDelay &&
+    //   this.state.fileName !== undefined &&
+    //   nextProps.serviceParameters.uniqueID !== undefined &&
+    //   nextProps.serviceParameters.uniqueID !== ""
+    // ) {
+    //   this.SavingImageOnServer();
+    // }
   }
   componentDidMount() {
     if (this.props.onlyDragDrop === undefined) {
@@ -77,7 +96,7 @@ export default class AlgaehFileUploader extends Component {
     }
     if (!_call) {
       this.setState({
-        filePreview: noImage,
+        filePreview: this.noImage,
         showLoader: false
       });
       return;
@@ -103,7 +122,7 @@ export default class AlgaehFileUploader extends Component {
               that.setState({ filePreview: data, showLoader: false });
             } else {
               that.setState({
-                filePreview: noImage,
+                filePreview: this.noImage,
                 showLoader: false
               });
             }
@@ -116,7 +135,7 @@ export default class AlgaehFileUploader extends Component {
             }
           } else {
             that.setState({
-              filePreview: noImage,
+              filePreview: this.noImage,
               showLoader: false
             });
           }
@@ -129,7 +148,7 @@ export default class AlgaehFileUploader extends Component {
         }
       } else {
         that.setState({
-          filePreview: noImage,
+          filePreview: this.noImage,
           showLoader: false
         });
       }
@@ -162,7 +181,7 @@ export default class AlgaehFileUploader extends Component {
           elem.width = img.width;
           const ctx = elem.getContext("2d");
           ctx.drawImage(img, 0, 0, img.width, img.height);
-          const _dataURL = elem.toDataURL("image/webp", 0.7);
+          const _dataURL = elem.toDataURL("image/webp", 1);
           this.setState({
             showCropper: true,
             filePreview: _dataURL, //this.resizingAndCompressImage(_file),
@@ -177,12 +196,13 @@ export default class AlgaehFileUploader extends Component {
       reader.readAsDataURL(_file);
       reader.onloadend = () => {
         const _result = reader.result;
-
-        this.SavingImageOnServer(
-          _result,
-          _fileExtention[_fileExtention.length - 1],
-          _file.name
-        );
+        if (this.props.serviceParameters.processDelay === undefined) {
+          this.SavingImageOnServer(
+            _result,
+            _fileExtention[_fileExtention.length - 1],
+            _file.name
+          );
+        }
       };
 
       this.setState({
@@ -197,7 +217,10 @@ export default class AlgaehFileUploader extends Component {
     if (_from === "crop")
       this.setState({
         showCropper: false,
-        filePreview: this.state.oldImage,
+        filePreview:
+          this.state.oldImage !== undefined
+            ? this.state.oldImage
+            : this.noImage,
         oldImage: undefined
       });
     if (_from === "zoom") this.setState({ showZoom: false });
@@ -211,7 +234,12 @@ export default class AlgaehFileUploader extends Component {
         croppingDone: true
       },
       () => {
-        if (this.props.saveFile === undefined) this.SavingImageOnServer();
+        if (this.props.serviceParameters.processDelay === undefined)
+          this.SavingImageOnServer();
+        else {
+          if (typeof this.props.serviceParameters.processDelay === "function")
+            this.props.serviceParameters.processDelay(this);
+        }
       }
     );
   }
@@ -270,7 +298,10 @@ export default class AlgaehFileUploader extends Component {
   }
 
   showAttachmentHandler(e) {
-    if (this.props.serviceParameters.uniqueID === "") {
+    if (
+      this.props.serviceParameters.uniqueID === "" &&
+      this.props.serviceParameters.processDelay === undefined
+    ) {
       const _messageUniqueBlank =
         this.props.uniqueBlankMessage === undefined
           ? "With out unique image can not process"
@@ -284,11 +315,13 @@ export default class AlgaehFileUploader extends Component {
     this.imager.click();
   }
 
-  SavingImageOnServer(dataToSave, fileExtention, fileName) {
+  SavingImageOnServer(dataToSave, fileExtention, fileName, uniqueID, callBack) {
     const that = this;
     dataToSave = dataToSave || that.state.filePreview;
     fileExtention = fileExtention || that.state.fileExtention;
     fileName = fileName || "";
+    uniqueID = uniqueID || that.props.serviceParameters.uniqueID;
+    callBack = callBack || undefined;
     const _pageName =
       this.props.pageName !== undefined
         ? this.props.pageName
@@ -308,7 +341,7 @@ export default class AlgaehFileUploader extends Component {
         "content-type": "multipart/form-data", //"application/octet-stream",
         "x-file-details": JSON.stringify({
           pageName: _pageName,
-          destinationName: that.props.serviceParameters.uniqueID,
+          destinationName: uniqueID,
           fileType: that.props.serviceParameters.fileType,
           fileExtention: fileExtention,
           ..._needConvertion
@@ -356,18 +389,29 @@ export default class AlgaehFileUploader extends Component {
       },
       onSuccess: result => {
         if (result.data.success) {
-          swalMessage({
-            croppingDone: false,
-            title: "File Uploaded Successfully",
-            type: "success"
-          });
+          if (typeof callBack === "function") callBack("success");
+          if (this.props.serviceParameters.processDelay === undefined) {
+            swalMessage({
+              croppingDone: false,
+              title: "File Uploaded Successfully",
+              type: "success"
+            });
+          }
         } else {
+          if (typeof callBack === "function") callBack("failure");
           swalMessage({
             croppingDone: false,
             title: "File Uploding failure",
             type: "Error"
           });
         }
+      },
+      onFailure: failure => {
+        if (typeof callBack === "function") callBack("failure");
+        swalMessage({
+          title: failure.message,
+          type: "failure"
+        });
       }
     });
     //};
@@ -513,7 +557,7 @@ export default class AlgaehFileUploader extends Component {
         <React.Fragment>
           <Dropzone
             className="dropzone"
-            maxSize={15728640}
+            // maxSize={15728640}
             {..._accept}
             onDrop={this.dropZoneHandlerOnDrop.bind(this)}
           >

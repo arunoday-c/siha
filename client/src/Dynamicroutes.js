@@ -360,7 +360,9 @@ const PageToPlot = {
       import("./Components/EmployeeManagement/ProjectJobCost/ProjectJobCost")
     )
   ),
-
+  AppSetup: React.lazy(() =>
+    retry(() => import("./Components/AppSetup/AppSetup"))
+  ),
   PackageSetup: React.lazy(() =>
     retry(() => import("./Components/PackageSetup/PackageSetup"))
   )

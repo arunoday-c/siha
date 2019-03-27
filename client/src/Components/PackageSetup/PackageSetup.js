@@ -88,7 +88,7 @@ class PackageSetup extends Component {
             <div className="row">
               <div className="col-lg-12" id="packagesGridCntr">
                 <AlgaehDataGrid
-                  id="packages_grid"
+                  id="packagesGrid"
                   columns={[
                     {
                       fieldName: "action",
@@ -156,7 +156,7 @@ class PackageSetup extends Component {
                   }}
                   // isEditable={true}
                   filter={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>
             </div>
