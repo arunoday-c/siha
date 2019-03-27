@@ -212,7 +212,7 @@ class NewPackage extends PureComponent {
                   </div>
                   <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col form-group" }}
+                      div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "select_service_type",
                         isImp: true
@@ -239,7 +239,7 @@ class NewPackage extends PureComponent {
                     />
 
                     <AlagehAutoComplete
-                      div={{ className: "col-3 form-group" }}
+                      div={{ className: "col form-group" }}
                       label={{
                         fieldName: "select_service",
                         isImp: true
