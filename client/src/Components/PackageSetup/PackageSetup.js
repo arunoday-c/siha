@@ -39,7 +39,8 @@ class PackageSetup extends Component {
     this.setState(
       {
         ...this.state,
-        isOpen: !this.state.isOpen
+        isOpen: !this.state.isOpen,
+        PackagesPop: {}
       },
       () => {
         if (e === true) {

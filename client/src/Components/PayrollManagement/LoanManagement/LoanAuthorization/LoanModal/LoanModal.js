@@ -121,6 +121,7 @@ class LoanModal extends Component {
           };
           algaehApiCall({
             uri: "/loan/authorizeLoan",
+            module: "hrManagement",
             method: "PUT",
             data: data,
             onSuccess: res => {

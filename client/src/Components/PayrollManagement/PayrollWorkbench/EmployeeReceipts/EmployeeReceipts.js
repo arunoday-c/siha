@@ -62,6 +62,7 @@ class EmployeeReceipts extends Component {
 
         algaehApiCall({
           uri: "/loan/addLoanReciept",
+          module: "hrManagement",
           method: "POST",
           data: {
             employee_id: this.state.hims_d_employee_id,
@@ -125,6 +126,7 @@ class EmployeeReceipts extends Component {
   getEmployeeReceipts() {
     algaehApiCall({
       uri: "/loan/getEmployeeLoanReciept",
+      module: "hrManagement",
       method: "GET",
       data: {
         employee_id: this.state.hims_d_employee_id

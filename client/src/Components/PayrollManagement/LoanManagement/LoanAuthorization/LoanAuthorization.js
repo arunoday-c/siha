@@ -33,6 +33,7 @@ class LoanAuthorization extends Component {
   getLoanLevels() {
     algaehApiCall({
       uri: "/loan/getLoanLevels",
+      module: "hrManagement",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {

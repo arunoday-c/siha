@@ -79,7 +79,29 @@ class NewPackage extends PureComponent {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(false);
+    debugger;
+    this.setState(
+      {
+        hims_d_package_header_id: null,
+        package_code: null,
+        package_name: null,
+        package_amount: 0,
+        total_service_amount: 0,
+        profit_loss: null,
+        pl_amount: 0,
+
+        open: false,
+        PakageDetail: [],
+        deletePackage: [],
+        insertPackage: [],
+        s_service_amount: null,
+        s_service_type: null,
+        s_service: null
+      },
+      () => {
+        this.props.onClose && this.props.onClose(false);
+      }
+    );
   };
 
   eventHandaler(e) {
@@ -113,7 +135,14 @@ class NewPackage extends PureComponent {
               <div className="popupHeader">
                 <div className="row">
                   <div className="col-lg-8">
-                    <h4>{this.props.HeaderCaption}</h4>
+                    <h4>
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "screen_name",
+                          align: "ltr"
+                        }}
+                      />
+                    </h4>
                   </div>
                   <div className="col-lg-4">
                     <button
@@ -181,8 +210,38 @@ class NewPackage extends PureComponent {
                         }
                       }}
                     />
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "total_service_amount"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(this.state.total_service_amount)}
+                      </h6>
+                    </div>
+
+                    <div className="col-2 form-group">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "pl_amount"
+                        }}
+                      />
+                      <h6>
+                        {getAmountFormart(this.state.pl_amount)}{" "}
+                        {this.state.profit_loss === null ? (
+                          "------"
+                        ) : this.state.profit_loss === "P" ? (
+                          <span className="badge badge-success">Profit</span>
+                        ) : (
+                          <span className="badge badge-danger">Loss</span>
+                        )}
+                      </h6>
+                    </div>
+                  </div>
+                  <div className="row">
                     <AlagehAutoComplete
-                      div={{ className: "col form-group" }}
+                      div={{ className: "col-3 form-group" }}
                       label={{
                         fieldName: "select_service_type",
                         isImp: true
@@ -231,7 +290,7 @@ class NewPackage extends PureComponent {
                         }
                       }}
                     />
-                    <div className="col form-group">
+                    <div className="col-2 form-group">
                       <button
                         className="btn btn-primary"
                         style={{ marginTop: 19 }}
@@ -239,42 +298,6 @@ class NewPackage extends PureComponent {
                       >
                         Add
                       </button>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-2 form-group">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "total_service_amount"
-                        }}
-                      />
-                      <h6>
-                        {getAmountFormart(this.state.total_service_amount)}
-                      </h6>
-                    </div>
-
-                    <div className="col-2 form-group">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "profit_loss"
-                        }}
-                      />
-                      <h6>
-                        {this.state.profit_loss === null
-                          ? "------"
-                          : this.state.profit_loss === "P"
-                          ? "Profit"
-                          : "Loss"}
-                      </h6>
-                    </div>
-
-                    <div className="col-2 form-group">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "pl_amount"
-                        }}
-                      />
-                      <h6>{getAmountFormart(this.state.pl_amount)}</h6>
                     </div>
                   </div>
                   <div className="portlet-body">

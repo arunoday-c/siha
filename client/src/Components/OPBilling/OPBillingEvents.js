@@ -27,6 +27,8 @@ const ClearData = ($this, e) => {
       );
       IOputs.patient_payable_h = 0;
       IOputs.counter_id = counter_id;
+      IOputs.s_service_type = null;
+      IOputs.s_service = null;
       $this.setState({ ...$this.state, ...IOputs });
     }
   });
