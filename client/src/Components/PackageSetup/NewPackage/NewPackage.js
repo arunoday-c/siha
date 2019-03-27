@@ -195,27 +195,19 @@ class NewPackage extends PureComponent {
                     <div className="col-2 form-group">
                       <AlgaehLabel
                         label={{
-                          fieldName: "profit_loss"
-                        }}
-                      />
-                      <h6>
-                        {this.state.profit_loss === null ? (
-                          "------"
-                        ) : this.state.profit_loss === "P" ? (
-                          <span class="badge badge-success">Profit</span>
-                        ) : (
-                          <span class="badge badge-danger">Loss</span>
-                        )}
-                      </h6>
-                    </div>
-
-                    <div className="col-2 form-group">
-                      <AlgaehLabel
-                        label={{
                           fieldName: "pl_amount"
                         }}
                       />
-                      <h6>{getAmountFormart(this.state.pl_amount)}</h6>
+                      <h6>
+                        {getAmountFormart(this.state.pl_amount)}{" "}
+                        {this.state.profit_loss === null ? (
+                          "------"
+                        ) : this.state.profit_loss === "P" ? (
+                          <span className="badge badge-success">Profit</span>
+                        ) : (
+                          <span className="badge badge-danger">Loss</span>
+                        )}
+                      </h6>
                     </div>
                   </div>
                   <div className="row">
