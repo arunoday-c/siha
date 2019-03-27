@@ -113,7 +113,14 @@ class NewPackage extends PureComponent {
               <div className="popupHeader">
                 <div className="row">
                   <div className="col-lg-8">
-                    <h4>{this.props.HeaderCaption}</h4>
+                    <h4>
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "screen_name",
+                          align: "ltr"
+                        }}
+                      />
+                    </h4>
                   </div>
                   <div className="col-lg-4">
                     <button
