@@ -716,6 +716,7 @@ class AddPatientForm extends PureComponent {
                               "patientImage"
                             )
                           }}
+                          renderPrevState={this.state.patientImage}
                         />
                       </div>
                       <div className="col-lg-7 patientRegId">
@@ -737,6 +738,7 @@ class AddPatientForm extends PureComponent {
                               "patientIdCard"
                             )
                           }}
+                          renderPrevState={this.state.patientIdCard}
                         />
 
                         {/* <Dropzone
