@@ -79,25 +79,35 @@
     min-height: 200px !important;
     max-height: 200px !important; }
 
-.CanvasEditorCntr {
+.examDiagramPopup .popupInner {
+  min-height: 80vh !important;
+  max-height: 80vh !important; }
+  .examDiagramPopup .popupInner .popLeftDiv {
+    min-height: 30vh;
+    max-height: 80vh; }
+  .examDiagramPopup .popupInner .popRightDiv {
+    min-height: 30vh;
+    max-height: 80vh; }
+
+.examDiagramPopup .CanvasEditorCntr {
   background: #cecece;
   width: 100%;
-  height: 47vh;
+  height: 57vh;
   float: left; }
 
-.DiagramRemarksCntr {
+.examDiagramPopup .DiagramRemarksCntr {
   width: 100%;
   float: left; }
 
-.eachDiagram {
+.examDiagramPopup .eachDiagram {
   border-bottom: 1px solid #ccc;
   margin-bottom: 10px; }
-  .eachDiagram img {
+  .examDiagramPopup .eachDiagram img {
     width: 100%;
     height: auto;
     background: #ccc;
     border: 1px solid #ccc; }
-  .eachDiagram p {
+  .examDiagramPopup .eachDiagram p {
     font-size: 0.9rem; }
-    .eachDiagram p small {
+    .examDiagramPopup .eachDiagram p small {
       display: block; }
