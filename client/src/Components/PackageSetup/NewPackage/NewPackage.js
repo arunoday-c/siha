@@ -79,7 +79,29 @@ class NewPackage extends PureComponent {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(false);
+    debugger;
+    this.setState(
+      {
+        hims_d_package_header_id: null,
+        package_code: null,
+        package_name: null,
+        package_amount: 0,
+        total_service_amount: 0,
+        profit_loss: null,
+        pl_amount: 0,
+
+        open: false,
+        PakageDetail: [],
+        deletePackage: [],
+        insertPackage: [],
+        s_service_amount: null,
+        s_service_type: null,
+        s_service: null
+      },
+      () => {
+        this.props.onClose && this.props.onClose(false);
+      }
+    );
   };
 
   eventHandaler(e) {

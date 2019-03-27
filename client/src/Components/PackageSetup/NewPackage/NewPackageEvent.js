@@ -126,7 +126,7 @@ export default function NewPackageEvent() {
         }
         $this.setState({
           PakageDetail: PakageDetail,
-          s_service_type: null,
+          // s_service_type: null,
           s_service: null,
           s_service_amount: null,
           total_service_amount: total_service_amount,
