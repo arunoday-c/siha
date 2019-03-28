@@ -8,7 +8,111 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 //import { getMaxAuth } from "../../../src/utils";
 // import Sync from "sync";
+
+
+ //created by irfan: to get hieghest auth level
+ function getMaxAuth(options) {
+  const _mysql = options.mysql;
+  let MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth;
+  return new Promise((resolve, reject) => {
+    _mysql
+      .executeQuery({
+        query: "SELECT * FROM hims_d_hrms_options"
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        //LEAVE
+        switch (result[0]["leave_level"]) {
+          case "1":
+            MaxLeave = "AL1";
+            break;
+
+          case "2":
+            MaxLeave = "AL2";
+            break;
+          case "3":
+            MaxLeave = "AL3";
+            break;
+          case "4":
+            MaxLeave = "AL4";
+            break;
+          case "5":
+            MaxLeave = "AL5";
+            break;
+          default:
+        }
+
+        //LOAN
+        switch (result[0]["loan_level"]) {
+          case "1":
+            MaxLoan = "AL1";
+            break;
+
+          case "2":
+            MaxLoan = "AL2";
+            break;
+          case "3":
+            MaxLoan = "AL3";
+            break;
+          case "4":
+            MaxLoan = "AL4";
+            break;
+          case "5":
+            MaxLoan = "AL5";
+            break;
+          default:
+        }
+        //LEAVE ENCASH
+        switch (result[0]["leave_encash_level"]) {
+          case "1":
+            MaxLeaveEncash = "AL1";
+            break;
+
+          case "2":
+            MaxLeaveEncash = "AL2";
+            break;
+          case "3":
+            MaxLeaveEncash = "AL3";
+            break;
+          case "4":
+            MaxLeaveEncash = "AL4";
+            break;
+          case "5":
+            MaxLeaveEncash = "AL5";
+            break;
+          default:
+        }
+        //REVIEW AUTH
+        switch (result[0]["review_auth_level"]) {
+          case "1":
+            MaxreviewAuth = "AL1";
+            break;
+
+          case "2":
+            MaxreviewAuth = "AL2";
+            break;
+          case "3":
+            MaxreviewAuth = "AL3";
+            break;
+          case "4":
+            MaxreviewAuth = "AL4";
+            break;
+          case "5":
+            MaxreviewAuth = "AL5";
+            break;
+          default:
+        }
+
+        resolve({ MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        reject(e);
+      });
+  });
+}
 module.exports = {
+  getMaxAuth:getMaxAuth,
   //created by irfan: to
   authorizeLeave: (req, res, next) => {
     const utilities = new algaehUtilities();
@@ -30,7 +134,6 @@ module.exports = {
           //for lower level authorize
           getLeaveAuthFields(input.auth_level).then(authFields => {
         
-
             _mysql
               .executeQueryWithTransaction({
                 query:
@@ -3919,107 +4022,6 @@ cancelLeave: (req, res, next) => {
 
 
 
- //created by irfan: to get hieghest auth level
-function getMaxAuth(options) {
-  const _mysql = options.mysql;
-  let MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth;
-  return new Promise((resolve, reject) => {
-    _mysql
-      .executeQuery({
-        query: "SELECT * FROM hims_d_hrms_options"
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        //LEAVE
-        switch (result[0]["leave_level"]) {
-          case "1":
-            MaxLeave = "AL1";
-            break;
-
-          case "2":
-            MaxLeave = "AL2";
-            break;
-          case "3":
-            MaxLeave = "AL3";
-            break;
-          case "4":
-            MaxLeave = "AL4";
-            break;
-          case "5":
-            MaxLeave = "AL5";
-            break;
-          default:
-        }
-
-        //LOAN
-        switch (result[0]["loan_level"]) {
-          case "1":
-            MaxLoan = "AL1";
-            break;
-
-          case "2":
-            MaxLoan = "AL2";
-            break;
-          case "3":
-            MaxLoan = "AL3";
-            break;
-          case "4":
-            MaxLoan = "AL4";
-            break;
-          case "5":
-            MaxLoan = "AL5";
-            break;
-          default:
-        }
-        //LEAVE ENCASH
-        switch (result[0]["leave_encash_level"]) {
-          case "1":
-            MaxLeaveEncash = "AL1";
-            break;
-
-          case "2":
-            MaxLeaveEncash = "AL2";
-            break;
-          case "3":
-            MaxLeaveEncash = "AL3";
-            break;
-          case "4":
-            MaxLeaveEncash = "AL4";
-            break;
-          case "5":
-            MaxLeaveEncash = "AL5";
-            break;
-          default:
-        }
-        //REVIEW AUTH
-        switch (result[0]["review_auth_level"]) {
-          case "1":
-            MaxreviewAuth = "AL1";
-            break;
-
-          case "2":
-            MaxreviewAuth = "AL2";
-            break;
-          case "3":
-            MaxreviewAuth = "AL3";
-            break;
-          case "4":
-            MaxreviewAuth = "AL4";
-            break;
-          case "5":
-            MaxreviewAuth = "AL5";
-            break;
-          default:
-        }
-
-        resolve({ MaxLeave, MaxLoan, MaxLeaveEncash, MaxreviewAuth });
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        reject(e);
-      });
-  });
-}
 
  //created by irfan: to get database field for authrzation
 function getLeaveAuthFields(auth_level) {

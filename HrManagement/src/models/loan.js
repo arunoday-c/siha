@@ -352,7 +352,7 @@ module.exports = {
                         printQuery: true
                       })
                       .then(rejResult => {
-                        mysql.commitTransaction(() => {
+                        _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = rejResult;
                           next();
@@ -364,7 +364,7 @@ module.exports = {
                         });
                       });
                   } else if (result.affectedRows > 0) {
-                    mysql.commitTransaction(() => {
+                    _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = result;
                       next();
@@ -444,7 +444,7 @@ module.exports = {
                         printQuery: true
                       })
                       .then(rejResult => {
-                        mysql.commitTransaction(() => {
+                        _mysql.commitTransaction(() => {
                           _mysql.releaseConnection();
                           req.records = rejResult;
                           next();
@@ -456,7 +456,7 @@ module.exports = {
                         });
                       });
                   } else if (result.affectedRows > 0) {
-                    mysql.commitTransaction(() => {
+                    _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
                       req.records = result;
                       next();
