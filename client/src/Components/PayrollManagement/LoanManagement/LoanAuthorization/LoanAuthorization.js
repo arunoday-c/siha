@@ -74,7 +74,7 @@ class LoanAuthorization extends Component {
       module: "hrManagement",
       method: "GET",
       data: {
-        auth_level: "L" + this.state.auth_level,
+        auth_level: "AL" + this.state.auth_level,
         employee_id: this.state.employee_id,
         from_date: this.state.from_date,
         to_date: this.state.to_date
@@ -135,8 +135,10 @@ class LoanAuthorization extends Component {
   }
 
   dropDownHandler(value) {
+    let name = value.name;
     this.setState({
-      [value.name]: value.value
+      [value.name]: value.value,
+      loan_applns: []
     });
   }
 
@@ -184,7 +186,13 @@ class LoanAuthorization extends Component {
                   valueField: "value",
                   data: this.state.levels
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    auth_level: null,
+                    loan_applns: []
+                  });
+                }
               }}
             />
 
@@ -238,7 +246,13 @@ class LoanAuthorization extends Component {
                   valueField: "hims_d_hospital_id",
                   data: this.state.hospitals
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null,
+                    loan_applns: []
+                  });
+                }
               }}
             />
 
@@ -257,7 +271,13 @@ class LoanAuthorization extends Component {
                   valueField: "hims_d_employee_id",
                   data: this.state.employees
                 },
-                onChange: this.dropDownHandler.bind(this)
+                onChange: this.dropDownHandler.bind(this),
+                onClear: () => {
+                  this.setState({
+                    employee_id: null,
+                    loan_applns: []
+                  });
+                }
               }}
             />
 

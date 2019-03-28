@@ -15,7 +15,7 @@ module.exports = {
     try {
       const _mysql = new algaehMysql();
       let input = req.body;
-      mysql
+      _mysql
         .executeQuery({
           query:
             "select hims_d_employee_id,date_of_joining,exit_date ,employee_status from hims_d_employee\
