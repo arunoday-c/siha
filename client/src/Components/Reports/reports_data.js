@@ -958,6 +958,36 @@ export default [
             others: {
               sort: "off"
             }
+          },
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              uri: "/department/get/subdepartment"
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
           }
         ]
       },

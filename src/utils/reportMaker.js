@@ -99,11 +99,12 @@ let algaehReportConfig = reportName => {
         reportQuery:
           "select employee_id,S.total_earnings,S.total_deductions,S.total_contributions,\
         S.net_salary,S.advance_due,S.loan_due_amount,E.employee_code,full_name as employee_name,\
-        E.mode_of_payment,SD.sub_department_code,SD.sub_department_name\
+        E.mode_of_payment,SD.sub_department_code,SD.sub_department_name,NA.nationality\
         from hims_f_salary S inner join  hims_d_employee E  on S.employee_id=E.hims_d_employee_id\
         left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
-        WHERE month=? and year=?",
-        questionOrder: ["month", "year"]
+        left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id\
+        WHERE month=? and year=? and S.sub_department_id=?",
+        questionOrder: ["month", "year", "sub_department_id"]
       },
       {
         reportName: "absentReport",
