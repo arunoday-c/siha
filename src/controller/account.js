@@ -39,7 +39,7 @@ export default ({ config, db }) => {
         if (result[0][0]["locked"] == "N") {
           let rowDetails = result[0][0];
           debugLog("rowDetails: ", rowDetails);
-          let encrypDetsil = { ...result[0][0] };
+          let encrypDetsil = { ...result[0][0], ...result[1][0] };
           let hospitalDetails = { ...result[1][0] };
 
           debugLog("encrypDetsil: ", encrypDetsil);
