@@ -103,8 +103,8 @@ let algaehReportConfig = reportName => {
         from hims_f_salary S inner join  hims_d_employee E  on S.employee_id=E.hims_d_employee_id\
         left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
         left join  hims_d_nationality NA  on E.nationality=NA.hims_d_nationality_id\
-        WHERE month=? and year=? and S.sub_department_id=?",
-        questionOrder: ["month", "year", "sub_department_id"]
+        WHERE month=? and year=?",
+        questionOrder: ["month", "year"]
       },
       {
         reportName: "absentReport",

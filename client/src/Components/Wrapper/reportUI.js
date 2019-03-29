@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import "./wrapper.scss";
 import ReactToPrint from "react-to-print";
-import { successfulMessage } from "../../utils/GlobalFunctions";
+import {
+  successfulMessage,
+  AlgaehValidation
+} from "../../utils/GlobalFunctions";
 import { algaehApiCall, valueReviver } from "../../utils/algaehApiCall";
 import { accessReport } from "../Wrapper/printReports";
 import Enumerable from "linq";
@@ -127,50 +130,62 @@ export default class ReportUI extends Component {
   }
   generateReport(e) {
     debugger;
-    const _reportQuery =
-      this.state.reportQuery !== undefined
-        ? this.state.reportQuery
-        : this.props.options.report.fileName;
+    AlgaehValidation({
+      querySelector: "data-validate='parameters-data'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        const _reportQuery =
+          this.state.reportQuery !== undefined
+            ? this.state.reportQuery
+            : this.props.options.report.fileName;
 
-    let inputs = { ...this.state.parameterCollection };
+        let inputs = { ...this.state.parameterCollection };
 
-    inputs["reportName"] = _reportQuery;
+        inputs["reportName"] = _reportQuery;
+        let querString =
+          inputs.sub_department_id !== undefined
+            ? "S.sub_department_id=" + inputs.sub_department_id
+            : "";
 
-    const that = this;
-    let options = { ...this.props.options, ...{ getRaw: true } };
-    console.log("Report Options", options);
-    const uri =
-      typeof options.report.reportUri === "string"
-        ? options.report.reportUri
-        : "/generateReport/getReport";
-
-    const _module =
-      typeof options.report.module === "string"
-        ? { module: options.report.module }
-        : {};
-    algaehApiCall({
-      uri: uri,
-      data: inputs,
-      method: "GET",
-      ..._module,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          new Promise((resolve, reject) => {
-            resolve(response.data.records);
-          }).then(data => {
-            options.inputData = that.state.parameterCollection;
-            options.data = data;
-            let _optionsFetch = options;
-            let _htm = accessReport(_optionsFetch);
-            that.setState({
-              _htmlString: _htm
-            });
-          });
-        }
+        const that = this;
+        let options = { ...this.props.options, ...{ getRaw: true } };
+        console.log("Report Options", options);
+        const uri =
+          typeof options.report.reportUri === "string"
+            ? options.report.reportUri
+            : "/generateReport/getReport";
+        debugger;
+        const _module =
+          typeof options.report.module === "string"
+            ? { module: options.report.module }
+            : {};
+        algaehApiCall({
+          uri: uri,
+          data: inputs,
+          method: "GET",
+          inputs: querString,
+          ..._module,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              new Promise((resolve, reject) => {
+                resolve(response.data.records);
+              }).then(data => {
+                options.inputData = that.state.parameterCollection;
+                options.data = data;
+                let _optionsFetch = options;
+                let _htm = accessReport(_optionsFetch);
+                that.setState({
+                  _htmlString: _htm
+                });
+              });
+            }
+          }
+        });
       }
     });
   }
   dropDownHandle(e) {
+    debugger;
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
       .where(w => w.name === e.name)
       .firstOrDefault().events;
@@ -296,7 +311,7 @@ export default class ReportUI extends Component {
     } = require("./algaehWrapper");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
-
+      debugger;
       switch (_param.type) {
         case "dropdown":
           const _data =
@@ -305,6 +320,7 @@ export default class ReportUI extends Component {
                 ? []
                 : _param.dataSource.data
               : this.state[_param.name + "_list"];
+          debugger;
           _controls.push(
             <AlagehAutoComplete
               key={i}
@@ -312,7 +328,10 @@ export default class ReportUI extends Component {
               label={{
                 fieldName: _param.name,
                 forceLabel: _param.label,
-                isImp: _param.isImp !== undefined ? false : _param.isImp
+                isImp:
+                  _param.isImp === undefined || _param.isImp === false
+                    ? false
+                    : _param.isImp
               }}
               selector={{
                 name: _param.name,
@@ -497,7 +516,10 @@ export default class ReportUI extends Component {
                 <div id="report_generation_interface">
                   {/* {this.props.options.plotUI.paramters()} */}
 
-                  <div className="col-lg-12 margin-top-15">
+                  <div
+                    className="col-lg-12 margin-top-15"
+                    data-validate="parameters-data"
+                  >
                     <div className="row">{this.generateInputParameters()}</div>
                   </div>
                   <button
