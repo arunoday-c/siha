@@ -2,11 +2,17 @@ import { payrollHeader } from "./payrollHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import "../report-style.css";
+import math from "mathjs";
 export function printReport(result) {
   debugger;
   if (result === undefined) return null;
   const data = result;
   if (data === undefined) return null;
+  let total_worked_hours = _.sumBy(data, s => parseFloat(s.total_hours));
+  let ot_work_hours = _.sumBy(data, s => parseFloat(s.ot_work_hours));
+  let shortage_hours = _.sumBy(data, s => parseFloat(s.shortage_hours));
+  let ot_weekoff_hours = _.sumBy(data, s => parseFloat(s.ot_weekoff_hours));
+  let ot_holiday_hours = _.sumBy(data, s => parseFloat(s.ot_holiday_hours));
   return `
   <div class="print-body">
   <header> ${payrollHeader(data)} </header> 
@@ -75,7 +81,34 @@ export function printReport(result) {
     .join("")}
   
  
-    </thead></table></div>    
+    </thead></table></div> 
+    
+    <div class="row">
+    <div class="col"></div>
+      <div class="col-2">
+        <label>Total Worked Hours</label>
+        <h6>${total_worked_hours ? total_worked_hours : "00:00"} Hrs</h6>
+      </div>
+      <div class="col-2">
+        <label>Total OT Hours</label>
+        <h6>${ot_work_hours ? ot_work_hours : "00:00"} Hrs</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Shortage Hours</label>
+
+        <h6>${shortage_hours ? shortage_hours : "00:00"} Hrs</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Weekoff OT</label>
+        <h6>${
+          ot_weekoff_hours ? math.round(ot_weekoff_hours, 2) : "00:00"
+        } Hrs</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Holiday Ot</label>
+        <h6>${ot_holiday_hours ? ot_holiday_hours : "00:00"} Hrs</h6>
+      </div>    
+    </div>
   </div>
 
 </section>

@@ -1140,6 +1140,7 @@ export default [
             sort: "off",
             isImp: true,
             initialLoad: true,
+            label: "year",
             dataSource: {
               textField: "name",
               valueField: "value",
