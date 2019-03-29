@@ -4110,7 +4110,11 @@ module.exports = {
       if (selectWhere.hims_d_employee_id != null) {
         selectData += " and AM.employee_id=" + selectWhere.hims_d_employee_id;
       }
+      if (selectWhere.employee_group_id != null) {
+        selectData += " and E.employee_group_id=" + selectWhere.employee_group_id;
+      }
 
+      
       _mysql
         .executeQuery({
           query: `select hims_f_attendance_monthly_id,employee_id,E.employee_code,E.full_name as employee_name,\

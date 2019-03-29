@@ -72,7 +72,7 @@ export default class MonthlyAttendance extends Component {
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            data: res.data.result,
+            data: res.data.records,
             displayLoader: false
           });
         }

@@ -238,6 +238,9 @@ class LoanRequest extends Component {
   }
 
   dropDownHandler(value) {
+    let present_month = moment(new Date()).format("M");
+    let present_year = moment().year();
+    debugger;
     switch (value.name) {
       case "loan_id":
         this.setState({
@@ -254,6 +257,26 @@ class LoanRequest extends Component {
           [value.name]: value.value,
           installment_amount: this.state.loan_amount / value.value
         });
+        break;
+
+      case "start_month":
+        if (
+          present_year === this.state.start_year &&
+          value.value < present_month
+        ) {
+          swalMessage({
+            title: "Start month must be future months",
+            type: "warning"
+          });
+          this.setState({
+            [value.name]: null
+          });
+        } else {
+          this.setState({
+            [value.name]: value.value
+          });
+        }
+
         break;
 
       default:
@@ -403,26 +426,6 @@ class LoanRequest extends Component {
                     <AlagehAutoComplete
                       div={{ className: "col-6" }}
                       label={{
-                        forceLabel: "Start Month",
-                        isImp: true
-                      }}
-                      selector={{
-                        sort: "off",
-                        name: "start_month",
-                        className: "select-fld",
-                        value: this.state.start_month,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: MONTHS
-                        },
-                        onChange: this.dropDownHandler.bind(this)
-                      }}
-                    />
-
-                    <AlagehAutoComplete
-                      div={{ className: "col-6" }}
-                      label={{
                         forceLabel: "Start Year.",
                         isImp: true
                       }}
@@ -441,6 +444,25 @@ class LoanRequest extends Component {
                             start_year: null
                           });
                         }
+                      }}
+                    />
+                    <AlagehAutoComplete
+                      div={{ className: "col-6" }}
+                      label={{
+                        forceLabel: "Start Month",
+                        isImp: true
+                      }}
+                      selector={{
+                        sort: "off",
+                        name: "start_month",
+                        className: "select-fld",
+                        value: this.state.start_month,
+                        dataSource: {
+                          textField: "name",
+                          valueField: "value",
+                          data: MONTHS
+                        },
+                        onChange: this.dropDownHandler.bind(this)
                       }}
                     />
 

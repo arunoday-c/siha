@@ -116,7 +116,7 @@ class LoanModal extends Component {
             loan_tenure: this.state.loan_tenure,
             installment_amount: this.state.installment_amount,
             authorized: type,
-            auth_level: "L" + this.props.auth_level,
+            auth_level: "AL" + this.props.auth_level,
             approved_amount: this.state.approved_amount
           };
           algaehApiCall({
