@@ -14,7 +14,8 @@ import {
   updateAppointmentClinic,
   addDoctorsSchedule,
   addLeaveOrModifySchedule,
-  getDoctorsScheduledList
+  getDoctorsScheduledList,
+  getDoctorScheduleDateWise
 } from "../models/appointment";
 
 export default () => {
@@ -133,6 +134,16 @@ export default () => {
   api.get(
     "/getDoctorsScheduledList",
     getDoctorsScheduledList,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.get(
+    "/getDoctorScheduleDateWise",
+    getDoctorScheduleDateWise,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
