@@ -6,13 +6,15 @@ import icona from "tui-image-editor/dist/svg/icon-a.svg";
 import iconb from "tui-image-editor/dist/svg/icon-b.svg";
 import iconc from "tui-image-editor/dist/svg/icon-c.svg";
 import icond from "tui-image-editor/dist/svg/icon-d.svg";
+import "./imageEditor.css";
 export default class AlgaehCanvas extends Component {
   constructor(props) {
     super(props);
     this.state = {
       image:
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
-      name: "algaeh-image-editor"
+      name: "algaeh-image-editor",
+      imageLoaded: false
     };
     this.btnSave = {
       position: "absolute",
@@ -33,7 +35,42 @@ export default class AlgaehCanvas extends Component {
 
   componentDidMount() {
     this.editor.getRootElement().lastElementChild.firstElementChild.hidden = true;
-    this.loadImageFromDB();
+    if (this.props.directImage === undefined) {
+      this.loadImageFromDB();
+    }
+  }
+  componentWillReceiveProps(props) {
+    if (props.directImage === undefined) {
+      this.loadImageFromDB();
+    } else {
+      if (props.image !== undefined && !this.state.imageLoaded) {
+        this.setState(
+          {
+            image: props.image,
+            name: props.name,
+            imageLoaded: true
+          },
+          () => {
+            this.editor
+              .getInstance()
+              .loadImageFromURL(props.image, props.name)
+              .then(result => {
+                this.editor.getInstance().ui.resizeEditor({
+                  imageSize: {
+                    oldWidth: result.oldWidth,
+                    oldHeight: result.oldHeight,
+                    newWidth: result.newWidth,
+                    newHeight: result.newHeight
+                  }
+                });
+              })
+              .catch(err => {
+                console.error("Something went wrong:", err);
+              });
+          }
+        );
+      }
+    }
   }
   loadImageFromDB(props) {
     const that = this;
@@ -104,20 +141,20 @@ export default class AlgaehCanvas extends Component {
               "common.backgroundImage": "none",
               "common.border": "0px",
               // checkbox style
-              "checkbox.border": "1px solid #ccc",
-              "checkbox.backgroundColor": "#fff",
+              // "checkbox.border": "1px solid #ccc",
+              // "checkbox.backgroundColor": "#fff",
 
-              // rango style
-              "range.pointer.color": "#fff",
-              "range.bar.color": "#666",
-              "range.subbar.color": "#d1d1d1",
-              "range.value.color": "#fff",
-              "range.value.fontWeight": "lighter",
-              "range.value.fontSize": "11px",
-              "range.value.border": "1px solid #353535",
-              "range.value.backgroundColor": "#151515",
-              "range.title.color": "#fff",
-              "range.title.fontWeight": "lighter",
+              // // rango style
+              // "range.pointer.color": "#fff",
+              // "range.bar.color": "#666",
+              // "range.subbar.color": "#d1d1d1",
+              // "range.value.color": "#fff",
+              // "range.value.fontWeight": "lighter",
+              // "range.value.fontSize": "11px",
+              // "range.value.border": "1px solid #353535",
+              // "range.value.backgroundColor": "#151515",
+              // "range.title.color": "#fff",
+              // "range.title.fontWeight": "lighter",
 
               // colorpicker style
               "colorpicker.button.border": "1px solid #1e1e1e",
