@@ -15,7 +15,17 @@ import {
   addDoctorsSchedule,
   addLeaveOrModifySchedule,
   getDoctorsScheduledList,
-  getDoctorScheduleDateWise
+  getDoctorScheduleDateWise,
+  getDoctorScheduleToModify,
+  updateDoctorScheduleDateWise,
+  deleteDoctorFromSchedule,
+  updateSchedule,
+  addDoctorToExistingSchedule,
+  addPatientAppointment,
+  updatePatientAppointment,
+  getPatientAppointment,
+  getEmployeeServiceID,
+  cancelPatientAppointment
 } from "../models/appointment";
 
 export default () => {
@@ -151,6 +161,115 @@ export default () => {
       });
     }
   );
+  api.get(
+    "/getDoctorScheduleToModify",
+    getDoctorScheduleToModify,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.put(
+    "/updateDoctorScheduleDateWise",
+    updateDoctorScheduleDateWise,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.put(
+    "/deleteDoctorFromSchedule",
+    deleteDoctorFromSchedule,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+  api.put("/updateSchedule", updateSchedule, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+  api.post(
+    "/addDoctorToExistingSchedule",
+    addDoctorToExistingSchedule,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
+  // created by irfan :to
+  api.post(
+    "/addPatientAppointment",
+    addPatientAppointment,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.slotExist == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+    }
+  );
+
+  // created by irfan :to
+  api.put(
+    "/updatePatientAppointment",
+    updatePatientAppointment,
+    (req, res, next) => {
+      let result = req.records;
+      if (req.records.slotExist == true || req.records.bookedtwice == true) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+    }
+  );
+
+  api.get("/getPatientAppointment", getPatientAppointment, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+  api.get("/getEmployeeServiceID", getEmployeeServiceID, (req, res, next) => {
+    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+      success: true,
+      records: req.records
+    });
+  });
+
+  api.get(
+    "/cancelPatientAppointment",
+    cancelPatientAppointment,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
   return api;
 };

@@ -936,6 +936,818 @@ module.exports = {
         _mysql.releaseConnection();
         next(e);
       });
+  },
+
+  //created by irfan: to get Doctor Schedule to Modify
+  getDoctorScheduleToModify: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let selectQry = "";
+    if (req.query.appointment_schedule_header_id > 0) {
+      selectQry += ` and appointment_schedule_header_id=${
+        req.query.appointment_schedule_header_id
+      } `;
+    }
+    if (req.query.provider_id > 0) {
+      selectQry += ` and provider_id=${req.query.provider_id} `;
+    }
+
+    _mysql
+      .executeQuery({
+        query: `select hims_d_appointment_schedule_header_id, sub_dept_id, SH.schedule_status as deprt_schedule_status, schedule_description, month, year,\
+        from_date,to_date,from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, \
+        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday,\
+        hims_d_appointment_schedule_detail_id, provider_id,clinic_id, ASD.schedule_status as doctor_schedule_status, slot,schedule_date, modified  \
+       from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD \
+       where SH.record_status='A' and ASD.record_status='A' and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id\
+       ${selectQry}`
+      })
+      .then(result => {
+        // _mysql.releaseConnection();
+        // req.records = result;
+        // next();
+
+        let activeSchedule = new LINQ(result)
+          .Where(w => w.modified != "M")
+          .Select(s => s)
+          .ToArray();
+
+        let ids = new LINQ(result)
+          .Where(w => w.modified == "M")
+          .Select(s => s.hims_d_appointment_schedule_detail_id)
+          .ToArray();
+
+        if (ids.length > 0) {
+          _mysql
+            .executeQuery({
+              query:
+                "SELECT hims_d_appointment_schedule_modify_id, SD.provider_id, SD.clinic_id, SD.schedule_status,appointment_schedule_detail_id, to_date as schedule_date, SM.slot,\
+            from_work_hr, to_work_hr,work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2, to_break_hr2 \
+            from hims_d_appointment_schedule_modify SM, hims_d_appointment_schedule_detail SD where SM.record_status='A' and SM.record_status='A' and SM.appointment_schedule_detail_id=SD.hims_d_appointment_schedule_detail_id and\
+            appointment_schedule_detail_id in (" +
+                ids +
+                ")"
+            })
+            .then(modResult => {
+              _mysql.releaseConnection();
+              // req.records = result;
+              // next();
+
+              if (modResult.length > 0) {
+                let mergeResult = [...activeSchedule, ...modResult];
+
+                let finResult = new LINQ(mergeResult)
+                  .OrderBy(w => w.schedule_date)
+                  .ToArray();
+
+                req.records = finResult;
+
+                next();
+              } else {
+                req.records = result;
+                next();
+              }
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        } else {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan: to update Doctor Schedule DateWise
+  updateDoctorScheduleDateWise: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+
+    _mysql
+      .executeQueryWithTransaction({
+        query:
+          "UPDATE `hims_d_appointment_schedule_detail` SET `modified`=?,\
+        `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+   `hims_d_appointment_schedule_detail_id`=?;",
+        values: [
+          input.modified,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.hims_d_appointment_schedule_detail_id
+        ]
+      })
+      .then(result => {
+        if (
+          input.hims_d_appointment_schedule_modify_id != null &&
+          input.modified == "M"
+        ) {
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_d_appointment_schedule_modify` SET appointment_schedule_detail_id=?,to_date=?,slot=?,\
+              from_work_hr=?,to_work_hr=?,work_break1=?,from_break_hr1=?,to_break_hr1=?,work_break2=?,from_break_hr2=?,to_break_hr2=?,\
+                  `updated_by`=?, `updated_date`=? WHERE `record_status`='A' and \
+              `hims_d_appointment_schedule_modify_id`=?;",
+              values: [
+                input.hims_d_appointment_schedule_detail_id,
+                input.to_date,
+                input.slot,
+                input.from_work_hr,
+                input.to_work_hr,
+                input.work_break1,
+                input.from_break_hr1,
+                input.to_break_hr1,
+                input.work_break2,
+                input.from_break_hr2,
+                input.to_break_hr2,
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                input.hims_d_appointment_schedule_modify_id
+              ]
+            })
+            .then(updateModResult => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = updateModResult;
+                next();
+              });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        } else if (result.length != 0 && input.modified == "M") {
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO `hims_d_appointment_schedule_modify` ( appointment_schedule_detail_id, to_date, slot, from_work_hr, to_work_hr, work_break1, from_break_hr1,\
+                to_break_hr1, work_break2, from_break_hr2, to_break_hr2,created_date, created_by, updated_date, updated_by)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                input.hims_d_appointment_schedule_detail_id,
+                input.to_date,
+                input.slot,
+                input.from_work_hr,
+                input.to_work_hr,
+                input.work_break1,
+                input.from_break_hr1,
+                input.to_break_hr1,
+                input.work_break2,
+                input.from_break_hr2,
+                input.to_break_hr2,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id
+              ]
+            })
+            .then(results => {
+              _mysql.commitTransaction(() => {
+                _mysql.releaseConnection();
+                req.records = results;
+                next();
+              });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        } else {
+          _mysql.commitTransaction(() => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          });
+        }
+      })
+      .catch(e => {
+        _mysql.rollBackTransaction(() => {
+          next(e);
+        });
+      });
+  },
+
+  //created by irfan: to delete Doctor From Schedule
+  deleteDoctorFromSchedule: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          " update hims_d_appointment_schedule_detail set record_status='I',updated_by=?,updated_date=?\
+          where record_status='A' and appointment_schedule_header_id=? and provider_id=?;",
+        values: [
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.appointment_schedule_header_id,
+          input.provider_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan: to update Schedule
+  updateSchedule: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_d_appointment_schedule_header` SET `sub_dept_id`=?, `schedule_status`=?,\
+        `schedule_description`=?, `month`=?, `year`=?, `from_date`=?, `to_date`=?, \
+        `from_work_hr`=?, `to_work_hr`=?, `work_break1`=?, `from_break_hr1`=?, \
+        `to_break_hr1`=?, `work_break2`=?, `from_break_hr2`=?, `to_break_hr2`=?,\
+               `monday`=?, `tuesday`=?, `wednesday`=?, `thursday`=?, `friday`=?, `saturday`=?,\
+         `sunday`=?, `updated_by`=?, `updated_date`=?, `record_status`=? \
+         WHERE record_status='A' and `hims_d_appointment_schedule_header_id`=? ;",
+
+        values: [
+          input.sub_dept_id,
+          input.schedule_status,
+          input.schedule_description,
+          input.month,
+          input.year,
+          input.from_date,
+          input.to_date,
+          input.from_work_hr,
+          input.to_work_hr,
+          input.work_break1,
+          input.from_break_hr1,
+          input.to_break_hr1,
+          input.work_break2,
+          input.from_break_hr2,
+          input.to_break_hr2,
+          input.monday,
+          input.tuesday,
+          input.wednesday,
+          input.thursday,
+          input.friday,
+          input.saturday,
+          input.sunday,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.record_status,
+          input.hims_d_appointment_schedule_header_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan: to add Doctor To Existing Schedule
+  addDoctorToExistingSchedule: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    let input = req.body;
+    //generating list of dates by date range ie.(from_time and  to_time)
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT from_work_hr,to_work_hr,from_date, to_date, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
+          from hims_d_appointment_schedule_header where  record_status='A' and hims_d_appointment_schedule_header_id=?",
+        values: [input.hims_d_appointment_schedule_header_id]
+      })
+      .then(result => {
+        // _mysql.commitTransaction(() => {
+        //   _mysql.releaseConnection();
+        //   req.records = defStatusRsult;
+        //   next();
+        // });
+
+        let working_days = [];
+
+        let inputDays = [
+          result[0].sunday,
+          result[0].monday,
+          result[0].tuesday,
+          result[0].wednesday,
+          result[0].thursday,
+          result[0].friday,
+          result[0].saturday
+        ];
+
+        for (let d = 0; d < 7; d++) {
+          if (inputDays[d] == "Y") {
+            working_days.push(d);
+          }
+        }
+
+        let newDateList = getDaysArray(
+          new Date(result[0].from_date),
+          new Date(result[0].to_date),
+          working_days
+        );
+        newDateList.map(v => v.toLocaleString());
+
+        _mysql
+          .executeQuery({
+            query:
+              "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and schedule_date>?;",
+            values: [input.provider_id, new Date()],
+
+            printQuery: true
+          })
+          .then(occupiedDoctorDates => {
+            // _mysql.releaseConnection();
+            // req.records = result;
+            // next();
+
+            let OccupiedDoctorDatesList = new LINQ(occupiedDoctorDates)
+              .Select(s => s.schedule_date)
+              .ToArray();
+
+            let clashingDate = [];
+            new LINQ(newDateList).Select(s => {
+              const index = OccupiedDoctorDatesList.indexOf(
+                moment(s).format("YYYY-MM-DD")
+              );
+              if (index > -1) {
+                clashingDate.push(OccupiedDoctorDatesList[index]);
+              }
+            });
+
+            //if date clashes check for time else add
+            if (clashingDate.length > 0) {
+              let appointment_schedule_header_id = new LINQ(occupiedDoctorDates)
+                .Where(w => w.schedule_date == clashingDate[0])
+                .Select(s => s.appointment_schedule_header_id)
+                .ToArray();
+              //obtain existing schedule time
+
+              _mysql
+                .executeQuery({
+                  query:
+                    "select * from hims_d_appointment_schedule_header where time(from_work_hr)<=?  and time(to_work_hr)> ?\
+      and hims_d_appointment_schedule_header_id=?",
+                  values: [
+                    result[0].from_work_hr,
+                    result[0].from_work_hr,
+                    appointment_schedule_header_id[0]
+                  ],
+
+                  printQuery: true
+                })
+                .then(timeChecking => {
+                  // _mysql.releaseConnection();
+                  // req.records = result;
+                  // next();
+
+                  if (timeChecking.length > 0) {
+                    //reject adding to schedule
+
+                    req.records = {
+                      message: "schedule already exist",
+                      schedule_exist: true
+                    };
+                    _mysql.releaseConnection();
+                    next();
+                  } else {
+                    //add to schedule
+
+                    if (input.schedule_detail.length != 0) {
+                      if (input.hims_d_appointment_schedule_header_id != null) {
+                        for (
+                          let doc = 0;
+                          doc < input.schedule_detail.length;
+                          doc++
+                        ) {
+                          let doctorSchedule = [];
+
+                          for (let i = 0; i < newDateList.length; i++) {
+                            doctorSchedule.push({
+                              ...input.schedule_detail[doc],
+                              ...{ schedule_date: newDateList[i] }
+                            });
+                          }
+
+                          const insurtColumns = [
+                            "provider_id",
+                            "clinic_id",
+                            "slot",
+                            "schedule_date",
+                            "created_by",
+                            "updated_by"
+                          ];
+
+                          _mysql
+                            .executeQueryWithTransaction({
+                              query:
+                                "INSERT INTO hims_d_appointment_schedule_detail(??) VALUES ?",
+                              values: doctorSchedule,
+                              includeValues: insurtColumns,
+                              extraValues: {
+                                appointment_schedule_header_id:
+                                  input.hims_d_appointment_schedule_header_id,
+
+                                created_date: new Date(),
+                                created_by:
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                updated_date: new Date(),
+                                updated_by:
+                                  req.userIdentity.algaeh_d_app_user_id
+                              },
+                              bulkInsertOrUpdate: true
+                            })
+                            .then(schedule_detailResult => {
+                              if (doc == input.schedule_detail.length - 1) {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = schedule_detailResult;
+                                  next();
+                                });
+                              }
+                            })
+                            .catch(e => {
+                              _mysql.rollBackTransaction(() => {
+                                next(e);
+                              });
+                            });
+                        }
+                      }
+                    } else {
+                      _mysql.releaseConnection();
+                      req.records = { message: "please select doctors" };
+                      next();
+                    }
+                  }
+                })
+                .catch(e => {
+                  _mysql.releaseConnection();
+                  next(e);
+                });
+            } else {
+              //else add doctor to schedule
+              if (input.schedule_detail.length != 0) {
+                if (input.hims_d_appointment_schedule_header_id != null) {
+                  for (let doc = 0; doc < input.schedule_detail.length; doc++) {
+                    let doctorSchedule = [];
+
+                    for (let i = 0; i < newDateList.length; i++) {
+                      doctorSchedule.push({
+                        ...input.schedule_detail[doc],
+                        ...{ schedule_date: newDateList[i] }
+                      });
+                    }
+
+                    const insurtColumns = [
+                      "provider_id",
+                      "clinic_id",
+                      "slot",
+                      "schedule_date",
+                      "created_by",
+                      "updated_by"
+                    ];
+
+                    _mysql
+                      .executeQueryWithTransaction({
+                        query:
+                          "INSERT INTO hims_d_appointment_schedule_detail(??) VALUES ?",
+                        values: doctorSchedule,
+                        includeValues: insurtColumns,
+                        extraValues: {
+                          appointment_schedule_header_id:
+                            input.hims_d_appointment_schedule_header_id,
+
+                          created_date: new Date(),
+                          created_by: req.userIdentity.algaeh_d_app_user_id,
+                          updated_date: new Date(),
+                          updated_by: req.userIdentity.algaeh_d_app_user_id
+                        },
+                        bulkInsertOrUpdate: true
+                      })
+                      .then(schedule_detailResult => {
+                        if (doc == input.schedule_detail.length - 1) {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = schedule_detailResult;
+                            next();
+                          });
+                        }
+                      })
+                      .catch(e => {
+                        _mysql.rollBackTransaction(() => {
+                          next(e);
+                        });
+                      });
+                  }
+                }
+              }
+            }
+          })
+          .catch(e => {
+            _mysql.releaseConnection();
+            next(e);
+          });
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+
+  //created by irfan: to add patient appointment
+  addPatientAppointment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_patient_appointment_id,provider_id,title_id,patient_name,appointment_date,appointment_from_time,\
+        appointment_to_time from hims_f_patient_appointment where record_status='A'\
+        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
+        ((?>=appointment_from_time and ?<appointment_to_time)\
+        or(?>appointment_from_time and ?<=appointment_to_time));\
+        SELECT hims_f_patient_appointment_id,patient_id,sub_department_id,patient_name FROM hims_f_patient_appointment\
+        where record_status='A' and cancelled='N' and is_stand_by='N' and contact_number=?\
+        and sub_department_id=? and provider_id=? and appointment_date=?",
+        values: [
+          input.appointment_date,
+          input.provider_id,
+          input.sub_department_id,
+          input.appointment_from_time,
+          input.appointment_from_time,
+          input.appointment_to_time,
+          input.appointment_to_time,
+          input.contact_number,
+          input.sub_department_id,
+          input.provider_id,
+          input.appointment_date
+        ]
+      })
+      .then(slotResult => {
+        // _mysql.releaseConnection();
+        // req.records = result;
+        // next();
+
+        if (slotResult[0].length > 0 && input.is_stand_by != "Y") {
+          _mysql.releaseConnection();
+          req.records = { slotExist: true };
+          next();
+        } else if (slotResult[1].length >= 2 && input.is_stand_by != "Y") {
+          _mysql.releaseConnection();
+          req.records = { bookedtwice: true };
+          next();
+        } else {
+          _mysql
+            .executeQuery({
+              query:
+                "INSERT INTO `hims_f_patient_appointment` (patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
+              appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
+              created_date, created_by, updated_date, updated_by)\
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                input.patient_id,
+                input.title_id,
+                input.patient_code,
+                input.provider_id,
+                input.sub_department_id,
+                input.number_of_slot,
+                input.appointment_date,
+                input.appointment_from_time,
+                input.appointment_to_time,
+                input.appointment_status_id,
+                input.patient_name,
+                input.arabic_name,
+                input.date_of_birth,
+                input.age,
+                input.contact_number,
+                input.email,
+                input.send_to_provider,
+                input.gender,
+                input.appointment_remarks,
+                input.is_stand_by,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id
+              ]
+            })
+            .then(result => {
+              _mysql.releaseConnection();
+              req.records = result;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan: to update Patient Appointment
+  updatePatientAppointment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.body;
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_f_patient_appointment_id,provider_id,title_id,patient_name,appointment_date,appointment_from_time,\
+        appointment_to_time from hims_f_patient_appointment where record_status='A'\
+        and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
+        ((?>=appointment_from_time and ?<appointment_to_time)\
+        or(?>appointment_from_time and ?<=appointment_to_time)) and hims_f_patient_appointment_id!=?;",
+        values: [
+          input.appointment_date,
+          input.provider_id,
+          input.sub_department_id,
+          input.appointment_from_time,
+          input.appointment_from_time,
+          input.appointment_to_time,
+          input.appointment_to_time,
+          input.hims_f_patient_appointment_id
+        ]
+      })
+      .then(slotResult => {
+        // _mysql.releaseConnection();
+        // req.records = result;
+        // next();
+
+        if (slotResult.length > 0 && input.is_stand_by != "Y") {
+          _mysql.releaseConnection();
+          req.records = { slotExist: true };
+          next();
+        } else {
+          _mysql
+            .executeQuery({
+              query:
+                "UPDATE `hims_f_patient_appointment` SET patient_id=?, title_id=? ,provider_id=?,sub_department_id=?,number_of_slot=?,appointment_date=?,appointment_from_time=?,appointment_to_time=?,\
+              appointment_status_id=?,patient_name=?,arabic_name=?,date_of_birth=?,age=?,contact_number=?,email=?,\
+              send_to_provider=?,gender=?,confirmed=?,confirmed_by=?,comfirmed_date=?,cancelled=?,cancelled_by=?,\
+              cancelled_date=?,cancel_reason=?,appointment_remarks=?,is_stand_by=?,\
+              updated_date=?, updated_by=? ,`record_status`=? WHERE  `record_status`='A' and  cancelled<>'Y' and `hims_f_patient_appointment_id`=?;",
+              values: [
+                input.patient_id,
+                input.title_id,
+                input.provider_id,
+                input.sub_department_id,
+                input.number_of_slot,
+                input.appointment_date,
+                input.appointment_from_time,
+                input.appointment_to_time,
+                input.appointment_status_id,
+                input.patient_name,
+                input.arabic_name,
+                input.date_of_birth,
+                input.age,
+                input.contact_number,
+                input.email,
+                input.send_to_provider,
+                input.gender,
+                input.confirmed,
+                input.confirmed_by,
+                input.comfirmed_date,
+                input.cancelled,
+                input.cancelled_by,
+                input.cancelled_date,
+                input.cancel_reason,
+                input.appointment_remarks,
+                input.is_stand_by,
+                new Date(),
+                req.userIdentity.algaeh_d_app_user_id,
+                input.record_status,
+                input.hims_f_patient_appointment_id
+              ]
+            })
+            .then(results => {
+              _mysql.releaseConnection();
+              req.records = results;
+              next();
+            })
+            .catch(e => {
+              _mysql.releaseConnection();
+              next(e);
+            });
+        }
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan: to get Patient Appointment
+  getPatientAppointment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.query;
+    let selectQry = "";
+    if (input.sub_department_id > 0) {
+      selectQry += ` and sub_department_id=${input.sub_department_id}`;
+    }
+    if (input.provider_id > 0) {
+      selectQry += ` and provider_id=${input.provider_id}`;
+    }
+    if (
+      input.appointment_to_time != null &&
+      input.appointment_to_time != undefined
+    ) {
+      selectQry += ` and appointment_to_time=${input.appointment_to_time}`;
+    }
+
+    _mysql
+      .executeQuery({
+        query: `select hims_f_patient_appointment_id,patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,\
+        appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
+    contact_number,email,send_to_provider,gender,confirmed,visit_created,\
+    confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,appointment_remarks,cancel_reason,is_stand_by\
+    from hims_f_patient_appointment where record_status='A'  ${selectQry}`
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan: to getEmployeeServiceID
+  getEmployeeServiceID: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.query;
+    let selectQry = "";
+    if (input.sub_department_id > 0) {
+      selectQry += ` and sub_department_id=${input.sub_department_id}`;
+    }
+    if (input.employee_id > 0) {
+      selectQry += ` and employee_id=${input.employee_id}`;
+    }
+
+    _mysql
+      .executeQuery({
+        query: `select  hims_d_employee_department_id, employee_id, services_id,\
+        sub_department_id, category_speciality_id, user_id from hims_m_employee_department_mappings\
+         where record_status='A'  ${selectQry}`
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
+  },
+  //created by irfan: to cancel patient appointment
+  cancelPatientAppointment: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_f_patient_appointment set cancelled='Y',cancelled_by=?,cancelled_date=?,cancel_reason=?,\
+        updated_by=?,updated_date=? where record_status='A' and hims_f_patient_appointment_id=?;",
+        values: [
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.cancel_reason,
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          input.hims_f_patient_appointment_id
+        ]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(e => {
+        _mysql.releaseConnection();
+        next(e);
+      });
   }
 };
 //[0,1,2,3,4,5,6]

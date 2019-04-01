@@ -109,7 +109,7 @@ class OrderedList extends PureComponent {
 
   render() {
     return (
-      <div className="hptl-phase1-ordering-services-form form-details">
+      <div className="hptl-phase1-ordering-services-form form-details margin-bottom-15">
         <div className="col-lg-12">
           <div className="row">
             <div className="col-md-10 col-lg-12" id="doctorOrder">
@@ -242,8 +242,7 @@ class OrderedList extends PureComponent {
           }}
         >
           <button
-            className="btn btn-primary"
-            style={{ marginTop: "10" }}
+            className="btn btn-primary  margin-bottom-15 margin-top-15"
             onClick={this.ShowModel.bind(this)}
           >
             Order Investigation

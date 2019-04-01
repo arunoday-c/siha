@@ -63,7 +63,8 @@
     border-bottom: 1px solid #d3d3d3;
     background: #fff;
     margin-left: 5px;
-    border-radius: 5px; }
+    border-radius: 5px;
+    vertical-align: top; }
     .doctorApp-Ar .appointment .tg thead tr {
       text-align: center; }
       .doctorApp-Ar .appointment .tg thead tr .tg-amwm {
