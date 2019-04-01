@@ -52,7 +52,7 @@ export function printReport(result) {
                 <th>Week Off OT</th>
                 <th>Holiday OT</th>                
             </tr>
-        </thead></table></div><div class="tbl-content" style="height: 30vh" id="tbl-content" >
+        </thead></table></div><div class="tbl-content" style="height: 30vh" algaeh-report-table="true" id="tbl-content" >
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data

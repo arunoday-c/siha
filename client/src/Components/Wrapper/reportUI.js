@@ -20,7 +20,8 @@ export default class ReportUI extends Component {
       openPopup: true,
       hasError: false,
       _htmlString: "",
-      parameterCollection: {}
+      parameterCollection: {},
+      hasTable: false
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -126,6 +127,17 @@ export default class ReportUI extends Component {
       message: error
     });
   }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.state.hasTable) {
+      document
+        .querySelectorAll("[algaeh-report-table='true']")
+        .forEach(item => {
+          item.addEventListener("scroll", function(e) {
+            e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
+          });
+        });
+    }
+  }
   generateReport(e) {
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
@@ -163,7 +175,6 @@ export default class ReportUI extends Component {
           inputs: querString,
           ..._module,
           onSuccess: response => {
-            debugger;
             if (response.data.success === true) {
               new Promise((resolve, reject) => {
                 resolve(response.data.records);
@@ -171,9 +182,17 @@ export default class ReportUI extends Component {
                 options.inputData = that.state.parameterCollection;
                 options.data = data;
                 let _optionsFetch = options;
+
                 let _htm = accessReport(_optionsFetch);
+                let _hasTable =
+                  _htm !== undefined
+                    ? String(_htm).indexOf("algaeh-report-table") > -1
+                      ? true
+                      : false
+                    : false;
                 that.setState({
-                  _htmlString: _htm
+                  _htmlString: _htm,
+                  hasTable: _hasTable
                 });
               });
             }
