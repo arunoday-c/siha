@@ -180,11 +180,7 @@ module.exports = {
     let employee = "";
     let range = "";
 
-    if (
-      req.query.employee_id != "" &&
-      req.query.employee_id != null &&
-      req.query.employee_id != "null"
-    ) {
+    if (req.query.employee_id > 0) {
       employee = ` and employee_id=${req.query.employee_id} `;
     }
 

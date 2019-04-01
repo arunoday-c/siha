@@ -42,6 +42,8 @@ import {
   getHospitalDetails,
   getCashiersAndShiftMAP
 } from "./RegistrationPatientEvent";
+import { SetBulkState } from "../../utils/GlobalFunctions";
+
 const emptyObject = extend(
   PatRegIOputs.inputParam(),
   BillingIOputs.inputParam()
@@ -221,204 +223,210 @@ class RegistrationPatient extends PureComponent {
   }
 
   SavePatientDetails(e) {
-    const err = Validations(this);
+    SetBulkState({
+      state: this,
+      callback: () => {
+        const err = Validations(this);
 
-    if (!err) {
-      if (this.state.unbalanced_amount === 0) {
-        this.GenerateReciept($this => {
-          AlgaehLoader({ show: true });
+        if (!err) {
+          if (this.state.unbalanced_amount === 0) {
+            this.GenerateReciept($this => {
+              AlgaehLoader({ show: true });
 
-          if ($this.state.hims_d_patient_id === null) {
-            let patientdata = {};
+              if ($this.state.hims_d_patient_id === null) {
+                let patientdata = {};
 
-            if ($this.state.filePreview !== null) {
-              patientdata = {
-                ...$this.state,
-                patient_Image: imageToByteArray(this.state.filePreview)
-              };
-            } else {
-              patientdata = $this.state;
-            }
-            const _patImage = $this.state.patientImage;
-            const _patientIdCard = $this.state.patientIdCard;
-            const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
-            const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
-            const _patSecInsuranceFrontImg =
-              $this.state.patSecInsuranceFrontImg;
-            const _patSecInsuranceBackImg = $this.state.patSecInsuranceBackImg;
-            delete patientdata.patSecInsuranceFrontImg;
-            delete patientdata.patientIdCard;
-            delete patientdata.patInsuranceFrontImg;
-            delete patientdata.patInsuranceBackImg;
-            delete patientdata.patSecInsuranceBackImg;
-            delete patientdata.patientImage;
-            delete patientdata.countrystates;
-            delete patientdata.cities;
-            algaehApiCall({
-              uri: "/frontDesk/add",
-              module: "frontDesk",
-              data: patientdata,
-              method: "POST",
-              onSuccess: response => {
-                AlgaehLoader({ show: false });
-                if (response.data.success) {
-                  let _arrayImages = [];
-                  if (_patImage !== undefined) {
-                    _arrayImages.push(
-                      new Promise((resolve, reject) => {
-                        _patImage.SavingImageOnServer(
-                          undefined,
-                          undefined,
-                          undefined,
-                          response.data.records.patient_code,
-                          () => {
-                            resolve();
-                          }
-                        );
-                      })
-                    );
-                  }
-                  if (_patientIdCard !== undefined) {
-                    _arrayImages.push(
-                      new Promise((resolve, reject) => {
-                        _patientIdCard.SavingImageOnServer(
-                          undefined,
-                          undefined,
-                          undefined,
-                          $this.state.primary_id_no,
-                          () => {
-                            resolve();
-                          }
-                        );
-                      })
-                    );
-                  }
-
-                  if (_patInsuranceFrontImg !== undefined) {
-                    _arrayImages.push(
-                      new Promise((resolve, reject) => {
-                        _patInsuranceFrontImg.SavingImageOnServer(
-                          undefined,
-                          undefined,
-                          undefined,
-                          $this.state.primary_card_number + "_front",
-                          () => {
-                            resolve();
-                          }
-                        );
-                      })
-                    );
-                  }
-                  if (_patInsuranceBackImg !== undefined) {
-                    _arrayImages.push(
-                      new Promise((resolve, reject) => {
-                        _patInsuranceBackImg.SavingImageOnServer(
-                          undefined,
-                          undefined,
-                          undefined,
-                          $this.state.primary_card_number + "_back",
-                          () => {
-                            resolve();
-                          }
-                        );
-                      })
-                    );
-                  }
-                  if (_patSecInsuranceFrontImg !== undefined) {
-                    _arrayImages.push(
-                      new Promise((resolve, reject) => {
-                        _patSecInsuranceFrontImg.SavingImageOnServer(
-                          undefined,
-                          undefined,
-                          undefined,
-                          $this.state.secondary_card_number + "_sec_front",
-                          () => {
-                            resolve();
-                          }
-                        );
-                      })
-                    );
-                  }
-
-                  if (_patSecInsuranceBackImg !== undefined) {
-                    _arrayImages.push(
-                      new Promise((resolve, reject) => {
-                        _patSecInsuranceBackImg.SavingImageOnServer(
-                          undefined,
-                          undefined,
-                          undefined,
-                          $this.state.secondary_card_number + "_sec_back",
-                          () => {
-                            resolve();
-                          }
-                        );
-                      })
-                    );
-                  }
-
-                  Promise.all(_arrayImages).then(result => {
-                    $this.setState({
-                      patient_code: response.data.records.patient_code,
-                      bill_number: response.data.records.bill_number,
-                      receipt_number: response.data.records.receipt_number,
-                      saveEnable: true,
-                      insuranceYes: true,
-                      sec_insuranceYes: true,
-                      ProcessInsure: true
-                    });
-
-                    swalMessage({
-                      title: "Done Successfully",
-                      type: "success"
-                    });
-                  });
+                if ($this.state.filePreview !== null) {
+                  patientdata = {
+                    ...$this.state,
+                    patient_Image: imageToByteArray(this.state.filePreview)
+                  };
+                } else {
+                  patientdata = $this.state;
                 }
-              },
-              onFailure: error => {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                  title: error.message,
-                  type: "error"
+                const _patImage = $this.state.patientImage;
+                const _patientIdCard = $this.state.patientIdCard;
+                const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
+                const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
+                const _patSecInsuranceFrontImg =
+                  $this.state.patSecInsuranceFrontImg;
+                const _patSecInsuranceBackImg =
+                  $this.state.patSecInsuranceBackImg;
+                delete patientdata.patSecInsuranceFrontImg;
+                delete patientdata.patientIdCard;
+                delete patientdata.patInsuranceFrontImg;
+                delete patientdata.patInsuranceBackImg;
+                delete patientdata.patSecInsuranceBackImg;
+                delete patientdata.patientImage;
+                delete patientdata.countrystates;
+                delete patientdata.cities;
+                algaehApiCall({
+                  uri: "/frontDesk/add",
+                  module: "frontDesk",
+                  data: patientdata,
+                  method: "POST",
+                  onSuccess: response => {
+                    AlgaehLoader({ show: false });
+                    if (response.data.success) {
+                      let _arrayImages = [];
+                      if (_patImage !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patImage.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              response.data.records.patient_code,
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+                      if (_patientIdCard !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patientIdCard.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.primary_id_no,
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+
+                      if (_patInsuranceFrontImg !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patInsuranceFrontImg.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.primary_card_number + "_front",
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+                      if (_patInsuranceBackImg !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patInsuranceBackImg.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.primary_card_number + "_back",
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+                      if (_patSecInsuranceFrontImg !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patSecInsuranceFrontImg.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.secondary_card_number + "_sec_front",
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+
+                      if (_patSecInsuranceBackImg !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patSecInsuranceBackImg.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.secondary_card_number + "_sec_back",
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+
+                      Promise.all(_arrayImages).then(result => {
+                        $this.setState({
+                          patient_code: response.data.records.patient_code,
+                          bill_number: response.data.records.bill_number,
+                          receipt_number: response.data.records.receipt_number,
+                          saveEnable: true,
+                          insuranceYes: true,
+                          sec_insuranceYes: true,
+                          ProcessInsure: true
+                        });
+
+                        swalMessage({
+                          title: "Done Successfully",
+                          type: "success"
+                        });
+                      });
+                    }
+                  },
+                  onFailure: error => {
+                    AlgaehLoader({ show: false });
+                    swalMessage({
+                      title: error.message,
+                      type: "error"
+                    });
+                  }
+                });
+              } else {
+                algaehApiCall({
+                  uri: "/frontDesk/update",
+                  module: "frontDesk",
+                  data: $this.state,
+                  method: "POST",
+                  onSuccess: response => {
+                    AlgaehLoader({ show: false });
+                    if (response.data.success) {
+                      $this.setState({
+                        bill_number: response.data.records.bill_number,
+                        receipt_number: response.data.records.receipt_number,
+                        saveEnable: true
+                      });
+                      swalMessage({
+                        title: "Done Successfully",
+                        type: "success"
+                      });
+                    }
+                  },
+                  onFailure: error => {
+                    AlgaehLoader({ show: false });
+                    swalMessage({
+                      title: error.message,
+                      type: "error"
+                    });
+                  }
                 });
               }
             });
           } else {
-            algaehApiCall({
-              uri: "/frontDesk/update",
-              module: "frontDesk",
-              data: $this.state,
-              method: "POST",
-              onSuccess: response => {
-                AlgaehLoader({ show: false });
-                if (response.data.success) {
-                  $this.setState({
-                    bill_number: response.data.records.bill_number,
-                    receipt_number: response.data.records.receipt_number,
-                    saveEnable: true
-                  });
-                  swalMessage({
-                    title: "Done Successfully",
-                    type: "success"
-                  });
-                }
-              },
-              onFailure: error => {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                  title: error.message,
-                  type: "error"
-                });
-              }
+            swalMessage({
+              title: "Please recive the amount.",
+              type: "error"
             });
           }
-        });
-      } else {
-        swalMessage({
-          title: "Please recive the amount.",
-          type: "error"
-        });
+        }
       }
-    }
+    });
   }
 
   handleClose = () => {

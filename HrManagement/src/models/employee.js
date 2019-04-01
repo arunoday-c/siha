@@ -67,7 +67,7 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT * FROM hims_d_employee WHERE record_status ='A'" +
+              "SELECT *, hims_d_employee_id as employee_id  FROM hims_d_employee WHERE record_status ='A'" +
               _strAppend,
             printQuery: true
           })

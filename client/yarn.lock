@@ -127,6 +127,13 @@
     exenv "^1.2.2"
     prop-types "^15.6.2"
 
+"@toast-ui/react-image-editor@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@toast-ui/react-image-editor/-/react-image-editor-1.0.0.tgz#7a823596f11f51a135dd94d77e03b1e3dc13c1e3"
+  integrity sha512-tbqh/dJYFwlcVwp7bp+FnAe5hqueE5ZcdRkpLSa6YDgdNZ/AQusQqWaYXgk2jMJ7dSvTDmOqPgGYsA1jARe+Tw==
+  dependencies:
+    tui-image-editor "^3.4.0"
+
 "@types/jss@^9.5.3":
   version "9.5.8"
   resolved "https://registry.yarnpkg.com/@types/jss/-/jss-9.5.8.tgz#258391f42211c042fc965508d505cbdc579baa5b"
@@ -2259,6 +2266,11 @@ copy-descriptor@^0.1.0:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha1-Z29us8OZl8LuGsOpJP1hJHSPV40=
+
+core-js@2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.4.1.tgz#4de911e667b0eae9124e34254b53aea6fc618d3e"
+  integrity sha1-TekR5mew6ukSTjQlS1OupvxhjT4=
 
 core-js@^1.0.0:
   version "1.2.7"
@@ -9030,6 +9042,27 @@ tty-browserify@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/tty-browserify/-/tty-browserify-0.0.0.tgz#a157ba402da24e9bf957f9aa69d524eed42901a6"
   integrity sha1-oVe6QC2iTpv5V/mqadUk7tQpAaY=
+
+tui-code-snippet@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/tui-code-snippet/-/tui-code-snippet-1.5.0.tgz#91c076ae84e3d619c783bb91d72ca462b06303c2"
+  integrity sha512-grVv/lrHDXp9sRWypmMe76fHDlpdSfVYLiVmy8f765mWEBk+2JtiKgH+ACuipNtPZbUAy2pYgIWRQfDcg0zdCw==
+
+tui-color-picker@^2.2.0:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/tui-color-picker/-/tui-color-picker-2.2.2.tgz#0376098bcafb8cb86c6c80e6dfccae0d8c3ad2be"
+  integrity sha512-uad1DJ+xQsBUxRYXGm9SM2l+wE8H8ZXZrNBrx42LXjOr23PpdjCdBaLXuHyhK65h9sM6ZLJU9A8lnKt+rO5T7Q==
+  dependencies:
+    tui-code-snippet "^1.5.0"
+
+tui-image-editor@^3.4.0:
+  version "3.5.2"
+  resolved "https://registry.yarnpkg.com/tui-image-editor/-/tui-image-editor-3.5.2.tgz#e20bc7b34112c3cfd3fe60f5ef937a06e5b3a54a"
+  integrity sha512-McXU+rztJO0hov23EDs8J5trbqJGta5XCjG6fc74XE8XcqZF/FkZ0P71KW4tWjxTF389NjSTnalrNH5aqwY5Gw==
+  dependencies:
+    core-js "2.4.1"
+    tui-code-snippet "^1.5.0"
+    tui-color-picker "^2.2.0"
 
 tunnel-agent@^0.6.0:
   version "0.6.0"
