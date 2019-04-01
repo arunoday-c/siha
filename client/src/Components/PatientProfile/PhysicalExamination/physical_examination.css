@@ -1,11 +1,14 @@
 .physical_examination .vitalTopFld15 {
-  width: 15%; }
+  width: 15%;
+}
 
 .physical_examination .vitalTopFld20 {
-  width: 20%; }
+  width: 20%;
+}
 
 .physical_examination .vitalTopFld25 {
-  width: 25%; }
+  width: 25%;
+}
 
 /* The actual timeline (the vertical ruler) */
 .timeline {
@@ -14,52 +17,62 @@
   margin: 0 auto;
   /* timelineContainer around content */
   /* The circles on the timeline */
-  /* Place the container to the right */ }
-  .timeline .timelineContainer {
-    padding: 5px 0 3px 5px;
-    position: relative;
-    width: 90%; }
-  .timeline .timelineContainer::after {
-    content: "";
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background-color: #2ebcb0;
-    top: 15px;
-    border-radius: 50%;
-    z-index: 1; }
-  .timeline .right {
-    left: 10px; }
-  .timeline .content {
-    position: relative;
-    padding: 4px 0 13px 16px;
-    border-bottom: 2px dashed #cecece; }
-    .timeline .content .dateStamp {
-      background: #2ebcb0;
-      color: #fff;
-      padding: 2px 10px;
-      margin: 0;
-      margin-bottom: 7px;
-      border-radius: 7px; }
-    .timeline .content ul.vitals-box {
-      margin: 0;
-      padding: 0;
-      list-style: none; }
-      .timeline .content ul.vitals-box li.each-vitals-box {
-        margin: 5px 0 0;
-        padding: 5px 10px;
-        list-style: none;
-        border: 1px solid #41bcaf;
-        border-radius: 5px;
-        background: #fffbf3; }
-        .timeline .content ul.vitals-box li.each-vitals-box p {
-          margin: 0;
-          padding: 0;
-          margin-bottom: 5px;
-          text-transform: uppercase; }
-        .timeline .content ul.vitals-box li.each-vitals-box span:last-child {
-          text-align: right;
-          margin-left: 5px; }
+  /* Place the container to the right */
+}
+.timeline .timelineContainer {
+  padding: 5px 0 3px 5px;
+  position: relative;
+  width: 90%;
+}
+.timeline .timelineContainer::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background-color: #2ebcb0;
+  top: 15px;
+  border-radius: 50%;
+  z-index: 1;
+}
+.timeline .right {
+  left: 10px;
+}
+.timeline .content {
+  position: relative;
+  padding: 4px 0 13px 16px;
+  border-bottom: 2px dashed #cecece;
+}
+.timeline .content .dateStamp {
+  background: #2ebcb0;
+  color: #fff;
+  padding: 2px 10px;
+  margin: 0;
+  margin-bottom: 7px;
+  border-radius: 7px;
+}
+.timeline .content ul.vitals-box {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.timeline .content ul.vitals-box li.each-vitals-box {
+  margin: 5px 0 0;
+  padding: 5px 10px;
+  list-style: none;
+  border: 1px solid #41bcaf;
+  border-radius: 5px;
+  background: #fffbf3;
+}
+.timeline .content ul.vitals-box li.each-vitals-box p {
+  margin: 0;
+  padding: 0;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+.timeline .content ul.vitals-box li.each-vitals-box span:last-child {
+  text-align: right;
+  margin-left: 5px;
+}
 
 /* The actual timeline (the vertical ruler) */
 .timeline::after {
@@ -70,44 +83,55 @@
   bottom: 0;
   left: 22px;
   margin-left: -3px;
-  background: #cecece; }
+  background: #cecece;
+}
 
 .textArea {
-  max-height: 188px; }
-  .textArea .ui.input input,
-  .textArea .ui.input textarea {
-    min-height: 200px !important;
-    max-height: 200px !important; }
+  max-height: 188px;
+}
+.textArea .ui.input input,
+.textArea .ui.input textarea {
+  min-height: 200px !important;
+  max-height: 200px !important;
+}
 
 .examDiagramPopup .popupInner {
   min-height: 80vh !important;
-  max-height: 80vh !important; }
-  .examDiagramPopup .popupInner .popLeftDiv {
-    min-height: 30vh;
-    max-height: 80vh; }
-  .examDiagramPopup .popupInner .popRightDiv {
-    min-height: 30vh;
-    max-height: 80vh; }
+  max-height: 80vh !important;
+}
+.examDiagramPopup .popupInner .popLeftDiv {
+  min-height: 30vh;
+  max-height: 80vh;
+}
+.examDiagramPopup .popupInner .popRightDiv {
+  min-height: 30vh;
+  max-height: 80vh;
+}
 
 .examDiagramPopup .CanvasEditorCntr {
-  background: #cecece;
   width: 100%;
-  height: 57vh;
-  float: left; }
+  float: left;
+  margin: 0 -15px 0 0;
+}
 
 .examDiagramPopup .DiagramRemarksCntr {
   width: 100%;
-  float: left; }
+  float: left;
+}
 
 .examDiagramPopup .eachDiagram {
   border-bottom: 1px solid #ccc;
-  margin-bottom: 10px; }
-  .examDiagramPopup .eachDiagram img {
-    width: 100%;
-    height: auto;
-    background: #ccc;
-    border: 1px solid #ccc; }
-  .examDiagramPopup .eachDiagram p {
-    font-size: 0.9rem; }
-    .examDiagramPopup .eachDiagram p small {
-      display: block; }
+  margin-bottom: 10px;
+}
+.examDiagramPopup .eachDiagram img {
+  width: 100%;
+  height: auto;
+  background: #ccc;
+  border: 1px solid #ccc;
+}
+.examDiagramPopup .eachDiagram p {
+  font-size: 0.9rem;
+}
+.examDiagramPopup .eachDiagram p small {
+  display: block;
+}

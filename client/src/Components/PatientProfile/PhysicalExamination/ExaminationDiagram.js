@@ -165,12 +165,12 @@ export default class ExaminationDiagram extends Component {
                           onlyDragDrop={true}
                         />
                       </div>
-                      <button
+                      {/* <button
                         className="btn btn-primary"
                         style={{ marginTop: 19 }}
                       >
                         Upload Image
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                   <div className="row">

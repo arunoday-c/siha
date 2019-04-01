@@ -12,7 +12,6 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 export default class ReportUI extends Component {
   constructor(props) {
-    debugger;
     super(props);
     this.state = {
       reportQuery:
@@ -106,7 +105,6 @@ export default class ReportUI extends Component {
   }
 
   componentWillReceiveProps(props) {
-    debugger;
     this.setState({
       openPopup: true,
       reportQuery: props.options.report.reportQuery
@@ -129,7 +127,6 @@ export default class ReportUI extends Component {
     });
   }
   generateReport(e) {
-    debugger;
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
@@ -149,12 +146,12 @@ export default class ReportUI extends Component {
 
         const that = this;
         let options = { ...this.props.options, ...{ getRaw: true } };
-        console.log("Report Options", options);
+
         const uri =
           typeof options.report.reportUri === "string"
             ? options.report.reportUri
             : "/generateReport/getReport";
-        debugger;
+
         const _module =
           typeof options.report.module === "string"
             ? { module: options.report.module }
@@ -166,6 +163,7 @@ export default class ReportUI extends Component {
           inputs: querString,
           ..._module,
           onSuccess: response => {
+            debugger;
             if (response.data.success === true) {
               new Promise((resolve, reject) => {
                 resolve(response.data.records);
@@ -185,7 +183,6 @@ export default class ReportUI extends Component {
     });
   }
   dropDownHandle(e) {
-    debugger;
     const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
       .where(w => w.name === e.name)
       .firstOrDefault().events;
@@ -311,7 +308,7 @@ export default class ReportUI extends Component {
     } = require("./algaehWrapper");
     for (let i = 0; i < _parameters.length; i++) {
       const _param = _parameters[i];
-      debugger;
+
       switch (_param.type) {
         case "dropdown":
           const _data =
@@ -320,7 +317,7 @@ export default class ReportUI extends Component {
                 ? []
                 : _param.dataSource.data
               : this.state[_param.name + "_list"];
-          debugger;
+
           _controls.push(
             <AlagehAutoComplete
               key={i}
