@@ -15,6 +15,7 @@ class PhysicalExamination extends Component {
     this.state = {
       isOpen: false
     };
+    this.isclosed = false;
   }
 
   textHandle(e) {
@@ -22,16 +23,20 @@ class PhysicalExamination extends Component {
   }
 
   OpenDiagram() {
-    debugger;
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
+    if (!this.isclosed) {
+      this.setState({
+        isOpen: true
+      });
+    } else {
+      this.isclosed = false;
+    }
   }
 
   CloseModel(e) {
+    this.isclosed = true;
     this.setState({
       ...this.state,
-      isOpen: !this.state.isOpen
+      isOpen: false
     });
   }
 

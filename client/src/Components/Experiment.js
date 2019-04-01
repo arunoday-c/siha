@@ -17,7 +17,8 @@ class Experiment extends Component {
     this.state = {
       patImg: "",
       openAuth: false,
-      name: "i"
+      name: "i",
+      image: undefined
     };
 
     // console.log("Chunk:", _.chunk(services, 1));
