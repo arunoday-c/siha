@@ -8,11 +8,10 @@ import {
   getCookie
 } from "../../../utils/algaehApiCall";
 import DirectRoutes from "../../../Dynamicroutes";
-import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 import Enumarable from "linq";
 import swal from "sweetalert2";
-import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
+
 class PersistentDrawer extends React.Component {
   constructor(props) {
     super(props);
@@ -239,45 +238,23 @@ class PersistentDrawer extends React.Component {
     }
     if (secLang === "en") {
       setCookie("ScreenName", renderComp, 30);
-      this.setState(
-        {
-          languageName: "English",
-          Language: "en",
-          title: this.state.enlabl,
-          renderComponent: renderComp
-        }
-        // ,
-        // () => {
-        //   this.setState({
-        //     renderComponent: renderComp
-        //   });
-        // }
-      );
+      this.setState({
+        languageName: "English",
+        Language: "en",
+        title: this.state.enlabl,
+        renderComponent: renderComp
+      });
     } else if (secLang === "ar") {
       if (renderComp === "FrontDesk" || renderComp === "OPBilling") {
         renderComp = renderComp + "Ar";
       }
       setCookie("ScreenName", renderComp, 30);
-      this.setState(
-        {
-          languageName: "عربي",
-          Language: "ar",
-          title: this.state.arlabl,
-          renderComponent: renderComp
-        }
-        // ,
-        // () => {
-        //
-        //   this.setState(
-        //     {
-        //       renderComponent: renderComp
-        //     },
-        //     () => {
-        //
-        //     }
-        //   );
-        // }
-      );
+      this.setState({
+        languageName: "عربي",
+        Language: "ar",
+        title: this.state.arlabl,
+        renderComponent: renderComp
+      });
     }
   }
 
@@ -300,12 +277,6 @@ class PersistentDrawer extends React.Component {
       class: "slideInLeft",
       sideopen: true
     });
-    // const _offSet =
-    //   document.querySelector("[menuselected]") === null
-    //     ? 0
-    //     : document.querySelector("[menuselected]").offsetTop;
-    // if (this.scrollLeftPanel !== undefined && this.scrollLeftPanel !== null)
-    //   this.scrollLeftPanel.scrollTop = _offSet;
   };
 
   handleDrawerClose = () => {
@@ -363,6 +334,7 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(submenu, e) {
+    debugger;
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
 
     // submenu.screen_name === "Doctor Appointment"

@@ -197,6 +197,14 @@ let algaehReportConfig = reportName => {
           inner join hims_f_patient P on C.patient_id=P.hims_d_patient_id where  RH.pay_type='R'and \
           date(receipt_date)   between date(?) and date(?)  and RH.record_status='A'  and RD.record_status='A'",
         questionOrder: ["from_date", "to_date"]
+      },
+      {
+        reportName: "patOutstandingSum",
+        reportQuery:
+          "SELECT P.patient_code,P.full_name,P.advance_amount,P.created_date FROM hims_f_patient P, \
+          hims_f_patient_advance PA where P.hims_d_patient_id = PA.hims_f_patient_id \
+          and date(PA.created_date) < date(?) and P.advance_amount>0 and P.record_status='A'",
+        questionOrder: ["till_date"]
       }
     ]
   };

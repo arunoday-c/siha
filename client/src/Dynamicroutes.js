@@ -365,6 +365,9 @@ const PageToPlot = {
   ),
   PackageSetup: React.lazy(() =>
     retry(() => import("./Components/PackageSetup/PackageSetup"))
+  ),
+  PackageBilling: React.lazy(() =>
+    retry(() => import("./Components/PackageBilling/PackageBilling"))
   )
 };
 

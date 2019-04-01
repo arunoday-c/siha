@@ -2030,5 +2030,27 @@ export default [
         ]
       }
     ]
+  },
+  {
+    name: "Patient Reports",
+    submenu: [
+      {
+        subitem: "Patient Outstanding",
+        template_name: "PatientReports/PatOutstandingSum",
+        reportQuery: "patOutstandingSum",
+        reportParameters: [
+          {
+            type: "date",
+            name: "till_date",
+            label: "Till Date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+      }
+    ]
   }
 ];
