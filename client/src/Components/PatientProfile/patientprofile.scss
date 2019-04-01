@@ -40,15 +40,18 @@
 
         img {
           height: 55px;
-          width: auto;
+          width: 55px;
           border-radius: 4px;
           overflow: hidden;
-          -webkit-transition: height 0.3s; /* For Safari 3.1 to 6.0 */
-          transition: height 0.3s;
+          -webkit-transition: width 0.3s; /* For Safari 3.1 to 6.0 */
+          transition: width 0.3s;
           border-radius: 0;
           &:hover {
-            height: 175px;
+            width: 175px;
+            height: auto;
             box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            z-index: 9;
           }
         }
       }
@@ -97,6 +100,7 @@
       padding-left: 10px;
       padding-right: 10px;
       min-height: 57px;
+      max-width: 170px;
       span {
         font-size: 0.9em;
         font-weight: 700;

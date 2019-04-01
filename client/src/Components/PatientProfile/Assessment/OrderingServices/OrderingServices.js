@@ -643,10 +643,10 @@ class OrderingServices extends Component {
                   </div>
                 </div>
 
-                <div className="row">
+                <div className="row GridTotalDetails">
                   <div className="col-lg-5" style={{ textAlign: "right" }}>
                     <div className="row">
-                      <div className="col-lg-4">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "sub_ttl"
@@ -654,7 +654,7 @@ class OrderingServices extends Component {
                         />
                         <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
                       </div>
-                      <div className="col-lg-4">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "dsct_amt"
@@ -663,7 +663,7 @@ class OrderingServices extends Component {
                         <h5>{getAmountFormart(this.state.discount_amount)}</h5>
                       </div>
 
-                      <div className="col-lg-4">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "net_ttl"
@@ -676,7 +676,7 @@ class OrderingServices extends Component {
 
                   <div className="col-lg-7">
                     <div className="row">
-                      <div className="col-lg-4">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "pat_payable"
@@ -684,7 +684,7 @@ class OrderingServices extends Component {
                         />
                         <h5>{getAmountFormart(this.state.patient_payable)}</h5>
                       </div>
-                      <div className="col-lg-4">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "co_payable"
@@ -692,7 +692,7 @@ class OrderingServices extends Component {
                         />
                         <h5>{getAmountFormart(this.state.company_payble)}</h5>
                       </div>
-                      <div className="col-lg-4">
+                      <div className="col">
                         <AlgaehLabel
                           label={{
                             fieldName: "sec_co_payable"

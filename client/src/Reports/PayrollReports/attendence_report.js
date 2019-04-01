@@ -13,12 +13,12 @@ export function printReport(result) {
   let ot_weekoff_hours = _.sumBy(data, s => parseFloat(s.ot_weekoff_hours));
   let ot_holiday_hours = _.sumBy(data, s => parseFloat(s.ot_holiday_hours));
 
-  document
-    .getElementById("reportFixedTable")
-    .addEventListener("scroll", function(e) {
-      alert("Hello");
-      console.log("Im Here");
-    });
+  // document
+  //   .getElementById("reportFixedTable")
+  //   .addEventListener("scroll", function(e) {
+  //     alert("Hello");
+  //     console.log("Im Here");
+  //   });
 
   // $("#tbl-content").scroll(function() {
   //   $("#tbl-header").scrollTop($(this).scrollTop());
@@ -52,7 +52,7 @@ export function printReport(result) {
                 <th>Week Off OT</th>
                 <th>Holiday OT</th>                
             </tr>
-        </thead></table></div><div class="tbl-content" style="height: 30vh" id="tbl-content" >
+        </thead></table></div><div class="tbl-content" style="height: 30vh" algaeh-report-table="true" id="tbl-content" >
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data
