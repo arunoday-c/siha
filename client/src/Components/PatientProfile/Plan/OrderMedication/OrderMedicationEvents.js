@@ -283,7 +283,7 @@ const getItemStock = $this => {
       if (data.length !== 0) {
         for (let i = 0; i < data.length; i++) {
           let qtyhand = data[i].qtyhand;
-          total_quantity = total_quantity + qtyhand;
+          total_quantity = parseFloat(total_quantity) + parseFloat(qtyhand);
         }
         $this.setState({
           total_quantity: total_quantity

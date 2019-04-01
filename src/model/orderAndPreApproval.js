@@ -434,8 +434,9 @@ let selectOrderServices = (req, res, next) => {
       }
       let where = whereCondition(extend(selectWhere, req.query));
       connection.query(
-        "SELECT  * FROM `hims_f_ordered_services` \
-       WHERE `record_status`='A' AND `billed`='N' AND " +
+        "SELECT  * FROM `hims_f_ordered_services` , `hims_d_services` WHERE \
+        hims_f_ordered_services.services_id = hims_d_services.hims_d_services_id and \
+        hims_f_ordered_services.`record_status`='A' AND `billed`='N' AND " +
           where.condition,
         where.values,
         (error, result) => {
