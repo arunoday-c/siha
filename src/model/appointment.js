@@ -865,7 +865,7 @@ let addDoctorsSchedule = (req, res, next) => {
 
                   //get list of dates which are already scheduled for this doctor
                   connection.query(
-                    "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and schedule_date>?;",
+                    "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and record_status='A' and schedule_date>?;",
                     [input.schedule_detail[doc].provider_id, new Date()],
                     (error, occupiedDoctorDates) => {
                       if (error) {
@@ -2028,7 +2028,7 @@ let addDoctorToExistingSchedule = (req, res, next) => {
             debugLog("newDateList:", newDateList.length);
             //get list of dates which are already scheduled for this doctor
             connection.query(
-              "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and schedule_date>?;",
+              "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and record_status='A' and schedule_date>?;",
               [input.provider_id, new Date()],
               (error, occupiedDoctorDates) => {
                 if (error) {
