@@ -7,6 +7,7 @@ import {
   AlagehAutoComplete,
   Modal
 } from "../../Wrapper/algaehWrapper";
+import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 import AlgaehCanvas from "../../Wrapper/algaehCanvas";
 export default class ExaminationDiagram extends Component {
   constructor(props) {
@@ -157,11 +158,18 @@ export default class ExaminationDiagram extends Component {
                       }}
                     />
                     <div className="col">
+                      <div className="d-none">
+                        <AlgaehFileUploader
+                          ref="imageToDepartment"
+                          showActions={false}
+                          onlyDragDrop={true}
+                        />
+                      </div>
                       <button
                         className="btn btn-primary"
                         style={{ marginTop: 19 }}
                       >
-                        Add
+                        Upload Image
                       </button>
                     </div>
                   </div>
