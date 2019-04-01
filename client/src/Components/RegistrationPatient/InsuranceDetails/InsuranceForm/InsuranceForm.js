@@ -273,7 +273,7 @@ class AddInsuranceForm extends Component {
 
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <div className="col-lg-6">
+                      <div className="col-lg-6 insurCrdImgDB maybe">
                         <div className="image-drop-area">
                           <AlgaehFileUploader
                             ref={patInsuranceFrontImg => {
@@ -321,7 +321,7 @@ class AddInsuranceForm extends Component {
                         </div>
                       </div>
 
-                      <div className="col-lg-6">
+                      <div className="col-lg-6 insurCrdImg">
                         <div className="image-drop-area">
                           <AlgaehFileUploader
                             ref={patInsuranceBackImg => {

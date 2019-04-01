@@ -4,7 +4,6 @@ import _ from "lodash";
 import "../report-style.css";
 import math from "mathjs";
 export function printReport(result) {
-  debugger;
   if (result === undefined) return null;
   const data = result;
   if (data === undefined) return null;
@@ -13,7 +12,23 @@ export function printReport(result) {
   let shortage_hours = _.sumBy(data, s => parseFloat(s.shortage_hours));
   let ot_weekoff_hours = _.sumBy(data, s => parseFloat(s.ot_weekoff_hours));
   let ot_holiday_hours = _.sumBy(data, s => parseFloat(s.ot_holiday_hours));
+  const scrollFun =
+    "function scrollfun() { \
+    debugger; \
+    alert('test');\
+  }";
+
+  //   $(function () {
+  //     $('#left').scroll(function () {
+  //         $('#right').scrollTop($(this).scrollTop());
+  //     });
+  //     $('#right').scroll(function () {
+  //         $('#left').scrollTop($(this).scrollTop());
+  //     });
+  // });
+
   return `
+
   <div class="print-body">
   <header> ${payrollHeader(data)} </header> 
    
@@ -40,7 +55,7 @@ export function printReport(result) {
                 <th>Week Off OT</th>
                 <th>Holiday OT</th>                
             </tr>
-        </thead></table></div><div class="tbl-content" style="height: 30vh">
+        </thead></table></div><div class="tbl-content" style="height: 30vh"  onscroll='${scrollFun}'   >
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data
