@@ -233,33 +233,33 @@ class RegistrationPatient extends PureComponent {
             this.GenerateReciept($this => {
               AlgaehLoader({ show: true });
 
-              if ($this.state.hims_d_patient_id === null) {
-                let patientdata = {};
+              let patientdata = {};
 
-                if ($this.state.filePreview !== null) {
-                  patientdata = {
-                    ...$this.state,
-                    patient_Image: imageToByteArray(this.state.filePreview)
-                  };
-                } else {
-                  patientdata = $this.state;
-                }
-                const _patImage = $this.state.patientImage;
-                const _patientIdCard = $this.state.patientIdCard;
-                const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
-                const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
-                const _patSecInsuranceFrontImg =
-                  $this.state.patSecInsuranceFrontImg;
-                const _patSecInsuranceBackImg =
-                  $this.state.patSecInsuranceBackImg;
-                delete patientdata.patSecInsuranceFrontImg;
-                delete patientdata.patientIdCard;
-                delete patientdata.patInsuranceFrontImg;
-                delete patientdata.patInsuranceBackImg;
-                delete patientdata.patSecInsuranceBackImg;
-                delete patientdata.patientImage;
-                delete patientdata.countrystates;
-                delete patientdata.cities;
+              if ($this.state.filePreview !== null) {
+                patientdata = {
+                  ...$this.state,
+                  patient_Image: imageToByteArray($this.state.filePreview)
+                };
+              } else {
+                patientdata = $this.state;
+              }
+              const _patImage = $this.state.patientImage;
+              const _patientIdCard = $this.state.patientIdCard;
+              const _patInsuranceFrontImg = $this.state.patInsuranceFrontImg;
+              const _patInsuranceBackImg = $this.state.patInsuranceBackImg;
+              const _patSecInsuranceFrontImg =
+                $this.state.patSecInsuranceFrontImg;
+              const _patSecInsuranceBackImg =
+                $this.state.patSecInsuranceBackImg;
+              delete patientdata.patSecInsuranceFrontImg;
+              delete patientdata.patientIdCard;
+              delete patientdata.patInsuranceFrontImg;
+              delete patientdata.patInsuranceBackImg;
+              delete patientdata.patSecInsuranceBackImg;
+              delete patientdata.patientImage;
+              delete patientdata.countrystates;
+              delete patientdata.cities;
+              if ($this.state.hims_d_patient_id === null) {
                 algaehApiCall({
                   uri: "/frontDesk/add",
                   module: "frontDesk",
@@ -392,20 +392,126 @@ class RegistrationPatient extends PureComponent {
                 algaehApiCall({
                   uri: "/frontDesk/update",
                   module: "frontDesk",
-                  data: $this.state,
+                  data: patientdata,
                   method: "POST",
                   onSuccess: response => {
                     AlgaehLoader({ show: false });
                     if (response.data.success) {
-                      $this.setState({
-                        bill_number: response.data.records.bill_number,
-                        receipt_number: response.data.records.receipt_number,
-                        saveEnable: true
+                      debugger;
+                      let _arrayImages = [];
+                      if (_patImage !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patImage.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.patient_code,
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+                      if (_patientIdCard !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patientIdCard.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.primary_id_no,
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+
+                      if (_patInsuranceFrontImg !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patInsuranceFrontImg.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.primary_card_number + "_front",
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+                      if (_patInsuranceBackImg !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patInsuranceBackImg.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.primary_card_number + "_back",
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+                      if (_patSecInsuranceFrontImg !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patSecInsuranceFrontImg.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.secondary_card_number + "_sec_front",
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+
+                      if (_patSecInsuranceBackImg !== undefined) {
+                        _arrayImages.push(
+                          new Promise((resolve, reject) => {
+                            _patSecInsuranceBackImg.SavingImageOnServer(
+                              undefined,
+                              undefined,
+                              undefined,
+                              $this.state.secondary_card_number + "_sec_back",
+                              () => {
+                                resolve();
+                              }
+                            );
+                          })
+                        );
+                      }
+
+                      Promise.all(_arrayImages).then(result => {
+                        $this.setState({
+                          bill_number: response.data.records.bill_number,
+                          receipt_number: response.data.records.receipt_number,
+                          saveEnable: true,
+                          insuranceYes: true,
+                          sec_insuranceYes: true,
+                          ProcessInsure: true
+                        });
+
+                        swalMessage({
+                          title: "Done Successfully",
+                          type: "success"
+                        });
                       });
-                      swalMessage({
-                        title: "Done Successfully",
-                        type: "success"
-                      });
+                      // $this.setState({
+                      //   bill_number: response.data.records.bill_number,
+                      //   receipt_number: response.data.records.receipt_number,
+                      //   saveEnable: true
+                      // });
                     }
                   },
                   onFailure: error => {
