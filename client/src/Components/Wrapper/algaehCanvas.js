@@ -19,13 +19,25 @@ export default class AlgaehCanvas extends Component {
     this.btnSave = {
       position: "absolute",
       top: "7px",
-      left: "9px",
+      right: 15,
       zIndex: 9,
       background: "#6ba25b",
       color: "#fff",
       width: "44px",
       height: "44px",
-      fontSize: "0.9rem",
+      fontSize: "1.5rem",
+      textAalign: "center"
+    };
+    this.btnUpLoad = {
+      position: "absolute",
+      top: "55px",
+      right: 15,
+      zIndex: 9,
+      background: "#fff",
+      color: "#000",
+      width: "44px",
+      height: "44px",
+      fontSize: "1.5rem",
       textAalign: "center"
     };
     this.btnDiagramCntr = {
@@ -110,6 +122,41 @@ export default class AlgaehCanvas extends Component {
     link.setAttribute("download", this.state.name + ".png");
     link.click();
   }
+  uploadImage(e) {
+    debugger;
+    this.fileUploader.click();
+    // this.editor.getRootElement().lastElementChild.firstElementChild();
+  }
+  fileUploaderHandler(e) {
+    debugger;
+    if (e.currentTarget.files.length > 0) {
+      const that = this;
+      const _file = e.currentTarget.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(_file);
+      reader.onloadend = () => {
+        const _result = reader.result;
+        that.setState({ image: _result, name: _file.name }, () => {
+          that.editor
+            .getInstance()
+            .loadImageFromURL(_result, _file.name)
+            .then(result => {
+              that.editor.getInstance().ui.resizeEditor({
+                imageSize: {
+                  oldWidth: result.oldWidth,
+                  oldHeight: result.oldHeight,
+                  newWidth: result.newWidth,
+                  newHeight: result.newHeight
+                }
+              });
+            })
+            .catch(err => {
+              console.error("Something went wrong:", err);
+            });
+        });
+      };
+    }
+  }
   render() {
     return (
       <div style={this.btnDiagramCntr}>
@@ -175,8 +222,8 @@ export default class AlgaehCanvas extends Component {
 
             // initMenu: "filter",
             uiSize: {
-              width: "1000px",
-              height: "700px"
+              width: "65vw",
+              height: "65vh"
             },
             menuBarPosition: "left"
           }}
@@ -189,7 +236,20 @@ export default class AlgaehCanvas extends Component {
           usageStatistics={false}
         />
         <button style={this.btnSave} onClick={this.loadImagaing.bind(this)}>
-          Save
+          <i className="far fa-save" />
+        </button>
+
+        <span className="d-none">
+          <input
+            ref={fileUploader => {
+              this.fileUploader = fileUploader;
+            }}
+            type="file"
+            onChange={this.fileUploaderHandler.bind(this)}
+          />
+        </span>
+        <button onClick={this.uploadImage.bind(this)} style={this.btnUpLoad}>
+          <i className="fas fa-upload" />
         </button>
       </div>
     );

@@ -13,12 +13,12 @@ export function printReport(result) {
   let ot_weekoff_hours = _.sumBy(data, s => parseFloat(s.ot_weekoff_hours));
   let ot_holiday_hours = _.sumBy(data, s => parseFloat(s.ot_holiday_hours));
 
-  document
-    .getElementById("reportFixedTable")
-    .addEventListener("scroll", function(e) {
-      alert("Hello");
-      console.log("Im Here");
-    });
+  // document
+  //   .getElementById("reportFixedTable")
+  //   .addEventListener("scroll", function(e) {
+  //     alert("Hello");
+  //     console.log("Im Here");
+  //   });
 
   // $("#tbl-content").scroll(function() {
   //   $("#tbl-header").scrollTop($(this).scrollTop());
