@@ -73,6 +73,21 @@ export default class ReportUI extends Component {
       }
     }
   }
+  componentWillUnmount() {
+    if (this.state.hasTable) {
+      document
+        .querySelectorAll("[algaeh-report-table='true']")
+        .forEach(item => {
+          item.removeEventListener(
+            "scroll",
+            function(e) {
+              e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
+            },
+            false
+          );
+        });
+    }
+  }
 
   componentDidMount() {
     this.setState({
