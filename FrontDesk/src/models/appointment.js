@@ -494,7 +494,7 @@ module.exports = {
               _mysql
                 .executeQuery({
                   query:
-                    "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and schedule_date>?;",
+                    "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and record_status='A' and schedule_date>?;",
                   values: [input.schedule_detail[doc].provider_id, new Date()]
                 })
                 .then(occupiedDoctorDates => {
@@ -1265,7 +1265,7 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and schedule_date>?;",
+              "select hims_d_appointment_schedule_detail_id,appointment_schedule_header_id,schedule_date from hims_d_appointment_schedule_detail  where provider_id=? and record_status='A' and schedule_date>?;",
             values: [input.provider_id, new Date()],
 
             printQuery: true
