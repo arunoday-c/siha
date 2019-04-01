@@ -273,102 +273,48 @@ class AddInsuranceForm extends Component {
 
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <div className="col-lg-6">
-                        <div className="image-drop-area">
-                          <AlgaehFileUploader
-                            ref={patInsuranceFrontImg => {
-                              this.patInsuranceFrontImg = patInsuranceFrontImg;
-                            }}
-                            noImage="insurance-card-front"
-                            name="patInsuranceFrontImg"
-                            accept="image/*"
-                            textAltMessage="Insurance Card Front Side"
-                            serviceParameters={{
-                              uniqueID:
-                                this.state.primary_card_number + "_front",
-                              fileType: "Patients",
-                              processDelay: this.imageDetails.bind(
-                                this,
-                                context,
-                                "patInsuranceFrontImg"
-                              )
-                            }}
-                            renderPrevState={this.state.patInsuranceFrontImg}
-                          />
-                          {/* <Dropzone
-                            onDrop={this.onDrop.bind(this, "frontSide")}
-                            id="attach-primary-id"
-                            className="dropzone"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              alt="Attach front side"
-                              src={this.state.frontSide}
-                              style={{ width: "100%", height: "101px" }}
-                            />
-
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_front",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                          </Dropzone> */}
-                        </div>
+                      <div className="col-lg-6 insurCrdImg">
+                        <AlgaehFileUploader
+                          ref={patInsuranceFrontImg => {
+                            this.patInsuranceFrontImg = patInsuranceFrontImg;
+                          }}
+                          noImage="insurance-card-front"
+                          name="patInsuranceFrontImg"
+                          accept="image/*"
+                          textAltMessage="Insurance Card Front Side"
+                          serviceParameters={{
+                            uniqueID: this.state.primary_card_number + "_front",
+                            fileType: "Patients",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              context,
+                              "patInsuranceFrontImg"
+                            )
+                          }}
+                          renderPrevState={this.state.patInsuranceFrontImg}
+                        />
                       </div>
 
-                      <div className="col-lg-6">
-                        <div className="image-drop-area">
-                          <AlgaehFileUploader
-                            ref={patInsuranceBackImg => {
-                              this.patInsuranceBackImg = patInsuranceBackImg;
-                            }}
-                            noImage="insurance-card-back"
-                            name="patInsuranceBackImg"
-                            accept="image/*"
-                            textAltMessage="Insurance Card Back Side"
-                            serviceParameters={{
-                              uniqueID:
-                                this.state.primary_card_number + "_back",
-                              fileType: "Patients",
-                              processDelay: this.imageDetails.bind(
-                                this,
-                                context,
-                                "patInsuranceBackImg"
-                              )
-                            }}
-                            renderPrevState={this.state.patInsuranceBackImg}
-                          />
-
-                          {/* <Dropzone
-                            onDrop={this.onDrop.bind(this, "backSide")}
-                            id="attach-width"
-                            className="dropzone"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              alt="Attach back side"
-                              src={this.state.backSide}
-                              style={{ width: "100%", height: "101px" }}
-                            />
-
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_back",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                          </Dropzone> */}
-                        </div>
-
+                      <div className="col-lg-6 insurCrdImg">
+                        <AlgaehFileUploader
+                          ref={patInsuranceBackImg => {
+                            this.patInsuranceBackImg = patInsuranceBackImg;
+                          }}
+                          noImage="insurance-card-back"
+                          name="patInsuranceBackImg"
+                          accept="image/*"
+                          textAltMessage="Insurance Card Back Side"
+                          serviceParameters={{
+                            uniqueID: this.state.primary_card_number + "_back",
+                            fileType: "Patients",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              context,
+                              "patInsuranceBackImg"
+                            )
+                          }}
+                          renderPrevState={this.state.patInsuranceBackImg}
+                        />
                         <div />
                       </div>
                     </div>

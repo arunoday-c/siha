@@ -4,7 +4,6 @@ import _ from "lodash";
 import "../report-style.css";
 import math from "mathjs";
 export function printReport(result) {
-  debugger;
   if (result === undefined) return null;
   const data = result;
   if (data === undefined) return null;
@@ -13,13 +12,26 @@ export function printReport(result) {
   let shortage_hours = _.sumBy(data, s => parseFloat(s.shortage_hours));
   let ot_weekoff_hours = _.sumBy(data, s => parseFloat(s.ot_weekoff_hours));
   let ot_holiday_hours = _.sumBy(data, s => parseFloat(s.ot_holiday_hours));
+
+  document
+    .getElementById("reportFixedTable")
+    .addEventListener("scroll", function(e) {
+      alert("Hello");
+      console.log("Im Here");
+    });
+
+  // $("#tbl-content").scroll(function() {
+  //   $("#tbl-header").scrollTop($(this).scrollTop());
+  // });
+
   return `
+
   <div class="print-body">
   <header> ${payrollHeader(data)} </header> 
    
 <section>
-    <h2><span>Attendence Details</span></h2><div class="tbl-header">
-    <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
+    <h2><span>Attendence Details</span></h2><div class="tbl-header" id="tbl-header">
+    <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <thead >
             <tr>
                 <th>Employee Code</th>
@@ -40,7 +52,7 @@ export function printReport(result) {
                 <th>Week Off OT</th>
                 <th>Holiday OT</th>                
             </tr>
-        </thead></table></div><div class="tbl-content" style="height: 30vh">
+        </thead></table></div><div class="tbl-content" style="height: 30vh" id="tbl-content" >
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data

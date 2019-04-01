@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 import EmployeeDocModel from "./employeeDoc";
 import PatientDocModel from "./patientDoc";
 import CompanyDocModel from "./company";
-import { logger, debugLog } from "../Utils/logging";
+import DepartmentImageModel from "./departmentImages";
+//import { logger, debugLog } from "../Utils/logging";
 import stream from "stream";
 module.exports = db => {
   return {
@@ -140,6 +141,48 @@ module.exports = db => {
               });
             }
           );
+        } else if (_headerFile.fileType == "DepartmentImages") {
+          DepartmentImageModel.findOneAndUpdate(
+            {
+              pageName: _headerFile.pageName,
+              destinationName: _headerFile.destinationName
+            },
+            {
+              pageName: _headerFile.pageName,
+              destinationName: _headerFile.destinationName,
+              clientID: _clientID,
+              image: _utf,
+              fileExtention: _headerFile.fileExtention,
+              updatedDate: new Date()
+            },
+            (error, result) => {
+              if (error) {
+                res.status(400).json({
+                  success: false,
+                  records: error
+                });
+                return;
+              } else {
+                if (result == null) {
+                  let _DepartmentImageModel = new DepartmentImageModel();
+                  _DepartmentImageModel.pageName = _headerFile.pageName;
+                  _DepartmentImageModel.destinationName =
+                    _headerFile.destinationName;
+                  _DepartmentImageModel.clientID = _clientID;
+                  _DepartmentImageModel.image = _utf;
+                  _DepartmentImageModel.fileExtention =
+                    _headerFile.fileExtention;
+                  _DepartmentImageModel.updatedDate = new Date();
+                  _DepartmentImageModel.save();
+                }
+              }
+
+              res.status(200).json({
+                success: true,
+                records: "Success"
+              });
+            }
+          );
         }
       });
     },
@@ -181,6 +224,33 @@ module.exports = db => {
         );
       } else if (_headerFile.fileType == "Patients") {
         PatientDocModel.findOne(
+          { destinationName: _headerFile.destinationName },
+          (error, result) => {
+            if (error) {
+              res.status(400).json({
+                success: false,
+                records: error
+              });
+              return;
+            } else {
+              if (result != null) {
+                res.setHeader("content-type", result.fileExtention);
+                res.status(200);
+
+                let bufferStream = new stream.PassThrough();
+                bufferStream.end(result.image, "base64");
+                bufferStream.pipe(res);
+              } else {
+                res.status(400).json({
+                  success: false,
+                  message: "file not found"
+                });
+              }
+            }
+          }
+        );
+      } else if (_headerFile.fileType == "DepartmentImages") {
+        DepartmentImageModel.findOne(
           { destinationName: _headerFile.destinationName },
           (error, result) => {
             if (error) {

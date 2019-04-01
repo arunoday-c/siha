@@ -32,7 +32,7 @@ export function printReport(data) {
                 <th>Advance Due</th>
                 <th>Loan Due Amount</th>
             </tr>
-        </thead></table></div><div class="tbl-content ">
+        </thead></table></div><div class="tbl-content" style="max-height:26vh">
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data
