@@ -12,19 +12,16 @@ export function printReport(result) {
   let shortage_hours = _.sumBy(data, s => parseFloat(s.shortage_hours));
   let ot_weekoff_hours = _.sumBy(data, s => parseFloat(s.ot_weekoff_hours));
   let ot_holiday_hours = _.sumBy(data, s => parseFloat(s.ot_holiday_hours));
-  const scrollFun =
-    "function scrollfun() { \
-    debugger; \
-    alert('test');\
-  }";
 
-  //   $(function () {
-  //     $('#left').scroll(function () {
-  //         $('#right').scrollTop($(this).scrollTop());
-  //     });
-  //     $('#right').scroll(function () {
-  //         $('#left').scrollTop($(this).scrollTop());
-  //     });
+  document
+    .getElementById("reportFixedTable")
+    .addEventListener("scroll", function(e) {
+      alert("Hello");
+      console.log("Im Here");
+    });
+
+  // $("#tbl-content").scroll(function() {
+  //   $("#tbl-header").scrollTop($(this).scrollTop());
   // });
 
   return `
@@ -33,8 +30,8 @@ export function printReport(result) {
   <header> ${payrollHeader(data)} </header> 
    
 <section>
-    <h2><span>Attendence Details</span></h2><div class="tbl-header">
-    <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
+    <h2><span>Attendence Details</span></h2><div class="tbl-header" id="tbl-header">
+    <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <thead >
             <tr>
                 <th>Employee Code</th>
@@ -55,7 +52,7 @@ export function printReport(result) {
                 <th>Week Off OT</th>
                 <th>Holiday OT</th>                
             </tr>
-        </thead></table></div><div class="tbl-content" style="height: 30vh"  onscroll='${scrollFun}'   >
+        </thead></table></div><div class="tbl-content" style="height: 30vh" id="tbl-content" >
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data
