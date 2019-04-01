@@ -1,5 +1,6 @@
 .nurse_workbench .panel-layout {
-  margin-top: 10px; }
+  margin-top: 10px;
+  margin-bottom: 50px; }
 
 .nurse_workbench .opPatientList .opList {
   margin: 0;
