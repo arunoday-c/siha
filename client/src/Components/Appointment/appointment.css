@@ -24,7 +24,8 @@
   border-bottom: 1px solid #d3d3d3;
   background: #fff;
   margin-right: 10px;
-  border-radius: 5px; }
+  border-radius: 5px;
+  vertical-align: top; }
   .appointment .tg thead tr {
     text-align: center; }
     .appointment .tg thead tr .tg-amwm {
