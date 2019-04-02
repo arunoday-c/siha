@@ -3,15 +3,12 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Dropzone from "react-dropzone";
-
 import "./InsuranceForm.css";
 import "./../../../../styles/site.css";
 import MyContext from "../../../../utils/MyContext.js";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehLabel,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -73,9 +70,11 @@ class AddInsuranceForm extends Component {
                           <label className="radio inline">
                             <input
                               type="radio"
-                              name="insured"
+                              name="insuredYes"
                               value="Y"
-                              checked={this.state.radioYes}
+                              checked={
+                                this.state.insured === "Y" ? true : false
+                              }
                               onChange={radioChange.bind(this, this, context)}
                               disabled={this.state.hideInsurance}
                             />
@@ -84,9 +83,11 @@ class AddInsuranceForm extends Component {
                           <label className="radio inline">
                             <input
                               type="radio"
-                              name="insured"
+                              name="insuredNo"
                               value="N"
-                              checked={this.state.radioNo}
+                              checked={
+                                this.state.insured === "N" ? true : false
+                              }
                               disabled={this.state.hideInsurance}
                               onChange={radioChange.bind(this, this, context)}
                             />

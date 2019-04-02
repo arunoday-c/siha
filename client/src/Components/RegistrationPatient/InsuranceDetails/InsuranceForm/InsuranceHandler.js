@@ -3,6 +3,7 @@ import AlgaehSearch from "../../../Wrapper/globalSearch";
 import Insurance from "../../../../Search/Insurance.json";
 import { swalMessage } from "../../../../utils/algaehApiCall.js";
 import swal from "sweetalert2";
+// import { SetBulkState } from "../../../../utils/GlobalFunctions";
 
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
@@ -23,6 +24,13 @@ const texthandle = ($this, context, e) => {
 };
 
 const insurancehandle = ($this, context, e) => {
+  let ProcessInsure = false;
+  if ($this.state.doctor_id === null) {
+    ProcessInsure = true;
+  } else {
+    ProcessInsure = false;
+  }
+
   if (e.selected.network_id === $this.state.secondary_network_id) {
     swalMessage({
       title: "Primary and Secondary Insurance Plan cannot be same.",
@@ -37,7 +45,7 @@ const insurancehandle = ($this, context, e) => {
       primary_card_number: e.selected.card_number,
       primary_effective_start_date: e.selected.effective_start_date,
       primary_effective_end_date: e.selected.effective_end_date,
-      ProcessInsure: false
+      ProcessInsure: ProcessInsure
     });
 
     if (context !== null) {
@@ -50,7 +58,7 @@ const insurancehandle = ($this, context, e) => {
         primary_effective_start_date: e.selected.effective_start_date,
         primary_effective_end_date: e.selected.effective_end_date,
         primary_network_office_id: e.selected.network_id,
-        ProcessInsure: false
+        ProcessInsure: ProcessInsure
       });
     }
   }
@@ -115,6 +123,13 @@ const enddatehandle = ($this, context, ctrl, e) => {
 };
 
 const InsuranceDetails = ($this, context, e) => {
+  let ProcessInsure = false;
+  if ($this.state.doctor_id === null) {
+    ProcessInsure = true;
+  } else {
+    ProcessInsure = false;
+  }
+
   AlgaehSearch({
     searchGrid: {
       columns: Insurance
@@ -193,7 +208,7 @@ const InsuranceDetails = ($this, context, e) => {
                     primary_effective_start_date: row.net_effective_start_date,
                     primary_effective_end_date: row.net_effective_end_date,
                     insurance_effective_end_date: row.effective_end_date,
-                    ProcessInsure: false
+                    ProcessInsure: ProcessInsure
                   });
 
                   if (context !== null) {
@@ -209,7 +224,7 @@ const InsuranceDetails = ($this, context, e) => {
                         row.net_effective_start_date,
                       primary_effective_end_date: row.net_effective_end_date,
                       insurance_effective_end_date: row.effective_end_date,
-                      ProcessInsure: false
+                      ProcessInsure: ProcessInsure
                     });
                   }
                 }
@@ -259,7 +274,7 @@ const InsuranceDetails = ($this, context, e) => {
                 primary_effective_start_date: row.net_effective_start_date,
                 primary_effective_end_date: row.net_effective_end_date,
                 insurance_effective_end_date: row.effective_end_date,
-                ProcessInsure: false
+                ProcessInsure: ProcessInsure
               });
 
               if (context !== null) {
@@ -274,7 +289,7 @@ const InsuranceDetails = ($this, context, e) => {
                   primary_effective_start_date: row.net_effective_start_date,
                   primary_effective_end_date: row.net_effective_end_date,
                   insurance_effective_end_date: row.effective_end_date,
-                  ProcessInsure: false
+                  ProcessInsure: ProcessInsure
                 });
               }
             }
@@ -286,32 +301,65 @@ const InsuranceDetails = ($this, context, e) => {
 };
 
 const radioChange = ($this, context, e) => {
-  if ($this.state.doctor_id !== null) {
-    let PatType = null;
-    let saveEnable = false;
-    let ProcessInsure = false;
-    let value = e.target.value;
-    let radioNo, radioYes;
-    if (value === "Y") {
-      PatType = "I";
-      saveEnable = true;
-      ProcessInsure = false;
-      radioNo = false;
-      radioYes = true;
-    } else {
-      PatType = "S";
-      saveEnable = false;
-      ProcessInsure = true;
-      radioNo = true;
-      radioYes = false;
-    }
+  // if ($this.state.doctor_id !== null) {
+  let value = e.target.value;
+  let name = e.target.name;
+  // SetBulkState({
+  //   state: $this,
+  //   callback: () => {
+  let PatType = null;
+  let saveEnable = false;
+  let ProcessInsure = false;
 
-    $this.setState({
-      [e.target.name]: e.target.value,
+  if (value === "Y") {
+    PatType = "I";
+    saveEnable = true;
+    if ($this.state.doctor_id === null) {
+      ProcessInsure = true;
+    } else {
+      ProcessInsure = false;
+    }
+  } else {
+    PatType = "S";
+    if (
+      $this.state.primary_insurance_provider_id === null &&
+      $this.state.doctor_id === null
+    ) {
+      saveEnable = true;
+      ProcessInsure = true;
+    } else {
+      if ($this.state.doctor_id === null) {
+        saveEnable = false;
+        ProcessInsure = true;
+      } else {
+        saveEnable = true;
+        ProcessInsure = false;
+      }
+    }
+  }
+
+  $this.setState({
+    insured: value,
+    insuranceYes: !$this.state.insuranceYes,
+    saveEnable: saveEnable,
+
+    primary_insurance_provider_id: null,
+    primary_sub_id: null,
+    primary_network_id: null,
+    primary_policy_num: null,
+    primary_network_office_id: null,
+    primary_card_number: null,
+    primary_effective_start_date: null,
+    primary_effective_end_date: null
+  });
+
+  if (context !== null) {
+    context.updateState({
+      insured: value,
       insuranceYes: !$this.state.insuranceYes,
+      payment_type: PatType,
       saveEnable: saveEnable,
-      radioNo: radioNo,
-      radioYes: radioYes,
+      ProcessInsure: ProcessInsure,
       primary_insurance_provider_id: null,
       primary_sub_id: null,
       primary_network_id: null,
@@ -321,32 +369,15 @@ const radioChange = ($this, context, e) => {
       primary_effective_start_date: null,
       primary_effective_end_date: null
     });
-
-    if (context !== null) {
-      context.updateState({
-        [e.target.name]: e.target.value,
-        insuranceYes: !$this.state.insuranceYes,
-        payment_type: PatType,
-        saveEnable: saveEnable,
-        ProcessInsure: ProcessInsure,
-        radioNo: radioNo,
-        radioYes: radioYes,
-        primary_insurance_provider_id: null,
-        primary_sub_id: null,
-        primary_network_id: null,
-        primary_policy_num: null,
-        primary_network_office_id: null,
-        primary_card_number: null,
-        primary_effective_start_date: null,
-        primary_effective_end_date: null
-      });
-    }
-  } else {
-    swalMessage({
-      title: "Please select the consultant doctor.",
-      type: "warning"
-    });
   }
+  //   }
+  // });
+  // } else {
+  //   swalMessage({
+  //     title: "Please select the consultant doctor.",
+  //     type: "warning"
+  //   });
+  // }
 };
 export {
   insurancehandle,

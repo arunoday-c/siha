@@ -1106,6 +1106,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
               ? "N"
               : servicesDetails.insured;
 
+          utilities.logger().log("insured: ", insured);
+
           let sec_insured =
             servicesDetails.sec_insured == undefined
               ? "N"

@@ -1,6 +1,5 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import "./PatientForm.css";
-import Dropzone from "react-dropzone";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
@@ -12,7 +11,6 @@ import {
   titlehandle,
   calculateAge,
   setAge,
-  onDrop,
   countryStatehandle,
   nationalityhandle
 } from "./AddPatientDetails.js";
@@ -21,14 +19,13 @@ import MyContext from "../../../../utils/MyContext.js";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehLabel,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import variableJson from "../../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
 
-class AddPatientForm extends PureComponent {
+class AddPatientForm extends Component {
   constructor(props) {
     super(props);
 

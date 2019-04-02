@@ -25,11 +25,6 @@ import {
   texthandle
 } from "./AddConsultationDetails";
 
-const MATERNITY_PATIENT = [
-  { label: "Yes", value: "Y" },
-  { label: "No", value: "N" }
-];
-
 class AddConsultationForm extends Component {
   constructor(props) {
     super(props);
@@ -41,10 +36,7 @@ class AddConsultationForm extends Component {
   }
 
   componentWillMount() {
-    let InputOutput;
-
-    InputOutput = this.props.PatRegIOputs;
-
+    let InputOutput = this.props.PatRegIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
 
@@ -90,7 +82,7 @@ class AddConsultationForm extends Component {
     ) {
       this.props.getSubDepartment({
         uri: "/department/get/subdepartment",
-        module : "masterSettings",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "DOCTOR_GET_DATA",
@@ -257,7 +249,7 @@ class AddConsultationForm extends Component {
                         <label className="radio inline">
                           <input
                             type="radio"
-                            name="maternity_patient"
+                            name="maternity_patient_yes"
                             value="Y"
                             checked={
                               this.state.maternity_patient === "Y"
@@ -271,7 +263,7 @@ class AddConsultationForm extends Component {
                         <label className="radio inline">
                           <input
                             type="radio"
-                            name="maternity_patient"
+                            name="maternity_patient_no"
                             value="N"
                             checked={
                               this.state.maternity_patient === "N"

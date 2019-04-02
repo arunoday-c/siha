@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import PatientDetails from "./PatientDetails/PatientDetails.js";
 import ConsultationDetails from "./ConsultationDetails/ConsultationDetails.js";
 import InsuranceDetails from "./InsuranceDetails/InsuranceDetails.js";
@@ -49,7 +49,7 @@ const emptyObject = extend(
   BillingIOputs.inputParam()
 );
 
-class RegistrationPatient extends PureComponent {
+class RegistrationPatient extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -633,6 +633,7 @@ class RegistrationPatient extends PureComponent {
   //Render Page Start Here
 
   render() {
+    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}
@@ -754,6 +755,7 @@ class RegistrationPatient extends PureComponent {
             value={{
               state: this.state,
               updateState: obj => {
+                debugger
                 this.setState({ ...obj });
               }
             }}
@@ -764,9 +766,8 @@ class RegistrationPatient extends PureComponent {
                   PatRegIOputs={this.state}
                   clearData={this.state.clearData}
                 />
-
-                <ConsultationDetails PatRegIOputs={this.state} />
                 <InsuranceDetails PatRegIOputs={this.state} />
+                <ConsultationDetails PatRegIOputs={this.state} />
               </div>
               <div className="algaeh-md-12 algaeh-lg-12 algaeh-xl-4">
                 <Billing PatRegIOputs={this.state} loader={true} />
