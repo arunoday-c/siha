@@ -1042,7 +1042,7 @@ let addDoctorsSchedule = (req, res, next) => {
                                           });
                                         }
                                         releaseDBConnection(db, connection);
-                                        req.records = schedule_detailResult;
+                                        req.records = result;
                                         next();
                                       });
                                     }
@@ -1098,7 +1098,7 @@ let addDoctorsSchedule = (req, res, next) => {
                                   });
                                 }
                                 releaseDBConnection(db, connection);
-                                req.records = schedule_detailResult;
+                                req.records = result;
                                 next();
                               });
                             }
@@ -1241,10 +1241,10 @@ let getDoctorsScheduledList = (req, res, next) => {
             releaseDBConnection(db, connection);
             next(error);
           }
-          let schedule_header_id_all = new LINQ(result)
-            .Where(w => w.hims_d_appointment_schedule_header_id != null)
-            .Select(s => s.hims_d_appointment_schedule_header_id)
-            .ToArray();
+          // let schedule_header_id_all = new LINQ(result)
+          //   .Where(w => w.hims_d_appointment_schedule_header_id != null)
+          //   .Select(s => s.hims_d_appointment_schedule_header_id)
+          //   .ToArray();
 
           if (result.length != 0) {
             for (let i = 0; i < result.length; i++) {
@@ -1258,7 +1258,7 @@ let getDoctorsScheduledList = (req, res, next) => {
                   where ASD.record_status='A' and E.record_status='A' and AC.record_status='A'and SH.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
                   and ASD.clinic_id=AC.hims_d_appointment_clinic_id and ASD.appointment_schedule_header_id=SH.hims_d_appointment_schedule_header_id and\
                   appointment_schedule_header_id in (" +
-                  schedule_header_id_all +
+                  result[i]["hims_d_appointment_schedule_header_id"] +
                   ")" +
                   selectDoctor +
                   " group by  provider_id;",

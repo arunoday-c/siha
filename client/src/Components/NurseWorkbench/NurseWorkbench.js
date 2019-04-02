@@ -607,7 +607,7 @@ class NurseWorkbench extends Component {
       },
       () => {
         getPatientAllergies(this);
-        
+
         // else {
         let _allergies = Enumerable.from(this.props.patient_allergies)
           .groupBy("$.allergy_type", null, (k, g) => {
@@ -1917,19 +1917,20 @@ class NurseWorkbench extends Component {
                   />
                 </div>
                 {/* Notes End */}
-
-                <div className="row">
-                  <div className="col-12">
-                    <button
-                      style={{ float: "right" }}
-                      onClick={this.savePatientExamn.bind(this)}
-                      className="btn btn-primary"
-                    >
-                      SAVE
-                    </button>
-                  </div>
-                </div>
               </div>
+            </div>
+          </div>
+        </div>
+        <div className="hptl-phase1-footer">
+          <div className="row">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.savePatientExamn.bind(this)}
+              >
+                <AlgaehLabel label={{ forceLabel: "Save" }} />
+              </button>
             </div>
           </div>
         </div>

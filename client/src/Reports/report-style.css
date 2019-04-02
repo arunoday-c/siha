@@ -1,5 +1,15 @@
 .tbl-header {
-  overflow: auto; }
+  overflow-y: hidden;
+  overflow-x: auto; }
+  .tbl-header::-webkit-scrollbar {
+    width: 0px !important;
+    /* remove scrollbar space */
+    height: 0px !important;
+    /* remove scrollbar space */
+    background: transparent !important;
+    /* optional: just make scrollbar invisible */ }
+  .tbl-header::-webkit-scrollbar-thumb {
+    background-color: white; }
 
 .tbl-content {
   height: 35vh;

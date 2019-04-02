@@ -336,6 +336,7 @@ class PatientProfile extends Component {
               <br />
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
+                  {console.log("Viatal Details", row)}
                   {row.vitals_name}:<b> {row.vital_value}</b>
                 </span>
               ))}
