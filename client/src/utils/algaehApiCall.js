@@ -218,10 +218,10 @@ export function algaehApiCall(options) {
                 JSON.stringify(err)
             );
 
-            swalMessage({
-              title: "Request taking long time to process....!",
-              type: "info"
-            });
+            // swalMessage({
+            //   title: "Request taking long time to process....!",
+            //   type: "info"
+            // });
           } else {
             if (typeof settings.onFailure === "function") {
               if (

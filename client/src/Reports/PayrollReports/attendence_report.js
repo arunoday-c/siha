@@ -30,7 +30,7 @@ export function printReport(result) {
   <header> ${payrollHeader(data)} </header> 
    
 <section>
-    <h2><span>Attendence Details</span></h2><div class="tbl-header" id="tbl-header">
+    <h2><span>Attendence Details</span></h2><div class="tbl-header">
     <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <thead >
             <tr>
@@ -52,7 +52,7 @@ export function printReport(result) {
                 <th>Week Off OT</th>
                 <th>Holiday OT</th>                
             </tr>
-        </thead></table></div><div class="tbl-content" style="height: 30vh" algaeh-report-table="true" id="tbl-content" >
+        </thead></table></div><div class="tbl-content" style="height: 22vh" algaeh-report-table="true" >
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data

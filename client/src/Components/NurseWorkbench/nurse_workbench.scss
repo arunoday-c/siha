@@ -1,6 +1,7 @@
 .nurse_workbench {
   .panel-layout {
     margin-top: 10px;
+    margin-bottom: 50px;
   }
 
   .opPatientList {
@@ -13,7 +14,7 @@
       .noPatientDiv {
         margin-top: 15%;
         text-align: center;
-        
+
         color: #929292;
       }
       li {
@@ -49,7 +50,6 @@
             background-size: 80%;
           }
           .opTime {
-            
           }
         }
         .op-sec-2 {
@@ -59,12 +59,11 @@
           display: inline-block;
           .opPatientName {
             display: block;
-            
+
             margin-top: 5px;
           }
           .opStatus {
             display: block;
-            
           }
           .nursing {
             color: #34b8bc;
@@ -81,7 +80,6 @@
           text-align: center;
           .opPatientStatus {
             display: block;
-            
           }
           .newVisit {
             color: #ff8800;
