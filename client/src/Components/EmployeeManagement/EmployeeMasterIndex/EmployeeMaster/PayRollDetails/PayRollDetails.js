@@ -348,7 +348,7 @@ class PayRollDetails extends Component {
             </div>
             <div className="col-lg-6 secondary-details">
               <h5>
-                <span>Salary Dedection Breakup</span>
+                <span>Salary Deduction Breakup</span>
               </h5>
               <div
                 className="row padding-bottom-5"
