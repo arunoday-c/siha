@@ -63,7 +63,7 @@ class DeptUserDetails extends Component {
         uri: "/serviceType/getService",
         module: "masterSettings",
         method: "GET",
-        data: { hims_d_services_id: 1 },
+        data: { service_type_id: 1 },
         redux: {
           type: "SERVICES_GET_DATA",
           mappingName: "depservices"
@@ -179,6 +179,7 @@ class DeptUserDetails extends Component {
   // }
 
   render() {
+    debugger;
     const _depservices = Enumerable.from(this.props.depservices)
       .where(w => w.service_type_id === 1)
       .toArray();

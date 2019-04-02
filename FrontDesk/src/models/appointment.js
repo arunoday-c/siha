@@ -1,7 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
-import mysql from "mysql";
+//import mysql from "mysql";
 import moment from "moment";
 import { LINQ } from "node-linq";
 module.exports = {

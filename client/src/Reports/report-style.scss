@@ -1,7 +1,18 @@
 @import "../styles/algaehCssVariables.scss";
 
 .tbl-header {
-  overflow: auto;
+  overflow-y: hidden;
+  overflow-x: auto;
+  // overflow: -moz-scrollbars-none;
+  // -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0px !important; /* remove scrollbar space */
+    height: 0px !important; /* remove scrollbar space */
+    background: transparent !important; /* optional: just make scrollbar invisible */
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+  }
 }
 .tbl-content {
   height: 35vh;
