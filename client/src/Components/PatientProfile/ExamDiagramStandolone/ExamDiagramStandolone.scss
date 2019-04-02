@@ -1,0 +1,68 @@
+.CanvasEditorCntr {
+  width: 100%;
+  margin-top: 20px;
+
+  .tui-image-editor-container {
+    width: 81.5vw !important;
+    height: 75vh !important;
+  }
+  .tui-image-editor-container.left .tui-image-editor-main-container {
+    left: 91px !important;
+    width: calc(100% - 91px) !important;
+    height: 100%;
+  }
+  .tui-image-editor-container .tui-image-editor-main {
+    top: 7px !important;
+  }
+  .tui-image-editor-container .tui-image-editor-menu {
+    width: 90px !important;
+    display: inline-block !important;
+  }
+  .tui-image-editor-container
+    .color-picker-control
+    .tui-colorpicker-palette-button {
+    height: 24px !important;
+    width: 24px !important;
+  }
+  .tui-image-editor-container
+    .tui-image-editor-submenu
+    .tui-image-editor-submenu-style {
+    left: 26px !important;
+  }
+}
+.diagramManageCntr {
+  margin-bottom: 20px;
+  background: #fff;
+  padding-top: 10px;
+  border-bottom: 1px solid #d0d0d0;
+  border-right: 1px solid #d0d0d0;
+}
+.DiagramRemarksCntr {
+  width: 100%;
+  float: left;
+}
+.diagramList {
+  padding: 10px 0;
+  background: #fff;
+  border-bottom: 1px solid #d0d0d0;
+  border-right: 1px solid #d0d0d0;
+  height: 51.5vh !important;
+  overflow-y: auto;
+  overflow-x: hidden;
+  .eachDiagram {
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 10px;
+    img {
+      width: 100%;
+      height: auto;
+      background: #ccc;
+      border: 1px solid #ccc;
+    }
+    p {
+      font-size: 0.9rem;
+      small {
+        display: block;
+      }
+    }
+  }
+}
