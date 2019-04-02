@@ -9,5 +9,5 @@
   .hptl-phase1-add-hospitalservies-form .button {
     padding: 10px; }
 
-.hospitalServiceModalSmall {
-  max-width: 40% !important; }
+.popUpHospitalServices .algaeh-modal {
+  max-width: 40vw; }

@@ -13,6 +13,9 @@
     padding: 10px;
   }
 }
-.hospitalServiceModalSmall {
-  max-width: 40% !important;
+
+.popUpHospitalServices {
+  .algaeh-modal {
+    max-width: 40vw;
+  }
 }

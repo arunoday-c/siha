@@ -159,6 +159,7 @@ class PhySchSetup extends Component {
   }
 
   checkHandle(e) {
+    debugger;
     let myRow = JSON.parse(e.currentTarget.getAttribute("row"));
     myRow.schedule_status = this.state.schedule_status;
     myRow.default_slot = this.state.slot;
@@ -200,6 +201,7 @@ class PhySchSetup extends Component {
       });
     } else {
       const myObj = {};
+      myObj.hims_d_appointment_schedule_header_id = this.state.hims_d_appointment_schedule_header_id;
       myObj.sub_dept_id = this.state.sub_department_id;
       myObj.schedule_description = this.state.description;
       myObj.month = this.state.month;
@@ -228,14 +230,23 @@ class PhySchSetup extends Component {
 
       myObj.schedule_detail = provider_array;
 
+      let _uri = "/appointment/addDoctorsSchedule";
+      if (e.target.innerText === "UPDATE") {
+        _uri = "/appointment/addDoctorToExistingSchedule";
+      }
+
       this.setState({ send_obj: myObj }, () => {
         algaehApiCall({
-          uri: "/appointment/addDoctorsSchedule",
+          uri: _uri,
           methid: "POST",
           data: this.state.send_obj,
           onSuccess: response => {
             if (response.data.success) {
+              debugger;
+              console.log("after save", response.data);
+              document.getElementById("srch-sch").click();
               this.resetSaveState();
+
               swalMessage({
                 title: "Schedule added successfully . .",
                 type: "success"
@@ -344,6 +355,7 @@ class PhySchSetup extends Component {
       .firstOrDefault();
 
     this.setState({
+      hims_d_appointment_schedule_header_id: header_id,
       description: docs.schedule_description,
       scheduleDoctors: docs.doctorsList,
       from_break_hr1: docs.from_break_hr1,
@@ -910,22 +922,34 @@ class PhySchSetup extends Component {
                           }
                         }
                       >
-                        {this.state.doctors.map((data, index) => (
-                          <li key={index}>
-                            <input
-                              row={JSON.stringify(data)}
-                              onChange={this.checkHandle.bind(this)}
-                              type="checkbox"
-                            />
-                            <span
-                              style={{
-                                width: "80%"
-                              }}
-                            >
-                              {data.full_name}
-                            </span>
-                          </li>
-                        ))}
+                        {this.state.doctors.map((data, index) => {
+                          const _alreadyExists = Enumerable.from(
+                            this.state.scheduleDoctors
+                          )
+                            .where(w => w.provider_id === data.provider_id)
+                            .firstOrDefault();
+                          const _checked =
+                            _alreadyExists === undefined
+                              ? {}
+                              : { checked: true };
+                          return (
+                            <li key={index}>
+                              <input
+                                row={JSON.stringify(data)}
+                                onChange={this.checkHandle.bind(this)}
+                                type="checkbox"
+                                {..._checked}
+                              />
+                              <span
+                                style={{
+                                  width: "80%"
+                                }}
+                              >
+                                {data.full_name}
+                              </span>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
                   </div>
@@ -979,7 +1003,8 @@ class PhySchSetup extends Component {
                           fieldName: "sel_month"
                         }}
                         selector={{
-                          sort:"off",name: "month",
+                          sort: "off",
+                          name: "month",
                           className: "select-fld",
                           value: this.state.month,
                           dataSource: {
@@ -1272,7 +1297,7 @@ class PhySchSetup extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                //                onClick={this.saveApptSchedule.bind(this)}
+                onClick={this.saveApptSchedule.bind(this)}
               >
                 Update
               </button>
@@ -1396,7 +1421,8 @@ class PhySchSetup extends Component {
                           fieldName: "sel_month"
                         }}
                         selector={{
-                          sort:"off",name: "month",
+                          sort: "off",
+                          name: "month",
                           className: "select-fld",
                           value: this.state.month,
                           dataSource: {
@@ -1732,7 +1758,8 @@ class PhySchSetup extends Component {
               fieldName: "sel_month"
             }}
             selector={{
-              sort:"off",name: "month",
+              sort: "off",
+              name: "month",
               className: "select-fld",
               value: this.state.month,
               dataSource: {
@@ -1788,7 +1815,10 @@ class PhySchSetup extends Component {
                   <span
                     className="btn btn-green btn-circle active"
                     onClick={() => {
-                      this.setState({ openScheduler: true });
+                      this.setState({
+                        ...this.resetSaveState(),
+                        openScheduler: true
+                      });
                     }}
                   >
                     <i className="fas fa-plus" />

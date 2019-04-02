@@ -20,7 +20,7 @@ export default class AlgaehCanvas extends Component {
       position: "absolute",
       top: "7px",
       right: 15,
-      zIndex: 9,
+      zIndex: 3,
       background: "#6ba25b",
       color: "#fff",
       width: "44px",
@@ -32,7 +32,7 @@ export default class AlgaehCanvas extends Component {
       position: "absolute",
       top: "55px",
       right: 15,
-      zIndex: 9,
+      zIndex: 3,
       background: "#fff",
       color: "#000",
       width: "44px",
@@ -187,24 +187,24 @@ export default class AlgaehCanvas extends Component {
               "common.bisize.height": "0",
               "common.backgroundImage": "none",
               "common.border": "0px",
-              // checkbox style
-              // "checkbox.border": "1px solid #ccc",
-              // "checkbox.backgroundColor": "#fff",
+              //checkbox style
+              "checkbox.border": "1px solid #ccc",
+              "checkbox.backgroundColor": "#fff",
 
-              // // rango style
-              // "range.pointer.color": "#fff",
-              // "range.bar.color": "#666",
-              // "range.subbar.color": "#d1d1d1",
-              // "range.value.color": "#fff",
-              // "range.value.fontWeight": "lighter",
-              // "range.value.fontSize": "11px",
-              // "range.value.border": "1px solid #353535",
-              // "range.value.backgroundColor": "#151515",
-              // "range.title.color": "#fff",
-              // "range.title.fontWeight": "lighter",
+              // rango style
+              "range.pointer.color": "#fff",
+              "range.bar.color": "#666",
+              "range.subbar.color": "#d1d1d1",
+              "range.value.color": "#fff",
+              "range.value.fontWeight": "lighter",
+              "range.value.fontSize": "11px",
+              "range.value.border": "1px solid #353535",
+              "range.value.backgroundColor": "#151515",
+              "range.title.color": "#fff",
+              "range.title.fontWeight": "lighter",
 
               // colorpicker style
-              "colorpicker.button.border": "1px solid #1e1e1e",
+              "colorpicker.button.border": "2px solid #1e1e1e",
               "colorpicker.title.color": "#fff"
             },
 

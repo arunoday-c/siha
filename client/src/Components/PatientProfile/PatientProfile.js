@@ -3,6 +3,7 @@ import "./patientprofile.css";
 import Overview from "./Overview/Overview";
 import Subjective from "./Subjective/Subjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
+import ExamDiagramStandolone from "./ExamDiagramStandolone/ExamDiagramStandolone";
 import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
@@ -27,6 +28,7 @@ import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
 import Eye from "./Eye/Eye";
+import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
 class PatientProfile extends Component {
   constructor(props) {
@@ -211,50 +213,6 @@ class PatientProfile extends Component {
       <div className="row patientProfile">
         {this.showAllergyAlert(_patient_allergies)}
 
-        {/* <AlgaehModalPopUp
-          openPopup={this.showAllergyAlert.bind(this, _patient_allergies)}
-          onClose={this.handleClose.bind(this)}
-          title="Alert"
-        >
-          <div>
-            <span>Patient is Allergic</span>
-            <span>Listed below are the following allergies</span>
-            <br />
-
-            {_patient_allergies.map((tables, index) => (
-              <table
-                key={index}
-                className="table table-sm table-bordered customTable"
-              >
-                <thead className="table-primary">
-                  <tr>
-                    <th> {tables.allergy_type_desc} </th>
-                    <th>Onset</th>
-                    <th>Comment</th>
-                    <th>Inactive</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tables.allergyList.map((rows, rIndex) => (
-                    <tr key={rIndex}>
-                      <td> {rows.allergy_name} </td>
-                      <td>
-                        {
-                          Enumerable.from(GlobalVariables.ALLERGY_ONSET)
-                            .where(w => w.value === rows.onset)
-                            .firstOrDefault().name
-                        }
-                      </td>
-                      <td>{rows.comment}</td>
-                      <td>{rows.allergy_inactive === "Y" ? "Yes" : "No"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ))}
-          </div>
-        </AlgaehModalPopUp> */}
-
         <div className="patientInfo-Top box-shadow-normal">
           <div className="backBtn">
             <button
@@ -336,6 +294,7 @@ class PatientProfile extends Component {
               <br />
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
+                  {console.log("Viatal Details", row)}
                   {row.vitals_name}:<b> {row.vital_value}</b>
                 </span>
               ))}
@@ -374,6 +333,15 @@ class PatientProfile extends Component {
                 className="nav-link"
               >
                 Physical Examination
+              </span>
+            </li>
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="exam_diagram"
+                className="nav-link"
+              >
+                Examination Diagram
               </span>
             </li>
             <li className="nav-item">
@@ -496,6 +464,8 @@ class PatientProfile extends Component {
             <Subjective />
           ) : this.state.pageDisplay === "phy_exam" ? (
             <PhysicalExamination />
+          ) : this.state.pageDisplay === "exam_diagram" ? (
+            <ExamDiagramStandolone />
           ) : this.state.pageDisplay === "assesment" ? (
             <Assesment vat_applicable={this.vatApplicable()} />
           ) : this.state.pageDisplay === "plan" ? (

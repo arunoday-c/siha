@@ -9,7 +9,7 @@ import {
   AlgaehLabel,
   AlagehFormGroup,
   AlagehAutoComplete,
-  Modal
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import {
   texthandle,
@@ -82,12 +82,16 @@ class HospitalServices extends PureComponent {
     return (
       <React.Fragment>
         <div className="hptl-phase1-add-hospitalservies-form">
-          <Modal open={this.props.open}>
-            <div
-              className="algaeh-modal hospitalServiceModalSmall"
-              data-validate="HospitalServices"
-            >
-              <div className="popupHeader">
+          <AlgaehModalPopUp
+            title={this.props.HeaderCaption}
+            openPopup={this.props.open}
+            events={{
+              onClose: this.onClose.bind(this)
+            }}
+            class="popUpHospitalServices"
+          >
+            <div className="col-12" data-validate="HospitalServices">
+              {/* <div className="popupHeader">
                 <div className="row">
                   <div className="col-lg-8">
                     <h4>{this.props.HeaderCaption}</h4>
@@ -104,197 +108,197 @@ class HospitalServices extends PureComponent {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
-              <div className="popupInner">
-                <div
-                  className="col-12 popRightDiv margin-top-15 margin-bottom-15"
-                  style={{ minHeight: "60vh" }}
-                >
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col-6 form-group" }}
-                      label={{
-                        fieldName: "service_code",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "service_code",
-                        value: this.state.service_code,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-6 form-group" }}
-                      label={{
-                        fieldName: "service_name",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "service_name",
-                        value: this.state.service_name,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-10 form-group" }}
-                      label={{
-                        fieldName: "cpt_code",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "cpt_code",
-                        value: this.state.cpt_code_data,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: true
-                        }
-                      }}
-                    />
-
-                    <div className="col-2 form-group">
-                      <i
-                        className="fas fa-search"
-                        onClick={CptCodesSearch.bind(this, this)}
-                        style={{ marginTop: 25, fontSize: "1.4rem" }}
-                      />
-                    </div>
-                    <AlagehAutoComplete
-                      div={{ className: "col-12 form-group" }}
-                      label={{
-                        fieldName: "hospital_id",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "hospital_id",
-                        className: "select-fld",
-                        value: this.state.hospital_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "hospital_name"
-                              : "arabic_hospital_name",
-                          valueField: "hims_d_hospital_id",
-                          data: this.props.hospitaldetails
-                        },
+              {/* <div className="popupInner"> */}
+              <div
+                className="col-12 popRightDiv margin-top-15 margin-bottom-15"
+                style={{ minHeight: "60vh" }}
+              >
+                <div className="row">
+                  <AlagehFormGroup
+                    div={{ className: "col-6 form-group" }}
+                    label={{
+                      fieldName: "service_code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "service_code",
+                      value: this.state.service_code,
+                      events: {
                         onChange: texthandle.bind(this, this)
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-12 form-group" }}
-                      label={{
-                        fieldName: "sub_department_id",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "sub_department_id",
-                        className: "select-fld",
-                        value: this.state.sub_department_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "sub_department_name"
-                              : "arabic_sub_department_name",
-                          valueField: "hims_d_sub_department_id",
-                          data: this.props.subdepartments
-                        },
-                        onChange: texthandle.bind(this, this)
-                      }}
-                    />
+                      }
+                    }}
+                  />
 
-                    <AlagehAutoComplete
-                      div={{ className: "col-12 form-group" }}
-                      label={{
-                        fieldName: "service_type_id",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "service_type_id",
-                        className: "select-fld",
-                        value: this.state.service_type_id,
-                        dataSource: {
-                          textField:
-                            this.state.selectedLang === "en"
-                              ? "service_type"
-                              : "arabic_service_type",
-                          valueField: "hims_d_service_type_id",
-                          data: this.props.servicetype
-                        },
+                  <AlagehFormGroup
+                    div={{ className: "col-6 form-group" }}
+                    label={{
+                      fieldName: "service_name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "service_name",
+                      value: this.state.service_name,
+                      events: {
                         onChange: texthandle.bind(this, this)
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-12 form-group" }}
-                      label={{
-                        fieldName: "standard_fee",
-                        isImp: true
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "standard_fee",
-                        value: this.state.standard_fee,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        }
-                      }}
-                    />
+                      }
+                    }}
+                  />
 
-                    <div className="col-12 form-group">
-                      <div className="row">
-                        <div
-                          className="col-6 customCheckbox"
-                          style={{ paddingTop: "10px" }}
-                        >
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="vat_applicable"
-                              value="Y"
-                              checked={this.state.Applicable}
-                              onChange={VatAppilicable.bind(this, this)}
+                  <AlagehFormGroup
+                    div={{ className: "col-10 form-group" }}
+                    label={{
+                      fieldName: "cpt_code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "cpt_code",
+                      value: this.state.cpt_code_data,
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
+                      others: {
+                        disabled: true
+                      }
+                    }}
+                  />
+
+                  <div className="col-2 form-group">
+                    <i
+                      className="fas fa-search"
+                      onClick={CptCodesSearch.bind(this, this)}
+                      style={{ marginTop: 25, fontSize: "1.4rem" }}
+                    />
+                  </div>
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      fieldName: "hospital_id",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "hospital_id",
+                      className: "select-fld",
+                      value: this.state.hospital_id,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "hospital_name"
+                            : "arabic_hospital_name",
+                        valueField: "hims_d_hospital_id",
+                        data: this.props.hospitaldetails
+                      },
+                      onChange: texthandle.bind(this, this)
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      fieldName: "sub_department_id",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "sub_department_id",
+                      className: "select-fld",
+                      value: this.state.sub_department_id,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "sub_department_name"
+                            : "arabic_sub_department_name",
+                        valueField: "hims_d_sub_department_id",
+                        data: this.props.subdepartments
+                      },
+                      onChange: texthandle.bind(this, this)
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      fieldName: "service_type_id",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "service_type_id",
+                      className: "select-fld",
+                      value: this.state.service_type_id,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "service_type"
+                            : "arabic_service_type",
+                        valueField: "hims_d_service_type_id",
+                        data: this.props.servicetype
+                      },
+                      onChange: texthandle.bind(this, this)
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-12 form-group" }}
+                    label={{
+                      fieldName: "standard_fee",
+                      isImp: true
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      className: "txt-fld",
+                      name: "standard_fee",
+                      value: this.state.standard_fee,
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      }
+                    }}
+                  />
+
+                  <div className="col-12 form-group">
+                    <div className="row">
+                      <div
+                        className="col-6 customCheckbox"
+                        style={{ paddingTop: "10px" }}
+                      >
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="vat_applicable"
+                            value="Y"
+                            checked={this.state.Applicable}
+                            onChange={VatAppilicable.bind(this, this)}
+                          />
+                          <span>
+                            <AlgaehLabel
+                              label={{ fieldName: "vat_applicable" }}
                             />
-                            <span>
-                              <AlgaehLabel
-                                label={{ fieldName: "vat_applicable" }}
-                              />
-                            </span>
-                          </label>
-                        </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-6" }}
-                          label={{
-                            fieldName: "vat_percent"
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "vat_percent",
-                            value: this.state.vat_percent,
-                            events: {
-                              onChange: texthandle.bind(this, this)
-                            },
-                            others: {
-                              disabled:
-                                this.state.Applicable === true ? false : true
-                            }
-                          }}
-                        />
+                          </span>
+                        </label>
                       </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-6" }}
+                        label={{
+                          fieldName: "vat_percent"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "vat_percent",
+                          value: this.state.vat_percent,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            disabled:
+                              this.state.Applicable === true ? false : true
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
+              {/* </div> */}
 
               <div className="popupFooter">
                 <div className="col-lg-12">
@@ -340,7 +344,7 @@ class HospitalServices extends PureComponent {
                 </div>
               </div>
             </div>
-          </Modal>
+          </AlgaehModalPopUp>
         </div>
       </React.Fragment>
     );

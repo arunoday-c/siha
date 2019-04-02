@@ -41,25 +41,16 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // };
 
 const serviceHandeler = ($this, context, e) => {
-  if (e.value === undefined) {
-    $this.setState({
-      [e]: null,
-      visittypeselect: true
-    });
-    if (context !== null) {
-      context.updateState({ [e]: null });
-    }
-  } else {
-    $this.setState(
-      {
-        [e.name]: e.value,
-        visittypeselect: false
-      },
-      () => {}
-    );
-    if (context !== null) {
-      context.updateState({ [e.name]: e.value });
-    }
+  debugger;
+  $this.setState(
+    {
+      [e.name]: e.value,
+      visittypeselect: false
+    },
+    () => {}
+  );
+  if (context !== null) {
+    context.updateState({ [e.name]: e.value });
   }
 };
 

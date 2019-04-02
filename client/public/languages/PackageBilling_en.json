@@ -45,6 +45,7 @@
 
   "service_type_id": "Service Type",
   "services_id": "Service",
+  "service_amount": "Service Amount",
   "quantity": "Quantity",
   "unit_cost": "Unit Cost",
   "gross_amount": "Gross Amount",
@@ -134,5 +135,9 @@
   "payby_card": "Pay by Card",
   "payby_check": "Pay by Cheque",
   "NotGenerated": "Not Generated",
-  "add_new_service": "Add New Services"
+  "add_new_service": "Add New Services",
+  "pack_list": "Package List",
+  "select_package": "Select Package",
+
+  "view_package_list": "View Pack List"
 }

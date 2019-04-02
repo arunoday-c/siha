@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import Dropzone from "react-dropzone";
 import "./SecondaryInsurance.css";
 import "../../../../styles/site.css";
 import MyContext from "../../../../utils/MyContext.js";
@@ -12,7 +11,6 @@ import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import {
   AlgaehDateHandler,
   AlagehFormGroup,
-  AlgaehLabel,
   AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";

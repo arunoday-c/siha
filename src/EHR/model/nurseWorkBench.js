@@ -10,7 +10,8 @@ import httpStatus from "../../utils/httpStatus";
 import { debugFunction, debugLog } from "../../utils/logging";
 import moment from "moment";
 import formater from "../../keys/keys";
-
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
 // created by : irfan to
 let addPatientNurseChiefComplaintsBackup = (req, res, next) => {
   debugFunction("addPatientNurseChiefComplaints");
@@ -543,26 +544,23 @@ let getNurseMyDay = (req, res, next) => {
     provider_id: "ALL",
     sub_department_id: "ALL"
   };
-
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let dateDiff = "";
-    if (req.query.fromDate != null && req.query.toDate != null) {
-      dateDiff +=
-        " date(E.created_date) BETWEEN date('" +
-        moment(req.query.fromDate).format(formater.dbFormat.date) +
-        "') AND date('" +
-        moment(req.query.toDate).format(formater.dbFormat.date) +
-        "')";
-      delete req.query.fromDate;
-      delete req.query.toDate;
-    } else if (req.query.toDate != null) {
-      dateDiff = " date(E.created_date) = date('" + req.query.toDate + "')";
-      delete req.query.toDate;
-    }
+    // let db = req.db;
+    // let dateDiff = "";
+    // if (req.query.fromDate != null && req.query.toDate != null) {
+    //   dateDiff +=
+    //     " date(E.created_date) BETWEEN date('" +
+    //     moment(req.query.fromDate).format(formater.dbFormat.date) +
+    //     "') AND date('" +
+    //     moment(req.query.toDate).format(formater.dbFormat.date) +
+    //     "')";
+    //   delete req.query.fromDate;
+    //   delete req.query.toDate;
+    // } else if (req.query.toDate != null) {
+    //   dateDiff = " date(E.created_date) = date('" + req.query.toDate + "')";
+    //   delete req.query.toDate;
+    // }
 
     let statusFlag = "";
     if (req.query.status == "A") {
@@ -573,10 +571,32 @@ let getNurseMyDay = (req, res, next) => {
       delete req.query.status;
     }
 
-    debugLog("req query:", req.query);
     let where = whereCondition(extend(getMydayWhere, req.query));
+    const inputParam = req.query;
+    let _isExists = "";
+    if (inputParam.provider_id != null) {
+      _isExists += _mysql.mysqlQueryFormat(
+        " AND provider_id",
+        inputParam.provider_id
+      );
+    }
+    if (inputParam.sub_department_id != null) {
+      _isExists += _mysql.mysqlQueryFormat(
+        " AND sub_department_id",
+        inputParam.sub_department_id
+      );
+    }
+    _mysql.executeQuery({
+      query:
+        "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
+         E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id from hims_f_patient_encounter E\
+         INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
+            inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' AND " +
+        statusFlag +
+        " date(E.created_date) BETWEEN date(?) AND date(?) " +
+        _isExists
+    });
 
-    debugLog("where conditn:", where);
     db.getConnection((error, connection) => {
       if (error) {
         next(error);

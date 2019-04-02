@@ -961,6 +961,40 @@ module.exports = {
     } catch (e) {
       next(e);
     }
+  },
+
+  getPakageDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    utilities.logger().log("getPakageDetails ");
+
+    try {
+      let inputParam = req.query;
+
+      utilities.logger().log("inputParam: ", inputParam);
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT PH.package_service_id,PD.hims_d_package_detail_id,PD.service_id,PD.service_amount \
+            FROM hims_d_package_header PH, hims_d_package_detail PD where PH.hims_d_package_header_id=PD.package_header_id and  \
+            PH.package_service_id=?;",
+          values: [inputParam.package_service_id],
+          printQuery: true
+        })
+        .then(package_details => {
+          _mysql.releaseConnection();
+          req.records = package_details;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(error);
+    }
   }
 };
 
@@ -1071,6 +1105,8 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             servicesDetails.insured == undefined
               ? "N"
               : servicesDetails.insured;
+
+          utilities.logger().log("insured: ", insured);
 
           let sec_insured =
             servicesDetails.sec_insured == undefined

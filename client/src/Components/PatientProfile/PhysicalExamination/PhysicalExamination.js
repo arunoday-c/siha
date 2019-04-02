@@ -7,7 +7,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import ExaminationDiagram from "./ExaminationDiagram";
+// import ExaminationDiagram from "./ExaminationDiagram";
 
 class PhysicalExamination extends Component {
   constructor(props) {
@@ -95,10 +95,10 @@ class PhysicalExamination extends Component {
                         className="btn btn-primary btn-circle active"
                         onClick={this.OpenDiagram.bind(this)}
                       >
-                        <ExaminationDiagram
+                        {/* <ExaminationDiagram
                           open={this.state.isOpen}
                           onClose={this.CloseModel.bind(this)}
-                        />
+                        /> */}
                         <i className="fas fa-plus" />
                       </a>
                     </div>

@@ -3,8 +3,9 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
-const texthandle = ($this, ctrl, e) => {
-  e = e || ctrl;
+const texthandle = ($this, e) => {
+  debugger;
+  // e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
