@@ -607,7 +607,7 @@ class NurseWorkbench extends Component {
       },
       () => {
         getPatientAllergies(this);
-        
+
         // else {
         let _allergies = Enumerable.from(this.props.patient_allergies)
           .groupBy("$.allergy_type", null, (k, g) => {

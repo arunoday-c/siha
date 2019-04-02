@@ -133,14 +133,16 @@ const BMICalculation = (weight, height, calculation) => {
   let BMI = 0;
   weight = typeof weight === "string" ? parseFloat(weight) : weight;
   height = typeof height === "string" ? parseFloat(height) : height;
+  calculation =
+    calculation === undefined || calculation === ""
+      ? "const _heightM = (height*height)/100; BMI=  (weight/_heightM*100)"
+      : calculation;
   eval(calculation);
-  return (BMI = typeof BMI === "number" ? BMI.toFixed(3) : BMI);
+  return (BMI = typeof BMI === "number" ? BMI.toFixed(2) : BMI);
 };
 
 const getFormula = options => {
   if (options === undefined) return;
-
-  debugger;
 
   if (Window.global === undefined) {
     const _input = config.algaeh_d_formulas.BMI;
