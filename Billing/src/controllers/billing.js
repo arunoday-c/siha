@@ -4,7 +4,8 @@ import {
   newReceiptData,
   patientAdvanceRefund,
   billingCalculations,
-  getBillDetails
+  getBillDetails,
+  getPakageDetails
 } from "../models/billing";
 
 export default () => {
@@ -49,6 +50,18 @@ export default () => {
   api.post(
     "/getBillDetails",
     getBillDetails,
+
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
+
+  api.get(
+    "/getPakageDetails",
+    getPakageDetails,
 
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({

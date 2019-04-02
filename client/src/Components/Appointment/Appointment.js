@@ -672,6 +672,7 @@ class Appointment extends PureComponent {
         type: "warning"
       });
     } else {
+      debugger;
       let openPatEdit = false;
       if (data === null) {
         openPatEdit = true;

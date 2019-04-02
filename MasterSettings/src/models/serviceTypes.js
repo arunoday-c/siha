@@ -31,6 +31,8 @@ module.exports = {
         })
         .then(result => {
           _mysql.releaseConnection();
+          req.body.service_id = result.insertId;
+          req.body.package_service_id = result.insertId;
           req.records = result;
           next();
         })

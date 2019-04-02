@@ -9,7 +9,7 @@ import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import "./PackageBilling.css";
 import MyContext from "../../utils/MyContext.js";
 import AlgaehLabel from "../Wrapper/label.js";
-import BillingIOputs from "../../Models/Billing";
+import BillingIOputs from "../../Models/PackageBilling";
 import PatRegIOputs from "../../Models/RegistrationPatient";
 import { getCookie } from "../../utils/algaehApiCall";
 import {
@@ -481,7 +481,7 @@ class PackageBilling extends Component {
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={this.SaveBill.bind(this)}
+                // onClick={this.SaveBill.bind(this)}
                 disabled={this.state.saveEnable}
               >
                 <AlgaehLabel

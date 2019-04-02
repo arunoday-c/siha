@@ -12,9 +12,9 @@ module.exports = {
         .executeQueryWithTransaction({
           query:
             "INSERT INTO `hims_d_package_header` (`package_code`, `package_name`, `package_amount`,\
-          `total_service_amount`, `profit_loss`, `pl_amount`,\
+          `total_service_amount`, `profit_loss`, `pl_amount`,`package_service_id`,\
           `created_date`, `created_by`, `updated_date`, `updated_by`)\
-         VALUE(?,?,?,?,?,?,?,?,?,?)",
+         VALUE(?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.package_code,
             input.package_name,
@@ -22,6 +22,7 @@ module.exports = {
             input.total_service_amount,
             input.profit_loss,
             input.pl_amount,
+            input.package_service_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -90,7 +91,7 @@ module.exports = {
         .executeQuery({
           query:
             "select PH.hims_d_package_header_id,PH.package_code,PH.package_name,PH.package_amount,PH.total_service_amount,PH.profit_loss,\
-            PH.pl_amount,PD.hims_d_package_detail_id,PD.service_type_id,PD.service_id,PD.service_amount from hims_d_package_header PH, \
+            PH.pl_amount,PH.package_service_id,PD.hims_d_package_detail_id,PD.service_type_id,PD.service_id,PD.service_amount from hims_d_package_header PH, \
             hims_d_package_detail PD where PH.hims_d_package_header_id=PD.package_header_id " +
             _strQry +
             " order by hims_d_package_header_id desc;",
@@ -120,7 +121,7 @@ module.exports = {
         .executeQueryWithTransaction({
           query:
             "UPDATE `hims_d_package_header` SET `package_code`=?, `package_name`=?, `package_amount`=?,\
-          `total_service_amount`=?, `profit_loss`=?, `pl_amount`=?,`updated_date`=?, `updated_by`=? \
+          `total_service_amount`=?, `profit_loss`=?, `pl_amount`=?, `package_service_id`=?, `updated_date`=?, `updated_by`=? \
           WHERE record_status='A' and `hims_d_package_header_id`=?",
           values: [
             input.package_code,
@@ -129,6 +130,7 @@ module.exports = {
             input.total_service_amount,
             input.profit_loss,
             input.pl_amount,
+            input.package_service_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.hims_d_package_header_id
