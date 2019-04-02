@@ -14,7 +14,6 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import DisplayOPBilling from "../../../BillDetails/BillDetails";
 import {
-  serviceTypeHandeler,
   serviceHandeler,
   discounthandle,
   adjustadvance,
@@ -30,12 +29,15 @@ import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
+import PackageList from "../PackageList/PackageList";
+import _ from "lodash";
 
 class AddPackageBilling extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      packOpen: false
     };
   }
 
@@ -73,6 +75,21 @@ class AddPackageBilling extends Component {
     });
   }
 
+  ShowPackList(row, e) {
+    debugger;
+    let package_List = this.state.package_List;
+    let packages = _.filter(
+      package_List,
+      f => f.package_service_id === row.services_id
+    );
+
+    this.setState({
+      ...this.state,
+      packOpen: !this.state.packOpen,
+      packages: packages
+    });
+  }
+
   ProcessToBill(context, e) {
     let $this = this;
 
@@ -80,6 +97,7 @@ class AddPackageBilling extends Component {
       .where(w => w.services_id === $this.state.s_service)
       .toArray();
 
+    let package_List = $this.state.package_List;
     if (SelectedService.length === 0) {
       if (this.state.patient_id !== null && this.state.visit_id !== null) {
         if (this.state.s_service !== null) {
@@ -133,8 +151,6 @@ class AddPackageBilling extends Component {
                     context.updateState({
                       billdetails: existingservices,
                       applydiscount: applydiscount,
-                      // s_service_type: null,
-                      s_service: null,
                       saveEnable: false
                     });
                   }
@@ -153,6 +169,39 @@ class AddPackageBilling extends Component {
 
                           response.data.records.billDetails = false;
                           context.updateState({ ...response.data.records });
+                        }
+                      }
+                    },
+                    onFailure: error => {
+                      swalMessage({
+                        title: error.message,
+                        type: "error"
+                      });
+                    }
+                  });
+
+                  debugger;
+                  algaehApiCall({
+                    uri: "/billing/getPakageDetails",
+                    module: "billing",
+                    method: "GET",
+                    data: { package_service_id: $this.state.s_service },
+                    onSuccess: response => {
+                      debugger;
+                      if (response.data.success) {
+                        if (context !== null) {
+                          // package_List.splice(0, 0, response.data.records);
+                          if (package_List.length === 0) {
+                            package_List = response.data.records;
+                          } else {
+                            package_List = package_List.concat(
+                              response.data.records
+                            );
+                          }
+                          context.updateState({
+                            package_List: package_List,
+                            s_service: null
+                          });
                         }
                       }
                     },
@@ -410,7 +459,11 @@ class AddPackageBilling extends Component {
                       },
                       others: { disabled: this.state.Billexists },
                       onChange: serviceHandeler.bind(this, this, context),
-                      onClear: serviceHandeler.bind(this, this, context)
+                      onClear: () => {
+                        this.setState({
+                          s_service: null
+                        });
+                      }
                     }}
                   />
 
@@ -425,7 +478,15 @@ class AddPackageBilling extends Component {
                     </button>
                   </div>
 
-                  <div className="col-lg-2">
+                  <div className="col-lg-5">
+                    {/* <button
+                      className="btn btn-default"
+                      style={{ marginTop: "24px", marginRight: "15px" }}
+                      onClick={this.ShowPackList.bind(this)}
+                      disabled={this.state.billDetails}
+                    >
+                      View Package List
+                    </button> */}
                     <button
                       className="btn btn-default"
                       style={{ marginTop: "24px" }}
@@ -451,6 +512,23 @@ class AddPackageBilling extends Component {
                       show={this.state.isOpen}
                       onClose={this.ShowBillDetails.bind(this)}
                     />
+
+                    <PackageList
+                      HeaderCaption={
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "pack_list",
+                            align: "ltr"
+                          }}
+                        />
+                      }
+                      PackageIOputs={{
+                        selectedLang: this.state.selectedLang,
+                        packages: this.state.packages
+                      }}
+                      open={this.state.packOpen}
+                      onClose={this.ShowPackList.bind(this)}
+                    />
                   </div>
                 </div>
                 <div className="row" style={{ marginTop: "10px" }}>
@@ -458,6 +536,28 @@ class AddPackageBilling extends Component {
                     <AlgaehDataGrid
                       id="Bill_details"
                       columns={[
+                        {
+                          fieldName: "view_package_list",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "view_package_list" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <React.Fragment>
+                                <i
+                                  className="fas fa-eye"
+                                  onClick={this.ShowPackList.bind(this, row)}
+                                />
+                              </React.Fragment>
+                            );
+                          },
+                          others: {
+                            maxWidth: 105,
+                            fixed: "left"
+                          }
+                        },
                         {
                           fieldName: "services_id",
                           label: (

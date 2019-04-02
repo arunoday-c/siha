@@ -266,7 +266,7 @@ class RegistrationPatient extends PureComponent {
                   data: patientdata,
                   method: "POST",
                   onSuccess: response => {
-                    AlgaehLoader({ show: false });
+                    // AlgaehLoader({ show: false });
                     if (response.data.success) {
                       let _arrayImages = [];
                       if (_patImage !== undefined) {
@@ -363,6 +363,7 @@ class RegistrationPatient extends PureComponent {
                       }
 
                       Promise.all(_arrayImages).then(result => {
+                        AlgaehLoader({ show: false });
                         $this.setState({
                           patient_code: response.data.records.patient_code,
                           bill_number: response.data.records.bill_number,
@@ -395,7 +396,7 @@ class RegistrationPatient extends PureComponent {
                   data: patientdata,
                   method: "POST",
                   onSuccess: response => {
-                    AlgaehLoader({ show: false });
+                    // AlgaehLoader({ show: false });
                     if (response.data.success) {
                       debugger;
                       let _arrayImages = [];
@@ -493,6 +494,7 @@ class RegistrationPatient extends PureComponent {
                       }
 
                       Promise.all(_arrayImages).then(result => {
+                        AlgaehLoader({ show: false });
                         $this.setState({
                           bill_number: response.data.records.bill_number,
                           receipt_number: response.data.records.receipt_number,
