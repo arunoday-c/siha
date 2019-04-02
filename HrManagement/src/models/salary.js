@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import _ from "lodash";
+import { LINQ } from "node-linq";
 import mysql from "mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
 
@@ -2444,7 +2445,133 @@ module.exports = {
       next();
       return;
     }
+  },
+
+
+  
+  //created by:irfan,for report
+  detailSalaryStatement : (req, res, next) => {
+    if (req.query.month > 0 && req.query.year > 0) {
+      const _mysql = new algaehMysql();
+
+            let input=req.query;
+            let outputArray=[];
+
+      _mysql
+        .executeQuery({
+          query: "select earning_deduction_description from hims_d_earning_deduction\
+          where record_status='A' and print_report='Y';\
+          select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
+          E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
+          S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions\
+          from hims_d_employee E\
+          inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  and H.default_nationality=E.nationality\
+          inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
+          inner join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
+          inner join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
+          inner join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
+          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?",
+          values: [input.hospital_id,input.employee_group_id,input.month,input.year]
+          
+        })
+        .then(result => {
+          // _mysql.releaseConnection();
+          // req.records = result;
+          // next();
+
+          let components=result[0];
+          let salary=result[1];
+            outputArray.push(components);
+          if(salary.length>0){
+            let salary_header_ids=new LINQ(salary).Select(s=>s.hims_f_salary_id).ToArray();
+
+
+            _mysql
+            .executeQuery({
+              query:
+                "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary from \
+                hims_f_salary_earnings  where salary_header_id in ("+salary_header_ids+ ");\
+                select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary from \
+                hims_f_salary_deductions where salary_header_id in ( "+salary_header_ids+ ");"
+              
+              
+            })
+            .then(results => {
+              // _mysql.releaseConnection();
+              // req.records = result;
+              // next();
+
+              let earnings=results[0];
+              let deductions=results[1];
+
+for (let i=0;i<salary.length;i++){
+
+ let employee_earning=new LINQ(earnings).Where(w=>w.salary_header_id==salary[i]["hims_f_salary_id"]). Select(s=>{
+   return{
+     hims_f_salary_earnings_id:s.hims_f_salary_earnings_id,
+earnings_id:s.earnings_id,
+amount:s.amount
+   }
+ }).ToArray();
+
+
+ let employee_deduction=new LINQ(deductions).Where(w=>w.salary_header_id==salary[i]["hims_f_salary_id"]). Select(s=>{
+   return{
+     hims_f_salary_deductions_id:s.hims_f_salary_deductions_id,
+deductions_id:s.deductions_id,
+amount:s.amount
+   }
+ }).ToArray();
+
+outputArray.push({
+...salary[i],employee_earning:employee_earning,employee_deduction:employee_deduction,
+
+})
+
+
+
+
+}
+
+
+ _mysql.releaseConnection();
+              req.records = outputArray;
+              next();
+            })
+            .catch(e => {
+          _mysql.releaseConnection();
+              next(e);
+            });
+
+
+
+          }else{
+
+  _mysql.releaseConnection();
+          req.records = salary;
+          next();
+
+          }
+ 
+
+
+         
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please Provide valid input "
+      };
+      next();
+      return;
+    }
   }
+
+
 };
 
 function InsertEmployeeLeaveSalary(options) {
