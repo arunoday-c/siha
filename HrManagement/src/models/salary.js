@@ -2457,20 +2457,27 @@ module.exports = {
             let input=req.query;
             let outputArray=[];
 
+            let is_local="";
+
+            if(input.is_local=="Y"){
+
+              is_local=" and H.default_nationality=E.nationality ";
+            }
+
       _mysql
         .executeQuery({
-          query: "select earning_deduction_description from hims_d_earning_deduction\
+          query: `select earning_deduction_description from hims_d_earning_deduction\
           where record_status='A' and print_report='Y';\
           select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
           S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions\
           from hims_d_employee E\
-          inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  and H.default_nationality=E.nationality\
+          inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  ${is_local}\
           inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
           inner join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
           inner join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
           inner join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?",
+          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?`,
           values: [input.hospital_id,input.employee_group_id,input.month,input.year]
           
         })
@@ -2490,10 +2497,13 @@ module.exports = {
             .executeQuery({
               query:
                 "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary from \
-                hims_f_salary_earnings  where salary_header_id in ("+salary_header_ids+ ");\
+                hims_f_salary_earnings SE inner join hims_d_earning_deduction ED on \
+                SE.earnings_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' where salary_header_id in ("+salary_header_ids+ ");\
                 select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary from \
-                hims_f_salary_deductions where salary_header_id in ( "+salary_header_ids+ ");"
-              
+                hims_f_salary_deductions SD inner join hims_d_earning_deduction ED on \
+                SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
+                where salary_header_id in ( "+salary_header_ids+ ");"
+                              
               
             })
             .then(results => {
