@@ -2459,6 +2459,10 @@ module.exports = {
 
       if (input.is_local == "Y") {
         is_local = " and H.default_nationality=E.nationality ";
+      }else if(input.is_local == "N") {
+
+ is_local = " and H.default_nationality<>E.nationality ";
+
       }
 
       _mysql
@@ -2489,8 +2493,25 @@ module.exports = {
 
           let components = result[0];
           let salary = result[1];
-          // outputArray.push(components);
+
+        let total_earnings=0;
+let total_deductions=0;
+let total_net_salary=0;
+
+
+
+
+
+
           if (salary.length > 0) {
+
+
+
+total_earnings=new LINQ(salary).Sum(s=>parseFloat(s.total_earnings));
+total_deductions=new LINQ(salary).Sum(s=>parseFloat(s.total_deductions));
+total_net_salary=new LINQ(salary).Sum(s=>parseFloat(s.net_salary));
+
+
             let salary_header_ids = new LINQ(salary)
               .Select(s => s.hims_f_salary_id)
               .ToArray();
@@ -2508,7 +2529,7 @@ module.exports = {
                 SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
                 where salary_header_id in ( " +
                   salary_header_ids +
-                  ");"
+                  ");select basic_earning_component from hims_d_hrms_options;"
               })
               .then(results => {
                 // _mysql.releaseConnection();
@@ -2517,6 +2538,12 @@ module.exports = {
 
                 let earnings = results[0];
                 let deductions = results[1];
+                let basic_id = results[2][0]["basic_earning_component"];
+
+               // console.log("basic:",basic_id);
+
+
+let total_basic=0;
 
                 for (let i = 0; i < salary.length; i++) {
                   let employee_earning = new LINQ(earnings)
@@ -2548,6 +2575,19 @@ module.exports = {
 
                   
 
+
+
+           total_basic += new LINQ(employee_earning)
+                    .Where(
+                      w => w.earnings_id == basic_id
+                    )
+                    .Select(s => parseFloat(s.amount)).FirstOrDefault(0);
+                    
+
+
+console.log("totalbasic:",total_basic );
+
+
                   outputArray.push({
                     ...salary[i],
                     employee_earning: employee_earning,
@@ -2559,7 +2599,13 @@ module.exports = {
                 _mysql.releaseConnection();
                 req.records = {
                   components: components,
-                  employees: outputArray
+                  employees: outputArray,
+                  total_basic:total_basic,
+                  total_earnings:total_earnings,
+                  total_deductions:total_deductions,
+                  total_net_salary:total_net_salary
+
+                    
                 };
                 next();
               })
