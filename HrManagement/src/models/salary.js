@@ -2471,7 +2471,8 @@ module.exports = {
           where record_status='A' and print_report='Y';\
           select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-          S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions\
+          S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions,\
+          S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours
           from hims_d_employee E\
           inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  ${is_local}\
           inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
@@ -2546,6 +2547,42 @@ total_net_salary=new LINQ(salary).Sum(s=>parseFloat(s.net_salary));
 let total_basic=0;
 
                 for (let i = 0; i < salary.length; i++) {
+
+
+let ot_hours =0;
+let ot_min =0;
+
+ ot_hours += parseInt(salary[i]["ot_work_hours"]
+                    .toString()
+                    .split(".")[0]);
+ ot_min += parseInt(salary[i]["ot_work_hours"]
+                    .toString()
+                    .split(".")[1]);
+
+ ot_hours += parseInt(salary[i]["ot_weekoff_hours"]
+                    .toString()
+                    .split(".")[0]);
+ ot_min +=parseInt(salary[i]["ot_weekoff_hours"]
+                    .toString()
+                    .split(".")[1]);
+
+ ot_hours += parseInt(salary[i]["ot_holiday_hours"]
+                    .toString()
+                    .split(".")[0]);
+ ot_min += parseInt(salary[i]["ot_holiday_hours"]
+                    .toString()
+                    .split(".")[1]);
+
+
+ ot_hours+= parseInt(parseInt(ot_min) / parseInt(60));
+
+           
+
+let complete_ot=ot_hours+"."+parseInt(ot_min) % parseInt(60);
+
+
+
+
                   let employee_earning = new LINQ(earnings)
                     .Where(
                       w => w.salary_header_id == salary[i]["hims_f_salary_id"]
@@ -2592,6 +2629,7 @@ console.log("totalbasic:",total_basic );
                     ...salary[i],
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
+                    complete_ot:complete_ot
                     
                   });
                 }
