@@ -2488,7 +2488,7 @@ module.exports = {
 
           let components=result[0];
           let salary=result[1];
-            outputArray.push(components);
+           // outputArray.push(components);
           if(salary.length>0){
             let salary_header_ids=new LINQ(salary).Select(s=>s.hims_f_salary_id).ToArray();
 
@@ -2545,7 +2545,7 @@ outputArray.push({
 
 
  _mysql.releaseConnection();
-              req.records = outputArray;
+              req.records = {components:components,employees:outputArray};
               next();
             })
             .catch(e => {
