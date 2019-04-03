@@ -1,5 +1,4 @@
 import { payrollHeader } from "./payrollHeader";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
 import _ from "lodash";
 import "../report-style.css";
 import math from "mathjs";

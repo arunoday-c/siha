@@ -7,12 +7,6 @@ import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(result) {
   debugger;
-  //   let net_salary = _.sumBy(data, s => parseFloat(s.net_salary));
-  //   let total_earnings = _.sumBy(data, s => parseFloat(s.total_earnings));
-  //   let total_deductions = _.sumBy(data, s => parseFloat(s.total_deductions));
-  //   let total_contributions = _.sumBy(data, s =>
-  //     parseFloat(s.total_contributions)
-  //   );
 
   if (result === undefined) return null;
   const header_data = result.components;
@@ -53,7 +47,7 @@ export function printReport(result) {
                         .join("")
                     : ""
                 }
-                <th>Total Salary</th>
+                <th>Total Earnings</th>
                 ${
                   deduction_component.length > 0
                     ? deduction_component
@@ -105,7 +99,17 @@ export function printReport(result) {
     <td>${list.total_deductions} </td>
     <td>${list.net_salary} </td>
     <td>${moment(list.salary_date).format("DD-MM-YYYY")} </td>
-    <td>${list.mode_of_payment} </td>
+    <td>${
+      list.mode_of_payment === "CS"
+        ? "Cash"
+        : list.mode_of_payment === "CH"
+        ? "Cheque"
+        : list.mode_of_payment === "TRF"
+        ? "Transfer"
+        : list.mode_of_payment === "WPS"
+        ? "Wages and Proctection System"
+        : ""
+    } </td>
 
   
 </tr>
@@ -116,8 +120,27 @@ export function printReport(result) {
     
     </tbody></table></div>
     <div class="row">
-    
+    <div class="col"></div>
+      <div class="col-2">
+        <label>Total Basic</label>
+        <h6>${getAmountFormart(result.total_basic)}</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Earnings</label>
+        <h6>${getAmountFormart(result.total_earnings)}</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Deductions</label>
+
+        <h6>${getAmountFormart(result.total_deductions)}</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Net Salary</label>
+        <h6>${getAmountFormart(result.total_net_salary)}$</h6>
+      </div>
+        
     </div>
+  </div>
 </section>
   `;
 }
