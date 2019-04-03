@@ -34,8 +34,8 @@ class AddPatientForm extends Component {
       DOBErrorMsg: "",
       DOBError: false,
       DOB: 0,
-      CurrentDate: new Date(),
-      patientImage: undefined
+      CurrentDate: new Date()
+      // patientImage: undefined
     };
     this.widthImg = "";
     this.widthDate = "";
@@ -144,6 +144,7 @@ class AddPatientForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     this.setState(nextProps.PatRegIOputs, () => {
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {
@@ -202,6 +203,8 @@ class AddPatientForm extends Component {
     }
   }
   imageDetails(context, type) {
+    debugger;
+    this.setState({ [type]: this[type] });
     if (context !== undefined) {
       context.updateState({ ...this.state, [type]: this[type] });
     }
@@ -714,6 +717,7 @@ class AddPatientForm extends Component {
                             )
                           }}
                           renderPrevState={this.state.patientImage}
+                          forceRefresh={this.state.forceRefresh}
                         />
                       </div>
                       <div className="col-lg-7 patientRegId">
@@ -736,6 +740,7 @@ class AddPatientForm extends Component {
                             )
                           }}
                           renderPrevState={this.state.patientIdCard}
+                          forceRefresh={this.state.forceRefresh}
                         />
 
                         {/* <Dropzone

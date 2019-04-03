@@ -590,6 +590,7 @@ class RegistrationPatient extends Component {
             data.patientRegistration.title_id = title_id;
           }
           //Appoinment End
+          debugger;
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
           data.patientRegistration.arabic_name =
@@ -755,7 +756,7 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger
+                debugger;
                 this.setState({ ...obj });
               }
             }}
