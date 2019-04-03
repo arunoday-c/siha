@@ -900,5 +900,9 @@
     { "name": "Advance", "value": "AD" },
     { "name": "OP Creidt", "value": "OPC" },
     { "name": "POS Creidt", "value": "POSC" }
+  ],
+  "LOCAL_TYPE": [
+    { "name": "Local", "value": "Y" },
+    { "name": "Non Local", "value": "N" }
   ]
 }

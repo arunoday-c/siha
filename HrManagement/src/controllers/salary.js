@@ -69,7 +69,7 @@ export default () => {
   api.get("/detailSalaryStatement", detailSalaryStatement, (req, res, next) => {
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      result: req.records
+      records: req.records
     });
   });
 

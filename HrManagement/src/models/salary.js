@@ -1258,7 +1258,7 @@ module.exports = {
                                                 over_time: _over_time,
                                                 leave_salary:
                                                   req.query.leave_salary,
-                                                  next: next
+                                                next: next
                                               })
                                                 .then(OTManagement => {
                                                   final_earning_amount =
@@ -1277,7 +1277,7 @@ module.exports = {
                                                     hrms_option: results[8],
                                                     leave_salary:
                                                       req.query.leave_salary,
-                                                      next: next
+                                                    next: next
                                                   })
                                                     .then(ShortAge => {
                                                       utilities
@@ -2447,26 +2447,23 @@ module.exports = {
     }
   },
 
-
-  
   //created by:irfan,for report
-  detailSalaryStatement : (req, res, next) => {
+  detailSalaryStatement: (req, res, next) => {
     if (req.query.month > 0 && req.query.year > 0) {
       const _mysql = new algaehMysql();
 
-            let input=req.query;
-            let outputArray=[];
+      let input = req.query;
+      let outputArray = [];
 
-            let is_local="";
+      let is_local = "";
 
-            if(input.is_local=="Y"){
-
-              is_local=" and H.default_nationality=E.nationality ";
-            }
+      if (input.is_local == "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      }
 
       _mysql
         .executeQuery({
-          query: `select earning_deduction_description from hims_d_earning_deduction\
+          query: `select earning_deduction_description,component_category from hims_d_earning_deduction\
           where record_status='A' and print_report='Y';\
           select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
@@ -2478,94 +2475,103 @@ module.exports = {
           inner join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
           inner join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
           where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?`,
-          values: [input.hospital_id,input.employee_group_id,input.month,input.year]
-          
+          values: [
+            input.hospital_id,
+            input.employee_group_id,
+            input.month,
+            input.year
+          ]
         })
         .then(result => {
           // _mysql.releaseConnection();
           // req.records = result;
           // next();
 
-          let components=result[0];
-          let salary=result[1];
-           // outputArray.push(components);
-          if(salary.length>0){
-            let salary_header_ids=new LINQ(salary).Select(s=>s.hims_f_salary_id).ToArray();
-
+          let components = result[0];
+          let salary = result[1];
+          // outputArray.push(components);
+          if (salary.length > 0) {
+            let salary_header_ids = new LINQ(salary)
+              .Select(s => s.hims_f_salary_id)
+              .ToArray();
 
             _mysql
-            .executeQuery({
-              query:
-                "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary from \
+              .executeQuery({
+                query:
+                  "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary from \
                 hims_f_salary_earnings SE inner join hims_d_earning_deduction ED on \
-                SE.earnings_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' where salary_header_id in ("+salary_header_ids+ ");\
+                SE.earnings_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' where salary_header_id in (" +
+                  salary_header_ids +
+                  ");\
                 select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary from \
                 hims_f_salary_deductions SD inner join hims_d_earning_deduction ED on \
                 SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
-                where salary_header_id in ( "+salary_header_ids+ ");"
-                              
-              
-            })
-            .then(results => {
-              // _mysql.releaseConnection();
-              // req.records = result;
-              // next();
+                where salary_header_id in ( " +
+                  salary_header_ids +
+                  ");"
+              })
+              .then(results => {
+                // _mysql.releaseConnection();
+                // req.records = result;
+                // next();
 
-              let earnings=results[0];
-              let deductions=results[1];
+                let earnings = results[0];
+                let deductions = results[1];
 
-for (let i=0;i<salary.length;i++){
+                for (let i = 0; i < salary.length; i++) {
+                  let employee_earning = new LINQ(earnings)
+                    .Where(
+                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                    )
+                    .Select(s => {
+                      return {
+                        hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
+                        earnings_id: s.earnings_id,
+                        amount: s.amount
+                      };
+                    })
+                    .ToArray();
 
- let employee_earning=new LINQ(earnings).Where(w=>w.salary_header_id==salary[i]["hims_f_salary_id"]). Select(s=>{
-   return{
-     hims_f_salary_earnings_id:s.hims_f_salary_earnings_id,
-earnings_id:s.earnings_id,
-amount:s.amount
-   }
- }).ToArray();
+                  let employee_deduction = new LINQ(deductions)
+                    .Where(
+                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                    )
+                    .Select(s => {
+                      return {
+                        hims_f_salary_deductions_id:
+                          s.hims_f_salary_deductions_id,
+                        deductions_id: s.deductions_id,
+                        amount: s.amount
+                      };
+                    })
+                    .ToArray();
 
+                  
 
- let employee_deduction=new LINQ(deductions).Where(w=>w.salary_header_id==salary[i]["hims_f_salary_id"]). Select(s=>{
-   return{
-     hims_f_salary_deductions_id:s.hims_f_salary_deductions_id,
-deductions_id:s.deductions_id,
-amount:s.amount
-   }
- }).ToArray();
+                  outputArray.push({
+                    ...salary[i],
+                    employee_earning: employee_earning,
+                    employee_deduction: employee_deduction,
+                    
+                  });
+                }
 
-outputArray.push({
-...salary[i],employee_earning:employee_earning,employee_deduction:employee_deduction,
-
-})
-
-
-
-
-}
-
-
- _mysql.releaseConnection();
-              req.records = {components:components,employees:outputArray};
-              next();
-            })
-            .catch(e => {
-          _mysql.releaseConnection();
-              next(e);
-            });
-
-
-
-          }else{
-
-  _mysql.releaseConnection();
-          req.records = salary;
-          next();
-
+                _mysql.releaseConnection();
+                req.records = {
+                  components: components,
+                  employees: outputArray
+                };
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = salary;
+            next();
           }
- 
-
-
-         
         })
         .catch(e => {
           _mysql.releaseConnection();
@@ -2580,8 +2586,6 @@ outputArray.push({
       return;
     }
   }
-
-
 };
 
 function InsertEmployeeLeaveSalary(options) {
@@ -2662,7 +2666,7 @@ function InsertEmployeeLeaveSalary(options) {
                   // resolve();
                 })
                 .catch(e => {
-                  reject(e);                  
+                  reject(e);
                 });
             } else {
               _mysql
@@ -2718,18 +2722,15 @@ function InsertEmployeeLeaveSalary(options) {
                     })
                     .catch(error => {
                       reject(error);
-                      
                     });
                 })
                 .catch(e => {
                   reject(e);
-                  
                 });
             }
           })
           .catch(e => {
             reject(e);
-            
           });
       }
       resolve();
