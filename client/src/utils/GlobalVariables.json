@@ -902,7 +902,7 @@
     { "name": "POS Creidt", "value": "POSC" }
   ],
   "LOCAL_TYPE": [
-    { "name": "Local", "value": "Y" },
-    { "name": "Non Local", "value": "N" }
+    { "name": "Localite", "value": "Y" },
+    { "name": "Expatriate", "value": "N" }
   ]
 }

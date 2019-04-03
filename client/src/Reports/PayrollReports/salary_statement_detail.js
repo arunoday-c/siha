@@ -37,6 +37,7 @@ export function printReport(result) {
                 <th>Designation</th>
                 <th>Date of Join</th>
                 <th>Days Present</th>
+                <th>OT Hours</th>
                 ${
                   earning_component.length > 0
                     ? earning_component
@@ -77,6 +78,7 @@ export function printReport(result) {
     <td>${list.designation}</td>
     <td>${moment(list.date_of_joining).format("DD-MM-YYYY")}</td>
     <td>${list.present_days} </td>
+    <td>${list.complete_ot} </td>
     ${
       earning_component.length > 0
         ? list.employee_earning.length > 0

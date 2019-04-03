@@ -1154,6 +1154,7 @@ export default [
             name: "is_local",
             initialLoad: true,
             isImp: true,
+            label: "Select Type",
             dataSource: {
               textField: "name",
               valueField: "value",
@@ -1210,7 +1211,7 @@ export default [
         reportParameters: [
           {
             type: "dropdown",
-            name: "yearAndMonth",
+            name: "year",
             sort: "off",
             isImp: true,
             initialLoad: true,
