@@ -3,7 +3,10 @@ import { payrollHeader } from "./payrollHeader";
 import "../report-style.css";
 import _ from "lodash";
 import moment from "moment";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import {
+  getAmountFormart,
+  getAmountWithOutCurrencyFormart
+} from "../../utils/GlobalFunctions";
 
 export function printReport(result) {
   debugger;
@@ -83,23 +86,29 @@ export function printReport(result) {
       earning_component.length > 0
         ? list.employee_earning.length > 0
           ? list.employee_earning
-              .map(earn => `<td>${earn.amount}</td>`)
+              .map(
+                earn =>
+                  `<td>${getAmountWithOutCurrencyFormart(earn.amount)}</td>`
+              )
               .join("")
           : ""
         : ""
     }
-    <td>${list.total_earnings} </td>
+    <td>${getAmountWithOutCurrencyFormart(list.total_earnings)} </td>
     ${
       deduction_component.length > 0
         ? list.employee_deduction.length > 0
           ? list.employee_deduction
-              .map(earn => `<td>${earn.amount}</td>`)
+              .map(
+                deduct =>
+                  `<td>${getAmountWithOutCurrencyFormart(deduct.amount)}</td>`
+              )
               .join("")
           : ""
         : ""
     }
-    <td>${list.total_deductions} </td>
-    <td>${list.net_salary} </td>
+    <td>${getAmountWithOutCurrencyFormart(list.total_deductions)}</td>
+    <td>${getAmountWithOutCurrencyFormart(list.net_salary)} </td>
     <td>${moment(list.salary_date).format("DD-MM-YYYY")} </td>
     <td>${
       list.mode_of_payment === "CS"
@@ -138,7 +147,7 @@ export function printReport(result) {
       </div>
       <div class="col-2">
         <label>Total Net Salary</label>
-        <h6>${getAmountFormart(result.total_net_salary)}$</h6>
+        <h6>${getAmountFormart(result.total_net_salary)}</h6>
       </div>
         
     </div>
