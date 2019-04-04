@@ -27,7 +27,7 @@ export function printReport(result) {
   return `
 
   <div class="print-body">
-  <header> ${payrollHeader(data)} </header> 
+  <header> ${payrollHeader(data, "Attendance Report")} </header> 
    
 <section>
     <h2><span>Attendence Details</span></h2><div class="tbl-header">
@@ -35,7 +35,7 @@ export function printReport(result) {
         <thead >
             <tr>
                 <th>Employee Code</th>
-                <th>Employee Name</th>
+                <th style="width:200px">Employee Name</th>
                 <th>Total Days</th>
                 <th>Total Work Days</th>
                 <th>Present Days</th>
@@ -44,9 +44,9 @@ export function printReport(result) {
                 <th>Unpaid Leaves</th>
                 <th>Total Paid Days</th>
                 <th>Total Holidays</th>
-                <th>Total Week Off Days</th>
-                <th>Total Working Hours</th>
-                <th>Total Worked Hours</th>
+                <th style="width:140px">Total Week Off Days</th>
+                <th style="width:150px">Total Working Hours</th>
+                <th style="width:145px">Total Worked Hours</th>
                 <th>OT Hours</th>
                 <th>Shortage Hours</th>
                 <th>Week Off OT</th>
@@ -60,32 +60,38 @@ export function printReport(result) {
       list =>
         `
     <tr>
-    <td>${list.employee_code}</td>
-    <td>${list.employee_name}</td>    
-    <td>${list.total_days} </td>
-    <td>${list.total_work_days} </td>
-    <td>${list.present_days}</td>
-    <td>${list.absent_days}</td>    
-    <td>${list.paid_leave} </td>
-    <td>${list.unpaid_leave} </td>
-    <td>${list.total_paid_days}</td>
-    <td>${list.total_holidays}</td>    
-    <td>${list.total_weekoff_days} </td>
-    <td>${
-      list.total_working_hours ? list.total_working_hours + " Hrs" : "00:00 Hrs"
-    } </td>
-    <td>${list.total_hours ? list.total_hours + " Hrs" : "00:00 Hrs"} </td>
-    <td>${list.ot_work_hours ? list.ot_work_hours + " Hrs" : "00:00 Hrs"} </td>
-    <td>${
-      list.shortage_hours ? list.shortage_hours + " Hrs" : "00:00 Hrs"
-    } </td>
+    <td class="center">${list.employee_code}</td>
+     <td class="left" style="width:200px">${list.employee_name}</td>    
+     <td class="right">${list.total_days} </td>
+     <td class="right">${list.total_work_days} </td>
+     <td class="right">${list.present_days}</td>
+     <td class="right">${list.absent_days}</td>    
+     <td class="right">${list.paid_leave} </td>
+     <td class="right">${list.unpaid_leave} </td>
+     <td class="right"  style="width:140px">${list.total_paid_days}</td>
+     <td class="right"  style="width:150px">${list.total_holidays}</td>    
+     <td class="right"  style="width:145px">${list.total_weekoff_days} </td>
+     <td class="right">${
+       list.total_working_hours
+         ? list.total_working_hours + " Hrs"
+         : "00:00 Hrs"
+     } </td>
+     <td class="right">${
+       list.total_hours ? list.total_hours + " Hrs" : "00:00 Hrs"
+     } </td>
+     <td class="right">${
+       list.ot_work_hours ? list.ot_work_hours + " Hrs" : "00:00 Hrs"
+     } </td>
+     <td class="right">${
+       list.shortage_hours ? list.shortage_hours + " Hrs" : "00:00 Hrs"
+     } </td>
 
-    <td>${
-      list.ot_weekoff_hours ? list.ot_weekoff_hours + " Hrs" : "00:00 Hrs"
-    } </td>
-    <td>${
-      list.ot_holiday_hours ? list.ot_holiday_hours + " Hrs" : "00:00 Hrs"
-    } </td>
+     <td class="right">${
+       list.ot_weekoff_hours ? list.ot_weekoff_hours + " Hrs" : "00:00 Hrs"
+     } </td>
+     <td class="right">${
+       list.ot_holiday_hours ? list.ot_holiday_hours + " Hrs" : "00:00 Hrs"
+     } </td>
    
 </tr>
     `
@@ -95,7 +101,7 @@ export function printReport(result) {
  
     </thead></table></div> 
     
-    <div class="row">
+    <div class="row reportFooterDetails">
     <div class="col"></div>
       <div class="col-2">
         <label>Total Worked Hours</label>

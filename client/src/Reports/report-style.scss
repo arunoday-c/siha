@@ -26,16 +26,16 @@
   table-layout: fixed;
 
   th {
-    padding: 5px 15px;
+    padding: 5px 5px;
     vertical-align: middle;
-    text-align: left;
+    text-align: center;
     font-weight: 500;
-    font-size: 12px;
+    font-size: 0.8rem;
     color: #000 !important;
     background: lighten($primary-color, 55%) !important;
     border-bottom: 1px solid lighten($primary-color, 10%) !important;
     text-transform: uppercase;
-    width: 100px;
+    width: 130px;
   }
   tr {
     &:nth-child(even) {
@@ -43,13 +43,22 @@
     }
   }
   td {
-    padding: 5px 15px;
+    padding: 5px 5px;
     text-align: left;
     vertical-align: middle;
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: lighten($color-black, 40%) !important;
     border-bottom: solid 1px rgba(255, 255, 255, 0.1);
-    width: 100px;
+    width: 130px;
+    &.left {
+      text-align: left;
+    }
+    &.center {
+      text-align: center;
+    }
+    &.right {
+      text-align: right;
+    }
   }
 
   /* for custom scrollbar for webkit browser*/
@@ -65,4 +74,7 @@
   ::-webkit-scrollbar-thumb {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
   }
+}
+.reportFooterDetails {
+  text-align: right;
 }
