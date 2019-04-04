@@ -45,6 +45,63 @@ export default class ExaminationDiagram extends Component {
   render() {
     return (
       <div className="row">
+        <div className="col saveWindow">
+          <div className="row saveHeader">
+            <div className="col">
+              <h6>Save</h6>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-6 form-group">
+              <label>Save As</label>
+              <div className="customRadio">
+                <label className="radio inline">
+                  <input
+                    type="radio"
+                    value="ALL"
+                    name="no_employees"
+                    // checked={this.state.no_employees === "ALL"}
+                    // onChange={this.textHandler.bind(this)}
+                  />
+                  <span>New</span>
+                </label>
+
+                <label className="radio inline" style={{ marginRight: 5 }}>
+                  <input
+                    type="radio"
+                    //  onChange={this.textHandler.bind(this)}
+                    value="ONE"
+                    name="no_employees"
+                    //   checked={this.state.no_employees === "ONE"}
+                  />
+                  <span>Existing</span>
+                </label>
+              </div>
+            </div>
+            <AlagehAutoComplete
+              div={{ className: "col-6 form-group" }}
+              label={{ forceLabel: "Select Existing Treatment", isImp: false }}
+              selector={{
+                name: "",
+                className: "select-fld",
+                dataSource: {},
+                others: {}
+              }}
+            />
+            <div className="col form-group">
+              <label>Enter Remarks</label>
+              <textarea className="textAreaRemarks" />
+            </div>
+          </div>
+
+          <div className="row saveFooter">
+            <div className="col">
+              <button className="btn btn-primary">Save</button>
+              <button className="btn btn-default">Cancel</button>
+            </div>
+          </div>
+        </div>
+
         {/* <div className="col-12 diagramManageCntr">
         </div> */}
         <div className="col-2">
