@@ -374,8 +374,8 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_inventory_material_detail p left outer join hims_d_item_master l \
-                on l.hims_d_item_master_id =p.item_id where inventory_header_id=?",
+                  "select * from hims_f_inventory_material_detail p left outer join hims_d_inventory_item_master l \
+                on l.hims_d_inventory_item_master_id =p.item_id where inventory_header_id=?",
                 values: [headerResult[0].hims_f_inventory_material_header_id],
                 printQuery: true
               })
