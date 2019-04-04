@@ -48,7 +48,7 @@ export default class ExaminationDiagram extends Component {
         <div className="col saveWindow">
           <div className="row saveHeader">
             <div className="col">
-              <h6>Save</h6>
+              <h5>Save</h5>
             </div>
           </div>
           <div className="row">
