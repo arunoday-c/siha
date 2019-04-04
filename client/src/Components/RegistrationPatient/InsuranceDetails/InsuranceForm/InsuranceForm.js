@@ -293,6 +293,7 @@ class AddInsuranceForm extends Component {
                             )
                           }}
                           renderPrevState={this.state.patInsuranceFrontImg}
+                          forceRefresh={this.state.forceRefresh}
                         />
                       </div>
 
@@ -315,6 +316,7 @@ class AddInsuranceForm extends Component {
                             )
                           }}
                           renderPrevState={this.state.patInsuranceBackImg}
+                          forceRefresh={this.state.forceRefresh}
                         />
                         <div />
                       </div>

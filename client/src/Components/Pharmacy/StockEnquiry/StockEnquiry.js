@@ -74,7 +74,7 @@ class StockEnquiry extends Component {
 
   render() {
     let total_quantity = Enumerable.from(this.props.itemBatch)
-      .select(w => w.qtyhand)
+      .select(w => parseFloat(w.qtyhand))
       .sum();
     return (
       <React.Fragment>
