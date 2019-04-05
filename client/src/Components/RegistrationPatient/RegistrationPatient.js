@@ -227,6 +227,7 @@ class RegistrationPatient extends Component {
     debugger;
     let prevLang = getCookie("Language");
     if (prevLang !== this.state.selectedLang) {
+      setGlobal({ selectedLang: prevLang });
       let IOputs = emptyObject;
       let counter_id = null;
       IOputs.visittypeselect = true;

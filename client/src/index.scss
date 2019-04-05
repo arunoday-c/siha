@@ -1587,5 +1587,35 @@
     }
   }
 }
-
+.ar_comp {
+  .algaeh-modal {
+    direction: rtl;
+    text-align: right;
+    input {
+      &::placeholder {
+        text-align: right;
+      }
+    }
+    .text-arabic {
+      font-size: 1.1rem;
+    }
+    .popupHeader {
+      h4 {
+        label {
+          font-size: 1.5rem;
+        }
+      }
+      button {
+        float: left;
+      }
+    }
+    .popupFooter {
+      .btn {
+        float: left;
+        margin-left: 0;
+        margin-right: 10px;
+      }
+    }
+  }
+}
 //App Arabic Version End Here //

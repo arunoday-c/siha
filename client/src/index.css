@@ -1145,3 +1145,19 @@
     .arabic_component .maternityRadio .customRadio .inline + .inline {
       margin-right: 10px !important;
       margin-left: 0 !important; }
+
+.ar_comp .algaeh-modal {
+  direction: rtl;
+  text-align: right; }
+  .ar_comp .algaeh-modal input::placeholder {
+    text-align: right; }
+  .ar_comp .algaeh-modal .text-arabic {
+    font-size: 1.1rem; }
+  .ar_comp .algaeh-modal .popupHeader h4 label {
+    font-size: 1.5rem; }
+  .ar_comp .algaeh-modal .popupHeader button {
+    float: left; }
+  .ar_comp .algaeh-modal .popupFooter .btn {
+    float: left;
+    margin-left: 0;
+    margin-right: 10px; }

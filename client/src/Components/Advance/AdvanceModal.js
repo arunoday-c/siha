@@ -58,6 +58,7 @@ class AddAdvanceModal extends PureComponent {
   }
 
   componentWillReceiveProps() {
+    debugger;
     let lang_sets = "en_comp";
     if (Window.global.selectedLang === "ar") {
       lang_sets = "ar_comp";
