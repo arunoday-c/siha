@@ -141,6 +141,7 @@ class PhySchSetup extends Component {
 
     algaehApiCall({
       uri: "/appointment/updateDoctorScheduleDateWise",
+      module: "frontDesk",
       method: "PUT",
       data: send_data,
       onSuccess: response => {
@@ -238,6 +239,7 @@ class PhySchSetup extends Component {
       this.setState({ send_obj: myObj }, () => {
         algaehApiCall({
           uri: _uri,
+          module: "frontDesk",
           methid: "POST",
           data: this.state.send_obj,
           onSuccess: response => {
@@ -398,6 +400,7 @@ class PhySchSetup extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/deleteDoctorFromSchedule",
+          module: "frontDesk",
           method: "PUT",
           data: send_data,
           onSuccess: response => {
@@ -437,6 +440,7 @@ class PhySchSetup extends Component {
       AlgaehLoader({ show: true });
       algaehApiCall({
         uri: "/appointment/getDoctorsScheduledList",
+        module: "frontDesk",
         method: "GET",
         data: {
           sub_dept_id: this.state.sub_department_id,
@@ -492,6 +496,7 @@ class PhySchSetup extends Component {
   getDoctorScheduleToModify(header_id, provider_id) {
     algaehApiCall({
       uri: "/appointment/getDoctorScheduleToModify",
+      module: "frontDesk",
       method: "GET",
       data: {
         appointment_schedule_header_id: header_id,

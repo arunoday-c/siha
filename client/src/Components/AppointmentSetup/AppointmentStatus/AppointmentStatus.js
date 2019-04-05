@@ -94,6 +94,7 @@ class AppointmentStatus extends Component {
                 })
               : algaehApiCall({
                   uri: "/appointment/appointmentStatusAuthorized",
+                  module: "frontDesk",
                   method: "PUT",
                   onSuccess: response => {
                     if (response.data.success) {
@@ -139,6 +140,7 @@ class AppointmentStatus extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/updateAppointmentStatus",
+          module: "frontDesk",
           data: {
             hims_d_appointment_status_id: data.hims_d_appointment_status_id,
             color_code: data.color_code,
@@ -176,6 +178,7 @@ class AppointmentStatus extends Component {
   updateAppointmentStatus(data) {
     algaehApiCall({
       uri: "/appointment/updateAppointmentStatus",
+      module: "frontDesk",
       data: {
         hims_d_appointment_status_id: data.hims_d_appointment_status_id,
         color_code: data.color_code,
@@ -208,6 +211,7 @@ class AppointmentStatus extends Component {
   getAppointmentStatus() {
     algaehApiCall({
       uri: "/appointment/getAppointmentStatus",
+      module: "frontDesk",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -274,6 +278,7 @@ class AppointmentStatus extends Component {
             })
           : algaehApiCall({
               uri: "/appointment/addAppointmentStatus",
+              module: "frontDesk",
               method: "POST",
               data: {
                 color_code: this.state.color_code,

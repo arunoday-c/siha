@@ -62,6 +62,7 @@ class AppointmentClinics extends Component {
   getApptRooms() {
     algaehApiCall({
       uri: "/appointment/getAppointmentRoom",
+      module: "frontDesk",
       method: "GET",
       data: {},
       onSuccess: response => {
@@ -81,6 +82,7 @@ class AppointmentClinics extends Component {
   getAppointmentClinics() {
     algaehApiCall({
       uri: "/appointment/getAppointmentClinic",
+      module: "frontDesk",
       method: "GET",
       data: {},
       onSuccess: response => {
@@ -138,6 +140,7 @@ class AppointmentClinics extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/appointment/updateAppointmentClinic",
+          module: "frontDesk",
           data: {
             record_status: "I",
             description: data.description,
@@ -176,6 +179,7 @@ class AppointmentClinics extends Component {
   updateAppointmentClinics(data) {
     algaehApiCall({
       uri: "/appointment/updateAppointmentClinic",
+      module: "frontDesk",
       method: "PUT",
       data: {
         record_status: "A",
@@ -221,6 +225,7 @@ class AppointmentClinics extends Component {
       onSuccess: () => {
         algaehApiCall({
           uri: "/appointment/addAppointmentClinic",
+          module: "frontDesk",
           method: "POST",
           data: {
             description: this.state.description,
