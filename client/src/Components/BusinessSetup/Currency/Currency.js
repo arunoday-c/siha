@@ -487,14 +487,15 @@ class Currency extends Component {
                   label: (
                     <AlgaehLabel label={{ fieldName: "thousand_separator" }} />
                   ),
+
                   displayTemplate: row => {
                     return (
                       <span>
                         {row.thousand_separator === "S"
                           ? "Space"
-                          : row.thousand_separator === "P"
+                          : row.thousand_separator === "."
                           ? "Period"
-                          : row.thousand_separator === "C"
+                          : row.thousand_separator === ","
                           ? "Comma"
                           : null}
                       </span>
@@ -532,9 +533,9 @@ class Currency extends Component {
                   displayTemplate: row => {
                     return (
                       <span>
-                        {row.decimal_separator === "P"
+                        {row.decimal_separator === "."
                           ? "Period"
-                          : row.decimal_separator === "C"
+                          : row.decimal_separator === ","
                           ? "Comma"
                           : null}
                       </span>
