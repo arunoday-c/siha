@@ -1,7 +1,9 @@
 import { Router } from "express";
 import {
   examinationDiagramMasterGetter,
-  saveExaminationDiagrams
+  saveExaminationDiagrams,
+  existingHeaderDiagramsGetter,
+  existingDetailDiagramGetter
 } from "../model/examinationDiagram";
 import httpStatus from "../../utils/httpStatus";
 export default () => {
@@ -14,6 +16,30 @@ export default () => {
     });
     delete req.records;
   });
+  api.get(
+    "/getExistingDiagramHeader",
+    existingHeaderDiagramsGetter,
+    (req, res) => {
+      const result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      delete req.records;
+    }
+  );
+  api.get(
+    "/getExistingDiagramDetails",
+    existingDetailDiagramGetter,
+    (req, res) => {
+      const result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      delete req.records;
+    }
+  );
   api.post("/saveDiagram", saveExaminationDiagrams, (req, res) => {
     res.status(httpStatus.ok).json({
       success: true,

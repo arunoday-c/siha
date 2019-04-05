@@ -2,7 +2,6 @@ import extend from "extend";
 import { swalMessage, algaehApiCall, getCookie } from "../utils/algaehApiCall";
 import crypto from "crypto";
 import Enumerable from "linq";
-import moment from "moment";
 
 export function successfulMessage(options) {
   options.icon = options.icon || "error";
@@ -243,13 +242,19 @@ export function saveFileOnServer(options) {
         }
       }
     },
-    onSuccess:result=>{
+    onSuccess: result => {
       if (result.data.success) {
-        swalMessage({
-          croppingDone: false,
-          title: "File Uploaded Successfully",
-          type: "success"
-        });
+        if (options.showSuccessMessage === undefined) {
+          swalMessage({
+            croppingDone: false,
+            title: "File Uploaded Successfully",
+            type: "success"
+          });
+        } else {
+          if (typeof options.showSuccessMessage === "function") {
+            options.showSuccessMessage(result);
+          }
+        }
       }
     }
   });

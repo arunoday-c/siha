@@ -187,95 +187,102 @@ module.exports = db => {
       });
     },
     getDocument: (req, res, next) => {
-      const _headerFile = req.query;
-      let _destination = _headerFile.destinationName;
       try {
-        _destination = JSON.parse(_destination);
-      } catch (e) {
-        _destination = _headerFile.destinationName;
-      }
+        const _headerFile = req.query;
+        let _destination = _headerFile.destinationName;
+        try {
+          _destination = JSON.parse(_destination);
+        } catch (e) {
+          _destination = _headerFile.destinationName;
+        }
 
-      if (_headerFile.fileType == "Employees") {
-        EmployeeDocModel.findOne(
-          { destinationName: _headerFile.destinationName },
-          (error, result) => {
-            if (error) {
-              res.status(400).json({
-                success: false,
-                records: error
-              });
-              return;
-            } else {
-              if (result != null) {
-                res.setHeader("content-type", result.fileExtention);
-                res.status(200);
-
-                let bufferStream = new stream.PassThrough();
-                bufferStream.end(result.image, "base64");
-                bufferStream.pipe(res);
-              } else {
+        if (_headerFile.fileType == "Employees") {
+          EmployeeDocModel.findOne(
+            { destinationName: _headerFile.destinationName },
+            (error, result) => {
+              if (error) {
                 res.status(400).json({
                   success: false,
-                  message: "file not found"
+                  records: error
                 });
+                return;
+              } else {
+                if (result != null) {
+                  res.setHeader("content-type", result.fileExtention);
+                  res.status(200);
+
+                  let bufferStream = new stream.PassThrough();
+                  bufferStream.end(result.image, "base64");
+                  bufferStream.pipe(res);
+                } else {
+                  res.status(400).json({
+                    success: false,
+                    message: "file not found"
+                  });
+                }
               }
             }
-          }
-        );
-      } else if (_headerFile.fileType == "Patients") {
-        PatientDocModel.findOne(
-          { destinationName: _headerFile.destinationName },
-          (error, result) => {
-            if (error) {
-              res.status(400).json({
-                success: false,
-                records: error
-              });
-              return;
-            } else {
-              if (result != null) {
-                res.setHeader("content-type", result.fileExtention);
-                res.status(200);
-
-                let bufferStream = new stream.PassThrough();
-                bufferStream.end(result.image, "base64");
-                bufferStream.pipe(res);
-              } else {
+          );
+        } else if (_headerFile.fileType == "Patients") {
+          PatientDocModel.findOne(
+            { destinationName: _headerFile.destinationName },
+            (error, result) => {
+              if (error) {
                 res.status(400).json({
                   success: false,
-                  message: "file not found"
+                  records: error
                 });
+                return;
+              } else {
+                if (result != null) {
+                  res.setHeader("content-type", result.fileExtention);
+                  res.status(200);
+
+                  let bufferStream = new stream.PassThrough();
+                  bufferStream.end(result.image, "base64");
+                  bufferStream.pipe(res);
+                } else {
+                  res.status(400).json({
+                    success: false,
+                    message: "file not found"
+                  });
+                }
               }
             }
-          }
-        );
-      } else if (_headerFile.fileType == "DepartmentImages") {
-        DepartmentImageModel.findOne(
-          { destinationName: _headerFile.destinationName },
-          (error, result) => {
-            if (error) {
-              res.status(400).json({
-                success: false,
-                records: error
-              });
-              return;
-            } else {
-              if (result != null) {
-                res.setHeader("content-type", result.fileExtention);
-                res.status(200);
-
-                let bufferStream = new stream.PassThrough();
-                bufferStream.end(result.image, "base64");
-                bufferStream.pipe(res);
-              } else {
+          );
+        } else if (_headerFile.fileType == "DepartmentImages") {
+          DepartmentImageModel.findOne(
+            { destinationName: _headerFile.destinationName },
+            (error, result) => {
+              if (error) {
                 res.status(400).json({
                   success: false,
-                  message: "file not found"
+                  records: error
                 });
+                return;
+              } else {
+                if (result != null) {
+                  res.setHeader("content-type", result.fileExtention);
+                  res.status(200);
+
+                  let bufferStream = new stream.PassThrough();
+                  bufferStream.end(result.image, "base64");
+                  bufferStream.pipe(res);
+                } else {
+                  res.status(400).json({
+                    success: false,
+                    message: "file not found"
+                  });
+                }
               }
             }
-          }
-        );
+          );
+        }
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          message: error.message
+        });
       }
     }
   };

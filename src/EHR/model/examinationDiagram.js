@@ -12,8 +12,7 @@ const examinationDiagramMasterGetter = (req, res, next) => {
          hims_d_employee_speciality ES on SWD.hims_d_employee_speciality_id = ES.hims_d_employee_speciality_id \
          where ES.sub_department_id=? or SWD.hims_d_employee_speciality_id is null \
           and SWD.record_status='A' and ES.speciality_status='A' or ES.speciality_status is null",
-        values: [req.userIdentity.sub_department_id],
-        printQuery: true
+        values: [req.userIdentity.sub_department_id]
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -80,7 +79,10 @@ const saveExaminationDiagrams = (req, res, next) => {
                 next(error);
               } else {
                 _mysql.releaseConnection();
-                req.records = data;
+                req.records = {
+                  hims_f_examination_diagram_header_id: _hims_f_examination_diagram_header_id,
+                  ...data
+                };
                 next();
               }
             });
@@ -99,5 +101,60 @@ const saveExaminationDiagrams = (req, res, next) => {
     next(error);
   }
 };
+const existingHeaderDiagramsGetter = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  const _req = req.userIdentity;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_f_examination_diagram_header_id,diagram_desc,diagram_id,patient_id,\
+      provider_id,hims_d_sub_department_id,last_update from hims_f_examination_diagram_header \
+      where record_status='A' and provider_id=? and hims_d_sub_department_id=?",
+        values: [_req.employee_id, _req.sub_department_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
 
-module.exports = { examinationDiagramMasterGetter, saveExaminationDiagrams };
+const existingDetailDiagramGetter = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select examination_diagrams_id,visit_id,H.hims_f_examination_diagram_header_id,episode_id,patient_id,\
+          provider_id,encounter_id,remarks,update_date, \
+          concat(diagram_id,'_',patient_id,'_',provider_id,'_',H.hims_f_examination_diagram_header_id,'_',examination_diagrams_id) as image  from hims_f_examination_diagram_header H,hims_f_examination_diagrams_detail D \
+          where H.hims_f_examination_diagram_header_id = D.hims_f_examination_diagram_header_id and record_status='A' \
+          and H.hims_f_examination_diagram_header_id = ?",
+        values: [req.query.hims_f_examination_diagram_header_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
+
+module.exports = {
+  examinationDiagramMasterGetter,
+  saveExaminationDiagrams,
+  existingHeaderDiagramsGetter,
+  existingDetailDiagramGetter
+};

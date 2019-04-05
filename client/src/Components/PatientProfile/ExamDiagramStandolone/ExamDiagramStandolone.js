@@ -1,12 +1,22 @@
 import React, { Component } from "react";
 
-import { AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
+import {
+  AlagehAutoComplete,
+  AlagehFormGroup
+} from "../../Wrapper/algaehWrapper";
 import "./ExamDiagramStandolone.css";
 import AlgaehCanvas from "../../Wrapper/algaehCanvas";
 import examination from "./ExaminationDiagramEvents";
-import { displayFileFromServer } from "../../../utils/GlobalFunctions";
+import {
+  displayFileFromServer,
+  AlgaehValidation,
+  saveFileOnServer
+} from "../../../utils/GlobalFunctions";
 import addNew from "../../../assets/images/add-new-diagram.jpg";
 import noDiagram from "../../../assets/images/no-diagram.jpg";
+import { swalMessage } from "../../../utils/algaehApiCall";
+import AlgaehFile from "../../Wrapper/algaehFileUpload";
+import moment from "moment";
 export default class ExaminationDiagram extends Component {
   constructor(props) {
     super(props);
@@ -17,7 +27,14 @@ export default class ExaminationDiagram extends Component {
       showSave: false,
       showUpload: false,
       showCam: false,
-      diagram_id: undefined
+      diagram_id: undefined,
+      showSavePopup: false,
+      existingDiagram: [],
+      hims_f_examination_diagram_header_id: undefined,
+      saveAsChecked: "new",
+      diagram_desc: undefined,
+      remarks: undefined,
+      exittingDetails: []
     };
   }
   componentDidMount() {
@@ -36,14 +53,23 @@ export default class ExaminationDiagram extends Component {
       .catch(error => {
         console.error(error);
       });
+    //Fetching Existing diagram dropdownlist
+    examination()
+      .getExistingHeader(this.state, this.props)
+      .then(result => {
+        let resultData = [];
+        for (let i = 0; i < result.length; i++) {
+          resultData.push(this.templateForExistingDiagramHeader(result[i]));
+        }
+        Promise.all(resultData).then(data => {
+          this.setState({ existingDiagram: data });
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
   }
 
-  diagrams(item) {
-    this.setState({
-      image: item.selected.image,
-      name: item.selected.name
-    });
-  }
   /** Template to load image in a content */
   templateForNewDiagram(item) {
     return new Promise((resolve, reject) => {
@@ -79,7 +105,8 @@ export default class ExaminationDiagram extends Component {
               ...item,
               content: (
                 <div className="diagramDropdown">
-                  <img src={data} /> <span>{item.image_desc}</span>
+                  <img src={data} />
+                  <span>{item.image_desc}</span>
                   <span>{item.speciality_name}</span>
                 </div>
               )
@@ -101,6 +128,50 @@ export default class ExaminationDiagram extends Component {
       }
     });
   }
+  /** Template to load image in a content */
+  templateForExistingDiagramHeader(item) {
+    return new Promise((resolve, reject) => {
+      displayFileFromServer({
+        uri: "/Document/get",
+        module: "documentManagement",
+        fileType: "DepartmentImages",
+        destinationName:
+          item.diagram_id +
+          "_" +
+          item.patient_id +
+          "_" +
+          item.provider_id +
+          "_" +
+          item.hims_f_examination_diagram_header_id,
+        // fileType: "Patients",
+        // destinationName: "PAT-A-0000672",
+        onFileSuccess: data => {
+          resolve({
+            ...item,
+            content: (
+              <div className="diagramDropdown">
+                <img src={data} />
+                <span>{item.diagram_desc}</span>
+                <span>{item.last_update}</span>
+              </div>
+            )
+          });
+        },
+        onFileFailure: () => {
+          resolve({
+            ...item,
+            content: (
+              <div className="diagramDropdown">
+                <img src={noDiagram} />
+                <span>{item.diagram_desc}</span>
+                <span>{item.last_update}</span>
+              </div>
+            )
+          });
+        }
+      });
+    });
+  }
   /*
   on File Upload from Canvas get image
  */
@@ -111,7 +182,18 @@ export default class ExaminationDiagram extends Component {
     });
   }
   onSaveImage(imageDetails) {
-    debugger;
+    const _saveAsChecked =
+      this.state.existingDiagram.length === 0 ? "new" : "existing";
+    this.setState({
+      showSavePopup: true,
+      saveAsChecked: _saveAsChecked
+    });
+  }
+
+  closeSavePopUp(e) {
+    this.setState({
+      showSavePopup: false
+    });
   }
 
   newDiagramClearHandler(name) {
@@ -154,72 +236,238 @@ export default class ExaminationDiagram extends Component {
       name: imageData.name
     });
   }
+  onChangeSaveAsHandler(e) {
+    this.setState({
+      saveAsChecked: e.currentTarget.value
+    });
+  }
+  onChangeTextBoxHandler(e) {
+    this.setState({
+      [e.currentTarget.name]: e.currentTarget.value
+    });
+  }
+  onChangeExistingDiagramHandler(item) {
+    debugger;
+    //Fetching Existing diagram dropdownlist
+    examination()
+      .getExistingDetail(item.value)
+      .then(result => {
+        this.setState({
+          exittingDetails: result,
+          showUpload: true,
+          showCam: true,
+          diagram_desc: item.selected.diagram_desc,
+          diagram_id: item.selected.diagram_id
+        });
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+  onChangeSaveDiagram(e) {
+    const that = this;
+    AlgaehValidation({
+      querySelector: "id='savePopUP'",
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        if (that.state.remarks !== "") {
+          examination()
+            .saveDiagramHandler(that.state, that.props)
+            .then(result => {
+              if (that.state.saveAsChecked === "new") {
+                saveFileOnServer({
+                  file: that.refs.imageSaver.state.image,
+                  uniqueID:
+                    that.state.diagram_id +
+                    "_" +
+                    Window.global["current_patient"] +
+                    "_" +
+                    Window.global["provider_id"] +
+                    "_" +
+                    result.hims_f_examination_diagram_header_id,
+                  fileType: "DepartmentImages",
+                  fileExtention: "webp",
+                  showSuccessMessage: false
+                });
+              }
+              saveFileOnServer({
+                file: that.refs.imageSaver.editor.getInstance().toDataURL(),
+                uniqueID:
+                  that.state.diagram_id +
+                  "_" +
+                  Window.global["current_patient"] +
+                  "_" +
+                  Window.global["provider_id"] +
+                  "_" +
+                  result.hims_f_examination_diagram_header_id +
+                  "_" +
+                  result.insertId,
+                fileType: "DepartmentImages",
+                fileExtention: "webp",
+                showSuccessMessage: () => {
+                  //Fetching Existing diagram dropdownlist
+                  examination()
+                    .getExistingHeader(that.state, that.props)
+                    .then(result => {
+                      let resultData = [];
+                      for (let i = 0; i < result.length; i++) {
+                        resultData.push(
+                          that.templateForExistingDiagramHeader(result[i])
+                        );
+                      }
+                      Promise.all(resultData).then(data => {
+                        that.setState({ existingDiagram: data });
+                      });
+                    })
+                    .catch(error => {
+                      console.error(error);
+                    });
+                }
+              });
+              swalMessage({
+                title: "Success",
+                type: "success"
+              });
+              that.setState({
+                showSavePopup: false,
+                remarks: undefined,
+                diagram_desc: undefined
+              });
+            })
+            .catch(error => {
+              debugger;
+              swalMessage({
+                title: error.request.responseText,
+                type: "error"
+              });
+            });
+        } else {
+          swalMessage({
+            title: "Remarks can't blank",
+            type: "warning"
+          });
+        }
+      }
+    });
+  }
   render() {
+    const _disable = this.state.existingDiagram === 0 ? { disabled: true } : {};
     return (
       <div className="row">
-        <div className="col saveWindow">
-          <div className="row saveHeader">
-            <div className="col">
-              <h5>Save</h5>
-            </div>
-          </div>
-          <div className="row">
-            <div className="col-6 form-group">
-              <label>Save As</label>
-              <div className="customRadio">
-                <label className="radio inline">
-                  <input
-                    type="radio"
-                    value="ALL"
-                    name="no_employees"
-                    // checked={this.state.no_employees === "ALL"}
-                    // onChange={this.textHandler.bind(this)}
-                  />
-                  <span>New</span>
-                </label>
+        {this.state.showSavePopup ? (
+          <div id="savePopUP" className="saveWrapper">
+            <div className="col saveWindow">
+              <div className="row saveHeader">
+                <div className="col">
+                  <h5>Save</h5>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col-6 form-group">
+                  <label>Save As</label>
+                  <div className="customRadio">
+                    <label className="radio inline">
+                      <input
+                        type="radio"
+                        value="new"
+                        name="diagramSaveAs"
+                        checked={
+                          this.state.saveAsChecked === "new" ? true : false
+                        }
+                        onChange={this.onChangeSaveAsHandler.bind(this)}
+                      />
+                      <span>New</span>
+                    </label>
 
-                <label className="radio inline" style={{ marginRight: 5 }}>
-                  <input
-                    type="radio"
-                    //  onChange={this.textHandler.bind(this)}
-                    value="ONE"
-                    name="no_employees"
-                    //   checked={this.state.no_employees === "ONE"}
+                    <label className="radio inline" style={{ marginRight: 5 }}>
+                      <input
+                        type="radio"
+                        onChange={this.onChangeSaveAsHandler.bind(this)}
+                        value="existing"
+                        name="diagramSaveAs"
+                        {..._disable}
+                        checked={
+                          this.state.saveAsChecked === "existing" ? true : false
+                        }
+                      />
+                      <span>Existing</span>
+                    </label>
+                  </div>
+                </div>
+                {this.state.saveAsChecked === "new" ? (
+                  <AlagehFormGroup
+                    div={{ className: "col-6 form-group" }}
+                    label={{
+                      forceLabel: "Enter Treatment Name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "diagram_desc",
+                      value: this.state.diagram_desc,
+                      events: {
+                        onChange: this.onChangeTextBoxHandler.bind(this)
+                      }
+                    }}
                   />
-                  <span>Existing</span>
-                </label>
+                ) : (
+                  <AlagehAutoComplete
+                    div={{ className: "col-6 form-group" }}
+                    label={{
+                      forceLabel: "Select Existing Treatment",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "hims_f_examination_diagram_header_id",
+                      className: "select-fld",
+                      dataSource: {
+                        data: this.state.existingDiagram,
+                        textField: "diagram_desc",
+                        valueField: "hims_f_examination_diagram_header_id"
+                      },
+                      value: this.state.hims_f_examination_diagram_header_id,
+                      onChange: this.onChangeExistingDiagramHandler.bind(this)
+                    }}
+                  />
+                )}
+
+                <div className="col form-group">
+                  <label>Enter Remarks</label>
+                  <textarea
+                    className="textAreaRemarks"
+                    name="remarks"
+                    value={this.state.remarks}
+                    onChange={this.onChangeTextBoxHandler.bind(this)}
+                  />
+                </div>
+              </div>
+
+              <div className="row saveFooter">
+                <div className="col">
+                  <button
+                    className="btn btn-primary"
+                    onClick={this.onChangeSaveDiagram.bind(this)}
+                  >
+                    Save
+                  </button>
+                  <button
+                    className="btn btn-default"
+                    onClick={this.closeSavePopUp.bind(this)}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
             </div>
-            <AlagehAutoComplete
-              div={{ className: "col-6 form-group" }}
-              label={{ forceLabel: "Select Existing Treatment", isImp: false }}
-              selector={{
-                name: "",
-                className: "select-fld",
-                dataSource: {},
-                others: {}
-              }}
-            />
-            <div className="col form-group">
-              <label>Enter Remarks</label>
-              <textarea className="textAreaRemarks" />
-            </div>
           </div>
-
-          <div className="row saveFooter">
-            <div className="col">
-              <button className="btn btn-primary">Save</button>
-              <button className="btn btn-default">Cancel</button>
-            </div>
-          </div>
-        </div>
+        ) : null}
 
         {/* <div className="col-12 diagramManageCntr">
         </div> */}
         <div className="col-2">
           <div className="row diagramManageCntr">
             <AlagehAutoComplete
-              div={{ className: "col-12" }}
+              div={{ className: "col-12 form-group" }}
               label={{ forceLabel: "New Diagram", isImp: false }}
               selector={{
                 name: "diagram_id",
@@ -240,91 +488,54 @@ export default class ExaminationDiagram extends Component {
               div={{ className: "col-12 form-group" }}
               label={{ forceLabel: "Exisiting Diagram", isImp: false }}
               selector={{
-                name: "diagrams",
+                name: "hims_f_examination_diagram_header_id",
                 className: "select-fld",
                 dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: []
+                  textField: "diagram_desc",
+                  valueField: "hims_f_examination_diagram_header_id",
+                  data: this.state.existingDiagram
                 },
-                onChange: this.diagrams.bind(this)
+                value: this.state.hims_f_examination_diagram_header_id,
+                onChange: this.onChangeExistingDiagramHandler.bind(this)
               }}
             />
           </div>
           <div className="row diagramList">
-            <div className="col-12 eachDiagram">
-              <img src="../../examDiagram.jpg" />
-              <p>
-                breathing difficulties can be seen during this step. Some
-                systemic problems can be detected during this part of the exam
-                as well as just mechanical breathing problems.{" "}
-                <small>12:03:2019 | 03:44 PM</small>
-              </p>
-            </div>
-            <div className="col-12 eachDiagram">
-              <img src="../../examDiagram.jpg" />
-              <p>
-                breathing difficulties can be seen during this step. Some
-                systemic problems can be detected during this part of the exam
-                as well as just mechanical breathing problems.{" "}
-                <small>12:03:2019 | 03:44 PM</small>
-              </p>
-            </div>
-            <div className="col-12 eachDiagram">
-              <img src="../../examDiagram.jpg" />
-              <p>
-                breathing difficulties can be seen during this step. Some
-                systemic problems can be detected during this part of the exam
-                as well as just mechanical breathing problems.{" "}
-                <small>12:03:2019 | 03:44 PM</small>
-              </p>
-            </div>
-            <div className="col-12 eachDiagram">
-              <img src="../../examDiagram.jpg" />
-              <p>
-                breathing difficulties can be seen during this step. Some
-                systemic problems can be detected during this part of the exam
-                as well as just mechanical breathing problems.{" "}
-                <small>12:03:2019 | 03:44 PM</small>
-              </p>
-            </div>
-            <div className="col-12 eachDiagram">
-              <img src="../../examDiagram.jpg" />
-              <p>
-                breathing difficulties can be seen during this step. Some
-                systemic problems can be detected during this part of the exam
-                as well as just mechanical breathing problems.{" "}
-                <small>12:03:2019 | 03:44 PM</small>
-              </p>
-            </div>
-            <div className="col-12 eachDiagram">
-              <img src="../../examDiagram.jpg" />
-              <p>
-                breathing difficulties can be seen during this step. Some
-                systemic problems can be detected during this part of the exam
-                as well as just mechanical breathing problems.{" "}
-                <small>12:03:2019 | 03:44 PM</small>
-              </p>
-            </div>
-            <div className="col-12 eachDiagram">
-              <img src="../../examDiagram.jpg" />
-              <p>
-                breathing difficulties can be seen during this step. Some
-                systemic problems can be detected during this part of the exam
-                as well as just mechanical breathing problems.{" "}
-                <small>12:03:2019 | 03:44 PM</small>
-              </p>
-            </div>
+            {this.state.exittingDetails.map((item, index) => (
+              <div className="col-12 eachDiagram" key={index}>
+                <AlgaehFile
+                  name={"attach_" + index}
+                  accept="image/*"
+                  noImage={true}
+                  showActions={false}
+                  serviceParameters={{
+                    uniqueID: item.image,
+                    destinationName: item.image,
+                    fileType: "DepartmentImages"
+                  }}
+                />
+                <p>
+                  {item.remarks}
+                  <small>
+                    {moment(new Date(item.update_date)).format(
+                      "DD:MM:YYYY | hh:mm A"
+                    )}
+                  </small>
+                </p>
+              </div>
+            ))}
           </div>
         </div>
         <div className="col-10">
           <div className="row">
             <div className="col-12 CanvasEditorCntr">
               <AlgaehCanvas
+                ref="imageSaver"
                 directImage={true}
                 image={this.state.image}
                 name={this.state.name}
                 onUpload={this.onFileUploadImage.bind(this)}
+                onSave={this.onSaveImage.bind(this)}
                 showSave={this.state.showSave}
                 showUpload={this.state.showUpload}
                 showCam={this.state.showCam}
