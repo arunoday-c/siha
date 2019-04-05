@@ -40,7 +40,7 @@ export default class ConsultationDetails extends PureComponent {
       ? "active"
       : "";
     let MlcDesign = this.state.actionMlcDesign ? "" : "active";
-
+    debugger;
     return (
       <div className="hptl-phase1-consultation-details margin-top-15">
         <div className="tab-container toggle-section">

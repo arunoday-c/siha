@@ -29,7 +29,8 @@ class DataGrid extends Component {
       recordsTotal: 0,
       inputParam: {},
       isEditable: false,
-      uiUpdate: true
+      uiUpdate: true,
+      forceRender: undefined
     };
 
     this.tmp = new Set();
@@ -569,14 +570,21 @@ class DataGrid extends Component {
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
-    
+    debugger;
     if (nextProps.uiUpdate !== undefined) {
       return nextState.uiUpdate;
+    }
+    if (
+      this.state.forceRender !== undefined &&
+      this.state.forceRender === true
+    ) {
+      return true;
     }
     if (this.state !== nextState) return true;
     else return false;
   }
   componentWillReceiveProps(props) {
+    debugger;
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }
@@ -586,7 +594,10 @@ class DataGrid extends Component {
       });
     }
 
-    if (props.algaehSearch !== undefined) {
+    if (
+      props.algaehSearch !== undefined ||
+      (props.forceRender !== undefined && props.forceRender === true)
+    ) {
       if (props.columns !== undefined && props.columns.length !== 0) {
         let _columns = Enumerable.from(props.columns)
           .select(s => {
@@ -695,7 +706,8 @@ class DataGrid extends Component {
                   ? props.paging.rowsPerPage
                   : 10
                 : 10,
-            recordsTotal: totalPages
+            recordsTotal: totalPages,
+            forceRender: props.forceRender
           });
         },
         props.dataSource.inputParam
@@ -720,7 +732,8 @@ class DataGrid extends Component {
             ? props.dataSource.data.length
             : 0,
         ..._loading,
-        inputParam: props.dataSource.inputParam
+        inputParam: props.dataSource.inputParam,
+        forceRender: props.forceRender
       });
     }
   }

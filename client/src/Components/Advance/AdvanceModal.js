@@ -48,7 +48,8 @@ class AddAdvanceModal extends PureComponent {
     this.state = {
       Cashchecked: true,
       Cardchecked: false,
-      Checkchecked: false
+      Checkchecked: false,
+      lang_sets: "en_comp"
     };
   }
   componentWillMount() {
@@ -57,7 +58,14 @@ class AddAdvanceModal extends PureComponent {
   }
 
   componentWillReceiveProps() {
-    this.setState({ selectedLang: Window.global.selectedLang });
+    let lang_sets = "en_comp";
+    if (Window.global.selectedLang === "ar") {
+      lang_sets = "ar_comp";
+    }
+    this.setState({
+      selectedLang: Window.global.selectedLang,
+      lang_sets: lang_sets
+    });
   }
 
   componentDidMount() {
@@ -212,6 +220,7 @@ class AddAdvanceModal extends PureComponent {
                 }}
                 title={this.props.HeaderCaption}
                 openPopup={this.props.show}
+                class={this.state.lang_sets}
               >
                 {/* <div className="algaeh-modal"> */}
                 {/* <div className="popupHeader">{this.props.HeaderCaption} </div> */}
