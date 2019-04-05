@@ -491,7 +491,7 @@ class Currency extends Component {
                   displayTemplate: row => {
                     return (
                       <span>
-                        {row.thousand_separator === "S"
+                        {row.thousand_separator === " "
                           ? "Space"
                           : row.thousand_separator === "."
                           ? "Period"

@@ -9,6 +9,7 @@ import MyContext from "../../../../utils/MyContext.js";
 import { successfulMessage } from "../../../../utils/GlobalFunctions";
 
 import {
+  AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete
@@ -87,7 +88,11 @@ class AddSecInsuranceForm extends Component {
                   <div className="col-lg-8 primary-details">
                     <div className="row primary-box-container">
                       <div className="col-lg-2  insuranceRadio">
-                        <label>Insurance</label>
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "lbl_insurance"
+                          }}
+                        />
                         <br />
                         <div className="customRadio">
                           <label className="radio inline">
@@ -103,7 +108,9 @@ class AddSecInsuranceForm extends Component {
                                   : false
                               }
                             />
-                            <span>Yes</span>
+                            <span>
+                              {this.state.selectedLang === "en" ? "Yes" : "نعم"}
+                            </span>
                           </label>
                           <label className="radio inline">
                             <input
@@ -118,7 +125,9 @@ class AddSecInsuranceForm extends Component {
                                   : false
                               }
                             />
-                            <span>No</span>
+                            <span>
+                              {this.state.selectedLang === "en" ? "No" : "لا"}
+                            </span>
                           </label>
                         </div>
                       </div>

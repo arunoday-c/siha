@@ -465,6 +465,7 @@ class AddConsultationForm extends Component {
                         alert("done is raisedd");
                       }
                     }}
+                    forceRender={this.state.Rerender}
                   />
                 </div>
               </div>

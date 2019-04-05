@@ -154,5 +154,6 @@
   "payby_check": "Pay By Cheque",
   "NotGenerated": "Not Generated",
   "PastVisit": "Past Visit",
-  "treatment_plan_id": "Treatment Plan"
+  "treatment_plan_id": "Treatment Plan",
+  "lbl_insurance": "Insurance"
 }
