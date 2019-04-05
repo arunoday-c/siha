@@ -7,6 +7,7 @@ import "./InsuranceForm.css";
 import "./../../../../styles/site.css";
 import MyContext from "../../../../utils/MyContext.js";
 import {
+  AlgaehLabel,
   AlgaehDateHandler,
   AlagehFormGroup,
   AlagehAutoComplete
@@ -62,8 +63,12 @@ class AddInsuranceForm extends Component {
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="row primary-box-container">
-                      <div className="col-lg-2" style={{ paddingRight: 0 }}>
-                        <label>Insurance</label>
+                      <div className="col-lg-2 insuranceRadio">
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "lbl_insurance"
+                          }}
+                        />
                         <br />
 
                         <div className="customRadio">
@@ -78,7 +83,9 @@ class AddInsuranceForm extends Component {
                               onChange={radioChange.bind(this, this, context)}
                               disabled={this.state.hideInsurance}
                             />
-                            <span>Yes</span>
+                            <span>
+                              {this.state.selectedLang === "en" ? "Yes" : "نعم"}
+                            </span>
                           </label>
                           <label className="radio inline">
                             <input
@@ -91,7 +98,9 @@ class AddInsuranceForm extends Component {
                               disabled={this.state.hideInsurance}
                               onChange={radioChange.bind(this, this, context)}
                             />
-                            <span>No</span>
+                            <span>
+                              {this.state.selectedLang === "en" ? "No" : "لا"}
+                            </span>
                           </label>
                         </div>
                       </div>

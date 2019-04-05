@@ -679,7 +679,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 
     row["extended_cost"] = extended_cost;
     row["tax_amount"] = (extended_cost * parseFloat(row.tax_percentage)) / 100;
-    row["total_amount"] = tax_amount + extended_cost;
+    row["total_amount"] = parseFloat(tax_amount) + parseFloat(extended_cost);
 
     row["sub_discount_percentage"] = sub_discount_percentage;
     row["sub_discount_amount"] = sub_discount_amount;

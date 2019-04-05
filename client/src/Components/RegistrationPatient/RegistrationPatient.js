@@ -66,6 +66,7 @@ class RegistrationPatient extends Component {
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
+    debugger;
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
@@ -220,6 +221,83 @@ class RegistrationPatient extends Component {
         }
       );
     }
+  }
+
+  componentWillReceiveProps() {
+    debugger;
+    let prevLang = getCookie("Language");
+    if (prevLang !== this.state.selectedLang) {
+      setGlobal({ selectedLang: prevLang });
+      let IOputs = emptyObject;
+      let counter_id = null;
+      IOputs.visittypeselect = true;
+      IOputs.age = 0;
+      IOputs.AGEMM = 0;
+      IOputs.AGEDD = 0;
+
+      // let prevLang = getCookie("Language");
+
+      IOputs.selectedLang = getCookie("Language");
+
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      let $this = this;
+      algaehApiCall({
+        uri: "/userPreferences/get",
+        data: {
+          screenName: _screenName,
+          identifier: "Counter"
+        },
+        method: "GET",
+        onSuccess: response => {
+          counter_id = response.data.records.selectedValue;
+
+          if (
+            $this.props.hospitaldetails !== undefined ||
+            $this.props.hospitaldetails.length !== 0
+          ) {
+            IOputs.vat_applicable =
+              $this.props.hospitaldetails[0].local_vat_applicable;
+            IOputs.nationality_id =
+              $this.props.hospitaldetails[0].default_nationality;
+            IOputs.country_id = $this.props.hospitaldetails[0].default_country;
+            IOputs.patient_type =
+              $this.props.hospitaldetails[0].default_patient_type;
+          }
+
+          if (counter_id !== null) {
+            IOputs.counter_id = counter_id;
+          }
+
+          IOputs.forceRefresh = true;
+          IOputs.Rerender = true;
+          $this.setState(IOputs, () => {
+            $this.props.setSelectedInsurance({
+              redux: {
+                type: "PRIMARY_INSURANCE_DATA",
+                mappingName: "primaryinsurance",
+                data: []
+              }
+            });
+
+            $this.props.setSelectedInsurance({
+              redux: {
+                type: "SECONDARY_INSURANCE_DATA",
+                mappingName: "secondaryinsurance",
+                data: []
+              }
+            });
+          });
+        }
+      });
+
+      // setGlobal({ selectedLang: prevLang });
+
+      // this.setState({ selectedLang: prevLang, Rerender: true });
+    }
+    // let prevLang = getCookie("Language");
+    // setGlobal({ selectedLang: prevLang });
+
+    // this.setState({ selectedLang: prevLang, Rerender: true });
   }
 
   SavePatientDetails(e) {

@@ -442,7 +442,12 @@ class AddOPBillingForm extends Component {
                       onClick={this.ProcessToBill.bind(this, context)}
                       disabled={this.state.addNewService}
                     >
-                      Add New Service
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "add_new_service",
+                          align: "ltr"
+                        }}
+                      />
                     </button>
                   </div>
 
@@ -453,7 +458,12 @@ class AddOPBillingForm extends Component {
                       onClick={this.ShowBillDetails.bind(this)}
                       disabled={this.state.billDetails}
                     >
-                      View Bill Details
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "view_bill_details",
+                          align: "ltr"
+                        }}
+                      />
                     </button>
 
                     <DisplayOPBilling
@@ -726,6 +736,7 @@ class AddOPBillingForm extends Component {
                         onCancel: CancelGrid.bind(this, this, context),
                         onDone: this.updateBillDetail.bind(this, context)
                       }}
+                      forceRender={this.state.Rerender}
                     />
                   </div>
                 </div>

@@ -146,7 +146,8 @@ export default {
       patInsuranceBackImg: undefined,
       patSecInsuranceFrontImg: undefined,
       patSecInsuranceBackImg: undefined,
-      forceRefresh: undefined
+      forceRefresh: undefined,
+      Rerender: false
     };
     return output;
   }

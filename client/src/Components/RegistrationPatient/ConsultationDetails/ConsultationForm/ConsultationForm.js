@@ -237,7 +237,7 @@ class AddConsultationForm extends Component {
                     />
                   </div>
                   <div className="row">
-                    <div className="col-lg-4" style={{ paddingRight: 0 }}>
+                    <div className="col-lg-4 maternityRadio">
                       <AlgaehLabel
                         label={{
                           fieldName: "maternity_patient"
@@ -465,6 +465,7 @@ class AddConsultationForm extends Component {
                         alert("done is raisedd");
                       }
                     }}
+                    forceRender={this.state.Rerender}
                   />
                 </div>
               </div>

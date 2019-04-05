@@ -43,7 +43,6 @@ class BreadCrumb extends PureComponent {
         <div className="col  margin-top-15">
           <div className="row spotlightSearchBox">
             <div className="col-lg-9">
-              {" "}
               <AlgaehLabel
                 label={{ forceLabel: this.props.soptlightSearch.label }}
               />

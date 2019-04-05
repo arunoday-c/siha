@@ -119,12 +119,12 @@ export default () => {
   api.post("/addDoctorsSchedule", addDoctorsSchedule, (req, res, next) => {
     let result = req.records;
     if (result.schedule_exist == true) {
-      res.status(httpStatus.ok).json({
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: false,
         records: result
       });
     } else {
-      res.status(httpStatus.ok).json({
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,
         records: result
       });
@@ -215,12 +215,12 @@ export default () => {
     (req, res, next) => {
       let result = req.records;
       if (result.slotExist == true) {
-        res.status(httpStatus.ok).json({
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
           records: result
         });
       } else {
-        res.status(httpStatus.ok).json({
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
           records: result
         });
@@ -235,12 +235,12 @@ export default () => {
     (req, res, next) => {
       let result = req.records;
       if (req.records.slotExist == true || req.records.bookedtwice == true) {
-        res.status(httpStatus.ok).json({
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: false,
           records: result
         });
       } else {
-        res.status(httpStatus.ok).json({
+        res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
           success: true,
           records: result
         });

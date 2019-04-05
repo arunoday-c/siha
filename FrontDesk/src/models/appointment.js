@@ -778,7 +778,7 @@ module.exports = {
                     where ASD.record_status='A' and E.record_status='A' and AC.record_status='A'and SH.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
                     and ASD.clinic_id=AC.hims_d_appointment_clinic_id and ASD.appointment_schedule_header_id=SH.hims_d_appointment_schedule_header_id and\
                     appointment_schedule_header_id in (" +
-                  schedule_header_id_all +
+                  result[i]["hims_d_appointment_schedule_header_id"] +
                   ")" +
                   selectDoctor +
                   " group by  provider_id;"
@@ -817,14 +817,14 @@ module.exports = {
     if (input.sub_dept_id > 0) {
       qry += ` and sub_dept_id=${input.sub_dept_id}`;
     }
-    if (input.schedule_date > 0) {
-      qry += ` and schedule_date=${input.schedule_date}`;
+    if (input.schedule_date != null && input.schedule_date != undefined) {
+      qry += ` and schedule_date=date('${input.schedule_date}')`;
     }
 
     let selectDoctor = "";
 
     if (input.provider_id != "null" && input.provider_id != null) {
-      selectDoctor = `ASD.provider_id=${input.provider_id}  `;
+      selectDoctor = ` and ASD.provider_id=${input.provider_id}  `;
       //provider_id = req.query.provider_id;
     }
 
@@ -841,7 +841,7 @@ module.exports = {
      and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
          and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id \
-          and sub_dept_id= SD.hims_d_sub_department_id  and ${selectDoctor} ${qry} `
+          and sub_dept_id= SD.hims_d_sub_department_id   ${selectDoctor} ${qry} `
       })
       .then(result => {
         if (result.length > 0) {
