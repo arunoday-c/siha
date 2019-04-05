@@ -214,6 +214,46 @@ export function displayFileFromServer(options) {
     }
   });
 }
+export function saveFileOnServer(options) {
+  const _pageName = getCookie("ScreenName").replace("/", "");
+  const _splitter = options.file.split(",");
+  algaehApiCall({
+    uri: "/Document/save",
+    method: "POST",
+    data: _splitter[1],
+    module: "documentManagement",
+    header: {
+      "content-type": "multipart/form-data",
+      "x-file-details": JSON.stringify({
+        pageName: _pageName,
+        destinationName: options.uniqueID,
+        fileType: options.fileType,
+        fileExtention: options.fileExtention
+      })
+    },
+    others: {
+      onUploadProgress: progressEvent => {
+        let percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total
+        );
+        if (percentCompleted >= 100) {
+          if (typeof options.afterSave === "function") options.afterSave();
+        } else {
+          if (typeof options.showProcess === "function") options.showProcess();
+        }
+      }
+    },
+    onSuccess:result=>{
+      if (result.data.success) {
+        swalMessage({
+          croppingDone: false,
+          title: "File Uploaded Successfully",
+          type: "success"
+        });
+      }
+    }
+  });
+}
 
 export function getLabelFromLanguage(options) {
   if (options.fieldName !== undefined && options.fieldName !== "") {

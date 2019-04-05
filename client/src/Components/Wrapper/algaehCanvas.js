@@ -7,6 +7,8 @@ import iconb from "tui-image-editor/dist/svg/icon-b.svg";
 import iconc from "tui-image-editor/dist/svg/icon-c.svg";
 import icond from "tui-image-editor/dist/svg/icon-d.svg";
 import "./imageEditor.css";
+import Webcam from "react-webcam";
+import moment from "moment";
 export default class AlgaehCanvas extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +16,8 @@ export default class AlgaehCanvas extends Component {
       image:
         "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
       name: "algaeh-image-editor",
-      imageLoaded: false
+      imageLoaded: false,
+      openWebCam: false
     };
     this.btnSave = {
       position: "absolute",
@@ -40,6 +43,18 @@ export default class AlgaehCanvas extends Component {
       fontSize: "1.5rem",
       textAalign: "center"
     };
+    this.btnCamera = {
+      position: "absolute",
+      top: "102px",
+      right: 15,
+      zIndex: 3,
+      background: "#fff",
+      color: "#000",
+      width: "44px",
+      height: "44px",
+      fontSize: "1.5rem",
+      textAalign: "center"
+    };
     this.btnDiagramCntr = {
       position: "relative"
     };
@@ -55,7 +70,10 @@ export default class AlgaehCanvas extends Component {
     if (props.directImage === undefined) {
       this.loadImageFromDB();
     } else {
-      if (props.image !== undefined && !this.state.imageLoaded) {
+      if (
+        (props.image !== undefined && !this.state.imageLoaded) ||
+        this.props.image !== props.image
+      ) {
         this.setState(
           {
             image: props.image,
@@ -117,18 +135,23 @@ export default class AlgaehCanvas extends Component {
   }
 
   loadImagaing(e) {
-    var link = document.createElement("a");
-    link.setAttribute("href", this.editor.getInstance().toDataURL());
-    link.setAttribute("download", this.state.name + ".png");
-    link.click();
+    if (typeof this.props.onSave === "function") {
+      this.props.onSave({
+        image: this.editor.getInstance().toDataURL(),
+        name: this.state.name
+      });
+    } else {
+      var link = document.createElement("a");
+      link.setAttribute("href", this.editor.getInstance().toDataURL());
+      link.setAttribute("download", this.state.name + ".png");
+      link.click();
+    }
   }
   uploadImage(e) {
-    debugger;
     this.fileUploader.click();
     // this.editor.getRootElement().lastElementChild.firstElementChild();
   }
   fileUploaderHandler(e) {
-    debugger;
     if (e.currentTarget.files.length > 0) {
       const that = this;
       const _file = e.currentTarget.files[0];
@@ -137,6 +160,9 @@ export default class AlgaehCanvas extends Component {
       reader.onloadend = () => {
         const _result = reader.result;
         that.setState({ image: _result, name: _file.name }, () => {
+          if (typeof that.props.onUpload === "function") {
+            that.props.onUpload({ image: _result, name: _file.name });
+          }
           that.editor
             .getInstance()
             .loadImageFromURL(_result, _file.name)
@@ -157,7 +183,85 @@ export default class AlgaehCanvas extends Component {
       };
     }
   }
+  openWebCamHandler(e) {
+    this.setState({
+      openWebCam: true
+    });
+  }
+  webCamCloseHandler(e) {
+    this.setState({
+      openWebCam: false
+    });
+  }
+  webcamCaptureImage(e) {
+    const short = this.webCam.getScreenshot();
+    this.setState(
+      {
+        image: short,
+        openWebCam: false
+      },
+      () => {
+        if (typeof this.props.onSave === "function") {
+          this.props.onSave({
+            image: this.editor.getInstance().toDataURL(),
+            name: this.state.name
+          });
+        }
+
+        this.editor
+          .getInstance()
+          .loadImageFromURL(
+            short,
+            "Webcam_" + moment().format("YYYYMMDDHHmmss")
+          )
+          .then(result => {
+            this.editor.getInstance().ui.resizeEditor({
+              imageSize: {
+                oldWidth: result.oldWidth,
+                oldHeight: result.oldHeight,
+                newWidth: result.newWidth,
+                newHeight: result.newHeight
+              }
+            });
+          })
+          .catch(err => {
+            console.error("Something went wrong:", err);
+          });
+      }
+    );
+  }
+  implementWebCam() {
+    if (this.state.openWebCam) {
+      return (
+        <div className=" image-area-cntr">
+          <Webcam
+            className="captureVideo"
+            screenshotFormat="image/jpeg"
+            ref={ref => {
+              this.webCam = ref;
+            }}
+          />
+          <div className="videoActions">
+            <i
+              className="fas fa-times"
+              onClick={this.webCamCloseHandler.bind(this)}
+            />
+            <i
+              className="fas fa-camera"
+              onClick={this.webcamCaptureImage.bind(this)}
+            />
+          </div>
+        </div>
+      );
+    } else null;
+  }
   render() {
+    const _showSave =
+      this.props.showSave === undefined ? true : this.props.showSave;
+    const _showUpload =
+      this.props.showUpload === undefined ? true : this.props.showUpload;
+    const _showCam =
+      this.props.showCam === undefined ? true : this.props.showCam;
     return (
       <div style={this.btnDiagramCntr}>
         <ImageEditor
@@ -235,22 +339,40 @@ export default class AlgaehCanvas extends Component {
           }}
           usageStatistics={false}
         />
-        <button style={this.btnSave} onClick={this.loadImagaing.bind(this)}>
-          <i className="far fa-save" />
-        </button>
+        {_showSave ? (
+          <button style={this.btnSave} onClick={this.loadImagaing.bind(this)}>
+            <i className="far fa-save" />
+          </button>
+        ) : null}
+        {_showUpload ? (
+          <React.Fragment>
+            <span className="d-none">
+              <input
+                ref={fileUploader => {
+                  this.fileUploader = fileUploader;
+                }}
+                type="file"
+                onChange={this.fileUploaderHandler.bind(this)}
+              />
+            </span>
+            <button
+              onClick={this.uploadImage.bind(this)}
+              style={this.btnUpLoad}
+            >
+              <i className="fas fa-upload" />
+            </button>
+          </React.Fragment>
+        ) : null}
+        {_showCam ? (
+          <button
+            onClick={this.openWebCamHandler.bind(this)}
+            style={this.btnCamera}
+          >
+            <i className="fas fa-camera" />
+          </button>
+        ) : null}
 
-        <span className="d-none">
-          <input
-            ref={fileUploader => {
-              this.fileUploader = fileUploader;
-            }}
-            type="file"
-            onChange={this.fileUploaderHandler.bind(this)}
-          />
-        </span>
-        <button onClick={this.uploadImage.bind(this)} style={this.btnUpLoad}>
-          <i className="fas fa-upload" />
-        </button>
+        {this.implementWebCam()}
       </div>
     );
   }

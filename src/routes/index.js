@@ -75,6 +75,7 @@ import holiday from "../Payroll/controller/holiday";
 import loan from "../Payroll/controller/loan";
 import salary from "../Payroll/controller/salary";
 import payrollSettings from "../Payroll/controller/payrollSettings";
+import examinationDiagrams from "../EHR/controller/examinationDiagram";
 //connect to DB
 //function(db)
 initializedDb(db => {
@@ -157,6 +158,7 @@ initializedDb(db => {
   router.use("/salary", salary({ config, db }));
   router.use("/payrollSettings", payrollSettings({ config, db }));
   router.use("/algaehappexpiry", algaehappexpiry({ config, db }));
+  router.use("/examinationDiagram", examinationDiagrams());
 });
 
 export default router;

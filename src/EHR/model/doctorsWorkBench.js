@@ -14,6 +14,8 @@ import { debugFunction, debugLog } from "../../utils/logging";
 import formater from "../../keys/keys";
 import { decryption } from "../../utils/cryptography";
 import mysql from "mysql";
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
 //created by irfan: to add  physical_examination_header
 let physicalExaminationHeader = (req, res, next) => {
   let physicalExaminationHeaderModel = {
@@ -680,71 +682,131 @@ let getEncounterReview = (req, res, next) => {
 
 //created by irfan: get MYDAY in doctors work bench , to show list of todays patients
 let getMyDay = (req, res, next) => {
-  let getMydayWhere = {
-    provider_id: req.userIdentity.employee_id,
-    sub_department_id: req.userIdentity.sub_department_id
-  };
+  const _mysql = new algaehMysql({ path: keyPath });
+  // let getMydayWhere = {
+  //   provider_id: req.userIdentity.employee_id,
+  //   sub_department_id: req.userIdentity.sub_department_id
+  // };
 
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let dateDiff = "";
-    if (req.query.fromDate != null && req.query.toDate != null) {
-      dateDiff +=
-        " date(E.created_date) BETWEEN date('" +
-        moment(req.query.fromDate).format(formater.dbFormat.date) +
-        "') AND date('" +
-        moment(req.query.toDate).format(formater.dbFormat.date) +
-        "')";
-      delete req.query.fromDate;
-      delete req.query.toDate;
-    } else if (req.query.toDate != null) {
-      dateDiff = " date(E.created_date) = date('" + req.query.toDate + "')";
-      delete req.query.toDate;
-    }
+    // if (req.db == null) {
+    //   next(httpStatus.dataBaseNotInitilizedError());
+    // }
+    // let db = req.db;
+    // let dateDiff = "";
+    // if (req.query.fromDate != null && req.query.toDate != null) {
+    //   dateDiff +=
+    //     " date(E.created_date) BETWEEN date('" +
+    //     moment(req.query.fromDate).format(formater.dbFormat.date) +
+    //     "') AND date('" +
+    //     moment(req.query.toDate).format(formater.dbFormat.date) +
+    //     "')";
+    //   delete req.query.fromDate;
+    //   delete req.query.toDate;
+    // } else if (req.query.toDate != null) {
+    //   dateDiff = " date(E.created_date) = date('" + req.query.toDate + "')";
+    //   delete req.query.toDate;
+    // }
 
-    let statusFlag = "";
+    // let statusFlag = "";
+    // if (req.query.status == "A") {
+    //   statusFlag = " E.status <> 'V' AND";
+    //   delete req.query.status;
+    // } else if (req.query.status == "V") {
+    //   statusFlag = " E.status='V' AND";
+    //   delete req.query.status;
+    // }
+
+    // let where = whereCondition(extend(getMydayWhere, req.query));
+
+    let _query = "";
+    _query += _mysql.mysqlQueryFormat(
+      " provider_id=? and sub_department_id=? and ",
+      [req.userIdentity.employee_id, req.userIdentity.sub_department_id]
+    );
+    if (
+      req.query.fromDate != null &&
+      req.query.fromDate != "" &&
+      req.query.fromDate != undefined &&
+      (req.query.toDate != null &&
+        req.query.fromDate != "" &&
+        req.query.fromDate != undefined)
+    )
+      _query += _mysql.mysqlQueryFormat(
+        "date(E.created_date) BETWEEN date(?) and date(?)",
+        [
+          moment(new Date(req.query.fromDate)).format(
+            keyPath.default.dbFormat.date
+          ),
+          moment(new Date(req.query.toDate)).format(
+            keyPath.default.dbFormat.date
+          )
+        ]
+      );
+    else if (
+      req.query.toDate != null &&
+      req.query.toDate != "" &&
+      req.query.toDate != undefined
+    ) {
+      _query += _mysql.mysqlQueryFormat("date(E.created_date) = date(?)", [
+        moment(new Date(req.query.toDate)).format(keyPath.default.dbFormat.date)
+      ]);
+    }
     if (req.query.status == "A") {
-      statusFlag = " E.status <> 'V' AND";
-      delete req.query.status;
+      _query += _mysql.mysqlQueryFormat("E.status <> 'V' AND");
     } else if (req.query.status == "V") {
-      statusFlag = " E.status='V' AND";
-      delete req.query.status;
+      _query += _mysql.mysqlQueryFormat("E.status=? AND", ["V"]);
     }
 
-    let where = whereCondition(extend(getMydayWhere, req.query));
-
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      db.query(
-        "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
+    _mysql
+      .executeQuery({
+        query:
+          "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
          E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
             inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' AND " +
-          statusFlag +
-          "" +
-          dateDiff +
-          " AND " +
-          where.condition +
-          " order by E.updated_date desc",
-        where.values,
+          _query
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
 
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
+    // db.getConnection((error, connection) => {
+    //   if (error) {
+    //     next(error);
+    //   }
+    //   db.query(
+    //     "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
+    //      E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id from hims_f_patient_encounter E\
+    //      INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
+    //         inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' AND " +
+    //       statusFlag +
+    //       "" +
+    //       dateDiff +
+    //       " AND " +
+    //       where.condition +
+    //       " order by E.updated_date desc",
+    //     where.values,
 
-          req.records = result;
-          next();
-        }
-      );
-    });
+    //     (error, result) => {
+    //       releaseDBConnection(db, connection);
+    //       if (error) {
+    //         next(error);
+    //       }
+
+    //       req.records = result;
+    //       next();
+    //     }
+    //   );
+    // });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
 };

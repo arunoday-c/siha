@@ -1,6 +1,9 @@
 .CanvasEditorCntr {
   width: 100%;
   margin-top: 20px; }
+  .CanvasEditorCntr .image-area-cntr {
+    top: 29vh !important;
+    left: 29vw !important; }
   .CanvasEditorCntr .tui-image-editor-container {
     width: 81.5vw !important;
     height: 75vh !important; }
@@ -54,3 +57,17 @@
       font-size: 0.9rem; }
       .diagramList .eachDiagram p small {
         display: block; }
+
+.diagramDropdown {
+  height: 51px; }
+  .diagramDropdown img {
+    width: 50px;
+    height: 50px;
+    float: left; }
+  .diagramDropdown span {
+    display: block;
+    font-size: 0.8rem;
+    margin-left: 56px; }
+  .diagramDropdown span:first-child {
+    font-size: 1rem;
+    font-weight: bold; }

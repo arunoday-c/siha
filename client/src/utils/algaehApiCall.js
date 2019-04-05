@@ -211,12 +211,14 @@ export function algaehApiCall(options) {
           }
 
           if (err.code === "ECONNABORTED") {
-            console.error(
-              "Error Message : \n" +
-                err.message +
-                " \n Detail Info : \n" +
-                JSON.stringify(err)
-            );
+            if (process.env.NODE_ENV === "development") {
+              console.error(
+                "Error Message : \n" +
+                  err.message +
+                  " \n Detail Info : \n" +
+                  JSON.stringify(err)
+              );
+            }
 
             // swalMessage({
             //   title: "Request taking long time to process....!",
