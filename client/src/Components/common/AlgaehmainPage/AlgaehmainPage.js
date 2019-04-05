@@ -354,12 +354,7 @@ class PersistentDrawer extends React.Component {
     //     : "");
     debugger;
 
-    let screenName =
-      submenu.page_to_redirect.replace(/\s/g, "") +
-      (this.state.Language !== "en"
-        ? this.state.Language.charAt(0).toUpperCase() +
-          this.state.Language.slice(1)
-        : "");
+    let screenName = submenu.page_to_redirect.replace(/\s/g, "");
 
     let lang_className =
       this.state.Language === "en" ? " english_component" : " arabic_component";

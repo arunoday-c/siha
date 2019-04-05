@@ -1092,3 +1092,56 @@
   min-height: 30px !important;
   max-height: 30px !important;
   padding: 0.3em 0.5em; }
+
+.arabic_component {
+  direction: rtl;
+  text-align: right; }
+  .arabic_component input::placeholder {
+    text-align: right; }
+  .arabic_component .text-arabic {
+    font-size: 1.1rem; }
+  .arabic_component .spotlightSearchIconBox {
+    border-right: 1px solid #ced4d8;
+    border-left: 0 !important; }
+  .arabic_component .print-area div {
+    float: left;
+    border-right: 1px solid #adaaaa;
+    border-left: 0; }
+  .arabic_component .hdg_bredcrump {
+    background: url("./assets/images/breadcrump_border_Ar.webp") no-repeat top left #fff !important; }
+  .arabic_component .hptl-phase1-add-patient-form .primary-details,
+  .arabic_component .htpl-phase1-primary-insurance-form .primary-details,
+  .arabic_component .htpl-phase1-seconary-insurance-form .primary-details,
+  .arabic_component .hptl-phase1-add-consultation-form .primary-details {
+    border-left: 1px dashed #d3d3d3;
+    border-right: 0; }
+  .arabic_component .hptl-phase1-footer button {
+    font-size: 1.2rem;
+    float: left; }
+  .arabic_component .toggle-section .nav {
+    padding: 0;
+    right: auto; }
+  .arabic_component .ui.search.dropdown > .text {
+    text-align: right;
+    float: right; }
+  .arabic_component .ui.selection.dropdown > .delete.icon,
+  .arabic_component .ui.selection.dropdown > .dropdown.icon,
+  .arabic_component .ui.selection.dropdown > .search.icon {
+    text-align: left;
+    left: 0; }
+  .arabic_component .ui.dropdown .menu {
+    right: 0; }
+  .arabic_component .ui.dropdown .menu > .item {
+    text-align: right; }
+  .arabic_component .insuranceRadio {
+    padding-right: 10px;
+    padding-left: 0; }
+    .arabic_component .insuranceRadio .customRadio .inline + .inline {
+      margin-right: 10px;
+      margin-left: 0; }
+  .arabic_component .maternityRadio {
+    padding-right: 10px;
+    padding-left: 0; }
+    .arabic_component .maternityRadio .customRadio .inline + .inline {
+      margin-right: 10px;
+      margin-left: 0; }

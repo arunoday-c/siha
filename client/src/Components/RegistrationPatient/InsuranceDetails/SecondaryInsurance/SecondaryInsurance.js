@@ -86,7 +86,7 @@ class AddSecInsuranceForm extends Component {
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="row primary-box-container">
-                      <div className="col-lg-2" style={{ paddingRight: 0 }}>
+                      <div className="col-lg-2  insuranceRadio">
                         <label>Insurance</label>
                         <br />
                         <div className="customRadio">
@@ -313,58 +313,54 @@ class AddSecInsuranceForm extends Component {
 
                   <div className="col-lg-4 secondary-details">
                     <div className="row secondary-box-container">
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <div className="image-drop-area">
-                          <AlgaehFileUploader
-                            ref={patSecInsuranceFrontImg => {
-                              this.patSecInsuranceFrontImg = patSecInsuranceFrontImg;
-                            }}
-                            noImage="insurance-card-front"
-                            name="patSecInsuranceFrontImg"
-                            accept="image/*"
-                            textAltMessage="Sec. Insurance Card Front Side"
-                            serviceParameters={{
-                              uniqueID:
-                                this.state.secondary_card_number + "_sec_front",
-                              fileType: "Patients",
-                              processDelay: this.imageDetails.bind(
-                                this,
-                                context,
-                                "patSecInsuranceFrontImg"
-                              )
-                            }}
-                            renderPrevState={this.state.patSecInsuranceFrontImg}
-                            forceRefresh={this.state.forceRefresh}
-                          />
-                        </div>
+                      <div className="col-lg-6 insurCrdImg">
+                        <AlgaehFileUploader
+                          ref={patSecInsuranceFrontImg => {
+                            this.patSecInsuranceFrontImg = patSecInsuranceFrontImg;
+                          }}
+                          noImage="insurance-card-front"
+                          name="patSecInsuranceFrontImg"
+                          accept="image/*"
+                          textAltMessage="Sec. Insurance Card Front Side"
+                          serviceParameters={{
+                            uniqueID:
+                              this.state.secondary_card_number + "_sec_front",
+                            fileType: "Patients",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              context,
+                              "patSecInsuranceFrontImg"
+                            )
+                          }}
+                          renderPrevState={this.state.patSecInsuranceFrontImg}
+                          forceRefresh={this.state.forceRefresh}
+                        />
 
                         <div />
                       </div>
 
-                      <div className="col-xs-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
-                        <div className="image-drop-area">
-                          <AlgaehFileUploader
-                            ref={patSecInsuranceBackImg => {
-                              this.patSecInsuranceBackImg = patSecInsuranceBackImg;
-                            }}
-                            noImage="insurance-card-back"
-                            name="patSecInsuranceBackImg"
-                            accept="image/*"
-                            textAltMessage="Sec. Insurance Card Back Side"
-                            serviceParameters={{
-                              uniqueID:
-                                this.state.secondary_card_number + "_sec_back",
-                              fileType: "Patients",
-                              processDelay: this.imageDetails.bind(
-                                this,
-                                context,
-                                "patSecInsuranceBackImg"
-                              )
-                            }}
-                            renderPrevState={this.state.patSecInsuranceBackImg}
-                            forceRefresh={this.state.forceRefresh}
-                          />
-                        </div>
+                      <div className="col-lg-6 insurCrdImg">
+                        <AlgaehFileUploader
+                          ref={patSecInsuranceBackImg => {
+                            this.patSecInsuranceBackImg = patSecInsuranceBackImg;
+                          }}
+                          noImage="insurance-card-back"
+                          name="patSecInsuranceBackImg"
+                          accept="image/*"
+                          textAltMessage="Sec. Insurance Card Back Side"
+                          serviceParameters={{
+                            uniqueID:
+                              this.state.secondary_card_number + "_sec_back",
+                            fileType: "Patients",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              context,
+                              "patSecInsuranceBackImg"
+                            )
+                          }}
+                          renderPrevState={this.state.patSecInsuranceBackImg}
+                          forceRefresh={this.state.forceRefresh}
+                        />
 
                         <div />
                       </div>

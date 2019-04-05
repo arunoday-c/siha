@@ -62,7 +62,7 @@ class AddInsuranceForm extends Component {
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="row primary-box-container">
-                      <div className="col-lg-2" style={{ paddingRight: 0 }}>
+                      <div className="col-lg-2 insuranceRadio">
                         <label>Insurance</label>
                         <br />
 
