@@ -139,7 +139,14 @@ export default {
       hideSecInsurance: false,
       existing_plan: "N",
       department_type: "N",
-      treatment_plan_id: null
+      treatment_plan_id: null,
+      patientImage: undefined,
+      patientIdCard: undefined,
+      patInsuranceFrontImg: undefined,
+      patInsuranceBackImg: undefined,
+      patSecInsuranceFrontImg: undefined,
+      patSecInsuranceBackImg: undefined,
+      forceRefresh: undefined
     };
     return output;
   }

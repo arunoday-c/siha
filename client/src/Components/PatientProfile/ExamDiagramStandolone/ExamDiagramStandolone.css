@@ -1,41 +1,55 @@
 .CanvasEditorCntr {
   width: 100%;
-  margin-top: 20px; }
-  .CanvasEditorCntr .image-area-cntr {
-    top: 29vh !important;
-    left: 29vw !important; }
-  .CanvasEditorCntr .tui-image-editor-container {
-    width: 81.5vw !important;
-    height: 75vh !important; }
-  .CanvasEditorCntr .tui-image-editor-container.left .tui-image-editor-main-container {
-    left: 91px !important;
-    width: calc(100% - 91px) !important;
-    height: 100%; }
-  .CanvasEditorCntr .tui-image-editor-container .tui-image-editor-main {
-    top: 7px !important; }
-  .CanvasEditorCntr .tui-image-editor-container .tui-image-editor-menu {
-    width: 90px !important;
-    display: inline-block !important; }
-  .CanvasEditorCntr .tui-image-editor-container
-.color-picker-control
-.tui-colorpicker-palette-button {
-    height: 24px !important;
-    width: 24px !important; }
-  .CanvasEditorCntr .tui-image-editor-container
-.tui-image-editor-submenu
-.tui-image-editor-submenu-style {
-    left: 26px !important; }
+  margin-top: 20px;
+}
+.CanvasEditorCntr .image-area-cntr {
+  top: 29vh !important;
+  left: 29vw !important;
+}
+.CanvasEditorCntr .tui-image-editor-container {
+  width: 81.5vw !important;
+  height: 75vh !important;
+}
+.CanvasEditorCntr
+  .tui-image-editor-container.left
+  .tui-image-editor-main-container {
+  left: 91px !important;
+  width: calc(100% - 91px) !important;
+  height: 100%;
+}
+.CanvasEditorCntr .tui-image-editor-container .tui-image-editor-main {
+  top: 7px !important;
+}
+.CanvasEditorCntr .tui-image-editor-container .tui-image-editor-menu {
+  width: 90px !important;
+  display: inline-block !important;
+}
+.CanvasEditorCntr
+  .tui-image-editor-container
+  .color-picker-control
+  .tui-colorpicker-palette-button {
+  height: 24px !important;
+  width: 24px !important;
+}
+.CanvasEditorCntr
+  .tui-image-editor-container
+  .tui-image-editor-submenu
+  .tui-image-editor-submenu-style {
+  left: 26px !important;
+}
 
 .diagramManageCntr {
   margin-bottom: 20px;
   background: #fff;
   padding-top: 10px;
   border-bottom: 1px solid #d0d0d0;
-  border-right: 1px solid #d0d0d0; }
+  border-right: 1px solid #d0d0d0;
+}
 
 .DiagramRemarksCntr {
   width: 100%;
-  float: left; }
+  float: left;
+}
 
 .diagramList {
   padding: 10px 0;
@@ -44,30 +58,69 @@
   border-right: 1px solid #d0d0d0;
   height: 51.5vh !important;
   overflow-y: auto;
-  overflow-x: hidden; }
-  .diagramList .eachDiagram {
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 10px; }
-    .diagramList .eachDiagram img {
-      width: 100%;
-      height: auto;
-      background: #ccc;
-      border: 1px solid #ccc; }
-    .diagramList .eachDiagram p {
-      font-size: 0.9rem; }
-      .diagramList .eachDiagram p small {
-        display: block; }
+  overflow-x: hidden;
+}
+.diagramList .eachDiagram {
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+.diagramList .eachDiagram img {
+  width: 100%;
+  height: auto;
+  background: #ccc;
+  border: 1px solid #ccc;
+}
+.diagramList .eachDiagram p {
+  font-size: 0.9rem;
+}
+.diagramList .eachDiagram p small {
+  display: block;
+}
 
 .diagramDropdown {
-  height: 51px; }
-  .diagramDropdown img {
-    width: 50px;
-    height: 50px;
-    float: left; }
-  .diagramDropdown span {
-    display: block;
-    font-size: 0.8rem;
-    margin-left: 56px; }
-  .diagramDropdown span:first-child {
-    font-size: 1rem;
-    font-weight: bold; }
+  height: 51px;
+}
+.diagramDropdown img {
+  width: 50px;
+  height: 50px;
+  float: left;
+}
+.diagramDropdown span {
+  display: block;
+  font-size: 0.8rem;
+  margin-left: 56px;
+}
+.diagramDropdown span:first-child {
+  font-size: 1rem;
+  font-weight: bold;
+}
+.saveWindow {
+  width: 50vw;
+  -webkit-box-shadow: 10px 10px 10px #000;
+  box-shadow: 10px 10px 10px #000;
+  position: absolute;
+  top: 150px;
+  z-index: 99;
+  background: #fff;
+  left: 25%;
+  border-radius: 3px;
+}
+.saveWindow .saveHeader {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.16);
+  padding-top: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+.saveWindow .textAreaRemarks {
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  height: 100px;
+}
+.saveWindow .saveFooter {
+  border-top: 1px solid rgba(0, 0, 0, 0.16);
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.saveWindow .saveFooter button {
+  float: right;
+  margin-left: 10px;
+}

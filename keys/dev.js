@@ -9,13 +9,14 @@ exports.default = {
   mysqlDb: {
     connectionLimit: 100,
     // host: "166.62.10.184",
-    host: "49.206.18.38",
+    // host: "49.206.18.38",
+    host: "192.168.0.145",
     port: 3306,
     user: "algaeh_root",
     password: "alg_hea2018",
     //database: "algaeh_hims_db",
     database: "hims_test_db",
-    //database: "algaeh_hrms_oman_db",
+    // database: "algaeh_hrms_oman_db",
 
     multipleStatements: true,
     acquireTimeout: 20000,

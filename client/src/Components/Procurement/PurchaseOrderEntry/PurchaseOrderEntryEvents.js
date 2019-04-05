@@ -169,141 +169,144 @@ const RequisitionSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        $this.props.getRequisitionEntry({
+        algaehApiCall({
           uri:
             $this.state.po_from === "PHR"
               ? "/PurchaseOrderEntry/getPharRequisitionEntryPO"
               : "/PurchaseOrderEntry/getInvRequisitionEntryPO",
           module: "procurement",
-          method: "GET",
           data: {
             material_requisition_number: row.material_requisition_number,
             from_location_id: from_location_id
           },
-          redux: {
-            type: "POS_ENTRY_GET_DATA",
-            mappingName: "porequisitionentry"
-          },
-          afterSuccess: data => {
-            if (data !== null && data !== undefined) {
-              AlgaehLoader({ show: true });
+          method: "GET",
+          onSuccess: response => {
+            if (response.data.success === true) {
+              let data = response.data.records;
+              if (data !== null && data !== undefined) {
+                AlgaehLoader({ show: true });
 
-              data.saveEnable = false;
+                data.saveEnable = false;
 
-              data.location_type = "MS";
+                data.location_type = "MS";
 
-              data.dataExitst = true;
+                data.dataExitst = true;
 
-              for (let i = 0; i < data.po_entry_detail.length; i++) {
-                let purchase_cost = data.po_entry_detail[i].purchase_cost;
+                for (let i = 0; i < data.po_entry_detail.length; i++) {
+                  let purchase_cost = data.po_entry_detail[i].purchase_cost;
 
-                if ($this.state.po_from === "PHR") {
-                  data.po_entry_detail[i].pharmacy_requisition_id =
-                    data.po_entry_detail[i].hims_f_pharmacy_material_detail_id;
+                  if ($this.state.po_from === "PHR") {
+                    data.po_entry_detail[i].pharmacy_requisition_id =
+                      data.po_entry_detail[
+                        i
+                      ].hims_f_pharmacy_material_detail_id;
 
-                  data.po_entry_detail[i].phar_item_category =
-                    data.po_entry_detail[i].item_category_id;
-                  data.po_entry_detail[i].phar_item_group =
-                    data.po_entry_detail[i].item_group_id;
-                  data.po_entry_detail[i].phar_item_id =
-                    data.po_entry_detail[i].item_id;
+                    data.po_entry_detail[i].phar_item_category =
+                      data.po_entry_detail[i].item_category_id;
+                    data.po_entry_detail[i].phar_item_group =
+                      data.po_entry_detail[i].item_group_id;
+                    data.po_entry_detail[i].phar_item_id =
+                      data.po_entry_detail[i].item_id;
 
-                  data.po_entry_detail[i].pharmacy_uom_id =
-                    data.po_entry_detail[i].purchase_uom_id;
-                } else {
-                  data.po_entry_detail[i].inventory_requisition_id =
-                    data.po_entry_detail[i].hims_f_inventory_material_detail_id;
+                    data.po_entry_detail[i].pharmacy_uom_id =
+                      data.po_entry_detail[i].purchase_uom_id;
+                  } else {
+                    data.po_entry_detail[i].inventory_requisition_id =
+                      data.po_entry_detail[
+                        i
+                      ].hims_f_inventory_material_detail_id;
 
-                  data.po_entry_detail[i].inv_item_category_id =
-                    data.po_entry_detail[i].item_category_id;
-                  data.po_entry_detail[i].inv_item_group_id =
-                    data.po_entry_detail[i].item_group_id;
-                  data.po_entry_detail[i].inv_item_id =
-                    data.po_entry_detail[i].item_id;
+                    data.po_entry_detail[i].inv_item_category_id =
+                      data.po_entry_detail[i].item_category_id;
+                    data.po_entry_detail[i].inv_item_group_id =
+                      data.po_entry_detail[i].item_group_id;
+                    data.po_entry_detail[i].inv_item_id =
+                      data.po_entry_detail[i].item_id;
 
-                  data.po_entry_detail[i].inventory_uom_id =
-                    data.po_entry_detail[i].purchase_uom_id;
+                    data.po_entry_detail[i].inventory_uom_id =
+                      data.po_entry_detail[i].purchase_uom_id;
+                  }
+
+                  data.po_entry_detail[i].order_quantity =
+                    data.po_entry_detail[i].quantity_authorized;
+                  data.po_entry_detail[i].total_quantity =
+                    data.po_entry_detail[i].quantity_authorized;
+
+                  data.po_entry_detail[i].uom_requested_id =
+                    data.po_entry_detail[i].item_uom;
+
+                  data.po_entry_detail[i].unit_price = purchase_cost;
+                  data.po_entry_detail[i].unit_cost = purchase_cost;
+
+                  data.po_entry_detail[i].extended_price =
+                    purchase_cost * data.po_entry_detail[i].quantity_authorized;
+
+                  data.po_entry_detail[i].extended_cost =
+                    purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                  data.po_entry_detail[i].net_extended_cost =
+                    purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                  data.po_entry_detail[i].extended_price =
+                    purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                  data.po_entry_detail[i].extended_price =
+                    purchase_cost * data.po_entry_detail[i].quantity_authorized;
+
+                  data.po_entry_detail[i].sub_discount_percentage = 0;
+                  data.po_entry_detail[i].sub_discount_amount = 0;
+                  data.po_entry_detail[i].expected_arrival_date =
+                    $this.state.expected_date;
+                  data.po_entry_detail[i].authorize_quantity = 0;
+                  data.po_entry_detail[i].rejected_quantity = 0;
+                  data.po_entry_detail[i].tax_percentage =
+                    $this.state.tax_percentage;
+                  data.po_entry_detail[i].tax_amount =
+                    (parseFloat(data.po_entry_detail[i].extended_cost) *
+                      parseFloat($this.state.tax_percentage)) /
+                    100;
+
+                  data.po_entry_detail[i].total_amount =
+                    parseFloat(data.po_entry_detail[i].extended_cost) +
+                    data.po_entry_detail[i].tax_amount;
                 }
 
-                data.po_entry_detail[i].order_quantity =
-                  data.po_entry_detail[i].quantity_authorized;
-                data.po_entry_detail[i].total_quantity =
-                  data.po_entry_detail[i].quantity_authorized;
+                let sub_total = Enumerable.from(data.po_entry_detail).sum(s =>
+                  parseFloat(s.extended_price)
+                );
 
-                data.po_entry_detail[i].uom_requested_id =
-                  data.po_entry_detail[i].item_uom;
+                let net_total = Enumerable.from(data.po_entry_detail).sum(s =>
+                  parseFloat(s.net_extended_cost)
+                );
 
-                data.po_entry_detail[i].unit_price = purchase_cost;
-                data.po_entry_detail[i].unit_cost = purchase_cost;
+                let net_payable = Enumerable.from(data.po_entry_detail).sum(s =>
+                  parseFloat(s.total_amount)
+                );
 
-                data.po_entry_detail[i].extended_price =
-                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                let total_tax = Enumerable.from(data.po_entry_detail).sum(s =>
+                  parseFloat(s.tax_amount)
+                );
 
-                data.po_entry_detail[i].extended_cost =
-                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
-                data.po_entry_detail[i].net_extended_cost =
-                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
-                data.po_entry_detail[i].extended_price =
-                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
-                data.po_entry_detail[i].extended_price =
-                  purchase_cost * data.po_entry_detail[i].quantity_authorized;
+                let detail_discount = Enumerable.from(data.po_entry_detail).sum(
+                  s => parseFloat(s.sub_discount_amount)
+                );
 
-                data.po_entry_detail[i].sub_discount_percentage = 0;
-                data.po_entry_detail[i].sub_discount_amount = 0;
-                data.po_entry_detail[i].expected_arrival_date =
-                  $this.state.expected_date;
-                data.po_entry_detail[i].authorize_quantity = 0;
-                data.po_entry_detail[i].rejected_quantity = 0;
-                data.po_entry_detail[i].tax_percentage =
-                  $this.state.tax_percentage;
-                data.po_entry_detail[i].tax_amount =
-                  (parseFloat(data.po_entry_detail[i].extended_cost) *
-                    parseFloat($this.state.tax_percentage)) /
-                  100;
+                data.sub_total = sub_total;
+                data.net_total = net_total;
+                data.net_payable = net_payable;
+                data.total_tax = total_tax;
+                data.detail_discount = detail_discount;
 
-                data.po_entry_detail[i].total_amount =
-                  parseFloat(data.po_entry_detail[i].extended_cost) +
-                  data.po_entry_detail[i].tax_amount;
+                if ($this.state.po_from === "PHR") {
+                  data.phar_requisition_id =
+                    data.hims_f_pharamcy_material_header_id;
+                  data.pharmacy_stock_detail = data.po_entry_detail;
+                } else {
+                  data.inv_requisition_id =
+                    data.hims_f_inventory_material_header_id;
+                  data.inventory_stock_detail = data.po_entry_detail;
+                }
+
+                $this.setState(data);
+                AlgaehLoader({ show: false });
               }
-
-              let sub_total = Enumerable.from(data.po_entry_detail).sum(s =>
-                parseFloat(s.extended_price)
-              );
-
-              let net_total = Enumerable.from(data.po_entry_detail).sum(s =>
-                parseFloat(s.net_extended_cost)
-              );
-
-              let net_payable = Enumerable.from(data.po_entry_detail).sum(s =>
-                parseFloat(s.total_amount)
-              );
-
-              let total_tax = Enumerable.from(data.po_entry_detail).sum(s =>
-                parseFloat(s.tax_amount)
-              );
-
-              let detail_discount = Enumerable.from(data.po_entry_detail).sum(
-                s => parseFloat(s.sub_discount_amount)
-              );
-
-              data.sub_total = sub_total;
-              data.net_total = net_total;
-              data.net_payable = net_payable;
-              data.total_tax = total_tax;
-              data.detail_discount = detail_discount;
-
-              if ($this.state.po_from === "PHR") {
-                data.phar_requisition_id =
-                  data.hims_f_pharamcy_material_header_id;
-                data.pharmacy_stock_detail = data.po_entry_detail;
-              } else {
-                data.inv_requisition_id =
-                  data.hims_f_inventory_material_header_id;
-                data.inventory_stock_detail = data.po_entry_detail;
-              }
-
-              $this.setState(data);
-              AlgaehLoader({ show: false });
             }
           }
         });

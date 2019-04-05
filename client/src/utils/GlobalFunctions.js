@@ -408,11 +408,15 @@ export function AlgaehValidation(options) {
   // }
 }
 
-export function getAmountFormart(value, options) {
-  return numberFormater(value, options);
+export function getAmountWithOutCurrencyFormart(value, options) {
+  return numberFormater(value, options, "N");
 }
 
-export function numberFormater(value, options) {
+export function getAmountFormart(value, options) {
+  return numberFormater(value, options, "Y");
+}
+
+export function numberFormater(value, options, currencyDis) {
   let CurrencyDetail = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   );
@@ -464,22 +468,24 @@ export function numberFormater(value, options) {
       ? s.join(settings.decimal_separator)
       : parseFloat(s).toFixed(precesions);
   let currency = result;
-  if (settings.appendSymbol) {
-    switch (settings.symbol_position) {
-      case "BWS":
-        currency = settings.currency_symbol + result;
-        break;
-      case "BS":
-        currency = settings.currency_symbol + " " + result;
-        break;
-      case "AWS":
-        currency = result + settings.currency_symbol;
-        break;
-      case "AS":
-        currency = result + " " + settings.currency_symbol;
-        break;
-      default:
-        return;
+  if (currencyDis === "Y") {
+    if (settings.appendSymbol) {
+      switch (settings.symbol_position) {
+        case "BWS":
+          currency = settings.currency_symbol + result;
+          break;
+        case "BS":
+          currency = settings.currency_symbol + " " + result;
+          break;
+        case "AWS":
+          currency = result + settings.currency_symbol;
+          break;
+        case "AS":
+          currency = result + " " + settings.currency_symbol;
+          break;
+        default:
+          return;
+      }
     }
   }
 

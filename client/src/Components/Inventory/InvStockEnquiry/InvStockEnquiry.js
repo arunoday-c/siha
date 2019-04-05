@@ -76,7 +76,7 @@ class InvStockEnquiry extends Component {
     // inventoryitemBatch
 
     let total_quantity = Enumerable.from(this.props.inventoryitemBatch)
-      .select(w => w.qtyhand)
+      .select(w => parseFloat(w.qtyhand))
       .sum();
 
     return (

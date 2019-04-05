@@ -316,7 +316,7 @@ const getItemLocationStock = ($this, context, value) => {
         let total_quantity = 0;
         for (let i = 0; i < data.length; i++) {
           let qtyhand = data[i].qtyhand;
-          total_quantity = total_quantity + qtyhand;
+          total_quantity = total_quantity + parseFloat(qtyhand);
         }
         if (value.set === "To") {
           $this.setState({

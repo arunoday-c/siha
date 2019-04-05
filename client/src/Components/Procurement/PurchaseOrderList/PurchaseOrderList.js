@@ -173,11 +173,7 @@ class PurchaseOrderList extends Component {
                           <AlgaehLabel label={{ forceLabel: "PO Date" }} />
                         ),
                         displayTemplate: row => {
-                          return (
-                            <span>
-                              {dateFormater(this, row.requistion_date)}
-                            </span>
-                          );
+                          return <span>{dateFormater(this, row.po_date)}</span>;
                         },
 
                         disabled: true,

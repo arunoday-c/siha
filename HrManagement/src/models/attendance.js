@@ -4093,8 +4093,8 @@ module.exports = {
     const _mysql = new algaehMysql();
 
     try {
-      const month_number = moment(req.query.yearAndMonth).format("M");
-      const year = moment(new Date(req.query.yearAndMonth)).format("YYYY");
+      const month_number = req.query.yearAndMonth === undefined ? req.query.month: moment(req.query.yearAndMonth).format("M");
+      const year =req.query.yearAndMonth === undefined ? req.query.year: moment(new Date(req.query.yearAndMonth)).format("YYYY");
 
       let selectWhere = {
         ...req.query

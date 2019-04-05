@@ -2,7 +2,8 @@ import {
   APPT_TYPE,
   LEAVE_STATUS,
   MONTHS,
-  RECEIPT_TYPE
+  RECEIPT_TYPE,
+  LOCAL_TYPE
 } from "../../utils/GlobalVariables.json";
 import { getYears } from "../../utils/GlobalFunctions";
 
@@ -1085,8 +1086,82 @@ export default [
       },
       {
         subitem: "Salary Statement Detail",
-        template_name: "asset_war_exp",
-        reportParameters: []
+        reportUri: "/salary/detailSalaryStatement",
+        module: "hrManagement",
+        template_name: "PayrollReports/salary_statement_detail",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "employee_group_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Group",
+            link: {
+              uri: "/hrsettings/getEmployeeGroups",
+              module: "hrManagement"
+            },
+            dataSource: {
+              textField: "group_description",
+              valueField: "hims_d_employee_group_id"
+            }
+          },
+          {
+            type: "dropdown",
+            name: "is_local",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Type",
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: LOCAL_TYPE
+            }
+          }
+        ]
         //reportParameters: () => <General ui="asset_warty_exp_rep" />
       },
 
@@ -1136,7 +1211,7 @@ export default [
         reportParameters: [
           {
             type: "dropdown",
-            name: "yearAndMonth",
+            name: "year",
             sort: "off",
             isImp: true,
             initialLoad: true,

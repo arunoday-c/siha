@@ -43,7 +43,8 @@ module.exports = {
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
             A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
-            A.total_paid_days,A.ot_work_hours, A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
+            A.total_paid_days, A.total_hours, A.total_working_hours, A.ot_work_hours, \
+            A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
             from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
             on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
@@ -64,7 +65,8 @@ module.exports = {
             "select A.hims_f_attendance_monthly_id, A.employee_id, A.year, A.month, A.hospital_id, \
             A.sub_department_id, A.total_days,A.present_days, A.absent_days, A.total_work_days, \
             A.total_weekoff_days, A.total_holidays, A.total_leave, A.paid_leave, A.unpaid_leave, \
-            A.total_paid_days,A.ot_work_hours, A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
+            A.total_paid_days,A.total_hours, A.total_working_hours,A.ot_work_hours, \
+            A.ot_weekoff_hours,A.ot_holiday_hours, A.shortage_hours,\
             E.employee_code,E.gross_salary, S.hims_f_salary_id,S.salary_processed \
             from hims_f_attendance_monthly as A inner join  hims_d_employee as E \
             on  E.hims_d_employee_id = A.employee_id and A.hospital_id = E.hospital_id \
@@ -239,6 +241,7 @@ module.exports = {
                 new Promise((resolve, reject) => {
                   try {
                     for (let i = 0; i < empResult.length; i++) {
+                      utilities.logger().log("empResult ", empResult[i]);
                       let results = Salaryresults;
 
                       let final_earning_amount = 0;
@@ -534,9 +537,10 @@ module.exports = {
                                         _headerQuery += _mysql.mysqlQueryFormat(
                                           "INSERT INTO `hims_f_salary` (salary_number,month,year,employee_id,sub_department_id,salary_date,per_day_sal,total_days,\
                                               present_days,absent_days,total_work_days,total_weekoff_days,total_holidays,total_leave,paid_leave,\
-                                              unpaid_leave,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
+                                              unpaid_leave,total_hours, total_working_hours, ot_work_hours, ot_weekoff_hours, ot_holiday_hours, \
+                                              shortage_hours,loan_payable_amount,loan_due_amount,advance_due,gross_salary,total_earnings,total_deductions,\
                                               total_contributions,net_salary, total_paid_days) \
-                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
+                                             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ;",
                                           [
                                             _salary_number,
                                             parseInt(month_number),
@@ -554,6 +558,12 @@ module.exports = {
                                             empResult[i]["total_leave"],
                                             empResult[i]["paid_leave"],
                                             empResult[i]["unpaid_leave"],
+                                            empResult[i]["total_hours"],
+                                            empResult[i]["total_working_hours"],
+                                            empResult[i]["ot_work_hours"],
+                                            empResult[i]["ot_weekoff_hours"],
+                                            empResult[i]["ot_holiday_hours"],
+                                            empResult[i]["shortage_hours"],
                                             total_loan_payable_amount,
                                             total_loan_due_amount,
                                             advance_due_amount,
@@ -1258,7 +1268,7 @@ module.exports = {
                                                 over_time: _over_time,
                                                 leave_salary:
                                                   req.query.leave_salary,
-                                                  next: next
+                                                next: next
                                               })
                                                 .then(OTManagement => {
                                                   final_earning_amount =
@@ -1277,7 +1287,7 @@ module.exports = {
                                                     hrms_option: results[8],
                                                     leave_salary:
                                                       req.query.leave_salary,
-                                                      next: next
+                                                    next: next
                                                   })
                                                     .then(ShortAge => {
                                                       utilities
@@ -2447,115 +2457,191 @@ module.exports = {
     }
   },
 
-
-  
   //created by:irfan,for report
-  detailSalaryStatement : (req, res, next) => {
+  detailSalaryStatement: (req, res, next) => {
     if (req.query.month > 0 && req.query.year > 0) {
       const _mysql = new algaehMysql();
 
-            let input=req.query;
-            let outputArray=[];
+      let input = req.query;
+      let outputArray = [];
+
+      let is_local = "";
+
+      if (input.is_local == "Y") {
+        is_local = " and H.default_nationality=E.nationality ";
+      } else if (input.is_local == "N") {
+        is_local = " and H.default_nationality<>E.nationality ";
+      }
 
       _mysql
         .executeQuery({
-          query: "select earning_deduction_description from hims_d_earning_deduction\
+          query: `select earning_deduction_description,component_category from hims_d_earning_deduction\
           where record_status='A' and print_report='Y';\
           select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
-          S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions\
+          S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions,\
+          S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours
           from hims_d_employee E\
-          inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  and H.default_nationality=E.nationality\
+          inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  ${is_local}\
           inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
           inner join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
           inner join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
           inner join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?",
-          values: [input.hospital_id,input.employee_group_id,input.month,input.year]
-          
+          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?`,
+          values: [
+            input.hospital_id,
+            input.employee_group_id,
+            input.month,
+            input.year
+          ]
         })
         .then(result => {
           // _mysql.releaseConnection();
           // req.records = result;
           // next();
 
-          let components=result[0];
-          let salary=result[1];
-            outputArray.push(components);
-          if(salary.length>0){
-            let salary_header_ids=new LINQ(salary).Select(s=>s.hims_f_salary_id).ToArray();
+          let components = result[0];
+          let salary = result[1];
 
+          let total_earnings = 0;
+          let total_deductions = 0;
+          let total_net_salary = 0;
+
+          if (salary.length > 0) {
+            total_earnings = new LINQ(salary).Sum(s =>
+              parseFloat(s.total_earnings)
+            );
+            total_deductions = new LINQ(salary).Sum(s =>
+              parseFloat(s.total_deductions)
+            );
+            total_net_salary = new LINQ(salary).Sum(s =>
+              parseFloat(s.net_salary)
+            );
+
+            let salary_header_ids = new LINQ(salary)
+              .Select(s => s.hims_f_salary_id)
+              .ToArray();
 
             _mysql
-            .executeQuery({
-              query:
-                "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary from \
-                hims_f_salary_earnings  where salary_header_id in ("+salary_header_ids+ ");\
+              .executeQuery({
+                query:
+                  "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary from \
+                hims_f_salary_earnings SE inner join hims_d_earning_deduction ED on \
+                SE.earnings_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' where salary_header_id in (" +
+                  salary_header_ids +
+                  ");\
                 select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary from \
-                hims_f_salary_deductions where salary_header_id in ( "+salary_header_ids+ ");"
-              
-              
-            })
-            .then(results => {
-              // _mysql.releaseConnection();
-              // req.records = result;
-              // next();
+                hims_f_salary_deductions SD inner join hims_d_earning_deduction ED on \
+                SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
+                where salary_header_id in ( " +
+                  salary_header_ids +
+                  ");select basic_earning_component from hims_d_hrms_options;"
+              })
+              .then(results => {
+                // _mysql.releaseConnection();
+                // req.records = result;
+                // next();
 
-              let earnings=results[0];
-              let deductions=results[1];
+                let earnings = results[0];
+                let deductions = results[1];
+                let basic_id = results[2][0]["basic_earning_component"];
 
-for (let i=0;i<salary.length;i++){
+                // console.log("basic:",basic_id);
 
- let employee_earning=new LINQ(earnings).Where(w=>w.salary_header_id==salary[i]["hims_f_salary_id"]). Select(s=>{
-   return{
-     hims_f_salary_earnings_id:s.hims_f_salary_earnings_id,
-earnings_id:s.earnings_id,
-amount:s.amount
-   }
- }).ToArray();
+                let total_basic = 0;
 
+                for (let i = 0; i < salary.length; i++) {
+                  let ot_hours = 0;
+                  let ot_min = 0;
 
- let employee_deduction=new LINQ(deductions).Where(w=>w.salary_header_id==salary[i]["hims_f_salary_id"]). Select(s=>{
-   return{
-     hims_f_salary_deductions_id:s.hims_f_salary_deductions_id,
-deductions_id:s.deductions_id,
-amount:s.amount
-   }
- }).ToArray();
+                  ot_hours += parseInt(
+                    salary[i]["ot_work_hours"].toString().split(".")[0]
+                  );
+                  ot_min += parseInt(
+                    salary[i]["ot_work_hours"].toString().split(".")[1]
+                  );
 
-outputArray.push({
-...salary[i],employee_earning:employee_earning,employee_deduction:employee_deduction,
+                  ot_hours += parseInt(
+                    salary[i]["ot_weekoff_hours"].toString().split(".")[0]
+                  );
+                  ot_min += parseInt(
+                    salary[i]["ot_weekoff_hours"].toString().split(".")[1]
+                  );
 
-})
+                  ot_hours += parseInt(
+                    salary[i]["ot_holiday_hours"].toString().split(".")[0]
+                  );
+                  ot_min += parseInt(
+                    salary[i]["ot_holiday_hours"].toString().split(".")[1]
+                  );
 
+                  ot_hours += parseInt(parseInt(ot_min) / parseInt(60));
 
+                  let complete_ot =
+                    ot_hours + "." + (parseInt(ot_min) % parseInt(60));
 
+                  let employee_earning = new LINQ(earnings)
+                    .Where(
+                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                    )
+                    .Select(s => {
+                      return {
+                        hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
+                        earnings_id: s.earnings_id,
+                        amount: s.amount
+                      };
+                    })
+                    .ToArray();
 
-}
+                  let employee_deduction = new LINQ(deductions)
+                    .Where(
+                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                    )
+                    .Select(s => {
+                      return {
+                        hims_f_salary_deductions_id:
+                          s.hims_f_salary_deductions_id,
+                        deductions_id: s.deductions_id,
+                        amount: s.amount
+                      };
+                    })
+                    .ToArray();
 
+                  total_basic += new LINQ(employee_earning)
+                    .Where(w => w.earnings_id == basic_id)
+                    .Select(s => parseFloat(s.amount))
+                    .FirstOrDefault(0);
 
- _mysql.releaseConnection();
-              req.records = outputArray;
-              next();
-            })
-            .catch(e => {
-          _mysql.releaseConnection();
-              next(e);
-            });
+                  console.log("totalbasic:", total_basic);
 
+                  outputArray.push({
+                    ...salary[i],
+                    employee_earning: employee_earning,
+                    employee_deduction: employee_deduction,
+                    complete_ot: complete_ot
+                  });
+                }
 
-
-          }else{
-
-  _mysql.releaseConnection();
-          req.records = salary;
-          next();
-
+                _mysql.releaseConnection();
+                req.records = {
+                  components: components,
+                  employees: outputArray,
+                  total_basic: total_basic,
+                  total_earnings: total_earnings,
+                  total_deductions: total_deductions,
+                  total_net_salary: total_net_salary
+                };
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = salary;
+            next();
           }
- 
-
-
-         
         })
         .catch(e => {
           _mysql.releaseConnection();
@@ -2570,8 +2656,6 @@ outputArray.push({
       return;
     }
   }
-
-
 };
 
 function InsertEmployeeLeaveSalary(options) {
@@ -2652,7 +2736,7 @@ function InsertEmployeeLeaveSalary(options) {
                   // resolve();
                 })
                 .catch(e => {
-                  reject(e);                  
+                  reject(e);
                 });
             } else {
               _mysql
@@ -2708,18 +2792,15 @@ function InsertEmployeeLeaveSalary(options) {
                     })
                     .catch(error => {
                       reject(error);
-                      
                     });
                 })
                 .catch(e => {
                   reject(e);
-                  
                 });
             }
           })
           .catch(e => {
             reject(e);
-            
           });
       }
       resolve();
