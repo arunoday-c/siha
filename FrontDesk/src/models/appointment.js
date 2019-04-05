@@ -778,7 +778,7 @@ module.exports = {
                     where ASD.record_status='A' and E.record_status='A' and AC.record_status='A'and SH.record_status='A' and ASD.provider_id=E.hims_d_employee_id\
                     and ASD.clinic_id=AC.hims_d_appointment_clinic_id and ASD.appointment_schedule_header_id=SH.hims_d_appointment_schedule_header_id and\
                     appointment_schedule_header_id in (" +
-                  schedule_header_id_all +
+                  result[i]["hims_d_appointment_schedule_header_id"] +
                   ")" +
                   selectDoctor +
                   " group by  provider_id;"
