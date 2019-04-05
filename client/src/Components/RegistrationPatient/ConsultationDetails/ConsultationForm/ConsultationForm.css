@@ -21,3 +21,6 @@
   .hptl-phase1-add-consultation-form td {
     border-right: 1px solid #e6e6e6;
     width: 10px; }
+  .hptl-phase1-add-consultation-form .maternityRadio {
+    padding-left: 15px;
+    padding-right: 0; }

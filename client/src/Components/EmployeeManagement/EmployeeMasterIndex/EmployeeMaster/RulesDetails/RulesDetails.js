@@ -1,6 +1,9 @@
 import React, { PureComponent } from "react";
 import "./RulesDetails.css";
-import { AlgaehLabel } from "../../../../Wrapper/algaehWrapper";
+import {
+  AlgaehLabel,
+  AlagehFormGroup
+} from "../../../../Wrapper/algaehWrapper";
 import { changeChecks } from "./RulesDetailsEvent.js";
 
 class RulesDetails extends PureComponent {
@@ -52,7 +55,7 @@ class RulesDetails extends PureComponent {
               </h5>
               <div className="row paddin-bottom-5">
                 <div
-                  className="col-2 customCheckbox"
+                  className="col-2 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -72,7 +75,7 @@ class RulesDetails extends PureComponent {
                 </div>
 
                 <div
-                  className="col-2 customCheckbox"
+                  className="col-2 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -89,7 +92,7 @@ class RulesDetails extends PureComponent {
                 </div>
 
                 <div
-                  className="col-2 customCheckbox"
+                  className="col-2 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -106,7 +109,7 @@ class RulesDetails extends PureComponent {
                 </div>
 
                 <div
-                  className="col-2 customCheckbox"
+                  className="col-2 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -123,7 +126,7 @@ class RulesDetails extends PureComponent {
                 </div>
 
                 <div
-                  className="col-2 customCheckbox"
+                  className="col-2 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -141,7 +144,7 @@ class RulesDetails extends PureComponent {
                   </label>
                 </div>
                 <div
-                  className="col-2 customCheckbox"
+                  className="col-2 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -159,7 +162,7 @@ class RulesDetails extends PureComponent {
                   </label>
                 </div>
                 <div
-                  className="col-2 customCheckbox"
+                  className="col-2 customCheckbox form-group"
                   style={{ border: "none" }}
                 >
                   <label className="checkbox inline">
@@ -174,6 +177,22 @@ class RulesDetails extends PureComponent {
                     </span>
                   </label>
                 </div>
+                <AlagehFormGroup
+                  div={{ className: "col-2 form-group" }}
+                  label={{
+                    forceLabel: "Fixed Airfrare Amount",
+                    isImp: false
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "",
+                    value: "",
+                    events: {},
+                    option: {
+                      type: "text"
+                    }
+                  }}
+                />
               </div>
             </div>
           </div>

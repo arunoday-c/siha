@@ -91,7 +91,9 @@ class AddReciptForm extends Component {
                     <h6>
                       {this.state.receipt_number
                         ? this.state.receipt_number
-                        : "Not Generated"}
+                        : this.state.selectedLang === "en"
+                        ? "Not Generated"
+                        : "غير مولدة"}
                     </h6>
                   </div>
                   <div className="col-lg-3">

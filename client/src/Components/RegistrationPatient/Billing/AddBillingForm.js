@@ -103,7 +103,7 @@ class AddBillingForm extends Component {
                   {/* <div className="container-fluid"> */}
                   <div className="Paper">
                     <div className="row primary-box-container">
-                      <div className="col-lg-6">
+                      {/* <div className="col-lg-6">
                         <button
                           className="btn btn-default btn-sm"
                           type="button"
@@ -112,7 +112,7 @@ class AddBillingForm extends Component {
                         >
                           Process Insurance
                         </button>
-                      </div>
+                      </div> */}
                       <div className="col-lg-6">
                         <button
                           className="btn btn-default btn-sm"
@@ -120,7 +120,12 @@ class AddBillingForm extends Component {
                           onClick={this.ShowBillDetails.bind(this)}
                           disabled={this.state.billdetail}
                         >
-                          Bill Details
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "bill_details"
+                            }}
+                          />
+                          {/* Bill Details */}
                         </button>
 
                         <DisplayOPBilling
@@ -174,7 +179,9 @@ class AddBillingForm extends Component {
                         <h6>
                           {this.state.bill_number
                             ? this.state.bill_number
-                            : "Not Generated"}
+                            : this.state.selectedLang === "en"
+                            ? "Not Generated"
+                            : "غير مولدة"}
                         </h6>
                       </div>
 
@@ -372,7 +379,9 @@ class AddBillingForm extends Component {
                           <h6>
                             {this.state.receipt_number
                               ? this.state.receipt_number
-                              : "Not Generated"}
+                              : this.state.selectedLang === "en"
+                              ? "Not Generated"
+                              : "غير مولدة"}
                           </h6>
                         </div>
                         <div className="col-lg-3">
