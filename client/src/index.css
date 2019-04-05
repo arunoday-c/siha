@@ -1134,14 +1134,14 @@
   .arabic_component .ui.dropdown .menu > .item {
     text-align: right; }
   .arabic_component .insuranceRadio {
-    padding-right: 10px;
-    padding-left: 0; }
+    padding-right: 15px !important;
+    padding-left: 0 !important; }
     .arabic_component .insuranceRadio .customRadio .inline + .inline {
-      margin-right: 10px;
-      margin-left: 0; }
+      margin-right: 10px !important;
+      margin-left: 0 !important; }
   .arabic_component .maternityRadio {
-    padding-right: 10px;
-    padding-left: 0; }
+    padding-right: 15px !important;
+    padding-left: 0 !important; }
     .arabic_component .maternityRadio .customRadio .inline + .inline {
-      margin-right: 10px;
-      margin-left: 0; }
+      margin-right: 10px !important;
+      margin-left: 0 !important; }

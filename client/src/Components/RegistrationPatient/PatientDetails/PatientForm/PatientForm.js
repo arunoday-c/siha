@@ -577,7 +577,8 @@ class AddPatientForm extends Component {
                           }
                         }}
                       />
-
+                    </div>
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{

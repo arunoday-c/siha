@@ -1571,19 +1571,19 @@
     text-align: right;
   }
   .insuranceRadio {
-    padding-right: 10px;
-    padding-left: 0;
+    padding-right: 15px !important;
+    padding-left: 0 !important;
     .customRadio .inline + .inline {
-      margin-right: 10px;
-      margin-left: 0;
+      margin-right: 10px !important;
+      margin-left: 0 !important;
     }
   }
   .maternityRadio {
-    padding-right: 10px;
-    padding-left: 0;
+    padding-right: 15px !important;
+    padding-left: 0 !important;
     .customRadio .inline + .inline {
-      margin-right: 10px;
-      margin-left: 0;
+      margin-right: 10px !important;
+      margin-left: 0 !important;
     }
   }
 }
