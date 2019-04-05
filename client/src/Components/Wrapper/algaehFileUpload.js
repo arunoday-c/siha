@@ -37,7 +37,6 @@ export default class AlgaehFileUploader extends Component {
     };
   }
   componentWillReceiveProps(nextProps) {
-    debugger;
     // const _refresh =
     //   nextProps.forceRefresh !== undefined
     //     ? this.state.forceRefreshed !== undefined

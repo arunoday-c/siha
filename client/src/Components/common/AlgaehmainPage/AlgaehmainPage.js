@@ -40,7 +40,8 @@ class PersistentDrawer extends React.Component {
       },
       isSelectedByForce: false,
       menuList: [],
-      scrollPosition: 0
+      scrollPosition: 0,
+      lang_className: " english_component"
     };
     const _userName = getCookie("userName");
     const _keyResources = getCookie("keyResources");
@@ -232,28 +233,34 @@ class PersistentDrawer extends React.Component {
     setCookie("prevLanguage", prevLang, 30);
 
     let renderComp = this.state.renderComponent;
-    var last2 = renderComp.slice(-2);
-    if (last2 === "Ar") {
-      renderComp = renderComp.substring(0, renderComp.length - 2);
-    }
+    debugger;
+    // var last2 = renderComp.slice(-2);
+    // if (last2 === "Ar") {
+    //   renderComp = renderComp.substring(0, renderComp.length - 2);
+    // }
+
     if (secLang === "en") {
       setCookie("ScreenName", renderComp, 30);
       this.setState({
+        selectedLang: "lang_en",
         languageName: "English",
         Language: "en",
         title: this.state.enlabl,
-        renderComponent: renderComp
+        renderComponent: renderComp,
+        lang_className: " english_component"
       });
     } else if (secLang === "ar") {
-      if (renderComp === "FrontDesk" || renderComp === "OPBilling") {
-        renderComp = renderComp + "Ar";
-      }
+      // if (renderComp === "FrontDesk" || renderComp === "OPBilling") {
+      //   renderComp = renderComp + "Ar";
+      // }
       setCookie("ScreenName", renderComp, 30);
       this.setState({
+        selectedLang: "lang_ar",
         languageName: "عربي",
         Language: "ar",
         title: this.state.arlabl,
-        renderComponent: renderComp
+        renderComponent: renderComp,
+        lang_className: " arabic_component"
       });
     }
   }
@@ -334,18 +341,28 @@ class PersistentDrawer extends React.Component {
   }
 
   TriggerPath(submenu, e) {
-    debugger;
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
 
     // submenu.screen_name === "Doctor Appointment"
+    // let screenName =
+    //   submenu.page_to_redirect.replace(/\s/g, "") +
+    //   (this.state.Language !== "en" &&
+    //   (submenu.screen_name === "Front Desk" ||
+    //     submenu.screen_name === "Op Billing")
+    //     ? this.state.Language.charAt(0).toUpperCase() +
+    //       this.state.Language.slice(1)
+    //     : "");
+    debugger;
+
     let screenName =
       submenu.page_to_redirect.replace(/\s/g, "") +
-      (this.state.Language !== "en" &&
-      (submenu.screen_name === "Front Desk" ||
-        submenu.screen_name === "Op Billing")
+      (this.state.Language !== "en"
         ? this.state.Language.charAt(0).toUpperCase() +
           this.state.Language.slice(1)
         : "");
+
+    let lang_className =
+      this.state.Language === "en" ? " english_component" : " arabic_component";
     const _menuselected = e.currentTarget.getAttribute("menuselected");
     const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
     setCookie("ScreenName", name, 30);
@@ -359,6 +376,7 @@ class PersistentDrawer extends React.Component {
       arlabl: submenu.other_language,
       enlabl: submenu.screen_name,
       onlyToggeleMenu: "",
+      lang_className: lang_className,
       activeNode: {
         class: "active",
         menuselected: _menuselected,
@@ -515,7 +533,7 @@ class PersistentDrawer extends React.Component {
                 <i className="fas fa-user" /> User Profile
               </a>
               <a className="dropdown-item">
-                <i className="fas fa-cog" /> Preference{" "}
+                <i className="fas fa-cog" /> Preference
               </a>
               <div className="dropdown-divider" />
               <a
@@ -582,7 +600,7 @@ class PersistentDrawer extends React.Component {
                   type: "password"
                 }
               }}
-            />{" "}
+            />
             <AlagehFormGroup
               div={{ className: "col-12 form-group" }}
               label={{
@@ -600,7 +618,7 @@ class PersistentDrawer extends React.Component {
                   type: "password"
                 }
               }}
-            />{" "}
+            />
             <AlagehFormGroup
               div={{ className: "col-12 form-group" }}
               label={{
@@ -675,7 +693,10 @@ class PersistentDrawer extends React.Component {
             </div>
           </div>
         ) : null}
-        <main className="mainPageArea container-fluid" id="hisapp">
+        <main
+          className={"mainPageArea container-fluid" + this.state.lang_className}
+          id="hisapp"
+        >
           <DirectRoutes
             componet={this.state.renderComponent}
             selectedLang={this.state.selectedLang}

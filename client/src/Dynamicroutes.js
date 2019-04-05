@@ -374,6 +374,7 @@ const PageToPlot = {
 const DirectRoutes = props => {
   const PlotPage = PageToPlot[props.componet];
 
+  debugger;
   return (
     <React.Suspense
       fallback={
