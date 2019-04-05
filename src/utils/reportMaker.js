@@ -205,6 +205,15 @@ let algaehReportConfig = reportName => {
           hims_f_patient_advance PA where P.hims_d_patient_id = PA.hims_f_patient_id \
           and date(PA.created_date) < date(?) and P.advance_amount>0 and P.record_status='A'",
         questionOrder: ["till_date"]
+      },
+      {
+        reportName: "leaveAccrual",
+        reportQuery:
+          " select hims_f_leave_salary_accrual_detail_id,employee_id,year,month,leave_days,\
+          leave_salary,airfare_amount,E.employee_code,E.full_name from hims_f_leave_salary_accrual_detail LA \
+          inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id\
+          where LA.year=? and LA.month=? and E.hospital_id=? and E.sub_department_id=?;",
+        questionOrder: ["year", "month", "hospital_id", "sub_department_id"]
       }
     ]
   };
