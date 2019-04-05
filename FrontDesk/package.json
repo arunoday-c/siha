@@ -30,7 +30,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-stage-0": "^6.24.1",
     "eslint": "^4.19.1",
-    "nodemon": "^1.17.3"
+    "nodemon": "^1.18.10"
   },
   "keywords": [],
   "author": "Algaeh Technologies Pvt. Ltd.",

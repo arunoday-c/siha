@@ -235,6 +235,7 @@ let getAppointmentStatus = (req, res, next) => {
   }
 };
 
+
 //created by irfan: to get Appointment Room
 let getAppointmentRoom = (req, res, next) => {
   let selectWhere = {
