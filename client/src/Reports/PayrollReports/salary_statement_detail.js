@@ -3,16 +3,13 @@ import { payrollHeader } from "./payrollHeader";
 import "../report-style.css";
 import _ from "lodash";
 import moment from "moment";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import {
+  getAmountFormart,
+  getAmountWithOutCurrencyFormart
+} from "../../utils/GlobalFunctions";
 
 export function printReport(result) {
   debugger;
-  //   let net_salary = _.sumBy(data, s => parseFloat(s.net_salary));
-  //   let total_earnings = _.sumBy(data, s => parseFloat(s.total_earnings));
-  //   let total_deductions = _.sumBy(data, s => parseFloat(s.total_deductions));
-  //   let total_contributions = _.sumBy(data, s =>
-  //     parseFloat(s.total_contributions)
-  //   );
 
   if (result === undefined) return null;
   const header_data = result.components;
@@ -39,10 +36,11 @@ export function printReport(result) {
         <thead >
             <tr>
                 <th>Employee Code</th>
-                <th>Employee Name</th>
-                <th>Designation</th>
+                <th style="width:250px">Employee Name</th>
+                <th style="width:250px">Designation</th>
                 <th>Date of Join</th>
                 <th>Days Present</th>
+                <th>OT Hours</th>
                 ${
                   earning_component.length > 0
                     ? earning_component
@@ -53,7 +51,7 @@ export function printReport(result) {
                         .join("")
                     : ""
                 }
-                <th>Total Salary</th>
+                <th style="width:135px">Total Earnings</th>
                 ${
                   deduction_component.length > 0
                     ? deduction_component
@@ -64,13 +62,13 @@ export function printReport(result) {
                         .join("")
                     : ""
                 }
-                <th>Total Deduction</th>
+                <th style="width:135px">Total Deduction</th>
                 <th>Net Salary</th>
                 <th>Day of Payment</th>
-                <th>Mode of Payment</th>
+                <th style="width:150px">Mode of Payment</th>
                 
             </tr>
-        </thead></table></div><div class="tbl-content" style="max-height:26vh">
+        </thead></table></div><div class="tbl-content" style="max-height:26vh" algaeh-report-table="true" >
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${detail_data
@@ -78,34 +76,63 @@ export function printReport(result) {
       list =>
         `
     <tr>
-    <td>${list.employee_code}</td>
-    <td>${list.full_name}</td>
-    <td>${list.designation}</td>
-    <td>${moment(list.date_of_joining).format("DD-MM-YYYY")}</td>
-    <td>${list.present_days} </td>
+      <td class="center">${list.employee_code}</td>
+      <td class="left" style="width:250px">${list.full_name}</td>
+      <td class="left" style="width:250px">${list.designation}</td>
+      <td class="center">${moment(list.date_of_joining).format(
+        "DD-MM-YYYY"
+      )}</td>
+      <td class="right">${list.present_days} </td>
+      <td class="right">${list.complete_ot} </td>
     ${
       earning_component.length > 0
         ? list.employee_earning.length > 0
           ? list.employee_earning
-              .map(earn => `<td>${earn.amount}</td>`)
+              .map(
+                earn =>
+                  `  <td class="right">${getAmountWithOutCurrencyFormart(
+                    earn.amount
+                  )}</td>`
+              )
               .join("")
           : ""
         : ""
     }
-    <td>${list.total_earnings} </td>
+      <td class="right" style="width:135px">${getAmountWithOutCurrencyFormart(
+        list.total_earnings
+      )} </td>
     ${
       deduction_component.length > 0
         ? list.employee_deduction.length > 0
           ? list.employee_deduction
-              .map(earn => `<td>${earn.amount}</td>`)
+              .map(
+                deduct =>
+                  `  <td class="right" style="width:135px">${getAmountWithOutCurrencyFormart(
+                    deduct.amount
+                  )}</td>`
+              )
               .join("")
           : ""
         : ""
     }
-    <td>${list.total_deductions} </td>
-    <td>${list.net_salary} </td>
-    <td>${moment(list.salary_date).format("DD-MM-YYYY")} </td>
-    <td>${list.mode_of_payment} </td>
+      <td class="right">${getAmountWithOutCurrencyFormart(
+        list.total_deductions
+      )}</td>
+      <td class="right">${getAmountWithOutCurrencyFormart(
+        list.net_salary
+      )} </td>
+      <td class="center">${moment(list.salary_date).format("DD-MM-YYYY")} </td>
+      <td class="center" style="width:150px">${
+        list.mode_of_payment === "CS"
+          ? "Cash"
+          : list.mode_of_payment === "CH"
+          ? "Cheque"
+          : list.mode_of_payment === "TRF"
+          ? "Transfer"
+          : list.mode_of_payment === "WPS"
+          ? "Wages and Proctection System"
+          : ""
+      } </td>
 
   
 </tr>
@@ -115,9 +142,28 @@ export function printReport(result) {
   
     
     </tbody></table></div>
-    <div class="row">
-    
+    <div class="row reportFooterDetails">
+    <div class="col"></div>
+      <div class="col-2">
+        <label>Total Basic</label>
+        <h6>${getAmountFormart(result.total_basic)}</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Earnings</label>
+        <h6>${getAmountFormart(result.total_earnings)}</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Deductions</label>
+
+        <h6>${getAmountFormart(result.total_deductions)}</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Net Salary</label>
+        <h6>${getAmountFormart(result.total_net_salary)}</h6>
+      </div>
+        
     </div>
+  </div>
 </section>
   `;
 }

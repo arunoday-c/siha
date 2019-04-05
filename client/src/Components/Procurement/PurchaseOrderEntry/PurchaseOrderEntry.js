@@ -367,7 +367,6 @@ function mapStateToProps(state) {
     poitemgroup: state.poitemgroup,
     poitemuom: state.poitemuom,
     povendors: state.povendors,
-    porequisitionentry: state.porequisitionentry,
     purchaseorderentry: state.purchaseorderentry
   };
 }
@@ -381,7 +380,6 @@ function mapDispatchToProps(dispatch) {
       getItemGroup: AlgaehActions,
       getItemUOM: AlgaehActions,
       getVendorMaster: AlgaehActions,
-      getRequisitionEntry: AlgaehActions,
       getPurchaseOrderEntry: AlgaehActions
     },
     dispatch

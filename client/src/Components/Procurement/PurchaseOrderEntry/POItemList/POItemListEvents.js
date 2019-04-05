@@ -219,7 +219,7 @@ const itemchangeText = ($this, context, e) => {
           unit_price:
             e.selected.purchase_cost === null
               ? 0
-              : e.selected.purchase_cost.toFixed(6),
+              : parseFloat(e.selected.purchase_cost).toFixed(6),
 
           addItemButton: false
         });
@@ -233,7 +233,7 @@ const itemchangeText = ($this, context, e) => {
             unit_price:
               e.selected.purchase_cost === null
                 ? 0
-                : e.selected.purchase_cost.toFixed(6),
+                : parseFloat(e.selected.purchase_cost).toFixed(6),
 
             addItemButton: false
           });
@@ -247,7 +247,7 @@ const itemchangeText = ($this, context, e) => {
           unit_price:
             e.selected.purchase_cost === null
               ? 0
-              : e.selected.purchase_cost.toFixed(6),
+              : parseFloat(e.selected.purchase_cost).toFixed(6),
 
           addItemButton: false
         });
@@ -261,7 +261,7 @@ const itemchangeText = ($this, context, e) => {
             unit_price:
               e.selected.purchase_cost === null
                 ? 0
-                : e.selected.purchase_cost.toFixed(6),
+                : parseFloat(e.selected.purchase_cost).toFixed(6),
 
             addItemButton: false
           });

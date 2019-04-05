@@ -334,30 +334,8 @@ class AddSecInsuranceForm extends Component {
                               )
                             }}
                             renderPrevState={this.state.patSecInsuranceFrontImg}
+                            forceRefresh={this.state.forceRefresh}
                           />
-
-                          {/* <Dropzone
-                            onDrop={this.onDrop.bind(this, "frontSide")}
-                            className="dropzone"
-                            id="attach-primary-id"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              //className="preview-image"
-                              src={this.state.frontSide}
-                              style={{ width: "100%", height: "101px" }}
-                            />
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_front",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                          </Dropzone> */}
                         </div>
 
                         <div />
@@ -384,29 +362,8 @@ class AddSecInsuranceForm extends Component {
                               )
                             }}
                             renderPrevState={this.state.patSecInsuranceBackImg}
+                            forceRefresh={this.state.forceRefresh}
                           />
-                          {/* <Dropzone
-                            onDrop={this.onDrop.bind(this, "backSide")}
-                            className="dropzone"
-                            id="attach-primary-id"
-                            accept="image/*"
-                            multiple={false}
-                            name="image"
-                          >
-                            <img
-                              //  className="preview-image"
-                              src={this.state.backSide}
-                              style={{ width: "100%", height: "101px" }}
-                            />
-                            <div className="attach-design text-center">
-                              <AlgaehLabel
-                                label={{
-                                  fieldName: "attach_back",
-                                  align: ""
-                                }}
-                              />
-                            </div>
-                          </Dropzone> */}
                         </div>
 
                         <div />

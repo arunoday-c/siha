@@ -31,6 +31,7 @@ class FrontDesk extends Component {
   routeComponents() {
     this.props.getEmployeeServiceID({
       uri: "/appointment/getEmployeeServiceID",
+      module: "frontDesk",
       method: "GET",
       data: {
         employee_id: Window.global["appt-provider-id"],

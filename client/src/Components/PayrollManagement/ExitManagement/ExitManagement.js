@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import GratuityAccrual from "./GratuityAccrual/GratuityAccrual";
 import EOSGratuity from "./EOSGratuity/EOSGratuity";
 import FinalSettlement from "./FinalSettlement/FinalSettlement";
 import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
@@ -8,7 +9,7 @@ class ExitManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "EOSGratuity",
+      pageDisplay: "GratuityAccrual",
       testHello: " Hello Functional Component"
     };
   }
@@ -38,8 +39,21 @@ class ExitManagement extends Component {
           <div className="tabMaster toggle-section">
             <ul className="nav">
               <li
-                algaehtabs={"EOSGratuity"}
+                algaehtabs={"GratuityAccrual"}
                 className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Gratuity Accrual"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"EOSGratuity"}
+                className={"nav-item tab-button "}
                 onClick={this.openTab.bind(this)}
               >
                 {
@@ -67,7 +81,9 @@ class ExitManagement extends Component {
           </div>
         </div>
         <div className="payroll-setion">
-          {this.state.pageDisplay === "EOSGratuity" ? (
+          {this.state.pageDisplay === "GratuityAccrual" ? (
+            <GratuityAccrual parent={this} />
+          ) : this.state.pageDisplay === "EOSGratuity" ? (
             <EOSGratuity parent={this} />
           ) : this.state.pageDisplay === "FinalSettlement" ? (
             <FinalSettlement />

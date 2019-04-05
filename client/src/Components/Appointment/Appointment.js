@@ -102,6 +102,7 @@ class Appointment extends PureComponent {
           };
           algaehApiCall({
             uri: "/appointment/cancelPatientAppointment",
+            module: "frontDesk",
             data: data,
             method: "PUT",
             onSuccess: response => {
@@ -192,6 +193,7 @@ class Appointment extends PureComponent {
   getPatientAppointment(e) {
     algaehApiCall({
       uri: "/appointment/getPatientAppointment",
+      module: "frontDesk",
       method: "GET",
       data: {
         appointment_date: moment(this.state.activeDateHeader).format(
@@ -279,6 +281,7 @@ class Appointment extends PureComponent {
             };
             algaehApiCall({
               uri: "/appointment/addPatientAppointment",
+              module: "frontDesk",
               method: "POST",
               data: send_data,
               onSuccess: response => {
@@ -371,6 +374,7 @@ class Appointment extends PureComponent {
   getAppointmentStatus() {
     algaehApiCall({
       uri: "/appointment/getAppointmentStatus",
+      module: "frontDesk",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -447,6 +451,7 @@ class Appointment extends PureComponent {
         algaehLoader({ show: true });
         algaehApiCall({
           uri: "/appointment/getDoctorScheduleDateWise",
+          module: "frontDesk",
           method: "GET",
           data: send_data,
           onSuccess: response => {
@@ -783,6 +788,7 @@ class Appointment extends PureComponent {
 
               algaehApiCall({
                 uri: "/appointment/updatePatientAppointment",
+                module: "frontDesk",
                 method: "PUT",
                 data: edit_details,
                 onSuccess: response => {
@@ -1043,6 +1049,7 @@ class Appointment extends PureComponent {
 
               algaehApiCall({
                 uri: "/appointment/updatePatientAppointment",
+                module: "frontDesk",
                 method: "PUT",
                 data: edit_details,
                 onSuccess: response => {

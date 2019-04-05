@@ -1,5 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
+import { parse } from "querystring";
 
 const Validations = $this => {
   let isError = false;
@@ -70,6 +71,7 @@ const InsertUpdateItems = $this => {
           $this.state.service_code = $this.state.item_code;
           $this.state.service_type_id = "4";
           $this.state.service_name = $this.state.item_description;
+          $this.state.standard_fee = parseFloat($this.state.standard_fee);
 
           algaehApiCall({
             uri: "/inventory/addItemMaster",

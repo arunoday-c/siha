@@ -32,13 +32,35 @@ export default class AlgaehFileUploader extends Component {
       openWebCam: false,
       showLoader: true,
       croppingDone: false,
-      outSaveFunction: undefined
+      outSaveFunction: undefined,
+      forceRefreshed: undefined
     };
   }
   componentWillReceiveProps(nextProps) {
-    if (this.props.renderPrevState !== undefined) {
-      this.setState({ ...this.props.renderPrevState.state });
+    // const _refresh =
+    //   nextProps.forceRefresh !== undefined
+    //     ? this.state.forceRefreshed !== undefined
+    //       ? true
+    //       : nextProps.forceRefresh
+    //     : nextProps.forceRefresh;
+    // if (_refresh !== undefined) {
+    //   this.setState({
+    //     filePreview: this.noImage
+    //   });
+    //   return;
+    // }
+    if (nextProps.renderPrevState !== undefined) {
+      this.setState({ ...nextProps.renderPrevState.state });
       return;
+    } else if (
+      nextProps.forceRefresh !== undefined &&
+      nextProps.forceRefresh === true
+    ) {
+      if (this.state.forceRefreshed === undefined) {
+        this.setState({ filePreview: this.noImage }, () => {
+          this.setState({ forceRefreshed: true });
+        });
+      }
     }
 
     if (nextProps.onlyDragDrop === undefined) {
@@ -47,6 +69,7 @@ export default class AlgaehFileUploader extends Component {
         nextProps.saveFile !== undefined
       ) {
         this.setState({
+          forceRefreshed: undefined,
           croppingDone: false,
           processDelay: nextProps.serviceParameters.processDelay
         });
@@ -102,7 +125,8 @@ export default class AlgaehFileUploader extends Component {
     if (!_call) {
       this.setState({
         filePreview: this.noImage,
-        showLoader: false
+        showLoader: false,
+        forceRefreshed: undefined
       });
       return;
     }
@@ -128,7 +152,8 @@ export default class AlgaehFileUploader extends Component {
             } else {
               that.setState({
                 filePreview: this.noImage,
-                showLoader: false
+                showLoader: false,
+                forceRefreshed: undefined
               });
             }
           }
@@ -141,7 +166,8 @@ export default class AlgaehFileUploader extends Component {
           } else {
             that.setState({
               filePreview: this.noImage,
-              showLoader: false
+              showLoader: false,
+              forceRefreshed: undefined
             });
           }
         }
@@ -154,7 +180,8 @@ export default class AlgaehFileUploader extends Component {
       } else {
         that.setState({
           filePreview: this.noImage,
-          showLoader: false
+          showLoader: false,
+          forceRefreshed: undefined
         });
       }
     }
@@ -191,7 +218,8 @@ export default class AlgaehFileUploader extends Component {
             showCropper: true,
             filePreview: _dataURL, //this.resizingAndCompressImage(_file),
             fileExtention: "image/webp",
-            croppingDone: false
+            croppingDone: false,
+            forceRefreshed: undefined
           });
         };
       };
@@ -212,7 +240,8 @@ export default class AlgaehFileUploader extends Component {
 
       this.setState({
         croppingDone: false,
-        fileName: _fileExtention
+        fileName: _fileExtention,
+        forceRefreshed: undefined
       });
     }
   }
@@ -221,6 +250,7 @@ export default class AlgaehFileUploader extends Component {
     const _from = e.target.getAttribute("from");
     if (_from === "crop")
       this.setState({
+        forceRefreshed: undefined,
         showCropper: false,
         filePreview:
           this.state.oldImage !== undefined
@@ -228,7 +258,8 @@ export default class AlgaehFileUploader extends Component {
             : this.noImage,
         oldImage: undefined
       });
-    if (_from === "zoom") this.setState({ showZoom: false });
+    if (_from === "zoom")
+      this.setState({ forceRefreshed: undefined, showZoom: false });
   }
   onCroppedHandler(e) {
     this.setState(
@@ -236,7 +267,8 @@ export default class AlgaehFileUploader extends Component {
         oldImage: this.state.filePreview,
         showCropper: false,
         filePreview: this.cropperImage.crop(),
-        croppingDone: true
+        croppingDone: true,
+        forceRefreshed: undefined
       },
       () => {
         if (this.props.serviceParameters.processDelay === undefined)
@@ -362,7 +394,8 @@ export default class AlgaehFileUploader extends Component {
             that.setState(
               {
                 progressPercentage: 100,
-                showProgress: false
+                showProgress: false,
+                forceRefreshed: undefined
               },
               () => {
                 if (
@@ -387,7 +420,8 @@ export default class AlgaehFileUploader extends Component {
             that.setState({
               progressPercentage: percentCompleted,
               showProgress: true,
-              oldImage: undefined
+              oldImage: undefined,
+              forceRefreshed: undefined
             });
           }
         }
@@ -437,17 +471,20 @@ export default class AlgaehFileUploader extends Component {
   }
   webCamHandler(e) {
     this.setState({
-      openWebCam: true
+      openWebCam: true,
+      forceRefreshed: undefined
     });
   }
   webCamCloseHandler(e) {
     this.setState({
-      openWebCam: false
+      openWebCam: false,
+      forceRefreshed: undefined
     });
   }
   webcamCaptureImage(e) {
     const short = this.webCam.getScreenshot();
     this.setState({
+      forceRefreshed: undefined,
       oldImage: this.state.filePreview,
       filePreview: short,
       openWebCam: false,
@@ -491,6 +528,7 @@ export default class AlgaehFileUploader extends Component {
 
   zoomHandler(e) {
     this.setState({
+      forceRefreshed: undefined,
       showZoom: true
     });
   }

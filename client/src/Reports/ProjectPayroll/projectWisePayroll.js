@@ -8,7 +8,7 @@ export function printReport(result) {
   if (data === undefined) return null;
   return `
   <div class="print-body">
-  <header> ${projectPayrol(data)} </header> 
+  <header> ${projectPayrol(data, "Project wise Payroll")} </header> 
    
 <section>
     <h2><span>Salary Details</span></h2><div class="tbl-header">
@@ -21,7 +21,7 @@ export function printReport(result) {
                 <th>Total Worked Hr</th>
                 <th>Project Cost</th>
             </tr>
-        </thead></table></div><div class="tbl-content" style="height: 30vh">
+        </thead></table></div><div class="tbl-content" style="max-height:30vh" algaeh-report-table="true" >
         <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody>
   ${data
@@ -29,11 +29,11 @@ export function printReport(result) {
       list =>
         `
     <tr>
-    <td>${list.project_desc}</td>
-    <td>${_.startCase(_.toLower(list.full_name))}</td>
-    <td>${list.designation} </td>
-    <td>${list.complete_hours} </td>
-    <td>${getAmountFormart(list.project_cost)} </td>  
+    <td class="center">${list.project_desc}</td>
+    <td class="left">${_.startCase(_.toLower(list.full_name))}</td>
+    <td class="center">${list.designation} </td>
+    <td class="right">${list.complete_hours} </td>
+    <td class="right">${getAmountFormart(list.project_cost)} </td>  
 </tr>
     `
     )
@@ -41,7 +41,7 @@ export function printReport(result) {
   
  
     </thead></table></div>
-    <div class="row">
+    <div class="row reportFooterDetails">
     <div class="col"></div>
     <div class="col-2">
     <label>No. of Empoyees</label>
