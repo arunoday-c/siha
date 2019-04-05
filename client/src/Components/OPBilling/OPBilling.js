@@ -105,16 +105,51 @@ class OPBilling extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    let prevLang = getCookie("Language");
     let output = {};
+    if (prevLang !== this.state.selectedLang) {
+      let _screenName = getCookie("ScreenName").replace("/", "");
+      let counter_id = 0;
+      algaehApiCall({
+        uri: "/userPreferences/get",
+        data: {
+          screenName: _screenName,
+          identifier: "Counter"
+        },
+        method: "GET",
+        onSuccess: response => {
+          counter_id = response.data.records.selectedValue;
 
-    if (
-      nextProps.existinsurance !== undefined &&
-      nextProps.existinsurance.length !== 0
-    ) {
-      output = nextProps.existinsurance[0];
+          let IOputs = extend(
+            PatRegIOputs.inputParam(),
+            BillingIOputs.inputParam()
+          );
+          IOputs.patient_payable_h = 0;
+          IOputs.counter_id = counter_id;
+          IOputs.s_service_type = null;
+          IOputs.s_service = null;
+          IOputs.Rerender = true;
+          IOputs.selectedLang = prevLang;
+          // $this.setState({ ...$this.state, ...IOputs });
+          if (
+            nextProps.existinsurance !== undefined &&
+            nextProps.existinsurance.length !== 0
+          ) {
+            output = nextProps.existinsurance[0];
+          }
+          this.setState({ ...this.state, ...output, ...IOputs });
+        }
+      });
+    } else {
+      if (
+        nextProps.existinsurance !== undefined &&
+        nextProps.existinsurance.length !== 0
+      ) {
+        output = nextProps.existinsurance[0];
+      }
+
+      this.setState({ ...this.state, ...output });
     }
-
-    this.setState({ ...this.state, ...output });
   }
 
   handleClose = () => {
