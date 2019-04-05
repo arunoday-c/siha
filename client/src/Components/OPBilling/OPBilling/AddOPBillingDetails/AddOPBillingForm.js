@@ -442,7 +442,6 @@ class AddOPBillingForm extends Component {
                       onClick={this.ProcessToBill.bind(this, context)}
                       disabled={this.state.addNewService}
                     >
-                      Add New Service
                       <AlgaehLabel
                         label={{
                           fieldName: "add_new_service",
