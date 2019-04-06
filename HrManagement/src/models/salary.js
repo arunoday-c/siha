@@ -2128,13 +2128,6 @@ module.exports = {
                                       next(e);
                                     });
                                   });
-                                // _mysql.commitTransaction(() => {
-                                //   _mysql.releaseConnection();
-                                //   req.records = {
-                                //     leave_salary_number: leave_salary_number
-                                //   };
-                                //   next();
-                                // });
                               })
                               .catch(e => {
                                 _mysql.rollBackTransaction(() => {
@@ -2206,11 +2199,35 @@ module.exports = {
                         next: next
                       })
                         .then(Employee_Leave_Salary => {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = Employee_Leave_Salary;
-                            next();
-                          });
+                          if (
+                            _input.fron_salary === "Y" &&
+                            req.result != null
+                          ) {
+                            InsertGratuityProvision({
+                              gratuity_provision: req.result,
+                              inputParam: inputParam,
+                              _mysql: _mysql,
+                              next: next
+                            })
+                              .then(gratuity_provision => {
+                                _mysql.commitTransaction(() => {
+                                  _mysql.releaseConnection();
+                                  req.records = gratuity_provision;
+                                  next();
+                                });
+                              })
+                              .catch(e => {
+                                _mysql.rollBackTransaction(() => {
+                                  next(e);
+                                });
+                              });
+                          } else {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = Employee_Leave_Salary;
+                              next();
+                            });
+                          }
                         })
                         .catch(e => {
                           _mysql.rollBackTransaction(() => {
@@ -2218,11 +2235,32 @@ module.exports = {
                           });
                         });
                     } else {
-                      _mysql.commitTransaction(() => {
-                        _mysql.releaseConnection();
-                        req.records = salary_process;
-                        next();
-                      });
+                      if (_input.fron_salary === "Y" && req.result != null) {
+                        InsertGratuityProvision({
+                          gratuity_provision: req.result,
+                          inputParam: inputParam,
+                          _mysql: _mysql,
+                          next: next
+                        })
+                          .then(gratuity_provision => {
+                            _mysql.commitTransaction(() => {
+                              _mysql.releaseConnection();
+                              req.records = gratuity_provision;
+                              next();
+                            });
+                          })
+                          .catch(e => {
+                            _mysql.rollBackTransaction(() => {
+                              next(e);
+                            });
+                          });
+                      } else {
+                        _mysql.commitTransaction(() => {
+                          _mysql.releaseConnection();
+                          req.records = salary_process;
+                          next();
+                        });
+                      }
                     }
                   })
                   .catch(e => {
@@ -3768,6 +3806,44 @@ function UpdateProjectWisePayroll(options) {
         .catch(e => {
           reject(e);
         });
+    } catch (e) {
+      reject(e);
+    }
+  }).catch(e => {
+    options.next(e);
+  });
+}
+
+function InsertGratuityProvision(options) {
+  return new Promise((resolve, reject) => {
+    try {
+      let gratuity_provision = options.gratuity_provision;
+      let _mysql = options._mysql;
+      let inputParam = options.inputParam;
+      let strQry = "";
+      //ToDO
+      // for (let i = 0; i < gratuity_provision.length; i++) {
+      strQry = mysql.format(
+        "INSERT INTO `hims_f_gratuity_provision`(employee_id,year,\
+            month,gratuity_amount) VALUE(?,?,?,?)",
+        [
+          inputParam.employee_id,
+          inputParam.year,
+          inputParam.month,
+          gratuity_provision.paybale_amout
+        ]
+      );
+
+      _mysql
+        .executeQuery({ query: strQry, printQuery: true })
+        .then(update_employee_leave => {
+          // resolve();
+        })
+        .catch(e => {
+          reject(e);
+        });
+      // }
+      resolve();
     } catch (e) {
       reject(e);
     }

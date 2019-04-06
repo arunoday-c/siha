@@ -904,5 +904,10 @@
   "LOCAL_TYPE": [
     { "name": "Localite", "value": "Y" },
     { "name": "Expatriate", "value": "N" }
+  ],
+  "GRATUITY_PROVISION": [
+    { "name": "None", "value": "0" },
+    { "name": "Salary Level", "value": "1" },
+    { "name": "Yearly", "value": "2" }
   ]
 }

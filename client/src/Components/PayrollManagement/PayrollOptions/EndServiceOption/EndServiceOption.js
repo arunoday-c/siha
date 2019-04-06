@@ -9,6 +9,7 @@ import {
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+import { GRATUITY_PROVISION } from "../../../../utils/GlobalVariables";
 import swal from "sweetalert2";
 
 export default class EndServiceOption extends Component {
@@ -211,7 +212,8 @@ export default class EndServiceOption extends Component {
         pending_salary_with_final: this.state.pending_salary_with_final,
         round_off_nearest_year: this.state.round_off_nearest_year,
         earning_comp: this.state.earning_comp,
-        service_days: this.state.service_days
+        service_days: this.state.service_days,
+        gratuity_provision: this.state.gratuity_provision
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -282,8 +284,10 @@ export default class EndServiceOption extends Component {
   }
 
   textHandler(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
     this.setState({
-      [e.target.name]: e.target.value
+      [name]: value
     });
   }
 
@@ -429,6 +433,27 @@ export default class EndServiceOption extends Component {
                       </label>
                     </div>
                   </div>
+
+                  <AlagehAutoComplete
+                    div={{ className: "col form-group" }}
+                    label={{ forceLabel: "Earnings", isImp: true }}
+                    selector={{
+                      name: "gratuity_provision",
+                      value: this.state.gratuity_provision,
+                      className: "select-fld",
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GRATUITY_PROVISION
+                      },
+                      onChange: this.textHandler.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          gratuity_provision: null
+                        });
+                      }
+                    }}
+                  />
                 </div>
                 <div className="row margin-top-15">
                   <div className="col-2">

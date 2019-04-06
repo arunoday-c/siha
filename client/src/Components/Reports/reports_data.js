@@ -996,6 +996,73 @@ export default [
         ]
       },
       {
+        subitem: "Leave Accrual",
+        template_name: "PayrollReports/salary_statement",
+        reportQuery: "salaryStatement",
+        input: "sub_department_id=?",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "year",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: allYears
+            }
+            // events: {
+            //   onChange: (reportState, currentValue) => {}
+            // }
+          },
+          {
+            type: "dropdown",
+            sort: "off",
+            name: "month",
+            isImp: true,
+            initialLoad: true,
+            dataSource: {
+              textField: "name",
+              valueField: "value",
+              data: MONTHS
+            },
+            others: {
+              sort: "off"
+            }
+          },
+          {
+            type: "dropdown",
+            name: "hospital_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select branch",
+            link: {
+              uri: "/organization/getOrganization"
+            },
+            dataSource: {
+              textField: "hospital_name",
+              valueField: "hims_d_hospital_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              uri: "/department/get/subdepartment"
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          }
+        ]
+      },
+      {
         subitem: "Absent Report",
         template_name: "PayrollReports/absent_report",
         reportQuery: "absentReport",

@@ -5,9 +5,12 @@ import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   endOfService: (req, res, next) => {
-    const _input = req.query;
-    const _mysql = new algaehMysql();
     const utilities = new algaehUtilities();
+
+    utilities.logger().log("req.query: ", req.query);
+    utilities.logger().log("req.body: ", req.body);
+    const _input = req.query || req.body;
+    const _mysql = new algaehMysql();
 
     _mysql
       .executeQuery({
@@ -22,20 +25,36 @@ module.exports = {
         if (end_of_service.length > 0) {
           endofServexit = true;
         }
-        _mysql
-          .executeQuery({
-            query:
-              "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
-              datediff(date(date_of_resignation),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
+        if (_input.fron_salary === "Y") {
+          _query = _mysql.mysqlQueryFormat(
+            "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
+              datediff(date(?),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
               E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
               E.sub_department_id,E.employee_designation_id,E.date_of_birth,\
               SD.sub_department_name,SD.arabic_sub_department_name \
             from hims_d_employee E Left join hims_d_sub_department SD \
              on SD.hims_d_sub_department_id = E.sub_department_id \
-            left join hims_d_title T \
-            on T.his_d_title_id = E.title_id \
-            where hims_d_employee_id in(?) and employee_status not in('A','I');select * from hims_d_end_of_service_options;",
-            values: [_input.hims_d_employee_id],
+            left join hims_d_title T on T.his_d_title_id = E.title_id \
+            where hims_d_employee_id in(?);select * from hims_d_end_of_service_options;",
+            [_input.salary_end_date, _input.hims_d_employee_id]
+          );
+        } else {
+          _query = _mysql.mysqlQueryFormat(
+            "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
+            datediff(date(date_of_resignation),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
+            E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
+            E.sub_department_id,E.employee_designation_id,E.date_of_birth,\
+            SD.sub_department_name,SD.arabic_sub_department_name \
+          from hims_d_employee E Left join hims_d_sub_department SD \
+           on SD.hims_d_sub_department_id = E.sub_department_id \
+          left join hims_d_title T on T.his_d_title_id = E.title_id \
+          where hims_d_employee_id in(?) and employee_status not in('A','I');select * from hims_d_end_of_service_options;",
+            [_input.hims_d_employee_id]
+          );
+        }
+        _mysql
+          .executeQuery({
+            query: _query,
             printQuery: true
           })
           .then(result => {
@@ -66,6 +85,13 @@ module.exports = {
                   .httpStatus()
                   .generateError(500, "Please update end of service options.")
               );
+              return;
+            }
+            if (
+              _input.fron_salary === "Y" &&
+              _options.gratuity_provision == 1
+            ) {
+              req.records = null;
               return;
             }
             const _employee = _result[0];

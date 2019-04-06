@@ -218,7 +218,7 @@ module.exports = {
         input["eligible_days" + (index + 1)] = item.eligible_days;
       });
     }
-    console.log("input.service_days", input.service_days);
+    // console.log("input.service_days", input);
     _mysql
       .executeQuery({
         query:
@@ -227,7 +227,7 @@ module.exports = {
           from_service_range4=?,from_service_range5=?,eligible_days1=?,eligible_days2=?,eligible_days3=?,\
           eligible_days4=?,eligible_days5=?,end_of_service_calculation=?,end_of_service_days=?,\
           end_of_service_type=?,gratuity_in_final_settle=?,round_off_nearest_year=?, terminate_salary=?,end_of_service_payment=?,\
-          end_of_service_years=?, pending_salary_with_final=?, limited_years=?,updated_by=?,updated_date=? \
+          end_of_service_years=?, pending_salary_with_final=?, limited_years=?, gratuity_provision=?,updated_by=?,updated_date=? \
                    where hims_d_end_of_service_options_id=?",
         values: [
           input.end_of_service_component1,
@@ -254,6 +254,7 @@ module.exports = {
           input.end_of_service_years,
           input.pending_salary_with_final,
           input.limited_years,
+          input.gratuity_provision,
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           1

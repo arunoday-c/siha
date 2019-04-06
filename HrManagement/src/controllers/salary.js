@@ -10,6 +10,8 @@ import {
   newProcessSalary,
   detailSalaryStatement
 } from "../models/salary";
+
+import { endOfService } from "../models/end_of_service";
 export default () => {
   const api = Router();
   api.get(
@@ -45,6 +47,7 @@ export default () => {
 
   api.put(
     "/finalizedSalaryProcess",
+    endOfService,
     finalizedSalaryProcess,
     (req, res, next) => {
       let result = "";
