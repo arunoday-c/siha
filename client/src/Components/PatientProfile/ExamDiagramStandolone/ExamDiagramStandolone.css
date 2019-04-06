@@ -22,6 +22,8 @@
 .tui-image-editor-submenu
 .tui-image-editor-submenu-style {
     left: 26px !important; }
+  .CanvasEditorCntr .image-area-cntr {
+    top: 25vh; }
 
 .diagramManageCntr {
   margin-bottom: 20px;
@@ -44,7 +46,9 @@
   overflow-x: hidden; }
   .diagramList .eachDiagram {
     border-bottom: 1px solid #ccc;
-    margin-bottom: 10px; }
+    margin-bottom: 10px;
+    min-width: 185px;
+    min-height: 140px; }
     .diagramList .eachDiagram img {
       width: 100%;
       height: auto;
@@ -54,6 +58,24 @@
       font-size: 0.9rem; }
       .diagramList .eachDiagram p small {
         display: block; }
+    .diagramList .eachDiagram .diagramImgTool {
+      margin-bottom: 10px; }
+      .diagramList .eachDiagram .diagramImgTool i {
+        padding: 5px;
+        border: 1px solid #ccc; }
+        .diagramList .eachDiagram .diagramImgTool i:hover {
+          color: #12a28d;
+          cursor: pointer; }
+        .diagramList .eachDiagram .diagramImgTool i:first-child:hover {
+          color: red; }
+      .diagramList .eachDiagram .diagramImgTool input[type="checkbox"] {
+        margin-left: 10px;
+        margin-right: 5px; }
+      .diagramList .eachDiagram .diagramImgTool input[type="checkbox"] + label {
+        color: #3d3d3d; }
+      .diagramList .eachDiagram .diagramImgTool input[type="checkbox"]:checked + label {
+        color: #12a28d;
+        font-style: bold; }
 
 .saveWrapper {
   background: rgba(0, 0, 0, 0.7);
@@ -88,6 +110,74 @@
       .saveWrapper .saveWindow .saveFooter button {
         float: right;
         margin-left: 10px; }
+
+.canvasImgPreviewWindow {
+  display: none;
+  width: 50vw;
+  -webkit-box-shadow: 10px 10px 10px #000;
+  box-shadow: 10px 10px 10px #000;
+  position: absolute;
+  top: 155px;
+  z-index: 99;
+  background: #fff;
+  left: 35%;
+  min-height: 60vh; }
+  .canvasImgPreviewWindow img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #000;
+    margin: 0;
+    padding: 0; }
+  .canvasImgPreviewWindow i {
+    float: right;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    border: 1px solid red;
+    border-bottom: 0;
+    color: #fff;
+    text-align: center;
+    line-height: 29px;
+    position: absolute;
+    top: -30px;
+    right: 0; }
+    .canvasImgPreviewWindow i:hover {
+      color: red;
+      cursor: pointer; }
+
+.canvasImgCompareWindow {
+  width: 80vw;
+  -webkit-box-shadow: 10px 10px 10px #000;
+  box-shadow: 10px 10px 10px #000;
+  position: absolute;
+  top: 155px;
+  z-index: 99;
+  background: #fff;
+  left: 35%;
+  min-height: 60vh; }
+  .canvasImgCompareWindow img {
+    width: 50%;
+    height: auto;
+    border: 1px solid #000;
+    margin: 0;
+    padding: 0;
+    display: inline-block; }
+  .canvasImgCompareWindow i {
+    float: right;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    border: 1px solid red;
+    border-bottom: 0;
+    color: #fff;
+    text-align: center;
+    line-height: 29px;
+    position: absolute;
+    top: -30px;
+    right: 0; }
+    .canvasImgCompareWindow i:hover {
+      color: red;
+      cursor: pointer; }
 
 .diagramDropdown {
   height: 51px; }
