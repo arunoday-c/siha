@@ -107,7 +107,7 @@ export default class ExaminationDiagram extends Component {
                 <div className="diagramDropdown">
                   <img src={data} />
                   <span>{item.image_desc}</span>
-                  <span>{item.speciality_name}</span>
+                  <span>{item.speciality_name}</span>{" "}
                 </div>
               )
             });
@@ -462,6 +462,16 @@ export default class ExaminationDiagram extends Component {
           </div>
         ) : null}
 
+        <div className="canvasImgPreviewWindow">
+          <i className="fas fa-times" />
+          <img />
+        </div>
+
+        <div className="canvasImgCompareWindow">
+          <i className="fas fa-times" />
+          <img alt="img1" /> <img alt="img2" />
+        </div>
+
         {/* <div className="col-12 diagramManageCntr">
         </div> */}
         <div className="col-2">
@@ -521,7 +531,14 @@ export default class ExaminationDiagram extends Component {
                       "DD:MM:YYYY | hh:mm A"
                     )}
                   </small>
-                </p>
+                </p>{" "}
+                <div className="diagramImgTool">
+                  <i className="fas fa-trash-alt" />
+                  <i className="fas fa-search-plus" />
+
+                  <input type="checkbox" />
+                  <label>Compare</label>
+                </div>
               </div>
             ))}
           </div>
