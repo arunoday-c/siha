@@ -54,6 +54,7 @@ const AlgaehReport = options => {
 };
 
 const plotUI = options => {
+  debugger;
   try {
     ReactDOM.render(<ReportUI options={options} />, reportWindow);
   } catch (e) {

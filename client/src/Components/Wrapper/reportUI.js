@@ -506,6 +506,7 @@ export default class ReportUI extends Component {
           break;
       }
     }
+
     return _controls;
   }
 
@@ -542,6 +543,10 @@ export default class ReportUI extends Component {
             </div>
             <div />
             <div>
+              {console.log(
+                "this.props.options.plotUI",
+                this.props.options.plotUI
+              )}
               {this.props.options !== undefined &&
               this.props.options.plotUI !== undefined ? (
                 <div id="report_generation_interface">
@@ -589,7 +594,7 @@ export default class ReportUI extends Component {
                 <div className="row">
                   <div className="col-lg-4"> &nbsp;</div>
                   <div className="col-lg-8">
-                    <ReactToPrint
+                    {/* <ReactToPrint
                       trigger={() => (
                         <button
                           type="button"
@@ -602,7 +607,7 @@ export default class ReportUI extends Component {
                         </button>
                       )}
                       content={() => this.algehPrintRef}
-                    />
+                    /> */}
                     <button
                       type="button"
                       className="btn btn-default"
