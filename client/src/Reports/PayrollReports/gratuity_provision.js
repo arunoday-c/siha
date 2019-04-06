@@ -5,13 +5,11 @@ import _ from "lodash";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
-  let leave_days = _.sumBy(data, s => parseFloat(s.leave_days));
-  let leave_salary = _.sumBy(data, s => parseFloat(s.leave_salary));
-  let airfare_amount = _.sumBy(data, s => parseFloat(s.airfare_amount));
+  let gratuity_amount = _.sumBy(data, s => parseFloat(s.gratuity_amount));
 
   return `
   <div class="print-body">
-  <header> ${payrollHeader(data, "Salary Statement")} </header> 
+  <header> ${payrollHeader(data, "Gratuity Provision")} </header> 
    
 <section>
     <h2><span>Salary Details</span></h2><div class="tbl-header">
@@ -21,9 +19,8 @@ export function printReport(data) {
                 <th>Employee Code</th>
                 <th style="width:250px">Employee Name</th>
                 <th>Department</th>
-                <th>Leave Days</th>
-                <th>Leave Salary</th>
-                <th>Airfare Amount</th>
+                <th>Gratuity Amount</th>
+                
                 
             </tr>
         </thead></table></div><div class="tbl-content" style="max-height:26vh" algaeh-report-table="true" >
@@ -38,13 +35,10 @@ export function printReport(data) {
      <td class="left"   style="width:250px">${list.full_name}</td>
      <td class="center" >${list.sub_department_name}</td>
      
-     <td class="right" >${list.leave_days} </td>
-     <td class="right" >${getAmountFormart(list.leave_salary, {
+     <td class="right" >${getAmountFormart(list.gratuity_amount, {
        appendSymbol: false
      })} </td>
-     <td class="right" >${getAmountFormart(list.airfare_amount, {
-       appendSymbol: false
-     })} </td>
+   
      
 
   
@@ -57,24 +51,14 @@ export function printReport(data) {
     </tbody></table></div>
     <div class="row reportFooterDetails">
     <div class="col"></div>
-    <div class="col-2">
-    <label> Total Leave Days</label>
-
-      <h6>${leave_days} </h6>
-      </div>
+   
 
    <div class="col-2">
-    <label> Total Leave Amount</label>
+    <label> Total Gratuity Amount</label>
 
-      <h6>${getAmountFormart(leave_salary)} </h6>
-      </div>
-      <div class="col-2">
-    <label> Total Airfare</label>
-
-      <h6>${getAmountFormart(airfare_amount)} </h6>
+      <h6>${getAmountFormart(gratuity_amount)} </h6>
       </div>
    
-      
     </div>
 </section>
   `;

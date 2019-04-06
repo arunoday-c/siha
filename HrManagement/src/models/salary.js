@@ -4,6 +4,7 @@ import _ from "lodash";
 import { LINQ } from "node-linq";
 import mysql from "mysql";
 import algaehUtilities from "algaeh-utilities/utilities";
+import math from "mathjs";
 
 module.exports = {
   newProcessSalary: (req, res, next) => {
@@ -1964,6 +1965,7 @@ module.exports = {
       const inputParam = { ...req.body };
 
       const utilities = new algaehUtilities();
+      const decimal_places = req.userIdentity.decimal_places;
 
       utilities.logger().log("employee_id: ", inputParam.employee_id);
       _mysql
@@ -2100,6 +2102,52 @@ module.exports = {
                                         next: next
                                       })
                                         .then(Employee_Leave_Salary => {
+                                          utilities
+                                            .logger()
+                                            .log("Employee_Leave_Salary: ");
+                                          InsertGratuityProvision({
+                                            inputParam: inputParam,
+                                            _mysql: _mysql,
+                                            next: next,
+                                            decimal_places: decimal_places
+                                          })
+                                            .then(gratuity_provision => {
+                                              utilities
+                                                .logger()
+                                                .log(
+                                                  "Employee_Leave_Salary gratuity_provision: "
+                                                );
+                                              _mysql.commitTransaction(() => {
+                                                _mysql.releaseConnection();
+                                                req.records = {
+                                                  leave_salary_number: leave_salary_number
+                                                };
+                                                next();
+                                              });
+                                            })
+                                            .catch(e => {
+                                              _mysql.rollBackTransaction(() => {
+                                                next(e);
+                                              });
+                                            });
+                                        })
+                                        .catch(e => {
+                                          _mysql.rollBackTransaction(() => {
+                                            next(e);
+                                          });
+                                        });
+                                    } else {
+                                      utilities.logger().log("else: ");
+                                      InsertGratuityProvision({
+                                        inputParam: inputParam,
+                                        _mysql: _mysql,
+                                        next: next,
+                                        decimal_places: decimal_places
+                                      })
+                                        .then(gratuity_provision => {
+                                          utilities
+                                            .logger()
+                                            .log("else gratuity_provision: ");
                                           _mysql.commitTransaction(() => {
                                             _mysql.releaseConnection();
                                             req.records = {
@@ -2113,14 +2161,6 @@ module.exports = {
                                             next(e);
                                           });
                                         });
-                                    } else {
-                                      _mysql.commitTransaction(() => {
-                                        _mysql.releaseConnection();
-                                        req.records = {
-                                          leave_salary_number: leave_salary_number
-                                        };
-                                        next();
-                                      });
                                     }
                                   })
                                   .catch(e => {
@@ -2199,35 +2239,24 @@ module.exports = {
                         next: next
                       })
                         .then(Employee_Leave_Salary => {
-                          if (
-                            _input.fron_salary === "Y" &&
-                            req.result != null
-                          ) {
-                            InsertGratuityProvision({
-                              gratuity_provision: req.result,
-                              inputParam: inputParam,
-                              _mysql: _mysql,
-                              next: next
-                            })
-                              .then(gratuity_provision => {
-                                _mysql.commitTransaction(() => {
-                                  _mysql.releaseConnection();
-                                  req.records = gratuity_provision;
-                                  next();
-                                });
-                              })
-                              .catch(e => {
-                                _mysql.rollBackTransaction(() => {
-                                  next(e);
-                                });
+                          InsertGratuityProvision({
+                            inputParam: inputParam,
+                            _mysql: _mysql,
+                            next: next,
+                            decimal_places: decimal_places
+                          })
+                            .then(gratuity_provision => {
+                              _mysql.commitTransaction(() => {
+                                _mysql.releaseConnection();
+                                req.records = gratuity_provision;
+                                next();
                               });
-                          } else {
-                            _mysql.commitTransaction(() => {
-                              _mysql.releaseConnection();
-                              req.records = Employee_Leave_Salary;
-                              next();
+                            })
+                            .catch(e => {
+                              _mysql.rollBackTransaction(() => {
+                                next(e);
+                              });
                             });
-                          }
                         })
                         .catch(e => {
                           _mysql.rollBackTransaction(() => {
@@ -2235,32 +2264,24 @@ module.exports = {
                           });
                         });
                     } else {
-                      if (_input.fron_salary === "Y" && req.result != null) {
-                        InsertGratuityProvision({
-                          gratuity_provision: req.result,
-                          inputParam: inputParam,
-                          _mysql: _mysql,
-                          next: next
-                        })
-                          .then(gratuity_provision => {
-                            _mysql.commitTransaction(() => {
-                              _mysql.releaseConnection();
-                              req.records = gratuity_provision;
-                              next();
-                            });
-                          })
-                          .catch(e => {
-                            _mysql.rollBackTransaction(() => {
-                              next(e);
-                            });
+                      InsertGratuityProvision({
+                        inputParam: inputParam,
+                        _mysql: _mysql,
+                        next: next,
+                        decimal_places: decimal_places
+                      })
+                        .then(gratuity_provision => {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = gratuity_provision;
+                            next();
                           });
-                      } else {
-                        _mysql.commitTransaction(() => {
-                          _mysql.releaseConnection();
-                          req.records = salary_process;
-                          next();
+                        })
+                        .catch(e => {
+                          _mysql.rollBackTransaction(() => {
+                            next(e);
+                          });
                         });
-                      }
                     }
                   })
                   .catch(e => {
@@ -3817,33 +3838,291 @@ function UpdateProjectWisePayroll(options) {
 function InsertGratuityProvision(options) {
   return new Promise((resolve, reject) => {
     try {
-      let gratuity_provision = options.gratuity_provision;
       let _mysql = options._mysql;
-      let inputParam = options.inputParam;
-      let strQry = "";
-      //ToDO
-      // for (let i = 0; i < gratuity_provision.length; i++) {
-      strQry = mysql.format(
-        "INSERT INTO `hims_f_gratuity_provision`(employee_id,year,\
-            month,gratuity_amount) VALUE(?,?,?,?)",
-        [
-          inputParam.employee_id,
-          inputParam.year,
-          inputParam.month,
-          gratuity_provision.paybale_amout
-        ]
-      );
+      const inputParam = options.inputParam;
+      const decimal_places = options.decimal_places;
+
+      const utilities = new algaehUtilities();
+
+      utilities.logger().log("InsertGratuityProvision: ");
 
       _mysql
-        .executeQuery({ query: strQry, printQuery: true })
-        .then(update_employee_leave => {
-          // resolve();
+        .executeQuery({
+          query:
+            "select E.date_of_joining,E.hims_d_employee_id,E.date_of_resignation,E.employee_status, E.employe_exit_type, \
+            datediff(date(?),date(date_of_joining))/365 endOfServiceYears,E.employee_code,E.exit_date,\
+            E.full_name,E.arabic_name,E.sex,E.employee_type ,E.title_id,T.title ,T.arabic_title,\
+            E.sub_department_id,E.employee_designation_id,E.date_of_birth,\
+            SD.sub_department_name,SD.arabic_sub_department_name \
+            from hims_d_employee E Left join hims_d_sub_department SD \
+            on SD.hims_d_sub_department_id = E.sub_department_id \
+            left join hims_d_title T on T.his_d_title_id = E.title_id \
+            where hims_d_employee_id in(?);select * from hims_d_end_of_service_options;",
+          values: [inputParam.salary_end_date, inputParam.employee_id],
+          printQuery: true
+        })
+        .then(result => {
+          const _employee = result[0];
+          const _options = result[1];
+
+          utilities.logger().log("_employee: ", _employee);
+
+          if (_employee.length == 0) {
+            resolve();
+            return;
+          }
+
+          utilities.logger().log("_options: ", _options);
+
+          if (_options.length == 0) {
+            resolve();
+            return;
+          }
+          const _optionsDetals = _options[0];
+          if (_optionsDetals.gratuity_provision == 1) {
+            utilities.logger().log("gratuity_provision: ");
+
+            let _eligibleDays = 0;
+
+            let strQry = "";
+            for (let k = 0; k < _employee.length; k++) {
+              new Promise((resolve, reject) => {
+                try {
+                  utilities.logger().log("_employee: ", _employee[k]);
+                  if (_optionsDetals.end_of_service_type == "S") {
+                    if (
+                      _employee[k].endOfServiceYears >= 0 &&
+                      _employee[k].endOfServiceYears <=
+                        _optionsDetals.from_service_range1
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days1;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                        _optionsDetals.from_service_range1 &&
+                      _employee[k].endOfServiceYears <=
+                        _optionsDetals.from_service_range2
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days2;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                        _optionsDetals.from_service_range2 &&
+                      _employee[k].endOfServiceYears <=
+                        _optionsDetals.from_service_range3
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days3;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                        _optionsDetals.from_service_range3 &&
+                      _employee[k].endOfServiceYears <=
+                        _optionsDetals.from_service_range4
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days4;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                        _optionsDetals.from_service_range4 &&
+                      _employee[k].endOfServiceYears <=
+                        _optionsDetals.from_service_range5
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days5;
+                    } else if (
+                      _employee[k].endOfServiceYears >=
+                      _optionsDetals.from_service_range5
+                    ) {
+                      _eligibleDays =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days5;
+                    }
+                  } else if (_optionsDetals.end_of_service_type == "H") {
+                    let by =
+                      _employee[k].endOfServiceYears -
+                      _optionsDetals.from_service_range1;
+                    let ted = 0;
+                    if (by > 0) {
+                      ted =
+                        _optionsDetals.from_service_range1 *
+                        _optionsDetals.eligible_days1;
+                      by =
+                        _employee[k].endOfServiceYears -
+                        _optionsDetals.from_service_range2;
+                      if (by > 0) {
+                        ted =
+                          (ted +
+                            (_optionsDetals.from_service_range2 -
+                              _optionsDetals.from_service_range1)) *
+                          by;
+                        by =
+                          _employee[k].endOfServiceYears -
+                          _optionsDetals.from_service_range3;
+                        if (by > 0) {
+                          ted =
+                            (ted +
+                              (_optionsDetals.from_service_range3 -
+                                _optionsDetals.from_service_range2)) *
+                            by;
+                          by =
+                            _employee[k].endOfServiceYears -
+                            _optionsDetals.from_service_range3;
+                          if (by > 0) {
+                            ted =
+                              (ted +
+                                (_optionsDetals.from_service_range4 -
+                                  _optionsDetals.from_service_range3)) *
+                              by;
+                            by =
+                              _employee[k].endOfServiceYears -
+                              _optionsDetals.from_service_range4;
+                            if (by > 0) {
+                              ted =
+                                (ted +
+                                  (_optionsDetals.from_service_range5 -
+                                    _optionsDetals.from_service_range4)) *
+                                by;
+                            } else {
+                              _eligibleDays =
+                                ted + by * _optionsDetals.eligible_days4;
+                            }
+                          } else {
+                            _eligibleDays =
+                              ted + by * _optionsDetals.eligible_days3;
+                          }
+                        }
+                      } else {
+                        _eligibleDays =
+                          ted + by * _optionsDetals.eligible_days2;
+                      }
+                    } else {
+                      ted =
+                        _employee[k].endOfServiceYears *
+                        _optionsDetals.eligible_days1;
+                    }
+                    ted = _eligibleDays;
+                  }
+
+                  let _componentsList_total = [];
+                  if (_optionsDetals.end_of_service_component1 != null) {
+                    _componentsList_total.push(
+                      _optionsDetals.end_of_service_component1
+                    );
+                  }
+                  if (_optionsDetals.end_of_service_component2 != null) {
+                    _componentsList_total.push(
+                      _optionsDetals.end_of_service_component2
+                    );
+                  }
+                  if (_optionsDetals.end_of_service_component3 != null) {
+                    _componentsList_total.push(
+                      _optionsDetals.end_of_service_component3
+                    );
+                  }
+                  if (_optionsDetals.end_of_service_component4 != null) {
+                    _componentsList_total.push(
+                      _optionsDetals.end_of_service_component4
+                    );
+                  }
+
+                  _mysql
+                    .executeQuery({
+                      query:
+                        "select hims_d_employee_earnings_id,employee_id, earnings_id,earning_deduction_description,\
+                  EE.short_desc, amount from hims_d_employee_earnings EE, hims_d_earning_deduction ED where \
+                  ED.hims_d_earning_deduction_id = EE.earnings_id \
+                  and EE.employee_id=? and ED.hims_d_earning_deduction_id in(?) and ED.record_status='A'",
+                      values: [
+                        _employee[k].hims_d_employee_id,
+                        _componentsList_total
+                      ],
+                      printQuery: true
+                    })
+                    .then(earnings => {
+                      // _mysql.releaseConnection();
+                      let _computatedAmout = [];
+                      if (_optionsDetals.end_of_service_calculation == "AN") {
+                        _computatedAmout = _.chain(earnings).map(items => {
+                          return (items.amount * 12) / 365;
+                        });
+                      } else if (
+                        _optionsDetals.end_of_service_calculation == "FI"
+                      ) {
+                        _computatedAmout = _.chain(earnings).map(items => {
+                          return (
+                            items.amount / _optionsDetals.end_of_service_days
+                          );
+                        });
+                      }
+                      // const _sumOfTotalEarningComponents = _.sumBy(earnings, s => {
+                      //   return s.amount;
+                      // });
+                      let _computatedAmoutSum =
+                        _computatedAmout.reduce((a, b) => {
+                          return a + b;
+                        }, 0) * _eligibleDays;
+
+                      _computatedAmoutSum = math.round(
+                        _computatedAmoutSum,
+                        decimal_places
+                      );
+
+                      strQry += mysql.format(
+                        "INSERT INTO `hims_f_gratuity_provision`(`employee_id`,`year`,\
+                      `month`,`gratuity_amount`) VALUE(?,?,?,?);",
+                        [
+                          _employee[k].hims_d_employee_id,
+                          inputParam.year,
+                          inputParam.month,
+                          _computatedAmoutSum
+                        ]
+                      );
+
+                      if (k == _employee.length - 1) {
+                        resolve();
+                        utilities.logger().log("strQry: ", strQry);
+                      }
+                    })
+                    .catch(e => {
+                      reject(e);
+                    });
+                } catch (e) {
+                  reject(e);
+                }
+              })
+                .then(result => {
+                  utilities.logger().log("strQry: ", strQry);
+
+                  _mysql
+                    .executeQuery({
+                      query: strQry,
+                      printQuery: true
+                    })
+                    .then(result => {
+                      utilities.logger().log("reslove: ");
+                      resolve();
+                    })
+                    .catch(e => {
+                      utilities.logger().log("Error: ");
+                      reject(e);
+                    });
+                })
+                .catch(e => {
+                  reject(e);
+                });
+            }
+          } else {
+            resolve();
+          }
         })
         .catch(e => {
           reject(e);
         });
-      // }
-      resolve();
     } catch (e) {
       reject(e);
     }
