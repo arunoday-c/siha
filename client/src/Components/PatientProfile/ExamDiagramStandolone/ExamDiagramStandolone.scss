@@ -28,6 +28,10 @@
     .tui-image-editor-submenu-style {
     left: 26px !important;
   }
+
+  .image-area-cntr {
+    top: 25vh;
+  }
 }
 .diagramManageCntr {
   margin-bottom: 20px;
@@ -51,6 +55,8 @@
   .eachDiagram {
     border-bottom: 1px solid #ccc;
     margin-bottom: 10px;
+    min-width: 185px;
+    min-height: 140px;
     img {
       width: 100%;
       height: auto;
@@ -61,6 +67,31 @@
       font-size: 0.9rem;
       small {
         display: block;
+      }
+    }
+    .diagramImgTool {
+      margin-bottom: 10px;
+      i {
+        padding: 5px;
+        border: 1px solid #ccc;
+        &:hover {
+          color: #12a28d;
+          cursor: pointer;
+        }
+        &:first-child:hover {
+          color: red;
+        }
+      }
+      input[type="checkbox"] {
+        margin-left: 10px;
+        margin-right: 5px;
+      }
+      input[type="checkbox"] + label {
+        color: #3d3d3d;
+      }
+      input[type="checkbox"]:checked + label {
+        color: #12a28d;
+        font-style: bold;
       }
     }
   }
@@ -103,6 +134,83 @@
         float: right;
         margin-left: 10px;
       }
+    }
+  }
+}
+.canvasImgPreviewWindow {
+  display: none;
+  width: 50vw;
+  -webkit-box-shadow: 10px 10px 10px #000;
+  box-shadow: 10px 10px 10px #000;
+  position: absolute;
+  top: 155px;
+  z-index: 99;
+  background: #fff;
+  left: 35%;
+  min-height: 60vh;
+
+  img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #000;
+    margin: 0;
+    padding: 0;
+  }
+  i {
+    float: right;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    border: 1px solid red;
+    border-bottom: 0;
+    color: #fff;
+    text-align: center;
+    line-height: 29px;
+    position: absolute;
+    top: -30px;
+    right: 0;
+    &:hover {
+      color: red;
+      cursor: pointer;
+    }
+  }
+}
+
+.canvasImgCompareWindow {
+  width: 80vw;
+  -webkit-box-shadow: 10px 10px 10px #000;
+  box-shadow: 10px 10px 10px #000;
+  position: absolute;
+  top: 155px;
+  z-index: 99;
+  background: #fff;
+  left: 35%;
+  min-height: 60vh;
+
+  img {
+    width: 50%;
+    height: auto;
+    border: 1px solid #000;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+  }
+  i {
+    float: right;
+    width: 30px;
+    height: 30px;
+    background: #000;
+    border: 1px solid red;
+    border-bottom: 0;
+    color: #fff;
+    text-align: center;
+    line-height: 29px;
+    position: absolute;
+    top: -30px;
+    right: 0;
+    &:hover {
+      color: red;
+      cursor: pointer;
     }
   }
 }
