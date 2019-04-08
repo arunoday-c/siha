@@ -3,10 +3,7 @@ import { payrollHeader } from "./payrollHeader";
 import "../report-style.css";
 import _ from "lodash";
 import moment from "moment";
-import {
-  getAmountFormart,
-  getAmountWithOutCurrencyFormart
-} from "../../utils/GlobalFunctions";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(result) {
   debugger;
@@ -90,16 +87,19 @@ export function printReport(result) {
           ? list.employee_earning
               .map(
                 earn =>
-                  `  <td class="right">${getAmountWithOutCurrencyFormart(
-                    earn.amount
-                  )}</td>`
+                  `  <td class="right">${getAmountFormart(earn.amount, {
+                    appendSymbol: false
+                  })}</td>`
               )
               .join("")
           : ""
         : ""
     }
-      <td class="right" style="width:135px">${getAmountWithOutCurrencyFormart(
-        list.total_earnings
+      <td class="right" style="width:135px">${getAmountFormart(
+        list.total_earnings,
+        {
+          appendSymbol: false
+        }
       )} </td>
     ${
       deduction_component.length > 0
@@ -107,20 +107,23 @@ export function printReport(result) {
           ? list.employee_deduction
               .map(
                 deduct =>
-                  `  <td class="right" style="width:135px">${getAmountWithOutCurrencyFormart(
-                    deduct.amount
+                  `  <td class="right" style="width:135px">${getAmountFormart(
+                    deduct.amount,
+                    {
+                      appendSymbol: false
+                    }
                   )}</td>`
               )
               .join("")
           : ""
         : ""
     }
-      <td class="right">${getAmountWithOutCurrencyFormart(
-        list.total_deductions
-      )}</td>
-      <td class="right">${getAmountWithOutCurrencyFormart(
-        list.net_salary
-      )} </td>
+      <td class="right">${getAmountFormart(list.total_deductions, {
+        appendSymbol: false
+      })}</td>
+      <td class="right">${getAmountFormart(list.net_salary, {
+        appendSymbol: false
+      })} </td>
       <td class="center">${moment(list.salary_date).format("DD-MM-YYYY")} </td>
       <td class="center" style="width:150px">${
         list.mode_of_payment === "CS"

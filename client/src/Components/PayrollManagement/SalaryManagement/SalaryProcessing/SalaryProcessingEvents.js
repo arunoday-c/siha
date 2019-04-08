@@ -146,7 +146,7 @@ const FinalizeSalary = $this => {
     };
   });
 
-  const salary_date = "01" + this.state.year + "-" + this.state.month;
+  const salary_date = "01-" + $this.state.month + "-" + $this.state.year;
   const salary_end_date = moment(salary_date)
     .endOf("month")
     .format("YYYY-MM-DD");
@@ -158,7 +158,6 @@ const FinalizeSalary = $this => {
     salary_end_date: salary_end_date,
     salary_header_id: salary_header_id,
     employee_id: employee_id,
-    hims_d_employee_id: employee_id,
     year: $this.state.year,
     month: $this.state.month,
     hospital_id: $this.state.hospital_id,

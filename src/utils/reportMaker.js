@@ -210,9 +210,21 @@ let algaehReportConfig = reportName => {
         reportName: "leaveAccrual",
         reportQuery:
           " select hims_f_leave_salary_accrual_detail_id,employee_id,year,month,leave_days,\
-          leave_salary,airfare_amount,E.employee_code,E.full_name from hims_f_leave_salary_accrual_detail LA \
+          leave_salary,airfare_amount,E.employee_code,E.full_name, SD.sub_department_name \
+          from hims_f_leave_salary_accrual_detail LA \
           inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id\
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
           where LA.year=? and LA.month=? and E.hospital_id=? and E.sub_department_id=?;",
+        questionOrder: ["year", "month", "hospital_id", "sub_department_id"]
+      },
+      {
+        reportName: "gratuityProvision",
+        reportQuery:
+          " select hims_f_gratuity_provision_id,employee_id,gratuity_amount,E.employee_code,E.full_name, \
+          SD.sub_department_name from hims_f_gratuity_provision GP \
+          inner join hims_d_employee E on GP.employee_id=E.hims_d_employee_id\
+          left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
+          where GP.year=? and GP.month=? and E.hospital_id=? and E.sub_department_id=?;",
         questionOrder: ["year", "month", "hospital_id", "sub_department_id"]
       }
     ]
