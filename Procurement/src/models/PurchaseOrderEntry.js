@@ -194,7 +194,7 @@ module.exports = {
 
   updatePurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
-
+    let qryExecute = false;
     try {
       req.mySQl = _mysql;
       let inputParam = { ...req.body };
@@ -236,24 +236,30 @@ module.exports = {
                   details[i].hims_f_procurement_po_detail_id
                 ]
               );
+
+              if (i == details.length - 1) {
+                qryExecute = true;
+              }
             }
-            _mysql
-              .executeQuery({
-                query: qry,
-                printQuery: true
-              })
-              .then(detailResult => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.records = detailResult;
-                  next();
+            if (qryExecute == true) {
+              _mysql
+                .executeQuery({
+                  query: qry,
+                  printQuery: true
+                })
+                .then(detailResult => {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = detailResult;
+                    next();
+                  });
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
                 });
-              })
-              .catch(e => {
-                _mysql.rollBackTransaction(() => {
-                  next(e);
-                });
-              });
+            }
           } else {
             _mysql.rollBackTransaction(() => {
               req.records = {};
