@@ -11,7 +11,7 @@ export function printReport(result) {
   <header> ${projectPayrol(data, "Project wise Payroll")} </header> 
    
 <section>
-    <h2><span>Salary Details</span></h2><div class="tbl-header">
+<div class="tbl-header">
     <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <thead >
             <tr>

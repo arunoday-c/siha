@@ -4,10 +4,9 @@ import moment from "moment";
 export function printReport(data) {
   return `
   <div class="print-body">
-  <header> ${payrollHeader(data)} </header> 
+  <header> ${payrollHeader(data, "Absent Reports")} </header> 
    
 <section>
-    <h2><span>Employee Details</span></h2>
     <table class="tableForData" cell-padding="0">
         <thead>
             <tr>

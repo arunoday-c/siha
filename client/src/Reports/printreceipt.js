@@ -9,12 +9,8 @@ export function printReport(data) {
     <div class="col-lg-4"><div class="hospitalLogo"></div></div>
     <div class="col-lg-4"><h3 class="receipt-header">Cash Receipt/إيصال نقدية</h3></div>
     <div class="col-lg-4">
-      <p class="hospitalAddress">
-        # 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India
-        Bangalore Karnataka 560001 IN, Lady Curzon Rd, Shivaji Nagar,
-        Bengaluru, Karnataka 560001
-      </p>
-    </div>
+    <p># 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India Bangalore Karnataka 560001</p>
+           </div>
   </div>
   <hr />
   <div class="row receipt-header-mid">

@@ -57,3 +57,14 @@
 
 .reportFooterDetails {
   text-align: right; }
+
+.forPDF .tbl-content {
+  height: auto !important;
+  max-height: inherit !important;
+  overflow: auto !important; }
+
+.forPDF th,
+.forPDF td {
+  font-size: 0.7rem;
+  padding: 3px;
+  width: auto !important; }

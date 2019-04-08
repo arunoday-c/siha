@@ -160,3 +160,10 @@
   width: 100%;
   overflow-y: auto;
   overflow-x: hidden; }
+
+.reportActionBtns {
+  margin: 10px 15px;
+  height: 32px; }
+  .reportActionBtns button {
+    float: right;
+    margin-left: 10px; }

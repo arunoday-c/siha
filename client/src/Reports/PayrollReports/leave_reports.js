@@ -13,10 +13,9 @@ export function printReport(data) {
 
   return `
   <div class="print-body">
-  <header> ${payrollHeader(data)} </header> 
+  <header> ${payrollHeader(data, "Leave Reports")} </header> 
    
 <section>
-    <h2><span>Leave Report Details</span></h2>
     <table class="tableForData" cell-padding="0">
         <thead>
             <tr>

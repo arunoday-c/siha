@@ -199,3 +199,12 @@
     overflow-x: hidden;
   }
 }
+
+.reportActionBtns {
+  margin: 10px 15px;
+  height: 32px;
+  button {
+    float: right;
+    margin-left: 10px;
+  }
+}

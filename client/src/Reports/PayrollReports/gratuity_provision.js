@@ -9,10 +9,10 @@ export function printReport(data) {
 
   return `
   <div class="print-body">
-  <header> ${payrollHeader(data, "Gratuity Provision")} </header> 
+  <header> ${payrollHeader(data, "Gratuity Provision Statement")} </header> 
    
 <section>
-    <h2><span>Salary Details</span></h2><div class="tbl-header">
+   <div class="tbl-header">
     <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <thead >
             <tr>

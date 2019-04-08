@@ -6,7 +6,6 @@ export function printReport(data) {
   <header> ${payrollHeader(data)} </header> 
    
 <section>
-    <h2><span>Employee Details</span></h2>
     <table class="tableForData" cell-padding="0">
         <thead>
             <tr>
