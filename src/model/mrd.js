@@ -59,7 +59,8 @@ let getPatientMrdList = (req, res, next) => {
           "" +
           registration_date +
           " AND " +
-          where.condition,
+          where.condition +
+          "order by registration_date desc",
         where.values,
         (error, result) => {
           releaseDBConnection(db, connection);

@@ -4,8 +4,8 @@ import httpStatus from "../utils/httpStatus";
 
 import {
   getPatientMrdList,
-  getPatientEncounterDetails,
-  getPatientChiefComplaint,
+  getPatientEncounterDetails, //Done
+  getPatientChiefComplaint, //Done
   getPatientDiagnosis,
   getPatientMedication,
   getPatientInvestigation,
