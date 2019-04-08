@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import "./wrapper.scss";
-import ReactToPrint from "react-to-print";
 import {
   successfulMessage,
   AlgaehValidation
@@ -10,6 +9,8 @@ import { accessReport } from "../Wrapper/printReports";
 import Enumerable from "linq";
 import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 export default class ReportUI extends Component {
   constructor(props) {
     super(props);
@@ -21,7 +22,8 @@ export default class ReportUI extends Component {
       hasError: false,
       _htmlString: "",
       parameterCollection: {},
-      hasTable: false
+      hasTable: false,
+      report_preview_type: 0
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -153,6 +155,39 @@ export default class ReportUI extends Component {
         });
     }
   }
+  onChangeReportPreview(e) {
+    if (parseInt(e.target.value) === 1) {
+      debugger;
+
+      const _element = this.algehPrintRef;
+
+      html2canvas(_element)
+        .then(canvas => {
+          debugger;
+          let pdf = new jsPDF("l", "mm", "a4");
+          var width = pdf.internal.pageSize.getWidth();
+          var height = pdf.internal.pageSize.getHeight();
+          let ratio = canvas.height / canvas.width;
+          height = ratio * width;
+          pdf.addImage(
+            canvas.toDataURL("image/png"),
+            "png",
+            5,
+            5,
+            width - 20,
+            height - 10
+          );
+          //  pdf.addImage(canvas.toDataURL("image/png"), "PNG", 200, 2017);
+          pdf.save(new Date().toString() + ".pdf");
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    }
+    this.setState({
+      report_preview_type: parseInt(e.target.value)
+    });
+  }
   generateReport(e) {
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
@@ -205,6 +240,7 @@ export default class ReportUI extends Component {
                       ? true
                       : false
                     : false;
+
                 that.setState({
                   _htmlString: _htm,
                   hasTable: _hasTable
@@ -549,23 +585,61 @@ export default class ReportUI extends Component {
               )}
               {this.props.options !== undefined &&
               this.props.options.plotUI !== undefined ? (
-                <div id="report_generation_interface">
-                  {/* {this.props.options.plotUI.paramters()} */}
+                <React.Fragment>
+                  <div id="report_generation_interface">
+                    {/* {this.props.options.plotUI.paramters()} */}
 
-                  <div
-                    className="col-lg-12 margin-top-15"
-                    data-validate="parameters-data"
-                  >
-                    <div className="row">{this.generateInputParameters()}</div>
+                    <div
+                      className="col-lg-12 margin-top-15"
+                      data-validate="parameters-data"
+                    >
+                      <div className="row">
+                        {this.generateInputParameters()}
+                      </div>
+                    </div>
+
+                    <button
+                      style={{ textAlign: "center", margin: "16px" }}
+                      className="btn btn-primary"
+                      onClick={this.generateReport.bind(this)}
+                    >
+                      Generate Report
+                    </button>
+                    <input
+                      type="radio"
+                      name="report_preview"
+                      id="report_normal_preview"
+                      value="0"
+                      onChange={this.onChangeReportPreview.bind(this)}
+                      checked={
+                        this.state.report_preview_type === 0 ? true : false
+                      }
+                    />
+                    <label htmlFor="report_normal_preview">Normal</label>
+                    <input
+                      type="radio"
+                      name="report_preview"
+                      id="report_pdf_preview"
+                      value="1"
+                      onChange={this.onChangeReportPreview.bind(this)}
+                      checked={
+                        this.state.report_preview_type === 1 ? true : false
+                      }
+                    />
+                    <label htmlFor="report_pdf_preview">PDF</label>
+                    <input
+                      type="radio"
+                      name="report_preview"
+                      id="report_excel_preview"
+                      value="2"
+                      onChange={this.onChangeReportPreview.bind(this)}
+                      checked={
+                        this.state.report_preview_type === 2 ? true : false
+                      }
+                    />
+                    <label htmlFor="report_excel_preview">Excel</label>
                   </div>
-                  <button
-                    style={{ textAlign: "center", margin: "16px" }}
-                    className="btn btn-primary"
-                    onClick={this.generateReport.bind(this)}
-                  >
-                    Generate Report
-                  </button>
-                </div>
+                </React.Fragment>
               ) : null}
               {this.props.plotui !== undefined ? this.props.plotui : null}
             </div>
@@ -574,12 +648,12 @@ export default class ReportUI extends Component {
               ref={el => (this.algehPrintRef = el)}
               style={{ minHeight: "30vh" }}
             >
-              {" "}
               <div
                 dangerouslySetInnerHTML={{
                   __html: this.state._htmlString
                 }}
               />
+
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-12">
