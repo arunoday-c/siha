@@ -194,7 +194,7 @@ module.exports = {
 
   updatePurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
-    // let qryExecute = false;
+    let qryExecute = false;
     const utilities = new algaehUtilities();
     utilities.logger().log("updatePurchaseOrderEntry: ");
     try {
