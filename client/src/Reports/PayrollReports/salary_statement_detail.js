@@ -9,8 +9,8 @@ export function printReport(result) {
   debugger;
 
   if (result === undefined) return null;
-  const header_data = result.components;
-  const detail_data = result.employees;
+  const header_data = result.components || [];
+  const detail_data = result.employees || [];
   if (detail_data === undefined) return null;
 
   let earning_component = _.filter(header_data, f => {

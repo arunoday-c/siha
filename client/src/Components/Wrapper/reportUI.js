@@ -239,7 +239,11 @@ export default class ReportUI extends Component {
                 resolve(response.data.records);
               }).then(data => {
                 debugger;
-                if (data.length > 0) {
+                if (Array.isArray(data)) {
+                  if (data.length > 0) {
+                    buttonDisable = false;
+                  }
+                } else if (data !== null || data !== undefined) {
                   buttonDisable = false;
                 }
                 options.inputData = that.state.parameterCollection;
