@@ -194,11 +194,13 @@ module.exports = {
 
   updatePurchaseOrderEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
-    let qryExecute = false;
+    // let qryExecute = false;
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updatePurchaseOrderEntry: ");
     try {
       req.mySQl = _mysql;
       let inputParam = { ...req.body };
-
+      utilities.logger().log("inputParam: ", inputParam);
       _mysql
         .executeQueryWithTransaction({
           query:
@@ -218,12 +220,14 @@ module.exports = {
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
+          utilities.logger().log("headerResult: ");
           if (headerResult != null) {
-            let details = inputParam.pharmacy_stock_detail;
+            let details = inputParam.po_entry_detail;
 
             let qry = "";
 
             for (let i = 0; i < details.length; i++) {
+              utilities.logger().log("details: ");
               qry += mysql.format(
                 "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
                 quantity_recieved=?, quantity_outstanding=?\
@@ -238,9 +242,11 @@ module.exports = {
               );
 
               if (i == details.length - 1) {
+                utilities.logger().log("if Data: ");
                 qryExecute = true;
               }
             }
+            utilities.logger().log("qryExecute: ", qryExecute);
             if (qryExecute == true) {
               _mysql
                 .executeQuery({
@@ -284,9 +290,22 @@ module.exports = {
     try {
       let inputParam = req.query;
 
+      // let strQuery =
+      //   "SELECT * from  hims_f_procurement_po_header\
+      //       where cancelled='N' ";
+
+      // if (inputParam.pharmcy_location_id != null) {
+      //   strQuery +=
+      //     " and pharmcy_location_id = " + inputParam.pharmcy_location_id;
+      // }
+      // if (inputParam.inventory_location_id != null) {
+      //   strQuery +=
+      //     " and inventory_location_id = " + inputParam.inventory_location_id;
+      // }
+
       let strQuery =
         "SELECT * from  hims_f_procurement_po_header\
-            where cancelled='N' ";
+    where cancelled='N' ";
 
       if (inputParam.pharmcy_location_id != null) {
         strQuery +=
@@ -295,6 +314,9 @@ module.exports = {
       if (inputParam.inventory_location_id != null) {
         strQuery +=
           " and inventory_location_id = " + inputParam.inventory_location_id;
+      }
+      if (inputParam.authorize1 != null) {
+        strQuery += " and authorize1 = '" + inputParam.authorize1 + "'";
       }
 
       _mysql
