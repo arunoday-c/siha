@@ -462,16 +462,18 @@ export default class ExaminationDiagram extends Component {
           </div>
         ) : null}
 
-        <div className="canvasImgPreviewWindow">
-          <i className="fas fa-times" />
-          <img />
+        <div className="canvasImgPreviewWindowWrapper">
+          <div className="canvasImgPreviewWindow">
+            <i className="fas fa-times" />
+            <img alt="img1" />
+          </div>
         </div>
-
-        <div className="canvasImgCompareWindow">
-          <i className="fas fa-times" />
-          <img alt="img1" /> <img alt="img2" />
+        <div className="canvasImgCompareWindowWrapper">
+          <div className="canvasImgCompareWindow">
+            <i className="fas fa-times" />
+            <img alt="img1" /> <img alt="img2" />
+          </div>
         </div>
-
         {/* <div className="col-12 diagramManageCntr">
         </div> */}
         <div className="col-2">
