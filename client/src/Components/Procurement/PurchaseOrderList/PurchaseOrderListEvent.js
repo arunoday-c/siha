@@ -39,7 +39,7 @@ const getPurchaseOrderList = $this => {
     inpObj.inventory_location_id = $this.state.inventory_location_id;
   }
 
-  // inpObj.authorize1 = "N";
+  inpObj.authorize1 = "N";
   // inpObj.authorie2 = "N";
   $this.props.getPurchaseOrderList({
     uri: "/PurchaseOrderEntry/getAuthPurchaseList",
