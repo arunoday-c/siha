@@ -270,38 +270,38 @@ export function printReport(result) {
     
     </tbody></table></div>
     <div class="row ">
-      <div class="col-2">
+      <div class="col">
         <label>Net Basic</label>
         <h6>${getAmountFormart(result.total_basic)}</h6>
       </div>
-      <div class="col-2">
+      <div class="col">
         <label>Net Earnings</label>
         <h6>${getAmountFormart(result.total_earnings)}</h6>
       </div>
-      <div class="col-2">
+      <div class="col">
         <label>Net Deductions</label>
 
         <h6>${getAmountFormart(result.total_deductions)}</h6>
       </div>
-      <div class="col-2">
+      <div class="col">
       <label>Net Contributions</label>
 
       <h6>${getAmountFormart(result.total_contributions)}</h6>
     </div>
-      <div class="col-2">
+      <div class="col">
         <label>Total Net Salary</label>
         <h6>${getAmountFormart(result.total_net_salary)}</h6>
       </div>
         
-      <div class="col-2">
+      <div class="col">
         <label>Total Leave Provision</label>
         <h6>${getAmountFormart(result.sum_leave_salary)}</h6>
       </div>
-      <div class="col-2">
+      <div class="col">
         <label>Total Airfair</label>
         <h6>${getAmountFormart(result.sum_airfare_amount)}</h6>
       </div>
-      <div class="col-2">
+      <div class="col">
         <label>Total Gratuity Provision</label>
         <h6>${getAmountFormart(result.sum_gratuity)}</h6>
       </div>
