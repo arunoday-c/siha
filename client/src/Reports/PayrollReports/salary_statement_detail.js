@@ -139,12 +139,9 @@ export function printReport(result) {
             list.employee_earning.length > 0
               ? assignEarningData(list.employee_earning, earnings).map(
                   data =>
-                    `  <td class="right" style="width:135px">${getAmountFormart(
-                      data.amount,
-                      {
-                        appendSymbol: false
-                      }
-                    )}</td>`
+                    `  <td class="right">${getAmountFormart(data.amount, {
+                      appendSymbol: false
+                    })}</td>`
                 )
               : `  <td class="right" style="width:135px">${getAmountFormart(
                   "0",

@@ -368,6 +368,9 @@ const PageToPlot = {
   ),
   PackageBilling: React.lazy(() =>
     retry(() => import("./Components/PackageBilling/PackageBilling"))
+  ),
+  DiagramMaster: React.lazy(() =>
+    retry(() => import("./Components/DiagramMaster/DiagramMaster"))
   )
 };
 
