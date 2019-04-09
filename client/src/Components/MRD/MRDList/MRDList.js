@@ -26,25 +26,28 @@ class MRDList extends Component {
     if (e !== undefined) e.preventDefault();
     algaehLoader({ show: true });
 
-    let reg_date = moment(this.state.registration_date).isValid()
-      ? this.state.registration_date
-      : null;
-    let dob = moment(this.state.date_of_birth).isValid()
-      ? this.state.date_of_birth
-      : null;
+    debugger;
+    // let reg_date = moment(this.state.registration_date).isValid()
+    //   ? this.state.registration_date
+    //   : null;
+    // let dob = moment(this.state.date_of_birth).isValid()
+    //   ? this.state.date_of_birth
+    //   : null;
+
+    //   data: {
+    //     full_name: this.state.full_name !== "" ? this.state.full_name : null,
+    //     patient_code:
+    //       this.state.patient_code !== "" ? this.state.patient_code : null,
+    //     registration_date: reg_date,
+    //     date_of_birth: dob,
+    //     contact_number:
+    //       this.state.contact_number !== "" ? this.state.contact_number : null
+    //   },
 
     algaehApiCall({
       uri: "/mrd/getPatientMrdList",
       method: "GET",
-      data: {
-        full_name: this.state.full_name !== "" ? this.state.full_name : null,
-        patient_code:
-          this.state.patient_code !== "" ? this.state.patient_code : null,
-        registration_date: reg_date,
-        date_of_birth: dob,
-        contact_number:
-          this.state.contact_number !== "" ? this.state.contact_number : null
-      },
+      module: "MRD",
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {

@@ -50,6 +50,7 @@ class Summary extends Component {
   getPatientMedication() {
     algaehApiCall({
       uri: "/mrd/getPatientMedication",
+      module: "MRD",
       method: "GET",
       data: {
         episode_id: Window.global["episode_id"]

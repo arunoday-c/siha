@@ -3,12 +3,12 @@ import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
 import {
-  getPatientMrdList,
+  getPatientMrdList, //Done
   getPatientEncounterDetails, //Done
   getPatientChiefComplaint, //Done
-  getPatientDiagnosis,
-  getPatientMedication,
-  getPatientInvestigation,
+  getPatientDiagnosis, //Done
+  getPatientMedication, //Done
+  getPatientInvestigation, //Done
   getPatientPaymentDetails,
   getPatientTreatments
 } from "../model/mrd";
