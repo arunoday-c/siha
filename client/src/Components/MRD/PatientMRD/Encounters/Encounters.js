@@ -108,6 +108,7 @@ class Encounters extends Component {
   getPatientDiagnosis(episode_id) {
     algaehApiCall({
       uri: "/mrd/getPatientDiagnosis",
+      module: "MRD",
       method: "GET",
       data: {
         episode_id: episode_id
@@ -130,6 +131,7 @@ class Encounters extends Component {
   getPatientMedication(enc_id) {
     algaehApiCall({
       uri: "/mrd/getPatientMedication",
+      module: "MRD",
       method: "GET",
       data: {
         encounter_id: enc_id
@@ -153,6 +155,7 @@ class Encounters extends Component {
   getPatientInvestigation(visit_id) {
     algaehApiCall({
       uri: "/mrd/getPatientInvestigation",
+      module: "MRD",
       method: "GET",
       data: {
         visit_id: visit_id
