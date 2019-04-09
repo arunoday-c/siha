@@ -2534,7 +2534,7 @@ module.exports = {
 
       _mysql
         .executeQuery({
-          query: `select earning_deduction_description,component_category from hims_d_earning_deduction\
+          query: `select hims_d_earning_deduction_id, earning_deduction_description,component_category from hims_d_earning_deduction\
           where record_status='A' and print_report='Y';\
           select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
@@ -2564,6 +2564,7 @@ module.exports = {
 
           let total_earnings = 0;
           let total_deductions = 0;
+          let total_contributions = 0;
           let total_net_salary = 0;
 
           if (salary.length > 0) {
@@ -2572,6 +2573,9 @@ module.exports = {
             );
             total_deductions = new LINQ(salary).Sum(s =>
               parseFloat(s.total_deductions)
+            );
+            total_contributions = new LINQ(salary).Sum(s =>
+              parseFloat(s.total_contributions)
             );
             total_net_salary = new LINQ(salary).Sum(s =>
               parseFloat(s.net_salary)
@@ -2594,7 +2598,14 @@ module.exports = {
                 SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
                 where salary_header_id in ( " +
                   salary_header_ids +
-                  ");select basic_earning_component from hims_d_hrms_options;"
+                  ");\
+                  select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount from \
+                  hims_f_salary_contributions SC inner join hims_d_earning_deduction ED on \
+                SC.contributions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
+                where salary_header_id in ( " +
+                  salary_header_ids +
+                  ");select basic_earning_component from hims_d_hrms_options;",
+                printQuery: true
               })
               .then(results => {
                 // _mysql.releaseConnection();
@@ -2603,7 +2614,8 @@ module.exports = {
 
                 let earnings = results[0];
                 let deductions = results[1];
-                let basic_id = results[2][0]["basic_earning_component"];
+                let contributions = results[2];
+                let basic_id = results[3][0]["basic_earning_component"];
 
                 // console.log("basic:",basic_id);
 
@@ -2666,6 +2678,20 @@ module.exports = {
                     })
                     .ToArray();
 
+                  let employee_contributions = new LINQ(contributions)
+                    .Where(
+                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                    )
+                    .Select(s => {
+                      return {
+                        hims_f_salary_contributions_id:
+                          s.hims_f_salary_contributions_id,
+                        contributions_id: s.contributions_id,
+                        amount: s.amount
+                      };
+                    })
+                    .ToArray();
+
                   total_basic += new LINQ(employee_earning)
                     .Where(w => w.earnings_id == basic_id)
                     .Select(s => parseFloat(s.amount))
@@ -2677,6 +2703,7 @@ module.exports = {
                     ...salary[i],
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
+                    employee_contributions: employee_contributions,
                     complete_ot: complete_ot
                   });
                 }
@@ -2688,6 +2715,7 @@ module.exports = {
                   total_basic: total_basic,
                   total_earnings: total_earnings,
                   total_deductions: total_deductions,
+                  total_contributions: total_contributions,
                   total_net_salary: total_net_salary
                 };
                 next();

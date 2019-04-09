@@ -33,7 +33,8 @@ class EarningsDeductions extends Component {
       calculator_values: "",
       displayNationality: false,
       specific_nationality: false,
-      nationality_id: null
+      nationality_id: null,
+      print_report: "N"
     };
     this.getEarningDeductions();
   }
@@ -94,6 +95,7 @@ class EarningsDeductions extends Component {
         round_off_amount: data.round_off_amount,
         specific_nationality: data.specific_nationality,
         nationality_id: data.nationality_id,
+        print_report: data.print_report,
         record_status: "A"
       },
       onSuccess: response => {
@@ -220,7 +222,8 @@ class EarningsDeductions extends Component {
             formula: this.state.formula,
             specific_nationality:
               this.state.specific_nationality === "true" ? "Y" : "N",
-            nationality_id: this.state.nationality_id
+            nationality_id: this.state.nationality_id,
+            print_report: this.state.print_report
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -348,6 +351,12 @@ class EarningsDeductions extends Component {
             });
           }
         );
+        break;
+      case "print_report":
+        this.setState({
+          print_report: e.target.value
+        });
+        break;
     }
   }
 
@@ -1005,6 +1014,31 @@ class EarningsDeductions extends Component {
                           checked={this.state.calculation_type === "V"}
                         />
                         <span>Variables</span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-4">
+                    <label>Print In Report</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Y"
+                          name="print_report"
+                          onChange={this.changeChecks.bind(this)}
+                          checked={this.state.print_report === "Y"}
+                        />
+                        <span>Yes</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="N"
+                          name="print_report"
+                          onChange={this.changeChecks.bind(this)}
+                          checked={this.state.print_report === "N"}
+                        />
+                        <span>No</span>
                       </label>
                     </div>
                   </div>
@@ -1769,6 +1803,43 @@ class EarningsDeductions extends Component {
                                   data: this.props.nationalities
                                 },
 
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "print_report",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Print In Report" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.print_report === "Y" ? "Yes" : "No"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "print_report",
+                                className: "select-fld",
+                                value: row.print_report,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO
+                                },
+                                others: {
+                                  errormessage: "Print Report cannot be blank",
+                                  required: true
+                                },
                                 onChange: this.changeGridEditors.bind(this, row)
                               }}
                             />
