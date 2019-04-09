@@ -58,11 +58,7 @@ export function printReport(data) {
     </tbody></table></div>
     <div class="row reportFooterDetails">
     <div class="col"></div>
-    <div class="col-2">
-    <label> Total Leave Days</label>
 
-      <h6>${leave_days} </h6>
-      </div>
 
    <div class="col-2">
     <label> Total Leave Amount</label>
