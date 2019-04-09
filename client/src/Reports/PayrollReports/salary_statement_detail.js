@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { payrollHeader } from "./payrollHeader";
 import "../report-style.css";
 import _ from "lodash";
-import moment from "moment";
+// import moment from "moment";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(result) {
@@ -104,6 +104,7 @@ export function printReport(result) {
             <tr>
                 <th>Employee Code</th>
                 <th style="width:250px">Employee Name</th>
+                <th style="width:200px">Nationality</th>
                 <th style="width:200px">Department</th>
                 <th style="width:200px">Designation</th>
                 <th style="width:200px">Branch</th>                                
@@ -164,9 +165,10 @@ export function printReport(result) {
     <tr>
       <td class="center">${list.employee_code}</td>
       <td class="left" style="width:250px">${list.full_name}</td>
+      <td class="left" style="width:200px">${list.nationality}</td>    
       <td class="left" style="width:200px">${list.sub_department_name}</td>
       <td class="left" style="width:200px">${list.designation}</td>
-      <td class="left" style="width:200px">${list.hospital_name}</td>     
+      <td class="left" style="width:200px">${list.hospital_name}</td>    
       
     ${
       earning_component.length > 0
@@ -276,6 +278,13 @@ export function printReport(result) {
       <td class="right">${getAmountFormart(list.net_salary, {
         appendSymbol: false
       })} </td>
+
+      <td class="right" style="width:150px">${getAmountFormart(
+        list.leave_salary,
+        {
+          appendSymbol: false
+        }
+      )} </td>
       
       <td class="right" style="width:150px">${getAmountFormart(
         list.airfare_amount,
