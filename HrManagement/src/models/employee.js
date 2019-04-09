@@ -292,109 +292,133 @@ module.exports = {
             ]
           })
           .then(update_employee => {
+            const utilities = new algaehUtilities();
+            utilities.logger().log("update_employee: ");
+
             let _InsertEmployeeDept = InsertEmployeeDepartment({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _UpdateEmployeeDept = UpdateEmployeeDepartment({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _InsertServiceComm = InsertServiceCommission({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _UpdateServiceComm = UpdateServiceCommission({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _InsertServiceTypeComm = InsertServiceTypeCommission({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _UpdateServiceTypeComm = UpdateServiceTypeCommission({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _InsertEmpEarning = InsertEmployeeEarnings({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _UpdateEmpEarning = UpdateEmployeeEarnings({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _DeleteEmpEarning = DeleteEmployeeEarnings({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _InsertEmpDeduction = InsertEmployeeDeduction({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _UpdateEmpDeduction = UpdateEmployeeDeduction({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _DeleteEmpDeduction = DeleteEmployeeDeduction({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _InsertEmpContributions = InsertEmployeeContributions({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _UpdateEmpContributions = UpdateEmployeeContributions({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _DeleteEmpContributions = DeleteEmployeeContributions({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _InsertEmpIdentification = InsertEmployeeIdentification({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _UpdateEmpIdentification = UpdateEmployeeIdentification({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _DeleteEmpIdentification = DeleteEmployeeIdentification({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _InsertEmpDependents = InsertEmployeeDependents({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _UpdateEmpDependents = UpdateEmployeeDependents({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             let _DeleteEmpDependents = DeleteEmployeeDependents({
               req: req,
-              _mysql: _mysql
+              _mysql: _mysql,
+              next: next
             });
 
             Promise.all([
@@ -1165,7 +1189,7 @@ function InsertEmployeeDepartment(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1175,7 +1199,7 @@ function InsertEmployeeDepartment(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1222,7 +1246,7 @@ function UpdateEmployeeDepartment(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1232,7 +1256,7 @@ function UpdateEmployeeDepartment(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 //Employee Dept End
@@ -1274,7 +1298,7 @@ function InsertServiceCommission(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1284,7 +1308,7 @@ function InsertServiceCommission(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1330,7 +1354,7 @@ function UpdateServiceCommission(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1340,7 +1364,7 @@ function UpdateServiceCommission(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 //Service End
@@ -1382,7 +1406,7 @@ function InsertServiceTypeCommission(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1392,7 +1416,7 @@ function InsertServiceTypeCommission(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1437,7 +1461,7 @@ function UpdateServiceTypeCommission(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1447,7 +1471,7 @@ function UpdateServiceTypeCommission(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 //Service Type End
@@ -1488,7 +1512,7 @@ function InsertEmployeeEarnings(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1498,7 +1522,7 @@ function InsertEmployeeEarnings(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1535,7 +1559,7 @@ function UpdateEmployeeEarnings(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1545,7 +1569,7 @@ function UpdateEmployeeEarnings(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1577,7 +1601,7 @@ function DeleteEmployeeEarnings(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1587,7 +1611,7 @@ function DeleteEmployeeEarnings(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 //Earning End
@@ -1627,7 +1651,7 @@ function InsertEmployeeDeduction(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1637,19 +1661,24 @@ function InsertEmployeeDeduction(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
 function UpdateEmployeeDeduction(options) {
   return new Promise((resolve, reject) => {
     try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("UpdateEmployeeDeduction: ");
       let req = options.req;
+      utilities.logger().log("inputParam: ", req.body.updateDeductionComp);
       if (req.body.updateDeductionComp.length > 0) {
         let _mysql = options._mysql;
 
         let qry = "";
         let inputParam = extend([], req.body.updateDeductionComp);
+
+        utilities.logger().log("inputParam: ", inputParam);
 
         for (let i = 0; i < req.body.updateDeductionComp.length; i++) {
           qry += mysql.format(
@@ -1674,7 +1703,7 @@ function UpdateEmployeeDeduction(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1684,7 +1713,7 @@ function UpdateEmployeeDeduction(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1716,7 +1745,7 @@ function DeleteEmployeeDeduction(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1726,7 +1755,7 @@ function DeleteEmployeeDeduction(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 //Deduction End
@@ -1766,7 +1795,7 @@ function InsertEmployeeContributions(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1776,7 +1805,7 @@ function InsertEmployeeContributions(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1813,7 +1842,7 @@ function UpdateEmployeeContributions(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1823,7 +1852,7 @@ function UpdateEmployeeContributions(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1855,7 +1884,7 @@ function DeleteEmployeeContributions(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1865,7 +1894,7 @@ function DeleteEmployeeContributions(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 //Contributions End
@@ -1907,7 +1936,7 @@ function InsertEmployeeIdentification(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1917,7 +1946,7 @@ function InsertEmployeeIdentification(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1955,7 +1984,7 @@ function UpdateEmployeeIdentification(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -1965,7 +1994,7 @@ function UpdateEmployeeIdentification(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -1997,7 +2026,7 @@ function DeleteEmployeeIdentification(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -2007,7 +2036,7 @@ function DeleteEmployeeIdentification(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 //Employee Identification End
@@ -2047,7 +2076,7 @@ function InsertEmployeeDependents(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -2057,7 +2086,7 @@ function InsertEmployeeDependents(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -2096,7 +2125,7 @@ function UpdateEmployeeDependents(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -2106,7 +2135,7 @@ function UpdateEmployeeDependents(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 
@@ -2138,7 +2167,7 @@ function DeleteEmployeeDependents(options) {
             resolve(result);
           })
           .catch(e => {
-            next(e);
+            options.next(e);
             reject(e);
           });
       } else {
@@ -2148,7 +2177,7 @@ function DeleteEmployeeDependents(options) {
       reject(e);
     }
   }).catch(e => {
-    next(e);
+    options.next(e);
   });
 }
 //Employee Dependents End

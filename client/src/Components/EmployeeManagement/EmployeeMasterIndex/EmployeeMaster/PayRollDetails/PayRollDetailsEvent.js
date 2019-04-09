@@ -756,6 +756,13 @@ const CalculateBasedonFormula = $this => {
   let deductioncomponents = $this.state.deductioncomponents;
   let contributioncomponents = $this.state.contributioncomponents;
 
+  let updateearnComp = $this.state.updateearnComp;
+  let insertearnComp = $this.state.insertearnComp;
+  let updateDeductionComp = $this.state.updateDeductionComp;
+  let insertDeductionComp = $this.state.insertDeductionComp;
+  let insertContributeComp = $this.state.insertContributeComp;
+  let updateContributeComp = $this.state.updateContributeComp;
+
   const earn_comp = Enumerable.from(earningComponents)
     .where(w => w.calculation_method === "FO")
     .toArray();
@@ -791,6 +798,15 @@ const CalculateBasedonFormula = $this => {
       formulaCal = eval(formulaCal);
       earn_comp[x].amount = formulaCal;
       earningComponents[_index] = earn_comp[x];
+
+      updateearnComp.push(earn_comp[x]);
+      if (insertearnComp.length > 0) {
+        for (let b = 0; b < insertearnComp.length; b++) {
+          if ((insertearnComp[b].earnings_id = earn_comp[x].earnings_id)) {
+            insertearnComp[b] = earn_comp[x];
+          }
+        }
+      }
     }
   }
 
@@ -817,11 +833,22 @@ const CalculateBasedonFormula = $this => {
       formulaCal = eval(formulaCal);
       deduct_comp[y].amount = formulaCal;
       deductioncomponents[_index] = deduct_comp[y];
+
+      updateDeductionComp.push(deduct_comp[y]);
+      if (insertDeductionComp.length > 0) {
+        for (let d = 0; d < insertDeductionComp.length; d++) {
+          if (
+            (insertDeductionComp[d].deductions_id =
+              deduct_comp[y].deductions_id)
+          ) {
+            insertDeductionComp[d] = deduct_comp[y];
+          }
+        }
+      }
     }
   }
 
   if (contribute_comp.length > 0) {
-    debugger;
     for (let z = 0; z < contribute_comp.length; z++) {
       let formulaCal = contribute_comp[z].formula;
 
@@ -842,6 +869,18 @@ const CalculateBasedonFormula = $this => {
       formulaCal = eval(formulaCal);
       contribute_comp[z].amount = formulaCal;
       contributioncomponents[_index] = contribute_comp[z];
+
+      updateContributeComp.push(contribute_comp[z]);
+      if (insertContributeComp.length > 0) {
+        for (let f = 0; f < insertContributeComp.length; f++) {
+          if (
+            (insertContributeComp[f].contributions_id =
+              contribute_comp[z].contributions_id)
+          ) {
+            insertContributeComp[f] = contribute_comp[z];
+          }
+        }
+      }
     }
   }
 
@@ -849,7 +888,13 @@ const CalculateBasedonFormula = $this => {
     {
       deductioncomponents: deductioncomponents,
       contributioncomponents: contributioncomponents,
-      earningComponents: earningComponents
+      earningComponents: earningComponents,
+      insertearnComp: insertearnComp,
+      updateearnComp: updateearnComp,
+      updateDeductionComp: updateDeductionComp,
+      insertDeductionComp: insertDeductionComp,
+      insertContributeComp: insertContributeComp,
+      updateContributeComp: updateContributeComp
     },
     () => {
       calculationTotals($this);

@@ -20,6 +20,43 @@ export function printReport(result) {
     return f.component_category === "D";
   });
 
+  let contributions_component = _.filter(header_data, f => {
+    return f.component_category === "C";
+  });
+  let data_amount = [];
+
+  const assignEarningData = (employee_earning, earnings) => {
+    data_amount = _.filter(employee_earning, f => {
+      return f.earnings_id === earnings.hims_d_earning_deduction_id;
+    });
+    if (data_amount.length === 0) {
+      data_amount.push({ amount: 0 });
+    }
+    return data_amount;
+  };
+
+  const assignDeductData = (employee_deduction, deduct) => {
+    debugger;
+    data_amount = _.filter(employee_deduction, f => {
+      return f.deductions_id === deduct.hims_d_earning_deduction_id;
+    });
+    if (data_amount.length === 0) {
+      data_amount.push({ amount: 0 });
+    }
+    return data_amount;
+  };
+
+  const assignContriData = (employee_contributions, contrib) => {
+    debugger;
+    data_amount = _.filter(employee_contributions, f => {
+      return f.contributions_id === contrib.hims_d_earning_deduction_id;
+    });
+    if (data_amount.length === 0) {
+      data_amount.push({ amount: 0 });
+    }
+    return data_amount;
+  };
+
   return `
   <div class="print-body">
   <header> ${payrollHeader(
@@ -48,7 +85,7 @@ export function printReport(result) {
                         .join("")
                     : ""
                 }
-                <th style="width:135px">Total Earnings</th>
+                <th style="width:135px">Total Earning</th>
                 ${
                   deduction_component.length > 0
                     ? deduction_component
@@ -60,6 +97,17 @@ export function printReport(result) {
                     : ""
                 }
                 <th style="width:135px">Total Deduction</th>
+                ${
+                  contributions_component.length > 0
+                    ? contributions_component
+                        .map(
+                          list =>
+                            `<th>${list.earning_deduction_description}</th>`
+                        )
+                        .join("")
+                    : ""
+                }
+                <th style="width:135px">Total Contribution</th>
                 <th>Net Salary</th>
                 <th>Day of Payment</th>
                 <th style="width:150px">Mode of Payment</th>
@@ -83,16 +131,31 @@ export function printReport(result) {
       <td class="right">${list.complete_ot} </td>
     ${
       earning_component.length > 0
-        ? list.employee_earning.length > 0
-          ? list.employee_earning
-              .map(
-                earn =>
-                  `  <td class="right">${getAmountFormart(earn.amount, {
+        ? earning_component
+            .map(
+              earnings =>
+                `
+          ${
+            list.employee_earning.length > 0
+              ? assignEarningData(list.employee_earning, earnings).map(
+                  data =>
+                    `  <td class="right" style="width:135px">${getAmountFormart(
+                      data.amount,
+                      {
+                        appendSymbol: false
+                      }
+                    )}</td>`
+                )
+              : `  <td class="right" style="width:135px">${getAmountFormart(
+                  "0",
+                  {
                     appendSymbol: false
-                  })}</td>`
-              )
-              .join("")
-          : ""
+                  }
+                )}</td>`
+          }
+          `
+            )
+            .join("")
         : ""
     }
       <td class="right" style="width:135px">${getAmountFormart(
@@ -101,26 +164,73 @@ export function printReport(result) {
           appendSymbol: false
         }
       )} </td>
-    ${
-      deduction_component.length > 0
-        ? list.employee_deduction.length > 0
-          ? list.employee_deduction
+
+      ${
+        deduction_component.length > 0
+          ? deduction_component
               .map(
                 deduct =>
-                  `  <td class="right" style="width:135px">${getAmountFormart(
-                    deduct.amount,
+                  `
+            ${
+              list.employee_deduction.length > 0
+                ? assignDeductData(list.employee_deduction, deduct).map(
+                    data =>
+                      `  <td class="right" style="width:135px">${getAmountFormart(
+                        data.amount,
+                        {
+                          appendSymbol: false
+                        }
+                      )}</td>`
+                  )
+                : `  <td class="right" style="width:135px">${getAmountFormart(
+                    "0",
                     {
                       appendSymbol: false
                     }
                   )}</td>`
+            }
+            `
               )
               .join("")
           : ""
-        : ""
-    }
+      }    
       <td class="right">${getAmountFormart(list.total_deductions, {
         appendSymbol: false
       })}</td>
+
+      ${
+        contributions_component.length > 0
+          ? contributions_component
+              .map(
+                contrib =>
+                  `
+            ${
+              list.employee_contributions.length > 0
+                ? assignContriData(list.employee_contributions, contrib).map(
+                    data =>
+                      `  <td class="right" style="width:135px">${getAmountFormart(
+                        data.amount,
+                        {
+                          appendSymbol: false
+                        }
+                      )}</td>`
+                  )
+                : `  <td class="right" style="width:135px">${getAmountFormart(
+                    "0",
+                    {
+                      appendSymbol: false
+                    }
+                  )}</td>`
+            }
+            `
+              )
+              .join("")
+          : ""
+      }    
+      <td class="right">${getAmountFormart(list.total_contributions, {
+        appendSymbol: false
+      })}</td>
+
       <td class="right">${getAmountFormart(list.net_salary, {
         appendSymbol: false
       })} </td>
@@ -148,18 +258,23 @@ export function printReport(result) {
     <div class="row reportFooterDetails">
     <div class="col"></div>
       <div class="col-2">
-        <label>Total Basic</label>
+        <label>Net Basic</label>
         <h6>${getAmountFormart(result.total_basic)}</h6>
       </div>
       <div class="col-2">
-        <label>Total Earnings</label>
+        <label>Net Earnings</label>
         <h6>${getAmountFormart(result.total_earnings)}</h6>
       </div>
       <div class="col-2">
-        <label>Total Deductions</label>
+        <label>Net Deductions</label>
 
         <h6>${getAmountFormart(result.total_deductions)}</h6>
       </div>
+      <div class="col-2">
+      <label>Net Contributions</label>
+
+      <h6>${getAmountFormart(result.total_contributions)}</h6>
+    </div>
       <div class="col-2">
         <label>Total Net Salary</label>
         <h6>${getAmountFormart(result.total_net_salary)}</h6>
