@@ -107,15 +107,13 @@ export function printReport(result) {
                 <th style="width:200px">Nationality</th>
                 <th style="width:200px">Department</th>
                 <th style="width:200px">Designation</th>
-                <th style="width:200px">Branch</th>                                
+                <th style="width:150px">Branch</th>                                
                 ${
                   earning_component.length > 0
                     ? earning_component
                         .map(
                           list =>
-                            `<th style="width:135px">${
-                              list.earning_deduction_description
-                            }</th>`
+                            `<th>${list.earning_deduction_description}</th>`
                         )
                         .join("")
                     : ""
@@ -126,9 +124,7 @@ export function printReport(result) {
                     ? deduction_component
                         .map(
                           list =>
-                            `<th style="width:135px">${
-                              list.earning_deduction_description
-                            }</th>`
+                            `<th>${list.earning_deduction_description}</th>`
                         )
                         .join("")
                     : ""
@@ -139,9 +135,7 @@ export function printReport(result) {
                     ? contributions_component
                         .map(
                           list =>
-                            `<th style="width:135px">${
-                              list.earning_deduction_description
-                            }</th>`
+                            `<th>${list.earning_deduction_description}</th>`
                         )
                         .join("")
                     : ""
@@ -149,9 +143,9 @@ export function printReport(result) {
                 <th style="width:135px">Total Contribution</th>
                 <th>Net Salary</th>
                 
-                <th style="width:150px">Leave Provision</th>
-                <th style="width:150px">Airfair Amount</th>
-                <th style="width:150px">Gratuity Provision</th>
+                <th>Leave Provision</th>
+                <th>Airfair Amount</th>
+                <th>Gratuity Provision</th>
                 
                 
             </tr>
@@ -168,7 +162,7 @@ export function printReport(result) {
       <td class="left" style="width:200px">${list.nationality}</td>    
       <td class="left" style="width:200px">${list.sub_department_name}</td>
       <td class="left" style="width:200px">${list.designation}</td>
-      <td class="left" style="width:200px">${list.hospital_name}</td>    
+      <td class="left" style="width:150px">${list.hospital_name}</td>     
       
     ${
       earning_component.length > 0
@@ -184,12 +178,9 @@ export function printReport(result) {
                       appendSymbol: false
                     })}</td>`
                 )
-              : `  <td class="right" style="width:135px">${getAmountFormart(
-                  "0",
-                  {
-                    appendSymbol: false
-                  }
-                )}</td>`
+              : `  <td class="right">${getAmountFormart("0", {
+                  appendSymbol: false
+                })}</td>`
           }
           `
             )
@@ -213,19 +204,13 @@ export function printReport(result) {
               list.employee_deduction.length > 0
                 ? assignDeductData(list.employee_deduction, deduct).map(
                     data =>
-                      `  <td class="right" style="width:135px">${getAmountFormart(
-                        data.amount,
-                        {
-                          appendSymbol: false
-                        }
-                      )}</td>`
+                      `  <td class="right" >${getAmountFormart(data.amount, {
+                        appendSymbol: false
+                      })}</td>`
                   )
-                : `  <td class="right" style="width:135px">${getAmountFormart(
-                    "0",
-                    {
-                      appendSymbol: false
-                    }
-                  )}</td>`
+                : `  <td class="right">${getAmountFormart("0", {
+                    appendSymbol: false
+                  })}</td>`
             }
             `
               )
@@ -249,19 +234,13 @@ export function printReport(result) {
               list.employee_contributions.length > 0
                 ? assignContriData(list.employee_contributions, contrib).map(
                     data =>
-                      `  <td class="right" style="width:135px">${getAmountFormart(
-                        data.amount,
-                        {
-                          appendSymbol: false
-                        }
-                      )}</td>`
+                      `  <td class="right" >${getAmountFormart(data.amount, {
+                        appendSymbol: false
+                      })}</td>`
                   )
-                : `  <td class="right" style="width:135px">${getAmountFormart(
-                    "0",
-                    {
-                      appendSymbol: false
-                    }
-                  )}</td>`
+                : `  <td class="right">${getAmountFormart("0", {
+                    appendSymbol: false
+                  })}</td>`
             }
             `
               )
@@ -286,20 +265,12 @@ export function printReport(result) {
         }
       )} </td>
       
-      <td class="right" style="width:150px">${getAmountFormart(
-        list.airfare_amount,
-        {
-          appendSymbol: false
-        }
-      )} </td>
-      <td class="right" style="width:150px">${getAmountFormart(
-        list.gratuity_amount,
-        {
-          appendSymbol: false
-        }
-      )} </td>
-
-  
+      <td class="right">${getAmountFormart(list.airfare_amount, {
+        appendSymbol: false
+      })} </td>
+      <td class="right">${getAmountFormart(list.gratuity_amount, {
+        appendSymbol: false
+      })} </td>
 </tr>
     `
     )
@@ -308,7 +279,6 @@ export function printReport(result) {
     
     </tbody></table></div>
     <div class="row ">
-    <div class="col"></div>
       <div class="col-2">
         <label>Net Basic</label>
         <h6>${getAmountFormart(result.total_basic)}</h6>
