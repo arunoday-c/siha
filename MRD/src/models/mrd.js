@@ -1,4 +1,6 @@
 import algaehMysql from "algaeh-mysql";
+import { LINQ } from "node-linq";
+import moment from "moment";
 module.exports = {
   getPatientMrdList: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -232,14 +234,136 @@ module.exports = {
     try {
       _mysql
         .executeQuery({
-          query: "",
-          values: [],
+          query:
+            "select distinct  visit_id from hims_f_billing_header where record_status='A' and patient_id=? order by visit_id desc;",
+          values: [req.query.patient_id],
           printQuery: true
         })
         .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
+          // _mysql.releaseConnection();
+          // req.records = result;
+          // next();
+
+          let allVisits = new LINQ(result)
+            .Where(w => w.visit_id != null)
+            .Select(s => s.visit_id)
+            .ToArray();
+
+          let outputArray = [];
+          if (result.length > 0) {
+            //bill for each visit
+            for (let i = 0; i < allVisits.length; i++) {
+              _mysql
+                .executeQuery({
+                  query:
+                    "select hims_f_billing_header_id ,bill_number,patient_id,visit_id,E.full_name provider_name,incharge_or_provider,bill_date,\
+        net_amount,patient_payable,receiveable_amount,credit_amount from hims_f_billing_header BH,hims_d_employee E where BH.record_status='A' and\
+         E.record_status='A' and BH.incharge_or_provider=E.hims_d_employee_id and visit_id=? order by bill_date desc;",
+                  values: [allVisits[i]],
+                  printQuery: true
+                })
+                .then(billHeadResult => {
+                  // _mysql.releaseConnection();
+                  // req.records = result;
+                  // next();
+
+                  if (billHeadResult.length > 0) {
+                    for (let k = 0; k < billHeadResult.length; k++) {
+                      new Promise((resolve, reject) => {
+                        try {
+                          if (billHeadResult.length == 0) {
+                            return resolve(billHeadResult);
+                          } else {
+                            _mysql
+                              .executeQuery({
+                                query:
+                                  "select hims_f_receipt_header_id, receipt_number, receipt_date, billing_header_id, total_amount\
+                    from hims_f_receipt_header where record_status='A' and billing_header_id=?;",
+                                values: [
+                                  billHeadResult[k].hims_f_billing_header_id
+                                ],
+                                printQuery: true
+                              })
+                              .then(recptResult => {
+                                // _mysql.releaseConnection();
+                                // req.records = result;
+                                // next();
+
+                                return resolve(recptResult);
+                              })
+                              .catch(error => {
+                                _mysql.releaseConnection();
+                                next(error);
+                              });
+                          }
+                        } catch (e) {
+                          reject(e);
+                        }
+                      }).then(resultRCPT => {
+                        _mysql
+                          .executeQuery({
+                            query:
+                              "select BH.hims_f_billing_header_id,company_payable as pri_company_payble, sec_company_payable,\
+                hims_f_patient_insurance_mapping_id,IM.patient_id,primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,\
+                secondary_insurance_provider_id,IPR.insurance_provider_name as sec_insurance_provider_name \
+                from  hims_f_billing_header BH \
+                 left join hims_m_patient_insurance_mapping IM on  BH.visit_id=IM.patient_visit_id and   IM.record_status='A'\
+                 left join hims_d_insurance_provider IP  on IM.primary_insurance_provider_id=IP.hims_d_insurance_provider_id and   IP.record_status='A'  \
+                 left join hims_d_insurance_provider IPR  on  IM.secondary_insurance_provider_id=IPR.hims_d_insurance_provider_id   \
+                where BH.record_status='A'  and   BH.hims_f_billing_header_id=?",
+                            values: [
+                              billHeadResult[k].hims_f_billing_header_id
+                            ],
+                            printQuery: true
+                          })
+                          .then(insResult => {
+                            // _mysql.releaseConnection();
+                            // req.records = result;
+                            // next();
+
+                            outputArray.push({
+                              ...billHeadResult[k],
+                              prov_date:
+                                moment(billHeadResult[k].bill_date).format(
+                                  "DD-MM-YYYY"
+                                ) +
+                                " " +
+                                billHeadResult[k].provider_name,
+                              ...insResult[0],
+                              receipt: resultRCPT
+                            });
+
+                            if (i == allVisits.length - 1) {
+                              _mysql.releaseConnection();
+                              req.records = outputArray;
+                              next();
+                            }
+                          })
+                          .catch(error => {
+                            _mysql.releaseConnection();
+                            next(error);
+                          });
+                      });
+                    }
+                  } else {
+                    if (i == allVisits.length - 1) {
+                      _mysql.releaseConnection();
+                      req.records = outputArray;
+
+                      next();
+                    }
+                  }
+                })
+                .catch(error => {
+                  _mysql.releaseConnection();
+                  next(error);
+                });
+            }
+          } else {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          }
         })
         .catch(error => {
           _mysql.releaseConnection();

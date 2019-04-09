@@ -2536,7 +2536,7 @@ module.exports = {
         .executeQuery({
           query: `select earning_deduction_description,component_category from hims_d_earning_deduction\
           where record_status='A' and print_report='Y';\
-          select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
+          select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
           S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions,\
           S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours
@@ -2546,7 +2546,7 @@ module.exports = {
           inner join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
           inner join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
           inner join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?`,
+          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=? `,
           values: [
             input.hospital_id,
             input.employee_group_id,
@@ -2594,22 +2594,32 @@ module.exports = {
                 SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
                 where salary_header_id in ( " +
                   salary_header_ids +
-                  ");select basic_earning_component from hims_d_hrms_options;"
+                  ");select basic_earning_component from hims_d_hrms_options;\
+                  select employee_id,gratuity_amount from hims_f_gratuity_provision where year=? and month=?;\
+                  select employee_id,leave_days,leave_salary,airfare_amount from hims_f_leave_salary_accrual_detail\
+                  where year=? and month=?;",
+                  values:[ input.year,input.month,input.year,input.month]
               })
               .then(results => {
-                // _mysql.releaseConnection();
-                // req.records = result;
-                // next();
+               
 
                 let earnings = results[0];
                 let deductions = results[1];
                 let basic_id = results[2][0]["basic_earning_component"];
-
-                // console.log("basic:",basic_id);
+                let gratuity=results[3];
+                let accrual=results[4];
+             //   console.log("accrual:",accrual);
 
                 let total_basic = 0;
 
+
+            let sum_gratuity= new LINQ(gratuity).Sum(s => parseFloat(s.gratuity_amount,3));
+            let sum_leave_salary= new LINQ(accrual).Sum(s => parseFloat(s.leave_salary));
+            let sum_airfare_amount= new LINQ(accrual).Sum(s => parseFloat(s.airfare_amount));
+                              
                 for (let i = 0; i < salary.length; i++) {
+
+                  //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
                   let ot_hours = 0;
                   let ot_min = 0;
 
@@ -2638,6 +2648,9 @@ module.exports = {
 
                   let complete_ot =
                     ot_hours + "." + (parseInt(ot_min) % parseInt(60));
+                   //EN-complete OVER-Time  calculation
+
+
 
                   let employee_earning = new LINQ(earnings)
                     .Where(
@@ -2671,10 +2684,35 @@ module.exports = {
                     .Select(s => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
-                  console.log("totalbasic:", total_basic);
+
+                    
+
+                  //console.log("totalbasic:", total_basic);
+
+
+                  let emp_gratuity=new LINQ(gratuity).Where(w=>w.employee_id==salary[i]["employee_id"]).Select(s=>{
+                    return{
+                  gratuity_amount:s.gratuity_amount
+                    }
+                  }).FirstOrDefault({gratuity_amount:0})
+
+
+                let emp_accural=new LINQ(accrual).Where(w=>w.employee_id==salary[i]["employee_id"]).Select(s=>{
+                    return{
+                leave_days:s. leave_days,
+                leave_salary:s.leave_salary,
+                airfare_amount:s.airfare_amount
+                    }
+                  }).FirstOrDefault({leave_days:0,
+                leave_salary:0,
+                airfare_amount:0})
+
+
 
                   outputArray.push({
                     ...salary[i],
+                    ...emp_gratuity,
+                    ...emp_accural,
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
                     complete_ot: complete_ot
@@ -2688,7 +2726,10 @@ module.exports = {
                   total_basic: total_basic,
                   total_earnings: total_earnings,
                   total_deductions: total_deductions,
-                  total_net_salary: total_net_salary
+                  total_net_salary: total_net_salary,
+                  sum_gratuity:sum_gratuity,
+                  sum_leave_salary:sum_leave_salary,
+                  sum_airfare_amount:sum_airfare_amount
                 };
                 next();
               })
