@@ -2539,7 +2539,7 @@ module.exports = {
           select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
           S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions,\
-          S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours
+          S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours,H.hospital_name
           from hims_d_employee E\
           inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  ${is_local}\
           inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
