@@ -231,7 +231,7 @@ module.exports = {
               qry += mysql.format(
                 "UPDATE hims_f_procurement_po_detail SET `authorize_quantity`=?, rejected_quantity=?,\
                 quantity_recieved=?, quantity_outstanding=?\
-              where `hims_f_procurement_po_detail_id`=? ",
+              where `hims_f_procurement_po_detail_id`=?;",
                 [
                   details[i].authorize_quantity,
                   details[i].rejected_quantity,
@@ -447,7 +447,7 @@ module.exports = {
         .executeQuery({
           query:
             "UPDATE `hims_f_pharamcy_material_header` SET `is_completed`=?, `completed_date`=? \
-          WHERE `hims_f_pharamcy_material_header_id`=?",
+          WHERE `hims_f_pharamcy_material_header_id`=?;",
           values: ["Y", new Date(), inputParam.phar_requisition_id],
           printQuery: true
         })
@@ -461,7 +461,7 @@ module.exports = {
             for (let i = 0; i < details.length; i++) {
               qry += mysql.format(
                 "UPDATE hims_f_pharmacy_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
-              where `hims_f_pharmacy_material_detail_id`=? ",
+              where `hims_f_pharmacy_material_detail_id`=? ;",
                 [
                   new Date(),
                   details[i].total_quantity,
@@ -517,7 +517,7 @@ module.exports = {
         .executeQuery({
           query:
             "UPDATE `hims_f_inventory_material_header` SET `is_completed`=?, `completed_date`=? \
-          WHERE `hims_f_inventory_material_header_id`=?",
+          WHERE `hims_f_inventory_material_header_id`=?;",
           values: ["Y", new Date(), inputParam.inv_requisition_id],
           printQuery: true
         })
@@ -531,7 +531,7 @@ module.exports = {
             for (let i = 0; i < details.length; i++) {
               qry += mysql.format(
                 "UPDATE hims_f_inventory_material_detail SET `po_created_date`=?, po_created='Y', po_created_quantity=?\
-              where `hims_f_inventory_material_detail_id`=? ",
+              where `hims_f_inventory_material_detail_id`=? ;",
                 [
                   new Date(),
                   details[i].total_quantity,

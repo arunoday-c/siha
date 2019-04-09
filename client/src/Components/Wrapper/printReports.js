@@ -46,6 +46,7 @@ export function accessReport(options) {
 }
 
 const AlgaehReport = options => {
+  debugger;
   if (options.plotUI !== undefined) {
     plotUI(options);
   } else {

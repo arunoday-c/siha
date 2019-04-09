@@ -597,10 +597,10 @@ export default class ReportUI extends Component {
             </div>
             <div />
             <div>
-              {console.log(
+              {/* {console.log(
                 "this.props.options.plotUI",
                 this.props.options.plotUI
-              )}
+              )} */}
               {this.props.options !== undefined &&
               this.props.options.plotUI !== undefined ? (
                 <React.Fragment>

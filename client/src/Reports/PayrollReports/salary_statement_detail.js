@@ -36,7 +36,6 @@ export function printReport(result) {
   };
 
   const assignDeductData = (employee_deduction, deduct) => {
-    debugger;
     data_amount = _.filter(employee_deduction, f => {
       return f.deductions_id === deduct.hims_d_earning_deduction_id;
     });
@@ -47,7 +46,6 @@ export function printReport(result) {
   };
 
   const assignContriData = (employee_contributions, contrib) => {
-    debugger;
     data_amount = _.filter(employee_contributions, f => {
       return f.contributions_id === contrib.hims_d_earning_deduction_id;
     });
@@ -56,6 +54,41 @@ export function printReport(result) {
     }
     return data_amount;
   };
+
+  // <td class="center">${moment(list.date_of_joining).format(
+  //   "DD-MM-YYYY"
+  // )}</td>
+  // <td class="right">${list.present_days} </td>
+  // <td class="right">${list.complete_ot} </td>
+
+  // <td class="center">${moment(list.salary_date).format("DD-MM-YYYY")} </td>
+  //     <td class="center" style="width:150px">${
+  //       list.mode_of_payment === "CS"
+  //         ? "Cash"
+  //         : list.mode_of_payment === "CH"
+  //         ? "Cheque"
+  //         : list.mode_of_payment === "TRF"
+  //         ? "Transfer"
+  //         : list.mode_of_payment === "WPS"
+  //         ? "Wages and Proctection System"
+  //         : ""
+  //     } </td>
+
+  //     <td class="right" style="width:150px">${list.leave_days} </td>
+  //     <td class="right" style="width:150px">${getAmountFormart(
+  //       list.leave_salary,
+  //       {
+  //         appendSymbol: false
+  //       }
+  //     )} </td>
+
+  // <th>Date of Join</th>
+  //               <th>Days Present</th>
+  // <th>OT Hours</th>
+
+  // <th>Day of Payment</th>
+  //               <th style="width:150px">Mode of Payment</th>
+  //               <th style="width:150px">Leave Days</th>
 
   return `
   <div class="print-body">
@@ -71,16 +104,17 @@ export function printReport(result) {
             <tr>
                 <th>Employee Code</th>
                 <th style="width:250px">Employee Name</th>
-                <th style="width:250px">Designation</th>
-                <th>Date of Join</th>
-                <th>Days Present</th>
-                <th>OT Hours</th>
+                <th style="width:200px">Department</th>
+                <th style="width:200px">Designation</th>
+                <th style="width:200px">Branch</th>                                
                 ${
                   earning_component.length > 0
                     ? earning_component
                         .map(
                           list =>
-                            `<th>${list.earning_deduction_description}</th>`
+                            `<th style="width:135px">${
+                              list.earning_deduction_description
+                            }</th>`
                         )
                         .join("")
                     : ""
@@ -91,7 +125,9 @@ export function printReport(result) {
                     ? deduction_component
                         .map(
                           list =>
-                            `<th>${list.earning_deduction_description}</th>`
+                            `<th style="width:135px">${
+                              list.earning_deduction_description
+                            }</th>`
                         )
                         .join("")
                     : ""
@@ -102,15 +138,20 @@ export function printReport(result) {
                     ? contributions_component
                         .map(
                           list =>
-                            `<th>${list.earning_deduction_description}</th>`
+                            `<th style="width:135px">${
+                              list.earning_deduction_description
+                            }</th>`
                         )
                         .join("")
                     : ""
                 }
                 <th style="width:135px">Total Contribution</th>
                 <th>Net Salary</th>
-                <th>Day of Payment</th>
-                <th style="width:150px">Mode of Payment</th>
+                
+                <th style="width:150px">Leave Provision</th>
+                <th style="width:150px">Airfair Amount</th>
+                <th style="width:150px">Gratuity Provision</th>
+                
                 
             </tr>
         </thead></table></div><div class="tbl-content" style="max-height:26vh" algaeh-report-table="true" >
@@ -123,12 +164,10 @@ export function printReport(result) {
     <tr>
       <td class="center">${list.employee_code}</td>
       <td class="left" style="width:250px">${list.full_name}</td>
-      <td class="left" style="width:250px">${list.designation}</td>
-      <td class="center">${moment(list.date_of_joining).format(
-        "DD-MM-YYYY"
-      )}</td>
-      <td class="right">${list.present_days} </td>
-      <td class="right">${list.complete_ot} </td>
+      <td class="left" style="width:200px">${list.sub_department_name}</td>
+      <td class="left" style="width:200px">${list.designation}</td>
+      <td class="left" style="width:200px">${list.hospital_name}</td>     
+      
     ${
       earning_component.length > 0
         ? earning_component
@@ -194,9 +233,12 @@ export function printReport(result) {
               .join("")
           : ""
       }    
-      <td class="right">${getAmountFormart(list.total_deductions, {
-        appendSymbol: false
-      })}</td>
+      <td class="right" style="width:135px">${getAmountFormart(
+        list.total_deductions,
+        {
+          appendSymbol: false
+        }
+      )}</td>
 
       ${
         contributions_component.length > 0
@@ -227,25 +269,29 @@ export function printReport(result) {
               .join("")
           : ""
       }    
-      <td class="right">${getAmountFormart(list.total_contributions, {
-        appendSymbol: false
-      })}</td>
+      <td class="right" style="width:135px">${getAmountFormart(
+        list.total_contributions,
+        {
+          appendSymbol: false
+        }
+      )}</td>
 
       <td class="right">${getAmountFormart(list.net_salary, {
         appendSymbol: false
       })} </td>
-      <td class="center">${moment(list.salary_date).format("DD-MM-YYYY")} </td>
-      <td class="center" style="width:150px">${
-        list.mode_of_payment === "CS"
-          ? "Cash"
-          : list.mode_of_payment === "CH"
-          ? "Cheque"
-          : list.mode_of_payment === "TRF"
-          ? "Transfer"
-          : list.mode_of_payment === "WPS"
-          ? "Wages and Proctection System"
-          : ""
-      } </td>
+      
+      <td class="right" style="width:150px">${getAmountFormart(
+        list.airfare_amount,
+        {
+          appendSymbol: false
+        }
+      )} </td>
+      <td class="right" style="width:150px">${getAmountFormart(
+        list.gratuity_amount,
+        {
+          appendSymbol: false
+        }
+      )} </td>
 
   
 </tr>
@@ -255,7 +301,7 @@ export function printReport(result) {
   
     
     </tbody></table></div>
-    <div class="row reportFooterDetails">
+    <div class="row ">
     <div class="col"></div>
       <div class="col-2">
         <label>Net Basic</label>
@@ -280,6 +326,18 @@ export function printReport(result) {
         <h6>${getAmountFormart(result.total_net_salary)}</h6>
       </div>
         
+      <div class="col-2">
+        <label>Total Leave Provision</label>
+        <h6>${getAmountFormart(result.sum_leave_salary)}</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Airfair</label>
+        <h6>${getAmountFormart(result.sum_airfare_amount)}</h6>
+      </div>
+      <div class="col-2">
+        <label>Total Gratuity Provision</label>
+        <h6>${getAmountFormart(result.sum_gratuity)}</h6>
+      </div>
     </div>
   </div>
 </section>

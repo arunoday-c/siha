@@ -238,7 +238,7 @@ module.exports = {
                 "UPDATE hims_f_inventory_material_detail SET `inventory_header_id`=?,`completed` = ?,\
               `item_category_id`=?, `item_group_id`=?, `item_id`=?, \
               `quantity_required`=?, `quantity_authorized`=?, `item_uom`=?,`quantity_recieved`=?, `quantity_outstanding`=?\
-              where `hims_f_inventory_material_detail_id`=? ",
+              where `hims_f_inventory_material_detail_id`=?;",
                 [
                   details[i].inventory_header_id,
                   details[i].completed,
