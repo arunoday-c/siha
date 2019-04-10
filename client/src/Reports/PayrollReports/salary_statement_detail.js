@@ -280,20 +280,20 @@ export function printReport(result) {
     </tbody></table></div>
     <div class="row ">
       <div class="col">
-        <label>Net Basic</label>
+        <label>Total Basic</label>
         <h6>${getAmountFormart(result.total_basic)}</h6>
       </div>
       <div class="col">
-        <label>Net Earnings</label>
+        <label>Total Earnings</label>
         <h6>${getAmountFormart(result.total_earnings)}</h6>
       </div>
       <div class="col">
-        <label>Net Deductions</label>
+        <label>Total Deductions</label>
 
         <h6>${getAmountFormart(result.total_deductions)}</h6>
       </div>
       <div class="col">
-      <label>Net Contributions</label>
+      <label>Total Contributions</label>
 
       <h6>${getAmountFormart(result.total_contributions)}</h6>
     </div>
