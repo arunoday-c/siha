@@ -53,7 +53,9 @@ import {
   addPatientHistory,
   getPatientHistory,
   getFollowUp,
-  getPatientEpisodeSummary
+  getPatientEpisodeSummary,
+  updatePatientEncounter,
+  getPatientEncounter
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -849,6 +851,36 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientEpisodeSummary",
     getPatientEpisodeSummary,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad: to Update Notes in Patient encounter
+  api.put(
+    "/updatePatientEncounter",
+    updatePatientEncounter,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad: to Get Notes in Patient encounter
+  api.get(
+    "/getPatientEncounter",
+    getPatientEncounter,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

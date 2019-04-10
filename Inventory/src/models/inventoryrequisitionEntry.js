@@ -369,7 +369,7 @@ module.exports = {
             for (let i = 0; i < details.length; i++) {
               qry += mysql.format(
                 "UPDATE hims_f_inventory_material_detail SET `quantity_outstanding`=?\
-              where `hims_f_inventory_material_detail_id`=? ",
+              where `hims_f_inventory_material_detail_id`=?;",
                 [
                   details[i].quantity_outstanding,
                   details[i].material_requisition_detail_id

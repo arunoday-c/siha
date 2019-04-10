@@ -308,6 +308,31 @@ const searchByhandaler = ($this, e) => {
   });
 };
 
+const getPatientEncounterDetails = $this => {
+  algaehApiCall({
+    uri: "/doctorsWorkBench/getPatientEncounter",
+    method: "GET",
+    data: {
+      hims_f_patient_encounter_id: Window.global.encounter_id
+    },
+    onSuccess: response => {
+      let data = response.data.records[0];
+      if (response.data.success) {
+        debugger;
+        $this.setState({
+          assesment_notes: data.assesment_notes
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 export {
   texthandle,
   assnotetexthandle,
@@ -320,5 +345,6 @@ export {
   deleteFinalDiagnosis,
   updateDiagnosis,
   searchByhandaler,
-  IcdsSearch
+  IcdsSearch,
+  getPatientEncounterDetails
 };
