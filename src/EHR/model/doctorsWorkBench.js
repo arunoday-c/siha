@@ -2809,6 +2809,75 @@ let getPatientEpisodeSummary = (req, res, next) => {
   }
 };
 
+//created by Nowshad: to Update Notes in Patient encounter
+let updatePatientEncounter = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let inputData = extend({}, req.body);
+    let strQuery = "";
+    if (inputData.examination_notes != null) {
+      strQuery = "examination_notes = '" + inputData.examination_notes + "'";
+    }
+    if (inputData.assesment_notes != null) {
+      strQuery = "assesment_notes = '" + inputData.assesment_notes + "'";
+    }
+
+    if (strQuery != "") {
+      db.getConnection((error, connection) => {
+        connection.query(
+          "UPDATE hims_f_patient_encounter Set " +
+            strQuery +
+            " where hims_f_patient_encounter_id",
+          [inputData.hims_f_patient_encounter_id],
+          (error, result) => {
+            releaseDBConnection(db, connection);
+            if (error) {
+              next(error);
+            }
+            req.records = result;
+            debugLog("result", result);
+            next();
+          }
+        );
+      });
+    } else {
+      next();
+      return;
+    }
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by Nowshad: to get
+let getPatientEncounter = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      connection.query(
+        "SELECT examination_notes,assesment_notes FROM hims_f_patient_encounter where hims_f_patient_encounter_id=?;",
+        [req.query.hims_f_patient_encounter_id],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -2862,5 +2931,8 @@ module.exports = {
   getVitalsHeaderMaster,
   addPatientHistory,
   getPatientHistory,
-  getPatientEpisodeSummary
+  getPatientEpisodeSummary,
+
+  updatePatientEncounter,
+  getPatientEncounter
 };

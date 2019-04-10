@@ -317,46 +317,46 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
           }).then(patientVitalRes => {
             new Promise((resolve, reject) => {
               try {
-                if (
-                  input.nurse_notes != undefined &&
-                  input.nurse_notes != null &&
-                  input.nurse_notes != "null"
-                ) {
-                  connection.query(
-                    "UPDATE `hims_f_patient_encounter` SET nurse_examine='Y', nurse_notes=?,\
+                // if (
+                //   input.nurse_notes != undefined &&
+                //   input.nurse_notes != null &&
+                //   input.nurse_notes != "null"
+                // ) {
+                connection.query(
+                  "UPDATE `hims_f_patient_encounter` SET nurse_examine='Y', nurse_notes=?,\
                  updated_date=?, updated_by=? WHERE  `record_status`='A' and `hims_f_patient_encounter_id`=?;",
-                    [
-                      req.body.nurse_notes,
-                      new Date(),
-                      req.body.updated_by,
-                      req.body.hims_f_patient_encounter_id
-                    ],
-                    (error, updateResult) => {
-                      if (error) {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          next(error);
-                        });
-                      }
-
-                      if (updateResult.affectedRows > 0) {
-                        resolve({ updateResult });
-                      } else {
-                        connection.rollback(() => {
-                          releaseDBConnection(db, connection);
-                          req.records = {
-                            invalid_data: true,
-                            message: "please send correct data"
-                          };
-                          next();
-                          return;
-                        });
-                      }
+                  [
+                    req.body.nurse_notes,
+                    new Date(),
+                    req.body.updated_by,
+                    req.body.hims_f_patient_encounter_id
+                  ],
+                  (error, updateResult) => {
+                    if (error) {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        next(error);
+                      });
                     }
-                  );
-                } else {
-                  resolve({ patientVitalRes });
-                }
+
+                    if (updateResult.affectedRows > 0) {
+                      resolve({ updateResult });
+                    } else {
+                      connection.rollback(() => {
+                        releaseDBConnection(db, connection);
+                        req.records = {
+                          invalid_data: true,
+                          message: "please send correct data"
+                        };
+                        next();
+                        return;
+                      });
+                    }
+                  }
+                );
+                // } else {
+                //   resolve({ patientVitalRes });
+                // }
               } catch (e) {
                 reject(e);
               }
