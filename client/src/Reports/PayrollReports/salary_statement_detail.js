@@ -102,6 +102,7 @@ export function printReport(result) {
     <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <thead >
             <tr>
+                <th style="width:50px">Sl. No.</th>
                 <th>Employee Code</th>
                 <th style="width:250px">Employee Name</th>
                 <th style="width:200px">Nationality</th>
@@ -154,9 +155,10 @@ export function printReport(result) {
         <tbody>
   ${detail_data
     .map(
-      list =>
+      (list, index) =>
         `
     <tr>
+      <td class="center"  style="width:50px">${index + 1}</td>
       <td class="center">${list.employee_code}</td>
       <td class="left" style="width:250px">${list.full_name}</td>
       <td class="left" style="width:200px">${list.nationality}</td>    
@@ -288,7 +290,8 @@ export function printReport(result) {
     <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <tbody >
             <tr>
-                <td>Total</td>
+                <td  style="width:50px">Total</td>
+                <td></td>
                 <td style="width:250px"></td>
                 <td style="width:200px"></td>
                 <td style="width:200px"></td>
