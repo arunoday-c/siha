@@ -144,7 +144,7 @@ export function printReport(result) {
                 <th>Net Salary</th>
                 
                 <th>Leave Provision</th>
-                <th>Airfair Amount</th>
+                <th>Airfare Amount</th>
                 <th>Gratuity Provision</th>
                 
                 
@@ -307,7 +307,7 @@ export function printReport(result) {
         <h6>${getAmountFormart(result.sum_leave_salary)}</h6>
       </div>
       <div class="col">
-        <label>Total Airfair</label>
+        <label>Total Airfare</label>
         <h6>${getAmountFormart(result.sum_airfare_amount)}</h6>
       </div>
       <div class="col">

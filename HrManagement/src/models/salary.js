@@ -2622,15 +2622,9 @@ module.exports = {
 
                 let total_basic = 0;
 
-                let sum_gratuity = new LINQ(gratuity).Sum(s =>
-                  parseFloat(s.gratuity_amount, 3)
-                );
-                let sum_leave_salary = new LINQ(accrual).Sum(s =>
-                  parseFloat(s.leave_salary)
-                );
-                let sum_airfare_amount = new LINQ(accrual).Sum(s =>
-                  parseFloat(s.airfare_amount)
-                );
+                let sum_gratuity = 0;
+                let sum_leave_salary = 0;
+                let sum_airfare_amount = 0;
 
                 for (let i = 0; i < salary.length; i++) {
                   //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
@@ -2708,6 +2702,21 @@ module.exports = {
                   total_basic += new LINQ(employee_earning)
                     .Where(w => w.earnings_id == basic_id)
                     .Select(s => parseFloat(s.amount))
+                    .FirstOrDefault(0);
+
+                  sum_gratuity += new LINQ(gratuity)
+                    .Where(w => w.employee_id == salary[i]["employee_id"])
+                    .Select(s => parseFloat(s.gratuity_amount))
+                    .FirstOrDefault(0);
+
+                  sum_leave_salary += new LINQ(accrual)
+                    .Where(w => w.employee_id == salary[i]["employee_id"])
+                    .Select(s => parseFloat(s.leave_salary))
+                    .FirstOrDefault(0);
+
+                  sum_airfare_amount += new LINQ(accrual)
+                    .Where(w => w.employee_id == salary[i]["employee_id"])
+                    .Select(s => parseFloat(s.airfare_amount))
                     .FirstOrDefault(0);
 
                   //console.log("totalbasic:", total_basic);
