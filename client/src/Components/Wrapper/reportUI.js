@@ -85,6 +85,7 @@ export default class ReportUI extends Component {
             "scroll",
             function(e) {
               e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
+              e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
             },
             false
           );
@@ -152,6 +153,7 @@ export default class ReportUI extends Component {
         .forEach(item => {
           item.addEventListener("scroll", function(e) {
             e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
+            e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
           });
         });
     }

@@ -11,6 +11,26 @@
   .tbl-header::-webkit-scrollbar-thumb {
     background-color: white; }
 
+.tbl-footer {
+  overflow-y: hidden;
+  overflow-x: auto; }
+  .tbl-footer::-webkit-scrollbar {
+    width: 0px !important;
+    /* remove scrollbar space */
+    height: 0px !important;
+    /* remove scrollbar space */
+    background: transparent !important;
+    /* optional: just make scrollbar invisible */ }
+  .tbl-footer::-webkit-scrollbar-thumb {
+    background-color: white; }
+  .tbl-footer td {
+    text-align: right !important;
+    font-weight: bold;
+    color: #000 !important;
+    border-bottom: solid 1px rgba(255, 255, 255, 0.5); }
+  .tbl-footer .highlightBorder {
+    border-bottom: 1px ridge #12a28d !important; }
+
 .tbl-content {
   height: 35vh;
   overflow: auto;
@@ -39,7 +59,7 @@
     text-align: left;
     vertical-align: middle;
     font-size: 0.9rem;
-    color: #666666 !important;
+    color: #666666;
     border-bottom: solid 1px rgba(255, 255, 255, 0.1);
     width: 130px; }
     .reportFixedTable td.left {

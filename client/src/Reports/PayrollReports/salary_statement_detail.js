@@ -130,6 +130,7 @@ export function printReport(result) {
                     : ""
                 }
                 <th style="width:135px">Total Deduction</th>
+                <th>Net Salary</th>
                 ${
                   contributions_component.length > 0
                     ? contributions_component
@@ -141,11 +142,10 @@ export function printReport(result) {
                     : ""
                 }
                 <th style="width:135px">Total Contribution</th>
-                <th>Net Salary</th>
                 
-                <th>Leave Provision</th>
-                <th>Airfare Amount</th>
-                <th>Gratuity Provision</th>
+                <th style="width:150px">Leave Provision</th>
+                <th style="width:150px">Airfare Amount</th>
+                <th style="width:150px">Gratuity Provision</th>
                 
                 
             </tr>
@@ -224,6 +224,9 @@ export function printReport(result) {
         }
       )}</td>
 
+      <td class="right">${getAmountFormart(list.net_salary, {
+        appendSymbol: false
+      })} </td>
       ${
         contributions_component.length > 0
           ? contributions_component
@@ -254,9 +257,6 @@ export function printReport(result) {
         }
       )}</td>
 
-      <td class="right">${getAmountFormart(list.net_salary, {
-        appendSymbol: false
-      })} </td>
 
       <td class="right" style="width:150px">${getAmountFormart(
         list.leave_salary,
@@ -265,12 +265,18 @@ export function printReport(result) {
         }
       )} </td>
       
-      <td class="right">${getAmountFormart(list.airfare_amount, {
-        appendSymbol: false
-      })} </td>
-      <td class="right">${getAmountFormart(list.gratuity_amount, {
-        appendSymbol: false
-      })} </td>
+      <td class="right" style="width:150px">${getAmountFormart(
+        list.airfare_amount,
+        {
+          appendSymbol: false
+        }
+      )} </td>
+      <td class="right" style="width:150px">${getAmountFormart(
+        list.gratuity_amount,
+        {
+          appendSymbol: false
+        }
+      )} </td>
 </tr>
     `
     )
@@ -278,43 +284,58 @@ export function printReport(result) {
   
     
     </tbody></table></div>
-    <div class="row ">
-      <div class="col">
-        <label>Total Basic</label>
-        <h6>${getAmountFormart(result.total_basic)}</h6>
-      </div>
-      <div class="col">
-        <label>Total Earnings</label>
-        <h6>${getAmountFormart(result.total_earnings)}</h6>
-      </div>
-      <div class="col">
-        <label>Total Deductions</label>
+    <div class="tbl-footer">
+    <table class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
+        <tbody >
+            <tr>
+                <td>Total</td>
+                <td style="width:250px"></td>
+                <td style="width:200px"></td>
+                <td style="width:200px"></td>
+                <td style="width:200px"></td>
+                <td style="width:150px"></td>                                
+                ${
+                  earning_component.length > 0
+                    ? earning_component.map(list => `<td></td>`).join("")
+                    : ""
+                }
+                <td style="width:135px" class="highlightBorder">${getAmountFormart(
+                  result.total_earnings
+                )}</td>
+                ${
+                  deduction_component.length > 0
+                    ? deduction_component.map(list => `<td></td>`).join("")
+                    : ""
+                }
+                <td style="width:135px" class="highlightBorder">${getAmountFormart(
+                  result.total_deductions
+                )}</td>
+                <td class="highlightBorder">${getAmountFormart(
+                  result.total_net_salary
+                )}</td>
+                ${
+                  contributions_component.length > 0
+                    ? contributions_component.map(list => `<td></td>`).join("")
+                    : ""
+                }
+                <td style="width:135px" class="highlightBorder">${getAmountFormart(
+                  result.total_contributions
+                )}</td>
+                
+                <td style="width:150px" class="highlightBorder">${getAmountFormart(
+                  result.sum_leave_salary
+                )}</td>
+                <td style="width:150px" class="highlightBorder">${getAmountFormart(
+                  result.sum_airfare_amount
+                )}</td>
+                <td style="width:150px" class="highlightBorder">${getAmountFormart(
+                  result.sum_gratuity
+                )}</td>
+                
+                
+            </tr>
+        </tbody></table></div>
 
-        <h6>${getAmountFormart(result.total_deductions)}</h6>
-      </div>
-      <div class="col">
-      <label>Total Contributions</label>
-
-      <h6>${getAmountFormart(result.total_contributions)}</h6>
-    </div>
-      <div class="col">
-        <label>Total Net Salary</label>
-        <h6>${getAmountFormart(result.total_net_salary)}</h6>
-      </div>
-        
-      <div class="col">
-        <label>Total Leave Provision</label>
-        <h6>${getAmountFormart(result.sum_leave_salary)}</h6>
-      </div>
-      <div class="col">
-        <label>Total Airfare</label>
-        <h6>${getAmountFormart(result.sum_airfare_amount)}</h6>
-      </div>
-      <div class="col">
-        <label>Total Gratuity Provision</label>
-        <h6>${getAmountFormart(result.sum_gratuity)}</h6>
-      </div>
-    </div>
   </div>
 </section>
   `;
