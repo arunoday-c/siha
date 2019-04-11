@@ -1287,7 +1287,7 @@ export default [
             type: "dropdown",
             name: "is_local",
             initialLoad: true,
-            isImp: true,
+            // isImp: true,
             label: "Select Type",
             dataSource: {
               textField: "name",

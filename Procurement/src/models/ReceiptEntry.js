@@ -237,7 +237,7 @@ module.exports = {
               qry += mysql.format(
                 "UPDATE hims_f_procurement_grn_detail SET `recieved_quantity`=?, batchno=?,\
                 rejected_quantity=?, outstanding_quantity=?, expiry_date=?\
-              where `hims_f_procurement_grn_detail_id`=? ",
+              where `hims_f_procurement_grn_detail_id`=? ;",
                 [
                   details[i].recieved_quantity,
                   details[i].batchno,
@@ -322,7 +322,7 @@ module.exports = {
             for (let i = 0; i < details.length; i++) {
               qry += mysql.format(
                 "UPDATE hims_f_procurement_dn_detail SET `quantity_outstanding`=?\
-              where `hims_f_procurement_dn_detail_id`=? ",
+              where `hims_f_procurement_dn_detail_id`=? ;",
                 [details[i].quantity_outstanding, details[i].dn_detail_id]
               );
             }

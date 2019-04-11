@@ -7,15 +7,18 @@ import {
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import ExaminationDiagram from "./ExaminationDiagram";
 
 class PhysicalExamination extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false
+      isOpen: false,
+      examination_notes: null
     };
     this.isclosed = false;
+    this.getPatientEncounterDetails();
   }
 
   textHandle(e) {
@@ -37,6 +40,52 @@ class PhysicalExamination extends Component {
     this.setState({
       ...this.state,
       isOpen: false
+    });
+  }
+
+  componentWillUnmount() {
+    debugger;
+    if (this.state.examination_notes !== null) {
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientEncounter",
+        method: "PUT",
+        data: {
+          examination_notes: this.state.examination_notes,
+          hims_f_patient_encounter_id: Window.global.encounter_id
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            debugger;
+          }
+        }
+      });
+    }
+    // updatePatientEncounter
+  }
+
+  getPatientEncounterDetails() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientEncounter",
+      method: "GET",
+      data: {
+        hims_f_patient_encounter_id: Window.global.encounter_id
+      },
+
+      onSuccess: response => {
+        if (response.data.success) {
+          debugger;
+          let data = response.data.records[0];
+          this.setState({
+            examination_notes: data.examination_notes
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   }
 

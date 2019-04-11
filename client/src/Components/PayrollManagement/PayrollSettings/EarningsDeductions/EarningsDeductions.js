@@ -33,7 +33,9 @@ class EarningsDeductions extends Component {
       calculator_values: "",
       displayNationality: false,
       specific_nationality: false,
-      nationality_id: null
+      nationality_id: null,
+      print_report: "N",
+      print_order_by: 0
     };
     this.getEarningDeductions();
   }
@@ -94,6 +96,8 @@ class EarningsDeductions extends Component {
         round_off_amount: data.round_off_amount,
         specific_nationality: data.specific_nationality,
         nationality_id: data.nationality_id,
+        print_report: data.print_report,
+        print_order_by: data.print_order_by,
         record_status: "A"
       },
       onSuccess: response => {
@@ -220,7 +224,9 @@ class EarningsDeductions extends Component {
             formula: this.state.formula,
             specific_nationality:
               this.state.specific_nationality === "true" ? "Y" : "N",
-            nationality_id: this.state.nationality_id
+            nationality_id: this.state.nationality_id,
+            print_report: this.state.print_report,
+            print_order_by: this.state.print_order_by
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -348,6 +354,12 @@ class EarningsDeductions extends Component {
             });
           }
         );
+        break;
+      case "print_report":
+        this.setState({
+          print_report: e.target.value
+        });
+        break;
     }
   }
 
@@ -1008,6 +1020,49 @@ class EarningsDeductions extends Component {
                       </label>
                     </div>
                   </div>
+                  <div className="col-4">
+                    <label>Print In Report</label>
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Y"
+                          name="print_report"
+                          onChange={this.changeChecks.bind(this)}
+                          checked={this.state.print_report === "Y"}
+                        />
+                        <span>Yes</span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="N"
+                          name="print_report"
+                          onChange={this.changeChecks.bind(this)}
+                          checked={this.state.print_report === "N"}
+                        />
+                        <span>No</span>
+                      </label>
+                    </div>
+                  </div>
+                  <AlagehFormGroup
+                    label={{
+                      forceLabel: "Print Order",
+                      isImp: this.state.print_order_by
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "print_order_by",
+                      value: this.state.print_order_by,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        placeholder: "Print Order",
+                        type: "number"
+                      }
+                    }}
+                  />
                   <div className="col-4 form-group">
                     <button
                       className="btn btn-primary"
@@ -1770,6 +1825,72 @@ class EarningsDeductions extends Component {
                                 },
 
                                 onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "print_report",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Print In Report" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.print_report === "Y" ? "Yes" : "No"}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "print_report",
+                                className: "select-fld",
+                                value: row.print_report,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.FORMAT_YESNO
+                                },
+                                others: {
+                                  errormessage: "Print Report cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "print_order_by",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Print Order" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "print_order_by",
+                                value: row.print_order_by,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Print Order - cannot be blank",
+                                  required:
+                                    row.print_report === "Y" ? true : false
+                                }
                               }}
                             />
                           );

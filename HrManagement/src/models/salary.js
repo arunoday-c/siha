@@ -2534,19 +2534,20 @@ module.exports = {
 
       _mysql
         .executeQuery({
-          query: `select earning_deduction_description,component_category from hims_d_earning_deduction\
-          where record_status='A' and print_report='Y';\
-          select E.employee_code,E.full_name,E.employee_designation_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
+          query: `select hims_d_earning_deduction_id,earning_deduction_description,component_category, print_order_by, \
+          nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
+          select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
           S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions,\
-          S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours
+          S.total_contributions,S.ot_work_hours,S.ot_weekoff_hours,S.ot_holiday_hours,H.hospital_name,SD.sub_department_name
           from hims_d_employee E\
+          inner join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
           inner join hims_d_hospital H  on E.hospital_id=H.hims_d_hospital_id  ${is_local}\
           inner join hims_d_designation D on E.employee_designation_id=D.hims_d_designation_id\
           inner join hims_d_employee_group EG on E.employee_group_id=EG.hims_d_employee_group_id\
           inner join hims_d_nationality N on E.nationality=N.hims_d_nationality_id\
           inner join  hims_f_salary S on E.hims_d_employee_id=S.employee_id\
-          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=?`,
+          where E.hospital_id=? and E.record_status='A' and E.employee_group_id=? and S.month=? and S.year=? `,
           values: [
             input.hospital_id,
             input.employee_group_id,
@@ -2564,6 +2565,7 @@ module.exports = {
 
           let total_earnings = 0;
           let total_deductions = 0;
+          let total_contributions = 0;
           let total_net_salary = 0;
 
           if (salary.length > 0) {
@@ -2572,6 +2574,9 @@ module.exports = {
             );
             total_deductions = new LINQ(salary).Sum(s =>
               parseFloat(s.total_deductions)
+            );
+            total_contributions = new LINQ(salary).Sum(s =>
+              parseFloat(s.total_contributions)
             );
             total_net_salary = new LINQ(salary).Sum(s =>
               parseFloat(s.net_salary)
@@ -2584,32 +2589,45 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary from \
+                  "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary,ED.nationality_id from \
                 hims_f_salary_earnings SE inner join hims_d_earning_deduction ED on \
                 SE.earnings_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' where salary_header_id in (" +
                   salary_header_ids +
                   ");\
-                select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary from \
+                select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary,ED.nationality_id from \
                 hims_f_salary_deductions SD inner join hims_d_earning_deduction ED on \
                 SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
                 where salary_header_id in ( " +
                   salary_header_ids +
-                  ");select basic_earning_component from hims_d_hrms_options;"
+                  ");select basic_earning_component from hims_d_hrms_options;\
+                  select employee_id,gratuity_amount from hims_f_gratuity_provision where year=? and month=?;\
+                  select employee_id,leave_days,leave_salary,airfare_amount from hims_f_leave_salary_accrual_detail\
+                  where year=? and month=?;\
+                  select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount,Ed.nationality_id from \
+                  hims_f_salary_contributions SC inner join hims_d_earning_deduction ED on \
+                  SC.contributions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
+                  where salary_header_id in ( " +
+                  salary_header_ids +
+                  ");",
+                values: [input.year, input.month, input.year, input.month]
               })
               .then(results => {
-                // _mysql.releaseConnection();
-                // req.records = result;
-                // next();
-
                 let earnings = results[0];
                 let deductions = results[1];
                 let basic_id = results[2][0]["basic_earning_component"];
-
-                // console.log("basic:",basic_id);
+                let gratuity = results[3];
+                let accrual = results[4];
+                let contributions = results[5];
+                //   console.log("accrual:",accrual);
 
                 let total_basic = 0;
 
+                let sum_gratuity = 0;
+                let sum_leave_salary = 0;
+                let sum_airfare_amount = 0;
+
                 for (let i = 0; i < salary.length; i++) {
+                  //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
                   let ot_hours = 0;
                   let ot_min = 0;
 
@@ -2638,6 +2656,7 @@ module.exports = {
 
                   let complete_ot =
                     ot_hours + "." + (parseInt(ot_min) % parseInt(60));
+                  //EN-complete OVER-Time  calculation
 
                   let employee_earning = new LINQ(earnings)
                     .Where(
@@ -2647,7 +2666,8 @@ module.exports = {
                       return {
                         hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
                         earnings_id: s.earnings_id,
-                        amount: s.amount
+                        amount: s.amount,
+                        nationality_id: s.nationality_id
                       };
                     })
                     .ToArray();
@@ -2661,7 +2681,23 @@ module.exports = {
                         hims_f_salary_deductions_id:
                           s.hims_f_salary_deductions_id,
                         deductions_id: s.deductions_id,
-                        amount: s.amount
+                        amount: s.amount,
+                        nationality_id: s.nationality_id
+                      };
+                    })
+                    .ToArray();
+
+                  let employee_contributions = new LINQ(contributions)
+                    .Where(
+                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                    )
+                    .Select(s => {
+                      return {
+                        hims_f_salary_contributions_id:
+                          s.hims_f_salary_contributions_id,
+                        contributions_id: s.contributions_id,
+                        amount: s.amount,
+                        nationality_id: s.nationality_id
                       };
                     })
                     .ToArray();
@@ -2671,12 +2707,54 @@ module.exports = {
                     .Select(s => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
-                  console.log("totalbasic:", total_basic);
+                  sum_gratuity += new LINQ(gratuity)
+                    .Where(w => w.employee_id == salary[i]["employee_id"])
+                    .Select(s => parseFloat(s.gratuity_amount))
+                    .FirstOrDefault(0);
+
+                  sum_leave_salary += new LINQ(accrual)
+                    .Where(w => w.employee_id == salary[i]["employee_id"])
+                    .Select(s => parseFloat(s.leave_salary))
+                    .FirstOrDefault(0);
+
+                  sum_airfare_amount += new LINQ(accrual)
+                    .Where(w => w.employee_id == salary[i]["employee_id"])
+                    .Select(s => parseFloat(s.airfare_amount))
+                    .FirstOrDefault(0);
+
+                  //console.log("totalbasic:", total_basic);
+
+                  let emp_gratuity = new LINQ(gratuity)
+                    .Where(w => w.employee_id == salary[i]["employee_id"])
+                    .Select(s => {
+                      return {
+                        gratuity_amount: s.gratuity_amount
+                      };
+                    })
+                    .FirstOrDefault({ gratuity_amount: 0 });
+
+                  let emp_accural = new LINQ(accrual)
+                    .Where(w => w.employee_id == salary[i]["employee_id"])
+                    .Select(s => {
+                      return {
+                        leave_days: s.leave_days,
+                        leave_salary: s.leave_salary,
+                        airfare_amount: s.airfare_amount
+                      };
+                    })
+                    .FirstOrDefault({
+                      leave_days: 0,
+                      leave_salary: 0,
+                      airfare_amount: 0
+                    });
 
                   outputArray.push({
                     ...salary[i],
+                    ...emp_gratuity,
+                    ...emp_accural,
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
+                    employee_contributions: employee_contributions,
                     complete_ot: complete_ot
                   });
                 }
@@ -2688,7 +2766,11 @@ module.exports = {
                   total_basic: total_basic,
                   total_earnings: total_earnings,
                   total_deductions: total_deductions,
-                  total_net_salary: total_net_salary
+                  total_contributions: total_contributions,
+                  total_net_salary: total_net_salary,
+                  sum_gratuity: sum_gratuity,
+                  sum_leave_salary: sum_leave_salary,
+                  sum_airfare_amount: sum_airfare_amount
                 };
                 next();
               })

@@ -85,6 +85,7 @@ class HistoricalData extends Component {
   getPatientDiagnosis() {
     algaehApiCall({
       uri: "/mrd/getPatientDiagnosis",
+      module: "MRD",
       method: "GET",
       data: {
         patient_id: Window.global["mrd_patient"]
@@ -109,6 +110,7 @@ class HistoricalData extends Component {
   getPatientMedication() {
     algaehApiCall({
       uri: "/mrd/getPatientMedication",
+      module: "MRD",
       method: "GET",
       data: {
         patient_id: Window.global["mrd_patient"]
@@ -157,6 +159,7 @@ class HistoricalData extends Component {
   getPatientInvestigation() {
     algaehApiCall({
       uri: "/mrd/getPatientInvestigation",
+      module: "MRD",
       method: "GET",
       data: {
         patient_id: Window.global["mrd_patient"]

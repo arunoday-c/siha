@@ -30,7 +30,7 @@ export function printReport(result) {
   <header> ${payrollHeader(data, "Attendance Report")} </header> 
    
 <section>
-    <h2><span>Attendence Details</span></h2><div class="tbl-header">
+   <div class="tbl-header">
     <table  class="reportFixedTable" cellpadding="0" cellspacing="0" border="0"> 
         <thead >
             <tr>

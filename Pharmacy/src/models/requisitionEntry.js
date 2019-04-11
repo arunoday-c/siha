@@ -245,7 +245,7 @@ module.exports = {
                 "UPDATE hims_f_pharmacy_material_detail SET `pharmacy_header_id`=?,`completed` = ?,\
               `item_category_id`=?, `item_group_id`=?, `item_id`=?, \
               `quantity_required`=?, `quantity_authorized`=?, `item_uom`=?,`quantity_recieved`=?, `quantity_outstanding`=?\
-              where `hims_f_pharmacy_material_detail_id`=? ",
+              where `hims_f_pharmacy_material_detail_id`=?;",
                 [
                   details[i].pharmacy_header_id,
                   details[i].completed,
@@ -376,7 +376,7 @@ module.exports = {
             for (let i = 0; i < details.length; i++) {
               qry += mysql.format(
                 "UPDATE hims_f_pharmacy_material_detail SET `quantity_outstanding`=?\
-              where `hims_f_pharmacy_material_detail_id`=? ",
+              where `hims_f_pharmacy_material_detail_id`=?;",
                 [
                   details[i].quantity_outstanding,
                   details[i].hims_f_pharmacy_material_detail_id

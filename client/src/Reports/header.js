@@ -8,7 +8,7 @@ export function header(data) {
             </div>
             <div class="hospitalAddress">
                 <h4>Cash Invoice</h4>
-                <p># 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India Bangalore Karnataka 560001 IN, Lady Curzon Rd, Shivaji Nagar, Bengaluru, Karnataka 560001</p>
+                <p># 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India Bangalore Karnataka 560001</p>
             </div>
     `;
 }

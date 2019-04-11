@@ -17,7 +17,8 @@ import {
   deleteDiagnosis,
   deleteFinalDiagnosis,
   updateDiagnosis,
-  IcdsSearch
+  IcdsSearch,
+  getPatientEncounterDetails
 } from "./AssessmentEvents";
 import { getPatientDiagnosis } from "../PatientProfileHandlers";
 
@@ -27,6 +28,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
 import OrderedList from "./OrderedList/OrderedList";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 class Assessment extends Component {
   constructor(props) {
@@ -45,8 +47,10 @@ class Assessment extends Component {
       search_by: "C",
       f_search_by: "C",
       showInitialDiagnosisLoader: true,
-      showFinalDiagnosisLoader: true
+      showFinalDiagnosisLoader: true,
+      assesment_notes: null
     };
+    getPatientEncounterDetails(this);
   }
 
   openTab(e) {
@@ -70,6 +74,25 @@ class Assessment extends Component {
     this.setState({
       f_search_by: e.currentTarget.getAttribute("search_by")
     });
+  }
+
+  componentWillUnmount() {
+    debugger;
+    if (this.state.assesment_notes !== null) {
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientEncounter",
+        method: "PUT",
+        data: {
+          assesment_notes: this.state.assesment_notes,
+          hims_f_patient_encounter_id: Window.global.encounter_id
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            debugger;
+          }
+        }
+      });
+    }
   }
 
   componentDidMount() {
@@ -101,12 +124,8 @@ class Assessment extends Component {
         }
       });
     }
-    // if (
-    //   this.props.patient_diagnosis === undefined ||
-    //   this.props.patient_diagnosis.length === 0
-    // ) {
+
     getPatientDiagnosis(this, true);
-    // }
   }
   render() {
     const _diagnosis =
@@ -439,13 +458,13 @@ class Assessment extends Component {
                     <AlagehFormGroup
                       div={{ className: "col-lg-12 form-details" }}
                       label={{
-                        forceLabel: "Assesments Notes",
+                        forceLabel: "Assesment Notes",
                         isImp: true
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "assesments_notes",
-                        value: this.state.assesments_notes,
+                        name: "assesment_notes",
+                        value: this.state.assesment_notes,
                         others: {
                           multiline: true,
                           rows: "4",

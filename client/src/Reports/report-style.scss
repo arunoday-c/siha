@@ -14,6 +14,29 @@
     background-color: white;
   }
 }
+.tbl-footer {
+  overflow-y: hidden;
+  overflow-x: auto;
+  // overflow: -moz-scrollbars-none;
+  // -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    width: 0px !important; /* remove scrollbar space */
+    height: 0px !important; /* remove scrollbar space */
+    background: transparent !important; /* optional: just make scrollbar invisible */
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: white;
+  }
+  td {
+    text-align: right !important;
+    font-weight: bold;
+    color: $color-black !important;
+    border-bottom: solid 1px rgba(255, 255, 255, 0.5);
+  }
+  .highlightBorder {
+    border-bottom: 1px ridge $primary-color !important;
+  }
+}
 .tbl-content {
   height: 35vh;
   overflow: auto;
@@ -47,7 +70,7 @@
     text-align: left;
     vertical-align: middle;
     font-size: 0.9rem;
-    color: lighten($color-black, 40%) !important;
+    color: lighten($color-black, 40%);
     border-bottom: solid 1px rgba(255, 255, 255, 0.1);
     width: 130px;
     &.left {
@@ -77,4 +100,18 @@
 }
 .reportFooterDetails {
   text-align: right;
+}
+
+.forPDF {
+  .tbl-content {
+    height: auto !important;
+    max-height: inherit !important;
+    overflow: auto !important;
+  }
+  th,
+  td {
+    font-size: 0.7rem;
+    padding: 3px;
+    width: auto !important;
+  }
 }

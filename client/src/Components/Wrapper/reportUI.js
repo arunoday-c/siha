@@ -11,6 +11,8 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import moment from "moment";
+
 export default class ReportUI extends Component {
   constructor(props) {
     super(props);
@@ -23,7 +25,9 @@ export default class ReportUI extends Component {
       _htmlString: "",
       parameterCollection: {},
       hasTable: false,
-      report_preview_type: 0
+      report_preview_type: 0,
+      buttonDisable: true,
+      report_name: null
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -84,6 +88,7 @@ export default class ReportUI extends Component {
             "scroll",
             function(e) {
               e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
+              e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
             },
             false
           );
@@ -151,44 +156,54 @@ export default class ReportUI extends Component {
         .forEach(item => {
           item.addEventListener("scroll", function(e) {
             e.target.previousElementSibling.scrollLeft = e.target.scrollLeft;
+            e.target.nextElementSibling.scrollLeft = e.target.scrollLeft;
           });
         });
     }
   }
-  onChangeReportPreview(e) {
-    if (parseInt(e.target.value) === 1) {
+  onChangeReportPreview(type) {
+    if (type === "PDF") {
       debugger;
 
       const _element = this.algehPrintRef;
-
+      const date_time = moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
+      const _hasSelection = _element.querySelector("section");
+      if (_hasSelection !== undefined) {
+        _hasSelection.classList += "forPDF";
+      }
       html2canvas(_element)
         .then(canvas => {
           debugger;
+          if (_hasSelection !== undefined)
+            _hasSelection.classList.remove("forPDF");
           let pdf = new jsPDF("l", "mm", "a4");
           var width = pdf.internal.pageSize.getWidth();
           var height = pdf.internal.pageSize.getHeight();
           let ratio = canvas.height / canvas.width;
           height = ratio * width;
+
           pdf.addImage(
             canvas.toDataURL("image/png"),
             "png",
             5,
             5,
-            width - 20,
+            width - 10,
             height - 10
           );
           //  pdf.addImage(canvas.toDataURL("image/png"), "PNG", 200, 2017);
-          pdf.save(new Date().toString() + ".pdf");
+          pdf.save(
+            this.state.report_name + " " + date_time.toString() + ".pdf"
+          );
         })
         .catch(error => {
+          if (_hasSelection !== undefined)
+            _hasSelection.classList.remove("forPDF");
           console.error(error);
         });
     }
-    this.setState({
-      report_preview_type: parseInt(e.target.value)
-    });
   }
   generateReport(e) {
+    let $this = this;
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
@@ -199,7 +214,7 @@ export default class ReportUI extends Component {
             : this.props.options.report.fileName;
 
         let inputs = { ...this.state.parameterCollection };
-
+        let report_name = _reportQuery.split("/");
         inputs["reportName"] = _reportQuery;
         let querString =
           inputs.sub_department_id !== undefined
@@ -225,10 +240,20 @@ export default class ReportUI extends Component {
           inputs: querString,
           ..._module,
           onSuccess: response => {
+            let buttonDisable = true;
             if (response.data.success === true) {
+              debugger;
               new Promise((resolve, reject) => {
                 resolve(response.data.records);
               }).then(data => {
+                debugger;
+                if (Array.isArray(data)) {
+                  if (data.length > 0) {
+                    buttonDisable = false;
+                  }
+                } else if (data !== null || data !== undefined) {
+                  buttonDisable = false;
+                }
                 options.inputData = that.state.parameterCollection;
                 options.data = data;
                 let _optionsFetch = options;
@@ -243,7 +268,9 @@ export default class ReportUI extends Component {
 
                 that.setState({
                   _htmlString: _htm,
-                  hasTable: _hasTable
+                  hasTable: _hasTable,
+                  buttonDisable: buttonDisable,
+                  report_name: report_name[report_name.length - 1]
                 });
               });
             }
@@ -579,10 +606,10 @@ export default class ReportUI extends Component {
             </div>
             <div />
             <div>
-              {console.log(
+              {/* {console.log(
                 "this.props.options.plotUI",
                 this.props.options.plotUI
-              )}
+              )} */}
               {this.props.options !== undefined &&
               this.props.options.plotUI !== undefined ? (
                 <React.Fragment>
@@ -597,47 +624,14 @@ export default class ReportUI extends Component {
                         {this.generateInputParameters()}
                       </div>
                     </div>
-
-                    <button
-                      style={{ textAlign: "center", margin: "16px" }}
-                      className="btn btn-primary"
-                      onClick={this.generateReport.bind(this)}
-                    >
-                      Generate Report
-                    </button>
-                    <input
-                      type="radio"
-                      name="report_preview"
-                      id="report_normal_preview"
-                      value="0"
-                      onChange={this.onChangeReportPreview.bind(this)}
-                      checked={
-                        this.state.report_preview_type === 0 ? true : false
-                      }
-                    />
-                    <label htmlFor="report_normal_preview">Normal</label>
-                    <input
-                      type="radio"
-                      name="report_preview"
-                      id="report_pdf_preview"
-                      value="1"
-                      onChange={this.onChangeReportPreview.bind(this)}
-                      checked={
-                        this.state.report_preview_type === 1 ? true : false
-                      }
-                    />
-                    <label htmlFor="report_pdf_preview">PDF</label>
-                    <input
-                      type="radio"
-                      name="report_preview"
-                      id="report_excel_preview"
-                      value="2"
-                      onChange={this.onChangeReportPreview.bind(this)}
-                      checked={
-                        this.state.report_preview_type === 2 ? true : false
-                      }
-                    />
-                    <label htmlFor="report_excel_preview">Excel</label>
+                    <div className="reportActionBtns">
+                      <button
+                        className="btn btn-primary"
+                        onClick={this.generateReport.bind(this)}
+                      >
+                        Generate Report
+                      </button>
+                    </div>
                   </div>
                 </React.Fragment>
               ) : null}
@@ -682,6 +676,58 @@ export default class ReportUI extends Component {
                       )}
                       content={() => this.algehPrintRef}
                     /> */}
+
+                    {/* <input
+                      type="radio"
+                      name="report_preview"
+                      id="report_normal_preview"
+                      value="0"
+                      onChange={this.onChangeReportPreview.bind(this)}
+                      checked={
+                        this.state.report_preview_type === 0 ? true : false
+                      }
+                    />
+                    <label htmlFor="report_normal_preview">Normal</label>
+                    <input
+                      type="radio"
+                      name="report_preview"
+                      id="report_pdf_preview"
+                      value="1"
+                      onChange={this.onChangeReportPreview.bind(this)}
+                      checked={
+                        this.state.report_preview_type === 1 ? true : false
+                      }
+                    />
+                    <label htmlFor="report_pdf_preview">PDF</label>
+                    <input
+                      type="radio"
+                      name="report_preview"
+                      id="report_excel_preview"
+                      value="2"
+                      onChange={this.onChangeReportPreview.bind(this)}
+                      checked={
+                        this.state.report_preview_type === 2 ? true : false
+                      }
+                    />
+                    <label htmlFor="report_excel_preview">Excel</label> */}
+
+                    <button
+                      className="btn btn-default"
+                      type="button"
+                      disabled={this.state.buttonDisable}
+                      onClick={this.onChangeReportPreview.bind(this, "PDF")}
+                    >
+                      Download as PDF
+                    </button>
+
+                    <button
+                      className="btn btn-default"
+                      type="button"
+                      disabled={this.state.buttonDisable}
+                      onClick={this.onChangeReportPreview.bind(this, "XSLS")}
+                    >
+                      Download as Excel
+                    </button>
                     <button
                       type="button"
                       className="btn btn-default"

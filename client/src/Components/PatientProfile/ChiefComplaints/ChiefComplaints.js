@@ -597,10 +597,15 @@ class ChiefComplaints extends Component {
   }
 
   HPIDropdownHandle(e) {
+    debugger;
+    // this.setState({
+    //   [e.name]: Enumerable.from(e.arrayList)
+    //     .select(s => s.displayValue)
+    //     .toArray()
+    // });
+
     this.setState({
-      [e.name]: Enumerable.from(e.arrayList)
-        .select(s => s.displayValue)
-        .toArray()
+      [e.name]: e.value
     });
   }
 
@@ -767,7 +772,7 @@ class ChiefComplaints extends Component {
                             name: "location",
                             className: "select-fld",
                             value: this.state.location,
-                            multiselect: true,
+                            // multiselect: true,
                             dataSource: {
                               textField: "element_description",
                               valueField: "hims_d_hpi_details_id",
@@ -801,7 +806,7 @@ class ChiefComplaints extends Component {
                             name: "quality",
                             className: "select-fld",
                             value: this.state.quality,
-                            multiselect: true,
+                            // multiselect: true,
                             dataSource: {
                               textField: "element_description",
                               valueField: "hims_d_hpi_details_id",
@@ -835,7 +840,7 @@ class ChiefComplaints extends Component {
                             name: "context",
                             className: "select-fld",
                             value: this.state.context,
-                            multiselect: true,
+                            // multiselect: true,
                             dataSource: {
                               textField: "element_description",
                               valueField: "hims_d_hpi_details_id",
@@ -869,7 +874,7 @@ class ChiefComplaints extends Component {
                           selector={{
                             name: "timing",
                             className: "select-fld",
-                            multiselect: true,
+                            // multiselect: true,
                             value: this.state.timing,
                             dataSource: {
                               textField: "element_description",
@@ -904,7 +909,7 @@ class ChiefComplaints extends Component {
                           selector={{
                             name: "modifying_factor",
                             className: "select-fld",
-                            multiselect: true,
+                            // multiselect: true,
                             value: this.state.modifying_factor,
                             dataSource: {
                               textField: "element_description",
@@ -941,7 +946,7 @@ class ChiefComplaints extends Component {
                             name: "associated_symptoms",
                             className: "select-fld",
                             value: this.state.associated_symptoms,
-                            multiselect: true,
+                            // multiselect: true,
                             dataSource: {
                               textField: "element_description",
                               valueField: "hims_d_hpi_details_id",

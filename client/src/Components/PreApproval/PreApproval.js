@@ -119,7 +119,7 @@ class PreApproval extends Component {
   render() {
     return (
       <div className="hptl-pre-approval-details">
-        <BreadCrumb
+        {/* <BreadCrumb
           title={
             <AlgaehLabel label={{ fieldName: "form_name", align: "ltr" }} />
           }
@@ -141,7 +141,7 @@ class PreApproval extends Component {
               )
             }
           ]}
-        />
+        /> */}
 
         <div
           className="row inner-top-search"
