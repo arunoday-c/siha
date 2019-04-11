@@ -570,7 +570,6 @@ class DataGrid extends Component {
     }
   }
   shouldComponentUpdate(nextProps, nextState) {
-    debugger;
     if (nextProps.uiUpdate !== undefined) {
       return nextState.uiUpdate;
     }
@@ -584,7 +583,6 @@ class DataGrid extends Component {
     else return false;
   }
   componentWillReceiveProps(props) {
-    debugger;
     if (props.uiUpdate !== undefined) {
       this.setState({ uiUpdate: props.uiUpdate });
     }
