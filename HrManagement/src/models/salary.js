@@ -2534,8 +2534,8 @@ module.exports = {
 
       _mysql
         .executeQuery({
-          query: `select hims_d_earning_deduction_id,earning_deduction_description,component_category from hims_d_earning_deduction\
-          where record_status='A' and print_report='Y';\
+          query: `select hims_d_earning_deduction_id,earning_deduction_description,component_category, print_order_by, \
+          nationality_id from hims_d_earning_deduction where record_status='A' and print_report='Y' order by print_order_by ;\
           select E.employee_code,E.full_name,E.employee_designation_id,S.employee_id,E.sub_department_id,E.date_of_joining,E.nationality,E.mode_of_payment,\
           E.hospital_id,E.employee_group_id,D.designation,EG.group_description,N.nationality,\
           S.hims_f_salary_id,S.salary_number,S.salary_date,S.present_days,S.net_salary,S.total_earnings,S.total_deductions,\
@@ -2589,12 +2589,12 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary from \
+                  "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary,ED.nationality_id from \
                 hims_f_salary_earnings SE inner join hims_d_earning_deduction ED on \
                 SE.earnings_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' where salary_header_id in (" +
                   salary_header_ids +
                   ");\
-                select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary from \
+                select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary,ED.nationality_id from \
                 hims_f_salary_deductions SD inner join hims_d_earning_deduction ED on \
                 SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
                 where salary_header_id in ( " +
@@ -2603,7 +2603,7 @@ module.exports = {
                   select employee_id,gratuity_amount from hims_f_gratuity_provision where year=? and month=?;\
                   select employee_id,leave_days,leave_salary,airfare_amount from hims_f_leave_salary_accrual_detail\
                   where year=? and month=?;\
-                  select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount from \
+                  select hims_f_salary_contributions_id,salary_header_id,contributions_id,amount,Ed.nationality_id from \
                   hims_f_salary_contributions SC inner join hims_d_earning_deduction ED on \
                   SC.contributions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
                   where salary_header_id in ( " +
@@ -2666,7 +2666,8 @@ module.exports = {
                       return {
                         hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
                         earnings_id: s.earnings_id,
-                        amount: s.amount
+                        amount: s.amount,
+                        nationality_id: s.nationality_id
                       };
                     })
                     .ToArray();
@@ -2680,7 +2681,8 @@ module.exports = {
                         hims_f_salary_deductions_id:
                           s.hims_f_salary_deductions_id,
                         deductions_id: s.deductions_id,
-                        amount: s.amount
+                        amount: s.amount,
+                        nationality_id: s.nationality_id
                       };
                     })
                     .ToArray();
@@ -2694,7 +2696,8 @@ module.exports = {
                         hims_f_salary_contributions_id:
                           s.hims_f_salary_contributions_id,
                         contributions_id: s.contributions_id,
-                        amount: s.amount
+                        amount: s.amount,
+                        nationality_id: s.nationality_id
                       };
                     })
                     .ToArray();

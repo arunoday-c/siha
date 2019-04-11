@@ -34,7 +34,8 @@ class EarningsDeductions extends Component {
       displayNationality: false,
       specific_nationality: false,
       nationality_id: null,
-      print_report: "N"
+      print_report: "N",
+      print_order_by: 0
     };
     this.getEarningDeductions();
   }
@@ -96,6 +97,7 @@ class EarningsDeductions extends Component {
         specific_nationality: data.specific_nationality,
         nationality_id: data.nationality_id,
         print_report: data.print_report,
+        print_order_by: data.print_order_by,
         record_status: "A"
       },
       onSuccess: response => {
@@ -223,7 +225,8 @@ class EarningsDeductions extends Component {
             specific_nationality:
               this.state.specific_nationality === "true" ? "Y" : "N",
             nationality_id: this.state.nationality_id,
-            print_report: this.state.print_report
+            print_report: this.state.print_report,
+            print_order_by: this.state.print_order_by
           },
           onSuccess: res => {
             if (res.data.success) {
@@ -1042,6 +1045,24 @@ class EarningsDeductions extends Component {
                       </label>
                     </div>
                   </div>
+                  <AlagehFormGroup
+                    label={{
+                      forceLabel: "Print Order",
+                      isImp: this.state.print_order_by
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "print_order_by",
+                      value: this.state.print_order_by,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        placeholder: "Print Order",
+                        type: "number"
+                      }
+                    }}
+                  />
                   <div className="col-4 form-group">
                     <button
                       className="btn btn-primary"
@@ -1841,6 +1862,35 @@ class EarningsDeductions extends Component {
                                   required: true
                                 },
                                 onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "print_order_by",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Print Order" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "print_order_by",
+                                value: row.print_order_by,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Print Order - cannot be blank",
+                                  required:
+                                    row.print_report === "Y" ? true : false
+                                }
                               }}
                             />
                           );

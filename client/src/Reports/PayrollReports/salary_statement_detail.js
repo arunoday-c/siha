@@ -3,7 +3,10 @@ import { payrollHeader } from "./payrollHeader";
 import "../report-style.css";
 import _ from "lodash";
 // import moment from "moment";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
+import {
+  getAmountFormart,
+  AlgaehOpenContainer
+} from "../../utils/GlobalFunctions";
 
 export function printReport(result) {
   debugger;
@@ -12,6 +15,10 @@ export function printReport(result) {
   const header_data = result.components || [];
   const detail_data = result.employees || [];
   if (detail_data === undefined) return null;
+
+  let HospitalDetails = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  );
 
   let earning_component = _.filter(header_data, f => {
     return f.component_category === "E";
@@ -24,6 +31,7 @@ export function printReport(result) {
     return f.component_category === "C";
   });
   let data_amount = [];
+  let employee_employeer = 0;
 
   const assignEarningData = (employee_earning, earnings) => {
     data_amount = _.filter(employee_earning, f => {
@@ -36,12 +44,14 @@ export function printReport(result) {
   };
 
   const assignDeductData = (employee_deduction, deduct) => {
+    // debugger;
     data_amount = _.filter(employee_deduction, f => {
       return f.deductions_id === deduct.hims_d_earning_deduction_id;
     });
     if (data_amount.length === 0) {
       data_amount.push({ amount: 0 });
     }
+
     return data_amount;
   };
 
@@ -52,7 +62,34 @@ export function printReport(result) {
     if (data_amount.length === 0) {
       data_amount.push({ amount: 0 });
     }
+
     return data_amount;
+  };
+
+  const assignEmployEmployer = employee_data => {
+    let final_amount = 0;
+
+    let deduction_amount = _.filter(employee_data.employee_deduction, f => {
+      return f.nationality_id === HospitalDetails.default_nationality;
+    });
+    let contribution_amount = _.filter(
+      employee_data.employee_contributions,
+      f => {
+        return f.nationality_id === HospitalDetails.default_nationality;
+      }
+    );
+
+    if (deduction_amount.length > 0) {
+      final_amount =
+        parseFloat(final_amount) + parseFloat(deduction_amount[0].amount);
+    }
+    if (contribution_amount.length > 0) {
+      final_amount =
+        parseFloat(final_amount) + parseFloat(contribution_amount[0].amount);
+    }
+
+    employee_employeer = employee_employeer + final_amount;
+    return [final_amount];
   };
 
   // <td class="center">${moment(list.date_of_joining).format(
@@ -143,6 +180,7 @@ export function printReport(result) {
                     : ""
                 }
                 <th style="width:135px">Total Contribution</th>
+                <th style="width:200px">Total Contribution(Employee + Employeer)</th>
                 
                 <th style="width:150px">Leave Provision</th>
                 <th style="width:150px">Airfare Amount</th>
@@ -258,7 +296,13 @@ export function printReport(result) {
           appendSymbol: false
         }
       )}</td>
-
+  
+      ${assignEmployEmployer(list).map(
+        final_amount =>
+          `  <td class="right" >${getAmountFormart(final_amount, {
+            appendSymbol: false
+          })}</td>`
+      )}
 
       <td class="right" style="width:150px">${getAmountFormart(
         list.leave_salary,
@@ -321,10 +365,14 @@ export function printReport(result) {
                     ? contributions_component.map(list => `<td></td>`).join("")
                     : ""
                 }
+                
                 <td style="width:135px" class="highlightBorder">${getAmountFormart(
                   result.total_contributions
                 )}</td>
                 
+                <td style="width:135px" class="highlightBorder">${getAmountFormart(
+                  employee_employeer
+                )}</td>      
                 <td style="width:150px" class="highlightBorder">${getAmountFormart(
                   result.sum_leave_salary
                 )}</td>

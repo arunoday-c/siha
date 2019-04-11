@@ -377,7 +377,7 @@ module.exports = {
           short_desc,component_category,calculation_method,component_frequency,calculation_type, specific_nationality, nationality_id,\
           component_type,shortage_deduction_applicable, miscellaneous_component, overtime_applicable,limit_applicable,limit_amount,\
           process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
-          round_off_amount,formula, print_report from hims_d_earning_deduction\
+          round_off_amount,formula, print_report, print_order_by from hims_d_earning_deduction\
           where record_status='A'  order by hims_d_earning_deduction_id desc",
         printQuery: true
       })
@@ -402,8 +402,8 @@ module.exports = {
             component_category,calculation_method, miscellaneous_component, formula,component_frequency,calculation_type,component_type,\
             shortage_deduction_applicable,overtime_applicable,limit_applicable,limit_amount,\
             process_limit_required,process_limit_days,general_ledger,allow_round_off,round_off_type,\
-            round_off_amount, specific_nationality, nationality_id, print_report, created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            round_off_amount, specific_nationality, nationality_id, print_report, print_order_by, created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.earning_deduction_code,
           input.earning_deduction_description,
@@ -428,6 +428,7 @@ module.exports = {
           input.specific_nationality,
           input.nationality_id,
           input.print_report,
+          input.print_order_by,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
@@ -455,7 +456,8 @@ module.exports = {
           component_category=?,calculation_method=?,component_frequency=?,calculation_type=?,\
           component_type=?,shortage_deduction_applicable=?,overtime_applicable=?,limit_applicable=?,\
           limit_amount=?,process_limit_required=?,process_limit_days=?,general_ledger=?,\
-          allow_round_off=?,round_off_type=?,round_off_amount=?,specific_nationality=?, nationality_id=?, print_report=?,record_status=?,\
+          allow_round_off=?,round_off_type=?,round_off_amount=?,specific_nationality=?, nationality_id=?, \
+          print_report=?,print_order_by=?,record_status=?,\
             updated_date=?, updated_by=?  WHERE  hims_d_earning_deduction_id = ?",
         values: [
           input.earning_deduction_code,
@@ -479,6 +481,7 @@ module.exports = {
           input.specific_nationality,
           input.nationality_id,
           input.print_report,
+          input.print_order_by,
           input.record_status,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
