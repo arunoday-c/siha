@@ -24,7 +24,8 @@ export default class ReportUI extends Component {
       parameterCollection: {},
       hasTable: false,
       report_preview_type: 0,
-      buttonDisable: true
+      buttonDisable: true,
+      report_name: null
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -184,11 +185,11 @@ export default class ReportUI extends Component {
             "png",
             5,
             5,
-            width - 20,
+            width - 10,
             height - 10
           );
           //  pdf.addImage(canvas.toDataURL("image/png"), "PNG", 200, 2017);
-          pdf.save(new Date().toString() + ".pdf");
+          pdf.save(this.state.report_name.toString() + ".pdf");
         })
         .catch(error => {
           if (_hasSelection !== undefined)
@@ -198,6 +199,7 @@ export default class ReportUI extends Component {
     }
   }
   generateReport(e) {
+    let $this = this;
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
@@ -208,7 +210,7 @@ export default class ReportUI extends Component {
             : this.props.options.report.fileName;
 
         let inputs = { ...this.state.parameterCollection };
-
+        let report_name = _reportQuery.split("/");
         inputs["reportName"] = _reportQuery;
         let querString =
           inputs.sub_department_id !== undefined
@@ -263,7 +265,8 @@ export default class ReportUI extends Component {
                 that.setState({
                   _htmlString: _htm,
                   hasTable: _hasTable,
-                  buttonDisable: buttonDisable
+                  buttonDisable: buttonDisable,
+                  report_name: report_name[report_name.length - 1]
                 });
               });
             }

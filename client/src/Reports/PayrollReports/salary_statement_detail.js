@@ -180,7 +180,7 @@ export function printReport(result) {
                     : ""
                 }
                 <th style="width:135px">Total Contribution</th>
-                <th style="width:200px">Total Contribution(Employee + Employeer)</th>
+                <th style="width:200px">Employee + Employeer</th>
                 
                 <th style="width:150px">Leave Provision</th>
                 <th style="width:150px">Airfare Amount</th>
