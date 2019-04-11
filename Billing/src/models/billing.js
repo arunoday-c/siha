@@ -888,10 +888,18 @@ module.exports = {
                   printQuery: true
                 })
                 .then(selectCurrentCash => {
-                  expected_cash += selectCurrentCash[0].expected_cash;
-                  expected_card += selectCurrentCash[0].expected_card;
-                  expected_cheque += selectCurrentCash[0].expected_cheque;
-                  no_of_cheques += selectCurrentCash[0].no_of_cheques;
+                  expected_cash += parseFloat(
+                    selectCurrentCash[0].expected_cash
+                  );
+                  expected_card += parseFloat(
+                    selectCurrentCash[0].expected_card
+                  );
+                  expected_cheque += parseFloat(
+                    selectCurrentCash[0].expected_cheque
+                  );
+                  no_of_cheques += parseFloat(
+                    selectCurrentCash[0].no_of_cheques
+                  );
                   _mysql
                     .executeQuery({
                       query:
