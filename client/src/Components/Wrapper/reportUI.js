@@ -11,6 +11,8 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import moment from "moment";
+
 export default class ReportUI extends Component {
   constructor(props) {
     super(props);
@@ -164,7 +166,7 @@ export default class ReportUI extends Component {
       debugger;
 
       const _element = this.algehPrintRef;
-
+      const date_time = moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
       const _hasSelection = _element.querySelector("section");
       if (_hasSelection !== undefined) {
         _hasSelection.classList += "forPDF";
@@ -189,7 +191,9 @@ export default class ReportUI extends Component {
             height - 10
           );
           //  pdf.addImage(canvas.toDataURL("image/png"), "PNG", 200, 2017);
-          pdf.save(this.state.report_name.toString() + ".pdf");
+          pdf.save(
+            this.state.report_name + " " + date_time.toString() + ".pdf"
+          );
         })
         .catch(error => {
           if (_hasSelection !== undefined)
