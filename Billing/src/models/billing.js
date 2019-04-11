@@ -765,8 +765,8 @@ module.exports = {
           .executeQuery({
             query:
               "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\
-            from  hims_f_cash_handover_detail where record_status='A' and casher_id=? and shift_status='O'",
-            values: [inputParam.created_by],
+            from  hims_f_cash_handover_detail where record_status='A' and casher_id=? and shift_status='O';",
+            values: [req.userIdentity.algaeh_d_app_user_id],
             printQuery: true
           })
           .then(checkShiftStatus => {
@@ -810,7 +810,7 @@ module.exports = {
                               VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
                             values: [
                               headerCashHandover.insertId,
-                              inputParam.created_by,
+                              req.userIdentity.algaeh_d_app_user_id,
                               "O",
                               new Date(),
                               0,
@@ -865,15 +865,15 @@ module.exports = {
 
               expected_cash = new LINQ(inputParam.receiptdetails)
                 .Where(w => w.pay_type == "CA")
-                .Sum(s => s.amount);
+                .Sum(s => parseFloat(s.amount));
 
               expected_card = new LINQ(inputParam.receiptdetails)
                 .Where(w => w.pay_type == "CD")
-                .Sum(s => s.amount);
+                .Sum(s => parseFloat(s.amount));
 
               expected_cheque = new LINQ(inputParam.receiptdetails)
                 .Where(w => w.pay_type == "CH")
-                .Sum(s => s.amount);
+                .Sum(s => parseFloat(s.amount));
 
               no_of_cheques = new LINQ(inputParam.receiptdetails)
                 .Where(w => w.pay_type == "CH")
@@ -888,10 +888,18 @@ module.exports = {
                   printQuery: true
                 })
                 .then(selectCurrentCash => {
-                  expected_cash += selectCurrentCash[0].expected_cash;
-                  expected_card += selectCurrentCash[0].expected_card;
-                  expected_cheque += selectCurrentCash[0].expected_cheque;
-                  no_of_cheques += selectCurrentCash[0].no_of_cheques;
+                  expected_cash += parseFloat(
+                    selectCurrentCash[0].expected_cash
+                  );
+                  expected_card += parseFloat(
+                    selectCurrentCash[0].expected_card
+                  );
+                  expected_cheque += parseFloat(
+                    selectCurrentCash[0].expected_cheque
+                  );
+                  no_of_cheques += parseFloat(
+                    selectCurrentCash[0].no_of_cheques
+                  );
                   _mysql
                     .executeQuery({
                       query:

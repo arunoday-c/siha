@@ -11,6 +11,8 @@ import ReactDOM from "react-dom";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
+import moment from "moment";
+
 export default class ReportUI extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +26,8 @@ export default class ReportUI extends Component {
       parameterCollection: {},
       hasTable: false,
       report_preview_type: 0,
-      buttonDisable: true
+      buttonDisable: true,
+      report_name: null
     };
 
     if (props.options !== undefined && props.options.plotUI !== undefined) {
@@ -163,7 +166,7 @@ export default class ReportUI extends Component {
       debugger;
 
       const _element = this.algehPrintRef;
-
+      const date_time = moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
       const _hasSelection = _element.querySelector("section");
       if (_hasSelection !== undefined) {
         _hasSelection.classList += "forPDF";
@@ -184,11 +187,13 @@ export default class ReportUI extends Component {
             "png",
             5,
             5,
-            width - 20,
+            width - 10,
             height - 10
           );
           //  pdf.addImage(canvas.toDataURL("image/png"), "PNG", 200, 2017);
-          pdf.save(new Date().toString() + ".pdf");
+          pdf.save(
+            this.state.report_name + " " + date_time.toString() + ".pdf"
+          );
         })
         .catch(error => {
           if (_hasSelection !== undefined)
@@ -198,6 +203,7 @@ export default class ReportUI extends Component {
     }
   }
   generateReport(e) {
+    let $this = this;
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
@@ -208,7 +214,7 @@ export default class ReportUI extends Component {
             : this.props.options.report.fileName;
 
         let inputs = { ...this.state.parameterCollection };
-
+        let report_name = _reportQuery.split("/");
         inputs["reportName"] = _reportQuery;
         let querString =
           inputs.sub_department_id !== undefined
@@ -263,7 +269,8 @@ export default class ReportUI extends Component {
                 that.setState({
                   _htmlString: _htm,
                   hasTable: _hasTable,
-                  buttonDisable: buttonDisable
+                  buttonDisable: buttonDisable,
+                  report_name: report_name[report_name.length - 1]
                 });
               });
             }
