@@ -11,6 +11,8 @@ import { getYears, getAmountFormart } from "../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import jsPDF from "jspdf";
+import { CSVLink } from "react-csv";
 
 export default class WPS extends Component {
   constructor(props) {
@@ -19,7 +21,9 @@ export default class WPS extends Component {
       banks: [],
       employees: [],
       year: moment().year(),
-      month: moment(new Date()).format("M")
+      month: moment(new Date()).format("M"),
+      button_enable: true,
+      csvData: ""
     };
     this.getBanks();
   }
@@ -55,9 +59,17 @@ export default class WPS extends Component {
       module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
-          this.setState({
-            employees: res.data.records
-          });
+          if (res.data.records.length > 0) {
+            this.setState({
+              employees: res.data.records,
+              button_enable: false
+            });
+          } else {
+            swalMessage({
+              title: "No data for selected year/month",
+              type: "warning"
+            });
+          }
         }
       },
       onFailure: err => {
@@ -68,11 +80,64 @@ export default class WPS extends Component {
       }
     });
   }
+  clearState() {
+    this.setState({
+      employees: [],
+      year: moment().year(),
+      month: moment(new Date()).format("M"),
+      button_enable: true
+    });
+  }
 
   dropDownHandler(value) {
     this.setState({
       [value.name]: value.value
     });
+  }
+
+  generatePDF() {
+    debugger;
+    var json = this.state.employees;
+    var fields = Object.keys(json[0]);
+    var replacer = function(key, value) {
+      return value === null ? "" : value;
+    };
+
+    var col = [
+      "Employee ID Type",
+      "Employee Code",
+      "Reference Number",
+      "Employee Name",
+      "Employee BIC",
+      "Employee Account No.",
+      "Salary Frequency",
+      "No. of Working Days",
+      "Net Salary",
+      "Basic Salary",
+      "Extra Hours",
+      "Extra Income",
+      "Deductions",
+      "Social Security Deductions",
+      "Notes/Comments"
+    ];
+
+    var csvData = json.map(function(row) {
+      return fields
+        .map(function(fieldName) {
+          return JSON.stringify(row[fieldName], replacer);
+        })
+        .join(",");
+    });
+    csvData.unshift(col.join(","));
+
+    this.setState(
+      {
+        csvData: [csvData]
+      },
+      () => {
+        this.csvLink.link.click();
+      }
+    );
   }
 
   render() {
@@ -161,7 +226,7 @@ export default class WPS extends Component {
               Load
             </button>
             <button
-              //  onClick={this.clearState.bind(this)}
+              onClick={this.clearState.bind(this)}
               style={{ marginTop: 21, marginLeft: 5 }}
               className="btn btn-default"
             >
@@ -177,11 +242,6 @@ export default class WPS extends Component {
                 <div className="caption">
                   <h3 className="caption-subject">WPS Statement</h3>
                 </div>
-                {/* <div className="actions">
-                                    <a className="btn btn-primary btn-circle active">
-                                        <i className="fas fa-pen" />
-                                    </a>
-                                </div> */}
               </div>
               <div className="portlet-body">
                 <div className="row">
@@ -191,34 +251,26 @@ export default class WPS extends Component {
                       datavalidate="WPSGrid"
                       columns={[
                         {
-                          fieldName: "salary_number",
+                          fieldName: "id_type",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Salary Number" }}
+                              label={{ forceLabel: "Employee ID Type" }}
                             />
                           )
                         },
                         {
-                          fieldName: "month",
-                          label: (
-                            <AlgaehLabel label={{ forceLabel: "Month" }} />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {moment(
-                                  "01-" + row.month + "-" + row.year,
-                                  "DD-MM-YYYY"
-                                ).format("MMMM")}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "employeeVisaID",
+                          fieldName: "id_type",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Employee Visa ID" }}
+                              label={{ forceLabel: "Employee Code" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "salary_number",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Reference Number" }}
                             />
                           )
                         },
@@ -231,10 +283,10 @@ export default class WPS extends Component {
                           )
                         },
                         {
-                          fieldName: "employeeBankName",
+                          fieldName: "id_type",
                           label: (
                             <AlgaehLabel
-                              label={{ forceLabel: "Employee Bank Name" }}
+                              label={{ forceLabel: "Employee BIC" }}
                             />
                           )
                         },
@@ -262,6 +314,7 @@ export default class WPS extends Component {
                             />
                           )
                         },
+
                         {
                           fieldName: "net_salary",
                           label: (
@@ -282,7 +335,7 @@ export default class WPS extends Component {
                           )
                         },
                         {
-                          fieldName: "extraHours",
+                          fieldName: "complete_ot",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Extra Hours" }}
@@ -294,6 +347,30 @@ export default class WPS extends Component {
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Extra Income" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "total_deductions",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Deductions" }} />
+                          )
+                        },
+                        {
+                          fieldName: "extraHours",
+                          label: (
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Social Security Deductions"
+                              }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "extraHours",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Notes/Comments" }}
                             />
                           )
                         }
@@ -315,12 +392,30 @@ export default class WPS extends Component {
         <div className="hptl-phase1-footer">
           <div className="row">
             <div className="col-lg-12">
-              <button type="button" className="btn btn-primary">
+              <button
+                type="button"
+                className="btn btn-primary"
+                disabled={this.state.button_enable}
+                onClick={this.generatePDF.bind(this)}
+              >
                 Generate SIF
               </button>
-              <button type="button" className="btn btn-default">
+
+              <button
+                type="button"
+                className="btn btn-default"
+                disabled={this.state.button_enable}
+              >
                 Export Excel
               </button>
+            </div>
+            <div>
+              <CSVLink
+                data={this.state.csvData}
+                filename="data.csv"
+                ref={r => (this.csvLink = r)}
+                // target="_blank"
+              />
             </div>
           </div>
         </div>

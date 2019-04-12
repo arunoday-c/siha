@@ -14,7 +14,8 @@ import {
   datehandle,
   accomodationProvided,
   employeeStatusHandler,
-  dateFormater
+  dateFormater,
+  bankEventhandle
 } from "./OfficalDetailsEvent.js";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
@@ -323,21 +324,30 @@ class OfficalDetails extends Component {
                 <span>Employee Bank Details</span>
               </h5>
               <div className="row paddin-bottom-5">
-                <AlagehFormGroup
-                  div={{ className: "col-6 mandatory" }}
+                <AlagehAutoComplete
+                  div={{ className: "col mandatory" }}
                   label={{
-                    forceLabel: "Bank Name",
+                    forceLabel: "Select Employee Bank",
                     isImp: true
                   }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "employee_bank_name",
-                    value: this.state.employee_bank_name,
-                    events: {
-                      onChange: texthandle.bind(this, this)
+                  selector={{
+                    name: "employee_bank_id",
+                    className: "select-fld",
+                    value: this.state.employee_bank_id,
+                    dataSource: {
+                      textField: "bank_name",
+                      valueField: "hims_d_bank_id",
+                      data: this.props.banks
+                    },
+                    onChange: bankEventhandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        employee_bank_id: null
+                      });
                     }
                   }}
                 />
+
                 <AlagehFormGroup
                   div={{ className: "col-6 mandatory" }}
                   label={{
@@ -350,7 +360,8 @@ class OfficalDetails extends Component {
                     name: "employee_bank_ifsc_code",
                     events: {
                       onChange: texthandle.bind(this, this)
-                    }
+                    },
+                    disabled: true
                   }}
                 />
 
@@ -381,7 +392,7 @@ class OfficalDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
-                    forceLabel: "Select a Bank",
+                    forceLabel: "Select Employeer Bank",
                     isImp: true
                   }}
                   selector={{

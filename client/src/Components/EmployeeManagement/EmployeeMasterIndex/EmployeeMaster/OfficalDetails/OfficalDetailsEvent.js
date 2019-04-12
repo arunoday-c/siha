@@ -103,10 +103,24 @@ const dateFormater = ($this, value) => {
   }
 };
 
+const bankEventhandle = ($this, e) => {
+  debugger;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  $this.setState({
+    [name]: value,
+    employee_bank_ifsc_code: e.selected.bank_code
+  });
+  $this.props.EmpMasterIOputs.updateEmployeeTabs({
+    [name]: value,
+    employee_bank_ifsc_code: e.selected.bank_code
+  });
+};
 export {
   texthandle,
   datehandle,
   accomodationProvided,
   employeeStatusHandler,
-  dateFormater
+  dateFormater,
+  bankEventhandle
 };

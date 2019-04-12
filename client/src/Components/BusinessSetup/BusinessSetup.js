@@ -12,6 +12,8 @@ import Category from "./Category/Category";
 import Speciality from "./Speciality/Speciality";
 import UserShiftMapping from "./UserShiftMapping/UserShiftMapping";
 import CategorySpeciality from "./CategorySpecialityMapping/CategorySpeciality";
+import BankMaster from "./BankMaster/BankMaster";
+import CompanyAccount from "./CompanyAccount/CompanyAccount";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 
 class BusinessSetup extends Component {
@@ -90,7 +92,6 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
-
               <li
                 algaehtabs={"Shift"}
                 className={"nav-item tab-button"}
@@ -143,6 +144,32 @@ class BusinessSetup extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"BankMaster"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Bank Master"
+                    }}
+                  />
+                }
+              </li>{" "}
+              <li
+                algaehtabs={"CompanyAccount"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Company Account"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -167,6 +194,10 @@ class BusinessSetup extends Component {
             <Category />
           ) : this.state.pageDisplay === "Speciality" ? (
             <Speciality />
+          ) : this.state.pageDisplay === "BankMaster" ? (
+            <BankMaster />
+          ) : this.state.pageDisplay === "CompanyAccount" ? (
+            <CompanyAccount />
           ) : this.state.pageDisplay === "CategorySpeciality" ? (
             <CategorySpeciality />
           ) : null}
