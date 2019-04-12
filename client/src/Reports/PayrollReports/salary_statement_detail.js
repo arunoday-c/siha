@@ -14,6 +14,9 @@ export function printReport(result) {
   if (result === undefined) return null;
   const header_data = result.components || [];
   const detail_data = result.employees || [];
+  let earn_array_amount = [];
+  let deduct_array_amount = [];
+  let contri_array_amount = [];
   if (detail_data === undefined) return null;
 
   let HospitalDetails = JSON.parse(
@@ -39,7 +42,13 @@ export function printReport(result) {
     });
     if (data_amount.length === 0) {
       data_amount.push({ amount: 0 });
+    } else {
+      earn_array_amount.push({
+        earnings_id: data_amount[0].earnings_id,
+        amount: data_amount[0].amount
+      });
     }
+
     return data_amount;
   };
 
@@ -52,6 +61,15 @@ export function printReport(result) {
       data_amount.push({ amount: 0 });
     }
 
+    if (data_amount.length === 0) {
+      data_amount.push({ amount: 0 });
+    } else {
+      deduct_array_amount.push({
+        deductions_id: data_amount[0].deductions_id,
+        amount: data_amount[0].amount
+      });
+    }
+
     return data_amount;
   };
 
@@ -61,6 +79,11 @@ export function printReport(result) {
     });
     if (data_amount.length === 0) {
       data_amount.push({ amount: 0 });
+    } else {
+      contri_array_amount.push({
+        contributions_id: data_amount[0].contributions_id,
+        amount: data_amount[0].amount
+      });
     }
 
     return data_amount;
@@ -90,6 +113,53 @@ export function printReport(result) {
 
     employee_employeer = employee_employeer + final_amount;
     return [final_amount];
+  };
+
+  const earningSumup = earnings => {
+    let earn_amount = 0;
+    let earn_comp = _.filter(earn_array_amount, f => {
+      return f.earnings_id === earnings.hims_d_earning_deduction_id;
+    });
+
+    if (earn_comp.length > 0) {
+      earn_amount = _.sumBy(earn_comp, s => parseFloat(s.amount));
+    } else {
+      earn_amount = 0;
+    }
+
+    return [earn_amount];
+  };
+
+  const decuctSumup = deduct => {
+    debugger;
+    let decuct_amount = 0;
+    let decuct_comp = _.filter(deduct_array_amount, f => {
+      return f.deductions_id === deduct.hims_d_earning_deduction_id;
+    });
+
+    if (decuct_comp.length > 0) {
+      decuct_amount = _.sumBy(decuct_comp, s => parseFloat(s.amount));
+    } else {
+      decuct_amount = 0;
+    }
+
+    return [decuct_amount];
+  };
+
+  const contributeSumup = contrib => {
+    debugger;
+    let contribute_amount = 0;
+    let contribute_comp = _.filter(contri_array_amount, f => {
+      return f.contributions_id === contrib.hims_d_earning_deduction_id;
+    });
+
+    if (contribute_comp.length > 0) {
+      contribute_amount = _.sumBy(contribute_comp, s => parseFloat(s.amount));
+    } else {
+      contribute_amount = 0;
+    }
+
+    return [contribute_amount];
   };
 
   // <td class="center">${moment(list.date_of_joining).format(
@@ -343,17 +413,44 @@ export function printReport(result) {
                 <td style="width:150px"></td>                                
                 ${
                   earning_component.length > 0
-                    ? earning_component.map(list => `<td></td>`).join("")
+                    ? earning_component
+                        .map(
+                          earnings =>
+                            `
+                      ${earningSumup(earnings).map(
+                        data =>
+                          `  <td class="highlightBorder">${getAmountFormart(
+                            data
+                          )}</td>`
+                      )}
+                      `
+                        )
+                        .join("")
                     : ""
                 }
+                
                 <td style="width:135px" class="highlightBorder">${getAmountFormart(
                   result.total_earnings
                 )}</td>
+                
                 ${
                   deduction_component.length > 0
-                    ? deduction_component.map(list => `<td></td>`).join("")
+                    ? deduction_component
+                        .map(
+                          deduct =>
+                            `
+                      ${decuctSumup(deduct).map(
+                        data =>
+                          `  <td class="highlightBorder">${getAmountFormart(
+                            data
+                          )}</td>`
+                      )}
+                      `
+                        )
+                        .join("")
                     : ""
                 }
+                
                 <td style="width:135px" class="highlightBorder">${getAmountFormart(
                   result.total_deductions
                 )}</td>
@@ -362,9 +459,22 @@ export function printReport(result) {
                 )}</td>
                 ${
                   contributions_component.length > 0
-                    ? contributions_component.map(list => `<td></td>`).join("")
+                    ? contributions_component
+                        .map(
+                          contribute =>
+                            `
+                      ${contributeSumup(contribute).map(
+                        data =>
+                          `  <td class="highlightBorder">${getAmountFormart(
+                            data
+                          )}</td>`
+                      )}
+                      `
+                        )
+                        .join("")
                     : ""
                 }
+                
                 
                 <td style="width:135px" class="highlightBorder">${getAmountFormart(
                   result.total_contributions
