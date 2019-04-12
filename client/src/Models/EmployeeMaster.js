@@ -44,6 +44,7 @@ export default {
       employee_bank_name: null,
       employee_bank_ifsc_code: null,
       employee_account_number: null,
+      employee_bank_id: null,
       company_bank_id: null,
       mode_of_payment: null,
       inactive_date: null,

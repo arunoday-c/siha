@@ -249,8 +249,8 @@ export function printReport(result) {
                         .join("")
                     : ""
                 }
-                <th style="width:135px">Total Contribution</th>
-                <th style="width:200px">Employee + Employeer</th>
+                
+                <th style="width:200px">Total Pasi Contribution</th>
                 
                 <th style="width:150px">Leave Provision</th>
                 <th style="width:150px">Airfare Amount</th>
@@ -337,6 +337,7 @@ export function printReport(result) {
       <td class="right">${getAmountFormart(list.net_salary, {
         appendSymbol: false
       })} </td>
+      
       ${
         contributions_component.length > 0
           ? contributions_component
@@ -360,18 +361,16 @@ export function printReport(result) {
               .join("")
           : ""
       }    
-      <td class="right" style="width:135px">${getAmountFormart(
-        list.total_contributions,
-        {
-          appendSymbol: false
-        }
-      )}</td>
+      
   
       ${assignEmployEmployer(list).map(
         final_amount =>
-          `  <td class="right" >${getAmountFormart(final_amount, {
-            appendSymbol: false
-          })}</td>`
+          `  <td class="right" style="width:200px">${getAmountFormart(
+            final_amount,
+            {
+              appendSymbol: false
+            }
+          )}</td>`
       )}
 
       <td class="right" style="width:150px">${getAmountFormart(
@@ -475,12 +474,7 @@ export function printReport(result) {
                     : ""
                 }
                 
-                
-                <td style="width:135px" class="highlightBorder">${getAmountFormart(
-                  result.total_contributions
-                )}</td>
-                
-                <td style="width:135px" class="highlightBorder">${getAmountFormart(
+                <td style="width:200px" class="highlightBorder">${getAmountFormart(
                   employee_employeer
                 )}</td>      
                 <td style="width:150px" class="highlightBorder">${getAmountFormart(

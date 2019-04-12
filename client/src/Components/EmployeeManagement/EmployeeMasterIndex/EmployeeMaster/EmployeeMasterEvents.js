@@ -64,11 +64,11 @@ const Validations = $this => {
     });
 
     return isError;
-  } else if ($this.state.personalDetails.employee_bank_name === null) {
+  } else if ($this.state.personalDetails.employee_bank_id === null) {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Bank Name. Cannot be blank."
+      title: "Employee Bank. Cannot be blank."
     });
 
     return isError;
@@ -92,7 +92,7 @@ const Validations = $this => {
     isError = true;
     swalMessage({
       type: "warning",
-      title: "Select A Bank. Cannot be blank."
+      title: "Employeer Bank. Cannot be blank."
     });
 
     return isError;
