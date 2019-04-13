@@ -2483,7 +2483,7 @@ module.exports = {
     }
   },
 
-  getWpsEmployees: (req, res, next) => {
+  getWpsEmployeesBKP: (req, res, next) => {
     if (req.query.month > 0 && req.query.year > 0) {
       const _mysql = new algaehMysql();
       _mysql
@@ -2556,6 +2556,195 @@ module.exports = {
     }
   },
 
+  //created by:irfan,for report
+  getWpsEmployees: (req, res, next) => {
+    if (req.query.month > 0 && req.query.year > 0) {
+      const _mysql = new algaehMysql();
+
+      let input = req.query;
+      let outputArray = [];
+
+   
+      _mysql
+        .executeQuery({
+          query: `select hims_f_salary_id,salary_number,employee_id,month,year,salary_date, E.employee_code,\
+          E.full_name as employee_name ,E.company_bank_id,E.employee_bank_name,E.employee_bank_ifsc_code,\
+          E.employee_account_number, S.salary_processed ,S.total_work_days ,S.net_salary ,S.total_deductions,S.total_hours,\
+          S.total_working_hours,S.ot_work_hours,S.ot_weekoff_hours,S.shortage_hours,S.ot_holiday_hours  from hims_f_salary S \
+          inner join hims_d_employee E on S.employee_id=E.hims_d_employee_id where S.salary_processed='Y'\
+          and E.company_bank_id=? and E.mode_of_payment='WPS' and  S.year=? and S.month=?`,
+          values: [                
+            input.company_bank_id,
+            input.year,
+            input.month
+          ],
+          printQuery:true
+        })
+        .then(salary => {
+        
+
+          let total_earnings = 0;
+          let total_deductions = 0;
+          let total_contributions = 0;
+          let total_net_salary = 0;
+
+          if (salary.length > 0) {
+            total_earnings = new LINQ(salary).Sum(s =>
+              parseFloat(s.total_earnings)
+            );
+            total_deductions = new LINQ(salary).Sum(s =>
+              parseFloat(s.total_deductions)
+            );
+            total_contributions = new LINQ(salary).Sum(s =>
+              parseFloat(s.total_contributions)
+            );
+            total_net_salary = new LINQ(salary).Sum(s =>
+              parseFloat(s.net_salary)
+            );
+
+            let salary_header_ids = new LINQ(salary)
+              .Select(s => s.hims_f_salary_id)
+              .ToArray();
+
+            _mysql
+              .executeQuery({
+                query:
+                  "select hims_f_salary_earnings_id,salary_header_id,earnings_id,amount,per_day_salary,ED.nationality_id from \
+                hims_f_salary_earnings SE inner join hims_d_earning_deduction ED on \
+                SE.earnings_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' where salary_header_id in (" +
+                  salary_header_ids +
+                  ");\
+                select hims_f_salary_deductions_id,salary_header_id,deductions_id,amount,per_day_salary,ED.nationality_id from \
+                hims_f_salary_deductions SD inner join hims_d_earning_deduction ED on \
+                SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
+                where salary_header_id in ( " +
+                  salary_header_ids +
+                  ");select basic_earning_component from hims_d_hrms_options; "
+              })
+              .then(results => {
+                _mysql.releaseConnection();
+                let earnings = results[0];
+                let deductions = results[1];
+                let basic_id = results[2][0]["basic_earning_component"];
+       
+
+                let total_basic = 0;
+
+       
+                for (let i = 0; i < salary.length; i++) {
+                  //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
+                  let ot_hours = 0;
+                  let ot_min = 0;
+
+                  ot_hours += parseInt(
+                    salary[i]["ot_work_hours"].toString().split(".")[0]
+                  );
+                  ot_min += parseInt(
+                    salary[i]["ot_work_hours"].toString().split(".")[1]
+                  );
+
+                  ot_hours += parseInt(
+                    salary[i]["ot_weekoff_hours"].toString().split(".")[0]
+                  );
+                  ot_min += parseInt(
+                    salary[i]["ot_weekoff_hours"].toString().split(".")[1]
+                  );
+
+                  ot_hours += parseInt(
+                    salary[i]["ot_holiday_hours"].toString().split(".")[0]
+                  );
+                  ot_min += parseInt(
+                    salary[i]["ot_holiday_hours"].toString().split(".")[1]
+                  );
+
+                  ot_hours += parseInt(parseInt(ot_min) / parseInt(60));
+
+                  let complete_ot =
+                    ot_hours + "." + (parseInt(ot_min) % parseInt(60));
+                  //EN-complete OVER-Time  calculation
+
+                  let employee_earning = new LINQ(earnings)
+                    .Where(
+                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                    )
+                    .Select(s => {
+                      return {
+                        hims_f_salary_earnings_id: s.hims_f_salary_earnings_id,
+                        earnings_id: s.earnings_id,
+                        amount: s.amount,
+                        nationality_id: s.nationality_id
+                      };
+                    })
+                    .ToArray();
+
+                  let employee_deduction = new LINQ(deductions)
+                    .Where(
+                      w => w.salary_header_id == salary[i]["hims_f_salary_id"]
+                    )
+                    .Select(s => {
+                      return {
+                        hims_f_salary_deductions_id:
+                          s.hims_f_salary_deductions_id,
+                        deductions_id: s.deductions_id,
+                        amount: s.amount,
+                        nationality_id: s.nationality_id
+                      };
+                    })
+                    .ToArray();
+
+
+                  total_basic += new LINQ(employee_earning)
+                    .Where(w => w.earnings_id == basic_id)
+                    .Select(s => parseFloat(s.amount))
+                    .FirstOrDefault(0);
+
+
+                
+
+                  outputArray.push({
+                    ...salary[i],                 
+                    employee_earning: employee_earning,
+                    employee_deduction: employee_deduction,
+                  
+                    complete_ot: complete_ot
+                  });
+                }
+
+               
+                req.records = {
+                  
+                  employees: outputArray,
+                  total_basic: total_basic,
+                  total_earnings: total_earnings,
+                  total_deductions: total_deductions,
+                  total_contributions: total_contributions,
+                  total_net_salary: total_net_salary
+                };
+                next();
+              })
+              .catch(e => {
+                _mysql.releaseConnection();
+                next(e);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = salary;
+            next();
+          }
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } else {
+      req.records = {
+        invalid_input: true,
+        message: "Please Provide valid input "
+      };
+      next();
+      return;
+    }
+  },
   //created by:irfan,for report
   detailSalaryStatement: (req, res, next) => {
     if (req.query.month > 0 && req.query.year > 0) {
