@@ -11,34 +11,37 @@ module.exports = {
       let intValue = [];
       let _strAppend = "";
       if (req.query.material_requisition_number != null) {
-        _strAppend += "and material_requisition_number=?";
+        _strAppend += " and material_requisition_number=?";
         intValue.push(req.query.material_requisition_number);
       }
 
       if (req.query.from_location_id != null) {
-        _strAppend += "and from_location_id=?";
+        _strAppend += " and from_location_id=?";
         intValue.push(req.query.from_location_id);
       }
 
       if (req.query.to_location_id != null) {
-        _strAppend += "and to_location_id=?";
+        _strAppend += " and to_location_id=?";
         intValue.push(req.query.to_location_id);
       }
 
       if (req.query.authorize1 != null) {
-        _strAppend += "and authorize1=?";
+        _strAppend += " and authorize1=?";
         intValue.push(req.query.authorize1);
       }
 
       if (req.query.authorie2 != null) {
-        _strAppend += "and authorie2=?";
+        _strAppend += " and authorie2=?";
         intValue.push(req.query.authorie2);
       }
 
       _mysql
         .executeQuery({
           query:
-            "SELECT * from  hims_f_inventory_material_header where 1=1 " +
+            "SELECT *,FL.location_description as from_location_name, TL.location_description as to_location_name from\
+            hims_f_inventory_material_header, hims_d_inventory_location FL, hims_d_inventory_location TL \
+            where from_location_id=FL.hims_d_inventory_location_id and\
+            to_location_id=TL.hims_d_inventory_location_id " +
             _strAppend,
           values: intValue,
           printQuery: true
@@ -48,7 +51,8 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_inventory_material_detail where inventory_header_id=?",
+                  "select * from hims_f_inventory_material_detail, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU\
+                  where inventory_header_id=? and item_id = IM.hims_d_inventory_item_master_id and item_uom = IU.hims_d_inventory_uom_id",
                 values: [headerResult[0].hims_f_inventory_material_header_id],
                 printQuery: true
               })
