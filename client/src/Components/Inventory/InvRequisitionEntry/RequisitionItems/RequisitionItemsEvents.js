@@ -1,5 +1,6 @@
 import moment from "moment";
 import { swalMessage } from "../../../../utils/algaehApiCall.js";
+import _ from "lodash";
 
 const UomchangeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -9,7 +10,8 @@ const UomchangeTexts = ($this, ctrl, e) => {
   $this.setState({
     [name]: value,
     conversion_factor: e.selected.conversion_factor,
-    unit_cost: unit_cost
+    unit_cost: unit_cost,
+    uom_description: e.selected.uom_description
   });
 };
 
@@ -32,6 +34,7 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
+  debugger;
   let name = e.name || e.target.name;
   if ($this.state.requistion_type === "PR") {
     if ($this.state.from_location_id !== null) {
@@ -55,8 +58,14 @@ const itemchangeText = ($this, context, e) => {
             item_id: value,
             set: "From"
           });
+
+          let uom_array = _.filter(data.uomResult, f => {
+            return f.uom_id === e.selected.sales_uom_id;
+          });
           $this.setState({
             [name]: value,
+            item_description: e.selected.item_description,
+            item_code: e.selected.item_code,
             item_category_id: e.selected.category_id,
             item_uom: e.selected.sales_uom_id,
 
@@ -64,12 +73,15 @@ const itemchangeText = ($this, context, e) => {
             quantity: 1,
             addItemButton: false,
 
-            ItemUOM: data.uomResult
+            ItemUOM: data.uomResult,
+            uom_description: uom_array[0].uom_description
           });
 
           if (context !== undefined) {
             context.updateState({
               [name]: value,
+              item_description: e.selected.item_description,
+              item_code: e.selected.item_code,
               item_category_id: e.selected.category_id,
               item_uom: e.selected.sales_uom_id,
 
@@ -124,8 +136,14 @@ const itemchangeText = ($this, context, e) => {
               item_id: value,
               set: "From"
             });
+
+            let uom_array = _.filter(data.uomResult, f => {
+              return f.uom_id === e.selected.sales_uom_id;
+            });
             $this.setState({
               [name]: value,
+              item_description: e.selected.item_description,
+              item_code: e.selected.item_code,
               item_category_id: e.selected.category_id,
               item_uom: e.selected.sales_uom_id,
 
@@ -133,12 +151,15 @@ const itemchangeText = ($this, context, e) => {
               quantity: 1,
               addItemButton: false,
 
-              ItemUOM: data.uomResult
+              ItemUOM: data.uomResult,
+              uom_description: uom_array[0].uom_description
             });
 
             if (context !== undefined) {
               context.updateState({
                 [name]: value,
+                item_description: e.selected.item_description,
+                item_code: e.selected.item_code,
                 item_category_id: e.selected.category_id,
                 item_uom: e.selected.sales_uom_id,
 
@@ -196,7 +217,10 @@ const AddItems = ($this, context) => {
       quantity_authorized: 0,
       item_uom: $this.state.item_uom,
       from_qtyhand: $this.state.from_qtyhand,
-      to_qtyhand: $this.state.to_qtyhand
+      to_qtyhand: $this.state.to_qtyhand,
+      item_description: $this.state.item_description,
+      item_code: $this.state.item_code,
+      uom_description: $this.state.uom_description
     };
     inventory_stock_detail.push(ItemInput);
     $this.setState({
@@ -312,6 +336,7 @@ const getItemLocationStock = ($this, context, value) => {
       mappingName: "inventoryitemBatch"
     },
     afterSuccess: data => {
+      debugger;
       if (data.length !== 0) {
         let total_quantity = 0;
         for (let i = 0; i < data.length; i++) {

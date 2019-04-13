@@ -6,10 +6,12 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
-const changeTexts = ($this, ctrl, e) => {
+const requisitionEvent = ($this, ctrl, e) => {
+  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
   $this.setState({ [name]: value });
 };
 
@@ -125,6 +127,7 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
 };
 
 const LocationchangeTexts = ($this, location, ctrl, e) => {
+  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -139,6 +142,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       $this.setState({ [name]: null });
     } else {
       let requistion_type = "";
+
       if (e.selected.location_type === "MS") {
         requistion_type = "PR";
       } else if (e.selected.location_type === "SS") {
@@ -149,7 +153,8 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
         [type]: e.selected.location_type,
         requistion_type: requistion_type,
         to_location_id: null,
-        to_location_type: null
+        to_location_type: null,
+        from_location_name: e.selected.location_description
       });
     }
   } else if (location === "To") {
@@ -161,16 +166,20 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       });
       $this.setState({ [name]: null });
     } else {
-      $this.setState({ [name]: value, [type]: e.selected.location_type });
+      $this.setState({
+        [name]: value,
+        [type]: e.selected.location_type,
+        to_location_name: e.selected.location_description
+      });
     }
   }
 };
 
 export {
-  changeTexts,
   getCtrlCode,
   ClearData,
   SaveRequisitionEntry,
   AuthorizeRequisitionEntry,
-  LocationchangeTexts
+  LocationchangeTexts,
+  requisitionEvent
 };

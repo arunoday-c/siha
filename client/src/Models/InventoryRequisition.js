@@ -64,7 +64,11 @@ export default {
       po_outstanding_quantity: null,
       po_completed: null,
       addItemButton: true,
-      dummyField: false
+      dummyField: false,
+      from_location_name: null,
+      to_location_name: null,
+      requistion_type_name: null,
+      requistion_from: null
     };
     return output;
   }

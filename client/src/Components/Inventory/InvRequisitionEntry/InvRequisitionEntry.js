@@ -7,7 +7,7 @@ import moment from "moment";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
-  changeTexts,
+  requisitionEvent,
   getCtrlCode,
   ClearData,
   SaveRequisitionEntry,
@@ -23,6 +23,7 @@ import RequisitionItems from "./RequisitionItems/RequisitionItems";
 import MyContext from "../../../utils/MyContext";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import Options from "../../../Options.json";
+import AlgaehReport from "../../Wrapper/printReports";
 
 class InvRequisitionEntry extends Component {
   constructor(props) {
@@ -157,6 +158,40 @@ class InvRequisitionEntry extends Component {
                 </div>
               </div>
             }
+            printArea={{
+              menuitems: [
+                {
+                  label: "Print Report",
+                  events: {
+                    onClick: () => {
+                      AlgaehReport({
+                        report: {
+                          fileName: "Inventory/MaterialRequisition"
+                        },
+                        data: {
+                          requisition_number: this.state
+                            .material_requisition_number,
+                          requistion_date: moment(
+                            this.state.requistion_date
+                          ).format(Options.datetimeFormat),
+
+                          requistion_type:
+                            this.state.requistion_type === "PR"
+                              ? "Purchase Requisition"
+                              : "Material Requisition",
+
+                          from_location: this.state.from_location_name,
+                          to_location: this.state.to_location_name,
+
+                          inventory_stock_detail: this.state
+                            .inventory_stock_detail
+                        }
+                      });
+                    }
+                  }
+                }
+              ]
+            }}
             selectedLang={this.state.selectedLang}
           />
 
@@ -215,12 +250,9 @@ class InvRequisitionEntry extends Component {
                     },
                     others: {
                       disabled: true
-                      // this.state.from_location_type === "SS"
-                      //   ? true
-                      //   : this.state.addedItem
                     },
 
-                    onChange: changeTexts.bind(this, this)
+                    onChange: requisitionEvent.bind(this, this)
                   }}
                 />
               </div>
