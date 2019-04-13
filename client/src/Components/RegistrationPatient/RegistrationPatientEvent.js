@@ -155,6 +155,7 @@ const ClearData = ($this, e) => {
             data: []
           }
         });
+        getCashiersAndShiftMAP($this);
       });
     }
   });
@@ -187,7 +188,7 @@ const getHospitalDetails = $this => {
 
 const getCashiersAndShiftMAP = $this => {
   let year = moment().format("YYYY");
-  let month = moment().format("MM");
+  let month = moment().format("M");
 
   algaehApiCall({
     uri: "/shiftAndCounter/getCashiersAndShiftMAP",

@@ -10,56 +10,45 @@ import POEntry from "../../../Models/POEntry";
 let texthandlerInterval = null;
 
 const texthandle = ($this, e) => {
-  if (e.value === undefined) {
-    $this.setState({ [e]: null });
-  } else {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
-    $this.setState({
-      [name]: value
-    });
-  }
+  $this.setState({
+    [name]: value
+  });
 };
 
 const loctexthandle = ($this, e) => {
-  if (e.value === undefined) {
-    $this.setState({ [e]: null });
-  } else {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    let ReqData = true;
-    if ($this.state.vendor_id !== null) {
-      ReqData = false;
-    }
-    $this.setState({
-      [name]: value,
-      ReqData: ReqData
-    });
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let ReqData = true;
+  if ($this.state.vendor_id !== null) {
+    ReqData = false;
   }
+  $this.setState({
+    [name]: value,
+    vendor_name: e.selected.vendor_name,
+    ReqData: ReqData
+  });
 };
 
 const vendortexthandle = ($this, e) => {
-  if (e.value === undefined) {
-    $this.setState({ [e]: null, payment_terms: null });
-  } else {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    let ReqData = true;
-    if (
-      $this.state.pharmcy_location_id !== null ||
-      $this.state.inventory_location_id !== null
-    ) {
-      ReqData = false;
-    }
-
-    $this.setState({
-      [name]: value,
-      payment_terms: e.selected.payment_terms,
-      tax_percentage: e.selected.vat_percentage,
-      ReqData: ReqData
-    });
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let ReqData = true;
+  if (
+    $this.state.pharmcy_location_id !== null ||
+    $this.state.inventory_location_id !== null
+  ) {
+    ReqData = false;
   }
+
+  $this.setState({
+    [name]: value,
+    payment_terms: e.selected.payment_terms,
+    tax_percentage: e.selected.vat_percentage,
+    ReqData: ReqData
+  });
 };
 
 const poforhandle = ($this, e) => {
