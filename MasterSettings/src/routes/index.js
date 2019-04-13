@@ -10,6 +10,8 @@ import specialityAndCategory from "../controllers/specialityAndCategory";
 import shiftAndCounter from "../controllers/shiftAndCounter";
 import currency from "../controllers/currency";
 import packagesetup from "../controllers/packagesetup";
+import bankmaster from "../controllers/bankmaster";
+import companyAccount from "../controllers/companyAccount";
 
 const router = express();
 router.use("/department", department());
@@ -23,5 +25,7 @@ router.use("/specialityAndCategory", specialityAndCategory());
 router.use("/shiftAndCounter", shiftAndCounter());
 router.use("/currency", currency());
 router.use("/packagesetup", packagesetup());
+router.use("/bankmaster", bankmaster());
+router.use("/companyAccount", companyAccount());
 
 export default router;

@@ -87,7 +87,9 @@ class EmployeePayment extends Component {
 
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.props.getBanks({
-        uri: "/masters/getBank",
+        uri: "/bankmaster/getBank",
+        data: { active_status: "A" },
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "BANK_GET_DATA",

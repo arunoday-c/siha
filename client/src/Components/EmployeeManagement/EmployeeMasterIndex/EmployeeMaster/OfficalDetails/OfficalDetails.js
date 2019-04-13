@@ -14,7 +14,8 @@ import {
   datehandle,
   accomodationProvided,
   employeeStatusHandler,
-  dateFormater
+  dateFormater,
+  bankEventhandle
 } from "./OfficalDetailsEvent.js";
 import { AlgaehActions } from "../../../../../actions/algaehActions";
 import { withRouter } from "react-router-dom";
@@ -40,11 +41,27 @@ class OfficalDetails extends Component {
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.props.getBanks({
-        uri: "/masters/getBank",
+        uri: "/bankmaster/getBank",
+        data: { active_status: "A" },
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "BANK_GET_DATA",
           mappingName: "banks"
+        }
+      });
+    }
+    if (
+      this.props.companyaccount === undefined ||
+      this.props.companyaccount.length === 0
+    ) {
+      this.props.getCompanyAccount({
+        uri: "/companyAccount/getCompanyAccount",
+        module: "masterSettings",
+        method: "GET",
+        redux: {
+          type: "COMPANY_ACC_DATA",
+          mappingName: "companyaccount"
         }
       });
     }
@@ -323,21 +340,30 @@ class OfficalDetails extends Component {
                 <span>Employee Bank Details</span>
               </h5>
               <div className="row paddin-bottom-5">
-                <AlagehFormGroup
-                  div={{ className: "col-6 mandatory" }}
+                <AlagehAutoComplete
+                  div={{ className: "col mandatory" }}
                   label={{
-                    forceLabel: "Bank Name",
+                    forceLabel: "Select Employee Bank",
                     isImp: true
                   }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "employee_bank_name",
-                    value: this.state.employee_bank_name,
-                    events: {
-                      onChange: texthandle.bind(this, this)
+                  selector={{
+                    name: "employee_bank_id",
+                    className: "select-fld",
+                    value: this.state.employee_bank_id,
+                    dataSource: {
+                      textField: "bank_name",
+                      valueField: "hims_d_bank_id",
+                      data: this.props.banks
+                    },
+                    onChange: bankEventhandle.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        employee_bank_id: null
+                      });
                     }
                   }}
                 />
+
                 <AlagehFormGroup
                   div={{ className: "col-6 mandatory" }}
                   label={{
@@ -350,7 +376,8 @@ class OfficalDetails extends Component {
                     name: "employee_bank_ifsc_code",
                     events: {
                       onChange: texthandle.bind(this, this)
-                    }
+                    },
+                    disabled: true
                   }}
                 />
 
@@ -381,7 +408,7 @@ class OfficalDetails extends Component {
                 <AlagehAutoComplete
                   div={{ className: "col mandatory" }}
                   label={{
-                    forceLabel: "Select a Bank",
+                    forceLabel: "Select Employeer Bank",
                     isImp: true
                   }}
                   selector={{
@@ -390,8 +417,8 @@ class OfficalDetails extends Component {
                     value: this.state.company_bank_id,
                     dataSource: {
                       textField: "bank_name",
-                      valueField: "hims_d_bank_id",
-                      data: this.props.banks
+                      valueField: "bank_id",
+                      data: this.props.companyaccount
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
@@ -437,14 +464,16 @@ class OfficalDetails extends Component {
 function mapStateToProps(state) {
   return {
     banks: state.banks,
-    subdepartment: state.subdepartment
+    subdepartment: state.subdepartment,
+    companyaccount: state.companyaccount
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getBanks: AlgaehActions
+      getBanks: AlgaehActions,
+      getCompanyAccount: AlgaehActions
     },
     dispatch
   );

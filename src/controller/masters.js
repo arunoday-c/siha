@@ -13,7 +13,6 @@ import {
   autoGenMaster,
   visaMaster,
   clinicalNonClinicalAll,
-  getBank,
   killDbConnections
 } from "../model/masters";
 import { getCacheData, setCacheData } from "../utils/caching";
@@ -289,15 +288,6 @@ export default () => {
     }
   );
 
-  api.get("/getBank", getBank, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
-
   api.get("/killDbConnections", killDbConnections, (req, res, next) => {
     let result = req.records;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
@@ -306,5 +296,6 @@ export default () => {
     });
     next();
   });
+
   return api;
 };

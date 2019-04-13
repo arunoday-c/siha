@@ -442,31 +442,6 @@ let killDbConnections = (req, res, next) => {
   }
 };
 
-//created by irfan: to get
-let getBank = (req, res, next) => {
-  const _mysql = new algaehMysql({ path: keyPath });
-  try {
-    _mysql
-      .executeQuery({
-        query:
-          "select   hims_d_bank_id, bank_name, bank_code, bank_short_name,\
-         address1, contact_person, contact_number, active_status from\
-          hims_d_bank where record_status='A' order by hims_d_bank_id desc "
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(error => {
-        _mysql.releaseConnection();
-        next(error);
-      });
-  } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
-  }
-};
 module.exports = {
   titleMaster,
   countryMaster,
@@ -478,6 +453,5 @@ module.exports = {
   visaMaster,
   clinicalNonClinicalAll,
   countryStateCity,
-  killDbConnections,
-  getBank
+  killDbConnections
 };
