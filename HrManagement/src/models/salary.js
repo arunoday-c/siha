@@ -2532,7 +2532,11 @@ module.exports = {
               ot_hours + "." + (parseInt(ot_min) % parseInt(60));
             //EN-complete OVER-Time  calculation
 
-            result[i] = { ...result[i], complete_ot: complete_ot };
+            result[i] = {
+              ...result[i],
+              complete_ot: complete_ot,
+              salary_freq: "M"
+            };
           }
 
           req.records = result;

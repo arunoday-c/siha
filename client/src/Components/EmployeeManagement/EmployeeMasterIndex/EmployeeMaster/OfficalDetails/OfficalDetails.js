@@ -41,11 +41,27 @@ class OfficalDetails extends Component {
     this.setState({ ...this.state, ...InputOutput });
     if (this.props.banks === undefined || this.props.banks.length === 0) {
       this.props.getBanks({
-        uri: "/masters/getBank",
+        uri: "/bankmaster/getBank",
+        data: { active_status: "A" },
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "BANK_GET_DATA",
           mappingName: "banks"
+        }
+      });
+    }
+    if (
+      this.props.companyaccount === undefined ||
+      this.props.companyaccount.length === 0
+    ) {
+      this.props.getCompanyAccount({
+        uri: "/companyAccount/getCompanyAccount",
+        module: "masterSettings",
+        method: "GET",
+        redux: {
+          type: "COMPANY_ACC_DATA",
+          mappingName: "companyaccount"
         }
       });
     }
@@ -401,8 +417,8 @@ class OfficalDetails extends Component {
                     value: this.state.company_bank_id,
                     dataSource: {
                       textField: "bank_name",
-                      valueField: "hims_d_bank_id",
-                      data: this.props.banks
+                      valueField: "bank_id",
+                      data: this.props.companyaccount
                     },
                     onChange: texthandle.bind(this, this),
                     onClear: () => {
@@ -448,14 +464,16 @@ class OfficalDetails extends Component {
 function mapStateToProps(state) {
   return {
     banks: state.banks,
-    subdepartment: state.subdepartment
+    subdepartment: state.subdepartment,
+    companyaccount: state.companyaccount
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getBanks: AlgaehActions
+      getBanks: AlgaehActions,
+      getCompanyAccount: AlgaehActions
     },
     dispatch
   );

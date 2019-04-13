@@ -2,40 +2,43 @@ import React, { Component } from "react";
 import "./WPS.css";
 import {
   AlgaehDataGrid,
-  AlgaehDateHandler,
   AlagehAutoComplete,
-  AlagehFormGroup,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import { getYears, getAmountFormart } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  getYears,
+  getAmountFormart
+} from "../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import moment from "moment";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import jsPDF from "jspdf";
 import { CSVLink } from "react-csv";
 
 export default class WPS extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      banks: [],
+      companyAccount: [],
       employees: [],
       year: moment().year(),
       month: moment(new Date()).format("M"),
       button_enable: true,
-      csvData: ""
+      csvData: "",
+      bank_id: null
     };
-    this.getBanks();
+    this.getCompanyAccount();
   }
 
-  getBanks() {
+  getCompanyAccount() {
     algaehApiCall({
-      uri: "/masters/getBank",
+      uri: "/companyAccount/getCompanyAccount",
+      module: "masterSettings",
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
           this.setState({
-            banks: res.data.records
+            companyAccount: res.data.records
           });
         }
       },
@@ -49,33 +52,38 @@ export default class WPS extends Component {
   }
 
   getWpsEmployees() {
-    algaehApiCall({
-      uri: "/salary/getWpsEmployees",
-      method: "GET",
-      data: {
-        year: this.state.year,
-        month: this.state.month
-      },
-      module: "hrManagement",
-      onSuccess: res => {
-        if (res.data.success) {
-          if (res.data.records.length > 0) {
-            this.setState({
-              employees: res.data.records,
-              button_enable: false
-            });
-          } else {
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        algaehApiCall({
+          uri: "/salary/getWpsEmployees",
+          method: "GET",
+          data: {
+            year: this.state.year,
+            month: this.state.month
+          },
+          module: "hrManagement",
+          onSuccess: res => {
+            if (res.data.success) {
+              if (res.data.records.length > 0) {
+                this.setState({
+                  employees: res.data.records,
+                  button_enable: false
+                });
+              } else {
+                swalMessage({
+                  title: "No data for selected year/month",
+                  type: "warning"
+                });
+              }
+            }
+          },
+          onFailure: err => {
             swalMessage({
-              title: "No data for selected year/month",
-              type: "warning"
+              title: err.message,
+              type: "error"
             });
           }
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
         });
       }
     });
@@ -85,7 +93,8 @@ export default class WPS extends Component {
       employees: [],
       year: moment().year(),
       month: moment(new Date()).format("M"),
-      button_enable: true
+      button_enable: true,
+      bank_id: null
     });
   }
 
@@ -198,7 +207,7 @@ export default class WPS extends Component {
             div={{ className: "col form-group" }}
             label={{
               forceLabel: "Select Bank",
-              isImp: false
+              isImp: true
             }}
             selector={{
               name: "bank_id",
@@ -206,8 +215,8 @@ export default class WPS extends Component {
               value: this.state.bank_id,
               dataSource: {
                 textField: "bank_name",
-                valueField: "hims_d_bank_id",
-                data: this.state.banks
+                valueField: "bank_id",
+                data: this.state.companyAccount
               },
               onChange: this.dropDownHandler.bind(this),
               onClear: () => {
@@ -259,7 +268,7 @@ export default class WPS extends Component {
                           )
                         },
                         {
-                          fieldName: "id_type",
+                          fieldName: "employee_code",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Code" }}
@@ -283,7 +292,7 @@ export default class WPS extends Component {
                           )
                         },
                         {
-                          fieldName: "id_type",
+                          fieldName: "employee_bank_ifsc_code",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee BIC" }}
@@ -291,7 +300,7 @@ export default class WPS extends Component {
                           )
                         },
                         {
-                          fieldName: "employeeBankAccNo",
+                          fieldName: "employee_account_number",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Account No." }}
@@ -299,7 +308,7 @@ export default class WPS extends Component {
                           )
                         },
                         {
-                          fieldName: "salaryFreq",
+                          fieldName: "salary_freq",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Salary Frequency" }}

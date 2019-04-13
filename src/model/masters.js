@@ -442,108 +442,6 @@ let killDbConnections = (req, res, next) => {
   }
 };
 
-//created by irfan: to get
-let getBank = (req, res, next) => {
-  const _mysql = new algaehMysql({ path: keyPath });
-  try {
-    _mysql
-      .executeQuery({
-        query:
-          "select   hims_d_bank_id, bank_name, bank_code, bank_short_name,\
-         address1, contact_person, contact_number, active_status from\
-          hims_d_bank where record_status='A' order by hims_d_bank_id desc "
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(error => {
-        _mysql.releaseConnection();
-        next(error);
-      });
-  } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
-  }
-};
-
-//created by irfan: to
-let addBank = (req, res, next) => {
-  const _mysql = new algaehMysql({ path: keyPath });
-
-  let input=req.body;
-  try {
-    _mysql
-      .executeQuery({
-        query:
-          "INSERT INTO hims_d_bank (bank_name,bank_code,bank_short_name,address1,contact_person,contact_number,created_date,created_by,updated_date,updated_by)\
-           values(?,?,?,?,?,?,?,?,?,?)",
-           values:[
-
-        input.bank_name,
-        input.bank_code,
-        input.bank_short_name,
-        input.address1,
-        input.contact_person,
-        input.contact_number,
-        new Date(),
-        req.userIdentity.algaeh_d_app_user_id,
-        new Date(),
-        req.userIdentity.algaeh_d_app_user_id
-
-           ]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(error => {
-        _mysql.releaseConnection();
-        next(error);
-      });
-  } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
-  }
-};
-//created by irfan: to
-let updateBank = (req, res, next) => {
-  const _mysql = new algaehMysql({ path: keyPath });
-
-  let input=req.body;
-  try {
-    _mysql
-      .executeQuery({
-        query:
-          "update  hims_d_bank  set bank_name=?,bank_short_name=?,address1=?,contact_person=?,contact_number=?,updated_date=?,updated_by=?",
-           values:[
-
-        input.bank_name,       
-        input.bank_short_name,
-        input.address1,
-        input.contact_person,
-        input.contact_number,      
-        new Date(),
-        req.userIdentity.algaeh_d_app_user_id
-
-           ]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(error => {
-        _mysql.releaseConnection();
-        next(error);
-      });
-  } catch (e) {
-    _mysql.releaseConnection();
-    next(e);
-  }
-};
 module.exports = {
   titleMaster,
   countryMaster,
@@ -555,7 +453,5 @@ module.exports = {
   visaMaster,
   clinicalNonClinicalAll,
   countryStateCity,
-  killDbConnections,
-  getBank,
-  addBank
+  killDbConnections
 };
