@@ -371,6 +371,9 @@ const PageToPlot = {
   ),
   DiagramMaster: React.lazy(() =>
     retry(() => import("./Components/DiagramMaster/DiagramMaster"))
+  ),
+  DentalLab: React.lazy(() =>
+    retry(() => import("./Components/Laboratory/DentalLab/DentalLab"))
   )
 };
 

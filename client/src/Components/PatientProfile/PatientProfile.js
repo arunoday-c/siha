@@ -27,6 +27,7 @@ import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
+import DentalForm from "./DentalForm/DentalForm";
 import Eye from "./Eye/Eye";
 import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
@@ -370,6 +371,15 @@ class PatientProfile extends Component {
               >
                 Dental
               </span>
+            </li>{" "}
+            <li className="nav-item">
+              <span
+                onClick={this.changeTabs}
+                algaehsoap="dental_form"
+                className="nav-link"
+              >
+                Dental Form
+              </span>
             </li>
             <li className="nav-item">
               <span
@@ -474,6 +484,8 @@ class PatientProfile extends Component {
             <Summary />
           ) : this.state.pageDisplay === "dental" ? (
             <Dental />
+          ) : this.state.pageDisplay === "dental_form" ? (
+            <DentalForm />
           ) : this.state.pageDisplay === "eye" ? (
             <Eye />
           ) : null}
