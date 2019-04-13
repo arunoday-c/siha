@@ -107,8 +107,9 @@ module.exports = {
             permanent_city_id,permanent_state_id,permanent_country_id,isdoctor,license_number, \
             date_of_joining,appointment_type,employee_type,reliving_date,notice_period,date_of_resignation,\
             company_bank_id,employee_bank_name,employee_bank_ifsc_code,employee_account_number,mode_of_payment,\
-            accomodation_provided,hospital_id,sub_department_id,overtime_group_id,created_date,created_by,updated_date,updated_by) \
-            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            accomodation_provided,hospital_id,sub_department_id,overtime_group_id,employee_bank_id,\
+            created_date,created_by,updated_date,updated_by) \
+            values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.employee_code,
               input.full_name,
@@ -150,6 +151,7 @@ module.exports = {
               input.hospital_id,
               input.sub_department_id,
               input.overtime_group_id,
+              input.employee_bank_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
@@ -221,7 +223,8 @@ module.exports = {
           accomodation_provided=?,hospital_id=?,gross_salary=?,total_earnings=?,total_deductions=?,total_contributions=?,\
           net_salary=?,cost_to_company=?,leave_salary_process=?,late_coming_rule=?,airfare_process=?,exit_date=?,\
           exclude_machine_data=?,gratuity_applicable=?,suspend_salary=?,pf_applicable=?,overtime_group_id=?,employee_group_id=?, \
-          reporting_to_id=?,sub_department_id=?,employee_designation_id=?,employee_status=?,inactive_date=?,updated_date=?,updated_by=?\
+          reporting_to_id=?,sub_department_id=?,employee_designation_id=?,employee_bank_id=?,\
+          employee_status=?,inactive_date=?,updated_date=?,updated_by=?\
           WHERE record_status='A' and  hims_d_employee_id=?",
             values: [
               input.employee_code,
@@ -284,6 +287,7 @@ module.exports = {
               input.reporting_to_id,
               input.sub_department_id,
               input.employee_designation_id,
+              input.employee_bank_id,
               input.employee_status,
               input.inactive_date,
               new Date(),
