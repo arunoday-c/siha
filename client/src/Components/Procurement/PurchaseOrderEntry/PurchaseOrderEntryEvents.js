@@ -19,6 +19,7 @@ const texthandle = ($this, e) => {
 };
 
 const loctexthandle = ($this, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let ReqData = true;
@@ -27,7 +28,6 @@ const loctexthandle = ($this, e) => {
   }
   $this.setState({
     [name]: value,
-    vendor_name: e.selected.vendor_name,
     ReqData: ReqData
   });
 };
@@ -45,6 +45,7 @@ const vendortexthandle = ($this, e) => {
 
   $this.setState({
     [name]: value,
+    vendor_name: e.selected.vendor_name,
     payment_terms: e.selected.payment_terms,
     tax_percentage: e.selected.vat_percentage,
     ReqData: ReqData
@@ -523,6 +524,19 @@ const AuthorizePOEntry = $this => {
     });
   }
 };
+
+const getVendorMaster = $this => {
+  $this.props.getVendorMaster({
+    uri: "/vendor/getVendorMaster",
+    module: "masterSettings",
+    method: "GET",
+    data: { vendor_status: "A" },
+    redux: {
+      type: "VENDORS_GET_DATA",
+      mappingName: "povendors"
+    }
+  });
+};
 export {
   texthandle,
   poforhandle,
@@ -535,5 +549,6 @@ export {
   SavePOEnrty,
   getCtrlCode,
   loctexthandle,
-  AuthorizePOEntry
+  AuthorizePOEntry,
+  getVendorMaster
 };

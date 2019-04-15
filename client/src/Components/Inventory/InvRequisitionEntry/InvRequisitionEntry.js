@@ -24,6 +24,7 @@ import MyContext from "../../../utils/MyContext";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import Options from "../../../Options.json";
 import AlgaehReport from "../../Wrapper/printReports";
+import _ from "lodash";
 
 class InvRequisitionEntry extends Component {
   constructor(props) {
@@ -94,6 +95,21 @@ class InvRequisitionEntry extends Component {
     ClearData(this, this);
   }
   render() {
+    const from_location_name =
+      this.state.from_location_id !== null
+        ? _.filter(this.props.invuserwiselocations, f => {
+            return (
+              f.hims_d_inventory_location_id === this.state.from_location_id
+            );
+          })
+        : [];
+    const to_location_name =
+      this.state.to_location_id !== null
+        ? _.filter(this.props.inventoryreqlocations, f => {
+            return f.hims_d_inventory_location_id === this.state.to_location_id;
+          })
+        : [];
+
     return (
       <React.Fragment>
         <div>
@@ -158,40 +174,50 @@ class InvRequisitionEntry extends Component {
                 </div>
               </div>
             }
-            printArea={{
-              menuitems: [
-                {
-                  label: "Print Report",
-                  events: {
-                    onClick: () => {
-                      AlgaehReport({
-                        report: {
-                          fileName: "Inventory/MaterialRequisition"
-                        },
-                        data: {
-                          requisition_number: this.state
-                            .material_requisition_number,
-                          requistion_date: moment(
-                            this.state.requistion_date
-                          ).format(Options.datetimeFormat),
+            printArea={
+              this.state.material_requisition_number !== null
+                ? {
+                    menuitems: [
+                      {
+                        label: "Print Report",
+                        events: {
+                          onClick: () => {
+                            AlgaehReport({
+                              report: {
+                                fileName: "Inventory/MaterialRequisition"
+                              },
+                              data: {
+                                requisition_number: this.state
+                                  .material_requisition_number,
+                                requistion_date: moment(
+                                  this.state.requistion_date
+                                ).format(Options.datetimeFormat),
 
-                          requistion_type:
-                            this.state.requistion_type === "PR"
-                              ? "Purchase Requisition"
-                              : "Material Requisition",
+                                requistion_type:
+                                  this.state.requistion_type === "PR"
+                                    ? "Purchase Requisition"
+                                    : "Material Requisition",
 
-                          from_location: this.state.from_location_name,
-                          to_location: this.state.to_location_name,
+                                from_location:
+                                  from_location_name.length > 0
+                                    ? from_location_name[0].location_description
+                                    : "",
+                                to_location:
+                                  to_location_name.length > 0
+                                    ? to_location_name[0].location_description
+                                    : [],
 
-                          inventory_stock_detail: this.state
-                            .inventory_stock_detail
+                                inventory_stock_detail: this.state
+                                  .inventory_stock_detail
+                              }
+                            });
+                          }
                         }
-                      });
-                    }
+                      }
+                    ]
                   }
-                }
-              ]
-            }}
+                : ""
+            }
             selectedLang={this.state.selectedLang}
           />
 

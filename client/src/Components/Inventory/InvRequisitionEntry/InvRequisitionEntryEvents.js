@@ -17,6 +17,7 @@ const requisitionEvent = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
+  debugger;
   $this.props.getRequisitionEntry({
     uri: "/inventoryrequisitionEntry/getinventoryrequisitionEntry",
     module: "inventory",

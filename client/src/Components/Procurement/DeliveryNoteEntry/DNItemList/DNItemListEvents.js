@@ -3,6 +3,7 @@ import moment from "moment";
 import Enumerable from "linq";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import Options from "../../../../Options.json";
+import AlgaehReport from "../../../Wrapper/printReports";
 
 const assignDataandclear = ($this, context, stock_detail, assignData) => {
   let sub_total = Enumerable.from(stock_detail).sum(s =>
@@ -286,6 +287,28 @@ const changeDateFormat = date => {
   }
 };
 
+const printBarcode = ($this, row, e) => {
+  debugger;
+  AlgaehReport({
+    report: {
+      fileName: "sampleBarcode",
+      barcode: {
+        parameter: "patient_code",
+        options: {
+          format: "",
+          lineColor: "#0aa",
+          width: 4,
+          height: 40
+        }
+      }
+    },
+    data: {
+      patient_code:
+        row.item_code + row.batchno + moment(row.expiry_date).format("YYYYMMDD")
+    }
+  });
+};
+
 export {
   deleteDNDetail,
   updateDNDetail,
@@ -297,5 +320,6 @@ export {
   EditGrid,
   CancelGrid,
   onchangegridcoldatehandle,
-  changeDateFormat
+  changeDateFormat,
+  printBarcode
 };

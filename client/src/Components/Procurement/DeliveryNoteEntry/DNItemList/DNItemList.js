@@ -21,7 +21,8 @@ import {
   EditGrid,
   CancelGrid,
   onchangegridcoldatehandle,
-  changeDateFormat
+  changeDateFormat,
+  printBarcode
 } from "./DNItemListEvents";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 
@@ -54,6 +55,34 @@ class DNItemList extends Component {
                         <AlgaehDataGrid
                           id="DN_details"
                           columns={[
+                            {
+                              fieldName: "action",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "Print" }} />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    <i
+                                      className="fas fa-barcode"
+                                      onClick={printBarcode.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    />
+                                  </span>
+                                );
+                              },
+                              disabled: true,
+                              others: {
+                                maxWidth: 70,
+                                resizable: false,
+                                filterable: false,
+                                style: { textAlign: "center" },
+                                fixed: "left"
+                              }
+                            },
                             {
                               fieldName:
                                 this.state.dn_from === "PHR"

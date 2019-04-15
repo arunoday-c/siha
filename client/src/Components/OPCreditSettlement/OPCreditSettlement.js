@@ -140,33 +140,37 @@ class OPCreditSettlement extends Component {
               </div>
             </div>
           }
-          printArea={{
-            menuitems: [
-              {
-                label: "Print Receipt",
-                events: {
-                  onClick: () => {
-                    AlgaehReport({
-                      report: {
-                        fileName: "printreceipt"
-                      },
-                      data: {
-                        patient_code: this.state.patient_code,
-                        full_name: this.state.full_name,
-                        advance_amount: this.state.advance_amount,
-                        bill_date: moment(this.state.bill_date).format(
-                          Options.dateFormat
-                        ),
-                        receipt_number: this.state.receipt_number,
-                        doctor_name: this.state.doctor_name,
-                        bill_details: this.state.billdetails
+          printArea={
+            this.state.credit_number !== null
+              ? {
+                  menuitems: [
+                    {
+                      label: "Print Receipt",
+                      events: {
+                        onClick: () => {
+                          AlgaehReport({
+                            report: {
+                              fileName: "printreceipt"
+                            },
+                            data: {
+                              patient_code: this.state.patient_code,
+                              full_name: this.state.full_name,
+                              advance_amount: this.state.advance_amount,
+                              bill_date: moment(this.state.bill_date).format(
+                                Options.dateFormat
+                              ),
+                              receipt_number: this.state.receipt_number,
+                              doctor_name: this.state.doctor_name,
+                              bill_details: this.state.billdetails
+                            }
+                          });
+                        }
                       }
-                    });
-                  }
+                    }
+                  ]
                 }
-              }
-            ]
-          }}
+              : ""
+          }
           selectedLang={this.state.selectedLang}
         />
         <div style={{ marginTop: 75 }}>

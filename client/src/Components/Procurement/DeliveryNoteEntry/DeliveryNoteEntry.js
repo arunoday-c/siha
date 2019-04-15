@@ -22,6 +22,7 @@ import {
   SaveDNEnrty,
   PurchaseOrderSearch,
   getCtrlCode
+  // PostDnEntry
 } from "./DeliveryNoteEntryEvent";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import { AlgaehActions } from "../../../actions/algaehActions";
@@ -323,6 +324,19 @@ class DeliveryNoteEntry extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
+                {/* <button
+                  type="button"
+                  className="btn btn-other"
+                  disabled={this.state.postEnable}
+                  onClick={PostDnEntry.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Post",
+                      returnText: true
+                    }}
+                  />
+                </button> */}
 
                 {/* {this.props.purchase_auth === true ? (
                     <button

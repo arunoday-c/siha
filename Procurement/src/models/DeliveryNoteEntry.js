@@ -11,17 +11,58 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * from  hims_f_procurement_dn_header where delivery_note_number=?",
+            "SELECT DNH.`hims_f_procurement_dn_header_id`, DNH.`delivery_note_number`, DNH.`dn_date`, DNH.`dn_type`, \
+            DNH.`dn_from`, DNH.`pharmcy_location_id`, DNH.`inventory_location_id`, DNH.`location_type`, DNH.`vendor_id`, \
+            DNH.`purchase_order_id`, DNH.`from_multiple_purchase_orders`, DNH.`payment_terms`, DNH.`comment`, \
+            DNH.`sub_total`, DNH.`detail_discount`, DNH.`extended_total`, DNH.`sheet_level_discount_percent`, \
+            DNH.`sheet_level_discount_amount`, DNH.`description`, DNH.`net_total`, DNH.`total_tax`, DNH.`net_payable`, \
+            DNH.`created_by`, DNH.`created_date`, DNH.`updated_by`, DNH.`updated_date`, DNH.`is_completed`, \
+            DNH.`completed_date`, DNH.`cancelled`, DNH.`cancel_by`, DNH.`cancel_date`, DNH.`authorize1`, \
+            DNH.`authorize_by_1`, DNH.`authorize_by_date`, POH.purchase_number \
+            from  hims_f_procurement_dn_header DNH, hims_f_procurement_po_header POH \
+            where DNH.purchase_order_id=POH.hims_f_procurement_po_header_id and DNH.delivery_note_number=?",
           values: [req.query.delivery_note_number],
           printQuery: true
         })
         .then(headerResult => {
           if (headerResult.length != 0) {
+            let strQuery = "";
+            if (headerResult[0].dn_from == "INV") {
+              strQuery = mysql.format(
+                "select DND.`hims_f_procurement_dn_detail_id`, DND.`hims_f_procurement_dn_header_id`, \
+                  DND.`phar_item_category`, DND.`phar_item_group`, DND.`phar_item_id`, DND.`inv_item_category_id`, \
+                  DND.`inv_item_group_id`, DND.`inv_item_id`, DND.`barcode`, DND.`po_quantity`, DND.`dn_quantity`, \
+                  DND.`authorize_quantity`, DND.`rejected_quantity`, DND.`pharmacy_uom_id`, DND.`inventory_uom_id`, \
+                  DND.`unit_cost`, DND.`extended_cost`, DND.`discount_percentage`, DND.`discount_amount`, \
+                  DND.`net_extended_cost`, DND.`vendor_item_no`, DND.`manufacturer_item_code`, DND.`quantity_recieved_todate`, \
+                  DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, \
+                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, \
+                  DND.`batchno_expiry_required`, DND.`batchno`, DND.`expiry_date`, DND.`purchase_order_header_id`, \
+                  DND.`purchase_order_detail_id`,IM.item_code, IM.item_description \
+                  from hims_f_procurement_dn_detail DND, hims_d_inventory_item_master IM \
+                  where DND.inv_item_id = IM.hims_d_inventory_item_master_id and DND.hims_f_procurement_dn_header_id=?",
+                [headerResult[0].hims_f_procurement_dn_header_id]
+              );
+            } else if (headerResult[0].dn_from == "PHR") {
+              strQuery = mysql.format(
+                "select DND.`hims_f_procurement_dn_detail_id`, DND.`hims_f_procurement_dn_header_id`, \
+                  DND.`phar_item_category`, DND.`phar_item_group`, DND.`phar_item_id`, DND.`inv_item_category_id`, \
+                  DND.`inv_item_group_id`, DND.`inv_item_id`, DND.`barcode`, DND.`po_quantity`, DND.`dn_quantity`, \
+                  DND.`authorize_quantity`, DND.`rejected_quantity`, DND.`pharmacy_uom_id`, DND.`inventory_uom_id`, \
+                  DND.`unit_cost`, DND.`extended_cost`, DND.`discount_percentage`, DND.`discount_amount`, \
+                  DND.`net_extended_cost`, DND.`vendor_item_no`, DND.`manufacturer_item_code`, DND.`quantity_recieved_todate`, \
+                  DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, \
+                  DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, \
+                  DND.`batchno_expiry_required`, DND.`batchno`, DND.`expiry_date`, DND.`purchase_order_header_id`, \
+                  DND.`purchase_order_detail_id`,IM.item_code, IM.item_description \
+                  from hims_f_procurement_dn_detail DND, hims_d_item_master IM \
+                   where DND.phar_item_id = IM.hims_d_item_master_id and DND.hims_f_procurement_dn_header_id=?",
+                [headerResult[0].hims_f_procurement_dn_header_id]
+              );
+            }
             _mysql
               .executeQuery({
-                query:
-                  "select * from hims_f_procurement_dn_detail where hims_f_procurement_dn_header_id=?",
-                values: [headerResult[0].hims_f_procurement_dn_header_id],
+                query: strQuery,
                 printQuery: true
               })
               .then(dn_entry_detail => {

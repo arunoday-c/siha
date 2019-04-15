@@ -11,42 +11,34 @@ module.exports = {
       let intValue = [];
       let _strAppend = "";
       if (req.query.material_requisition_number != null) {
-        _strAppend += " and IH.material_requisition_number=?";
+        _strAppend += " and material_requisition_number=?";
         intValue.push(req.query.material_requisition_number);
       }
 
       if (req.query.from_location_id != null) {
-        _strAppend += " and IH.from_location_id=?";
+        _strAppend += " and from_location_id=?";
         intValue.push(req.query.from_location_id);
       }
 
       if (req.query.to_location_id != null) {
-        _strAppend += " and IH.to_location_id=?";
+        _strAppend += " and to_location_id=?";
         intValue.push(req.query.to_location_id);
       }
 
       if (req.query.authorize1 != null) {
-        _strAppend += " and IH.authorize1=?";
+        _strAppend += " and authorize1=?";
         intValue.push(req.query.authorize1);
       }
 
       if (req.query.authorie2 != null) {
-        _strAppend += " and IH.authorie2=?";
+        _strAppend += " and authorie2=?";
         intValue.push(req.query.authorie2);
       }
 
       _mysql
         .executeQuery({
           query:
-            "SELECT IH.`hims_f_inventory_material_header_id`, IH.`material_requisition_number`, IH.`from_location_type`, IH.`from_location_id`, \
-            IH.`requistion_date`, IH.`expiration_date`, IH.`required_date`, IH.`requested_by`, IH.`on_hold`, IH.`to_location_type`, IH.`to_location_id`, \
-            IH.`description`, IH.`comment`, IH.`is_completed`, IH.`completed_date`, IH.`completed_lines`, IH.`requested_lines`, \
-            IH.`purchase_created_lines`, IH.`status`, IH.`requistion_type`, IH.`no_of_transfers`, IH.`no_of_po`, IH.`authorize1`,\
-            IH.`authorize1_date`, IH.`authorize1_by`, IH.`authorie2`, IH.`authorize2_date`, IH.`authorize2_by`, IH.`cancelled`, \
-            IH.`cancelled_by`, IH.`cancelled_date`,FL.location_description as from_location_name, TL.location_description as to_location_name from\
-            hims_f_inventory_material_header IH, hims_d_inventory_location FL, hims_d_inventory_location TL \
-            where from_location_id=FL.hims_d_inventory_location_id and\
-            to_location_id=TL.hims_d_inventory_location_id " +
+            "SELECT * from hims_f_inventory_material_header where 1=1 " +
             _strAppend,
           values: intValue,
           printQuery: true
