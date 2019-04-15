@@ -2564,30 +2564,29 @@ module.exports = {
       let input = req.query;
       let outputArray = [];
 
-   
       _mysql
         .executeQuery({
           query: `select hims_f_salary_id,salary_number,employee_id,month,year,salary_date, E.employee_code,\
           E.full_name as employee_name ,E.company_bank_id,E.employee_bank_name,E.employee_bank_ifsc_code,\
           E.employee_account_number, S.salary_processed ,S.total_work_days ,S.net_salary ,S.total_deductions,S.total_hours,\
-          S.total_working_hours,S.ot_work_hours,S.ot_weekoff_hours,S.shortage_hours,S.ot_holiday_hours  from hims_f_salary S \
+          S.total_working_hours,S.ot_work_hours,S.ot_weekoff_hours,S.shortage_hours,S.ot_holiday_hours,E.nationality  from hims_f_salary S \
           inner join hims_d_employee E on S.employee_id=E.hims_d_employee_id where S.salary_processed='Y'\
-          and E.company_bank_id=? and E.mode_of_payment='WPS' and  S.year=? and S.month=?`,
-          values: [                
-            input.company_bank_id,
-            input.year,
-            input.month
-          ],
-          printQuery:true
+          and E.company_bank_id=? and E.mode_of_payment='WPS' and  S.year=? and S.month=?; \
+          select default_nationality from hims_d_hospital;`,
+          values: [input.company_bank_id, input.year, input.month],
+          printQuery: true
         })
-        .then(salary => {
-        
-
+        .then(salary_details => {
           let total_earnings = 0;
           let total_deductions = 0;
           let total_contributions = 0;
           let total_net_salary = 0;
+          let salary = salary_details[0];
+          let default_nationality = salary_details[1][0]["default_nationality"];
 
+          const utilities = new algaehUtilities();
+
+          utilities.logger().log("default_nationality: ", default_nationality);
           if (salary.length > 0) {
             total_earnings = new LINQ(salary).Sum(s =>
               parseFloat(s.total_earnings)
@@ -2606,6 +2605,8 @@ module.exports = {
               .Select(s => s.hims_f_salary_id)
               .ToArray();
 
+            utilities.logger().log("salary_header_ids: ", salary_header_ids);
+
             _mysql
               .executeQuery({
                 query:
@@ -2619,18 +2620,19 @@ module.exports = {
                 SD.deductions_id=ED.hims_d_earning_deduction_id  and ED.print_report='Y' \
                 where salary_header_id in ( " +
                   salary_header_ids +
-                  ");select basic_earning_component from hims_d_hrms_options; "
+                  ");select basic_earning_component from hims_d_hrms_options; \
+                  select hims_d_earning_deduction_id from hims_d_earning_deduction where component_type='OV'"
               })
               .then(results => {
                 _mysql.releaseConnection();
                 let earnings = results[0];
                 let deductions = results[1];
                 let basic_id = results[2][0]["basic_earning_component"];
-       
+                let ovettime_earning_deduction_id =
+                  results[3][0]["hims_d_earning_deduction_id"];
 
                 let total_basic = 0;
 
-       
                 for (let i = 0; i < salary.length; i++) {
                   //ST-complete OVER-Time (ot,wot,hot all togather sum)  calculation
                   let ot_hours = 0;
@@ -2663,6 +2665,16 @@ module.exports = {
                     ot_hours + "." + (parseInt(ot_min) % parseInt(60));
                   //EN-complete OVER-Time  calculation
 
+                  let extra_income = 0;
+                  if (parseFloat(complete_ot) > 0) {
+                    extra_income = new LINQ(earnings)
+                      .Where(
+                        w => w.earnings_id == ovettime_earning_deduction_id
+                      )
+                      .Select(s => parseFloat(s.amount))
+                      .FirstOrDefault(0);
+                  }
+
                   let employee_earning = new LINQ(earnings)
                     .Where(
                       w => w.salary_header_id == salary[i]["hims_f_salary_id"]
@@ -2692,27 +2704,47 @@ module.exports = {
                     })
                     .ToArray();
 
-
                   total_basic += new LINQ(employee_earning)
                     .Where(w => w.earnings_id == basic_id)
                     .Select(s => parseFloat(s.amount))
                     .FirstOrDefault(0);
 
+                  let basic_salary = new LINQ(employee_earning)
+                    .Where(w => w.earnings_id == basic_id)
+                    .Select(s => parseFloat(s.amount))
+                    .FirstOrDefault(0);
 
-                
+                  utilities
+                    .logger()
+                    .log("nationality: ", salary[i].nationality);
+                  let emp_id_type = "P";
+                  if (default_nationality == salary[i].nationality) {
+                    emp_id_type = "C";
+                  }
+
+                  utilities
+                    .logger()
+                    .log("employee_earning: ", employee_earning);
+
+                  let social_security_deductions = new LINQ(employee_deduction)
+                    .Where(w => w.nationality_id == default_nationality)
+                    .Select(s => parseFloat(s.amount))
+                    .FirstOrDefault(0);
 
                   outputArray.push({
-                    ...salary[i],                 
+                    ...salary[i],
                     employee_earning: employee_earning,
                     employee_deduction: employee_deduction,
-                  
-                    complete_ot: complete_ot
+                    basic_salary: basic_salary,
+                    extra_income: extra_income,
+                    complete_ot: complete_ot,
+                    emp_id_type: emp_id_type,
+                    salary_freq: "M",
+                    social_security_deductions: social_security_deductions
                   });
                 }
 
-               
                 req.records = {
-                  
                   employees: outputArray,
                   total_basic: total_basic,
                   total_earnings: total_earnings,

@@ -3,17 +3,15 @@ import "./WPS.css";
 import {
   AlgaehDataGrid,
   AlagehAutoComplete,
+  AlagehFormGroup,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import {
-  AlgaehValidation,
-  getYears,
-  getAmountFormart
-} from "../../../utils/GlobalFunctions";
+import { getYears, getAmountFormart } from "../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+// import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { CSVLink } from "react-csv";
+import WPSEvents from "./WPSEvent";
 
 export default class WPS extends Component {
   constructor(props) {
@@ -25,128 +23,46 @@ export default class WPS extends Component {
       month: moment(new Date()).format("M"),
       button_enable: true,
       csvData: "",
-      bank_id: null
+      bank_id: null,
+      fileName: null,
+      employer_cr_no: null,
+      payer_cr_no: null,
+      bank_short_name: null,
+      account_number: null
     };
-    this.getCompanyAccount();
-  }
-
-  getCompanyAccount() {
-    algaehApiCall({
-      uri: "/companyAccount/getCompanyAccount",
-      module: "masterSettings",
-      method: "GET",
-      onSuccess: res => {
-        if (res.data.success) {
-          this.setState({
-            companyAccount: res.data.records
-          });
-        }
-      },
-      onFailure: err => {
-        swalMessage({
-          title: err.message,
-          type: "error"
-        });
-      }
-    });
+    WPSEvents().getCompanyAccount(this);
   }
 
   getWpsEmployees() {
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        algaehApiCall({
-          uri: "/salary/getWpsEmployees",
-          method: "GET",
-          data: {
-            year: this.state.year,
-            month: this.state.month
-          },
-          module: "hrManagement",
-          onSuccess: res => {
-            if (res.data.success) {
-              if (res.data.records.length > 0) {
-                this.setState({
-                  employees: res.data.records,
-                  button_enable: false
-                });
-              } else {
-                swalMessage({
-                  title: "No data for selected year/month",
-                  type: "warning"
-                });
-              }
-            }
-          },
-          onFailure: err => {
-            swalMessage({
-              title: err.message,
-              type: "error"
-            });
-          }
-        });
-      }
-    });
+    WPSEvents().getWpsEmployees(this);
   }
+
   clearState() {
-    this.setState({
-      employees: [],
-      year: moment().year(),
-      month: moment(new Date()).format("M"),
-      button_enable: true,
-      bank_id: null
-    });
+    WPSEvents().clearState(this);
   }
 
-  dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value
-    });
+  dropDownHandler(e) {
+    WPSEvents().dropDownHandler(this, e);
   }
 
-  generatePDF() {
+  BankEventHandaler(e) {
+    WPSEvents().BankEventHandaler(this, e);
+  }
+  generateCSV() {
     debugger;
-    var json = this.state.employees;
-    var fields = Object.keys(json[0]);
-    var replacer = function(key, value) {
-      return value === null ? "" : value;
-    };
+    WPSEvents().generateSIFFile(this);
+  }
 
-    var col = [
-      "Employee ID Type",
-      "Employee Code",
-      "Reference Number",
-      "Employee Name",
-      "Employee BIC",
-      "Employee Account No.",
-      "Salary Frequency",
-      "No. of Working Days",
-      "Net Salary",
-      "Basic Salary",
-      "Extra Hours",
-      "Extra Income",
-      "Deductions",
-      "Social Security Deductions",
-      "Notes/Comments"
-    ];
+  deleteFunction() {
+    WPSEvents().deleteFunction();
+  }
 
-    var csvData = json.map(function(row) {
-      return fields
-        .map(function(fieldName) {
-          return JSON.stringify(row[fieldName], replacer);
-        })
-        .join(",");
-    });
-    csvData.unshift(col.join(","));
+  updateWPS(row) {
+    WPSEvents().updateWPS(this, row);
+  }
 
-    this.setState(
-      {
-        csvData: [csvData]
-      },
-      () => {
-        this.csvLink.link.click();
-      }
-    );
+  changeGridEditors(row, e) {
+    WPSEvents().changeGridEditors(this, row, e);
   }
 
   render() {
@@ -218,7 +134,7 @@ export default class WPS extends Component {
                 valueField: "bank_id",
                 data: this.state.companyAccount
               },
-              onChange: this.dropDownHandler.bind(this),
+              onChange: this.BankEventHandaler.bind(this),
               onClear: () => {
                 this.setState({
                   bank_id: null
@@ -252,6 +168,43 @@ export default class WPS extends Component {
                   <h3 className="caption-subject">WPS Statement</h3>
                 </div>
               </div>
+
+              <div className="row">
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Employer CR-NO" }} />
+                  <h6>
+                    {this.state.employer_cr_no
+                      ? this.state.employer_cr_no
+                      : "----------"}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Payer CR-NO" }} />
+                  <h6>
+                    {this.state.payer_cr_no
+                      ? this.state.payer_cr_no
+                      : "----------"}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel
+                    label={{ forceLabel: "Payer Bank Short Name" }}
+                  />
+                  <h6>
+                    {this.state.bank_short_name
+                      ? this.state.bank_short_name
+                      : "----------"}
+                  </h6>
+                </div>
+                <div className="col">
+                  <AlgaehLabel label={{ forceLabel: "Payer Account Number" }} />
+                  <h6>
+                    {this.state.account_number
+                      ? this.state.account_number
+                      : "----------"}
+                  </h6>
+                </div>
+              </div>
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-12" id="WPSGrid_Cntr">
@@ -260,12 +213,13 @@ export default class WPS extends Component {
                       datavalidate="WPSGrid"
                       columns={[
                         {
-                          fieldName: "id_type",
+                          fieldName: "emp_id_type",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Employee ID Type" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "employee_code",
@@ -273,7 +227,8 @@ export default class WPS extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Code" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "salary_number",
@@ -281,7 +236,8 @@ export default class WPS extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Reference Number" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "employee_name",
@@ -289,7 +245,8 @@ export default class WPS extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Name" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "employee_bank_ifsc_code",
@@ -297,7 +254,8 @@ export default class WPS extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Employee BIC" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "employee_account_number",
@@ -305,7 +263,8 @@ export default class WPS extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Employee Account No." }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "salary_freq",
@@ -313,7 +272,8 @@ export default class WPS extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Salary Frequency" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "total_work_days",
@@ -321,7 +281,8 @@ export default class WPS extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "No. of Working Days" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
 
                         {
@@ -331,17 +292,32 @@ export default class WPS extends Component {
                           ),
                           displayTemplate: row => {
                             return (
-                              <span>{getAmountFormart(row.net_salary)}</span>
+                              <span>
+                                {getAmountFormart(row.net_salary, {
+                                  appendSymbol: false
+                                })}
+                              </span>
                             );
-                          }
+                          },
+                          disabled: true
                         },
                         {
-                          fieldName: "basicSalary",
+                          fieldName: "basic_salary",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Basic Salary" }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.basic_salary, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
+                          disabled: true
                         },
                         {
                           fieldName: "complete_ot",
@@ -349,48 +325,130 @@ export default class WPS extends Component {
                             <AlgaehLabel
                               label={{ forceLabel: "Extra Hours" }}
                             />
-                          )
+                          ),
+
+                          disabled: true
                         },
                         {
-                          fieldName: "extraIncome",
+                          fieldName: "extra_income",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Extra Income" }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.extra_income, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
+                          disabled: true
                         },
                         {
                           fieldName: "total_deductions",
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Deductions" }} />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(row.total_deductions, {
+                                  appendSymbol: false
+                                })}
+                              </span>
+                            );
+                          },
+                          disabled: true
                         },
                         {
-                          fieldName: "extraHours",
+                          fieldName: "social_security_deductions",
                           label: (
                             <AlgaehLabel
                               label={{
                                 forceLabel: "Social Security Deductions"
                               }}
                             />
-                          )
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {getAmountFormart(
+                                  row.social_security_deductions,
+                                  {
+                                    appendSymbol: false
+                                  }
+                                )}
+                              </span>
+                            );
+                          },
+
+                          disabled: true
                         },
                         {
-                          fieldName: "extraHours",
+                          fieldName: "notes_comments",
                           label: (
                             <AlgaehLabel
                               label={{ forceLabel: "Notes/Comments" }}
                             />
-                          )
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "notes_comments",
+                                  value: row.notes_comments,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         }
                       ]}
                       keyId="hims_f_salary_id"
                       dataSource={{ data: this.state.employees }}
-                      isEditable={false}
+                      isEditable={true}
                       paging={{ page: 0, rowsPerPage: 50 }}
-                      events={{}}
+                      events={{
+                        onEdit: () => {},
+                        onDelete: this.deleteFunction.bind(this),
+                        onDone: this.updateWPS.bind(this)
+                      }}
                       others={{}}
                     />
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-7" />
+                <div className="col-5" style={{ textAlign: "right" }}>
+                  <div className="row">
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Number Of Records"
+                        }}
+                      />
+                      <h6>{this.state.employees.length}</h6>
+                    </div>
+                    <div className="col-lg-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Total Net Salary"
+                        }}
+                      />
+                      <h6>{getAmountFormart(this.state.total_net_salary)}</h6>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -405,7 +463,7 @@ export default class WPS extends Component {
                 type="button"
                 className="btn btn-primary"
                 disabled={this.state.button_enable}
-                onClick={this.generatePDF.bind(this)}
+                onClick={this.generateCSV.bind(this)}
               >
                 Generate SIF
               </button>
@@ -421,9 +479,9 @@ export default class WPS extends Component {
             <div>
               <CSVLink
                 data={this.state.csvData}
-                filename="data.csv"
+                filename={this.state.fileName + ".csv"}
                 ref={r => (this.csvLink = r)}
-                // target="_blank"
+                target="_blank"
               />
             </div>
           </div>
