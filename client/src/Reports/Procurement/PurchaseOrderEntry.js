@@ -2,6 +2,7 @@
 
 import { getCookie } from "../../utils/algaehApiCall";
 import { ReportHeader } from "../ReportHeader";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
   debugger;
@@ -57,6 +58,7 @@ export function printReport(data) {
               <th>Sl No.</th>              
               <th>Item Code</th>
               <th>Item Name</th>
+              <th>Unit</th>
               <th>Quantity</th>              
               <th>Unit Price</th>      
               <th>Discount</th>      
@@ -75,12 +77,19 @@ export function printReport(data) {
             <tr>
               <td class="co-4"> ${index + 1}</td>              
               <td class="co-4"> ${item.item_code}</td>
-              <td class="co-4"> ${item.item_description}</td>              
+              <td class="co-4"> ${item.item_description}</td>    
+              <td class="co-4"> ${item.uom_description}</td>          
               <td class="co-4"> ${item.order_quantity}</td>
               <td class="co-4"> ${item.unit_price}</td>
-              <td class="co-4"> ${item.sub_discount_amount}</td>
-              <td class="co-4"> ${item.net_extended_cost}</td>
-              <td class="co-4"> ${item.tax_amount}</td>
+              <td class="co-4"> ${getAmountFormart(item.sub_discount_amount, {
+                appendSymbol: false
+              })}</td>
+              <td class="co-4"> ${getAmountFormart(item.net_extended_cost, {
+                appendSymbol: false
+              })}</td>
+              <td class="co-4"> ${getAmountFormart(item.tax_amount, {
+                appendSymbol: false
+              })}</td>
 
             </tr>`
             )

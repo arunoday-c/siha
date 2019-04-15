@@ -10,17 +10,56 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * from  hims_f_procurement_po_header where purchase_number=?",
+            "SELECT PH.hims_f_procurement_po_header_id, PH.purchase_number, PH.po_date, PH.po_from, PH.pharmcy_location_id, PH.inventory_location_id,\
+            PH.location_type,PH.vendor_id,PH.expected_date,PH.on_hold,PH.phar_requisition_id,PH.inv_requisition_id,\
+            PH.from_multiple_requisition, PH.payment_terms, PH.sub_total,PH.detail_discount, PH.extended_total, \
+            PH.sheet_level_discount_percent,PH.sheet_level_discount_amount,PH.description,PH.net_total,PH.total_tax,\
+            PH.net_payable,PH.is_completed, PH.completed_date,PH.cancelled,PH.cancel_by,PH.cancel_date,PH.authorize1,\
+            CASE WHEN PH.po_from = 'INV' THEN (select material_requisition_number from hims_f_inventory_material_header \
+            where hims_f_inventory_material_header_id=PH.inv_requisition_id ) \
+            else (select material_requisition_number from hims_f_pharamcy_material_header  \
+            where hims_f_pharamcy_material_header_id=PH.inv_requisition_id) END as material_requisition_number\
+            from  hims_f_procurement_po_header PH where purchase_number=?",
           values: [req.query.purchase_number],
           printQuery: true
         })
         .then(headerResult => {
           if (headerResult.length != 0) {
+            let strQuery = "";
+            if (headerResult[0].po_from == "INV") {
+              strQuery = mysql.format(
+                "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`, PD.`phar_item_group`, PD.`phar_item_id`, \
+                PD.`inv_item_category_id`, PD.`inv_item_group_id`, PD.`inv_item_id`, PD.`barcode`, PD.`order_quantity`, PD.`foc_quantity`, \
+                PD.`total_quantity`, PD.`pharmacy_uom_id`, PD.`inventory_uom_id`, PD.`unit_price`, PD.`extended_price`, PD.`sub_discount_percentage`, \
+                PD.`sub_discount_amount`, PD.`extended_cost`, PD.`unit_cost`, PD.`discount_percentage`, PD.`discount_amount`, PD.`net_extended_cost`, \
+                PD.`expected_arrival_date`, PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`, PD.`quantity_recieved`, \
+                PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`, PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, \
+                PD.`tax_percentage`, PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`, PD.`tax_discount`, PD.`item_type`, \
+                IM.item_code, IM.item_description, IU.uom_description\
+                from hims_f_procurement_po_detail PD, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU \
+                where PD.inv_item_id = IM.hims_d_inventory_item_master_id and PD.inventory_uom_id = IU.hims_d_inventory_uom_id \
+                and procurement_header_id=?",
+                [headerResult[0].hims_f_procurement_po_header_id]
+              );
+            } else if (headerResult[0].po_from == "PHR") {
+              strQuery = mysql.format(
+                "select PD.`hims_f_procurement_po_detail_id`, PD.`procurement_header_id`, PD.`phar_item_category`, PD.`phar_item_group`, PD.`phar_item_id`, \
+                PD.`inv_item_category_id`, PD.`inv_item_group_id`, PD.`inv_item_id`, PD.`barcode`, PD.`order_quantity`, PD.`foc_quantity`, \
+                PD.`total_quantity`, PD.`pharmacy_uom_id`, PD.`inventory_uom_id`, PD.`unit_price`, PD.`extended_price`, PD.`sub_discount_percentage`, \
+                PD.`sub_discount_amount`, PD.`extended_cost`, PD.`unit_cost`, PD.`discount_percentage`, PD.`discount_amount`, PD.`net_extended_cost`, \
+                PD.`expected_arrival_date`, PD.`vendor_item_no`, PD.`manufacturer_item_code`, PD.`completed`, PD.`completed_date`, PD.`quantity_recieved`, \
+                PD.`quantity_outstanding`, PD.`pharmacy_requisition_id`, PD.`inventory_requisition_id`, PD.`authorize_quantity`, PD.`rejected_quantity`, \
+                PD.`tax_percentage`, PD.`tax_amount`, PD.`total_amount`, PD.`mrp_price`, PD.`calculate_tax_on`, PD.`tax_discount`, PD.`item_type`, \
+                IM.item_code, IM.item_description, PU.uom_description\
+                from hims_f_procurement_po_detail PD, hims_d_item_master IM ,hims_d_pharmacy_uom PU\
+                where PD.phar_item_id = IM.hims_d_item_master_id and PD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id \
+                and procurement_header_id=?",
+                [headerResult[0].hims_f_procurement_po_header_id]
+              );
+            }
             _mysql
               .executeQuery({
-                query:
-                  "select * from hims_f_procurement_po_detail where procurement_header_id=?",
-                values: [headerResult[0].hims_f_procurement_po_header_id],
+                query: strQuery,
                 printQuery: true
               })
               .then(po_entry_detail => {
@@ -65,7 +104,7 @@ module.exports = {
         .then(generatedNumbers => {
           purchase_number = generatedNumbers[0];
 
-          let today = moment().format("YYYY-MM-DD");
+          // let today = moment().format("YYYY-MM-DD");
 
           _mysql
             .executeQuery({
@@ -78,7 +117,7 @@ module.exports = {
               VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 purchase_number,
-                today,
+                new Date(),
                 input.po_type,
                 input.po_from,
                 input.pharmcy_location_id,
