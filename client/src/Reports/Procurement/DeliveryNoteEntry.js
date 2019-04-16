@@ -10,7 +10,6 @@ export function printReport(data) {
   return `<div class="cashReciptStyles">
   <div class="print-body">
   <header> ${ReportHeader(data, "Delivery Note")} </header> 
-  <hr />
   <section>
   <div class="row receipt-header-mid">
     <div class="table-responsive table-report">
@@ -110,7 +109,7 @@ export function printReport(data) {
       </div>
     </div>
   </div>
-  <div class="row receipt-header-mid">
+  <div class=" receipt-header-mid">
     <div class="table-responsive table-report">
       <table class="table table-sm">
         <tbody>

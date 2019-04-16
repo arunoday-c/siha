@@ -136,7 +136,7 @@ export function printReport(data) {
       </div>
     </div>
   </div>
-  <div class="row receipt-header-mid">
+  <div class=" receipt-header-mid">
     <div class="table-responsive table-report">
       <table class="table table-sm">
         <tbody>

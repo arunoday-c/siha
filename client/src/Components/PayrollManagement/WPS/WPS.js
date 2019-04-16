@@ -429,27 +429,24 @@ export default class WPS extends Component {
                 </div>
               </div>
 
-              <div className="row">
-                <div className="col-7" />
-                <div className="col-5" style={{ textAlign: "right" }}>
-                  <div className="row">
-                    <div className="col-4">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Number Of Records"
-                        }}
-                      />
-                      <h6>{this.state.employees.length}</h6>
-                    </div>
-                    <div className="col-lg-4">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Total Net Salary"
-                        }}
-                      />
-                      <h6>{getAmountFormart(this.state.total_net_salary)}</h6>
-                    </div>
-                  </div>
+              <div className="row" style={{ textAlign: "right" }}>
+                <div className="col" />
+
+                <div className="col-2">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Number Of Records"
+                    }}
+                  />
+                  <h6>{this.state.employees.length}</h6>
+                </div>
+                <div className="col-2">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Total Net Salary"
+                    }}
+                  />
+                  <h6>{getAmountFormart(this.state.total_net_salary)}</h6>
                 </div>
               </div>
             </div>
