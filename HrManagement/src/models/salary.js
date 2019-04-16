@@ -2740,7 +2740,8 @@ module.exports = {
                     complete_ot: complete_ot,
                     emp_id_type: emp_id_type,
                     salary_freq: "M",
-                    social_security_deductions: social_security_deductions
+                    social_security_deductions: social_security_deductions,
+                    notes_comments: ""
                   });
                 }
 

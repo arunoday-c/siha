@@ -9,8 +9,6 @@ import {
 import { getYears, getAmountFormart } from "../../../utils/GlobalFunctions";
 import { MONTHS } from "../../../utils/GlobalVariables.json";
 import moment from "moment";
-// import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { CSVLink } from "react-csv";
 import WPSEvents from "./WPSEvent";
 
 export default class WPS extends Component {
@@ -475,14 +473,6 @@ export default class WPS extends Component {
               >
                 Export Excel
               </button>
-            </div>
-            <div>
-              <CSVLink
-                data={this.state.csvData}
-                filename={this.state.fileName + ".csv"}
-                ref={r => (this.csvLink = r)}
-                target="_blank"
-              />
             </div>
           </div>
         </div>

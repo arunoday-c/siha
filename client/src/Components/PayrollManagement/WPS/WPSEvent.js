@@ -110,88 +110,83 @@ export default function WPSEvents() {
       debugger;
       let employees = $this.state.employees;
       let today = moment().format("YYYYMMDD");
-      var header_col = [
-        [
-          "Employer CR-NO",
-          "Payer CR-NO",
-          "Payer Bank Short Name",
-          "Payer Account Number",
-          "Salary Year",
-          "Salary Month",
-          "Total Salary",
-          "Number Of Records",
-          "Payment Type"
-        ]
-      ];
-      let header_array = [
-        [
-          $this.state.employer_cr_no,
-          $this.state.payer_cr_no,
-          $this.state.bank_short_name,
-          $this.state.account_number,
-          $this.state.year,
-          $this.state.month,
-          $this.state.total_net_salary,
-          employees.length,
-          "Salary"
-        ]
-      ];
+      //Header Data
+      let _csvString =
+        "Employer CR-NO,Payer CR-NO,Payer Bank Short Name,\
+      Payer Account Number,Salary Year,Salary Month,Total Salary,Number Of Records,Payment Type \n ";
 
-      var col = [
-        "Employee ID Type",
-        "Employee Code",
-        "Reference Number",
-        "Employee Name",
-        "Employee BIC",
-        "Employee Account No.",
-        "Salary Frequency",
-        "No. of Working Days",
-        "Net Salary",
-        "Basic Salary",
-        "Extra Hours",
-        "Extra Income",
-        "Deductions",
-        "Social Security Deductions",
-        "Notes/Comments"
-      ];
-      let csvData = [];
-      csvData.push(header_col, header_array, col);
+      _csvString +=
+        $this.state.employer_cr_no +
+        "," +
+        $this.state.payer_cr_no +
+        "," +
+        $this.state.bank_short_name +
+        "," +
+        $this.state.account_number +
+        "," +
+        $this.state.year +
+        "," +
+        $this.state.month +
+        "," +
+        $this.state.total_net_salary +
+        "," +
+        employees.length +
+        ",Salary \n";
+      //Detail Data
+      _csvString +=
+        "Employee ID Type,Employee Code,Reference Number,Employee Name,Employee BIC,Employee Account No.,\
+        Salary Frequency,No. of Working Days,Net Salary,Basic Salary,Extra Hours,Extra Income,Deductions,\
+        Social Security Deductions,Notes/Comments \n";
+
       for (let i = 0; i < employees.length; i++) {
-        csvData.push([
-          employees[i].emp_id_type,
-          employees[i].employee_code,
-          employees[i].salary_number,
-          employees[i].employee_name,
-          employees[i].employee_bank_ifsc_code,
-          employees[i].employee_account_number,
-          employees[i].salary_freq,
-          employees[i].total_work_days,
-          employees[i].net_salary,
-          employees[i].basic_salary,
-          employees[i].complete_ot,
-          employees[i].extra_income,
-          employees[i].total_deductions,
-          0,
-          employees[i].notes_comments
-        ]);
+        _csvString +=
+          employees[i].emp_id_type +
+          "," +
+          employees[i].employee_code +
+          "," +
+          employees[i].salary_number +
+          "," +
+          employees[i].employee_name +
+          "," +
+          employees[i].employee_bank_ifsc_code +
+          "," +
+          employees[i].employee_account_number +
+          "," +
+          employees[i].salary_freq +
+          "," +
+          employees[i].total_work_days +
+          "," +
+          employees[i].net_salary +
+          "," +
+          employees[i].basic_salary +
+          "," +
+          employees[i].complete_ot +
+          "," +
+          employees[i].extra_income +
+          "," +
+          employees[i].total_deductions +
+          "," +
+          0 +
+          "," +
+          employees[i].notes_comments +
+          "\n";
       }
 
-      $this.setState(
-        {
-          csvData: csvData,
-          fileName:
-            "SIF" +
-            "_" +
-            $this.state.payer_cr_no +
-            "_" +
-            $this.state.bank_short_name +
-            "_" +
-            today
-        },
-        () => {
-          $this.csvLink.link.click();
-        }
-      );
+      let fileName =
+        "SIF" +
+        "_" +
+        $this.state.payer_cr_no +
+        "_" +
+        $this.state.bank_short_name +
+        "_" +
+        today;
+      let csvContent = "data:text/csv;charset=utf-8," + _csvString;
+      var encodedUri = encodeURI(csvContent);
+
+      var link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", fileName + ".csv");
+      link.click();
     },
     BankEventHandaler: ($this, e) => {
       debugger;
