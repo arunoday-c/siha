@@ -201,8 +201,8 @@ export default class AlgaehCanvas extends Component {
         openWebCam: false
       },
       () => {
-        if (typeof this.props.onSave === "function") {
-          this.props.onSave({
+        if (typeof this.props.onAfterCapture === "function") {
+          this.props.onAfterCapture({
             image: this.editor.getInstance().toDataURL(),
             name: this.state.name
           });

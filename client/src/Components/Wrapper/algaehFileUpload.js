@@ -158,6 +158,13 @@ export default class AlgaehFileUploader extends Component {
             }
           }
         },
+        onNoContent: () => {
+          that.setState({
+            filePreview: this.noImage,
+            showLoader: false,
+            forceRefreshed: undefined
+          });
+        },
         onFileFailure: data => {
           if (propsP.events !== undefined) {
             if (typeof propsP.events.onFailure === "function") {
@@ -188,7 +195,10 @@ export default class AlgaehFileUploader extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps !== this.props || nextState !== this.state) {
+    if (
+      JSON.stringify(nextProps) !== JSON.stringify(this.props) ||
+      JSON.stringify(nextState) !== JSON.stringify(this.state)
+    ) {
       return true;
     } else return false;
   }
