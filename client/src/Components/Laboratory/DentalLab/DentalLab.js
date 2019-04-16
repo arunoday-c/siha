@@ -123,7 +123,7 @@ export default class DentalLab extends Component {
           </div>
         </div>
 
-        <DentelForm
+        {/* <DentelForm
           show={this.state.OpenForm}
           onClose={this.OpenDentalForm.bind(this)}
           HeaderCaption={
@@ -134,7 +134,7 @@ export default class DentalLab extends Component {
               }}
             />
           }
-        />
+        /> */}
       </div>
     );
   }

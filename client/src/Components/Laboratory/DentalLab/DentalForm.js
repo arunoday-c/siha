@@ -78,7 +78,7 @@ class DentalForm extends Component {
                     <div className="col">
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="bruxzir_anterior"
@@ -88,7 +88,7 @@ class DentalForm extends Component {
                           <span>BruxZir - Anterior</span>
                         </label>
 
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="ips_e_max"
@@ -98,7 +98,7 @@ class DentalForm extends Component {
                           <span>IPS E.max</span>
                         </label>
 
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="lava"
@@ -107,7 +107,7 @@ class DentalForm extends Component {
                           />
                           <span>Lava</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="lumineers"
@@ -116,7 +116,7 @@ class DentalForm extends Component {
                           />
                           <span>Lumineers</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="zirconia_e_max_layered"
@@ -125,7 +125,7 @@ class DentalForm extends Component {
                           />
                           <span>Zirconia E.Max Layered</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="bruxzir"
@@ -144,7 +144,7 @@ class DentalForm extends Component {
                     <div className="col">
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="nobel"
@@ -153,7 +153,7 @@ class DentalForm extends Component {
                           />
                           <span>Noble</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -162,7 +162,7 @@ class DentalForm extends Component {
                           />
                           <span>White High Noble</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -181,7 +181,7 @@ class DentalForm extends Component {
                     <div className="col">
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -200,7 +200,7 @@ class DentalForm extends Component {
                     <div className="col">
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -209,7 +209,7 @@ class DentalForm extends Component {
                           />
                           <span>Titanium</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -218,7 +218,7 @@ class DentalForm extends Component {
                           />
                           <span>Zirconia w/Ti-Base</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -227,7 +227,7 @@ class DentalForm extends Component {
                           />
                           <span>Biomet 3i Encode</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -236,7 +236,7 @@ class DentalForm extends Component {
                           />
                           <span>Screw Retained</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -257,7 +257,7 @@ class DentalForm extends Component {
                     <div className="col">
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -266,7 +266,7 @@ class DentalForm extends Component {
                           />
                           <span>Analog</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -275,7 +275,7 @@ class DentalForm extends Component {
                           />
                           <span>Models</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -284,7 +284,7 @@ class DentalForm extends Component {
                           />
                           <span>Implant Parts</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -293,7 +293,7 @@ class DentalForm extends Component {
                           />
                           <span>Impression</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -302,7 +302,7 @@ class DentalForm extends Component {
                           />
                           <span>Bite</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -311,7 +311,7 @@ class DentalForm extends Component {
                           />
                           <span>Shade Tab</span>
                         </label>{" "}
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -320,7 +320,7 @@ class DentalForm extends Component {
                           />
                           <span>Others</span>
                         </label>{" "}
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -341,7 +341,7 @@ class DentalForm extends Component {
                     <div className="col">
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"
@@ -350,7 +350,7 @@ class DentalForm extends Component {
                           />
                           <span>Bags</span>
                         </label>
-                        <label className="checkbox inline">
+                        <label className="checkbox block">
                           <input
                             type="checkbox"
                             name="All"

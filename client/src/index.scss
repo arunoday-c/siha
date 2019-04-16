@@ -761,12 +761,14 @@
       display: inline-block;
       margin-right: 10px;
     }
+    .block {
+      display: block;
+    }
     .inline + .inline {
       margin-left: 0;
     }
     .checkbox {
       color: #999;
-
       position: relative;
     }
 

@@ -512,6 +512,8 @@
     :global .customCheckbox .inline {
       display: inline-block;
       margin-right: 10px; }
+    :global .customCheckbox .block {
+      display: block; }
     :global .customCheckbox .inline + .inline {
       margin-left: 0; }
     :global .customCheckbox .checkbox {
