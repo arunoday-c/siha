@@ -41,7 +41,7 @@
   background: #fff;
   border-bottom: 1px solid #d0d0d0;
   border-right: 1px solid #d0d0d0;
-  height: 51.5vh !important;
+  height: 47.5vh !important;
   overflow-y: auto;
   overflow-x: hidden; }
   .diagramList .eachDiagram {
@@ -122,16 +122,18 @@
     -webkit-box-shadow: 10px 10px 10px #000;
     box-shadow: 10px 10px 10px #000;
     position: absolute;
-    top: 100px;
+    top: 60px;
     z-index: 99;
     background: #fff;
     left: 10%;
     min-height: 60vh;
     border-radius: 3px;
-    padding: 15px; }
+    padding: 15px;
+    text-align: center; }
     .canvasImgPreviewWindowWrapper .canvasImgPreviewWindow img {
-      width: 99.5%;
-      height: auto;
+      width: auto;
+      max-width: 100%;
+      height: 382px;
       border: 1px solid #c3c3c3;
       margin: 0;
       padding: 0; }
@@ -163,15 +165,17 @@
     -webkit-box-shadow: 10px 10px 10px #000;
     box-shadow: 10px 10px 10px #000;
     position: absolute;
-    top: 100px;
+    top: 60px;
     z-index: 99;
     background: #fff;
     left: 10%;
     min-height: 60vh;
     border-radius: 3px;
-    padding: 15px; }
+    padding: 15px;
+    text-align: center; }
     .canvasImgCompareWindowWrapper .canvasImgCompareWindow img {
-      width: 100%;
+      max-width: 100%;
+      width: auto;
       height: 300px;
       border: 1px solid #c3c3c3;
       margin: 0;

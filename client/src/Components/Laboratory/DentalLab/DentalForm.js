@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -14,15 +14,50 @@ import {
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-class DentalForm extends PureComponent {
+class DentalForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      patient_id: null,
+      provider_id: null,
+      visit_id: null,
+      episode: null,
+      approved: "N",
+      work_status: "PEN",
+      due_date: null,
+      bruxzir_anterior: false,
+      ips_e_max: false,
+      lava: false,
+      lumineers: false,
+      zirconia_e_max_layered: false,
+      bruxzir: false,
+      nobel: false,
+      white_high_nobel: false,
+      non_precious: false,
+      pmma: false,
+      titanium: false,
+      zirconia_w_ti_base: false,
+      biomet_3i_encode: false,
+      screw_retained: false,
+      flexi: false,
+      analog: false,
+      models: false,
+      implant_parts: false,
+      impression: false,
+      bite: false,
+      shade_tab: false,
+      others: false,
+      photos: false,
+      bags: false,
+      rx_forms: false
+    };
   }
 
-  onClose = e => {
-    this.props.onClose && this.props.onClose(e);
-  };
+  changeChecks(e) {
+    this.setState({
+      [e.target.name]: e.target.checked
+    });
+  }
 
   render() {
     return (
@@ -44,27 +79,59 @@ class DentalForm extends PureComponent {
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
                         <label className="checkbox inline">
-                          <input type="checkbox" name="All" />
+                          <input
+                            type="checkbox"
+                            name="bruxzir_anterior"
+                            checked={this.state.bruxzir_anterior}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>BruxZir - Anterior</span>
                         </label>
+
                         <label className="checkbox inline">
-                          <input type="checkbox" name="sunday" />
+                          <input
+                            type="checkbox"
+                            name="ips_e_max"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>IPS E.max</span>
                         </label>
+
                         <label className="checkbox inline">
-                          <input type="checkbox" name="monday" />
+                          <input
+                            type="checkbox"
+                            name="lava"
+                            checked={this.state.lava}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Lava</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="tuesday" />
+                          <input
+                            type="checkbox"
+                            name="lumineers"
+                            checked={this.state.lumineers}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Lumineers</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="wednesday" />
+                          <input
+                            type="checkbox"
+                            name="zirconia_e_max_layered"
+                            checked={this.state.zirconia_e_max_layered}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Zirconia E.Max Layered</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="thursday" />
+                          <input
+                            type="checkbox"
+                            name="bruxzir"
+                            checked={this.state.bruxzir}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>BruxZir</span>
                         </label>
                       </div>
@@ -78,15 +145,30 @@ class DentalForm extends PureComponent {
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
                         <label className="checkbox inline">
-                          <input type="checkbox" name="All" />
+                          <input
+                            type="checkbox"
+                            name="nobel"
+                            checked={this.state.nobel}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Noble</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="sunday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>White High Noble</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="monday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Non- Precious</span>
                         </label>
                       </div>
@@ -100,7 +182,12 @@ class DentalForm extends PureComponent {
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
                         <label className="checkbox inline">
-                          <input type="checkbox" name="All" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>PMMA</span>
                         </label>
                       </div>
@@ -114,23 +201,48 @@ class DentalForm extends PureComponent {
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
                         <label className="checkbox inline">
-                          <input type="checkbox" name="All" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Titanium</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="sunday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Zirconia w/Ti-Base</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="monday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Biomet 3i Encode</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="tuesday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Screw Retained</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="wednesday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Felxi</span>
                         </label>
                       </div>
@@ -146,35 +258,75 @@ class DentalForm extends PureComponent {
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
                         <label className="checkbox inline">
-                          <input type="checkbox" name="All" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Analog</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="sunday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Models</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="monday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Implant Parts</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="tuesday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Impression</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="wednesday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Bite</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="thursday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Shade Tab</span>
                         </label>{" "}
                         <label className="checkbox inline">
-                          <input type="checkbox" name="thursday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Others</span>
                         </label>{" "}
                         <label className="checkbox inline">
-                          <input type="checkbox" name="thursday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Photos</span>
                         </label>
                       </div>
@@ -190,11 +342,21 @@ class DentalForm extends PureComponent {
                       {/* <label>Working Days</label> */}
                       <div className="customCheckbox">
                         <label className="checkbox inline">
-                          <input type="checkbox" name="All" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>Bags</span>
                         </label>
                         <label className="checkbox inline">
-                          <input type="checkbox" name="sunday" />
+                          <input
+                            type="checkbox"
+                            name="All"
+                            checked={this.state.ips_e_max}
+                            onChange={this.changeChecks.bind(this)}
+                          />
                           <span>RX Forms</span>
                         </label>
                       </div>

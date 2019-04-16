@@ -621,42 +621,55 @@ export default class ExaminationDiagram extends Component {
                 className="fas fa-times"
                 onClick={this.onClickCloseCompire.bind(this)}
               />
-
-              <div className="col-lg-6">
-                <button
-                  position="left"
-                  button="prev"
-                  onClick={this.onImageChangeOnCompire.bind(this)}
-                >
-                  Prev
-                </button>
-                <button
-                  position="left"
-                  button="next"
-                  onClick={this.onImageChangeOnCompire.bind(this)}
-                >
-                  Next
-                </button>
-                <br />
-                <img alt="leftImage" src={this.state.leftCompireImage} />
-              </div>
-              <div className="col-lg-6">
-                <button
-                  position="right"
-                  button="prev"
-                  onClick={this.onImageChangeOnCompire.bind(this)}
-                >
-                  Prev
-                </button>
-                <button
-                  position="right"
-                  button="next"
-                  onClick={this.onImageChangeOnCompire.bind(this)}
-                >
-                  Next
-                </button>
-                <br />
-                <img alt="rightImage" src={this.state.rightCompireImage} />
+              <div className="row">
+                <div className="col-lg-6">
+                  <button
+                    className="btn btn-default"
+                    position="left"
+                    button="prev"
+                    onClick={this.onImageChangeOnCompire.bind(this)}
+                  >
+                    Prev
+                  </button>
+                  <button
+                    className="btn btn-default"
+                    position="left"
+                    button="next"
+                    onClick={this.onImageChangeOnCompire.bind(this)}
+                  >
+                    Next
+                  </button>
+                  <br />
+                  <img alt="leftImage" src={this.state.leftCompireImage} />
+                  <p>
+                    Day 4 - Acne in red Color
+                    <br /> <small>16:04:2019 | 03:00 PM</small>
+                  </p>
+                </div>
+                <div className="col-lg-6">
+                  <button
+                    className="btn btn-default"
+                    position="right"
+                    button="prev"
+                    onClick={this.onImageChangeOnCompire.bind(this)}
+                  >
+                    Prev
+                  </button>
+                  <button
+                    className="btn btn-default"
+                    position="right"
+                    button="next"
+                    onClick={this.onImageChangeOnCompire.bind(this)}
+                  >
+                    Next
+                  </button>
+                  <br />
+                  <img alt="rightImage" src={this.state.rightCompireImage} />
+                  <p>
+                    Day 4 - Acne in red Color
+                    <br /> <small>16:04:2019 | 03:00 PM</small>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -736,7 +749,12 @@ export default class ExaminationDiagram extends Component {
             ))}
           </div>
           {this.state.exittingDetails.length > 0 ? (
-            <button onClick={this.onClickCompire.bind(this)}>Compare</button>
+            <button
+              onClick={this.onClickCompire.bind(this)}
+              className="btn btn-default btn-block"
+            >
+              Compare
+            </button>
           ) : null}
         </div>
         <div className="col-10">
