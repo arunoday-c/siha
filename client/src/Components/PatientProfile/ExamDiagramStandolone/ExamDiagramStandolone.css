@@ -112,7 +112,6 @@
         margin-left: 10px; }
 
 .canvasImgPreviewWindowWrapper {
-  display: none;
   width: 100%;
   background: rgba(0, 0, 0, 0.8);
   height: 100%;
@@ -154,7 +153,6 @@
         cursor: pointer; }
 
 .canvasImgCompareWindowWrapper {
-  display: none;
   width: 100%;
   background: rgba(0, 0, 0, 0.8);
   height: 100%;
@@ -173,8 +171,8 @@
     border-radius: 3px;
     padding: 15px; }
     .canvasImgCompareWindowWrapper .canvasImgCompareWindow img {
-      width: 49.5%;
-      height: auto;
+      width: 100%;
+      height: 300px;
       border: 1px solid #c3c3c3;
       margin: 0;
       padding: 0;
@@ -198,6 +196,11 @@
 
 .diagramDropdown {
   height: 51px; }
+  .diagramDropdown .image-drop-area {
+    width: 50px;
+    height: 50px;
+    float: left;
+    min-height: 50px; }
   .diagramDropdown img {
     width: 50px;
     height: 50px;

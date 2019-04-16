@@ -215,7 +215,7 @@ module.exports = db => {
                   bufferStream.end(result.image, "base64");
                   bufferStream.pipe(res);
                 } else {
-                  res.status(400).json({
+                  res.status(204).json({
                     success: false,
                     message: "file not found"
                   });
@@ -242,7 +242,7 @@ module.exports = db => {
                   bufferStream.end(result.image, "base64");
                   bufferStream.pipe(res);
                 } else {
-                  res.status(400).json({
+                  res.status(204).json({
                     success: false,
                     message: "file not found"
                   });
@@ -269,11 +269,40 @@ module.exports = db => {
                   bufferStream.end(result.image, "base64");
                   bufferStream.pipe(res);
                 } else {
-                  res.status(400).json({
+                  res.status(204).json({
                     success: false,
                     message: "file not found"
                   });
                 }
+              }
+            }
+          );
+        }
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          message: error.message
+        });
+      }
+    },
+    deleteDocument: (req, res) => {
+      try {
+        const _headerFile = req.body;
+
+        if (_headerFile.fileType == "DepartmentImages") {
+          DepartmentImageModel.deleteOne(
+            { destinationName: _headerFile.unique },
+            error => {
+              if (error) {
+                res.status(400).json({
+                  success: false,
+                  message: error
+                });
+              } else {
+                res.status(200).json({
+                  success: true,
+                  message: "Successfully Deleted"
+                });
               }
             }
           );

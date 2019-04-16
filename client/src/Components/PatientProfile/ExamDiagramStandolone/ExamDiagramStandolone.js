@@ -8,12 +8,10 @@ import "./ExamDiagramStandolone.css";
 import AlgaehCanvas from "../../Wrapper/algaehCanvas";
 import examination from "./ExaminationDiagramEvents";
 import {
-  displayFileFromServer,
   AlgaehValidation,
   saveFileOnServer
 } from "../../../utils/GlobalFunctions";
 import addNew from "../../../assets/images/add-new-diagram.jpg";
-import noDiagram from "../../../assets/images/no-diagram.jpg";
 import { swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehFile from "../../Wrapper/algaehFileUpload";
 import moment from "moment";
@@ -34,7 +32,14 @@ export default class ExaminationDiagram extends Component {
       saveAsChecked: "new",
       diagram_desc: undefined,
       remarks: undefined,
-      exittingDetails: []
+      exittingDetails: [],
+      showZoomImage: false,
+      zoomImage: undefined,
+      showCompire: false,
+      rightCompireImageIndex: 0,
+      leftCompireImageIndex: 0,
+      rightCompireImage: undefined,
+      leftCompireImage: undefined
     };
   }
   componentDidMount() {
@@ -88,42 +93,32 @@ export default class ExaminationDiagram extends Component {
           )
         });
       } else {
-        displayFileFromServer({
-          uri: "/Document/get",
-          module: "documentManagement",
-          fileType: "DepartmentImages",
-          destinationName:
-            item.diagram_id +
-            "_" +
-            item.hims_d_employee_speciality_id +
-            "_" +
-            item.sub_department_id,
-          // fileType: "Patients",
-          // destinationName: "PAT-A-0000672",
-          onFileSuccess: data => {
-            resolve({
-              ...item,
-              content: (
-                <div className="diagramDropdown">
-                  <img src={data} />
-                  <span>{item.image_desc}</span>
-                  <span>{item.speciality_name}</span>{" "}
-                </div>
-              )
-            });
-          },
-          onFileFailure: () => {
-            resolve({
-              ...item,
-              content: (
-                <div className="diagramDropdown">
-                  <img src={noDiagram} />
-                  <span>{item.image_desc}</span>{" "}
-                  <span>{item.speciality_name}</span>
-                </div>
-              )
-            });
-          }
+        const _unique =
+          item.diagram_id +
+          "_" +
+          item.hims_d_employee_speciality_id +
+          "_" +
+          item.sub_department_id;
+        resolve({
+          ...item,
+          content: (
+            <div className="diagramDropdown">
+              <AlgaehFile
+                name={"attach_" + _unique}
+                accept="image/*"
+                noImage={true}
+                showActions={false}
+                noImage="noDiagram"
+                serviceParameters={{
+                  uniqueID: _unique,
+                  destinationName: _unique,
+                  fileType: "DepartmentImages"
+                }}
+              />
+              <span>{item.image_desc}</span>
+              <span>{item.speciality_name}</span>{" "}
+            </div>
+          )
         });
       }
     });
@@ -131,44 +126,35 @@ export default class ExaminationDiagram extends Component {
   /** Template to load image in a content */
   templateForExistingDiagramHeader(item) {
     return new Promise((resolve, reject) => {
-      displayFileFromServer({
-        uri: "/Document/get",
-        module: "documentManagement",
-        fileType: "DepartmentImages",
-        destinationName:
-          item.diagram_id +
-          "_" +
-          item.patient_id +
-          "_" +
-          item.provider_id +
-          "_" +
-          item.hims_f_examination_diagram_header_id,
-        // fileType: "Patients",
-        // destinationName: "PAT-A-0000672",
-        onFileSuccess: data => {
-          resolve({
-            ...item,
-            content: (
-              <div className="diagramDropdown">
-                <img src={data} />
-                <span>{item.diagram_desc}</span>
-                <span>{item.last_update}</span>
-              </div>
-            )
-          });
-        },
-        onFileFailure: () => {
-          resolve({
-            ...item,
-            content: (
-              <div className="diagramDropdown">
-                <img src={noDiagram} />
-                <span>{item.diagram_desc}</span>
-                <span>{item.last_update}</span>
-              </div>
-            )
-          });
-        }
+      const _unique =
+        item.diagram_id +
+        "_" +
+        item.patient_id +
+        "_" +
+        item.provider_id +
+        "_" +
+        item.hims_f_examination_diagram_header_id;
+
+      resolve({
+        ...item,
+        content: (
+          <div className="diagramDropdown">
+            <AlgaehFile
+              name={"attach_" + _unique}
+              accept="image/*"
+              noImage={true}
+              showActions={false}
+              noImage="noDiagram"
+              serviceParameters={{
+                uniqueID: _unique,
+                destinationName: _unique,
+                fileType: "DepartmentImages"
+              }}
+            />
+            <span>{item.diagram_desc}</span>
+            <span>{item.last_update}</span>
+          </div>
+        )
       });
     });
   }
@@ -247,7 +233,6 @@ export default class ExaminationDiagram extends Component {
     });
   }
   onChangeExistingDiagramHandler(item) {
-    debugger;
     //Fetching Existing diagram dropdownlist
     examination()
       .getExistingDetail(item.value)
@@ -256,14 +241,25 @@ export default class ExaminationDiagram extends Component {
           exittingDetails: result,
           showUpload: true,
           showCam: true,
+          showSave: true,
           diagram_desc: item.selected.diagram_desc,
-          diagram_id: item.selected.diagram_id
+          diagram_id: item.selected.diagram_id,
+          hims_f_examination_diagram_header_id: item.value
         });
       })
       .catch(error => {
         console.error(error);
       });
   }
+
+  onZoomImage(e) {
+    const _img = e.target.offsetParent.querySelector("img");
+    this.setState({ showZoomImage: true, zoomImage: _img.getAttribute("src") });
+  }
+  onZoomClose() {
+    this.setState({ showZoomImage: false, zoomImage: undefined });
+  }
+
   onChangeSaveDiagram(e) {
     const that = this;
     AlgaehValidation({
@@ -276,7 +272,7 @@ export default class ExaminationDiagram extends Component {
             .then(result => {
               if (that.state.saveAsChecked === "new") {
                 saveFileOnServer({
-                  file: that.refs.imageSaver.state.image,
+                  file: that.refs.imageSaver.editor.getInstance().toDataURL(),
                   uniqueID:
                     that.state.diagram_id +
                     "_" +
@@ -328,14 +324,29 @@ export default class ExaminationDiagram extends Component {
                 title: "Success",
                 type: "success"
               });
-              that.setState({
-                showSavePopup: false,
-                remarks: undefined,
-                diagram_desc: undefined
-              });
+
+              //Fetching Existing diagram dropdownlist
+              examination()
+                .getExistingDetail(
+                  this.state.hims_f_examination_diagram_header_id
+                )
+                .then(result => {
+                  this.setState({
+                    exittingDetails: result,
+                    showUpload: true,
+                    showCam: true,
+                    showSave: true,
+                    showSavePopup: false,
+                    remarks: undefined,
+                    diagram_desc: undefined,
+                    showSave: true
+                  });
+                })
+                .catch(error => {
+                  console.error(error);
+                });
             })
             .catch(error => {
-              debugger;
               swalMessage({
                 title: error.request.responseText,
                 type: "error"
@@ -350,8 +361,139 @@ export default class ExaminationDiagram extends Component {
       }
     });
   }
+
+  onClickCompire(e) {
+    const _element = document.querySelectorAll(".diagramList .eachDiagram");
+    const _left = _element[0].querySelector("img").getAttribute("src");
+    const _right = _element[this.state.exittingDetails.length - 1]
+      .querySelector("img")
+      .getAttribute("src");
+
+    this.setState({
+      showCompire: true,
+      rightCompireImage: _right,
+      leftCompireImage: _left,
+      rightCompireImageIndex: this.state.exittingDetails.length - 1,
+      leftCompireImageIndex: 0
+    });
+  }
+  onClickCloseCompire(e) {
+    this.setState({ showCompire: false });
+  }
+  onImageChangeOnCompire(e) {
+    const _button = e.target;
+    const _position = _button.getAttribute("position");
+    const _buttonType = _button.getAttribute("button");
+    const _element = document.querySelectorAll(".diagramList .eachDiagram");
+    const _totalRecords = _element.length; //this.state.exittingDetails.length;
+
+    if (_position === "left") {
+      if (_buttonType === "prev") {
+        if (this.state.leftCompireImageIndex - 1 === -1) {
+          const _src = _element[_totalRecords - 1]
+            .querySelector("img")
+            .getAttribute("src");
+          this.setState({
+            leftCompireImageIndex: _totalRecords - 1,
+            leftCompireImage: _src
+          });
+        } else {
+          const _src = _element[this.state.leftCompireImageIndex - 1]
+            .querySelector("img")
+            .getAttribute("src");
+          this.setState({
+            leftCompireImageIndex: this.state.leftCompireImageIndex - 1,
+            leftCompireImage: _src
+          });
+        }
+      } else {
+        if (this.state.leftCompireImageIndex + 1 >= _totalRecords) {
+          const _src = _element[0].querySelector("img").getAttribute("src");
+          this.setState({ leftCompireImageIndex: 0, leftCompireImage: _src });
+        } else {
+          const _src = _element[this.state.leftCompireImageIndex + 1]
+            .querySelector("img")
+            .getAttribute("src");
+          this.setState({
+            leftCompireImageIndex: this.state.leftCompireImageIndex + 1,
+            leftCompireImage: _src
+          });
+        }
+      }
+    } else {
+      if (_buttonType === "prev") {
+        if (this.state.rightCompireImageIndex - 1 === -1) {
+          const _src = _element[_totalRecords - 1]
+            .querySelector("img")
+            .getAttribute("src");
+          this.setState({
+            rightCompireImageIndex: _totalRecords - 1,
+            rightCompireImage: _src
+          });
+        } else {
+          const _src = _element[this.state.rightCompireImageIndex - 1]
+            .querySelector("img")
+            .getAttribute("src");
+          this.setState({
+            rightCompireImage: _src,
+            rightCompireImageIndex: this.state.rightCompireImageIndex - 1
+          });
+        }
+      } else {
+        if (this.state.rightCompireImageIndex + 1 >= _totalRecords) {
+          const _src = _element[0].querySelector("img").getAttribute("src");
+          this.setState({ rightCompireImageIndex: 0, rightCompireImage: _src });
+        } else {
+          const _src = _element[this.state.rightCompireImageIndex + 1]
+            .querySelector("img")
+            .getAttribute("src");
+          this.setState({
+            rightCompireImage: _src,
+            rightCompireImageIndex: this.state.rightCompireImageIndex + 1
+          });
+        }
+      }
+    }
+  }
+  onClickDeleteDiagram(item, e) {
+    examination()
+      .deleteDetaiDiagram({
+        examination_diagrams_id: item.examination_diagrams_id,
+        unique: item.image
+      })
+      .then(reu => {
+        examination()
+          .getExistingDetail(item.hims_f_examination_diagram_header_id)
+          .then(result => {
+            this.setState(
+              {
+                exittingDetails: result,
+                showUpload: true,
+                showCam: true,
+                showSave: true
+              },
+              () => {
+                swalMessage({
+                  title: reu,
+                  type: "success"
+                });
+              }
+            );
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      })
+      .catch(error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      });
+  }
   render() {
-    const _disable = this.state.existingDiagram === 0 ? { disabled: true } : {};
+    const _disable =
+      this.state.existingDiagram.length === 0 ? { disabled: true } : {};
     return (
       <div className="row">
         {this.state.showSavePopup ? (
@@ -461,21 +603,64 @@ export default class ExaminationDiagram extends Component {
             </div>
           </div>
         ) : null}
+        {this.state.showZoomImage ? (
+          <div className="canvasImgPreviewWindowWrapper">
+            <div className="canvasImgPreviewWindow">
+              <i
+                className="fas fa-times"
+                onClick={this.onZoomClose.bind(this)}
+              />
+              <img alt="zoomImage" src={this.state.zoomImage} />
+            </div>
+          </div>
+        ) : null}
+        {this.state.showCompire ? (
+          <div className="canvasImgCompareWindowWrapper">
+            <div className="canvasImgCompareWindow">
+              <i
+                className="fas fa-times"
+                onClick={this.onClickCloseCompire.bind(this)}
+              />
 
-        <div className="canvasImgPreviewWindowWrapper">
-          <div className="canvasImgPreviewWindow">
-            <i className="fas fa-times" />
-            <img alt="img1" />
+              <div className="col-lg-6">
+                <button
+                  position="left"
+                  button="prev"
+                  onClick={this.onImageChangeOnCompire.bind(this)}
+                >
+                  Prev
+                </button>
+                <button
+                  position="left"
+                  button="next"
+                  onClick={this.onImageChangeOnCompire.bind(this)}
+                >
+                  Next
+                </button>
+                <br />
+                <img alt="leftImage" src={this.state.leftCompireImage} />
+              </div>
+              <div className="col-lg-6">
+                <button
+                  position="right"
+                  button="prev"
+                  onClick={this.onImageChangeOnCompire.bind(this)}
+                >
+                  Prev
+                </button>
+                <button
+                  position="right"
+                  button="next"
+                  onClick={this.onImageChangeOnCompire.bind(this)}
+                >
+                  Next
+                </button>
+                <br />
+                <img alt="rightImage" src={this.state.rightCompireImage} />
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="canvasImgCompareWindowWrapper">
-          <div className="canvasImgCompareWindow">
-            <i className="fas fa-times" />
-            <img alt="img1" /> <img alt="img2" />
-          </div>
-        </div>
-        {/* <div className="col-12 diagramManageCntr">
-        </div> */}
+        ) : null}
         <div className="col-2">
           <div className="row diagramManageCntr">
             <AlagehAutoComplete
@@ -535,15 +720,24 @@ export default class ExaminationDiagram extends Component {
                   </small>
                 </p>{" "}
                 <div className="diagramImgTool">
-                  <i className="fas fa-trash-alt" />
-                  <i className="fas fa-search-plus" />
+                  <i
+                    className="fas fa-trash-alt"
+                    onClick={this.onClickDeleteDiagram.bind(this, item)}
+                  />
+                  <i
+                    className="fas fa-search-plus"
+                    onClick={this.onZoomImage.bind(this)}
+                  />
 
-                  <input type="checkbox" />
-                  <label>Compare</label>
+                  {/* <input type="checkbox" id={"chk_compire_" + index} />
+                  <label htmlFor={"chk_compire_" + index}>Compare</label> */}
                 </div>
               </div>
             ))}
           </div>
+          {this.state.exittingDetails.length > 0 ? (
+            <button onClick={this.onClickCompire.bind(this)}>Compare</button>
+          ) : null}
         </div>
         <div className="col-10">
           <div className="row">
@@ -554,6 +748,7 @@ export default class ExaminationDiagram extends Component {
                 image={this.state.image}
                 name={this.state.name}
                 onUpload={this.onFileUploadImage.bind(this)}
+                onAfterCapture={this.onFileUploadImage.bind(this)}
                 onSave={this.onSaveImage.bind(this)}
                 showSave={this.state.showSave}
                 showUpload={this.state.showUpload}

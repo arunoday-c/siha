@@ -178,6 +178,7 @@ export function displayFileFromServer(options) {
     options.resize !== undefined
       ? { resize: JSON.stringify(options.resize) }
       : {};
+  options.forceSkipNoContent = options.forceSkipNoContent || false;
   algaehApiCall({
     uri: options.uri,
     method: "GET",
@@ -192,6 +193,15 @@ export function displayFileFromServer(options) {
     },
     others: { responseType: "blob" },
     onSuccess: response => {
+      if (!options.forceSkipNoContent) {
+        if (response.status === 204) {
+          if (typeof options.onNoContent === "function") {
+            options.onNoContent();
+          }
+          return;
+        }
+      }
+
       if (response.data) {
         let reader = new FileReader();
 

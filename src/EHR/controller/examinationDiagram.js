@@ -3,7 +3,8 @@ import {
   examinationDiagramMasterGetter,
   saveExaminationDiagrams,
   existingHeaderDiagramsGetter,
-  existingDetailDiagramGetter
+  existingDetailDiagramGetter,
+  deleteExaminationDiagramDetailDelete
 } from "../model/examinationDiagram";
 import httpStatus from "../../utils/httpStatus";
 export default () => {
@@ -47,5 +48,16 @@ export default () => {
     });
     delete req.records;
   });
+  api.delete(
+    "/deleteDiagram",
+    deleteExaminationDiagramDetailDelete,
+    (req, res) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
+      delete req.records;
+    }
+  );
   return api;
 };

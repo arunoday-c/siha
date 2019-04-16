@@ -28,20 +28,23 @@ const saveExaminationDiagrams = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   const input = req.body;
   const _req = req.userIdentity;
+
   try {
     _mysql
       .executeQueryWithTransaction({
         query:
           "INSERT INTO hims_f_examination_diagram_header(`diagram_desc`,`diagram_id`,\
-      `patient_id`,`provider_id`,`hims_d_sub_department_id`)values(?,?,?,?,?) ON DUPLICATE KEY UPDATE last_update=?",
+      `patient_id`,`provider_id`,`hims_d_sub_department_id`,`header_datetime`)values(?,?,?,?,?,?)  ON DUPLICATE KEY UPDATE last_update=?",
         values: [
           input.diagram_desc,
           input.diagram_id,
           input.patient_id,
           _req.employee_id,
           _req.sub_department_id,
+          input.header_datetime,
           new Date()
-        ]
+        ],
+        printQuery: true
       })
       .then(result => {
         const _hims_f_examination_diagram_header_id =
@@ -104,14 +107,15 @@ const saveExaminationDiagrams = (req, res, next) => {
 const existingHeaderDiagramsGetter = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   const _req = req.userIdentity;
+  const _getPatientId = req.query.patient_id;
   try {
     _mysql
       .executeQuery({
         query:
-          "SELECT hims_f_examination_diagram_header_id,diagram_desc,diagram_id,patient_id,\
+          "SELECT hims_f_examination_diagram_header_id,diagram_desc,diagram_id,patient_id,header_datetime,\
       provider_id,hims_d_sub_department_id,last_update from hims_f_examination_diagram_header \
-      where record_status='A' and provider_id=? and hims_d_sub_department_id=?",
-        values: [_req.employee_id, _req.sub_department_id]
+      where record_status='A' and provider_id=? and hims_d_sub_department_id=? and patient_id=?",
+        values: [_req.employee_id, _req.sub_department_id, _getPatientId]
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -151,10 +155,30 @@ const existingDetailDiagramGetter = (req, res, next) => {
     next(error);
   }
 };
+const deleteExaminationDiagramDetailDelete = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
 
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "delete from hims_f_examination_diagrams_detail where examination_diagrams_id =?",
+        values: [req.body.examination_diagrams_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      });
+  } catch (error) {
+    _mysql.releaseConnection();
+    next(error);
+  }
+};
 module.exports = {
   examinationDiagramMasterGetter,
   saveExaminationDiagrams,
   existingHeaderDiagramsGetter,
-  existingDetailDiagramGetter
+  existingDetailDiagramGetter,
+  deleteExaminationDiagramDetailDelete
 };
