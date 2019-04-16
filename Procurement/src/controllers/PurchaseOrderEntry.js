@@ -8,7 +8,8 @@ import {
   addPurchaseOrderEntry,
   updatePharReqEntry,
   updateInvReqEntry,
-  updatePurchaseOrderEntry
+  updatePurchaseOrderEntry,
+  releaseDB
 } from "../models/PurchaseOrderEntry";
 import algaehUtilities from "algaeh-utilities/utilities";
 
@@ -73,6 +74,7 @@ export default () => {
         next();
       }
     },
+    releaseDB,
     (req, res, next) => {
       res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
         success: true,

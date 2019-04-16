@@ -9,14 +9,19 @@ module.exports = {
       let intValue = [];
       let _strAppend = "";
       if (req.query.transfer_number != null) {
-        _strAppend += " and transfer_number=?";
+        _strAppend += " and TH.transfer_number=?";
         intValue.push(req.query.transfer_number);
       }
 
       _mysql
         .executeQuery({
           query:
-            "SELECT * from  hims_f_inventory_transfer_header\
+            "SELECT TH.`hims_f_inventory_transfer_header_id`, TH.`hims_f_inventory_material_header_id`, \
+            TH.`transfer_number`, TH.`from_location_type`, TH.`from_location_id`, TH.`transfer_date`, TH.`year`, \
+            TH.`period`, TH.`material_requisition_number`, TH.`to_location_type`, TH.`to_location_id`, TH.`description`,\
+            TH.`completed`, TH.`completed_date`, TH.`completed_lines`, TH.`transfer_quantity`, TH.`requested_quantity`, \
+            TH.`recieved_quantity`, TH.`outstanding_quantity`, TH.`cancelled`, TH.`cancelled_date`, TH.`cancelled_by` \
+            from  hims_f_inventory_transfer_header TH\
           where 1=1" +
             _strAppend,
           values: intValue,
@@ -27,7 +32,15 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_inventory_transfer_detail where transfer_header_id=?",
+                  "select TD.`hims_f_inventory_transfer_detail_id`, TD.`transfer_header_id`, TD.`from_qtyhand`, \
+                  TD.`to_qtyhand`, TD.`completed`, TD.`completed_date`, TD.`item_category_id`, TD.`item_group_id`, \
+                  TD.`item_id`, TD.`batchno`, TD.`grnno`, TD.`expiry_date`, TD.`quantity_requested`, \
+                  TD.`quantity_authorized`, TD.`uom_requested_id`, TD.`quantity_transferred`, TD.`uom_transferred_id`,\
+                  TD.`quantity_recieved`, TD.`uom_recieved_id`, TD.`quantity_outstanding`, TD.`unit_cost`, \
+                  TD.`sales_uom`, TD.`material_requisition_header_id`, TD.`material_requisition_detail_id`, \
+                  TD.`transfer_to_date`,IM.item_code, IM.item_description, IU.uom_description\
+                  from hims_f_inventory_transfer_detail TD, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU \
+                  where TD.transfer_header_id=? and TD.item_id = IM.hims_d_inventory_item_master_id and TD.uom_transferred_id = IU.hims_d_inventory_uom_id",
                 values: [headerResult[0].hims_f_inventory_transfer_header_id],
                 printQuery: true
               })

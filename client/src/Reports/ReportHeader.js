@@ -1,5 +1,10 @@
 import hims_app_logo from "../assets/images/hospital_logo_reports.webp";
 import moment from "moment";
+import { AlgaehOpenContainer } from "../utils/GlobalFunctions";
+
+let HospitalDetails = JSON.parse(
+  AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+);
 
 export function ReportHeader(data, report_name) {
   return `
@@ -9,7 +14,7 @@ export function ReportHeader(data, report_name) {
             </div>
             <div class="hospitalAddress">
                 <h4>${report_name}</h4>
-                <p># 301A, Curzon Square, Lady Curzon Road Opposite State Bank of India Bangalore Karnataka 560001</p>
+                <p>${HospitalDetails.hospital_address}</p>
                 </div>
     `;
 }

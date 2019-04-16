@@ -170,8 +170,11 @@ class PurchaseOrderEntry extends Component {
                                   ? Location_data[0].location_description
                                   : "",
                               vendor_name: Vendor_data[0].vendor_name,
+                              vendor_trn:
+                                Vendor_data[0].business_registration_no,
                               requisition_number: this.state
                                 .material_requisition_number,
+                              net_payable: this.state.net_payable,
                               po_detail:
                                 this.state.po_from === "PHR"
                                   ? this.state.pharmacy_stock_detail

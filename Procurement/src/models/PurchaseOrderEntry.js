@@ -474,6 +474,22 @@ module.exports = {
     }
   },
 
+  releaseDB: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.data = req.records.purchase_number;
+        next();
+      });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
   updatePharReqEntry: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
@@ -514,11 +530,11 @@ module.exports = {
                 printQuery: true
               })
               .then(detailResult => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.data = req.records.purchase_number;
-                  next();
-                });
+                // _mysql.commitTransaction(() => {
+                //   _mysql.releaseConnection();
+                req.data = req.records.purchase_number;
+                next();
+                // });
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {
@@ -584,11 +600,11 @@ module.exports = {
                 printQuery: true
               })
               .then(detailResult => {
-                _mysql.commitTransaction(() => {
-                  _mysql.releaseConnection();
-                  req.data = req.records.purchase_number;
-                  next();
-                });
+                // _mysql.commitTransaction(() => {
+                //   _mysql.releaseConnection();
+                req.data = req.records.purchase_number;
+                next();
+                // });
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {

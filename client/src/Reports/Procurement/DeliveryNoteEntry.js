@@ -3,14 +3,13 @@
 import { getCookie } from "../../utils/algaehApiCall";
 import { ReportHeader } from "../ReportHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-import "../report-style.css";
 
 export function printReport(data) {
   debugger;
 
   return `<div class="cashReciptStyles">
   <div class="print-body">
-  <header> ${ReportHeader(data, "Purchase Order")} </header> 
+  <header> ${ReportHeader(data, "Delivery Note")} </header> 
   <hr />
   <section>
   <div class="row receipt-header-mid">
@@ -19,26 +18,25 @@ export function printReport(data) {
         <tbody>
           <tr>
             <td>Purchase No.:</td>
-            <td>${data.purchase_number}</td>
+            <td>${data.delivery_note_number}</td>
             <td class="col"></td>
             <td>Purchase Date:</td>
-            <td >${data.po_date}</td>
+            <td >${data.dn_date}</td>
             
           </tr>
           <tr>
             <td>Purchase For:</td>
-            <td >${data.po_from}</td>
+            <td >${data.dn_from}</td>
             <td class="col"></td>
             <td>Vendor Name:</td>
             <td >${data.vendor_name}</td>
             <td>TRN:</td>
             <td >${data.vendor_trn}</td>
-            
           
           <tr>
           
-            <td>From Requisition:</td>
-            <td >${data.requisition_number}</td>
+            <td>From PO:</td>
+            <td >${data.purchase_number}</td>
             <td></td>
             <td>From Location:</td>
             <td >${data.from_location}</td>
@@ -59,32 +57,48 @@ export function printReport(data) {
               <th>Item Code</th>
               <th>Item Name</th>
               <th>Unit</th>
-              <th>Quantity</th>              
-              <th>Unit Price</th>      
-              <th>Discount</th>      
-              <th>Amount</th>      
-              <th>Vat</th>      
+              <th>PO Quantity</th>
+              <th>Unit Price</th>
+              <th>DN Quantity</th>
+              <th>Quantity Outstanding</th>
+              <th>Quantity Recived Todate</th>              
+              <th>Discount</th>
+              <th>Amount</th>
+              <th>Vat</th>
+              <th>Total Amount</th>
             </tr>
           </thead>
 
-          <tbody data-list="po_detail">
-          ${data.po_detail
+          <tbody data-list="dn_detail">
+          ${data.dn_detail
             .map(
               (item, index) => `
             <tr>
               <td class="co-4"> ${index + 1}</td>              
               <td class="co-4"> ${item.item_code}</td>
               <td class="co-4"> ${item.item_description}</td>    
-              <td class="co-4"> ${item.uom_description}</td>          
-              <td class="co-4"> ${item.order_quantity}</td>
-              <td class="co-4"> ${item.unit_price}</td>
-              <td class="co-4"> ${getAmountFormart(item.sub_discount_amount, {
+              <td class="co-4"> ${
+                item.uom_description
+              }</td>                       
+              <td class="co-4"> ${item.po_quantity}</td>
+              <td class="co-4"> ${item.unit_cost}</td>
+              <td class="co-4"> ${item.dn_quantity}</td>
+              <td class="co-4"> ${item.quantity_outstanding}</td>
+              <td class="co-4"> ${item.quantity_recieved_todate}</td>
+
+              
+              
+              
+              <td class="co-4"> ${getAmountFormart(item.discount_amount, {
                 appendSymbol: false
               })}</td>
               <td class="co-4"> ${getAmountFormart(item.net_extended_cost, {
                 appendSymbol: false
               })}</td>
               <td class="co-4"> ${getAmountFormart(item.tax_amount, {
+                appendSymbol: false
+              })}</td>
+              <td class="co-4"> ${getAmountFormart(item.total_amount, {
                 appendSymbol: false
               })}</td>
 
@@ -94,16 +108,6 @@ export function printReport(data) {
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
-  <div class="row reportFooterDetails">
-    <div class="col"></div>
-      <div class="col-2">
-        <label> Total Amount</label>
-  
-          <h6>${getAmountFormart(data.net_payable)} </h6>
-          </div>          
-      </div> 
     </div>
   </div>
   <div class="row receipt-header-mid">

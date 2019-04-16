@@ -102,32 +102,32 @@ export function printReport(result) {
     </thead></table></div> 
     
     <div class="row reportFooterDetails">
-    <div class="col"></div>
-      <div class="col-2">
-        <label>Total Worked Hours</label>
-        <h6>${total_worked_hours ? total_worked_hours : "00:00"} Hrs</h6>
-      </div>
-      <div class="col-2">
-        <label>Total OT Hours</label>
-        <h6>${ot_work_hours ? ot_work_hours : "00:00"} Hrs</h6>
-      </div>
-      <div class="col-2">
-        <label>Total Shortage Hours</label>
+      <div class="col"></div>
+        <div class="col-2">
+          <label>Total Worked Hours</label>
+          <h6>${total_worked_hours ? total_worked_hours : "00:00"} Hrs</h6>
+        </div>
+        <div class="col-2">
+          <label>Total OT Hours</label>
+          <h6>${ot_work_hours ? ot_work_hours : "00:00"} Hrs</h6>
+        </div>
+        <div class="col-2">
+          <label>Total Shortage Hours</label>
 
-        <h6>${shortage_hours ? shortage_hours : "00:00"} Hrs</h6>
+          <h6>${shortage_hours ? shortage_hours : "00:00"} Hrs</h6>
+        </div>
+        <div class="col-2">
+          <label>Total Weekoff OT</label>
+          <h6>${
+            ot_weekoff_hours ? math.round(ot_weekoff_hours, 2) : "00:00"
+          } Hrs</h6>
+        </div>
+        <div class="col-2">
+          <label>Total Holiday Ot</label>
+          <h6>${ot_holiday_hours ? ot_holiday_hours : "00:00"} Hrs</h6>
+        </div>    
       </div>
-      <div class="col-2">
-        <label>Total Weekoff OT</label>
-        <h6>${
-          ot_weekoff_hours ? math.round(ot_weekoff_hours, 2) : "00:00"
-        } Hrs</h6>
-      </div>
-      <div class="col-2">
-        <label>Total Holiday Ot</label>
-        <h6>${ot_holiday_hours ? ot_holiday_hours : "00:00"} Hrs</h6>
-      </div>    
     </div>
-  </div>
 
 </section>
   `;

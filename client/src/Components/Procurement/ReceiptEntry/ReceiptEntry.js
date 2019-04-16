@@ -30,6 +30,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import ReceiptEntryInp from "../../../Models/ReceiptEntry";
 import MyContext from "../../../utils/MyContext";
+import AlgaehReport from "../../Wrapper/printReports";
+import _ from "lodash";
 
 class ReceiptEntry extends Component {
   constructor(props) {
@@ -66,6 +68,28 @@ class ReceiptEntry extends Component {
     const _mainStore = Enumerable.from(this.props.receiptlocations)
       .where(w => w.location_type === "MS")
       .toArray();
+
+    const Location_data =
+      this.state.grn_from === "PHR"
+        ? this.state.pharmcy_location_id !== null
+          ? _.filter(_mainStore, f => {
+              return (
+                f.hims_d_pharmacy_location_id === this.state.pharmcy_location_id
+              );
+            })
+          : []
+        : this.state.inventory_location_id !== null
+        ? _.filter(_mainStore, f => {
+            return (
+              f.hims_d_inventory_location_id ===
+              this.state.inventory_location_id
+            );
+          })
+        : [];
+
+    const Vendor_data = _.filter(this.props.receiptvendors, f => {
+      return f.hims_d_vendor_id === this.state.vendor_id;
+    });
     return (
       <div>
         <BreadCrumb
@@ -126,6 +150,48 @@ class ReceiptEntry extends Component {
                 </h6>
               </div>
             </div>
+          }
+          printArea={
+            this.state.grn_number !== null
+              ? {
+                  menuitems: [
+                    {
+                      label: "Print Report",
+                      events: {
+                        onClick: () => {
+                          AlgaehReport({
+                            report: {
+                              fileName: "Procurement/ReceiptEntry"
+                            },
+                            data: {
+                              grn_number: this.state.grn_number,
+                              grn_date: moment(this.state.grn_date).format(
+                                Options.datetimeFormat
+                              ),
+                              grn_from:
+                                this.state.grn_from === "PHR"
+                                  ? "Pharmacy"
+                                  : "Inventory",
+
+                              from_location:
+                                Location_data.length > 0
+                                  ? Location_data[0].location_description
+                                  : "",
+                              vendor_name: Vendor_data[0].vendor_name,
+                              vendor_trn:
+                                Vendor_data[0].business_registration_no,
+                              delivery_note_number: this.state
+                                .delivery_note_number,
+                              net_payable: this.state.net_payable,
+                              receipt_detail: this.state.receipt_entry_detail
+                            }
+                          });
+                        }
+                      }
+                    }
+                  ]
+                }
+              : ""
           }
           selectedLang={this.state.selectedLang}
         />

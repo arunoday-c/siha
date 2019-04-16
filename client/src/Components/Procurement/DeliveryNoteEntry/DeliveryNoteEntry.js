@@ -8,8 +8,7 @@ import DNItemList from "./DNItemList/DNItemList";
 import {
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -29,6 +28,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import DNEntry from "../../../Models/DNEntry";
 import MyContext from "../../../utils/MyContext";
+import AlgaehReport from "../../Wrapper/printReports";
+import _ from "lodash";
 
 class DeliveryNoteEntry extends Component {
   constructor(props) {
@@ -65,6 +66,29 @@ class DeliveryNoteEntry extends Component {
     const _mainStore = Enumerable.from(this.props.dnlocations)
       .where(w => w.location_type === "MS")
       .toArray();
+
+    const Location_data =
+      this.state.dn_from === "PHR"
+        ? this.state.pharmcy_location_id !== null
+          ? _.filter(_mainStore, f => {
+              return (
+                f.hims_d_pharmacy_location_id === this.state.pharmcy_location_id
+              );
+            })
+          : []
+        : this.state.inventory_location_id !== null
+        ? _.filter(_mainStore, f => {
+            return (
+              f.hims_d_inventory_location_id ===
+              this.state.inventory_location_id
+            );
+          })
+        : [];
+
+    const Vendor_data = _.filter(this.props.dnvendors, f => {
+      return f.hims_d_vendor_id === this.state.vendor_id;
+    });
+
     return (
       <div>
         <BreadCrumb
@@ -125,6 +149,47 @@ class DeliveryNoteEntry extends Component {
                 </h6>
               </div>
             </div>
+          }
+          printArea={
+            this.state.delivery_note_number !== null
+              ? {
+                  menuitems: [
+                    {
+                      label: "Print Report",
+                      events: {
+                        onClick: () => {
+                          AlgaehReport({
+                            report: {
+                              fileName: "Procurement/DeliveryNoteEntry"
+                            },
+                            data: {
+                              delivery_note_number: this.state
+                                .delivery_note_number,
+                              dn_date: moment(this.state.dn_date).format(
+                                Options.datetimeFormat
+                              ),
+                              dn_from:
+                                this.state.dn_from === "PHR"
+                                  ? "Pharmacy"
+                                  : "Inventory",
+
+                              from_location:
+                                Location_data.length > 0
+                                  ? Location_data[0].location_description
+                                  : "",
+                              vendor_name: Vendor_data[0].vendor_name,
+                              vendor_trn:
+                                Vendor_data[0].business_registration_no,
+                              purchase_number: this.state.purchase_number,
+                              dn_detail: this.state.dn_entry_detail
+                            }
+                          });
+                        }
+                      }
+                    }
+                  ]
+                }
+              : ""
           }
           selectedLang={this.state.selectedLang}
         />

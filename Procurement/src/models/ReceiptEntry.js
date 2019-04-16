@@ -11,17 +11,53 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT * from  hims_f_procurement_grn_header where grn_number=?",
+            "SELECT GH.`hims_f_procurement_grn_header_id`, GH.`grn_number`, GH.`grn_for`, GH.`vendor_id`, GH.`grn_date`, \
+            GH.`year`, GH.`period`, GH.`pharmcy_location_id`, GH.`inventory_location_id`, GH.`location_type`, GH.`po_id`, \
+            GH.`dn_id`, GH.`payment_terms`, GH.`comment`, GH.`description`, GH.`sub_total`, GH.`detail_discount`, \
+            GH.`extended_total`, GH.`sheet_level_discount_percent`, GH.`sheet_level_discount_amount`, GH.`net_total`, \
+            GH.`total_tax`, GH.`net_payable`, GH.`additional_cost`, GH.`reciept_total`, GH.`created_by`, GH.`created_date`, \
+            GH.`updated_by`, GH.`updated_date`, GH.`posted`, GH.`posted_by`, GH.`posted_date`, GH.`inovice_number`, \
+            GH.`invoice_date`, GH.`invoice_posted` from  hims_f_procurement_grn_header GH where grn_number=?",
           values: [req.query.grn_number],
           printQuery: true
         })
         .then(headerResult => {
           if (headerResult.length != 0) {
+            let strQuery = "";
+            if (headerResult[0].grn_for == "INV") {
+              strQuery = mysql.format(
+                "select GD.`hims_f_procurement_grn_detail_id`, GD.`grn_header_id`, GD.`phar_item_category`, \
+                GD.`phar_item_group`, GD.`phar_item_id`, GD.`inv_item_category_id`, GD.`inv_item_group_id`, \
+                GD.`inv_item_id`, GD.`barcode`, GD.`recieved_quantity`, GD.`po_quantity`, GD.`dn_quantity`, \
+                GD.`pharmacy_uom_id`, GD.`inventory_uom_id`, GD.`unit_cost`, GD.`extended_cost`, GD.`discount_percentage`, \
+                GD.`discount_amount`, GD.`net_extended_cost`, GD.`batchno_expiry_required`, GD.`batchno`, GD.`expiry_date`, \
+                GD.`rejected_quantity`, GD.`outstanding_quantity`, GD.`tax_inclusive`, GD.`tax_percentage`, GD.`tax_amount`, \
+                GD.`total_amount`, GD.`mrp_price`, GD.`sales_price`, GD.`landed_cost`, GD.`dn_header_id`, GD.`dn_detail_id`, \
+                GD.`quantity_recieved_todate`,IM.item_code, IM.item_description, IU.uom_description \
+                from hims_f_procurement_grn_detail GD, hims_d_inventory_item_master IM, hims_d_inventory_uom IU \
+                where GD.inv_item_id = IM.hims_d_inventory_item_master_id and GD.inventory_uom_id = IU.hims_d_inventory_uom_id  \
+                and GD.grn_header_id=?",
+                [headerResult[0].hims_f_procurement_grn_header_id]
+              );
+            } else if (headerResult[0].grn_for == "PHR") {
+              strQuery = mysql.format(
+                "select GD.`hims_f_procurement_grn_detail_id`, GD.`grn_header_id`, GD.`phar_item_category`, \
+                GD.`phar_item_group`, GD.`phar_item_id`, GD.`inv_item_category_id`, GD.`inv_item_group_id`, \
+                GD.`inv_item_id`, GD.`barcode`, GD.`recieved_quantity`, GD.`po_quantity`, GD.`dn_quantity`, \
+                GD.`pharmacy_uom_id`, GD.`inventory_uom_id`, GD.`unit_cost`, GD.`extended_cost`, GD.`discount_percentage`, \
+                GD.`discount_amount`, GD.`net_extended_cost`, GD.`batchno_expiry_required`, GD.`batchno`, GD.`expiry_date`, \
+                GD.`rejected_quantity`, GD.`outstanding_quantity`, GD.`tax_inclusive`, GD.`tax_percentage`, GD.`tax_amount`, \
+                GD.`total_amount`, GD.`mrp_price`, GD.`sales_price`, GD.`landed_cost`, GD.`dn_header_id`, GD.`dn_detail_id`, \
+                GD.`quantity_recieved_todate`,IM.item_code, IM.item_description, IU.uom_description \
+                from hims_f_procurement_grn_detail GD, hims_d_item_master IM ,hims_d_inventory_uom IU \
+                where GD.phar_item_id = IM.hims_d_item_master_id and GD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id\
+                and GD.grn_header_id=?",
+                [headerResult[0].hims_f_procurement_grn_header_id]
+              );
+            }
             _mysql
               .executeQuery({
-                query:
-                  "select * from hims_f_procurement_grn_detail where grn_header_id=?",
-                values: [headerResult[0].hims_f_procurement_grn_header_id],
+                query: strQuery,
                 printQuery: true
               })
               .then(receipt_entry_detail => {

@@ -25,6 +25,8 @@ import Options from "../../../Options.json";
 import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
+import AlgaehReport from "../../Wrapper/printReports";
+import _ from "lodash";
 
 class InvTransferEntry extends Component {
   constructor(props) {
@@ -71,6 +73,18 @@ class InvTransferEntry extends Component {
       });
     }
 
+    if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
+      this.props.getItemUOM({
+        uri: "/inventory/getInventoryUom",
+        module: "inventory",
+        method: "GET",
+        redux: {
+          type: "ITEM_UOM_GET_DATA",
+          mappingName: "inventoryitemuom"
+        }
+      });
+    }
+
     if (
       this.props.invuserwiselocations === undefined ||
       this.props.invuserwiselocations.length === 0
@@ -95,6 +109,15 @@ class InvTransferEntry extends Component {
         : this.props.inventorylocations.filter(
             f => f.hims_d_inventory_location_id === this.state.to_location_id
           );
+
+    const from_location_name =
+      this.state.from_location_id !== null
+        ? _.filter(this.props.invuserwiselocations, f => {
+            return (
+              f.hims_d_inventory_location_id === this.state.from_location_id
+            );
+          })
+        : [];
 
     return (
       <React.Fragment>
@@ -159,6 +182,45 @@ class InvTransferEntry extends Component {
                   </h6>
                 </div>
               </div>
+            }
+            printArea={
+              this.state.transfer_number !== null
+                ? {
+                    menuitems: [
+                      {
+                        label: "Print Report",
+                        events: {
+                          onClick: () => {
+                            AlgaehReport({
+                              report: {
+                                fileName: "Inventory/TransferEntry"
+                              },
+                              data: {
+                                transfer_number: this.state.transfer_number,
+                                transfer_date: moment(
+                                  this.state.transfer_date
+                                ).format(Options.datetimeFormat),
+                                requisition_number: this.state
+                                  .material_requisition_number,
+                                from_location:
+                                  from_location_name.length > 0
+                                    ? from_location_name[0].location_description
+                                    : "",
+                                to_location:
+                                  display.length > 0
+                                    ? display[0].location_description
+                                    : "",
+                                inventoryitemuom: this.props.inventoryitemuom,
+                                inventory_stock_detail: this.state
+                                  .inventory_stock_detail
+                              }
+                            });
+                          }
+                        }
+                      }
+                    ]
+                  }
+                : ""
             }
             selectedLang={this.state.selectedLang}
           />
@@ -329,7 +391,8 @@ function mapStateToProps(state) {
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
     inventoryrequisitionentry: state.inventoryrequisitionentry,
-    invuserwiselocations: state.invuserwiselocations
+    invuserwiselocations: state.invuserwiselocations,
+    inventoryitemuom: state.inventoryitemuom
   };
 }
 
@@ -340,7 +403,8 @@ function mapDispatchToProps(dispatch) {
       getLocation: AlgaehActions,
       getRequisitionEntry: AlgaehActions,
       getTransferEntry: AlgaehActions,
-      getUserLocationPermission: AlgaehActions
+      getUserLocationPermission: AlgaehActions,
+      getItemUOM: AlgaehActions
     },
     dispatch
   );

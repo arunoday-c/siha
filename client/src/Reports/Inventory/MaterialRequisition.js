@@ -6,9 +6,6 @@ import { ReportHeader } from "../ReportHeader";
 export function printReport(data) {
   debugger;
 
-  if (data.requisition_number === undefined || data.requisition_number === null)
-    return null;
-
   return `<div class="cashReciptStyles">
   <div class="print-body">
   <header> ${ReportHeader(data, "Material Requisition")} </header> 
