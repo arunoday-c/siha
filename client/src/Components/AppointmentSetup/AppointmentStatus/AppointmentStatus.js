@@ -41,13 +41,13 @@ class AppointmentStatus extends Component {
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
 
-    e.target.name === "description"
-      ? this.setState({ steps: this.state.appointmentStatus.length + 1 })
-      : null;
+    if (e.target.name === "description") {
+      this.setState({ steps: this.state.appointmentStatus.length + 1 });
+    }
 
-    e.target.name === "steps" && e.target.value === "1"
-      ? this.setState({ default_status: "Y" })
-      : null;
+    if (e.target.name === "steps" && e.target.value === "1") {
+      this.setState({ default_status: "Y" });
+    }
   }
 
   dropDownHandler(value) {

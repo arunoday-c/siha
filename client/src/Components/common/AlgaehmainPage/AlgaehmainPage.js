@@ -408,7 +408,7 @@ class PersistentDrawer extends React.Component {
             submenu.push(item);
           }
         });
-        menuList_condition;
+        // menuList_condition;
         if (submenu.length > 0) {
           menuList_condition.push({
             algaeh_d_module_id: obj.algaeh_d_module_id,

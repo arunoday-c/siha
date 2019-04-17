@@ -171,17 +171,32 @@ const InsertUpdateEmployee = $this => {
             i < $this.state.personalDetails.insertdeptDetails.length;
             i++
           ) {
-            $this.state.personalDetails.insertdeptDetails[i].from_date === null
-              ? null
-              : moment(
-                  $this.state.personalDetails.insertdeptDetails[i].from_date
-                ).format("YYYY-MM-DD");
+            if (
+              $this.state.personalDetails.insertdeptDetails[i].from_date !==
+              null
+            ) {
+              moment(
+                $this.state.personalDetails.insertdeptDetails[i].from_date
+              ).format("YYYY-MM-DD");
+            }
+            // $this.state.personalDetails.insertdeptDetails[i].from_date === null
+            //   ? null
+            //   : moment(
+            //       $this.state.personalDetails.insertdeptDetails[i].from_date
+            //     ).format("YYYY-MM-DD");
 
-            $this.state.personalDetails.insertdeptDetails[i].to_date === null
-              ? null
-              : moment(
-                  $this.state.personalDetails.insertdeptDetails[i].to_date
-                ).format("YYYY-MM-DD");
+            if (
+              $this.state.personalDetails.insertdeptDetails[i].to_date !== null
+            ) {
+              moment(
+                $this.state.personalDetails.insertdeptDetails[i].to_date
+              ).format("YYYY-MM-DD");
+            }
+            // $this.state.personalDetails.insertdeptDetails[i].to_date === null
+            //   ? null
+            //   : moment(
+            //       $this.state.personalDetails.insertdeptDetails[i].to_date
+            //     ).format("YYYY-MM-DD");
           }
         }
 
@@ -191,17 +206,32 @@ const InsertUpdateEmployee = $this => {
             j < $this.state.personalDetails.updatedeptDetails.length;
             j++
           ) {
-            $this.state.personalDetails.updatedeptDetails[j].from_date === null
-              ? null
-              : moment(
-                  $this.state.personalDetails.updatedeptDetails[j].from_date
-                ).format("YYYY-MM-DD");
+            if (
+              $this.state.personalDetails.updatedeptDetails[j].from_date !==
+              null
+            ) {
+              moment(
+                $this.state.personalDetails.updatedeptDetails[j].from_date
+              ).format("YYYY-MM-DD");
+            }
+            // $this.state.personalDetails.updatedeptDetails[j].from_date === null
+            //   ? null
+            //   : moment(
+            //       $this.state.personalDetails.updatedeptDetails[j].from_date
+            //     ).format("YYYY-MM-DD");
 
-            $this.state.personalDetails.updatedeptDetails[j].to_date === null
-              ? null
-              : moment(
-                  $this.state.personalDetails.updatedeptDetails[j].to_date
-                ).format("YYYY-MM-DD");
+            if (
+              $this.state.personalDetails.updatedeptDetails[j].to_date !== null
+            ) {
+              moment(
+                $this.state.personalDetails.updatedeptDetails[j].to_date
+              ).format("YYYY-MM-DD");
+            }
+            // $this.state.personalDetails.updatedeptDetails[j].to_date === null
+            //   ? null
+            //   : moment(
+            //       $this.state.personalDetails.updatedeptDetails[j].to_date
+            //     ).format("YYYY-MM-DD");
           }
         }
 

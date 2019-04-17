@@ -176,9 +176,9 @@ class EmployeeReceipts extends Component {
   dropDownHandler(value) {
     switch (value.name) {
       case "reciepts_type":
-        value.value === "LO" && this.state.loans.length === 0
-          ? this.getLoans()
-          : null;
+        if (value.value === "LO" && this.state.loans.length === 0) {
+          this.getLoans();
+        }
 
         this.setState({
           [value.name]: value.value

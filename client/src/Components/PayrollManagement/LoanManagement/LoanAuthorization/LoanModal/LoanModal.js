@@ -22,11 +22,15 @@ class LoanModal extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    nextProps.open === true
-      ? this.setState(nextProps.data, () => {
-          this.getEmployeeLoans();
-        })
-      : null;
+    if (nextProps.open === true) {
+      this.setState(nextProps.data, () => {
+        this.getEmployeeLoans();
+      });
+    }
+    // ? this.setState(nextProps.data, () => {
+    //     this.getEmployeeLoans();
+    //   })
+    // : null;
   }
 
   getEmployeeLoans() {
@@ -126,17 +130,28 @@ class LoanModal extends Component {
             data: data,
             onSuccess: res => {
               if (res.data.success) {
-                type === "A"
-                  ? swalMessage({
-                      title: "Loan Authorized Successfully",
-                      type: "success"
-                    })
-                  : type === "R"
-                  ? swalMessage({
-                      title: "Loan Rejected",
-                      type: "success"
-                    })
-                  : null;
+                if (type === "A") {
+                  swalMessage({
+                    title: "Loan Authorized Successfully",
+                    type: "success"
+                  });
+                } else if (type === "R") {
+                  swalMessage({
+                    title: "Loan Rejected",
+                    type: "success"
+                  });
+                }
+                // type === "A"
+                //   ? swalMessage({
+                //       title: "Loan Authorized Successfully",
+                //       type: "success"
+                //     })
+                //   : type === "R"
+                //   ? swalMessage({
+                //       title: "Loan Rejected",
+                //       type: "success"
+                //     })
+                //   : null;
 
                 document.getElementById("loan-reload").click();
               }
@@ -400,7 +415,6 @@ class LoanModal extends Component {
                   },
                   {
                     fieldName: "loan_tenure",
-                    label: "No. of EMI Pending",
                     label: (
                       <AlgaehLabel
                         label={{ forceLabel: "No. of EMI Pending" }}

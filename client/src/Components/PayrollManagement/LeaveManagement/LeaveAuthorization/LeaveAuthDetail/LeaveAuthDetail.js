@@ -21,7 +21,10 @@ class LeaveAuthDetail extends Component {
       },
       () => {
         console.log("DATA:", this.state.data.leave_category);
-        nextProps.open ? this.getEmployeeLeaveHistory() : null;
+        if (nextProps.open) {
+          this.getEmployeeLeaveHistory();
+        }
+        // nextProps.open ? this.getEmployeeLeaveHistory() : null;
       }
     );
   }

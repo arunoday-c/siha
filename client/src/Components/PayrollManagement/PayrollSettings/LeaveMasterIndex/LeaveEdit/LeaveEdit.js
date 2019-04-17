@@ -30,16 +30,24 @@ class LeaveEdit extends Component {
         ...nextProps.data
       },
       () => {
-        this.state.religion_required === "Y" &&
-        this.state.religions.length === 0
-          ? this.getReligionsMaster()
-          : null;
+        if (
+          this.state.religion_required === "Y" &&
+          this.state.religions.length === 0
+        ) {
+          this.getReligionsMaster();
+        }
 
-        this.state.type === "ED" ? this.getLeaveDetails() : null;
+        if (this.state.type === "ED") {
+          this.getLeaveDetails();
+        }
 
-        this.state.type === "EE" ? this.getLeaveEncashment() : null;
+        if (this.state.type === "EE") {
+          this.getLeaveEncashment();
+        }
 
-        this.state.type === "ER" ? this.getLeaveRules() : null;
+        if (this.state.type === "ER") {
+          this.getLeaveRules();
+        }
       }
     );
   }
@@ -582,13 +590,25 @@ class LeaveEdit extends Component {
             [e.target.name]: e.target.checked
           },
           () => {
-            this.state.religion_required && this.state.religions.length === 0
-              ? this.getReligionsMaster()
-              : !this.state.religion_required
-              ? this.setState({
+            if (
+              this.state.religion_required &&
+              this.state.religions.length === 0
+            ) {
+              this.getReligionsMaster();
+            } else {
+              if (!this.state.religion_required) {
+                this.setState({
                   religion_id: null
-                })
-              : null;
+                });
+              }
+            }
+            // this.state.religion_required && this.state.religions.length === 0
+            //   ? this.getReligionsMaster()
+            //   : !this.state.religion_required
+            //   ? this.setState({
+            //       religion_id: null
+            //     })
+            //   : null;
           }
         );
         break;
@@ -599,11 +619,11 @@ class LeaveEdit extends Component {
             [e.target.name]: e.target.checked
           },
           () => {
-            !this.state.leave_encash
-              ? this.setState({
-                  encashment_percentage: null
-                })
-              : null;
+            if (!this.state.leave_encash) {
+              this.setState({
+                encashment_percentage: null
+              });
+            }
           }
         );
         break;
@@ -614,11 +634,11 @@ class LeaveEdit extends Component {
             [e.target.name]: e.target.checked
           },
           () => {
-            !this.state.leave_carry_forward
-              ? this.setState({
-                  carry_forward_percentage: null
-                })
-              : null;
+            if (!this.state.leave_carry_forward) {
+              this.setState({
+                carry_forward_percentage: null
+              });
+            }
           }
         );
         break;

@@ -150,29 +150,29 @@ class DisplayVisitDetails extends Component {
                               label={{ fieldName: "department_id" }}
                             />
                           ),
-                          displayTemplate: row => {
-                            let display = [];
-                            this.props.deptanddoctors !== 0
-                              ? (display =
-                                  this.props.deptanddoctors === undefined
-                                    ? []
-                                    : this.props.deptanddoctors.departmets.filter(
-                                        f =>
-                                          f.sub_department_id ===
-                                          row.sub_department_id
-                                      ))
-                              : [];
+                          // displayTemplate: row => {
+                          //   let display = [];
+                          //   this.props.deptanddoctors !== 0
+                          //     ? (display =
+                          //         this.props.deptanddoctors === undefined
+                          //           ? []
+                          //           : this.props.deptanddoctors.departmets.filter(
+                          //               f =>
+                          //                 f.sub_department_id ===
+                          //                 row.sub_department_id
+                          //             ))
+                          //     : [];
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].sub_department_name
-                                    : display[0].arabic_sub_department_name
-                                  : ""}
-                              </span>
-                            );
-                          },
+                          //   return (
+                          //     <span>
+                          //       {display !== null && display.length !== 0
+                          //         ? this.state.selectedLang === "en"
+                          //           ? display[0].sub_department_name
+                          //           : display[0].arabic_sub_department_name
+                          //         : ""}
+                          //     </span>
+                          //   );
+                          // },
                           disabled: true
                         },
                         {
@@ -182,27 +182,27 @@ class DisplayVisitDetails extends Component {
                               label={{ fieldName: "incharge_or_provider" }}
                             />
                           ),
-                          displayTemplate: row => {
-                            let display;
-                            this.props.deptanddoctors !== 0
-                              ? (display =
-                                  this.props.deptanddoctors === undefined
-                                    ? []
-                                    : this.props.deptanddoctors.doctors.filter(
-                                        f => f.employee_id === row.doctor_id
-                                      ))
-                              : [];
+                          // displayTemplate: row => {
+                          //   let display;
+                          //   this.props.deptanddoctors !== 0
+                          //     ? (display =
+                          //         this.props.deptanddoctors === undefined
+                          //           ? []
+                          //           : this.props.deptanddoctors.doctors.filter(
+                          //               f => f.employee_id === row.doctor_id
+                          //             ))
+                          //     : [];
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].full_name
-                                    : display[0].arabic_name
-                                  : ""}
-                              </span>
-                            );
-                          },
+                          //   return (
+                          //     <span>
+                          //       {display !== null && display.length !== 0
+                          //         ? this.state.selectedLang === "en"
+                          //           ? display[0].full_name
+                          //           : display[0].arabic_name
+                          //         : ""}
+                          //     </span>
+                          //   );
+                          // },
                           disabled: true
                         }
                       ]}

@@ -52,16 +52,16 @@ class ValidateBills extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    nextProps.data !== undefined
-      ? this.setState(
-          {
-            invoices: nextProps.data
-          },
-          () => {
-            this.getInvoiceICDs();
-          }
-        )
-      : null;
+    if (nextProps.data !== undefined) {
+      this.setState(
+        {
+          invoices: nextProps.data
+        },
+        () => {
+          this.getInvoiceICDs();
+        }
+      );
+    }
   }
 
   addICDtoInvoice() {

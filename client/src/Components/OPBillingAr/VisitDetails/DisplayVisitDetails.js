@@ -178,25 +178,25 @@ class DisplayVisitDetails extends Component {
                               label={{ fieldName: "incharge_or_provider" }}
                             />
                           ),
-                          displayTemplate: row => {
-                            let display;
+                          // displayTemplate: row => {
+                          //   let display;
 
-                            this.props.deptanddoctors === undefined
-                              ? (display = this.props.deptanddoctors.doctors.filter(
-                                  f => f.employee_id === row.doctor_id
-                                ))
-                              : [];
+                          //   this.props.deptanddoctors === undefined
+                          //     ? (display = this.props.deptanddoctors.doctors.filter(
+                          //         f => f.employee_id === row.doctor_id
+                          //       ))
+                          //     : [];
 
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].full_name
-                                    : display[0].arabic_name
-                                  : ""}
-                              </span>
-                            );
-                          },
+                          //   return (
+                          //     <span>
+                          //       {display !== null && display.length !== 0
+                          //         ? this.state.selectedLang === "en"
+                          //           ? display[0].full_name
+                          //           : display[0].arabic_name
+                          //         : ""}
+                          //     </span>
+                          //   );
+                          // },
                           disabled: true
                         }
                       ]}

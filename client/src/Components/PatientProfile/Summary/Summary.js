@@ -16,10 +16,12 @@ class Summary extends Component {
       patientEpisode: []
     };
 
-    this.props.patient_history === undefined ||
-    this.props.patient_history.length === 0
-      ? getPatientHistory(this)
-      : null;
+    if (
+      this.props.patient_history === undefined ||
+      this.props.patient_history.length === 0
+    ) {
+      getPatientHistory(this);
+    }
 
     this.getPatientMedication();
     this.getEpisodeSummary();
@@ -71,11 +73,11 @@ class Summary extends Component {
   }
 
   render() {
-    const _pat_profile =
-      this.props.patient_profile !== undefined &&
-      this.props.patient_profile.length > 0
-        ? this.props.patient_profile[0]
-        : {};
+    // const _pat_profile =
+    //   this.props.patient_profile !== undefined &&
+    //   this.props.patient_profile.length > 0
+    //     ? this.props.patient_profile[0]
+    //     : {};
 
     const _pat_allergies =
       this.props.patient_allergies !== undefined &&

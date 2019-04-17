@@ -101,13 +101,20 @@ export default class PatientDashboard extends Component {
         ? encounterVisits[0].hims_f_patient_visit_id
         : this.state.hims_f_patient_visit_id;
 
-    !this.state.isProcess
-      ? this.getVitals(
-          selectedPatientDetails.length > 0
-            ? selectedPatientDetails[0]
-            : undefined
-        )
-      : null;
+    if (!this.state.isProcess) {
+      this.getVitals(
+        selectedPatientDetails.length > 0
+          ? selectedPatientDetails[0]
+          : undefined
+      );
+    }
+    // !this.state.isProcess
+    //   ? this.getVitals(
+    //       selectedPatientDetails.length > 0
+    //         ? selectedPatientDetails[0]
+    //         : undefined
+    //     )
+    //   : null;
 
     const _objSelected = eventLogic().getSelectedDateVitals(
       _hims_f_patient_visit_id,

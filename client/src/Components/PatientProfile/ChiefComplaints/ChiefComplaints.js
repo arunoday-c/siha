@@ -66,7 +66,10 @@ class ChiefComplaints extends Component {
       this.props.patient_chief_complaints === undefined ||
       this.props.patient_chief_complaints.length === 0
     ) {
-      Window.global === undefined ? null : getPatientChiefComplaints(this);
+      if (Window.global !== undefined) {
+        getPatientChiefComplaints(this);
+      }
+      // Window.global === undefined ? null : getPatientChiefComplaints(this);
     } else {
       const _patient = Enumerable.from(
         this.props.patient_chief_complaints
@@ -336,7 +339,7 @@ class ChiefComplaints extends Component {
                 _ResponseSplit["associated_symptoms"] = g.getSource();
                 break;
               default:
-                null;
+                break;
             }
           })
           .toArray();
@@ -581,9 +584,13 @@ class ChiefComplaints extends Component {
               });
               //  this.getPatientChiefComplaintsDetails();
               getAllChiefComplaints(this);
-              Window.global === undefined
-                ? null
-                : getPatientChiefComplaints(this);
+
+              if (Window.global !== undefined) {
+                getPatientChiefComplaints(this);
+              }
+              // Window.global === undefined
+              //   ? null
+              //   : getPatientChiefComplaints(this);
             }
           }
         });

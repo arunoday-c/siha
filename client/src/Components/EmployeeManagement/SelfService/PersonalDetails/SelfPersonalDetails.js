@@ -116,7 +116,6 @@ class SelfPersonalDetails extends Component {
         break;
 
       default:
-        null;
         break;
     }
   }

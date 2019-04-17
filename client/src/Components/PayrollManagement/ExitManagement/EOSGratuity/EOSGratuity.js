@@ -37,15 +37,15 @@ class EOSGratuity extends Component {
   }
 
   changeChecks(e) {
-    e.target.checked
-      ? this.setState({
-          [e.target.name]: e.target.value
-        })
-      : !e.target.checked
-      ? this.setState({
-          [e.target.name]: null
-        })
-      : null;
+    if (e.target.checked) {
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    } else if (!e.target.checked) {
+      this.setState({
+        [e.target.name]: null
+      });
+    }
   }
 
   clearState() {

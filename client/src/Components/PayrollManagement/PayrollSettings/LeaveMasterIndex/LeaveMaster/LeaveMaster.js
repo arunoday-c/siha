@@ -289,15 +289,28 @@ class LeaveMaster extends Component {
           }
           e.currentTarget.classList.add("active");
 
-          specified === "LeaveEncashment" &&
-          this.state.earning_deductions.length === 0
-            ? this.getEarningsDeds()
-            : null;
+          if (
+            specified === "LeaveEncashment" &&
+            this.state.earning_deductions.length === 0
+          ) {
+            this.getEarningsDeds();
+          }
+          // specified === "LeaveEncashment" &&
+          // this.state.earning_deductions.length === 0
+          //   ? this.getEarningsDeds()
+          //   : null;
 
-          specified === "LeaveRules" &&
-          this.state.earning_deductions.length === 0
-            ? this.getEarningsDeds()
-            : null;
+          if (
+            specified === "LeaveRules" &&
+            this.state.earning_deductions.length === 0
+          ) {
+            this.getEarningsDeds();
+          }
+
+          // specified === "LeaveRules" &&
+          // this.state.earning_deductions.length === 0
+          //   ? this.getEarningsDeds()
+          //   : null;
 
           this.setState({
             pageDisplay: specified
@@ -370,9 +383,12 @@ class LeaveMaster extends Component {
             [e.target.name]: e.target.checked
           },
           () => {
-            this.state.religion_required && this.state.religions.length === 0
-              ? this.getReligionsMaster()
-              : null;
+            if (
+              this.state.religion_required &&
+              this.state.religions.length === 0
+            ) {
+              this.getReligionsMaster();
+            }
           }
         );
         break;
@@ -383,11 +399,16 @@ class LeaveMaster extends Component {
             [e.target.name]: e.target.checked
           },
           () => {
-            !this.state.leave_encash
-              ? this.setState({
-                  encashment_percentage: null
-                })
-              : null;
+            if (!this.state.leave_encash) {
+              this.setState({
+                encashment_percentage: null
+              });
+            }
+            // !this.state.leave_encash
+            //   ? this.setState({
+            //       encashment_percentage: null
+            //     })
+            //   : null;
           }
         );
         break;
@@ -398,11 +419,16 @@ class LeaveMaster extends Component {
             [e.target.name]: e.target.checked
           },
           () => {
-            !this.state.leave_carry_forward
-              ? this.setState({
-                  carry_forward_percentage: null
-                })
-              : null;
+            if (!this.state.leave_carry_forward) {
+              this.setState({
+                carry_forward_percentage: null
+              });
+            }
+            // !this.state.leave_carry_forward
+            //   ? this.setState({
+            //       carry_forward_percentage: null
+            //     })
+            //   : null;
           }
         );
         break;

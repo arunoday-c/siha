@@ -55,20 +55,20 @@ class AppointmentAr extends PureComponent {
 
     let x = JSON.parse(localStorage.getItem("ApptCriteria"));
 
-    x !== undefined && x !== null
-      ? this.setState(
-          {
-            sub_department_id: x.sub_dept_id,
-            provider_id: x.provider_id,
-            activeDateHeader: x.schedule_date,
-            doctors: x.doctors,
-            byPassValidation: true
-          },
-          () => {
-            this.getAppointmentSchedule();
-          }
-        )
-      : null;
+    if (x !== undefined && x !== null) {
+      this.setState(
+        {
+          sub_department_id: x.sub_dept_id,
+          provider_id: x.provider_id,
+          activeDateHeader: x.schedule_date,
+          doctors: x.doctors,
+          byPassValidation: true
+        },
+        () => {
+          this.getAppointmentSchedule();
+        }
+      );
+    }
   }
 
   cancelAppt(row) {

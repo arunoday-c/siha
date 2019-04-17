@@ -13,9 +13,9 @@ export default class ActivityFeed extends Component {
       pageDisplay: "ActivityFeed"
     };
 
-    props.empData !== undefined
-      ? this.getActivityFeed(props.empData.hims_d_employee_id)
-      : null;
+    if (props.empData !== undefined) {
+      this.getActivityFeed(props.empData.hims_d_employee_id);
+    }
   }
 
   componentWillReceiveProps(nextProps) {

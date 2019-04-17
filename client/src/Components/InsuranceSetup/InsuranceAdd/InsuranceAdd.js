@@ -44,7 +44,10 @@ function getSteps() {
 }
 
 function getStepContent(stepIndex, $this) {
-  $this.state.buttonenable === true ? (stepIndex = stepIndex - 1) : null;
+  if ($this.state.buttonenable === true) {
+    stepIndex = stepIndex - 1;
+  }
+  // $this.state.buttonenable === true ? (stepIndex = stepIndex - 1) : null;
   switch (stepIndex) {
     case 0:
       return <InsuranceProvider InsuranceSetup={$this.state} />;
@@ -55,7 +58,7 @@ function getStepContent(stepIndex, $this) {
     case 3:
       return <ServicePriceList InsuranceSetup={$this.state} />;
     default:
-      null;
+      break;
   }
 }
 

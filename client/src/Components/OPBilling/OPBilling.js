@@ -505,7 +505,6 @@ class OPBilling extends Component {
                     if (key === "patient_code") {
                       this.getPatientDetails(this);
                     }
-                    return;
                   });
                 });
               }
