@@ -53,7 +53,8 @@ export default ({ config, db }) => {
               user_displayname: rowDetails["user_displayname"],
               keyResources: keyData,
               secureModels: req.secureModels,
-              hospitalDetails: hospitalDetails
+              hospitalDetails: hospitalDetails,
+              app_d_app_roles_id: rowDetails.app_d_app_roles_id
             }
           });
           next();

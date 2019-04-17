@@ -48,15 +48,22 @@
       min-height: 35px;
       border-bottom: 1px dashed #eee;
       color: #666;
-      font-weight: normal;
+      font-weight: bold;
       line-height: 26px;
-      margin: 10px 0; }
+      margin: 10px 0;
+      font-size: 1rem; }
     .dashboard .card .dashboardChartsCntr {
       margin: 10px;
       width: 95%;
       height: auto;
       position: relative; }
       .dashboard .card .dashboardChartsCntr h6 {
+        text-align: center; }
+    .dashboard .card .dashboardGridCntr {
+      margin: 10px;
+      height: auto;
+      position: relative; }
+      .dashboard .card .dashboardGridCntr h6 {
         text-align: center; }
   .dashboard hr {
     margin: 0 !important; }
