@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import PatientDetails from "./PatientDisDetails/PatientDetails.js";
-import DisplayVisitDetails from "./VisitDetails/DisplayVisitDetails.js";
+// import DisplayVisitDetails from "./VisitDetails/DisplayVisitDetails.js";
 import OPBillingDetails from "./OPBilling/OPBillingDetails";
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import "./OPBilling.css";
@@ -505,6 +505,7 @@ class OPBilling extends Component {
                     if (key === "patient_code") {
                       this.getPatientDetails(this);
                     }
+                    return;
                   });
                 });
               }

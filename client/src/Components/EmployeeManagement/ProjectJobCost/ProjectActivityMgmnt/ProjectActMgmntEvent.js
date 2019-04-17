@@ -1,5 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
+// import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 // import swal from "sweetalert2";
 // import Enumerable from "linq";
 // import AlgaehSearch from "../../../Wrapper/globalSearch";

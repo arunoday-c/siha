@@ -82,23 +82,23 @@ const InsertUpdateItems = $this => {
           $this.state.service_name = $this.state.item_description;
           $this.state.service_status = "A";
           $this.state.standard_fee = parseFloat($this.state.standard_fee);
-          ($this.state.hospital_id = JSON.parse(
+          $this.state.hospital_id = JSON.parse(
             AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-          ).hims_d_hospital_id),
-            algaehApiCall({
-              uri: "/pharmacy/addItemMaster",
-              module: "pharmacy",
-              data: $this.state,
-              onSuccess: response => {
-                if (response.data.success === true) {
-                  $this.props.onClose && $this.props.onClose(true);
-                  swalMessage({
-                    type: "success",
-                    title: "Saved successfully . ."
-                  });
-                }
+          ).hims_d_hospital_id;
+          algaehApiCall({
+            uri: "/pharmacy/addItemMaster",
+            module: "pharmacy",
+            data: $this.state,
+            onSuccess: response => {
+              if (response.data.success === true) {
+                $this.props.onClose && $this.props.onClose(true);
+                swalMessage({
+                  type: "success",
+                  title: "Saved successfully . ."
+                });
               }
-            });
+            }
+          });
         } else {
           $this.state.record_status = "A";
           algaehApiCall({

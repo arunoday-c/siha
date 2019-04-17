@@ -27,7 +27,6 @@ class EmployeeProjectRoster extends Component {
       hospitals: [],
       projects: [],
       designations: [],
-      loading: false,
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
@@ -315,8 +314,7 @@ class EmployeeProjectRoster extends Component {
       .endOf("month")
       .format("MMM DD YYYY");
 
-    var now = moment(currDate).clone(),
-      Emp_Dates = [];
+    var now = moment(currDate).clone();
 
     while (now.isSameOrBefore(lastDate)) {
       let holiday = Enumerable.from(holidays)
@@ -499,8 +497,7 @@ class EmployeeProjectRoster extends Component {
       .endOf("month")
       .format("MMM DD YYYY");
 
-    var now = moment(currDate).clone(),
-      dates = [];
+    var now = moment(currDate).clone();
 
     while (now.isSameOrBefore(lastDate)) {
       dates.push(
@@ -721,7 +718,6 @@ class EmployeeProjectRoster extends Component {
               isImp: true
             }}
             selector={{
-              sort: "off",
               sort: "off",
               name: "month",
               className: "select-fld",

@@ -403,21 +403,19 @@ const updateEarningComponent = ($this, row) => {
     updateearnComp.push(Updateobj);
     earningComponents[row.rowIdx] = Updateobj;
   } else {
-    {
-      Updateobj = {
-        employee_id: $this.state.hims_d_employee_id,
-        earnings_id: row.earnings_id,
-        amount: row.amount,
-        allocate: row.allocate
-      };
-      for (let x = 0; x < insertearnComp.length; x++) {
-        if (insertearnComp[x].earnings_id === row.earnings_id) {
-          insertearnComp[x] = Updateobj;
-        }
+    Updateobj = {
+      employee_id: $this.state.hims_d_employee_id,
+      earnings_id: row.earnings_id,
+      amount: row.amount,
+      allocate: row.allocate
+    };
+    for (let x = 0; x < insertearnComp.length; x++) {
+      if (insertearnComp[x].earnings_id === row.earnings_id) {
+        insertearnComp[x] = Updateobj;
       }
-      // insertearnComp[row.rowIdx] = Updateobj;
-      earningComponents[row.rowIdx] = Updateobj;
     }
+    // insertearnComp[row.rowIdx] = Updateobj;
+    earningComponents[row.rowIdx] = Updateobj;
   }
   $this.setState(
     {
@@ -504,21 +502,19 @@ const updateDeductionComponent = ($this, row) => {
     updateDeductionComp.push(Updateobj);
     deductioncomponents[row.rowIdx] = Updateobj;
   } else {
-    {
-      Updateobj = {
-        employee_id: $this.state.hims_d_employee_id,
-        deductions_id: row.deductions_id,
-        amount: row.amount,
-        allocate: row.allocate
-      };
-      for (let x = 0; x < insertDeductionComp.length; x++) {
-        if (insertDeductionComp[x].deductions_id === row.deductions_id) {
-          insertDeductionComp[x] = Updateobj;
-        }
+    Updateobj = {
+      employee_id: $this.state.hims_d_employee_id,
+      deductions_id: row.deductions_id,
+      amount: row.amount,
+      allocate: row.allocate
+    };
+    for (let x = 0; x < insertDeductionComp.length; x++) {
+      if (insertDeductionComp[x].deductions_id === row.deductions_id) {
+        insertDeductionComp[x] = Updateobj;
       }
-      // insertDeductionComp[row.rowIdx] = Updateobj;
-      deductioncomponents[row.rowIdx] = Updateobj;
     }
+    // insertDeductionComp[row.rowIdx] = Updateobj;
+    deductioncomponents[row.rowIdx] = Updateobj;
   }
   $this.setState(
     {
@@ -605,21 +601,19 @@ const updateContibuteComponent = ($this, row) => {
     updateContributeComp.push(Updateobj);
     contributioncomponents[row.rowIdx] = Updateobj;
   } else {
-    {
-      Updateobj = {
-        employee_id: $this.state.hims_d_employee_id,
-        contributions_id: row.contributions_id,
-        amount: row.amount,
-        allocate: row.allocate
-      };
-      for (let x = 0; x < insertContributeComp.length; x++) {
-        if (insertContributeComp[x].contributions_id === row.contributions_id) {
-          insertContributeComp[x] = Updateobj;
-        }
+    Updateobj = {
+      employee_id: $this.state.hims_d_employee_id,
+      contributions_id: row.contributions_id,
+      amount: row.amount,
+      allocate: row.allocate
+    };
+    for (let x = 0; x < insertContributeComp.length; x++) {
+      if (insertContributeComp[x].contributions_id === row.contributions_id) {
+        insertContributeComp[x] = Updateobj;
       }
-      // insertContributeComp[row.rowIdx] = Updateobj;
-      contributioncomponents[row.rowIdx] = Updateobj;
     }
+    // insertContributeComp[row.rowIdx] = Updateobj;
+    contributioncomponents[row.rowIdx] = Updateobj;
   }
   $this.setState(
     {

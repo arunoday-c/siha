@@ -89,7 +89,6 @@ class DisplayVisitDetails extends Component {
                                       row,
                                       context
                                     )}
-                                    type="radio"
                                   />
                                   <span />
                                 </label>
@@ -151,15 +150,13 @@ class DisplayVisitDetails extends Component {
                           ),
                           displayTemplate: row => {
                             let display = [];
-                            this.props.deptanddoctors !== 0
-                              ? (display =
-                                  this.props.deptanddoctors === undefined
-                                    ? []
-                                    : this.props.deptanddoctors.departmets.filter(
-                                        f =>
-                                          f.sub_department_id ===
-                                          row.sub_department_id
-                                      ))
+
+                            this.props.deptanddoctors === undefined
+                              ? (display = this.props.deptanddoctors.departmets.filter(
+                                  f =>
+                                    f.sub_department_id ===
+                                    row.sub_department_id
+                                ))
                               : [];
 
                             return (
@@ -183,13 +180,11 @@ class DisplayVisitDetails extends Component {
                           ),
                           displayTemplate: row => {
                             let display;
-                            this.props.deptanddoctors !== 0
-                              ? (display =
-                                  this.props.deptanddoctors === undefined
-                                    ? []
-                                    : this.props.deptanddoctors.doctors.filter(
-                                        f => f.employee_id === row.doctor_id
-                                      ))
+
+                            this.props.deptanddoctors === undefined
+                              ? (display = this.props.deptanddoctors.doctors.filter(
+                                  f => f.employee_id === row.doctor_id
+                                ))
                               : [];
 
                             return (

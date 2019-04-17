@@ -100,19 +100,15 @@ const VatAppilicable = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
-      let Applicable = false;
       let Value = "N";
 
       if ($this.state.Applicable === true) {
-        Applicable = false;
         Value = "N";
       } else if ($this.state.Applicable === false) {
-        Applicable = true;
         Value = "Y";
       }
       $this.setState({
         [name]: Value,
-        // Applicable: Applicable,
         vat_percent: 0,
         ...$this.state
       });
@@ -121,7 +117,6 @@ const VatAppilicable = ($this, context, e) => {
       if (context !== undefined) {
         context.updateState({
           [name]: Value,
-          // Applicable: Applicable,
           vat_percent: 0,
           ...$this.state
         });

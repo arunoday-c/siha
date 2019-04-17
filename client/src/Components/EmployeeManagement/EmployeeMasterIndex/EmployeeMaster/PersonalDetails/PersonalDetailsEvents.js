@@ -1,4 +1,4 @@
-import Enumerable from "linq";
+// import Enumerable from "linq";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;

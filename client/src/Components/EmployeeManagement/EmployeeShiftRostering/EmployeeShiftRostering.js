@@ -280,8 +280,7 @@ export default class EmployeeShiftRostering extends Component {
       .endOf("month")
       .format("MMM DD YYYY");
 
-    var now = moment(currDate).clone(),
-      Emp_Dates = [];
+    var now = moment(currDate).clone();
 
     while (now.isSameOrBefore(lastDate)) {
       let holiday = Enumerable.from(holidays)
@@ -657,8 +656,7 @@ export default class EmployeeShiftRostering extends Component {
       .endOf("month")
       .format("MMM DD YYYY");
 
-    var now = moment(currDate).clone(),
-      dates = [];
+    var now = moment(currDate).clone();
 
     while (now.isSameOrBefore(lastDate)) {
       dates.push(
@@ -881,7 +879,6 @@ export default class EmployeeShiftRostering extends Component {
               isImp: true
             }}
             selector={{
-              sort: "off",
               sort: "off",
               name: "month",
               className: "select-fld",

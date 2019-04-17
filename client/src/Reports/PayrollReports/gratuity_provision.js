@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+// import React, { Component } from "react";
 import { payrollHeader } from "./payrollHeader";
 import "../report-style.css";
 import _ from "lodash";

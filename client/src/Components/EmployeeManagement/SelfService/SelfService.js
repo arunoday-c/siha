@@ -12,7 +12,7 @@ import LeaveEncashment from "./LeaveEncashmemnt/LeaveEncashment";
 import HolidayListSelf from "./HolidayListSelf/HolidayListSelf";
 import TimeSheetSelf from "./TimeSheetSelf/TimeSheetSelf";
 
-import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
+// import employeeProfileImg from "../../../assets/images/employee_profile_img.webp";
 import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 export default class SelfService extends Component {

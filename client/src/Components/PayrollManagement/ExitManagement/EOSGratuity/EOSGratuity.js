@@ -6,7 +6,7 @@ import "./EOSGratuity.css";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import moment from "moment";
-import { parse } from "url";
+// import { parse } from "url";
 
 class EOSGratuity extends Component {
   constructor(props) {

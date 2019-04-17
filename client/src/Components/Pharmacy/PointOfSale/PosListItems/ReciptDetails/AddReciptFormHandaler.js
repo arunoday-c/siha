@@ -1,8 +1,8 @@
 import moment from "moment";
-import { successfulMessage } from "../../../../../utils/GlobalFunctions";
+// import { successfulMessage } from "../../../../../utils/GlobalFunctions";
 import { swalMessage, algaehApiCall } from "../../../../../utils/algaehApiCall";
-import { debug } from "util";
-let texthandlerInterval = null;
+// import { debug } from "util";
+// let texthandlerInterval = null;
 
 const texthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;

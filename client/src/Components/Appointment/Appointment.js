@@ -43,7 +43,7 @@ class Appointment extends PureComponent {
       date_of_birth: null,
       activeDateHeader: moment()._d,
       outerStyles: {},
-      byPassValidation: false,
+      // byPassValidation: false,
       width: 0,
       byPassValidation: true
     };

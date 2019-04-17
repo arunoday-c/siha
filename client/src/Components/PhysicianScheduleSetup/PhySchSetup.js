@@ -392,7 +392,6 @@ class PhySchSetup extends Component {
       type: "warning",
       confirmButtonText: "Yes!",
       showCancelButton: true,
-      confirmButtonText: "Yes!",
       confirmButtonColor: "#44b8bd",
       cancelButtonColor: "#d33",
       cancelButtonText: "No"
@@ -485,7 +484,7 @@ class PhySchSetup extends Component {
 
   dropDownHandler(value) {
     if (value.name === "month") {
-      let dateToday = this.state.year + this.state.month + "01";
+      // let dateToday = this.state.year + this.state.month + "01";
       this.setState({
         from_date: this.state.year + this.state.month + "01"
       });

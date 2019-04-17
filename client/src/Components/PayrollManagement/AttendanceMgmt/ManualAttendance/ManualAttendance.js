@@ -18,8 +18,8 @@ import moment from "moment";
 import Options from "../../../../Options.json";
 import {
   AlgaehValidation,
-  AlgaehOpenContainer,
-  getYears
+  AlgaehOpenContainer
+  // getYears
 } from "../../../../utils/GlobalFunctions";
 import { swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
@@ -335,15 +335,13 @@ class ManualAttendance extends Component {
                     dataSource: _dropDownDataSource,
                     onChange: this.eventHandaler.bind(this),
                     onClear: () => {
-                      {
-                        this.state.manual_timesheet_entry === "D"
-                          ? this.setState({
-                              sub_department_id: null
-                            })
-                          : this.setState({
-                              project_id: null
-                            });
-                      }
+                      this.state.manual_timesheet_entry === "D"
+                        ? this.setState({
+                            sub_department_id: null
+                          })
+                        : this.setState({
+                            project_id: null
+                          });
                     }
                   }}
                 />

@@ -3,7 +3,7 @@
 import { getCookie } from "../../utils/algaehApiCall";
 import { ReportHeader } from "../ReportHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-import _ from "lodash";
+// import _ from "lodash";
 export function printReport(data) {
   debugger;
 

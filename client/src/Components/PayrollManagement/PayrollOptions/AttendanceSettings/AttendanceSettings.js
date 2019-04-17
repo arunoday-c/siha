@@ -180,7 +180,6 @@ export default class AttendanceSettings extends Component {
                         name="salary_pay_before_end_date"
                         checked={this.state.salary_pay_before_end_date === "Y"}
                         onChange={this.textHandler.bind(this)}
-                        type="radio"
                       />
                       <span>Yes</span>
                     </label>
@@ -192,7 +191,6 @@ export default class AttendanceSettings extends Component {
                         name="salary_pay_before_end_date"
                         checked={this.state.salary_pay_before_end_date === "N"}
                         onChange={this.textHandler.bind(this)}
-                        type="radio"
                       />
                       <span>No</span>
                     </label>

@@ -18,8 +18,7 @@ import moment from "moment";
 import {
   AlagehAutoComplete,
   AlgaehLabel,
-  AlgaehDataGrid,
-  AlagehFormGroup
+  AlgaehDataGrid
 } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getYears } from "../../../../utils/GlobalFunctions";
@@ -62,7 +61,7 @@ class LeaveEncashmentAuth extends Component {
     ) {
       this.props.getDepartments({
         uri: "/department/get/subdepartment",
-        module : "masterSettings",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "DEPARTENTS_GET_DATA",

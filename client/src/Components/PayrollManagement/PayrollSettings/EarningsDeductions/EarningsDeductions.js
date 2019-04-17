@@ -360,6 +360,8 @@ class EarningsDeductions extends Component {
           print_report: e.target.value
         });
         break;
+      default:
+        break;
     }
   }
 
@@ -399,7 +401,7 @@ class EarningsDeductions extends Component {
     });
   }
   render() {
-    let i = 10;
+    // let i = 10;
 
     let earn_component = Enumerable.from(this.state.earning_deductions)
       .where(

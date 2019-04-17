@@ -272,14 +272,12 @@ const deleteDeptUser = ($this, row) => {
     deptDetails[row.rowIdx] = Updateobj;
     deptDetails.splice(row.rowIdx, 1);
   } else {
-    {
-      for (let x = 0; x < insertdeptDetails.length; x++) {
-        if (insertdeptDetails[x].earnings_id === row.earnings_id) {
-          insertdeptDetails.splice(x, 1);
-        }
+    for (let x = 0; x < insertdeptDetails.length; x++) {
+      if (insertdeptDetails[x].earnings_id === row.earnings_id) {
+        insertdeptDetails.splice(x, 1);
       }
-      deptDetails.splice(row.rowIdx, 1);
     }
+    deptDetails.splice(row.rowIdx, 1);
   }
   $this.setState({
     deptDetails: deptDetails,

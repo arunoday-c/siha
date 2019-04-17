@@ -21,7 +21,6 @@ import {
 } from "./AnalyteEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 class LabAnalyte extends Component {
   constructor(props) {
@@ -51,7 +50,6 @@ class LabAnalyte extends Component {
     ) {
       this.props.getLabAnalytes({
         uri: "/labmasters/selectAnalytes",
-        module: "laboratory",
         module: "laboratory",
         method: "GET",
         redux: {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 //import { withRouter } from "react-router-dom";
 //import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
+// import { bindActionCreators } from "redux";
 import "./ShipmentEntry.css";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import {
@@ -15,8 +15,8 @@ import moment from "moment";
 import ShipmentItemList from "./ShipmentItemList/ShipmentItemList";
 
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import { AlgaehActions } from "../../../actions/algaehActions";
-import Enumerable from "linq";
+// import { AlgaehActions } from "../../../actions/algaehActions";
+// import Enumerable from "linq";
 import MyContext from "../../../utils/MyContext";
 
 class ShipmentEntry extends Component {

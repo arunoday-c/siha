@@ -28,7 +28,7 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
 import OrderedList from "./OrderedList/OrderedList";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 class Assessment extends Component {
   constructor(props) {

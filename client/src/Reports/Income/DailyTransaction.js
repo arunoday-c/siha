@@ -1,6 +1,6 @@
 import { incomeHeader } from "./incomeHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
-import _ from "lodash";
+// import _ from "lodash";
 import "../report-style.css";
 export function printReport(result) {
   if (result === undefined) return null;
