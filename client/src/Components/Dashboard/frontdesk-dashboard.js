@@ -7,9 +7,11 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
-// import { getCookie } from "../../utils/algaehApiCall.js";
-import { getAmountFormart } from "../../utils/GlobalFunctions";
-import DashBoardEvents from "./DashBoardEvents";
+import { getCookie } from "../../utils/algaehApiCall.js";
+import {
+  AlgaehCloseContainer,
+  getAmountFormart
+} from "../../utils/GlobalFunctions";
 
 const AdmissionsReadmissionData = {
   datasets: [
@@ -165,43 +167,20 @@ const OutpatientsInpatientsDataOptions = {
   }
 };
 
-const AvgWaitingTimeDep = {
-  labels: [
-    "Surgery",
-    "Gynaecology",
-    "Dermatology",
-    "Neurology",
-    "Oncology",
-    "Orthopedics",
-    "Cardiology"
-  ],
-  datasets: [
-    {
-      data: [65, 59, 80, 81, 56, 55, 45],
-      label: "Waiting Time",
-      backgroundColor: "rgba(255,99,132,0.2)",
-      borderColor: "rgba(255,99,132,1)",
-      borderWidth: 1,
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)"
-    }
-  ]
-};
-
 const RevenuebyDepartment = {
   labels: [
-    "Surgery",
+    "General Medcine",
     "Gynaecology",
     "Dermatology",
     "Neurology",
     "Oncology",
-    "Orthopedics",
-    "Cardiology"
+    "Orthopedics"
   ],
   datasets: [
     {
-      data: [95, 80, 73, 64, 56, 50, 48],
-      label: "Revenue",
+      data: [73, 11, 11, 3, 7, 2],
+      label: "Total Booking",
+
       backgroundColor: "rgba(255,99,132,0.2)",
       borderColor: "rgba(255,99,132,1)",
       borderWidth: 1,
@@ -223,8 +202,8 @@ const RevenuebyDoctor = {
   ],
   datasets: [
     {
-      data: [81, 80, 65, 59, 56, 55, 45],
-      label: "Revenue",
+      data: [6, 11, 15, 6, 4, 10, 9],
+      label: "Total Booking",
       backgroundColor: "rgba(255,99,132,0.2)",
       borderColor: "rgba(255,99,132,1)",
       borderWidth: 1,
@@ -246,8 +225,9 @@ const RevenuebyService = {
   ],
   datasets: [
     {
-      data: [81, 80, 65, 59, 56, 55, 45],
-      label: "Revenue",
+      data: [3, 2, 5, 3, 7, 4, 2],
+      label: "Total Booking",
+
       backgroundColor: "rgba(255,99,132,0.2)",
       borderColor: "rgba(255,99,132,1)",
       borderWidth: 1,
@@ -403,10 +383,8 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       sidBarOpen: true,
-      showDetails: "d-none",
-      sample_collection: []
+      showDetails: "d-none"
     };
-    DashBoardEvents().getSampleCollectionDetails(this);
   }
 
   showDetailHandler(event) {
@@ -450,153 +428,219 @@ class Dashboard extends Component {
     // let margin = this.state.sidBarOpen ? "" : "";
     return (
       <div className="dashboard ">
+        <div className="row card-deck">
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-calendar-check" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Today's Appointments</p>80
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  <b onClick={this.showDetailHandler.bind(this)}>
+                    {this.state.showDetails === "d-block"
+                      ? "Hide"
+                      : "Show Details"}
+                  </b>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-walking" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Today's Walk-In</p>
+                    27
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Today Patient Fall - <span>18%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-hand-holding-usd" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Total Cash Received</p>
+
+                    {getAmountFormart("10378.00")}
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  By Cash <span>{getAmountFormart("3540.33")} </span> | By Card{" "}
+                  <span>{getAmountFormart("6837.67")} </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-users" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Total Patients</p>
+                    61,938
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Patients Admitted - <span>31,374</span>
+                </div>
+              </div>
+            </div>
+          </div> */}
+
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-user-md" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Avg. Patient per Dr. (MTD)</p>
+                    26.79
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Today Available Dr. - <span>190</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="row">
+          <div className={"col-4 " + this.state.showDetails}>
+            <div className="card animated fadeInUp faster">
+              <h6>Patients Booking by Department</h6>
+              <div className="dashboardChartsCntr">
+                <HorizontalBar data={RevenuebyDepartment} />
+              </div>
+            </div>
+          </div>
+          <div className={"col-4 " + this.state.showDetails}>
+            <div className="card animated fadeInUp faster">
+              <h6>Patients Booking by Doctor</h6>
+              <div className="dashboardChartsCntr">
+                <HorizontalBar data={RevenuebyDoctor} />
+              </div>
+            </div>
+          </div>
+          <div className={"col-4 " + this.state.showDetails}>
+            <div className="card animated fadeInUp faster">
+              <h6>Patients Booking by Service</h6>
+              <div className="dashboardChartsCntr">
+                <HorizontalBar data={RevenuebyService} />
+              </div>
+            </div>
+          </div>
           <div className="col-4">
             <div className="card animated fadeInUp faster">
-              <h6>Employee Survery for this Month</h6>
-
+              <h6>Appointments By Department</h6>
               <div className="dashboardChartsCntr">
-                <p>
-                  {" "}
-                  Do you think that work is distributed evenly across your team?{" "}
-                </p>
-                <Doughnut
-                  data={PieData}
-                  //options={AdmissionsReadmissionDataOptions}
-                />
-              </div>
-              <hr />
-              <div className="dashboardChartsCntr">
-                <p>Do you find your work meaningful?</p>
-                <HorizontalBar
-                  data={DoctorExplained}
-                  options={DoctorExplainedDataOptions}
-                />
-              </div>
-              <hr />
-
-              <div className="dashboardChartsCntr">
-                <p>Do you feel valued for your contributions?</p>
-                <HorizontalBar
-                  data={TreatingPhysician}
-                  options={TreatingPhysicianDataOptions}
-                />
+                <table className="table  table-bordered table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Department</th>
+                      <th>Appointment</th>
+                      <th>Walk In</th>
+                      <th>Cancelled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Gynaecology</td>
+                      <td>11</td>
+                      <td>0</td>
+                      <td>1</td>
+                    </tr>
+                    <tr>
+                      <td>Dermatology</td>
+                      <td>5</td>
+                      <td>6</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>Neurology</td>
+                      <td>2</td>
+                      <td>1</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>Oncology</td>
+                      <td>3</td>
+                      <td>4</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>Cardiology</td>
+                      <td>0</td>
+                      <td>2</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>General</td>
+                      <td>59</td>
+                      <td>14</td>
+                      <td>0</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
 
-          <div className="col-8">
-            <div className="row">
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Document Expiring Soon</h6>
-                  <div className="dashboardGridCntr">
-                    <table className="table  table-bordered table-sm table-striped ">
-                      <thead>
-                        <tr>
-                          <th className="text-center">Employee Code</th>
-                          <th className="text-center">Employee Name</th>
-                          <th className="text-center">Document Type</th>
-                          <th className="text-center">Expiry On</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="text-center">EMP-0000686</td>
-                          <td className="text-center">Tejaswi Surya</td>
-                          <td className="text-center">Iqama</td>
-                          <td className="text-center">2019-04-01</td>
-                        </tr>
-                        <tr>
-                          <td className="text-center">EMP-0000674 </td>
-                          <td className="text-center">Zakir Khan</td>
-                          <td className="text-center">Iqama</td>
-                          <td className="text-center">2019-04-04</td>
-                        </tr>
-                        <tr>
-                          <td className="text-center">EMP-0000685 </td>
-                          <td className="text-center">KHALID AL-HAMDAN</td>
-                          <td className="text-center">Passport</td>
-                          <td className="text-center">2019-04-05</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>New Joinee for this month</h6>
-                  <div className="dashboardGridCntr">
-                    <table className="table  table-bordered table-sm table-striped ">
-                      <thead>
-                        <tr>
-                          <th className="text-center">Employee Code</th>
-                          <th className="text-center">Employee Name</th>
-                          <th className="text-center">Department</th>
-                          <th className="text-center">Joined On</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="text-center">EMP-0000986</td>
-                          <td className="text-center">Irfan Khan</td>
-                          <td className="text-center">Front Desk</td>
-                          <td className="text-center">2019-04-25</td>
-                        </tr>
-                        <tr>
-                          <td className="text-center">EMP-0000989 </td>
-                          <td className="text-center">Noushad Ahmed</td>
-                          <td className="text-center">Lab Technician</td>
-                          <td className="text-center">2019-04-23</td>
-                        </tr>
-                        <tr>
-                          <td className="text-center">EMP-0000990 </td>
-                          <td className="text-center">Noor Mohsin</td>
-                          <td className="text-center">IT Department</td>
-                          <td className="text-center">2019-04-23</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Employee Resigned/Terminated this month</h6>
-                  <div className="dashboardGridCntr">
-                    <table className="table  table-bordered table-sm table-striped ">
-                      <thead>
-                        <tr>
-                          <th className="text-center">Employee Code</th>
-                          <th className="text-center">Employee Name</th>
-                          <th className="text-center">Status</th>
-                          <th className="text-center">
-                            Resigned/Terminated On
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="text-center">EMP-0000459 </td>
-                          <td className="text-center">Munees Abdulla</td>
-                          <td className="text-center">
-                            <span className="badge badge-info">Resigned</span>
-                          </td>
-                          <td className="text-center">2019-04-23</td>
-                        </tr>
-                        <tr>
-                          <td className="text-center">EMP-00001240 </td>
-                          <td className="text-center">Shahid Ahmed</td>
-                          <td className="text-center">
-                            <span className="badge badge-info">Resigned</span>
-                          </td>
-                          <td className="text-center">2019-04-23</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+          <div className="col-4">
+            <div className="card animated fadeInUp faster">
+              <h6>Outpatients vs. Inpatients Trend</h6>
+              <div className="dashboardChartsCntr">
+                <Bar
+                  data={OutpatientsInpatientsData}
+                  options={OutpatientsInpatientsDataOptions}
+                />
               </div>
             </div>
           </div>

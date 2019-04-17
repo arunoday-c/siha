@@ -88,7 +88,7 @@ class HospitalServices extends PureComponent {
             events={{
               onClose: this.onClose.bind(this)
             }}
-            class="popUpHospitalServices"
+            className="popUpHospitalServices"
           >
             <div className="col-12" data-validate="HospitalServices">
               {/* <div className="popupHeader">
