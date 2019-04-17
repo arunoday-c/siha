@@ -195,10 +195,7 @@ export default class AlgaehFileUploader extends Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (
-      JSON.stringify(nextProps) !== JSON.stringify(this.props) ||
-      JSON.stringify(nextState) !== JSON.stringify(this.state)
-    ) {
+    if (nextProps !== this.props || nextState !== this.state) {
       return true;
     } else return false;
   }
