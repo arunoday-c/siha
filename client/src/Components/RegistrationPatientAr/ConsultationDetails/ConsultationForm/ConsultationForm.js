@@ -25,10 +25,10 @@ import {
   texthandle
 } from "./AddConsultationDetails";
 
-const MATERNITY_PATIENT = [
-  { label: "Yes", value: "Y" },
-  { label: "No", value: "N" }
-];
+// const MATERNITY_PATIENT = [
+//   { label: "Yes", value: "Y" },
+//   { label: "No", value: "N" }
+// ];
 
 class AddConsultationForm extends Component {
   constructor(props) {
@@ -416,7 +416,7 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "department_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display = [];
+                          let display;
                           this.props.viewsubdept === undefined
                             ? []
                             : (display = this.props.viewsubdept.filter(
@@ -443,7 +443,7 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display = [];
+                          let display;
                           this.props.frontproviders === undefined
                             ? []
                             : (display = this.props.frontproviders.filter(

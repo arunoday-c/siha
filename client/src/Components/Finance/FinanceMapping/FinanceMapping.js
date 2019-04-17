@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import "./FinanceMapping.css";
 
 import {
-  AlgaehDataGrid,
-  AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  // AlgaehDataGrid,
+  // AlgaehLabel,
+  // AlagehFormGroup,
+  AlagehAutoComplete
+  // AlgaehDateHandler
 } from "../../Wrapper/algaehWrapper";
 
 class FinanceMapping extends Component {

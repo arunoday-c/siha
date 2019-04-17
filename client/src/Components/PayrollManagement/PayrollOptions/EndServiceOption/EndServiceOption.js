@@ -304,6 +304,8 @@ export default class EndServiceOption extends Component {
           Tcomps: value.selected
         });
         break;
+      default:
+        break;
     }
   }
 
@@ -327,7 +329,6 @@ export default class EndServiceOption extends Component {
                             this.state.end_of_service_calculation === "AN"
                           }
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Annual</span>
                       </label>
@@ -341,7 +342,6 @@ export default class EndServiceOption extends Component {
                             this.state.end_of_service_calculation === "FI"
                           }
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Fixed</span>
                       </label>
@@ -358,7 +358,6 @@ export default class EndServiceOption extends Component {
                           name="terminate_salary"
                           checked={this.state.terminate_salary === "ACT"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Actual</span>
                       </label>
@@ -370,7 +369,6 @@ export default class EndServiceOption extends Component {
                           name="terminate_salary"
                           checked={this.state.terminate_salary === "FUL"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Full</span>
                       </label>
@@ -386,7 +384,6 @@ export default class EndServiceOption extends Component {
                           name="end_of_service_payment"
                           checked={this.state.end_of_service_payment === "EOS"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>End of Service</span>
                       </label>
@@ -398,7 +395,6 @@ export default class EndServiceOption extends Component {
                           name="end_of_service_payment"
                           checked={this.state.end_of_service_payment === "YEA"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Yearly</span>
                       </label>
@@ -415,7 +411,6 @@ export default class EndServiceOption extends Component {
                           name="end_of_service_type"
                           checked={this.state.end_of_service_type === "S"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Slab</span>
                       </label>
@@ -427,7 +422,6 @@ export default class EndServiceOption extends Component {
                           name="end_of_service_type"
                           checked={this.state.end_of_service_type === "H"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Hierarchical</span>
                       </label>
@@ -466,7 +460,6 @@ export default class EndServiceOption extends Component {
                           name="end_of_service_years"
                           checked={this.state.end_of_service_years === "ACT"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Actual</span>
                       </label>
@@ -478,7 +471,6 @@ export default class EndServiceOption extends Component {
                           name="end_of_service_years"
                           checked={this.state.end_of_service_years === "LIM"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Limit</span>
                       </label>
@@ -514,7 +506,6 @@ export default class EndServiceOption extends Component {
                           name="gratuity_in_final_settle"
                           checked={this.state.gratuity_in_final_settle === "Y"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Yes</span>
                       </label>
@@ -526,7 +517,6 @@ export default class EndServiceOption extends Component {
                           name="gratuity_in_final_settle"
                           checked={this.state.gratuity_in_final_settle === "N"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>No</span>
                       </label>
@@ -542,7 +532,6 @@ export default class EndServiceOption extends Component {
                           name="pending_salary_with_final"
                           checked={this.state.pending_salary_with_final === "Y"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Yes</span>
                       </label>
@@ -554,12 +543,11 @@ export default class EndServiceOption extends Component {
                           name="pending_salary_with_final"
                           checked={this.state.pending_salary_with_final === "N"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>No</span>
                       </label>
-                    </div>{" "}
-                  </div>{" "}
+                    </div>
+                  </div>
                   <div className="col-2">
                     <label>Round off nearest year</label>
                     <div className="customRadio">
@@ -570,7 +558,6 @@ export default class EndServiceOption extends Component {
                           name="round_off_nearest_year"
                           checked={this.state.round_off_nearest_year === "Y"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>Yes</span>
                       </label>
@@ -582,7 +569,6 @@ export default class EndServiceOption extends Component {
                           name="round_off_nearest_year"
                           checked={this.state.round_off_nearest_year === "N"}
                           onChange={this.textHandler.bind(this)}
-                          type="radio"
                         />
                         <span>No</span>
                       </label>

@@ -1,7 +1,7 @@
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
-import _ from "lodash";
+import { algaehApiCall } from "../../utils/algaehApiCall";
+// import _ from "lodash";
 import Enumerable from "linq";
-import { AlgaehValidation } from "../../utils/GlobalFunctions";
+// import { AlgaehValidation } from "../../utils/GlobalFunctions";
 
 export default function PackageSetupEvent() {
   return {

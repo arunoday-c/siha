@@ -10,7 +10,6 @@ import {
 } from "../../utils/algaehApiCall.js";
 import { AlagehFormGroup } from "../Wrapper/algaehWrapper";
 import { getTokenDetals } from "../../actions/Login/Loginactions.js";
-import { AlgaehActions } from "../../actions/algaehActions";
 import { AlgaehCloseContainer } from "../../utils/GlobalFunctions";
 
 export default class Login extends Component {

@@ -10,9 +10,7 @@ import {
   AlgaehDataGrid,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
-
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import _ from "lodash";
 
 class PackageList extends PureComponent {
   constructor(props) {

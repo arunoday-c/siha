@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import "./overtime_groups.css";
 import {
   AlagehFormGroup,
-  AlagehAutoComplete,
+  // AlagehAutoComplete,
   AlgaehDataGrid,
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import Enumerable from "linq";
 

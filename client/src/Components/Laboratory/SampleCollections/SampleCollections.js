@@ -6,11 +6,7 @@ import moment from "moment";
 import MyContext from "../../../utils/MyContext.js";
 import "./SampleCollections.css";
 import "../../../styles/site.css";
-import {
-  CollectSample,
-  printBarcode,
-  dateFormater
-} from "./SampleCollectionEvent";
+import { CollectSample, printBarcode } from "./SampleCollectionEvent";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
@@ -371,7 +367,6 @@ class SampleCollectionPatient extends PureComponent {
                                 displayTemplate: row => {
                                   return (
                                     <span>
-                                      {/* {dateFormater(this, row.collected_date)} */}
                                       {moment(row.collected_date).isValid()
                                         ? moment(row.collected_date).format(
                                             "DD-MM-YYYY hh:mm"

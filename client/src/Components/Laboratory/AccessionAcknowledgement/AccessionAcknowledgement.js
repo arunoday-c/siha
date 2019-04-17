@@ -33,7 +33,7 @@ import {
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../Options.json";
-import { swalMessage } from "../../../utils/algaehApiCall";
+// import { swalMessage } from "../../../utils/algaehApiCall";
 
 class AccessionAcknowledgement extends Component {
   constructor(props) {

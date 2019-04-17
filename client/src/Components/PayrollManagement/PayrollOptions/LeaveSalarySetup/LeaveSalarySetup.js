@@ -51,7 +51,6 @@ export default class LeaveSalarySetup extends Component {
           .annual_leave_process_separately
       },
       method: "PUT",
-      module: "hrManagement",
       onSuccess: res => {
         if (res.data.success) {
           swalMessage({
@@ -148,7 +147,6 @@ export default class LeaveSalarySetup extends Component {
                           this.state.annual_leave_process_separately === "Y"
                         }
                         onChange={this.textHandler.bind(this)}
-                        type="radio"
                       />
                       <span>Yes</span>
                     </label>
@@ -162,7 +160,6 @@ export default class LeaveSalarySetup extends Component {
                           this.state.annual_leave_process_separately === "N"
                         }
                         onChange={this.textHandler.bind(this)}
-                        type="radio"
                       />
                       <span>No</span>
                     </label>

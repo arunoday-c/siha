@@ -85,7 +85,7 @@ export default class FormGroup extends PureComponent {
       let settings = JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       );
-      if (typeof settings == "string") {
+      if (typeof settings === "string") {
         settings = JSON.parse(settings);
       }
       if (!decimal) {

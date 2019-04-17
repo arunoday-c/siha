@@ -5,7 +5,7 @@ import "react-table/react-table.css";
 import Enumerable from "linq";
 import moment from "moment";
 import { AlgaehDateHandler, AlagehFormGroup } from "../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
+import { algaehApiCall } from "../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import "../Wrapper/wrapper.css";
 const CreateCsv = React.lazy(() => import("./csvGenerator"));

@@ -75,6 +75,7 @@ class AddPatientForm extends Component {
       this.props.getIDTypes({
         uri: "/identity/get",
         module: "masterSettings",
+        data: { identity_status: "A" },
         method: "GET",
         redux: {
           type: "IDTYPE_GET_DATA",
@@ -106,8 +107,7 @@ class AddPatientForm extends Component {
         redux: {
           type: "CTRY_GET_DATA",
           mappingName: "countries"
-        },
-        afterSuccess: data => {}
+        }
       });
     }
     if (
@@ -117,6 +117,7 @@ class AddPatientForm extends Component {
       this.props.getVisatypes({
         uri: "/visaType/getVisaMaster",
         module: "masterSettings",
+        data: { visa_status: "A" },
         method: "GET",
         redux: {
           type: "VISA_GET_DATA",
@@ -132,6 +133,7 @@ class AddPatientForm extends Component {
       this.props.getPatientType({
         uri: "/patientType/getPatientType",
         module: "masterSettings",
+        data: { patient_status: "A" },
         method: "GET",
         redux: {
           type: "PATIENT_TYPE_GET_DATA",
@@ -144,7 +146,6 @@ class AddPatientForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.PatRegIOputs, () => {
       if (this.state.country_id === null) return;
       if (this.state.country_id !== nextProps.country_id) {

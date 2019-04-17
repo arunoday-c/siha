@@ -1,5 +1,5 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import _ from "lodash";
+// import _ from "lodash";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import moment from "moment";
 
@@ -112,8 +112,7 @@ export default function WPSEvents() {
       let today = moment().format("YYYYMMDD");
       //Header Data
       let _csvString =
-        "Employer CR-NO,Payer CR-NO,Payer Bank Short Name,\
-      Payer Account Number,Salary Year,Salary Month,Total Salary,Number Of Records,Payment Type \n ";
+        "Employer CR-NO,Payer CR-NO,Payer Bank Short Name,Payer Account Number,Salary Year,Salary Month,Total Salary,Number Of Records,Payment Type \n ";
 
       _csvString +=
         $this.state.employer_cr_no +
@@ -134,9 +133,7 @@ export default function WPSEvents() {
         ",Salary \n";
       //Detail Data
       _csvString +=
-        "Employee ID Type,Employee Code,Reference Number,Employee Name,Employee BIC,Employee Account No.,\
-        Salary Frequency,No. of Working Days,Net Salary,Basic Salary,Extra Hours,Extra Income,Deductions,\
-        Social Security Deductions,Notes/Comments \n";
+        "Employee ID Type,Employee Code,Reference Number,Employee Name,Employee BIC,Employee Account No.,Salary Frequency,No. of Working Days,Net Salary,Basic Salary,Extra Hours,Extra Income,Deductions,Social Security Deductions,Notes/Comments \n";
 
       for (let i = 0; i < employees.length; i++) {
         _csvString +=

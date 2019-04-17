@@ -37,8 +37,10 @@ export default class ExaminationDiagram extends Component {
       zoomImage: undefined,
       showCompire: false,
       rightCompireImageIndex: 0,
-      leftCompireImageIndex: 0,
       rightCompireImage: undefined,
+      rightComireText: undefined,
+      leftCompireImageIndex: 0,
+      leftComireText: undefined,
       leftCompireImage: undefined
     };
   }
@@ -373,6 +375,10 @@ export default class ExaminationDiagram extends Component {
       showCompire: true,
       rightCompireImage: _right,
       leftCompireImage: _left,
+      leftComireText: _element[0].querySelector("p").innerHTML,
+      rightComireText: _element[
+        this.state.exittingDetails.length - 1
+      ].querySelector("p").innerHTML,
       rightCompireImageIndex: this.state.exittingDetails.length - 1,
       leftCompireImageIndex: 0
     });
@@ -393,7 +399,11 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[_totalRecords - 1]
             .querySelector("img")
             .getAttribute("src");
+          const _leftCompireText = _element[_totalRecords - 1].querySelector(
+            "p"
+          ).innerHTML;
           this.setState({
+            leftComireText: _leftCompireText,
             leftCompireImageIndex: _totalRecords - 1,
             leftCompireImage: _src
           });
@@ -401,7 +411,11 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[this.state.leftCompireImageIndex - 1]
             .querySelector("img")
             .getAttribute("src");
+          const _leftCompireText = _element[
+            this.state.leftCompireImageIndex - 1
+          ].querySelector("p").innerHTML;
           this.setState({
+            leftComireText: _leftCompireText,
             leftCompireImageIndex: this.state.leftCompireImageIndex - 1,
             leftCompireImage: _src
           });
@@ -409,12 +423,21 @@ export default class ExaminationDiagram extends Component {
       } else {
         if (this.state.leftCompireImageIndex + 1 >= _totalRecords) {
           const _src = _element[0].querySelector("img").getAttribute("src");
-          this.setState({ leftCompireImageIndex: 0, leftCompireImage: _src });
+          const _leftCompireText = _element[0].querySelector("p").innerHTML;
+          this.setState({
+            leftComireText: _leftCompireText,
+            leftCompireImageIndex: 0,
+            leftCompireImage: _src
+          });
         } else {
           const _src = _element[this.state.leftCompireImageIndex + 1]
             .querySelector("img")
             .getAttribute("src");
+          const _leftCompireText = _element[
+            this.state.leftCompireImageIndex + 1
+          ].querySelector("p").innerHTML;
           this.setState({
+            leftComireText: _leftCompireText,
             leftCompireImageIndex: this.state.leftCompireImageIndex + 1,
             leftCompireImage: _src
           });
@@ -426,7 +449,11 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[_totalRecords - 1]
             .querySelector("img")
             .getAttribute("src");
+          const _rightCompireText = _element[_totalRecords - 1].querySelector(
+            "p"
+          ).innerHTML;
           this.setState({
+            rightComireText: _rightCompireText,
             rightCompireImageIndex: _totalRecords - 1,
             rightCompireImage: _src
           });
@@ -434,7 +461,11 @@ export default class ExaminationDiagram extends Component {
           const _src = _element[this.state.rightCompireImageIndex - 1]
             .querySelector("img")
             .getAttribute("src");
+          const _rightCompireText = _element[
+            this.state.rightCompireImageIndex - 1
+          ].querySelector("p").innerHTML;
           this.setState({
+            rightComireText: _rightCompireText,
             rightCompireImage: _src,
             rightCompireImageIndex: this.state.rightCompireImageIndex - 1
           });
@@ -442,12 +473,21 @@ export default class ExaminationDiagram extends Component {
       } else {
         if (this.state.rightCompireImageIndex + 1 >= _totalRecords) {
           const _src = _element[0].querySelector("img").getAttribute("src");
-          this.setState({ rightCompireImageIndex: 0, rightCompireImage: _src });
+          const _rightCompireText = _element[0].querySelector("p").innerHTML;
+          this.setState({
+            rightComireText: _rightCompireText,
+            rightCompireImageIndex: 0,
+            rightCompireImage: _src
+          });
         } else {
           const _src = _element[this.state.rightCompireImageIndex + 1]
             .querySelector("img")
             .getAttribute("src");
+          const _rightCompireText = _element[
+            this.state.rightCompireImageIndex + 1
+          ].querySelector("p").innerHTML;
           this.setState({
+            ightComireText: _rightCompireText,
             rightCompireImage: _src,
             rightCompireImageIndex: this.state.rightCompireImageIndex + 1
           });
@@ -641,10 +681,16 @@ export default class ExaminationDiagram extends Component {
                   </button>
                   <br />
                   <img alt="leftImage" src={this.state.leftCompireImage} />
-                  <p>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: this.state.leftComireText
+                    }}
+                  />
+
+                  {/* <p>
                     Day 4 - Acne in red Color
                     <br /> <small>16:04:2019 | 03:00 PM</small>
-                  </p>
+                  </p> */}
                 </div>
                 <div className="col-lg-6">
                   <button
@@ -665,10 +711,15 @@ export default class ExaminationDiagram extends Component {
                   </button>
                   <br />
                   <img alt="rightImage" src={this.state.rightCompireImage} />
-                  <p>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: this.state.rightComireText
+                    }}
+                  />
+                  {/* <p>
                     Day 4 - Acne in red Color
                     <br /> <small>16:04:2019 | 03:00 PM</small>
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </div>

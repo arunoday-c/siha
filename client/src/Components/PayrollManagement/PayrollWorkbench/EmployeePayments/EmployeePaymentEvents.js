@@ -5,7 +5,7 @@ import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import EmployeePaymentIOputs from "../../../../Models/EmployeePayment";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
-import swal from "sweetalert2";
+// import swal from "sweetalert2";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;

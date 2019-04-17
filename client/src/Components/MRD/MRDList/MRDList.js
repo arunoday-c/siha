@@ -3,7 +3,7 @@ import "./mrd_list.css";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehDataGrid, AlgaehLabel } from "../../Wrapper/algaehWrapper";
 import algaehLoader from "../../Wrapper/fullPageLoader";
-import moment from "moment";
+// import moment from "moment";
 import { setGlobal } from "../../../utils/GlobalFunctions";
 
 class MRDList extends Component {

@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+// import React, { Component } from "react";
 import { payrollHeader } from "./payrollHeader";
 import "../report-style.css";
 import _ from "lodash";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
-  let leave_days = _.sumBy(data, s => parseFloat(s.leave_days));
+  // let leave_days = _.sumBy(data, s => parseFloat(s.leave_days));
   let leave_salary = _.sumBy(data, s => parseFloat(s.leave_salary));
   let airfare_amount = _.sumBy(data, s => parseFloat(s.airfare_amount));
 

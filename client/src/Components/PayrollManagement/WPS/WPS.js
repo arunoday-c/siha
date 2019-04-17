@@ -100,7 +100,6 @@ export default class WPS extends Component {
             }}
             selector={{
               sort: "off",
-              sort: "off",
               name: "month",
               className: "select-fld",
               value: this.state.month,

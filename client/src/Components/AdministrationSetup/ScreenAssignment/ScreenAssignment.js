@@ -6,7 +6,7 @@ import {
   // AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
 // import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import _ from "lodash";
+// import _ from "lodash";
 import ScreenAssignmentEvents from "./ScreenAssignmentEvents";
 
 class ScreenAssignment extends Component {

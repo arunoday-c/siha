@@ -8,7 +8,7 @@ import {
   AlagehFormGroup
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-import GlobalVariables from "../../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 

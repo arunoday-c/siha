@@ -16,7 +16,7 @@ import {
   getEmployeeDetails,
   EditEmployeeMaster
 } from "./EmployeeMasterIndexEvent";
-import variableJson from "../../../utils/GlobalVariables.json";
+// import variableJson from "../../../utils/GlobalVariables.json";
 
 class EmployeeMasterIndex extends Component {
   constructor(props) {

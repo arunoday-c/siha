@@ -2,7 +2,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import FrontDesk from "../../../Search/FrontDesk.json";
 import moment from "moment";
 import Options from "../../../Options.json";
-import Enumerable from "linq";
+// import Enumerable from "linq";
 import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {

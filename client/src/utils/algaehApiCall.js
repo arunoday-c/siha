@@ -342,14 +342,12 @@ export function SelectFiledData(options) {
   let Data = [];
 
   if (settings.textField !== "" && settings.valueField !== "") {
-    {
-      for (let i = 0; i < settings.payload.length; i++) {
-        let row = settings.payload[i];
-        Data.push({
-          name: row[settings.textField],
-          value: row[settings.valueField]
-        });
-      }
+    for (let i = 0; i < settings.payload.length; i++) {
+      let row = settings.payload[i];
+      Data.push({
+        name: row[settings.textField],
+        value: row[settings.valueField]
+      });
     }
   }
   return Data;
