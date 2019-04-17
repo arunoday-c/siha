@@ -1,9 +1,15 @@
 import React from "react";
-
+import _ from "lodash";
 import { retry } from "./utils/GlobalFunctions";
 const PageToPlot = {
   Dashboard: React.lazy(() =>
     retry(() => import("./Components/Dashboard/Dashboard"))
+  ),
+  11: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/lab-dashboard"))
+  ),
+  12: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/hr-dashboard"))
   ),
   FrontDesk: React.lazy(() =>
     retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
@@ -378,8 +384,16 @@ const PageToPlot = {
 };
 
 const DirectRoutes = props => {
-  const PlotPage = PageToPlot[props.componet];
-
+  let PlotPage = PageToPlot[props.componet];
+  if (props.componet === "Dashboard") {
+    const appRole = sessionStorage.getItem("appRole");
+    if (appRole !== undefined) {
+      const filter = _.hasIn(PageToPlot, appRole);
+      if (filter === true) {
+        PlotPage = PageToPlot[appRole];
+      }
+    }
+  }
   return (
     <React.Suspense
       fallback={

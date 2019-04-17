@@ -79,7 +79,10 @@ export default class Login extends Component {
               JSON.stringify(response.data.records.hospitalDetails)
             )
           );
-
+          sessionStorage.setItem(
+            "appRole",
+            response.data.records.app_d_app_roles_id
+          );
           window.history.pushState(null, null, window.location.href);
           window.onpopstate = function(event) {
             window.history.go(1);

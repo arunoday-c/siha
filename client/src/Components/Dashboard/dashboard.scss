@@ -71,14 +71,22 @@
       min-height: 35px;
       border-bottom: 1px dashed #eee;
       color: #666;
-
-      font-weight: normal;
+      font-weight: bold;
       line-height: 26px;
       margin: 10px 0;
+      font-size: 1rem;
     }
     .dashboardChartsCntr {
       margin: 10px;
       width: 95%;
+      height: auto;
+      position: relative;
+      h6 {
+        text-align: center;
+      }
+    }
+    .dashboardGridCntr {
+      margin: 10px;
       height: auto;
       position: relative;
       h6 {
