@@ -187,20 +187,20 @@ const InsertUpdateEmployee = $this => {
 
         if ($this.state.personalDetails.updatedeptDetails.length > 0) {
           for (
-            var i = 0;
-            i < $this.state.personalDetails.updatedeptDetails.length;
-            i++
+            var j = 0;
+            j < $this.state.personalDetails.updatedeptDetails.length;
+            j++
           ) {
-            $this.state.personalDetails.updatedeptDetails[i].from_date === null
+            $this.state.personalDetails.updatedeptDetails[j].from_date === null
               ? null
               : moment(
-                  $this.state.personalDetails.updatedeptDetails[i].from_date
+                  $this.state.personalDetails.updatedeptDetails[j].from_date
                 ).format("YYYY-MM-DD");
 
-            $this.state.personalDetails.updatedeptDetails[i].to_date === null
+            $this.state.personalDetails.updatedeptDetails[j].to_date === null
               ? null
               : moment(
-                  $this.state.personalDetails.updatedeptDetails[i].to_date
+                  $this.state.personalDetails.updatedeptDetails[j].to_date
                 ).format("YYYY-MM-DD");
           }
         }

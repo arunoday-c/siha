@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import Dropzone from "react-dropzone";
-import _ from "lodash";
+// import _ from "lodash";
 import XLSX from "xlsx";
 export default class UploadCsv extends Component {
   constructor(props) {
@@ -34,7 +34,7 @@ export default class UploadCsv extends Component {
   }
 
   onChangeFileUploader(files) {
-    const { columns } = this.state;
+    // const { columns } = this.state;
     const { rows, tool } = this.props;
     if (files.length > 0) {
       let file = files[0];

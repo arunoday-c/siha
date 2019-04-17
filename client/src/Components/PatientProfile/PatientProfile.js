@@ -29,7 +29,7 @@ import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
 import DentalForm from "./DentalForm/DentalForm";
 import Eye from "./Eye/Eye";
-import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
+// import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
 class PatientProfile extends Component {
   constructor(props) {

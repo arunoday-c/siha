@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import "./TimeSheetSelf.css";
-import {
-  AlgaehDateHandler,
-  AlagehAutoComplete
-} from "../../../Wrapper/algaehWrapper";
+// import {
+//   AlgaehDateHandler,
+//   AlagehAutoComplete
+// } from "../../../Wrapper/algaehWrapper";
 
 export default class TimeSheetSelf extends Component {
   render() {
@@ -135,7 +135,7 @@ export default class TimeSheetSelf extends Component {
                 <div className="progress ">
                   <div
                     className="progress-bar bg-default "
-                    role="progressbar "
+                    role="progressbar"
                     aria-valuenow="75"
                     aria-valuemin="0"
                     aria-valuemax="100"

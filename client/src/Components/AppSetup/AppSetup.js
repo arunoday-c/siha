@@ -5,8 +5,8 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlagehAutoComplete
+  // AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
 export default class AppSetup extends Component {
   render() {

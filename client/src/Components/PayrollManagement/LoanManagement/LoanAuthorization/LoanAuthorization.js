@@ -135,7 +135,6 @@ class LoanAuthorization extends Component {
   }
 
   dropDownHandler(value) {
-    let name = value.name;
     this.setState({
       [value.name]: value.value,
       loan_applns: []

@@ -91,7 +91,6 @@ class DisplayVisitDetails extends Component {
                                       row,
                                       context
                                     )}
-                                    type="radio"
                                   />
                                   <span />
                                 </label>

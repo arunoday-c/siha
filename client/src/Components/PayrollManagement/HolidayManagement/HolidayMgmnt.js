@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./HolidayMgmnt.css";
 import HolidayMgmntClndr from "./HolidayMgmntClndr/HolidayMgmntClndr";
-import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
+// import { AlgaehLabel } from "../../Wrapper/algaehWrapper";
 
 class HolidayMgmnt extends Component {
   constructor(props) {

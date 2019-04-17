@@ -1,6 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
-import _ from "lodash";
+// import _ from "lodash";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
@@ -225,14 +225,14 @@ export default function ManualAttendanceEvents() {
           debugger;
           let start = row.in_time.split(":");
           let end = value.split(":");
-          var startDate = new Date(0, 0, 0, start[0], start[1], 0);
-          var endDate = new Date(0, 0, 0, end[0], end[1], 0);
-          var diff = endDate.getTime() - startDate.getTime();
+          var out_startDate = new Date(0, 0, 0, start[0], start[1], 0);
+          var out_endDate = new Date(0, 0, 0, end[0], end[1], 0);
+          var out_diff = out_endDate.getTime() - out_startDate.getTime();
 
-          diff_hour = Math.floor(diff / 1000 / 60 / 60);
+          diff_hour = Math.floor(out_diff / 1000 / 60 / 60);
 
           diff -= diff_hour * 1000 * 60 * 60;
-          diff_munite = Math.floor(diff / 1000 / 60);
+          diff_munite = Math.floor(out_diff / 1000 / 60);
 
           worked_hours = parseFloat(diff_hour) + "." + parseFloat(diff_munite);
         }

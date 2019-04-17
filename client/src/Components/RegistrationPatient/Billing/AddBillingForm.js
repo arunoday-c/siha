@@ -17,7 +17,7 @@ import {
   cardtexthandle,
   chequetexthandle,
   adjustadvance,
-  ProcessInsurance,
+  // ProcessInsurance,
   checkcashhandaler,
   checkcardhandaler,
   checkcheckhandaler,

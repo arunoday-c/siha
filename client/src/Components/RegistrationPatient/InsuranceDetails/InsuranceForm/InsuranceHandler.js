@@ -422,7 +422,7 @@ const ProcessInsurance = ($this, context) => {
 
 const radioChange = ($this, context, e) => {
   let value = e.target.value;
-  let name = e.target.name;
+  // let name = e.target.name;
   SetBulkState({
     state: $this,
     callback: () => {

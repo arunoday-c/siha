@@ -1,6 +1,6 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
-import { parse } from "querystring";
+// import { parse } from "querystring";
 
 const Validations = $this => {
   let isError = false;

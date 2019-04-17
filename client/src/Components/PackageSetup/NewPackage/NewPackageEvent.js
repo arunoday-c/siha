@@ -203,23 +203,23 @@ export default function NewPackageEvent() {
             $this.state.service_name = $this.state.package_name;
             $this.state.service_status = "A";
             $this.state.standard_fee = $this.state.package_amount;
-            ($this.state.hospital_id = JSON.parse(
+            $this.state.hospital_id = JSON.parse(
               AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
-            ).hims_d_hospital_id),
-              algaehApiCall({
-                uri: "/packagesetup/addPackage",
-                module: "masterSettings",
-                data: $this.state,
-                onSuccess: response => {
-                  if (response.data.success === true) {
-                    swalMessage({
-                      type: "success",
-                      title: "Saved successfully . ."
-                    });
-                    $this.props.onClose && $this.props.onClose(true);
-                  }
+            ).hims_d_hospital_id;
+            algaehApiCall({
+              uri: "/packagesetup/addPackage",
+              module: "masterSettings",
+              data: $this.state,
+              onSuccess: response => {
+                if (response.data.success === true) {
+                  swalMessage({
+                    type: "success",
+                    title: "Saved successfully . ."
+                  });
+                  $this.props.onClose && $this.props.onClose(true);
                 }
-              });
+              }
+            });
           } else {
             algaehApiCall({
               uri: "/packagesetup/updatePackageSetup",

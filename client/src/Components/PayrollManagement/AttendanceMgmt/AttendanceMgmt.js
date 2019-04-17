@@ -5,8 +5,8 @@ import WeeklyAttendance from "./WeeklyAttendance/WeeklyAttendance";
 import AbsenceManagement from "./AbsenceManagement/AbsenceManagement";
 import ManualAttendance from "./ManualAttendance/ManualAttendance";
 import "./AttendanceMgmt.css";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
+// import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+// import { AlgaehCloseContainer } from "../../../utils/GlobalFunctions";
 
 export default class AttendanceMgmt extends Component {
   constructor(props) {

@@ -1043,8 +1043,8 @@ class NurseWorkbench extends Component {
                           <AlagehAutoComplete
                             div={{ className: "col-3" }}
                             label={{
-                              fieldName: "bp",
-                              fieldName: "BP_type"
+                              fieldName: "bp"
+                              // fieldName: "BP_type"
                             }}
                             selector={{
                               name: "bp_position",

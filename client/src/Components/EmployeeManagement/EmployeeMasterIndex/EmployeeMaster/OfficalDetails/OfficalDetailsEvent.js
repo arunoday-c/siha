@@ -65,24 +65,18 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const employeeStatusHandler = ($this, e) => {
-  let _enable_active_status = "";
   let _date_of_releaving = "";
   let _other = {};
   if (e.value === "A") {
-    _enable_active_status = "A";
     _date_of_releaving = "Date of leaving";
   } else if (e.value === "I") {
-    _enable_active_status = "I";
     _date_of_releaving = "Date of leaving";
     _other = { inactive_date: new Date() };
   } else if (e.value === "R") {
-    _enable_active_status = "R";
     _date_of_releaving = "Date of Reliving";
   } else if (e.value === "T") {
-    _enable_active_status = "T";
     _date_of_releaving = "Date of Terminating";
   } else if (e.value === "E") {
-    _enable_active_status = "E";
     _date_of_releaving = "Date of Retirement";
   }
   $this.setState({

@@ -67,7 +67,7 @@ class ValidateBills extends PureComponent {
   addICDtoInvoice() {
     let invoice = this.state.invoices;
 
-    this.state.icd_code !== null > 0
+    this.state.icd_code !== null
       ? algaehApiCall({
           uri: "/invoiceGeneration/addInvoiceIcd",
           data: {

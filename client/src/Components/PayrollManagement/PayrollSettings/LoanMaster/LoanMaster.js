@@ -8,10 +8,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import {
-  AlgaehValidation,
-  getAmountFormart
-} from "../../../../utils/GlobalFunctions";
+import { AlgaehValidation } from "../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 
 class LoanMaster extends Component {

@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import "./formula.css";
 import {
   AlagehFormGroup,
-  AlgaehDataGrid,
-  AlagehAutoComplete
+  AlgaehDataGrid
+  // AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
+// import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class Formula extends Component {
   constructor(props) {

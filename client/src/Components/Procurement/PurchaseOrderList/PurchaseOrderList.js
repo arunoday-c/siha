@@ -191,25 +191,24 @@ class PurchaseOrderList extends Component {
 
                         displayTemplate: row => {
                           let display;
-                          {
-                            this.state.po_from === "PHR"
-                              ? (display =
-                                  this.props.polocations === undefined
-                                    ? []
-                                    : this.props.polocations.filter(
-                                        f =>
-                                          f.hims_d_pharmacy_location_id ===
-                                          row.pharmcy_location_id
-                                      ))
-                              : (display =
-                                  this.props.polocations === undefined
-                                    ? []
-                                    : this.props.polocations.filter(
-                                        f =>
-                                          f.hims_d_inventory_location_id ===
-                                          row.inventory_location_id
-                                      ));
-                          }
+
+                          this.state.po_from === "PHR"
+                            ? (display =
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      f =>
+                                        f.hims_d_pharmacy_location_id ===
+                                        row.pharmcy_location_id
+                                    ))
+                            : (display =
+                                this.props.polocations === undefined
+                                  ? []
+                                  : this.props.polocations.filter(
+                                      f =>
+                                        f.hims_d_inventory_location_id ===
+                                        row.inventory_location_id
+                                    ));
 
                           return (
                             <span>

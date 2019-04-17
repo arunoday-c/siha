@@ -1,11 +1,11 @@
 import React from "react";
 import {
-  BrowserRouter,
+  // BrowserRouter,
   Switch,
   Route,
-  Redirect,
-  HashRouter,
-  ReactRouter
+  // Redirect,
+  HashRouter
+  // ReactRouter
 } from "react-router-dom";
 
 import Login from "./Components/Login/Login";

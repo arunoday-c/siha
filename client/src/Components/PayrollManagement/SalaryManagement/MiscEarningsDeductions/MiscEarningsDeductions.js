@@ -14,7 +14,6 @@ import {
   AlgaehOpenContainer
 } from "../../../../utils/GlobalFunctions";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
-import _ from "lodash";
 import Enumerable from "linq";
 
 export default class MiscEarningsDeductions extends Component {

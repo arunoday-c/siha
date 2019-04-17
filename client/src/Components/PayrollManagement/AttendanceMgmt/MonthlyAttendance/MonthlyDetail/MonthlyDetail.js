@@ -7,7 +7,7 @@ import {
 import moment from "moment";
 
 function MonthlyDetail(props) {
-  const _open = props.open;
+  // const _open = props.open;
   return (
     <AlgaehModalPopUp
       title="Monthly Detail"
