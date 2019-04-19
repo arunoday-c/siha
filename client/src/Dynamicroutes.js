@@ -11,7 +11,7 @@ const PageToPlot = {
   12: React.lazy(() =>
     retry(() => import("./Components/Dashboard/hr-dashboard"))
   ),
-   7: React.lazy(() =>
+  7: React.lazy(() =>
     retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
   ),
   FrontDesk: React.lazy(() =>
@@ -154,6 +154,11 @@ const PageToPlot = {
   RequisitionList: React.lazy(() =>
     retry(() =>
       import("./Components/Pharmacy/RequisitionList/RequisitionSwitch")
+    )
+  ),
+  ConsumptionEntry: React.lazy(() =>
+    retry(() =>
+      import("./Components/Pharmacy/ConsumptionEntry/ConsumptionEntry")
     )
   ),
   ReportsList: React.lazy(() =>

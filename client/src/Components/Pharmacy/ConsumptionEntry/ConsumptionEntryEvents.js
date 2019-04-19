@@ -1,5 +1,5 @@
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import ConsumptionIOputs from "../../../Models/InventoryConsumption";
+import ConsumptionIOputs from "../../../Models/ConsumptionEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 export default function ConsumptionItemsEvents() {
@@ -8,8 +8,8 @@ export default function ConsumptionItemsEvents() {
       AlgaehLoader({ show: true });
 
       algaehApiCall({
-        uri: "/inventoryconsumption/getInventoryConsumption",
-        module: "inventory",
+        uri: "/consumptionEntry/getconsumptionEntry",
+        module: "pharmacy",
         method: "GET",
         data: { consumption_number: docNumber },
         onSuccess: response => {
@@ -30,7 +30,6 @@ export default function ConsumptionItemsEvents() {
         }
       });
     },
-
     ClearData: $this => {
       let IOputs = ConsumptionIOputs.inputParam();
       $this.setState(IOputs);
@@ -38,8 +37,8 @@ export default function ConsumptionItemsEvents() {
 
     SaveConsumptionEntry: $this => {
       algaehApiCall({
-        uri: "/inventoryconsumption/addInventoryConsumption",
-        module: "inventory",
+        uri: "/consumptionEntry/addconsumptionEntry",
+        module: "pharmacy",
         data: $this.state,
         onSuccess: response => {
           if (response.data.success === true) {
@@ -47,8 +46,8 @@ export default function ConsumptionItemsEvents() {
               consumption_number: response.data.records.consumption_number,
               saveEnable: true,
 
-              hims_f_inventory_consumption_header_id:
-                response.data.records.hims_f_inventory_consumption_header_id,
+              hims_f_pharmacy_consumption_header_id:
+                response.data.records.hims_f_pharmacy_consumption_header_id,
               year: response.data.records.year,
               period: response.data.records.period
             });

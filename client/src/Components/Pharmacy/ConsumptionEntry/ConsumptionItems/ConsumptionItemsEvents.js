@@ -44,8 +44,8 @@ export default function ConsumptionItemsEvents() {
         let value = e.value || e.target.value;
 
         algaehApiCall({
-          uri: "/inventoryGlobal/getUomLocationStock",
-          module: "inventory",
+          uri: "/pharmacyGlobal/getUomLocationStock",
+          module: "pharmacy",
           method: "GET",
           data: {
             location_id: $this.state.location_id,
@@ -138,7 +138,7 @@ export default function ConsumptionItemsEvents() {
           type: "warning"
         });
       } else {
-        let inventory_stock_detail = $this.state.inventory_stock_detail;
+        let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
         let ItemInput = {
           location_id: $this.state.location_id,
@@ -162,9 +162,9 @@ export default function ConsumptionItemsEvents() {
           extended_cost: $this.state.extended_cost,
           operation: "-"
         };
-        inventory_stock_detail.push(ItemInput);
+        pharmacy_stock_detail.push(ItemInput);
         $this.setState({
-          inventory_stock_detail: inventory_stock_detail,
+          pharmacy_stock_detail: pharmacy_stock_detail,
           addedItem: true,
           item_category_id: null,
           item_group_id: null,
@@ -182,7 +182,7 @@ export default function ConsumptionItemsEvents() {
 
         if (context !== undefined) {
           context.updateState({
-            inventory_stock_detail: inventory_stock_detail,
+            pharmacy_stock_detail: pharmacy_stock_detail,
             addedItem: true,
             saveEnable: false,
             item_category_id: null,
@@ -200,26 +200,24 @@ export default function ConsumptionItemsEvents() {
         }
       }
     },
-
     datehandle: ($this, ctrl, e) => {
       $this.setState({
         [e]: moment(ctrl)._d
       });
     },
-
     deleteConsumptionDetail: ($this, context, row) => {
-      let inventory_stock_detail = $this.state.inventory_stock_detail;
+      let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       let saveEnable = false;
-      inventory_stock_detail.splice(row.rowIdx, 1);
+      pharmacy_stock_detail.splice(row.rowIdx, 1);
 
-      if (inventory_stock_detail.length === 0) {
+      if (pharmacy_stock_detail.length === 0) {
         saveEnable = true;
       }
-      $this.setState({ inventory_stock_detail: inventory_stock_detail });
+      $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
       if (context !== undefined) {
         context.updateState({
-          inventory_stock_detail: inventory_stock_detail,
+          pharmacy_stock_detail: pharmacy_stock_detail,
           saveEnable: saveEnable
         });
       }
@@ -229,8 +227,8 @@ export default function ConsumptionItemsEvents() {
 
 function getItemLocationStock($this, context, value) {
   algaehApiCall({
-    uri: "/inventoryGlobal/getItemLocationStock",
-    module: "inventory",
+    uri: "/pharmacyGlobal/getItemLocationStock",
+    module: "pharmacy",
     method: "GET",
     data: {
       location_id: value.location_id,

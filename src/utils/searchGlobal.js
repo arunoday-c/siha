@@ -333,6 +333,18 @@ let algaehSearchConfig = searchName => {
           IM.service_id= SR.hims_d_services_id  and IM.item_status='A' and IM.record_status='A' and \
           IC.record_status='A' and IE.record_status='A' and IG.record_status='A' ",
         orderBy: "IM.hims_d_item_master_id desc"
+      },
+      {
+        searchName: "PharConsEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_consumption_header",
+        orderBy: "hims_f_pharmacy_consumption_header_id desc"
+      },
+      {
+        searchName: "InvConsEntry",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_consumption_header",
+        orderBy: "hims_f_inventory_consumption_header_id desc"
       }
     ]
   };

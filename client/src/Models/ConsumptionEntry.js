@@ -3,7 +3,7 @@ export default {
     var output;
 
     output = {
-      hims_f_inventory_consumption_header_id: null,
+      hims_f_pharmacy_consumption_header_id: null,
       consumption_number: null,
       location_id: null,
       location_type: null,
@@ -28,7 +28,7 @@ export default {
       batchno: null,
       grn_no: null,
       saveEnable: true,
-      inventory_stock_detail: []
+      pharmacy_stock_detail: []
     };
     return output;
   }

@@ -212,9 +212,6 @@ class RequisitionEntry extends Component {
                     },
                     others: {
                       disabled: true
-                      // this.state.from_location_type === "SS"
-                      //   ? true
-                      //   : this.state.addedItem
                     },
 
                     onChange: changeTexts.bind(this, this)

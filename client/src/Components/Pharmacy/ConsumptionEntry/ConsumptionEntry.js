@@ -6,19 +6,19 @@ import { AlgaehLabel, AlagehAutoComplete } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
-import ConsumptionItemsEvents from "./InvConsumptionEntryEvents";
-import "./InvConsumptionEntry.css";
+import ConsumptionItemsEvents from "./ConsumptionEntryEvents";
+import "./ConsumptionEntry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
 import ConsumptionItems from "./ConsumptionItems/ConsumptionItems";
 import MyContext from "../../../utils/MyContext";
-import ConsumptionIOputs from "../../../Models/InventoryConsumption";
+import ConsumptionIOputs from "../../../Models/ConsumptionEntry";
 import Options from "../../../Options.json";
 import AlgaehReport from "../../Wrapper/printReports";
 import _ from "lodash";
 
-class InvConsumptionEntry extends Component {
+class ConsumptionEntry extends Component {
   constructor(props) {
     super(props);
 
@@ -31,53 +31,36 @@ class InvConsumptionEntry extends Component {
   }
 
   componentDidMount() {
-    if (
-      this.props.inventoryitemlist === undefined ||
-      this.props.inventoryitemlist.length === 0
-    ) {
+    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
-        uri: "/inventory/getItemMaster",
-        module: "inventory",
+        uri: "/pharmacy/getItemMaster",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GET_DATA",
-          mappingName: "inventoryitemlist"
-        }
-      });
-    }
-    if (
-      this.props.inventoryreqlocations === undefined ||
-      this.props.inventoryreqlocations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/inventory/getInventoryLocation",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "inventoryreqlocations"
+          mappingName: "itemlist"
         }
       });
     }
 
     if (
-      this.props.invuserwiselocations === undefined ||
-      this.props.invuserwiselocations.length === 0
+      this.props.userwiselocations === undefined ||
+      this.props.userwiselocations.length === 0
     ) {
       this.props.getUserLocationPermission({
-        uri: "/inventoryGlobal/getUserLocationPermission",
-        module: "inventory",
+        uri: "/pharmacyGlobal/getUserLocationPermission",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "LOCATIOS_GET_DATA",
-          mappingName: "invuserwiselocations"
+          mappingName: "userwiselocations"
         }
       });
     }
 
     if (
-      this.props.consumption_number !== undefined &&
-      this.props.consumption_number.length !== 0
+      this.props.material_requisition_number !== undefined &&
+      this.props.material_requisition_number.length !== 0
     ) {
       ConsumptionItemsEvents().getCtrlCode(this, this.props.consumption_number);
     }
@@ -94,7 +77,6 @@ class InvConsumptionEntry extends Component {
     ConsumptionItemsEvents().SaveConsumptionEntry(this);
   }
   getCtrlCode(docNumber) {
-    debugger;
     ConsumptionItemsEvents().getCtrlCode(this, docNumber);
   }
   ClearData() {
@@ -104,9 +86,9 @@ class InvConsumptionEntry extends Component {
   render() {
     const from_location_name =
       this.state.from_location_id !== null
-        ? _.filter(this.props.invuserwiselocations, f => {
+        ? _.filter(this.props.userwiselocations, f => {
             return (
-              f.hims_d_inventory_location_id === this.state.from_location_id
+              f.hims_d_pharmacy_location_id === this.state.from_location_id
             );
           })
         : [];
@@ -153,9 +135,9 @@ class InvConsumptionEntry extends Component {
               },
               jsonFile: {
                 fileName: "spotlightSearch",
-                fieldName: "ConsumptionEntry.InvConsEntry"
+                fieldName: "ConsumptionEntry.PharConsEntry"
               },
-              searchName: "InvConsEntry"
+              searchName: "InvREQEntry"
             }}
             userArea={
               <div className="row">
@@ -185,7 +167,7 @@ class InvConsumptionEntry extends Component {
                           onClick: () => {
                             AlgaehReport({
                               report: {
-                                fileName: "Inventory/MaterialConsumption"
+                                fileName: "Pharmacy/MaterialConsumption"
                               },
                               data: {
                                 consumption_number: this.state
@@ -199,8 +181,8 @@ class InvConsumptionEntry extends Component {
                                     ? from_location_name[0].location_description
                                     : "",
 
-                                inventory_stock_detail: this.state
-                                  .inventory_stock_detail
+                                pharmacy_stock_detail: this.state
+                                  .pharmacy_stock_detail
                               }
                             });
                           }
@@ -229,8 +211,8 @@ class InvConsumptionEntry extends Component {
                     value: this.state.location_id,
                     dataSource: {
                       textField: "location_description",
-                      valueField: "hims_d_inventory_location_id",
-                      data: this.props.invuserwiselocations
+                      valueField: "hims_d_pharmacy_location_id",
+                      data: this.props.userwiselocations
                     },
                     others: {
                       disabled: this.state.addedItem
@@ -305,10 +287,8 @@ class InvConsumptionEntry extends Component {
 
 function mapStateToProps(state) {
   return {
-    inventoryitemlist: state.inventoryitemlist,
-    inventoryreqlocations: state.inventoryreqlocations,
-    inventoryrequisitionentry: state.inventoryrequisitionentry,
-    invuserwiselocations: state.invuserwiselocations
+    itemlist: state.itemlist,
+    userwiselocations: state.userwiselocations
   };
 }
 
@@ -316,8 +296,6 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getItems: AlgaehActions,
-      getLocation: AlgaehActions,
-      getRequisitionEntry: AlgaehActions,
       getUserLocationPermission: AlgaehActions
     },
     dispatch
@@ -328,5 +306,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(InvConsumptionEntry)
+  )(ConsumptionEntry)
 );

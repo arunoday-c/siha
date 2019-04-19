@@ -31,46 +31,43 @@ class ConsumptionItems extends Component {
 
   componentDidMount() {
     if (
-      this.props.inventoryitemcategory === undefined ||
-      this.props.inventoryitemcategory.length === 0
+      this.props.itemcategory === undefined ||
+      this.props.itemcategory.length === 0
     ) {
       this.props.getItemCategory({
-        uri: "/inventory/getItemCategory",
-        module: "inventory",
+        uri: "/pharmacy/getItemCategory",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "inventoryitemcategory"
+          mappingName: "itemcategory"
         }
       });
     }
 
     if (
-      this.props.inventoryitemgroup === undefined ||
-      this.props.inventoryitemgroup.length === 0
+      this.props.itemgroup === undefined ||
+      this.props.itemgroup.length === 0
     ) {
       this.props.getItemGroup({
-        uri: "/inventory/getItemGroup",
-        module: "inventory",
+        uri: "/pharmacy/getItemGroup",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_GROUOP_GET_DATA",
-          mappingName: "inventoryitemgroup"
+          mappingName: "itemgroup"
         }
       });
     }
 
-    if (
-      this.props.inventoryitemuom === undefined ||
-      this.props.inventoryitemuom.length === 0
-    ) {
+    if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
-        uri: "/inventory/getInventoryUom",
-        module: "inventory",
+        uri: "/pharmacy/getPharmacyUom",
+        module: "pharmacy",
         method: "GET",
         redux: {
           type: "ITEM_UOM_GET_DATA",
-          mappingName: "inventoryitemuom"
+          mappingName: "itemuom"
         }
       });
     }
@@ -122,8 +119,8 @@ class ConsumptionItems extends Component {
                           value: this.state.item_id,
                           dataSource: {
                             textField: "item_description",
-                            valueField: "hims_d_inventory_item_master_id",
-                            data: this.props.inventoryitemlist
+                            valueField: "hims_d_item_master_id",
+                            data: this.props.itemlist
                           },
                           others: {
                             disabled: this.state.ItemDisable
@@ -285,11 +282,11 @@ class ConsumptionItems extends Component {
                               ),
                               displayTemplate: row => {
                                 let display =
-                                  this.props.inventoryitemlist === undefined
+                                  this.props.itemlist === undefined
                                     ? []
-                                    : this.props.inventoryitemlist.filter(
+                                    : this.props.itemlist.filter(
                                         f =>
-                                          f.hims_d_inventory_item_master_id ===
+                                          f.hims_d_item_master_id ===
                                           row.item_id
                                       );
 
@@ -313,11 +310,11 @@ class ConsumptionItems extends Component {
                               ),
                               displayTemplate: row => {
                                 let display =
-                                  this.props.inventoryitemcategory === undefined
+                                  this.props.itemcategory === undefined
                                     ? []
-                                    : this.props.inventoryitemcategory.filter(
+                                    : this.props.itemcategory.filter(
                                         f =>
-                                          f.hims_d_inventory_tem_category_id ===
+                                          f.hims_d_item_category_id ===
                                           row.item_category_id
                                       );
 
@@ -340,11 +337,11 @@ class ConsumptionItems extends Component {
                               ),
                               displayTemplate: row => {
                                 let display =
-                                  this.props.inventoryitemgroup === undefined
+                                  this.props.itemgroup === undefined
                                     ? []
-                                    : this.props.inventoryitemgroup.filter(
+                                    : this.props.itemgroup.filter(
                                         f =>
-                                          f.hims_d_inventory_item_group_id ===
+                                          f.hims_d_item_group_id ===
                                           row.item_group_id
                                       );
 
@@ -365,11 +362,11 @@ class ConsumptionItems extends Component {
                               ),
                               displayTemplate: row => {
                                 let display =
-                                  this.props.inventoryitemuom === undefined
+                                  this.props.itemuom === undefined
                                     ? []
-                                    : this.props.inventoryitemuom.filter(
+                                    : this.props.itemuom.filter(
                                         f =>
-                                          f.hims_d_inventory_uom_id ===
+                                          f.hims_d_pharmacy_uom_id ===
                                           row.uom_id
                                       );
 
@@ -429,7 +426,7 @@ class ConsumptionItems extends Component {
                           ]}
                           keyId="consumption_id"
                           dataSource={{
-                            data: this.state.inventory_stock_detail
+                            data: this.state.pharmacy_stock_detail
                           }}
                           isEditable={false}
                           paging={{ page: 0, rowsPerPage: 10 }}
@@ -450,10 +447,10 @@ class ConsumptionItems extends Component {
 
 function mapStateToProps(state) {
   return {
-    inventoryitemlist: state.inventoryitemlist,
-    inventoryitemcategory: state.inventoryitemcategory,
-    inventoryitemuom: state.inventoryitemuom,
-    inventoryitemgroup: state.inventoryitemgroup
+    itemlist: state.itemlist,
+    itemcategory: state.itemcategory,
+    itemuom: state.itemuom,
+    itemgroup: state.itemgroup
   };
 }
 
