@@ -1,4 +1,7 @@
 import algaehMysql from "algaeh-mysql";
+import mysql from "mysql";
+import moment from "moment";
+
 module.exports = {
   addItemMaster: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -743,7 +746,7 @@ module.exports = {
                     qry += mysql.format(
                       "UPDATE `hims_m_inventory_item_uom` SET `item_master_id`=?,\
                       `uom_id`=?,`stocking_uom`=?,`conversion_factor`=?,`record_status`=?,\
-                      updated_date=?,updated_by=? where record_status='A' and hims_m_item_uom_id=?;",
+                      updated_date=?,updated_by=? where record_status='A' and hims_m_inventory_item_uom_id=?;",
                       [
                         inputParam[i].item_master_id,
                         inputParam[i].uom_id,

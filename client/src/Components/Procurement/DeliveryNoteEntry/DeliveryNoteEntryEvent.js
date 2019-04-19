@@ -249,27 +249,38 @@ const SaveDNEnrty = $this => {
     .where(w => w.dn_quantity === 0)
     .toArray();
 
-  if (dnQuantity.length === 0) {
-    algaehApiCall({
-      uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
-      module: "procurement",
-      data: $this.state,
-      onSuccess: response => {
-        if (response.data.success === true) {
-          $this.setState({
-            delivery_note_number: response.data.records.delivery_note_number,
-            hims_f_procurement_dn_header_id:
-              response.data.records.hims_f_procurement_dn_header_id,
-            saveEnable: true
-          });
+  const batchExpiryDate = Enumerable.from($this.state.receipt_entry_detail)
+    .where(w => w.batchno === null || w.expiry_date === null)
+    .toArray();
 
-          swalMessage({
-            type: "success",
-            title: "Saved successfully . ."
-          });
+  if (dnQuantity.length === 0) {
+    if (batchExpiryDate.length === 0) {
+      algaehApiCall({
+        uri: "/DeliveryNoteEntry/addDeliveryNoteEntry",
+        module: "procurement",
+        data: $this.state,
+        onSuccess: response => {
+          if (response.data.success === true) {
+            $this.setState({
+              delivery_note_number: response.data.records.delivery_note_number,
+              hims_f_procurement_dn_header_id:
+                response.data.records.hims_f_procurement_dn_header_id,
+              saveEnable: true
+            });
+
+            swalMessage({
+              type: "success",
+              title: "Saved successfully . ."
+            });
+          }
         }
-      }
-    });
+      });
+    } else {
+      swalMessage({
+        title: "Please enter Batch No. and Expiry Date.",
+        type: "warning"
+      });
+    }
   } else {
     swalMessage({
       title: "Please enter DN Quantity.",

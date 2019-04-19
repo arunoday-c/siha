@@ -210,6 +210,11 @@ const PageToPlot = {
       import("./Components/Inventory/InvTransferEntry/InvTransferEntry")
     )
   ),
+  InvConsumptionEntry: React.lazy(() =>
+    retry(() =>
+      import("./Components/Inventory/InvConsumptionEntry/InvConsumptionEntry")
+    )
+  ),
   VendorSetup: React.lazy(() =>
     retry(() => import("./Components/VendorSetup/VendorSetup"))
   ),

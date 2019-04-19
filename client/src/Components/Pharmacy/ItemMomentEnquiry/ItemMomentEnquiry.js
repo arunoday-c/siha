@@ -201,6 +201,10 @@ class ItemMomentEnquiry extends Component {
                           ? "Sales Return"
                           : row.transaction_type === "SRT"
                           ? "Opening Stock"
+                          : row.transaction_type === "CS"
+                          ? "Consumption"
+                          : row.transaction_type === "REC"
+                          ? "Receipt"
                           : "";
                       }
                     },
