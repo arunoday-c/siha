@@ -649,7 +649,7 @@ class Dashboard extends Component {
           </div>
           <div className="col-8">
             <div className="row">
-              <div className="col-12">
+              {/* <div className="col-12">
                 <div className="card animated fadeInUp faster">
                   <h6>Outpatients vs. Inpatients Trend</h6>
                   <div className="dashboardChartsCntr">
@@ -659,7 +659,7 @@ class Dashboard extends Component {
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
               <div className="col-6">
                 <div className="card animated fadeInUp faster">
                   <h6>Avg Waiting Time By Department</h6>
