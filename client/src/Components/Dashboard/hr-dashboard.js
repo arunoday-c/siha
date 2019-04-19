@@ -581,7 +581,7 @@ class Dashboard extends Component {
                           <td className="text-center">EMP-0000459 </td>
                           <td className="text-center">Munees Abdulla</td>
                           <td className="text-center">
-                            <span class="badge badge-info">Resigned</span>
+                            <span className="badge badge-info">Resigned</span>
                           </td>
                           <td className="text-center">2019-04-23</td>
                         </tr>
@@ -589,7 +589,7 @@ class Dashboard extends Component {
                           <td className="text-center">EMP-00001240 </td>
                           <td className="text-center">Shahid Ahmed</td>
                           <td className="text-center">
-                            <span class="badge badge-info">Resigned</span>
+                            <span className="badge badge-info">Resigned</span>
                           </td>
                           <td className="text-center">2019-04-23</td>
                         </tr>

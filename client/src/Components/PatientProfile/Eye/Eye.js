@@ -19,7 +19,7 @@ export default class Eye extends Component {
                 <div className="row">
                   <div className="col-6">
                     {" "}
-                    <table class="table table-sm table-bordered customTable">
+                    <table className="table table-sm table-bordered customTable">
                       <thead>
                         <tr>
                           {" "}
@@ -63,7 +63,7 @@ export default class Eye extends Component {
                     </table>
                   </div>
                   <div className="col-6">
-                    <table class="table table-sm table-bordered customTable">
+                    <table className="table table-sm table-bordered customTable">
                       <thead>
                         <tr>
                           {" "}

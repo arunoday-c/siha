@@ -167,43 +167,20 @@ const OutpatientsInpatientsDataOptions = {
   }
 };
 
-const AvgWaitingTimeDep = {
-  labels: [
-    "Surgery",
-    "Gynaecology",
-    "Dermatology",
-    "Neurology",
-    "Oncology",
-    "Orthopedics",
-    "Cardiology"
-  ],
-  datasets: [
-    {
-      data: [65, 59, 80, 81, 56, 55, 45],
-      label: "Waiting Time",
-      backgroundColor: "rgba(255,99,132,0.2)",
-      borderColor: "rgba(255,99,132,1)",
-      borderWidth: 1,
-      hoverBackgroundColor: "rgba(255,99,132,0.4)",
-      hoverBorderColor: "rgba(255,99,132,1)"
-    }
-  ]
-};
-
 const RevenuebyDepartment = {
   labels: [
-    "Surgery",
+    "General Medcine",
     "Gynaecology",
     "Dermatology",
     "Neurology",
     "Oncology",
-    "Orthopedics",
-    "Cardiology"
+    "Orthopedics"
   ],
   datasets: [
     {
-      data: [95, 80, 73, 64, 56, 50, 48],
-      label: "Revenue",
+      data: [73, 11, 11, 3, 7, 2],
+      label: "Total Booking",
+
       backgroundColor: "rgba(255,99,132,0.2)",
       borderColor: "rgba(255,99,132,1)",
       borderWidth: 1,
@@ -225,8 +202,8 @@ const RevenuebyDoctor = {
   ],
   datasets: [
     {
-      data: [81, 80, 65, 59, 56, 55, 45],
-      label: "Revenue",
+      data: [6, 11, 15, 6, 4, 10, 9],
+      label: "Total Booking",
       backgroundColor: "rgba(255,99,132,0.2)",
       borderColor: "rgba(255,99,132,1)",
       borderWidth: 1,
@@ -248,8 +225,9 @@ const RevenuebyService = {
   ],
   datasets: [
     {
-      data: [81, 80, 65, 59, 56, 55, 45],
-      label: "Revenue",
+      data: [3, 2, 5, 3, 7, 4, 2],
+      label: "Total Booking",
+
       backgroundColor: "rgba(255,99,132,0.2)",
       borderColor: "rgba(255,99,132,1)",
       borderWidth: 1,
@@ -456,22 +434,46 @@ class Dashboard extends Component {
               <div className="row">
                 <div className="col-4">
                   <div className="icon-big text-center">
-                    <i className="fas fa-hospital" />
+                    <i className="fas fa-calendar-check" />
                   </div>
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Operational Cost</p>
-
-                    {getAmountFormart("150378.00")}
+                    <p>Today's Appointments</p>80
                   </div>
                 </div>
               </div>
               <div className="footer">
                 <hr />
                 <div className="stats">
-                  Avg. Cost per Patient -
-                  <span>{getAmountFormart("500.00")} </span>
+                  <b onClick={this.showDetailHandler.bind(this)}>
+                    {this.state.showDetails === "d-block"
+                      ? "Hide"
+                      : "Show Details"}
+                  </b>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-4">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-walking" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Today's Walk-In</p>
+                    27
+                  </div>
+                </div>
+              </div>
+              <div className="footer">
+                <hr />
+                <div className="stats">
+                  Today Patient Fall - <span>18%</span>
                 </div>
               </div>
             </div>
@@ -486,21 +488,17 @@ class Dashboard extends Component {
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Revenue by MTD</p>
-                    {getAmountFormart("124128.75")}
+                    <p>Total Cash Received</p>
+
+                    {getAmountFormart("10378.00")}
                   </div>
                 </div>
               </div>
               <div className="footer">
                 <hr />
                 <div className="stats">
-                  Avg. Revenue per day-
-                  <span>{getAmountFormart("4128.75")} </span>
-                  <b onClick={this.showDetailHandler.bind(this)}>
-                    {this.state.showDetails === "d-block"
-                      ? "Hide"
-                      : "Show Details"}
-                  </b>
+                  By Cash <span>{getAmountFormart("3540.33")} </span> | By Card{" "}
+                  <span>{getAmountFormart("6837.67")} </span>
                 </div>
               </div>
             </div>
@@ -552,35 +550,12 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-walking" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Patient footfall (MTD)</p>
-                    58%
-                  </div>
-                </div>
-              </div>
-              <div className="footer">
-                <hr />
-                <div className="stats">
-                  Today Patient Fall - <span>18%</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
         <div className="row">
           <div className={"col-4 " + this.state.showDetails}>
             <div className="card animated fadeInUp faster">
-              <h6>Top 10 Department - Revenue</h6>
+              <h6>Patients Booking by Department</h6>
               <div className="dashboardChartsCntr">
                 <HorizontalBar data={RevenuebyDepartment} />
               </div>
@@ -588,7 +563,7 @@ class Dashboard extends Component {
           </div>
           <div className={"col-4 " + this.state.showDetails}>
             <div className="card animated fadeInUp faster">
-              <h6>Top 10 Doctor - Revenue</h6>
+              <h6>Patients Booking by Doctor</h6>
               <div className="dashboardChartsCntr">
                 <HorizontalBar data={RevenuebyDoctor} />
               </div>
@@ -596,213 +571,76 @@ class Dashboard extends Component {
           </div>
           <div className={"col-4 " + this.state.showDetails}>
             <div className="card animated fadeInUp faster">
-              <h6>Top 10 Service - Revenue</h6>
+              <h6>Patients Booking by Service</h6>
               <div className="dashboardChartsCntr">
                 <HorizontalBar data={RevenuebyService} />
               </div>
             </div>
           </div>
           <div className="col-4">
-            <div className="row">
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Admissions and 30-Day Readmission Rate</h6>
-                  <div className="dashboardChartsCntr">
-                    <Bar
-                      data={AdmissionsReadmissionData}
-                      options={AdmissionsReadmissionDataOptions}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Overall Patient Satisfacation</h6>
-                  <div className="dashboardChartsCntr">
-                    <Doughnut
-                      data={PieData}
-                      //options={AdmissionsReadmissionDataOptions}
-                    />
-                  </div>
-                  <hr />
-                  <div className="dashboardChartsCntr">
-                    <p>The doctor explained the treatment understandably.</p>
-                    <HorizontalBar
-                      data={DoctorExplained}
-                      options={DoctorExplainedDataOptions}
-                    />
-                  </div>
-                  <hr />
-
-                  <div className="dashboardChartsCntr">
-                    <p>I had confidence and trust in the treating physician.</p>
-                    <HorizontalBar
-                      data={TreatingPhysician}
-                      options={TreatingPhysicianDataOptions}
-                    />
-                  </div>
-                </div>
+            <div className="card animated fadeInUp faster">
+              <h6>Appointments By Department</h6>
+              <div className="dashboardChartsCntr">
+                <table className="table  table-bordered table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Department</th>
+                      <th>Appointment</th>
+                      <th>Walk In</th>
+                      <th>Cancelled</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Gynaecology</td>
+                      <td>11</td>
+                      <td>0</td>
+                      <td>1</td>
+                    </tr>
+                    <tr>
+                      <td>Dermatology</td>
+                      <td>5</td>
+                      <td>6</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>Neurology</td>
+                      <td>2</td>
+                      <td>1</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>Oncology</td>
+                      <td>3</td>
+                      <td>4</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>Cardiology</td>
+                      <td>0</td>
+                      <td>2</td>
+                      <td>0</td>
+                    </tr>
+                    <tr>
+                      <td>General</td>
+                      <td>59</td>
+                      <td>14</td>
+                      <td>0</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <div className="col-8">
-            <div className="row">
-              {/* <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Outpatients vs. Inpatients Trend</h6>
-                  <div className="dashboardChartsCntr">
-                    <Bar
-                      data={OutpatientsInpatientsData}
-                      options={OutpatientsInpatientsDataOptions}
-                    />
-                  </div>
-                </div>
-              </div> */}
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Avg Waiting Time By Department</h6>
-                  <div className="dashboardChartsCntr">
-                    <HorizontalBar data={AvgWaitingTimeDep} />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Cost by Payer & Type of Stay</h6>
-                  <div className="dashboardChartsCntr">
-                    <HorizontalBar
-                      data={CostPayerTypeData}
-                      options={CostPayerTypeDataOption}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Patients By Department</h6>
-                  <div className="dashboardChartsCntr">
-                    <table className="table  table-bordered table-sm table-striped">
-                      <thead>
-                        <tr>
-                          <th>Department</th>
-                          <th>In Patients</th>
-                          <th>Out Patients</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Surgery</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Gynaecology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Dermatology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Neurology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Oncology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Orthopedics</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Cardiology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Lab Test Turnaround (in Hr)</h6>
-                  <div className="dashboardChartsCntr">
-                    <table className="table  table-bordered table-sm table-striped table-responsive">
-                      <thead>
-                        <tr>
-                          <th>Test</th>
-                          <th>Average (Hr)</th>
-                          <th>Target (Hr)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Amylase</td>
-                          <td className="text-danger text-center">31</td>
-                          <td className="text-center">24</td>
-                        </tr>
-                        <tr>
-                          <td>ANA</td>
-                          <td className="text-danger text-center">180</td>
-                          <td className="text-center">168</td>
-                        </tr>
-                        <tr>
-                          <td>aPIT</td>
-                          <td className="text-danger text-center">78</td>
-                          <td className="text-center">72</td>
-                        </tr>
-                        <tr>
-                          <td>Basic Metabolic Panel</td>
-                          <td className="text-danger text-center">26</td>
-                          <td className="text-center">24</td>
-                        </tr>
-                        <tr>
-                          <td>Complete Blood Count</td>
-                          <td className="text-danger text-center">28</td>
-                          <td className="text-center">24</td>
-                        </tr>
-                        <tr>
-                          <td>Comprehensiv Metabolic Panel</td>
-                          <td className="text-danger text-center">52</td>
-                          <td className="text-center">48</td>
-                        </tr>
-                        <tr>
-                          <td>Electrolyte Panel</td>
-                          <td className="text-success text-center">23</td>
-                          <td className="text-center">24</td>
-                        </tr>
-                        <tr>
-                          <td>Sedimentation Rate</td>
-                          <td className="text-success text-center">94</td>
-                          <td className="text-center">96</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+
+          <div className="col-4">
+            <div className="card animated fadeInUp faster">
+              <h6>Outpatients vs. Inpatients Trend</h6>
+              <div className="dashboardChartsCntr">
+                <Bar
+                  data={OutpatientsInpatientsData}
+                  options={OutpatientsInpatientsDataOptions}
+                />
               </div>
             </div>
           </div>

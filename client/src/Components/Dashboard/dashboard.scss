@@ -9,11 +9,10 @@
     position: relative;
     z-index: 1;
     .content {
-      padding: 15px 15px 10px 15px;
+      padding: 15px 15px 0 15px;
       .footer {
         padding: 0;
-
-        line-height: 30px;
+        line-height: 25px;
         .stats {
           display: inline-block;
           color: #808080;
@@ -35,35 +34,17 @@
     .numbers {
       text-align: right;
       font-weight: 600;
+      font-size: 1.3rem;
       p {
         font-weight: normal;
         margin: 0;
+        font-size: 1rem;
       }
     }
     .icon-big {
       i {
         min-height: 3.5rem;
         font-size: 2.5em;
-      }
-      .fa-hand-holding-usd {
-        &:before {
-          color: #c655cc;
-        }
-      }
-      .fa-hospital {
-        &:before {
-          color: #7455cc;
-        }
-      }
-      .fa-user-md {
-        &:before {
-          color: #3c67dd;
-        }
-      }
-      .fa-walking {
-        &:before {
-          color: #9d3cdd;
-        }
       }
     }
     h6 {
@@ -92,6 +73,37 @@
       h6 {
         text-align: center;
       }
+    }
+    &:nth-child(1) {
+      .fas {
+        &:before {
+          color: #c655cc;
+        }
+      }
+    }
+    &:nth-child(2) {
+      .fas {
+        &:before {
+          color: #7455cc;
+        }
+      }
+    }
+    &:nth-child(3) {
+      .fas {
+        &:before {
+          color: #3c67dd;
+        }
+      }
+    }
+    &:nth-child(4) {
+      .fas {
+        &:before {
+          color: #9d3cdd;
+        }
+      }
+    }
+    .table {
+      margin-bottom: 0;
     }
   }
   hr {

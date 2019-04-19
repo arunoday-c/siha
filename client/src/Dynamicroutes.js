@@ -11,6 +11,9 @@ const PageToPlot = {
   12: React.lazy(() =>
     retry(() => import("./Components/Dashboard/hr-dashboard"))
   ),
+   7: React.lazy(() =>
+    retry(() => import("./Components/Dashboard/frontdesk-dashboard"))
+  ),
   FrontDesk: React.lazy(() =>
     retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
   ),
