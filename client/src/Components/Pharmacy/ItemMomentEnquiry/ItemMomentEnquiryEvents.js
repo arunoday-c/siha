@@ -1,7 +1,6 @@
 import moment from "moment";
 import Options from "../../../Options.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -22,32 +21,43 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const ProcessItemMoment = $this => {
-  AlgaehValidation({
-    alertTypeIcon: "warning",
-    querySelector: "data-validate='itemMoment'",
-    onSuccess: () => {
-      AlgaehLoader({ show: true });
-      $this.props.getItemMoment({
-        uri: "/pharmacyGlobal/getItemMoment",
-        module: "pharmacy",
-        method: "GET",
-        printInput: true,
-        data: {
-          from_location_id: $this.state.location_id,
-          item_code_id: $this.state.item_id,
-          from_date: moment($this.state.from_date).format(
-            Options.dateFormatYear
-          ),
-          to_date: moment($this.state.to_date).format(Options.dateFormatYear)
-        },
-        redux: {
-          type: "ITEM_MOMENT_DATA",
-          mappingName: "itemmoment"
-        },
-        afterSuccess: data => {
-          AlgaehLoader({ show: false });
-        }
-      });
+  let inputObj = {};
+  if ($this.state.location_id !== null) {
+    inputObj.from_location_id = $this.state.location_id;
+  }
+  if ($this.state.item_code_id !== null) {
+    inputObj.item_code_id = $this.state.item_code_id;
+  }
+  if ($this.state.barcode !== null) {
+    inputObj.barcode = $this.state.barcode;
+  }
+  if ($this.state.transaction_type !== null) {
+    inputObj.transaction_type = $this.state.transaction_type;
+  }
+  if ($this.state.from_date !== null) {
+    inputObj.from_date = moment($this.state.from_date).format(
+      Options.dateFormatYear
+    );
+  }
+  if ($this.state.to_date !== null) {
+    inputObj.to_date = moment($this.state.to_date).format(
+      Options.dateFormatYear
+    );
+  }
+
+  AlgaehLoader({ show: true });
+  $this.props.getItemMoment({
+    uri: "/pharmacyGlobal/getItemMoment",
+    module: "pharmacy",
+    method: "GET",
+    printInput: true,
+    data: inputObj,
+    redux: {
+      type: "ITEM_MOMENT_DATA",
+      mappingName: "itemmoment"
+    },
+    afterSuccess: data => {
+      AlgaehLoader({ show: false });
     }
   });
 };

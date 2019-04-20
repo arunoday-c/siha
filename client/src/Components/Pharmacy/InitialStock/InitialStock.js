@@ -24,7 +24,8 @@ import {
   LocationchangeTexts,
   deleteInitialStock,
   ClearData,
-  PostInitialStock
+  PostInitialStock,
+  printBarcode
 } from "./InitialStockEvents";
 import "./InitialStock.css";
 import "../../../styles/site.css";
@@ -431,6 +432,10 @@ class InitialStock extends Component {
                             <i
                               className="fas fa-times"
                               onClick={deleteInitialStock.bind(this, this, row)}
+                            />
+                            <i
+                              className="fas fa-barcode"
+                              onClick={printBarcode.bind(this, this, row)}
                             />
                           </span>
                         );

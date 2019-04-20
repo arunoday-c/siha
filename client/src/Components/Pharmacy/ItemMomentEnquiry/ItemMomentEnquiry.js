@@ -7,7 +7,8 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
 
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
@@ -20,6 +21,7 @@ import {
 import "./ItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class ItemMomentEnquiry extends Component {
   constructor(props) {
@@ -108,8 +110,42 @@ class ItemMomentEnquiry extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Location", isImp: true }}
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Item Name" }}
+                    selector={{
+                      name: "item_id",
+                      className: "select-fld",
+                      value: this.state.item_id,
+                      dataSource: {
+                        textField: "item_description",
+                        valueField: "hims_d_item_master_id",
+                        data: this.props.itemlist
+                      },
+                      onChange: changeTexts.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          item_id: null
+                        });
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Item Barcode"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "barcode",
+                      value: this.state.barcode,
+                      events: {
+                        onChange: changeTexts.bind(this, this)
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Location" }}
                     selector={{
                       name: "location_id",
                       className: "select-fld",
@@ -125,24 +161,29 @@ class ItemMomentEnquiry extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Item Name", isImp: true }}
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Transaction Type" }}
                     selector={{
-                      name: "item_id",
+                      name: "transaction_type",
                       className: "select-fld",
-                      value: this.state.item_id,
+                      value: this.state.transaction_type,
                       dataSource: {
-                        textField: "item_description",
-                        valueField: "hims_d_item_master_id",
-                        data: this.props.itemlist
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_TRANSACTION_TYPE
+                      },
+                      onClear: () => {
+                        this.setState({
+                          transaction_type: null
+                        });
                       },
                       onChange: changeTexts.bind(this, this)
                     }}
                   />
 
                   <AlgaehDateHandler
-                    div={{ className: "col-lg-2" }}
-                    label={{ forceLabel: "From Date", isImp: true }}
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "From Date" }}
                     textBox={{ className: "txt-fld", name: "from_date" }}
                     events={{
                       onChange: datehandle.bind(this, this)
@@ -150,8 +191,8 @@ class ItemMomentEnquiry extends Component {
                     value={this.state.from_date}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-lg-2" }}
-                    label={{ forceLabel: "To Date", isImp: true }}
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "To Date" }}
                     textBox={{ className: "txt-fld", name: "to_date" }}
                     events={{
                       onChange: datehandle.bind(this, this)
@@ -159,7 +200,7 @@ class ItemMomentEnquiry extends Component {
                     maxDate={new Date()}
                     value={this.state.to_date}
                   />
-                  <div className="col-lg-2" style={{ paddingTop: "3vh" }}>
+                  <div className="col" style={{ paddingTop: "3vh" }}>
                     <button
                       className="btn btn-primary btn-sm"
                       type="button"
@@ -199,7 +240,7 @@ class ItemMomentEnquiry extends Component {
                           ? "Point of Sale"
                           : row.transaction_type === "SRT"
                           ? "Sales Return"
-                          : row.transaction_type === "SRT"
+                          : row.transaction_type === "INT"
                           ? "Opening Stock"
                           : row.transaction_type === "CS"
                           ? "Consumption"
@@ -222,6 +263,64 @@ class ItemMomentEnquiry extends Component {
                       displayTemplate: row => {
                         return (
                           <span>{dateFormater(row.transaction_date)}</span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "from_location_id",
+                      label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
+                      displayTemplate: row => {
+                        let display =
+                          this.props.locations === undefined
+                            ? []
+                            : this.props.locations.filter(
+                                f =>
+                                  f.hims_d_pharmacy_location_id ===
+                                  row.from_location_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].location_description
+                              : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "item_code_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.itemlist === undefined
+                            ? []
+                            : this.props.itemlist.filter(
+                                f =>
+                                  f.hims_d_item_master_id === row.item_code_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].item_description
+                              : ""}
+                            {display !== null && display.length !== 0 ? (
+                              <i
+                                className={
+                                  row.operation === "+"
+                                    ? "fas fa-arrow-up green"
+                                    : row.operation === "-"
+                                    ? "fas fa-arrow-down red"
+                                    : ""
+                                }
+                              />
+                            ) : (
+                              ""
+                            )}
+                          </span>
                         );
                       }
                     },

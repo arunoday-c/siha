@@ -71,25 +71,46 @@ module.exports = {
       let _strAppend = "";
 
       if (req.query.from_date != null) {
-        _strAppend =
-          "date(transaction_date) between date('" +
+        _strAppend +=
+          " and date(transaction_date) between date('" +
           req.query.from_date +
           "') AND date('" +
           req.query.to_date +
           "')";
       } else {
-        _strAppend = "date(transaction_date) <= date(now())";
+        _strAppend += " and date(transaction_date) <= date(now())";
       }
 
-      delete req.query.from_date;
-      delete req.query.to_date;
+      // delete req.query.from_date;
+      // delete req.query.to_date;
+
+      if (req.query.from_location_id != null) {
+        _strAppend +=
+          " and from_location_id='" + req.query.from_location_id + "'";
+      }
+
+      if (req.query.item_code_id != null) {
+        _strAppend += " and item_code_id='" + req.query.item_code_id + "'";
+      }
+
+      if (req.query.barcode != null) {
+        _strAppend += " and barcode='" + req.query.barcode + "'";
+      }
+
+      if (req.query.transaction_type != null) {
+        _strAppend +=
+          " and transaction_type='" + req.query.transaction_type + "'";
+      }
+
+      // delete req.query.from_date;
+      // delete req.query.to_date;
 
       _mysql
         .executeQuery({
           query:
-            "SELECT * from hims_f_pharmacy_trans_history  WHERE record_status = 'A' and from_location_id=? and item_code_id=? and " +
+            "SELECT * from hims_f_pharmacy_trans_history  WHERE record_status = 'A' " +
             _strAppend,
-          values: [req.query.from_location_id, req.query.item_code_id],
+
           printQuery: true
         })
         .then(result => {

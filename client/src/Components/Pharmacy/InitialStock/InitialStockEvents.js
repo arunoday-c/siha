@@ -5,6 +5,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import math from "mathjs";
 import Enumerable from "linq";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
+import AlgaehReport from "../../Wrapper/printReports";
 
 var intervalId;
 const changeTexts = ($this, ctrl, e) => {
@@ -75,7 +76,8 @@ const itemchangeText = ($this, e) => {
     item_group_id: e.selected.group_id,
     uom_id: e.selected.stocking_uom_id,
     sales_uom: e.selected.sales_uom_id,
-    required_batchno: e.selected.required_batchno
+    required_batchno: e.selected.required_batchno,
+    item_code: e.selected.item_code
   });
 };
 
@@ -112,7 +114,10 @@ const AddItems = $this => {
           unit_cost: $this.state.unit_cost,
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
-          barcode: "",
+          barcode:
+            $this.state.item_code +
+            $this.state.batchno +
+            moment($this.state.expiry_date).format("YYYYMMDD"),
           grn_number: $this.state.grn_number,
           noorecords: pharmacy_stock_detail.length + 1,
           required_batchno: $this.state.required_batchno
@@ -256,6 +261,13 @@ const PostInitialStock = $this => {
     $this.state.pharmacy_stock_detail[i].net_total =
       $this.state.pharmacy_stock_detail[i].extended_cost;
 
+    $this.state.pharmacy_stock_detail[i].barcode =
+      $this.state.pharmacy_stock_detail[i].item_code +
+      $this.state.pharmacy_stock_detail[i].batchno +
+      moment($this.state.pharmacy_stock_detail[i].expiry_date).format(
+        "YYYYMMDD"
+      );
+    $this.state.pharmacy_stock_detail[i].operation = "+";
     // $this.state.pharmacy_stock_detail[i].operation = "+";
   }
 
@@ -278,6 +290,27 @@ const PostInitialStock = $this => {
   });
 };
 
+const printBarcode = ($this, row, e) => {
+  debugger;
+  AlgaehReport({
+    report: {
+      fileName: "sampleBarcode",
+      barcode: {
+        parameter: "bar_code",
+        options: {
+          format: "",
+          lineColor: "#0aa",
+          width: 4,
+          height: 40
+        }
+      }
+    },
+    data: {
+      bar_code: row.barcode
+    }
+  });
+};
+
 export {
   changeTexts,
   itemchangeText,
@@ -290,5 +323,6 @@ export {
   LocationchangeTexts,
   deleteInitialStock,
   ClearData,
-  PostInitialStock
+  PostInitialStock,
+  printBarcode
 };
