@@ -77,7 +77,7 @@ class ItemMomentEnquiry extends Component {
           <BreadCrumb
             title={
               <AlgaehLabel
-                label={{ forceLabel: "Item Moment Enquiry", align: "ltr" }}
+                label={{ forceLabel: "Item Movement Enquiry", align: "ltr" }}
               />
             }
             breadStyle={this.props.breadStyle}
@@ -95,7 +95,10 @@ class ItemMomentEnquiry extends Component {
               {
                 pageName: (
                   <AlgaehLabel
-                    label={{ forceLabel: "Item Moment Enquiry", align: "ltr" }}
+                    label={{
+                      forceLabel: "Item Movement Enquiry",
+                      align: "ltr"
+                    }}
                   />
                 )
               }

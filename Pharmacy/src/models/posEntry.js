@@ -332,7 +332,8 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, itmloc.grnno, itmloc.sales_uom, item.item_description \
+              "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
+              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description \
                 from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
                 where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0",
             values: [item_ids, location_ids],

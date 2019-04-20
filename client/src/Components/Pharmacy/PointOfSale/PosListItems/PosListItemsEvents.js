@@ -160,6 +160,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
         },
         onSuccess: response => {
           if (response.data.success) {
+            debugger;
             let data = response.data.records;
             if (data.locationResult.length > 0) {
               getUnitCost($this, context, e.service_id);
@@ -174,6 +175,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                 batchno: data.locationResult[0].batchno,
                 grn_no: data.locationResult[0].grnno,
                 qtyhand: data.locationResult[0].qtyhand,
+                barcode: data.locationResult[0].barcode,
                 ItemUOM: data.uomResult,
                 Batch_Items: data.locationResult,
                 addItemButton: false,
@@ -193,6 +195,7 @@ const itemchangeText = ($this, context, e, ctrl) => {
                   batchno: data.locationResult[0].batchno,
                   grn_no: data.locationResult[0].grnno,
                   qtyhand: data.locationResult[0].qtyhand,
+                  barcode: data.locationResult[0].barcode,
                   ItemUOM: data.uomResult,
                   Batch_Items: data.locationResult,
                   addItemButton: false,
@@ -466,6 +469,7 @@ const AddItems = ($this, context) => {
                 data.billdetails[0].operation = "-";
                 data.billdetails[0].grn_no = $this.state.grn_no;
                 data.billdetails[0].qtyhand = $this.state.qtyhand;
+                data.billdetails[0].barcode = $this.state.barcode;
                 data.billdetails[0].service_id =
                   data.billdetails[0].services_id;
                 data.billdetails[0].discount_amount =
@@ -491,6 +495,7 @@ const AddItems = ($this, context) => {
                   item_group_id: null,
                   item_category: null,
                   qtyhand: 0,
+                  barcode: null,
                   discount_percentage: 0
                 });
               }
@@ -510,6 +515,7 @@ const AddItems = ($this, context) => {
                 item_group_id: null,
                 selectBatchButton: false,
                 qtyhand: 0,
+                barcode: null,
                 discount_percentage: 0
               });
 

@@ -14,5 +14,19 @@
     cursor: pointer;
     margin-top: 2.5vh; }
 
-#initialStock_Cntr .ReactTable {
-  max-height: 50vh !important; }
+#initial_stock .ReactTable {
+  max-height: 60vh !important; }
+  #initial_stock .ReactTable span i {
+    width: 16px;
+    height: 16px;
+    border-radius: 100%;
+    font-size: 0.7rem;
+    line-height: 15px;
+    float: right;
+    text-align: center; }
+    #initial_stock .ReactTable span i.red {
+      background: #ff7f7f;
+      color: #fff; }
+    #initial_stock .ReactTable span i.green {
+      background: #15a28d;
+      color: #fff; }

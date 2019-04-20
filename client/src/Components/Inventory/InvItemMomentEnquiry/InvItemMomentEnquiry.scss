@@ -21,8 +21,28 @@
     margin-top: 2.5vh;
   }
 }
-#initialStock_Cntr {
+
+#initial_stock {
   .ReactTable {
-    max-height: 50vh !important;
+    max-height: 60vh !important;
+    span {
+      i {
+        width: 16px;
+        height: 16px;
+        border-radius: 100%;
+        font-size: 0.7rem;
+        line-height: 15px;
+        float: right;
+        text-align: center;
+        &.red {
+          background: #ff7f7f;
+          color: #fff;
+        }
+        &.green {
+          background: #15a28d;
+          color: #fff;
+        }
+      }
+    }
   }
 }
