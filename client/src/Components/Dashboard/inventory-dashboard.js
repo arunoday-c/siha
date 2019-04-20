@@ -17,26 +17,13 @@ const AdmissionsReadmissionData = {
   datasets: [
     {
       type: "line",
-      label: "Readmission Rate",
-      data: [0.2, 0.2, 0.22, 0.19],
+      label: "Total Sales",
+      data: [10486, 9866, 11343, 11634, 10134, 8334],
       fill: false,
       backgroundColor: "#71B37C",
       borderColor: "#71B37C",
       hoverBackgroundColor: "#71B37C",
       hoverBorderColor: "#71B37C",
-      yAxisID: "y-axis-2"
-    },
-    {
-      type: "bar",
-      label: "Admissions",
-      data: [2286, 2534, 2126, 2272],
-      fill: false,
-      borderColor: "#EC932F",
-      backgroundColor: "#EC932F",
-      pointBorderColor: "#EC932F",
-      pointBackgroundColor: "#EC932F",
-      pointHoverBackgroundColor: "#EC932F",
-      pointHoverBorderColor: "#EC932F",
       yAxisID: "y-axis-1"
     }
   ]
@@ -65,7 +52,7 @@ const AdmissionsReadmissionDataOptions = {
         gridLines: {
           display: false
         },
-        labels: ["Q3 2017", "Q4 2017", "Q1 2018", "Q2 2018"]
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"]
       }
     ],
     yAxes: [
@@ -74,18 +61,6 @@ const AdmissionsReadmissionDataOptions = {
         display: true,
         position: "left",
         id: "y-axis-1",
-        gridLines: {
-          display: false
-        },
-        labels: {
-          show: true
-        }
-      },
-      {
-        type: "linear",
-        display: true,
-        position: "right",
-        id: "y-axis-2",
         gridLines: {
           display: false
         },
@@ -213,20 +188,12 @@ const RevenuebyDepartment = {
   ]
 };
 
-const RevenuebyDoctor = {
-  labels: [
-    "Dr. Suhail",
-    "Dr. Fathima",
-    "Dr. Khalid",
-    "Dr. Tony",
-    "Dr. Ridhwan",
-    "Dr. Joseph",
-    "Dr. Aysha"
-  ],
+const DistributionbySales = {
+  labels: ["Suhail", "Fathima", "Khalid", "Tony", "Ridhwan"],
   datasets: [
     {
-      data: [81, 80, 65, 59, 56, 55, 45],
-      label: "Revenue",
+      data: [81, 80, 65, 59, 56],
+      label: "Sales Distribution",
       backgroundColor: "rgba(255,99,132,0.2)",
       borderColor: "rgba(255,99,132,1)",
       borderWidth: 1,
@@ -322,12 +289,24 @@ const TreatingPhysicianDataOptions = {
 // ];
 
 const PieData = {
-  labels: ["Excellent", "Good", "Neutral/Negative"],
+  labels: [
+    "Innohep 10,000 IU/0.5 ml Prefilled Syringe 2's ",
+    "Livial 2.5 mg Tablets 28's",
+    "Nevanac 0.1% Eye Drops 5 ml",
+    "Pholcodine 5 mg/5 ml Linctus (200 ml)",
+    "Pyrazinamide 500 mg Tablets 20'S (10'S X 2)"
+  ],
   datasets: [
     {
-      data: [24, 40, 35],
-      backgroundColor: ["#34b8bc", "#DCAC66", "#EC932F"],
-      hoverBackgroundColor: ["#34b8bc", "#DCAC66", "#EC932F"]
+      data: [24, 40, 35, 45, 19],
+      backgroundColor: ["#34b8bc", "#DCAC66", "#EC932F", "#673ab7", "#009688"],
+      hoverBackgroundColor: [
+        "#34b8bc",
+        "#DCAC66",
+        "#EC932F",
+        "#673ab7",
+        "#009688"
+      ]
     }
   ]
 };
@@ -454,100 +433,34 @@ class Dashboard extends Component {
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-hospital" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Operational Cost</p>
-
-                    {getAmountFormart("150378.00")}
-                  </div>
-                </div>
-              </div>
-              <div className="footer">
-                <hr />
-                <div className="stats">
-                  Avg. Cost per Patient -
-                  <span>{getAmountFormart("500.00")} </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
-                  <div className="icon-big text-center">
-                    <i className="fas fa-hand-holding-usd" />
-                  </div>
-                </div>
-                <div className="col-8">
-                  <div className="numbers">
-                    <p>Revenue by MTD</p>
-                    {getAmountFormart("124128.75")}
-                  </div>
-                </div>
-              </div>
-              <div className="footer">
-                <hr />
-                <div className="stats">
-                  Avg. Revenue per day-
-                  <span>{getAmountFormart("4128.75")} </span>
-                  <b onClick={this.showDetailHandler.bind(this)}>
-                    {this.state.showDetails === "d-block"
-                      ? "Hide"
-                      : "Show Details"}
-                  </b>
-                </div>
-              </div>
-            </div>
-          </div>
-          {/* <div className="card animated fadeInUp faster">
-            <div className="content">
-              <div className="row">
-                <div className="col-4">
+                <div className="col-3">
                   <div className="icon-big text-center">
                     <i className="fas fa-users" />
                   </div>
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Total Patients</p>
-                    61,938
+                    <p>Expired Items</p>
+                    124
                   </div>
                 </div>
               </div>
-              <div className="footer">
-                <hr />
-                <div className="stats">
-                  Patients Admitted - <span>31,374</span>
-                </div>
-              </div>
             </div>
-          </div> */}
+          </div>
 
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                <div className="col-3">
                   <div className="icon-big text-center">
-                    <i className="fas fa-user-md" />
+                    <i className="fas fa-coins" />
                   </div>
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Avg. Patient per Dr. (MTD)</p>
-                    26.79
+                    <p>Inventory Total Value</p>
+                    {getAmountFormart("3.33")}M
                   </div>
-                </div>
-              </div>
-              <div className="footer">
-                <hr />
-                <div className="stats">
-                  Today Available Dr. - <span>190</span>
                 </div>
               </div>
             </div>
@@ -555,22 +468,33 @@ class Dashboard extends Component {
           <div className="card animated fadeInUp faster">
             <div className="content">
               <div className="row">
-                <div className="col-4">
+                <div className="col-3">
                   <div className="icon-big text-center">
-                    <i className="fas fa-walking" />
+                    <i className="fas fa-hand-holding-usd" />
                   </div>
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Patient footfall (MTD)</p>
-                    58%
+                    <p>Low Stock Items</p>
+                    40
                   </div>
                 </div>
               </div>
-              <div className="footer">
-                <hr />
-                <div className="stats">
-                  Today Patient Fall - <span>18%</span>
+            </div>
+          </div>
+          <div className="card animated fadeInUp faster">
+            <div className="content">
+              <div className="row">
+                <div className="col-3">
+                  <div className="icon-big text-center">
+                    <i className="fas fa-hand-holding-usd" />
+                  </div>
+                </div>
+                <div className="col-8">
+                  <div className="numbers">
+                    <p>Open Purchase Order</p>
+                    33
+                  </div>
                 </div>
               </div>
             </div>
@@ -578,234 +502,136 @@ class Dashboard extends Component {
         </div>
 
         <div className="row">
-          <div className={"col-4 " + this.state.showDetails}>
+          <div className="col-6">
             <div className="card animated fadeInUp faster">
-              <h6>Top 10 Department - Revenue</h6>
+              <h6>Items Near Expiry </h6>
               <div className="dashboardChartsCntr">
-                <HorizontalBar data={RevenuebyDepartment} />
+                <table className="table  table-bordered table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Item Name</th>
+                      <th>Batch</th>
+                      <th>Expiry Date</th>
+                      <th>Days Left</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Vozet</td>
+                      <td>78546</td>
+                      <td>05/05/2019</td>
+                      <td>
+                        <span class="badge badge-light">15 days</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Dextrose 10% Solution For Infusion (500 ml)</td>
+                      <td>23232</td>
+                      <td>29/04/2019</td>
+                      <td>
+                        <span class="badge badge-light">10 days</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Actifed Tablets 24'S</td>
+                      <td>57566</td>
+                      <td>24/04/2019</td>
+                      <td>
+                        <span class="badge badge-warning">8 days</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Abelcet 5 mg/ml Vial (20 ml)</td>
+                      <td>5222</td>
+                      <td>05/04/2019</td>
+                      <td>
+                        <span class="badge badge-danger">Expired</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <div className={"col-4 " + this.state.showDetails}>
+          <div className="col-6">
             <div className="card animated fadeInUp faster">
-              <h6>Top 10 Doctor - Revenue</h6>
+              <h6>Product with low Stock</h6>
               <div className="dashboardChartsCntr">
-                <HorizontalBar data={RevenuebyDoctor} />
-              </div>
-            </div>
-          </div>
-          <div className={"col-4 " + this.state.showDetails}>
-            <div className="card animated fadeInUp faster">
-              <h6>Top 10 Service - Revenue</h6>
-              <div className="dashboardChartsCntr">
-                <HorizontalBar data={RevenuebyService} />
-              </div>
-            </div>
-          </div>
-          <div className="col-4">
-            <div className="row">
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Admissions and 30-Day Readmission Rate</h6>
-                  <div className="dashboardChartsCntr">
-                    <Bar
-                      data={AdmissionsReadmissionData}
-                      options={AdmissionsReadmissionDataOptions}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Overall Patient Satisfacation</h6>
-                  <div className="dashboardChartsCntr">
-                    <Doughnut
-                      data={PieData}
-                      //options={AdmissionsReadmissionDataOptions}
-                    />
-                  </div>
-                  <hr />
-                  <div className="dashboardChartsCntr">
-                    <p>The doctor explained the treatment understandably.</p>
-                    <HorizontalBar
-                      data={DoctorExplained}
-                      options={DoctorExplainedDataOptions}
-                    />
-                  </div>
-                  <hr />
+                <table className="table  table-bordered table-sm table-striped">
+                  <thead>
+                    <tr>
+                      <th>Item Name</th>
+                      <th>Quanity Left</th>
+                      <th>UOM</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Abelcet 5 mg/ml Vial (20 ml)</td>
 
-                  <div className="dashboardChartsCntr">
-                    <p>I had confidence and trust in the treating physician.</p>
-                    <HorizontalBar
-                      data={TreatingPhysician}
-                      options={TreatingPhysicianDataOptions}
-                    />
-                  </div>
-                </div>
+                      <td>
+                        <span class="badge badge-light">123</span>
+                      </td>
+                      <td>Capsule</td>
+                    </tr>
+                    <tr>
+                      <td>Dermovate 0.05% Scalp Solution (25 ml)</td>
+
+                      <td>
+                        <span class="badge badge-warning">18</span>
+                      </td>
+                      <td>Bottle</td>
+                    </tr>
+                    <tr>
+                      <td>Canesten 1% Cream (20 g)</td>
+
+                      <td>
+                        <span class="badge badge-warning">10</span>
+                      </td>
+                      <td>Tablet</td>
+                    </tr>
+                    <tr>
+                      <td>Imodium 2 mg Capsules 6'S</td>
+                      <td>
+                        <span class="badge badge-danger">Out of Stock</span>
+                      </td>
+                      <td>Sachet</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-          <div className="col-8">
-            <div className="row">
-              <div className="col-12">
-                <div className="card animated fadeInUp faster">
-                  <h6>Outpatients vs. Inpatients Trend</h6>
-                  <div className="dashboardChartsCntr">
-                    <Bar
-                      data={OutpatientsInpatientsData}
-                      options={OutpatientsInpatientsDataOptions}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Avg Waiting Time By Department</h6>
-                  <div className="dashboardChartsCntr">
-                    <HorizontalBar data={AvgWaitingTimeDep} />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Cost by Payer & Type of Stay</h6>
-                  <div className="dashboardChartsCntr">
-                    <HorizontalBar
-                      data={CostPayerTypeData}
-                      options={CostPayerTypeDataOption}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Patients By Department</h6>
-                  <div className="dashboardChartsCntr">
-                    <table className="table  table-bordered table-sm table-striped">
-                      <thead>
-                        <tr>
-                          <th>Department</th>
-                          <th>In Patients</th>
-                          <th>Out Patients</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Surgery</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Gynaecology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Dermatology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Neurology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Oncology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Orthopedics</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                        <tr>
-                          <td>Cardiology</td>
-                          <td>
-                            <i className="fas fa-long-arrow-alt-up" /> 9,471
-                          </td>
-                          <td>17,642</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-              <div className="col-6">
-                <div className="card animated fadeInUp faster">
-                  <h6>Lab Test Turnaround (in Hr)</h6>
-                  <div className="dashboardChartsCntr">
-                    <table className="table  table-bordered table-sm table-striped table-responsive">
-                      <thead>
-                        <tr>
-                          <th>Test</th>
-                          <th>Average (Hr)</th>
-                          <th>Target (Hr)</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>Amylase</td>
-                          <td className="text-danger text-center">31</td>
-                          <td className="text-center">24</td>
-                        </tr>
-                        <tr>
-                          <td>ANA</td>
-                          <td className="text-danger text-center">180</td>
-                          <td className="text-center">168</td>
-                        </tr>
-                        <tr>
-                          <td>aPIT</td>
-                          <td className="text-danger text-center">78</td>
-                          <td className="text-center">72</td>
-                        </tr>
-                        <tr>
-                          <td>Basic Metabolic Panel</td>
-                          <td className="text-danger text-center">26</td>
-                          <td className="text-center">24</td>
-                        </tr>
-                        <tr>
-                          <td>Complete Blood Count</td>
-                          <td className="text-danger text-center">28</td>
-                          <td className="text-center">24</td>
-                        </tr>
-                        <tr>
-                          <td>Comprehensiv Metabolic Panel</td>
-                          <td className="text-danger text-center">52</td>
-                          <td className="text-center">48</td>
-                        </tr>
-                        <tr>
-                          <td>Electrolyte Panel</td>
-                          <td className="text-success text-center">23</td>
-                          <td className="text-center">24</td>
-                        </tr>
-                        <tr>
-                          <td>Sedimentation Rate</td>
-                          <td className="text-success text-center">94</td>
-                          <td className="text-center">96</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
+          {/* <div className={"col-4"}>
+            <div className="card animated fadeInUp faster">
+              <h6>Fast Moving Item</h6>
+              <div className="dashboardChartsCntr">
+                <Doughnut
+                  data={PieData}
+                  //options={AdmissionsReadmissionDataOptions}
+                />
               </div>
             </div>
           </div>
+          <div className={"col-4"}>
+            <div className="card animated fadeInUp faster">
+              <h6>Top 5 Sales Person - Distribution</h6>
+              <div className="dashboardChartsCntr">
+                <HorizontalBar data={DistributionbySales} />
+              </div>
+            </div>
+          </div>
+          <div className={"col-4"}>
+            <div className="card animated fadeInUp faster">
+              <h6>Sales Overview</h6>
+              <div className="dashboardChartsCntr">
+                <Bar
+                  data={AdmissionsReadmissionData}
+                  options={AdmissionsReadmissionDataOptions}
+                />
+              </div>
+            </div>
+          </div> */}
         </div>
       </div>
     );
