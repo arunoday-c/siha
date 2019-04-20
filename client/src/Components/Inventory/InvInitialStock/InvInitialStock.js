@@ -24,7 +24,8 @@ import {
   LocationchangeTexts,
   deleteInitialStock,
   ClearData,
-  PostInitialStock
+  PostInitialStock,
+  printBarcode
 } from "./InvInitialStockEvents";
 import "./InvInitialStock.css";
 import "../../../styles/site.css";
@@ -35,6 +36,7 @@ class InvInitialStock extends Component {
     super(props);
 
     this.state = {
+      item_code: null,
       description: "",
       inventory_stock_detail: [],
       location_id: null,
@@ -421,6 +423,10 @@ class InvInitialStock extends Component {
                             <i
                               className="fas fa-times"
                               onClick={deleteInitialStock.bind(this, this, row)}
+                            />
+                            <i
+                              className="fas fa-barcode"
+                              onClick={printBarcode.bind(this, this, row)}
                             />
                           </span>
                         );

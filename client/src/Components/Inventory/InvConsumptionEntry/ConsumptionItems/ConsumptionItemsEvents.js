@@ -79,6 +79,8 @@ export default function ConsumptionItemsEvents() {
                   grn_no: data.locationResult[0].grnno,
                   qtyhand: data.locationResult[0].qtyhand,
 
+                  barcode: data.locationResult[0].barcode,
+
                   ItemUOM: data.uomResult,
                   uom_description: uom_array[0].uom_description
                 });
@@ -99,6 +101,7 @@ export default function ConsumptionItemsEvents() {
                     batchno: data.locationResult[0].batchno,
                     grn_no: data.locationResult[0].grnno,
                     qtyhand: data.locationResult[0].qtyhand,
+                    barcode: data.locationResult[0].barcode,
 
                     ItemUOM: data.uomResult
                   });
@@ -157,7 +160,7 @@ export default function ConsumptionItemsEvents() {
           batchno: $this.state.batchno,
           grn_no: $this.state.grn_no,
           grn_number: $this.state.grn_no,
-          qtyhand: $this.state.qtyhand,
+          barcode: $this.state.barcode,
           unit_cost: $this.state.unit_cost,
           extended_cost: $this.state.extended_cost,
           operation: "-"
@@ -173,6 +176,7 @@ export default function ConsumptionItemsEvents() {
 
           uom_id: null,
           qtyhand: 0,
+          barcode: null,
           expiry_date: null,
           batchno: null,
           grn_no: null,
@@ -193,6 +197,7 @@ export default function ConsumptionItemsEvents() {
 
             uom_id: null,
             qtyhand: 0,
+            barcode: null,
             expiry_date: null,
             batchno: null,
             grn_no: null

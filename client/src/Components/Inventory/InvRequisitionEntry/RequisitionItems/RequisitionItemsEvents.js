@@ -70,6 +70,7 @@ const itemchangeText = ($this, context, e) => {
             item_uom: e.selected.sales_uom_id,
 
             item_group_id: e.selected.group_id,
+            barcode: e.selected.barcode,
             quantity: 1,
             addItemButton: false,
 
@@ -84,6 +85,7 @@ const itemchangeText = ($this, context, e) => {
               item_code: e.selected.item_code,
               item_category_id: e.selected.category_id,
               item_uom: e.selected.sales_uom_id,
+              barcode: e.selected.barcode,
 
               item_group_id: e.selected.group_id,
               quantity: 1,
@@ -149,6 +151,7 @@ const itemchangeText = ($this, context, e) => {
 
               item_group_id: e.selected.group_id,
               quantity: 1,
+              barcode: e.selected.barcode,
               addItemButton: false,
 
               ItemUOM: data.uomResult,
@@ -164,6 +167,7 @@ const itemchangeText = ($this, context, e) => {
                 item_uom: e.selected.sales_uom_id,
 
                 item_group_id: e.selected.group_id,
+                barcode: e.selected.barcode,
                 quantity: 1,
                 addItemButton: false,
 
@@ -220,7 +224,8 @@ const AddItems = ($this, context) => {
       to_qtyhand: $this.state.to_qtyhand,
       item_description: $this.state.item_description,
       item_code: $this.state.item_code,
-      uom_description: $this.state.uom_description
+      uom_description: $this.state.uom_description,
+      barcode: $this.state.barcode
     };
     inventory_stock_detail.push(ItemInput);
     $this.setState({
@@ -230,7 +235,7 @@ const AddItems = ($this, context) => {
       item_group_id: null,
       item_id: null,
       quantity_required: 0,
-
+      barcode: null,
       item_uom: null,
       from_qtyhand: 0,
       to_qtyhand: 0
@@ -245,6 +250,7 @@ const AddItems = ($this, context) => {
         item_group_id: null,
         item_id: null,
         quantity_required: 0,
+        barcode: null,
         item_uom: null,
         from_qtyhand: 0,
         to_qtyhand: 0

@@ -205,6 +205,10 @@ class ItemMomentEnquiry extends Component {
                           ? "Consumption"
                           : row.transaction_type === "REC"
                           ? "Receipt"
+                          : row.transaction_type === "PO"
+                          ? "Purchase Order"
+                          : row.transaction_type === "DN"
+                          ? "Delivery Note"
                           : "";
                       }
                     },

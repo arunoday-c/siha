@@ -61,6 +61,7 @@ const itemchangeText = ($this, e) => {
             uom_id: e.selected.sales_uom_id,
             service_id: e.selected.service_id,
             item_group_id: e.selected.group_id,
+            barcode: e.selected.barcode,
             quantity: 1,
 
             expiry_date: data.locationResult[0].expirydt,
@@ -109,6 +110,7 @@ const AddItems = ($this, context) => {
 
         insured: $this.state.insured,
         conversion_factor: $this.state.conversion_factor,
+        barcode: $this.state.barcode,
         vat_applicable: "Y",
         hims_d_services_id: $this.state.service_id,
         quantity: $this.state.quantity
@@ -157,6 +159,7 @@ const AddItems = ($this, context) => {
               item_id: null,
               uom_id: null,
               batchno: null,
+              barcode: null,
               expiry_date: null,
               quantity: 0,
               unit_cost: 0,
@@ -172,6 +175,7 @@ const AddItems = ($this, context) => {
             item_id: null,
             uom_id: null,
             batchno: null,
+            barcode: null,
             expiry_date: null,
             quantity: 0,
             unit_cost: 0,

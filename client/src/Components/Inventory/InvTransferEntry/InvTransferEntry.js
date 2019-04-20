@@ -96,8 +96,7 @@ class InvTransferEntry extends Component {
         redux: {
           type: "LOCATIOS_GET_DATA",
           mappingName: "invuserwiselocations"
-        },
-        afterSuccess: data => {}
+        }
       });
     }
   }
@@ -390,7 +389,6 @@ function mapStateToProps(state) {
   return {
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
-    inventoryrequisitionentry: state.inventoryrequisitionentry,
     invuserwiselocations: state.invuserwiselocations,
     inventoryitemuom: state.inventoryitemuom
   };
@@ -401,7 +399,6 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getRequisitionEntry: AlgaehActions,
       getTransferEntry: AlgaehActions,
       getUserLocationPermission: AlgaehActions,
       getItemUOM: AlgaehActions

@@ -139,70 +139,142 @@ const RequisitionSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
-        $this.props.getRequisitionEntry({
+        algaehApiCall({
           uri: "/inventorytransferEntry/getrequisitionEntryTransfer",
           module: "inventory",
           method: "GET",
-          printInput: true,
           data: {
             material_requisition_number: row.material_requisition_number,
             from_location_id: $this.state.from_location_id
           },
-          redux: {
-            type: "POS_ENTRY_GET_DATA",
-            mappingName: "inventoryrequisitionentry"
-          },
-          afterSuccess: data => {
-            AlgaehLoader({ show: true });
-            let from_location_id = data.from_location_id;
-            let from_location_type = data.from_location_type;
-            data.saveEnable = false;
 
-            data.from_location_id = data.to_location_id;
-            data.to_location_id = from_location_id;
-            data.from_location_type = data.to_location_type;
-            data.to_location_type = from_location_type;
+          onSuccess: response => {
+            if (response.data.success === true) {
+              debugger;
+              let data = response.data.records;
+              AlgaehLoader({ show: true });
+              let from_location_id = data.from_location_id;
+              let from_location_type = data.from_location_type;
+              data.saveEnable = false;
 
-            data.dataExitst = true;
+              data.from_location_id = data.to_location_id;
+              data.to_location_id = from_location_id;
+              data.from_location_type = data.to_location_type;
+              data.to_location_type = from_location_type;
 
-            for (let i = 0; i < data.inventory_stock_detail.length; i++) {
-              data.inventory_stock_detail[i].material_requisition_header_id =
-                data.hims_f_inventory_material_header_id;
+              data.dataExitst = true;
 
-              data.inventory_stock_detail[i].material_requisition_detail_id =
-                data.inventory_stock_detail[
-                  i
-                ].hims_f_inventory_material_detail_id;
+              for (let i = 0; i < data.inventory_stock_detail.length; i++) {
+                data.inventory_stock_detail[i].material_requisition_header_id =
+                  data.hims_f_inventory_material_header_id;
 
-              // grnno
-              data.inventory_stock_detail[i].quantity_transferred =
-                data.inventory_stock_detail[i].quantity_outstanding;
+                data.inventory_stock_detail[i].material_requisition_detail_id =
+                  data.inventory_stock_detail[
+                    i
+                  ].hims_f_inventory_material_detail_id;
 
-              data.inventory_stock_detail[i].transfer_to_date =
-                data.inventory_stock_detail[i].quantity_authorized -
-                data.inventory_stock_detail[i].quantity_outstanding;
-              data.inventory_stock_detail[i].quantity_outstanding = 0;
+                // grnno
+                data.inventory_stock_detail[i].quantity_transferred =
+                  data.inventory_stock_detail[i].quantity_outstanding;
 
-              data.inventory_stock_detail[i].expiry_date =
-                data.inventory_stock_detail[i].expirydt;
+                data.inventory_stock_detail[i].transfer_to_date =
+                  data.inventory_stock_detail[i].quantity_authorized -
+                  data.inventory_stock_detail[i].quantity_outstanding;
+                data.inventory_stock_detail[i].quantity_outstanding = 0;
 
-              data.inventory_stock_detail[i].quantity_requested =
-                data.inventory_stock_detail[i].quantity_required;
-              data.inventory_stock_detail[i].from_qtyhand =
-                data.inventory_stock_detail[i].qtyhand;
+                data.inventory_stock_detail[i].expiry_date =
+                  data.inventory_stock_detail[i].expirydt;
 
-              data.inventory_stock_detail[i].uom_requested_id =
-                data.inventory_stock_detail[i].item_uom;
-              data.inventory_stock_detail[i].uom_transferred_id =
-                data.inventory_stock_detail[i].item_uom;
+                data.inventory_stock_detail[i].quantity_requested =
+                  data.inventory_stock_detail[i].quantity_required;
+                data.inventory_stock_detail[i].from_qtyhand =
+                  data.inventory_stock_detail[i].qtyhand;
 
-              data.inventory_stock_detail[i].unit_cost =
-                data.inventory_stock_detail[i].avgcost;
+                data.inventory_stock_detail[i].uom_requested_id =
+                  data.inventory_stock_detail[i].item_uom;
+                data.inventory_stock_detail[i].uom_transferred_id =
+                  data.inventory_stock_detail[i].item_uom;
+
+                data.inventory_stock_detail[i].unit_cost =
+                  data.inventory_stock_detail[i].avgcost;
+              }
+              $this.setState(data);
+              AlgaehLoader({ show: false });
             }
-            $this.setState(data);
+          },
+          onFailure: error => {
             AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
           }
         });
+        // $this.props.getRequisitionEntry({
+        //   uri: "/inventorytransferEntry/getrequisitionEntryTransfer",
+        //   module: "inventory",
+        //   method: "GET",
+        //   printInput: true,
+        //   data: {
+        //     material_requisition_number: row.material_requisition_number,
+        //     from_location_id: $this.state.from_location_id
+        //   },
+        //   redux: {
+        //     type: "POS_ENTRY_GET_DATA",
+        //     mappingName: "inventoryrequisitionentry"
+        //   },
+        //   afterSuccess: data => {
+        //     debugger;
+        //     AlgaehLoader({ show: true });
+        //     let from_location_id = data.from_location_id;
+        //     let from_location_type = data.from_location_type;
+        //     data.saveEnable = false;
+
+        //     data.from_location_id = data.to_location_id;
+        //     data.to_location_id = from_location_id;
+        //     data.from_location_type = data.to_location_type;
+        //     data.to_location_type = from_location_type;
+
+        //     data.dataExitst = true;
+
+        //     for (let i = 0; i < data.inventory_stock_detail.length; i++) {
+        //       data.inventory_stock_detail[i].material_requisition_header_id =
+        //         data.hims_f_inventory_material_header_id;
+
+        //       data.inventory_stock_detail[i].material_requisition_detail_id =
+        //         data.inventory_stock_detail[
+        //           i
+        //         ].hims_f_inventory_material_detail_id;
+
+        //       // grnno
+        //       data.inventory_stock_detail[i].quantity_transferred =
+        //         data.inventory_stock_detail[i].quantity_outstanding;
+
+        //       data.inventory_stock_detail[i].transfer_to_date =
+        //         data.inventory_stock_detail[i].quantity_authorized -
+        //         data.inventory_stock_detail[i].quantity_outstanding;
+        //       data.inventory_stock_detail[i].quantity_outstanding = 0;
+
+        //       data.inventory_stock_detail[i].expiry_date =
+        //         data.inventory_stock_detail[i].expirydt;
+
+        //       data.inventory_stock_detail[i].quantity_requested =
+        //         data.inventory_stock_detail[i].quantity_required;
+        //       data.inventory_stock_detail[i].from_qtyhand =
+        //         data.inventory_stock_detail[i].qtyhand;
+
+        //       data.inventory_stock_detail[i].uom_requested_id =
+        //         data.inventory_stock_detail[i].item_uom;
+        //       data.inventory_stock_detail[i].uom_transferred_id =
+        //         data.inventory_stock_detail[i].item_uom;
+
+        //       data.inventory_stock_detail[i].unit_cost =
+        //         data.inventory_stock_detail[i].avgcost;
+        //     }
+        //     $this.setState(data);
+        //     AlgaehLoader({ show: false });
+        //   }
+        // });
       }
     });
   } else {

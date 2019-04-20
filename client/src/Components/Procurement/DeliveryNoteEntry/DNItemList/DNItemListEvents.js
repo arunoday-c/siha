@@ -293,7 +293,7 @@ const printBarcode = ($this, row, e) => {
     report: {
       fileName: "sampleBarcode",
       barcode: {
-        parameter: "patient_code",
+        parameter: "bar_code",
         options: {
           format: "",
           lineColor: "#0aa",
@@ -303,7 +303,7 @@ const printBarcode = ($this, row, e) => {
       }
     },
     data: {
-      patient_code:
+      bar_code:
         row.item_code + row.batchno + moment(row.expiry_date).format("YYYYMMDD")
     }
   });

@@ -68,7 +68,8 @@ export default {
       from_location_name: null,
       to_location_name: null,
       requistion_type_name: null,
-      requistion_from: null
+      requistion_from: null,
+      barcode: null
     };
     return output;
   }

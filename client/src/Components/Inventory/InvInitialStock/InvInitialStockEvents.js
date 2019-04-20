@@ -6,6 +6,7 @@ import math from "mathjs";
 import Enumerable from "linq";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import AlgaehReport from "../../Wrapper/printReports";
 
 var intervalId;
 const changeTexts = ($this, ctrl, e) => {
@@ -62,14 +63,15 @@ const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
-
+  debugger;
   $this.setState({
     [name]: value,
     item_category_id: e.selected.category_id,
     item_group_id: e.selected.group_id,
     uom_id: e.selected.stocking_uom_id,
     sales_uom: e.selected.sales_uom_id,
-    required_batchno: e.selected.required_batchno
+    required_batchno: e.selected.required_batchno,
+    item_code: e.selected.item_code
   });
 };
 
@@ -92,6 +94,7 @@ const AddItems = $this => {
         document.querySelector("[name='unit_cost']").focus();
       } else {
         let inventory_stock_detail = $this.state.inventory_stock_detail;
+        debugger;
         let itemObj = {
           location_id: $this.state.location_id,
           location_type: $this.state.location_type,
@@ -106,10 +109,14 @@ const AddItems = $this => {
           unit_cost: $this.state.unit_cost,
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
-          barcode: "",
+          barcode:
+            $this.state.item_code +
+            $this.state.batchno +
+            moment($this.state.expiry_date).format("YYYYMMDD"),
           grn_number: $this.state.grn_number,
           noorecords: inventory_stock_detail.length + 1,
-          required_batchno: $this.state.required_batchno
+          required_batchno: $this.state.required_batchno,
+          operation: "+"
         };
 
         inventory_stock_detail.push(itemObj);
@@ -237,7 +244,8 @@ const ClearData = $this => {
     saveEnable: true,
     postEnable: true,
     dataExitst: false,
-    posted: "N"
+    posted: "N",
+    item_code: null
   });
 };
 
@@ -250,6 +258,13 @@ const PostInitialStock = $this => {
   for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
     $this.state.inventory_stock_detail[i].net_total =
       $this.state.inventory_stock_detail[i].extended_cost;
+    $this.state.inventory_stock_detail[i].barcode =
+      $this.state.inventory_stock_detail[i].item_code +
+      $this.state.inventory_stock_detail[i].batchno +
+      moment($this.state.inventory_stock_detail[i].expiry_date).format(
+        "YYYYMMDD"
+      );
+    $this.state.inventory_stock_detail[i].operation = "+";
   }
   algaehApiCall({
     uri: "/inventoryinitialstock/updateInventoryInitialStock",
@@ -270,6 +285,27 @@ const PostInitialStock = $this => {
   });
 };
 
+const printBarcode = ($this, row, e) => {
+  debugger;
+  AlgaehReport({
+    report: {
+      fileName: "sampleBarcode",
+      barcode: {
+        parameter: "bar_code",
+        options: {
+          format: "",
+          lineColor: "#0aa",
+          width: 4,
+          height: 40
+        }
+      }
+    },
+    data: {
+      bar_code: row.barcode
+    }
+  });
+};
+
 export {
   changeTexts,
   itemchangeText,
@@ -282,5 +318,6 @@ export {
   LocationchangeTexts,
   deleteInitialStock,
   ClearData,
-  PostInitialStock
+  PostInitialStock,
+  printBarcode
 };
