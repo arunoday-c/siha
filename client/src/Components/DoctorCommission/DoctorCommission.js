@@ -158,7 +158,7 @@ class DoctorCommission extends Component {
                 events={{
                   onChange: null
                 }}
-                value={this.state.initial_stock_date}
+                value={this.state.doctoCommGrid_date}
               />
             }
             selectedLang={this.state.selectedLang}
@@ -300,7 +300,7 @@ class DoctorCommission extends Component {
                 <div className="row">
                   <div className="col-lg-12" id="Doc_Com_grid_cntr">
                     <AlgaehDataGrid
-                      id="initial_stock"
+                      id="doctoCommGrid"
                       columns={[
                         {
                           fieldName: "bill_number",
