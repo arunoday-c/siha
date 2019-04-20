@@ -524,5 +524,27 @@
         "label": "Generic Name"
       }
     ]
+  },
+  "ConsumptionEntry": {
+    "PharConsEntry": [
+      {
+        "fieldName": "consumption_number",
+        "label": "Consumption Number"
+      },
+      {
+        "fieldName": "consumption_number",
+        "label": "Consumption Number"
+      }
+    ],
+    "InvConsEntry": [
+      {
+        "fieldName": "consumption_number",
+        "label": "Consumption Number"
+      },
+      {
+        "fieldName": "consumption_number",
+        "label": "Consumption Number"
+      }
+    ]
   }
 }

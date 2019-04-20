@@ -18,7 +18,12 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_inventory_stock_detail where inventory_stock_header_id=? and record_status='A'",
+                  "select SD.`hims_f_inventory_stock_detail_id`, SD.`inventory_stock_header_id`, SD.`item_id`, SD.`location_type`, SD.`location_id`, \
+                SD.`item_category_id`, SD.`item_group_id`, SD.`uom_id`, SD.`barcode`, SD.`batchno`, SD.`expiry_date`, SD.`grn_number`, SD.`quantity`, \
+                SD.`conversion_fact`, SD.`unit_cost`, SD.`extended_cost`, SD.`sales_uom`, SD.`comment`, SD.`created_date`, SD.`created_by`, \
+                SD.`updated_date`, SD.`updated_by`, SD.`record_status`, IM.item_code, IM.item_description, IU.uom_description from \
+                hims_f_inventory_stock_detail SD, hims_d_inventory_item_master IM ,hims_d_inventory_uom IU where SD.inventory_stock_header_id=? and \
+                SD.record_status='A'  and SD.item_id = IM.hims_d_inventory_item_master_id and SD.uom_id = IU.hims_d_inventory_uom_id",
                 values: [headerResult[0].hims_f_inventory_stock_header_id],
                 printQuery: true
               })

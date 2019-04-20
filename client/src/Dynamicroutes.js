@@ -162,6 +162,11 @@ const PageToPlot = {
       import("./Components/Pharmacy/RequisitionList/RequisitionSwitch")
     )
   ),
+  ConsumptionEntry: React.lazy(() =>
+    retry(() =>
+      import("./Components/Pharmacy/ConsumptionEntry/ConsumptionEntry")
+    )
+  ),
   ReportsList: React.lazy(() =>
     retry(() => import("./Components/Reports/Reports"))
   ),
@@ -217,6 +222,11 @@ const PageToPlot = {
   InvTransferEntry: React.lazy(() =>
     retry(() =>
       import("./Components/Inventory/InvTransferEntry/InvTransferEntry")
+    )
+  ),
+  InvConsumptionEntry: React.lazy(() =>
+    retry(() =>
+      import("./Components/Inventory/InvConsumptionEntry/InvConsumptionEntry")
     )
   ),
   VendorSetup: React.lazy(() =>

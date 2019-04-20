@@ -68,7 +68,7 @@ let updateIntoItemLocation = (req, res, next) => {
           transaction_total: s.extended_cost,
           discount_percentage: s.discount_percentage || 0,
           discount_amount: s.discount_amount || 0,
-          net_total: s.net_total,
+          net_total: s.net_total || 0,
           landing_cost: s.landing_cost || 0,
           average_cost: s.unit_cost,
           created_by: req.userIdentity.algaeh_d_app_user_id,

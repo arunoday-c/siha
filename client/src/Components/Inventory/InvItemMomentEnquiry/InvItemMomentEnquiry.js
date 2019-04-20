@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import {
+  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
@@ -20,6 +21,7 @@ import {
 import "./InvItemMomentEnquiry.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class InvItemMomentEnquiry extends Component {
   constructor(props) {
@@ -28,9 +30,11 @@ class InvItemMomentEnquiry extends Component {
     this.state = {
       ListItems: [],
       location_id: null,
-      item_id: null,
+      item_code_id: null,
       from_date: null,
-      to_date: null
+      to_date: null,
+      barcode: null,
+      transaction_type: null
     };
   }
 
@@ -109,25 +113,8 @@ class InvItemMomentEnquiry extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Location", isImp: true }}
-                    selector={{
-                      name: "location_id",
-                      className: "select-fld",
-                      value: this.state.location_id,
-                      dataSource: {
-                        textField: "location_description",
-                        valueField: "hims_d_inventory_location_id",
-                        data: this.props.inventorylocations
-                      },
-
-                      onChange: changeTexts.bind(this, this)
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{ forceLabel: "Item Name", isImp: true }}
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Item Name" }}
                     selector={{
                       name: "item_id",
                       className: "select-fld",
@@ -137,13 +124,75 @@ class InvItemMomentEnquiry extends Component {
                         valueField: "hims_d_inventory_item_master_id",
                         data: this.props.inventoryitemlist
                       },
+                      onChange: changeTexts.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          item_id: null
+                        });
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      forceLabel: "Item Barcode"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "barcode",
+                      value: this.state.barcode,
+                      events: {
+                        onChange: changeTexts.bind(this, this)
+                      }
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Location" }}
+                    selector={{
+                      name: "location_id",
+                      className: "select-fld",
+                      value: this.state.location_id,
+                      dataSource: {
+                        textField: "location_description",
+                        valueField: "hims_d_inventory_location_id",
+                        data: this.props.inventorylocations
+                      },
+                      onClear: () => {
+                        this.setState({
+                          location_id: null
+                        });
+                      },
+                      onChange: changeTexts.bind(this, this)
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Transaction Type" }}
+                    selector={{
+                      name: "transaction_type",
+                      className: "select-fld",
+                      value: this.state.transaction_type,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.FORMAT_TRANSACTION_TYPE
+                      },
+                      onClear: () => {
+                        this.setState({
+                          transaction_type: null
+                        });
+                      },
                       onChange: changeTexts.bind(this, this)
                     }}
                   />
 
                   <AlgaehDateHandler
-                    div={{ className: "col-lg-2" }}
-                    label={{ forceLabel: "From Date", isImp: true }}
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "From Date" }}
                     textBox={{ className: "txt-fld", name: "from_date" }}
                     events={{
                       onChange: datehandle.bind(this, this)
@@ -151,8 +200,8 @@ class InvItemMomentEnquiry extends Component {
                     value={this.state.from_date}
                   />
                   <AlgaehDateHandler
-                    div={{ className: "col-lg-2" }}
-                    label={{ forceLabel: "To Date", isImp: true }}
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "To Date" }}
                     textBox={{ className: "txt-fld", name: "to_date" }}
                     events={{
                       onChange: datehandle.bind(this, this)
@@ -160,7 +209,8 @@ class InvItemMomentEnquiry extends Component {
                     maxDate={new Date()}
                     value={this.state.to_date}
                   />
-                  <div className="col-lg-2" style={{ paddingTop: "3vh" }}>
+
+                  <div className="col" style={{ paddingTop: "3vh" }}>
                     <button
                       className="btn btn-primary btn-sm"
                       type="button"
@@ -183,7 +233,28 @@ class InvItemMomentEnquiry extends Component {
                         <AlgaehLabel
                           label={{ forceLabel: "Transaction Type" }}
                         />
-                      )
+                      ),
+                      displayTemplate: row => {
+                        return row.transaction_type === "MR"
+                          ? "Material Requisition"
+                          : row.transaction_type === "ST"
+                          ? "Stock Transfer"
+                          : row.transaction_type === "POS"
+                          ? "Point of Sale"
+                          : row.transaction_type === "SRT"
+                          ? "Sales Return"
+                          : row.transaction_type === "INT"
+                          ? "Opening Stock"
+                          : row.transaction_type === "CS"
+                          ? "Consumption"
+                          : row.transaction_type === "REC"
+                          ? "Receipt"
+                          : row.transaction_type === "PO"
+                          ? "Purchase Order"
+                          : row.transaction_type === "DN"
+                          ? "Delivery Note"
+                          : "";
+                      }
                     },
                     {
                       fieldName: "transaction_date",
@@ -195,6 +266,65 @@ class InvItemMomentEnquiry extends Component {
                       displayTemplate: row => {
                         return (
                           <span>{dateFormater(row.transaction_date)}</span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "from_location_id",
+                      label: <AlgaehLabel label={{ forceLabel: "Location" }} />,
+                      displayTemplate: row => {
+                        let display =
+                          this.props.inventorylocations === undefined
+                            ? []
+                            : this.props.inventorylocations.filter(
+                                f =>
+                                  f.hims_d_inventory_location_id ===
+                                  row.from_location_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].location_description
+                              : ""}
+                          </span>
+                        );
+                      }
+                    },
+                    {
+                      fieldName: "item_code_id",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                      ),
+                      displayTemplate: row => {
+                        let display =
+                          this.props.inventoryitemlist === undefined
+                            ? []
+                            : this.props.inventoryitemlist.filter(
+                                f =>
+                                  f.hims_d_inventory_item_master_id ===
+                                  row.item_code_id
+                              );
+
+                        return (
+                          <span>
+                            {display !== null && display.length !== 0
+                              ? display[0].item_description
+                              : ""}
+                            {display !== null && display.length !== 0 ? (
+                              <i
+                                className={
+                                  row.operation === "+"
+                                    ? "fas fa-arrow-up green"
+                                    : row.operation === "-"
+                                    ? "fas fa-arrow-down red"
+                                    : ""
+                                }
+                              />
+                            ) : (
+                              ""
+                            )}
+                          </span>
                         );
                       }
                     },

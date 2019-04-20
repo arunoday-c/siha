@@ -909,5 +909,17 @@
     { "name": "None", "value": "0" },
     { "name": "Salary Level", "value": "1" },
     { "name": "Yearly", "value": "2" }
+  ],
+  "FORMAT_TRANSACTION_TYPE": [
+    { "name": "Material Requisition", "value": "MR" },
+    { "name": "Purchase Order", "value": "PO" },
+    { "name": "Stock Transfer", "value": "ST" },
+    { "name": "Point of Sale", "value": "PO" },
+    { "name": "Material Requisition", "value": "POS" },
+    { "name": "Sales Return", "value": "SRT" },
+    { "name": "Opening Stock", "value": "INT" },
+    { "name": "Consumption", "value": "CS" },
+    { "name": "Receipt", "value": "REC" },
+    { "name": "Delivery Note", "value": "DN" }
   ]
 }

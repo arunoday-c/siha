@@ -99,9 +99,9 @@ const AddUom = ($this, context) => {
             } else {
               stocking_uom_id = $this.state.stocking_uom_id;
             }
-            if ($this.state.hims_d_item_master_id !== null) {
+            if ($this.state.hims_d_inventory_item_master_id !== null) {
               let Insertobj = {
-                item_master_id: $this.state.hims_d_item_master_id,
+                item_master_id: $this.state.hims_d_inventory_item_master_id,
                 uom_id: $this.state.uom_id,
                 stocking_uom: $this.state.stocking_uom,
                 conversion_factor: $this.state.conversion_factor,
@@ -168,11 +168,11 @@ const updateUOM = ($this, context, row) => {
   let detail_item_uom = $this.state.detail_item_uom;
   let updateUomMapResult = $this.state.updateUomMapResult;
 
-  if ($this.state.hims_d_item_master_id !== null) {
-    if (row.hims_m_item_uom_id !== undefined) {
+  if ($this.state.hims_d_inventory_item_master_id !== null) {
+    if (row.hims_m_inventory_item_uom_id !== undefined) {
       let Updateobj = {
-        hims_m_item_uom_id: row.hims_m_item_uom_id,
-        item_master_id: row.hims_d_item_master_id,
+        hims_m_inventory_item_uom_id: row.hims_m_inventory_item_uom_id,
+        item_master_id: row.hims_d_inventory_item_master_id,
         uom_id: row.uom_id,
         stocking_uom: row.stocking_uom,
         conversion_factor: row.conversion_factor,
@@ -182,8 +182,8 @@ const updateUOM = ($this, context, row) => {
       updateUomMapResult.push(Updateobj);
     } else {
       let Updateobj = {
-        hims_m_item_uom_id: row.hims_m_item_uom_id,
-        item_master_id: row.hims_d_item_master_id,
+        hims_m_inventory_item_uom_id: row.hims_m_inventory_item_uom_id,
+        item_master_id: row.hims_d_inventory_item_master_id,
         uom_id: row.uom_id,
         stocking_uom: row.stocking_uom,
         conversion_factor: row.conversion_factor,
@@ -219,15 +219,16 @@ const updateUOM = ($this, context, row) => {
 };
 
 const deleteUOM = ($this, context, row, rowId) => {
-  if (row.hims_m_item_uom_id !== undefined) {
+  debugger;
+  if (row.hims_m_inventory_item_uom_id !== undefined) {
     let detail_item_uom = $this.state.detail_item_uom;
     let updateUomMapResult = $this.state.updateUomMapResult;
     let insertItemUomMap = $this.state.insertItemUomMap;
-    if ($this.state.hims_d_item_master_id !== null) {
-      if (row.hims_m_item_uom_id !== undefined) {
+    if ($this.state.hims_d_inventory_item_master_id !== null) {
+      if (row.hims_m_inventory_item_uom_id !== undefined) {
         let Updateobj = {
-          hims_m_item_uom_id: row.hims_m_item_uom_id,
-          item_master_id: row.hims_d_item_master_id,
+          hims_m_inventory_item_uom_id: row.hims_m_inventory_item_uom_id,
+          item_master_id: row.hims_d_inventory_item_master_id,
           uom_id: row.uom_id,
           stocking_uom: row.stocking_uom,
           conversion_factor: row.conversion_factor,
