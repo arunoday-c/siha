@@ -176,7 +176,7 @@ export default class Login extends Component {
                 <div className="row">
                   <div className="col-12">
                     <div className="companyLogo" />
-                    <h3 className="LoginCntrHdg">Login In</h3>
+                    <h3 className="LoginCntrHdg">Log In</h3>
                   </div>
                   <div
                     className="col-12"
