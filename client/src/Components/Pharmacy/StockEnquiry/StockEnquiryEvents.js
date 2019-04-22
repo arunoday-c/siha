@@ -1,5 +1,6 @@
 import moment from "moment";
 import Options from "../../../Options.json";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -34,14 +35,24 @@ const getItemLocationStock = $this => {
     inputObj.item_id = $this.state.item_id;
   }
 
-  $this.props.getItemLocationStock({
+  algaehApiCall({
     uri: "/pharmacyGlobal/getItemandLocationStock",
     module: "pharmacy",
     method: "GET",
     data: inputObj,
-    redux: {
-      type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "itemBatch"
+    onSuccess: response => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          ListItems: response.data.records
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };

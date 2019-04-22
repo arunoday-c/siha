@@ -45,20 +45,20 @@ class StockEnquiry extends Component {
       });
     }
 
-    if (
-      this.props.locations === undefined ||
-      this.props.locations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/pharmacy/getPharmacyLocation",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ANALYTES_GET_DATA",
-          mappingName: "locations"
-        }
-      });
-    }
+    // if (
+    //   this.props.locations === undefined ||
+    //   this.props.locations.length === 0
+    // ) {
+    this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ANALYTES_GET_DATA",
+        mappingName: "locations"
+      }
+    });
+    // }
     if (this.props.itemuom === undefined || this.props.itemuom.length === 0) {
       this.props.getItemUOM({
         uri: "/pharmacy/getPharmacyUom",
@@ -262,7 +262,7 @@ class StockEnquiry extends Component {
                 ]}
                 keyId="item_id"
                 dataSource={{
-                  data: this.props.itemBatch
+                  data: this.state.ListItems
                 }}
                 noDataText="No Stock available for selected Item in the selected Location"
                 // isEditable={true}
@@ -285,7 +285,6 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     locations: state.locations,
-    itemBatch: state.itemBatch,
     itemuom: state.itemuom
   };
 }
@@ -295,7 +294,6 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getItemLocationStock: AlgaehActions,
       getItemUOM: AlgaehActions
     },
     dispatch

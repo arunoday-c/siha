@@ -30,6 +30,7 @@ import {
 import "./InitialStock.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class InitialStock extends Component {
   constructor(props) {
@@ -61,6 +62,9 @@ class InitialStock extends Component {
   }
 
   componentDidMount() {
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
     if (
       this.props.intitemlist === undefined ||
       this.props.intitemlist.length === 0
@@ -75,20 +79,24 @@ class InitialStock extends Component {
         }
       });
     }
-    if (
-      this.props.intlocations === undefined ||
-      this.props.intlocations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/pharmacy/getPharmacyLocation",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "LOCATIONS_GET_DATA",
-          mappingName: "intlocations"
-        }
-      });
-    }
+    // if (
+    //   this.props.intlocations === undefined ||
+    //   this.props.intlocations.length === 0
+    // ) {
+    this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        location_status: "A",
+        hospital_id: hospital.hims_d_hospital_id
+      },
+      redux: {
+        type: "LOCATIONS_GET_DATA",
+        mappingName: "intlocations"
+      }
+    });
+    // }
     if (
       this.props.intitemcategory === undefined ||
       this.props.intitemcategory.length === 0

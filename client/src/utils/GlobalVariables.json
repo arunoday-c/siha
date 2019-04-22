@@ -357,6 +357,7 @@
     { "name": "ICD Name", "value": "D" }
   ],
   "FORMAT_PHARMACY_STORE": [
+    { "name": "Warehouse", "arabic_name": "مستودع", "value": "WH" },
     { "name": "Main Store", "arabic_name": "المخزن الرئيسي", "value": "MS" },
     { "name": "Sub Store", "arabic_name": "المتجر الفرعي", "value": "SS" }
   ],

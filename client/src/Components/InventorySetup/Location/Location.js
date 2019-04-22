@@ -31,7 +31,8 @@ class Location extends Component {
     this.state = {
       hims_d_inventory_location_id: "",
       location_description: "",
-      location_type: null
+      location_type: null,
+      hospital_id: null
     };
     this.baseState = this.state;
   }
@@ -48,6 +49,19 @@ class Location extends Component {
       this.props.inventorylocation.length === 0
     ) {
       getLocation(this, this);
+    }
+    if (
+      this.props.organizations === undefined ||
+      this.props.organizations.length === 0
+    ) {
+      this.props.getOrganizations({
+        uri: "/organization/getOrganization",
+        method: "GET",
+        redux: {
+          type: "ORGS_GET_DATA",
+          mappingName: "organizations"
+        }
+      });
     }
   }
 
@@ -94,7 +108,36 @@ class Location extends Component {
                   valueField: "value",
                   data: GlobalVariables.FORMAT_PHARMACY_STORE
                 },
-                onChange: changeTexts.bind(this, this)
+                onChange: changeTexts.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    location_type: null
+                  });
+                }
+              }}
+            />
+
+            <AlagehAutoComplete
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "hospital_id",
+                isImp: true
+              }}
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                onChange: changeTexts.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
+                }
               }}
             />
 
@@ -143,28 +186,81 @@ class Location extends Component {
                       <AlgaehLabel label={{ fieldName: "location_type" }} />
                     ),
                     displayTemplate: row => {
-                      return row.location_type === "MS"
+                      return row.location_type === "WH"
+                        ? "Warehouse"
+                        : row.location_type === "MS"
                         ? "Main Store"
                         : row.location_type === "SS"
                         ? "Sub Store"
                         : null;
                     },
                     editorTemplate: row => {
+                      return row.location_type === "WH"
+                        ? "Warehouse"
+                        : row.location_type === "MS"
+                        ? "Main Store"
+                        : row.location_type === "SS"
+                        ? "Sub Store"
+                        : null;
+                    }
+                    // editorTemplate: row => {
+                    //   return (
+                    //     <AlagehAutoComplete
+                    //       div={{}}
+                    //       selector={{
+                    //         name: "location_type",
+                    //         className: "select-fld",
+                    //         value: row.location_type,
+                    //         dataSource: {
+                    //           textField: "name",
+                    //           valueField: "value",
+                    //           data: GlobalVariables.FORMAT_PHARMACY_STORE
+                    //         },
+                    //         onChange: onchangegridcol.bind(this, this, row),
+                    //         others: {
+                    //           errormessage: "Location Type - cannot be blank",
+                    //           required: true
+                    //         }
+                    //       }}
+                    //     />
+                    //   );
+                    // }
+                  },
+                  {
+                    fieldName: "hospital_id",
+                    label: <AlgaehLabel label={{ fieldName: "hospital_id" }} />,
+                    displayTemplate: row => {
+                      let display =
+                        this.props.organizations === undefined
+                          ? []
+                          : this.props.organizations.filter(
+                              f => f.hims_d_hospital_id === row.hospital_id
+                            );
+
+                      return (
+                        <span>
+                          {display !== null && display.length !== 0
+                            ? display[0].hospital_name
+                            : ""}
+                        </span>
+                      );
+                    },
+                    editorTemplate: row => {
                       return (
                         <AlagehAutoComplete
                           div={{}}
                           selector={{
-                            name: "location_type",
+                            name: "hospital_id",
                             className: "select-fld",
-                            value: row.location_type,
+                            value: row.hospital_id,
                             dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_PHARMACY_STORE
+                              textField: "hospital_name",
+                              valueField: "hims_d_hospital_id",
+                              data: this.props.organizations
                             },
                             onChange: onchangegridcol.bind(this, this, row),
                             others: {
-                              errormessage: "Location Type - cannot be blank",
+                              errormessage: "Division/Branch - cannot be blank",
                               required: true
                             }
                           }}
@@ -281,14 +377,16 @@ class Location extends Component {
 function mapStateToProps(state) {
   return {
     inventorylocation: state.inventorylocation,
-    userdrtails: state.userdrtails
+    userdrtails: state.userdrtails,
+    organizations: state.organizations
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
+      getOrganizations: AlgaehActions
     },
     dispatch
   );

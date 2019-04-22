@@ -132,9 +132,8 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let type = "";
+
   if (location === "From") {
-    type = "from_location_type";
     if ($this.state.to_location_id === value) {
       swalMessage({
         title: "From Location and To Location Cannot be Same ",
@@ -151,7 +150,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       }
       $this.setState({
         [name]: value,
-        [type]: e.selected.location_type,
+        from_location_type: e.selected.location_type,
         requistion_type: requistion_type,
         to_location_id: null,
         to_location_type: null,
@@ -159,7 +158,6 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       });
     }
   } else if (location === "To") {
-    type = "to_location_type";
     if ($this.state.from_location_id === value) {
       swalMessage({
         title: "From Location and To Location Cannot be Same ",
@@ -169,7 +167,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
     } else {
       $this.setState({
         [name]: value,
-        [type]: e.selected.location_type,
+        to_location_type: e.selected.location_type,
         to_location_name: e.selected.location_description
       });
     }

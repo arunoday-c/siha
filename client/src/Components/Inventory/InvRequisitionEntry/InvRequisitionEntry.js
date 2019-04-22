@@ -25,6 +25,7 @@ import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import Options from "../../../Options.json";
 import AlgaehReport from "../../Wrapper/printReports";
 import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class InvRequisitionEntry extends Component {
   constructor(props) {
@@ -39,6 +40,9 @@ class InvRequisitionEntry extends Component {
   }
 
   componentDidMount() {
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
     if (
       this.props.inventoryitemlist === undefined ||
       this.props.inventoryitemlist.length === 0
@@ -76,6 +80,10 @@ class InvRequisitionEntry extends Component {
         uri: "/inventoryGlobal/getUserLocationPermission",
         module: "inventory",
         method: "GET",
+        data: {
+          location_status: "A",
+          hospital_id: hospital.hims_d_hospital_id
+        },
         redux: {
           type: "LOCATIOS_GET_DATA",
           mappingName: "invuserwiselocations"
@@ -95,6 +103,12 @@ class InvRequisitionEntry extends Component {
     ClearData(this, this);
   }
   render() {
+    const invuserwiselocations = _.filter(
+      this.props.invuserwiselocations,
+      f => {
+        return f.location_type !== "WH";
+      }
+    );
     const from_location_name =
       this.state.from_location_id !== null
         ? _.filter(this.props.invuserwiselocations, f => {
@@ -238,12 +252,18 @@ class InvRequisitionEntry extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_inventory_location_id",
-                      data: this.props.invuserwiselocations
+                      data: invuserwiselocations
                     },
                     others: {
                       disabled: this.state.addedItem
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "From")
+                    onChange: LocationchangeTexts.bind(this, this, "From"),
+                    onClear: () => {
+                      this.setState({
+                        from_location_id: null,
+                        from_location_type: null
+                      });
+                    }
                   }}
                 />
 
@@ -255,7 +275,9 @@ class InvRequisitionEntry extends Component {
                   />
                   <h6>
                     {this.state.from_location_type
-                      ? this.state.from_location_type === "MS"
+                      ? this.state.from_location_type === "WH"
+                        ? "Warehouse"
+                        : this.state.from_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
                       : "From Location Type"}
@@ -275,10 +297,16 @@ class InvRequisitionEntry extends Component {
                       data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
                     },
                     others: {
-                      disabled: true
+                      disabled:
+                        this.state.from_location_type === "MS" ? false : true
                     },
 
-                    onChange: requisitionEvent.bind(this, this)
+                    onChange: requisitionEvent.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        requistion_type: null
+                      });
+                    }
                   }}
                 />
               </div>
@@ -303,7 +331,13 @@ class InvRequisitionEntry extends Component {
                           ? true
                           : this.state.addedItem
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "To")
+                    onChange: LocationchangeTexts.bind(this, this, "To"),
+                    onClear: () => {
+                      this.setState({
+                        to_location_id: null,
+                        to_location_type: null
+                      });
+                    }
                   }}
                 />
 
@@ -315,7 +349,9 @@ class InvRequisitionEntry extends Component {
                   />
                   <h6>
                     {this.state.to_location_type
-                      ? this.state.to_location_type === "MS"
+                      ? this.state.to_location_type === "WH"
+                        ? "Warehouse"
+                        : this.state.to_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
                       : "To Location Type"}

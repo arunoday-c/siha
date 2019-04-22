@@ -64,7 +64,7 @@ class DeliveryNoteEntry extends Component {
 
   render() {
     const _mainStore = Enumerable.from(this.props.dnlocations)
-      .where(w => w.location_type === "MS")
+      .where(w => w.location_type === "WH")
       .toArray();
 
     const Location_data =

@@ -22,6 +22,7 @@
   "category_id": "Category",
   "location_type": "Location Type",
   "allow_pos": "Allow POS",
+  "hospital_id": "Division/Branch",
 
   "user_id": "User",
   "from_location": "Location",

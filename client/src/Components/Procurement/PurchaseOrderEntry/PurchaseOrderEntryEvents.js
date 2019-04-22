@@ -396,6 +396,9 @@ const getData = $this => {
       uri: "/pharmacy/getPharmacyLocation",
       module: "pharmacy",
       method: "GET",
+      data: {
+        location_status: "A"
+      },
       redux: {
         type: "LOCATIONS_GET_DATA",
         mappingName: "polocations"
@@ -446,6 +449,9 @@ const getData = $this => {
       uri: "/inventory/getInventoryLocation",
       module: "inventory",
       method: "GET",
+      data: {
+        location_status: "A"
+      },
       redux: {
         type: "LOCATIONS_GET_DATA",
         mappingName: "polocations"

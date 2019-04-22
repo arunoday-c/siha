@@ -56,7 +56,7 @@ class PurchaseOrderEntry extends Component {
 
   render() {
     const _mainStore = Enumerable.from(this.props.polocations)
-      .where(w => w.location_type === "MS")
+      .where(w => w.location_type === "WH")
       .toArray();
 
     debugger;

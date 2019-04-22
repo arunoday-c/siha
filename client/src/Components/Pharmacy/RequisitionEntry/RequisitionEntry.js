@@ -23,6 +23,8 @@ import RequisitionItems from "./RequisitionItems/RequisitionItems";
 import MyContext from "../../../utils/MyContext";
 import RequisitionIOputs from "../../../Models/Requisition";
 import Options from "../../../Options.json";
+import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class RequisitionEntry extends Component {
   constructor(props) {
@@ -37,6 +39,9 @@ class RequisitionEntry extends Component {
   }
 
   componentDidMount() {
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
@@ -56,6 +61,7 @@ class RequisitionEntry extends Component {
         uri: "/pharmacy/getPharmacyLocation",
         module: "pharmacy",
         method: "GET",
+
         redux: {
           type: "LOCATIOS_GET_DATA",
           mappingName: "reqlocations"
@@ -63,20 +69,24 @@ class RequisitionEntry extends Component {
       });
     }
 
-    if (
-      this.props.userwiselocations === undefined ||
-      this.props.userwiselocations.length === 0
-    ) {
-      this.props.getUserLocationPermission({
-        uri: "/pharmacyGlobal/getUserLocationPermission",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "userwiselocations"
-        }
-      });
-    }
+    // if (
+    //   this.props.userwiselocations === undefined ||
+    //   this.props.userwiselocations.length === 0
+    // ) {
+    this.props.getUserLocationPermission({
+      uri: "/pharmacyGlobal/getUserLocationPermission",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        location_status: "A",
+        hospital_id: hospital.hims_d_hospital_id
+      },
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "userwiselocations"
+      }
+    });
+    // }
 
     if (
       this.props.material_requisition_number !== undefined &&
@@ -90,6 +100,10 @@ class RequisitionEntry extends Component {
     ClearData(this, this);
   }
   render() {
+    const userwiselocations = _.filter(this.props.userwiselocations, f => {
+      return f.location_type !== "WH";
+    });
+
     return (
       <React.Fragment>
         <div>
@@ -174,12 +188,18 @@ class RequisitionEntry extends Component {
                     dataSource: {
                       textField: "location_description",
                       valueField: "hims_d_pharmacy_location_id",
-                      data: this.props.userwiselocations
+                      data: userwiselocations
                     },
                     others: {
                       disabled: this.state.addedItem
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "From")
+                    onChange: LocationchangeTexts.bind(this, this, "From"),
+                    onClear: () => {
+                      this.setState({
+                        from_location_id: null,
+                        from_location_type: null
+                      });
+                    }
                   }}
                 />
 
@@ -211,10 +231,16 @@ class RequisitionEntry extends Component {
                       data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
                     },
                     others: {
-                      disabled: true
+                      disabled:
+                        this.state.from_location_type === "MS" ? false : true
                     },
 
-                    onChange: changeTexts.bind(this, this)
+                    onChange: changeTexts.bind(this, this),
+                    onClear: () => {
+                      this.setState({
+                        requistion_type: null
+                      });
+                    }
                   }}
                 />
               </div>
@@ -239,7 +265,13 @@ class RequisitionEntry extends Component {
                           ? true
                           : this.state.addedItem
                     },
-                    onChange: LocationchangeTexts.bind(this, this, "To")
+                    onChange: LocationchangeTexts.bind(this, this, "To"),
+                    onClear: () => {
+                      this.setState({
+                        to_location_id: null,
+                        to_location_type: null
+                      });
+                    }
                   }}
                 />
 

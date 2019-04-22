@@ -130,7 +130,11 @@ class InvStockEnquiry extends Component {
                     },
 
                     onChange: changeTexts.bind(this, this),
-                    onClear: changeTexts.bind(this, this)
+                    onClear: () => {
+                      this.setState({
+                        location_id: null
+                      });
+                    }
                   }}
                 />
 
@@ -147,7 +151,11 @@ class InvStockEnquiry extends Component {
                       data: this.props.inventoryitemlist
                     },
                     onChange: changeTexts.bind(this, this),
-                    onClear: changeTexts.bind(this, this)
+                    onClear: () => {
+                      this.setState({
+                        item_id: null
+                      });
+                    }
                   }}
                 />
                 <div className="col-lg-3">
@@ -267,7 +275,7 @@ class InvStockEnquiry extends Component {
                 ]}
                 keyId="item_id"
                 dataSource={{
-                  data: this.props.inventoryitemBatch
+                  data: this.state.ListItems
                 }}
                 noDataText="No Stock available for selected Item in the selected Location"
                 // isEditable={true}
@@ -290,7 +298,6 @@ function mapStateToProps(state) {
   return {
     inventoryitemlist: state.inventoryitemlist,
     inventorylocations: state.inventorylocations,
-    inventoryitemBatch: state.inventoryitemBatch,
     inventoryitemuom: state.inventoryitemuom
   };
 }
@@ -300,7 +307,6 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getItemLocationStock: AlgaehActions,
       getItemUOM: AlgaehActions
     },
     dispatch
