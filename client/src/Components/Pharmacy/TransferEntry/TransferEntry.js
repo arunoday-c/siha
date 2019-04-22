@@ -24,6 +24,7 @@ import Options from "../../../Options.json";
 import TransferEntryItems from "./TransferEntryItems/TransferEntryItems";
 import MyContext from "../../../utils/MyContext";
 import TransferIOputs from "../../../Models/TransferEntry";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class TransferEntry extends Component {
   constructor(props) {
@@ -40,6 +41,10 @@ class TransferEntry extends Component {
   }
 
   componentDidMount() {
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
+
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       this.props.getItems({
         uri: "/pharmacy/getItemMaster",
@@ -67,21 +72,25 @@ class TransferEntry extends Component {
       });
     }
 
-    if (
-      this.props.userwiselocations === undefined ||
-      this.props.userwiselocations.length === 0
-    ) {
-      this.props.getUserLocationPermission({
-        uri: "/pharmacyGlobal/getUserLocationPermission",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "userwiselocations"
-        },
-        afterSuccess: data => {}
-      });
-    }
+    // if (
+    //   this.props.userwiselocations === undefined ||
+    //   this.props.userwiselocations.length === 0
+    // ) {
+    this.props.getUserLocationPermission({
+      uri: "/pharmacyGlobal/getUserLocationPermission",
+      module: "pharmacy",
+      method: "GET",
+      data: {
+        location_status: "A",
+        hospital_id: hospital.hims_d_hospital_id
+      },
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "userwiselocations"
+      },
+      afterSuccess: data => {}
+    });
+    // }
   }
 
   render() {

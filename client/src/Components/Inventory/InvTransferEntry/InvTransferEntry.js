@@ -27,6 +27,7 @@ import MyContext from "../../../utils/MyContext";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
 import AlgaehReport from "../../Wrapper/printReports";
 import _ from "lodash";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class InvTransferEntry extends Component {
   constructor(props) {
@@ -43,6 +44,9 @@ class InvTransferEntry extends Component {
   }
 
   componentDidMount() {
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
     if (
       this.props.inventoryitemlist === undefined ||
       this.props.inventoryitemlist.length === 0
@@ -93,6 +97,10 @@ class InvTransferEntry extends Component {
         uri: "/inventoryGlobal/getUserLocationPermission",
         module: "inventory",
         method: "GET",
+        data: {
+          location_status: "A",
+          hospital_id: hospital.hims_d_hospital_id
+        },
         redux: {
           type: "LOCATIOS_GET_DATA",
           mappingName: "invuserwiselocations"
@@ -255,7 +263,9 @@ class InvTransferEntry extends Component {
                   />
                   <h6>
                     {this.state.from_location_type
-                      ? this.state.from_location_type === "MS"
+                      ? this.state.from_location_type === "WH"
+                        ? "Warehouse"
+                        : this.state.from_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
                       : "From Location Type"}
@@ -316,7 +326,9 @@ class InvTransferEntry extends Component {
                   />
                   <h6>
                     {this.state.to_location_type
-                      ? this.state.to_location_type === "MS"
+                      ? this.state.to_location_type === "WH"
+                        ? "Warehouse"
+                        : this.state.to_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
                       : "To Location Type"}

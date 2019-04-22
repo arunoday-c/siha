@@ -23,6 +23,13 @@ const PageToPlot = {
   FrontDesk: React.lazy(() =>
     retry(() => import("./Components/RegistrationPatient/RegistrationPatient"))
   ),
+
+  UpdatePatientDetails: React.lazy(() =>
+    retry(() =>
+      import("./Components/UpdatePatientDetails/UpdatePatientDetails")
+    )
+  ),
+
   BusinessSetup: React.lazy(() =>
     retry(() => import("./Components/BusinessSetup/BusinessSetup"))
   ),

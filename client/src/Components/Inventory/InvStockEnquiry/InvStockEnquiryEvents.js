@@ -1,20 +1,16 @@
 import moment from "moment";
 import Options from "../../../Options.json";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
-  if (e.value === undefined) {
-    $this.setState({ [e]: null }, () => {
-      getItemLocationStock($this);
-    });
-  } else {
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
 
-    $this.setState({ [name]: value }, () => {
-      getItemLocationStock($this);
-    });
-  }
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({ [name]: value }, () => {
+    getItemLocationStock($this);
+  });
 };
 
 const dateFormater = ($this, value) => {
@@ -34,14 +30,24 @@ const getItemLocationStock = $this => {
     inputObj.item_id = $this.state.item_id;
   }
 
-  $this.props.getItemLocationStock({
+  algaehApiCall({
     uri: "/inventoryGlobal/getItemandLocationStock",
     module: "inventory",
     method: "GET",
     data: inputObj,
-    redux: {
-      type: "ITEMS_BATCH_GET_DATA",
-      mappingName: "inventoryitemBatch"
+    onSuccess: response => {
+      debugger;
+      if (response.data.success === true) {
+        $this.setState({
+          ListItems: response.data.records
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };

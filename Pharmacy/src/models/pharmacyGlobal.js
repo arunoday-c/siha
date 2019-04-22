@@ -171,11 +171,25 @@ module.exports = {
         })
         .then(result => {
           if (result.length < 1) {
+            let _strQry = "";
+            let intValues = [];
+
+            if (req.query.location_status != null) {
+              _strQry += " and location_status=?";
+              intValues.push(req.query.location_status);
+            }
+            if (req.query.hospital_id != null) {
+              _strQry += " and hospital_id=?";
+              intValues.push(req.query.hospital_id);
+            }
+
             _mysql
               .executeQuery({
                 query:
                   "select  hims_d_pharmacy_location_id, location_description, location_status, location_type,\
-              allow_pos from hims_d_pharmacy_location where record_status='A'",
+              allow_pos from hims_d_pharmacy_location where record_status='A' " +
+                  _strQry,
+                values: intValues,
                 printQuery: true
               })
               .then(resultLoctaion => {

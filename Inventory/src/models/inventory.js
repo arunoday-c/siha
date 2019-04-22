@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import mysql from "mysql";
 import moment from "moment";
+import algaehUtilities from "algaeh-utilities/utilities";
 
 module.exports = {
   addItemMaster: (req, res, next) => {
@@ -194,12 +195,12 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_inventory_location` (`location_description`,  `location_type`, `allow_pos`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+            "INSERT INTO `hims_d_inventory_location` (`location_description`,  `location_type`, `hospital_id`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
           VALUE(?,?,?,?,?,?,?)",
           values: [
             input.location_description,
             input.location_type,
-            input.allow_pos,
+            input.hospital_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -421,10 +422,23 @@ module.exports = {
     try {
       let _strQry = "";
       let intValues = [];
+      const utilities = new algaehUtilities();
+      utilities.logger().log("req.query: ", req.query.location_status);
+
       if (req.query.hims_d_inventory_location_id != null) {
-        _strQry = "and hims_d_inventory_location_id=?";
+        _strQry += "and hims_d_inventory_location_id=?";
         intValues.push(req.query.hims_d_inventory_location_id);
       }
+
+      if (req.query.location_status != null) {
+        _strQry += "and location_status=?";
+        intValues.push(req.query.location_status);
+      }
+      if (req.query.hospital_id != null) {
+        _strQry += "and hospital_id=?";
+        intValues.push(req.query.hospital_id);
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -592,13 +606,13 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_inventory_location` SET `location_description`=?, `location_status`=?, `location_type`=?, `allow_pos`=?,\
+            "UPDATE `hims_d_inventory_location` SET `location_description`=?, `location_status`=?, `location_type`=?, `hospital_id`=?,\
           `updated_date`=?,`updated_by`=?, `record_status`=? WHERE `record_status`='A' and `hims_d_inventory_location_id`=?;",
           values: [
             input.location_description,
             input.location_status,
             input.location_type,
-            input.allow_pos,
+            input.hospital_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,

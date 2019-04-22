@@ -30,6 +30,7 @@ import {
 import "./InvInitialStock.css";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class InvInitialStock extends Component {
   constructor(props) {
@@ -62,6 +63,9 @@ class InvInitialStock extends Component {
   }
 
   componentDidMount() {
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
     if (
       this.props.inventoryitemlist === undefined ||
       this.props.inventoryitemlist.length === 0
@@ -83,6 +87,10 @@ class InvInitialStock extends Component {
       this.props.getLocation({
         uri: "/inventory/getInventoryLocation",
         module: "inventory",
+        data: {
+          location_status: "A",
+          hospital_id: hospital.hims_d_hospital_id
+        },
         method: "GET",
         redux: {
           type: "LOCATIONS_GET_DATA",
@@ -239,7 +247,12 @@ class InvInitialStock extends Component {
                         data: this.props.inventorylocations
                       },
 
-                      onChange: LocationchangeTexts.bind(this, this)
+                      onChange: LocationchangeTexts.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          location_id: null
+                        });
+                      }
                     }}
                   />
 
@@ -255,7 +268,15 @@ class InvInitialStock extends Component {
                         valueField: "hims_d_inventory_item_master_id",
                         data: this.props.inventoryitemlist
                       },
-                      onChange: itemchangeText.bind(this, this)
+                      onChange: itemchangeText.bind(this, this),
+                      onClear: () => {
+                        this.setState({
+                          item_id: null,
+                          item_category_id: null,
+                          item_group_id: null,
+                          uom_id: null
+                        });
+                      }
                     }}
                   />
                   <AlagehAutoComplete

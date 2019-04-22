@@ -228,12 +228,14 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-          VALUE(?,?,?,?,?,?,?)",
+            "INSERT INTO `hims_d_pharmacy_location` (`location_description`,  `location_type`, `allow_pos`, `hospital_id`,\
+            `created_date`, `created_by`, `updated_date`, `updated_by`)\
+          VALUE(?,?,?,?,?,?,?,?)",
           values: [
             input.location_description,
             input.location_type,
             input.allow_pos,
+            input.hospital_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -562,6 +564,17 @@ module.exports = {
         _strQry = "and hims_d_pharmacy_location_id=?";
         intValues.push(req.query.hims_d_pharmacy_location_id);
       }
+
+      if (req.query.location_status != null) {
+        _strQry += "and location_status=?";
+        intValues.push(req.query.location_status);
+      }
+
+      if (req.query.hospital_id != null) {
+        _strQry += "and hospital_id=?";
+        intValues.push(req.query.hospital_id);
+      }
+
       _mysql
         .executeQuery({
           query:
@@ -866,13 +879,14 @@ module.exports = {
         .executeQuery({
           query:
             "UPDATE `hims_d_pharmacy_location` SET `location_description`=?, `location_status`=?, `location_type`=?, \
-            `allow_pos`=?, `updated_date`=?,`updated_by`=?, `record_status`=? WHERE `record_status`='A' and \
+            `allow_pos`=?, `hospital_id`=?, `updated_date`=?,`updated_by`=?, `record_status`=? WHERE `record_status`='A' and \
             `hims_d_pharmacy_location_id`=?;",
           values: [
             input.location_description,
             input.location_status,
             input.location_type,
             input.allow_pos,
+            input.hospital_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,
