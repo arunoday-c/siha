@@ -396,7 +396,7 @@ let createUserLogin = (req, res, next) => {
                 VALUE(?,md5(?),?,?,?,?)",
                     [
                       result.insertId,
-                      generatePwd(),
+                      "12345",
                       new Date(),
                       input.created_by,
                       new Date(),
@@ -410,10 +410,7 @@ let createUserLogin = (req, res, next) => {
                         });
                       }
 
-                      if (
-                        pwdResult.insertId != null &&
-                        pwdResult.insertId != undefined
-                      ) {
+                      if (pwdResult.insertId > 0 && input.role_id > 0) {
                         connection.query(
                           "INSERT INTO `algaeh_m_role_user_mappings` ( user_id,  role_id,created_date, created_by, updated_date, updated_by)\
                       VALUE(?,?,?,?,?,?)",
@@ -433,18 +430,58 @@ let createUserLogin = (req, res, next) => {
                               });
                             }
 
-                            connection.commit(error => {
-                              if (error) {
-                                connection.rollback(() => {
-                                  releaseDBConnection(db, connection);
-                                  next(error);
-                                });
-                              }
+                            //--------
 
-                              releaseDBConnection(db, connection);
-                              req.records = finalResult;
+                            if (
+                              finalResult.insertId > 0 &&
+                              input.employee_id > 0
+                            ) {
+                              connection.query(
+                                "INSERT INTO `algaeh_m_role_user_mappings` (employee_id,user_id,sub_department_id,hospital_id,created_by,created_date,updated_by,updated_date)\
+                      VALUE(?,?,?,?,?,?,?,?)",
+                                [
+                                  input.employee_id,
+                                  result.insertId,
+                                  input.sub_department_id,
+                                  req.userIdentity.hospital_id,
+                                  input.created_by,
+                                  new Date(),
+                                  input.updated_by,
+                                  new Date()
+                                ],
+                                (error, user_employee_res) => {
+                                  if (error) {
+                                    connection.rollback(() => {
+                                      releaseDBConnection(db, connection);
+                                      next(error);
+                                    });
+                                  }
+                                  connection.commit(error => {
+                                    if (error) {
+                                      connection.rollback(() => {
+                                        releaseDBConnection(db, connection);
+                                        next(error);
+                                      });
+                                    }
+
+                                    releaseDBConnection(db, connection);
+                                    req.records = user_employee_res;
+                                    next();
+                                  });
+                                }
+                              );
+                            } else {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                              req.records = {
+                                validUser: false,
+                                message: "Please Select a employee"
+                              };
                               next();
-                            });
+                            }
+                            //--------
                           }
                         );
                       } else {
