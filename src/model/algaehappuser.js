@@ -437,7 +437,7 @@ let createUserLogin = (req, res, next) => {
                               input.employee_id > 0
                             ) {
                               connection.query(
-                                "INSERT INTO `algaeh_m_role_user_mappings` (employee_id,user_id,sub_department_id,hospital_id,created_by,created_date,updated_by,updated_date)\
+                                "INSERT INTO `hims_m_user_employee` (employee_id,user_id,sub_department_id,hospital_id,created_by,created_date,updated_by,updated_date)\
                       VALUE(?,?,?,?,?,?,?,?)",
                                 [
                                   input.employee_id,

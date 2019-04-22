@@ -101,7 +101,7 @@ export default class Login extends Component {
               error.response.status === 404
             ) {
               this.unsuccessfulSignIn(
-                "User Name or Password doesn't match.\n Please check and login again",
+                "Username or Password or Branch Incorrect",
                 "Invalid User Details."
               );
             } else if (
@@ -166,16 +166,16 @@ export default class Login extends Component {
             >
                Add Client's Logo and other details here
             </div> */}
-            <div className="loginTopbar">
+            {/* <div className="loginTopbar">
               <div className="companyLogo" />
               <div className="productLogo" />
-            </div>
+            </div> */}
 
             <div id="loginForm" className="loginFormContainer">
               <div className="col-12">
                 <div className="row">
                   <div className="col-12">
-                    {" "}
+                    <div className="companyLogo" />
                     <h3 className="LoginCntrHdg">Login In</h3>
                   </div>
                   <div
@@ -192,10 +192,10 @@ export default class Login extends Component {
                     >
                       <AlagehFormGroup
                         div={{ className: "col-12 form-group" }}
-                        label={{
-                          fieldName: "username",
-                          isImp: true
-                        }}
+                        // label={{
+                        //   fieldName: "username",
+                        //   isImp: true
+                        // }}
                         textBox={{
                           className: "txt-fld",
                           name: "username",
@@ -214,10 +214,10 @@ export default class Login extends Component {
                       <br />
                       <AlagehFormGroup
                         div={{ className: "col-12 form-group" }}
-                        label={{
-                          fieldName: "password",
-                          isImp: true
-                        }}
+                        // label={{
+                        //   fieldName: "password",
+                        //   isImp: true
+                        // }}
                         textBox={{
                           className: "txt-fld",
                           name: "password",
@@ -237,10 +237,10 @@ export default class Login extends Component {
                       <br />
                       <AlagehAutoComplete
                         div={{ className: "col-12 form-group" }}
-                        label={{
-                          forceLabel: "Select Division/Branch",
-                          isImp: true
-                        }}
+                        // label={{
+                        //   forceLabel: "Select Division/Branch",
+                        //   isImp: true
+                        // }}
                         selector={{
                           name: "item_id",
                           className: "select-fld",
@@ -251,6 +251,7 @@ export default class Login extends Component {
                             valueField: "hims_d_hospital_id",
                             data: this.state.hospitalList
                           },
+                          placeholder: "Select a Branch",
                           others: { tabIndex: "3" },
                           onChange: this.onHospitalChange.bind(this),
                           onClear: this.onHospitalClear.bind(this)
@@ -264,7 +265,7 @@ export default class Login extends Component {
                           </label>
                         </div>
                         <button
-                          className="btn btn-lg btn-primary btn-block sign-btn"
+                          className="btn btn-lg btn-secondary btn-block sign-btn"
                           type="submit"
                           tabIndex="4"
                         >
