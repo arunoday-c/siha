@@ -27,9 +27,9 @@
         .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--selected,
         .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--in-selecting-range,
         .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--in-range {
-          background-color: #12a28d; }
+          background-color: #00a796; }
         .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__day--today {
-          border: 1px solid #12a28d;
+          border: 1px solid #00a796;
           border-radius: 5px; }
         .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__month-select,
         .clinicalDeskScreen .cldrPatientList .cldrSection .react-datepicker .react-datepicker__month-container .react-datepicker__year-select {
@@ -86,7 +86,7 @@
             font-weight: bold;
             color: #ec5c09; }
           .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.nursingDone {
-            color: #12a28d; }
+            color: #00a796; }
           .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.nursingGoing {
             color: #5b5eeb; }
           .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.checkedIn {
@@ -94,19 +94,19 @@
           .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus span.notShown {
             background: #b3b3b3; }
           .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus.active {
-            background: #12a28d;
+            background: #00a796;
             color: #fff; }
             .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection .apptDetailsSec .patStatus.active:hover {
-              background: #0d7465;
+              background: #007468;
               color: #fff;
               cursor: pointer; }
       .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection:nth-child(odd) {
         background: #f2f2f2; }
       .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .appSection:hover {
-        background: #8ef2e4;
+        background: #74fff1;
         cursor: pointer; }
     .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .active {
-      background: #12a28d !important;
+      background: #00a796 !important;
       color: #fff; }
     .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .noAppRecord {
       text-align: center;
@@ -118,7 +118,7 @@
       .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .noAppRecord span {
         display: block; }
         .clinicalDeskScreen .cldrPatientList .newPatientSec .appPatientList .appPatientListCntr .noAppRecord span span {
-          color: #12a28d;
+          color: #00a796;
           font-weight: 700; }
   .clinicalDeskScreen .cldrPatientList .completedPatientSec {
     background: #999999;
@@ -182,7 +182,7 @@
         margin: 0;
         padding: 0; }
         .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientName p b {
-          color: #12a28d;
+          color: #00a796;
           font-size: 0.9em;
           font-weight: 700; }
     .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientDemographic {
@@ -199,7 +199,7 @@
           text-align: center;
           width: 20px; }
         .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientDemographic span b {
-          color: #12a28d; }
+          color: #00a796; }
     .clinicalDeskScreen .patientMainInfo .PatientProfile .PatientInfo-Top .PatientVitals {
       background: #333333;
       color: #e6e6e6;
