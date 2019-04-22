@@ -25,7 +25,9 @@ class LoginUsers extends Component {
 
   searchSelect(data) {
     this.setState({
-      hims_d_employee_id: data.hims_d_employee_id
+      employee_id: data.hims_d_employee_id,
+      sub_department_id: data.sub_department_id,
+      full_name: data.full_name
     });
   }
 
@@ -38,7 +40,8 @@ class LoginUsers extends Component {
       confirm_password: "",
       app_group_id: null,
       role_id: null,
-      hims_d_employee_id: null,
+      employee_id: null,
+      sub_department_id: null,
       user_type: "",
       full_name: ""
     });
@@ -147,7 +150,9 @@ class LoginUsers extends Component {
             password: this.state.password,
             app_group_id: this.state.app_group_id,
             role_id: this.state.role_id,
-            user_type: this.state.user_type
+            user_type: this.state.user_type,
+            employee_id: this.state.employee_id,
+            sub_department_id: this.state.sub_department_id
           },
           onSuccess: response => {
             if (response.data.success) {

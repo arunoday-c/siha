@@ -507,7 +507,9 @@ class PersistentDrawer extends React.Component {
             <p className="appLogoOnly" />
           </div>
 
-          <h5 className="topNavbar-title mr-auto">{this.state.title}</h5>
+          <h5 className="topNavbar-title mr-auto">
+            <i className="fas fa-chevron-right" /> {this.state.title}
+          </h5>
           <div className="navTopBarRight">
             <div className="loginProfileInfo">
               <span>{getCookie("userName")},</span>

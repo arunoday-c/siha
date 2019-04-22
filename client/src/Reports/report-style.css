@@ -29,7 +29,7 @@
     color: #000 !important;
     border-bottom: solid 1px rgba(255, 255, 255, 0.5); }
   .tbl-footer .highlightBorder {
-    border-bottom: 1px ridge #12a28d !important; }
+    border-bottom: 1px ridge #00a796 !important; }
 
 .tbl-content {
   height: 35vh;
@@ -48,8 +48,8 @@
     font-weight: 500;
     font-size: 0.8rem;
     color: #000 !important;
-    background: #d2faf4 !important;
-    border-bottom: 1px solid #17d0b5 !important;
+    background: #c1fff9 !important;
+    border-bottom: 1px solid #00dac4 !important;
     text-transform: uppercase;
     width: 130px; }
   .reportFixedTable tr:nth-child(even) {

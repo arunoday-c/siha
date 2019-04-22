@@ -72,7 +72,7 @@
         text-align: center;
         width: 20px; }
       .patient-mrd .patientProfile .patientInfo-Top .patientDemographic span b {
-        color: #12a28d; }
+        color: #00a796; }
   .patient-mrd .patientProfile .patientInfo-Top .patientHospitalDetail {
     line-height: 1.4rem;
     border-right: 1px solid #e1e1e1;
@@ -88,7 +88,7 @@
         text-align: center;
         width: 20px; }
       .patient-mrd .patientProfile .patientInfo-Top .patientHospitalDetail span b {
-        color: #12a28d; }
+        color: #00a796; }
   .patient-mrd .patientProfile .patientInfo-Top .patientVital {
     max-width: 40vw;
     line-height: 1.4rem;
@@ -106,7 +106,7 @@
         text-align: center;
         width: 20px; }
       .patient-mrd .patientProfile .patientInfo-Top .patientVital span b {
-        color: #12a28d; }
+        color: #00a796; }
   .patient-mrd .patientProfile .patientInfo-Top .moreAction {
     float: right;
     border-right: 1px solid #e1e1e1;

@@ -4,10 +4,10 @@ header {
   border-bottom: 2px solid rgba(0, 0, 0, 0.1); }
 
 .mainTheme {
-  background: #12a28d;
+  background: #00a796;
   color: #fff;
   padding: 0 1rem;
-  border-bottom: 1px solid #0d7465;
+  border-bottom: 1px solid #007468;
   height: 52px; }
 
 .mainPageArea {
@@ -18,13 +18,13 @@ header {
   overflow-x: hidden; }
 
 .sideMenuBars {
-  border-right: 1px solid #17d0b5;
+  border-right: 1px solid #00dac4;
   margin-left: -15px;
   padding: 15px;
   cursor: pointer;
   background: linear-gradient(to right, rgba(228, 171, 89, 0.76) 0%, rgba(0, 186, 190, 0.1) 100%); }
   .sideMenuBars:hover {
-    background: #17d0b5; }
+    background: #00dac4; }
 
 .topNavbar-title {
   margin: 0;
@@ -34,9 +34,9 @@ header {
 
 .appLogoCntr {
   width: 115px;
-  border-left: 1px solid #0d7465;
+  border-left: 1px solid #007468;
   padding-left: 3px;
-  margin-right: 10px; }
+  margin-right: 4px; }
   .appLogoCntr .appLogoOnly {
     background: url(../../../assets/svg/HIMS_LOGO_ONLY.svg) no-repeat center left;
     background-size: 100%;
@@ -48,7 +48,7 @@ header {
 .btn-userProfile {
   background: none;
   color: #fff;
-  border-left: 1px solid #17d0b5;
+  border-left: 1px solid #00dac4;
   margin-top: -21px; }
   .btn-userProfile i {
     margin: 3px; }
@@ -66,7 +66,7 @@ header {
     text-transform: uppercase; }
     #simple-menu ul li i {
       margin-right: 15px;
-      color: #12a28d; }
+      color: #00a796; }
   #simple-menu hr {
     margin: 5px 0;
     padding: 0; }
@@ -112,7 +112,7 @@ header {
 
 .hptl-phase1-sideMenuBar .side-menu-title:hover {
   background: #fff;
-  color: #17d0b5; }
+  color: #00dac4; }
 
 .hptl-phase1-sideMenuBar .side-menu-arrow {
   margin-top: 5px; }
@@ -153,7 +153,7 @@ header {
         .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li:hover i {
           color: #fff; }
       .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li.active {
-        background: #17d0b5;
+        background: #00dac4;
         color: #fff; }
         .hptl-phase1-sideMenuBar .sub-menu-option ul.tree-structure-menu li.active i {
           color: #fff; }
@@ -329,7 +329,7 @@ header {
 
 .navTopbar-dropdown {
   padding: 15px;
-  border-left: 1px solid #0d7465;
+  border-left: 1px solid #007468;
   margin: 0;
   margin-right: -15px;
   cursor: pointer; }
@@ -346,9 +346,9 @@ header {
       .navTopbar-dropdown .dropdown-menu .dropdown-item i {
         margin-right: 0.5rem; }
       .navTopbar-dropdown .dropdown-menu .dropdown-item:hover {
-        color: #17d0b5; }
+        color: #00dac4; }
   .navTopbar-dropdown:hover {
-    background: #17d0b5; }
+    background: #00dac4; }
     .navTopbar-dropdown:hover .dropdown-menu {
       display: block; }
 
@@ -376,15 +376,15 @@ header {
   left: 35vw;
   top: 15vh; }
   .passwordCntr h4 {
-    border-bottom: 1px solid #08463d !important;
+    border-bottom: 1px solid #00413a !important;
     padding-bottom: 15px;
     width: 100%;
-    background: #12a28d;
+    background: #00a796;
     line-height: 40px;
     height: 42px;
     color: #fff;
     text-transform: uppercase;
-    text-shadow: 0 1px 1px darken #12a28d, 20% !important;
+    text-shadow: 0 1px 1px darken #00a796, 20% !important;
     text-align: center; }
   .passwordCntr .footerBtn button {
     float: right;
