@@ -164,6 +164,26 @@ let authUser = (req, res, next) => {
     username: "",
     password: ""
   };
+
+  // SELECT algaeh_d_app_user_id, username, user_display_name,  locked, user_type,login_attempts,\
+  //    password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
+  //    role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,edit_monthly_attendance,\
+  //    algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
+  //     employee_id,  sub_department_id \
+  //    FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
+  //    inner join algaeh_d_app_roles R on RU.role_id=R.app_d_app_roles_id\
+  //    inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
+  //    inner join hims_m_user_employee UEM on  RU.user_id=UEM.user_id\
+  //    inner join  algaeh_d_app_password P on U.algaeh_d_app_user_id=P.userid\
+  //    WHERE P.password=md5(?) AND U.username=? AND U.record_status='A' \
+  //    AND P.record_status='A' AND G.record_status='A' AND R.record_status='A';\
+  //    SELECT hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
+  //  default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
+  //  arabic_hospital_name, hospital_address, city_id, organization_id, effective_start_date, effective_end_date, \
+  //  hosital_status, lab_location_code ,hims_d_currency_id, currency_code, currency_description, currency_symbol,\
+  //  decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator FROM \
+  //  hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
+  //  CUR.hims_d_currency_id=default_currency AND hims_d_hospital_id=?
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let inputData = extend(authModel, req.body);
@@ -175,14 +195,15 @@ let authUser = (req, res, next) => {
      password_expiry_rule, algaeh_m_role_user_mappings_id,app_d_app_roles_id,app_group_id,\
      role_code, role_name, role_discreption, role_type,loan_authorize_privilege,leave_authorize_privilege,edit_monthly_attendance,\
      algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc, group_type, \
-      employee_id,  sub_department_id \
+      employee_id, E.sub_department_id \
      FROM  algaeh_d_app_user U inner join algaeh_m_role_user_mappings RU on RU.user_id=U.algaeh_d_app_user_id\
      inner join algaeh_d_app_roles R on RU.role_id=R.app_d_app_roles_id\
      inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
      inner join hims_m_user_employee UEM on  RU.user_id=UEM.user_id\
+     inner join hims_d_employee E on UEM.employee_id=E.hims_d_employee_id\
      inner join  algaeh_d_app_password P on U.algaeh_d_app_user_id=P.userid\
      WHERE P.password=md5(?) AND U.username=? AND U.record_status='A' \
-     AND P.record_status='A' AND G.record_status='A' AND R.record_status='A';\
+     AND P.record_status='A' AND G.record_status='A' AND R.record_status='A' and UEM.record_status='A' and UEM.hospital_id=?;\
      SELECT hims_d_hospital_id, hospital_code, local_vat_applicable, default_nationality, default_country, \
    default_currency, default_slot, default_patient_type, standard_from_time, standard_to_time, hospital_name, \
    arabic_hospital_name, hospital_address, city_id, organization_id, effective_start_date, effective_end_date, \
@@ -190,7 +211,12 @@ let authUser = (req, res, next) => {
    decimal_places, symbol_position, thousand_separator, decimal_separator, negative_separator FROM \
    hims_d_hospital, hims_d_currency CUR WHERE hims_d_hospital.record_status='A' AND \
    CUR.hims_d_currency_id=default_currency AND hims_d_hospital_id=? ",
-        values: [inputData.password, inputData.username, inputData.item_id]
+        values: [
+          inputData.password,
+          inputData.username,
+          inputData.item_id,
+          inputData.item_id
+        ]
       })
       .then(result => {
         _mysql.releaseConnection();
