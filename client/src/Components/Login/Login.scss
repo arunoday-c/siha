@@ -99,6 +99,13 @@
     font-size: 12px;
     margin-top: 20px;
     margin-bottom: 0;
+    a {
+      text-decoration: none;
+      color: $color-white;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   }
   .ui.fluid.dropdown {
     .menu {
@@ -188,12 +195,12 @@
   left: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: $color-black;
   font-size: 0.7rem;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   a {
     text-decoration: none;
-    color: $secondary-color;
+    color: $color-white;
   }
   a:hover {
     text-decoration: underline;

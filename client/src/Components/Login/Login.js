@@ -272,7 +272,10 @@ export default class Login extends Component {
                           Log In
                         </button>
                         <p className="frgtPass">
-                          <a>Forgot Password?</a>
+                          FORGOT PASSWORD? |{" "}
+                          <a href="mailto:we@algaeh.com?Subject=Hello%20New%20Password%20Requesting">
+                            CONTACT ADMINISTRATOR
+                          </a>
                         </p>
                       </div>
                     </form>
