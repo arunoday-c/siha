@@ -80,15 +80,15 @@ const getVisitWiseBillDetailS = $this => {
         let data = response.data.records;
         if (data.length > 0) {
           let gross_total = Enumerable.from(data)
-            .select(w => w.gross_amount)
+            .select(w => parseFloat(w.gross_amount))
             .sum();
 
           let discout_total = Enumerable.from(data)
-            .select(w => w.discount_amout)
+            .select(w => parseFloat(w.discount_amout))
             .sum();
 
           let net_total = Enumerable.from(data)
-            .select(w => w.net_amout)
+            .select(w => parseFloat(w.net_amout))
             .sum();
 
           for (let i = 0; i < data.length; i++) {
@@ -178,6 +178,7 @@ const FinalizedAndInvoice = $this => {
       type: "warning"
     });
   } else {
+    debugger;
     algaehApiCall({
       uri: "/invoiceGeneration/addInvoiceGeneration",
       data: $this.state,
