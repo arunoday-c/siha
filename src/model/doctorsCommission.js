@@ -1,13 +1,9 @@
 "use strict";
 import extend from "extend";
-import {
-  
-  releaseDBConnection
-
-} from "../utils";
+import { releaseDBConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { LINQ } from "node-linq";
-import {  debugLog } from "../utils/logging";
+import { debugLog } from "../utils/logging";
 
 //created by irfan: to get doctors commission
 let getDoctorsCommission = (req, res, next) => {
@@ -109,7 +105,7 @@ let getDoctorsCommission = (req, res, next) => {
                                       ...results[i],
                                       ...{ commission_not_exist: true }
                                     };
-                                    return resolve();
+                                    return resolve(results);
                                   }
                                 }
                               );
