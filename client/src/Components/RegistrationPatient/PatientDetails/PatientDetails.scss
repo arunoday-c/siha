@@ -10,3 +10,60 @@
   text-align: right !important;
   direction: rtl !important;
 }
+.patIDCard {
+  display: none;
+  position: absolute;
+  background: url(../../../assets/images/hospital_id_card_bg.jpg) no-repeat
+    right bottom #fff;
+  border: 1px solid #000;
+  width: 450px;
+  z-index: 9;
+  overflow: hidden;
+  border-radius: 10px;
+  background-size: 100%;
+  left: 29%;
+  .cardHeader {
+    border-bottom: 1px solid #000;
+    padding: 15px 0;
+    .col-4 {
+      border: 1px solid #000;
+      height: 55px;
+      line-height: 50px;
+      text-align: center;
+    }
+    .col-8 {
+      text-align: center;
+    }
+  }
+  .cardContent {
+    border-bottom: 1px solid #000;
+    padding: 15px 0;
+    p {
+      text-transform: uppercase;
+      line-height: 10px;
+      font-size: 0.9rem;
+      span {
+        font-weight: bold;
+      }
+    }
+    img {
+      border: 1px solid #000;
+      height: 100%;
+      width: 125px;
+      float: right;
+    }
+    .bardcodeCntr {
+      background: #000;
+      height: 50px;
+      width: 100%;
+    }
+  }
+  .cardFooter {
+    font-size: 0.8rem;
+    padding: 5px 0;
+    p {
+      text-align: center;
+      width: 100%;
+    }
+  }
+}

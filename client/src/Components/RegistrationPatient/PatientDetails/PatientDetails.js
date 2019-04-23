@@ -44,6 +44,45 @@ export default class PatientDetails extends PureComponent {
         <MyContext.Consumer>
           {context => (
             <div className="hptl-phase1-patient-details margin-bottom-15 margin-top-15">
+              <div className="col-12 patIDCard">
+                <div className="row cardHeader">
+                  <div className="col-4">Hospital Logo</div>
+                  <div className="col-8">
+                    <h5>Hospital Name</h5>
+                    <p>Address</p>
+                  </div>
+                </div>
+                <div className="row cardContent">
+                  <div className="col-8">
+                    <h4>Brinna Dave</h4>
+                    <p>
+                      Patient Id: <span>PAT-074563-234</span>
+                    </p>
+                    <p>
+                      DOB: <span>10/12/1988</span>
+                    </p>
+                    <p>
+                      Gender: <span>F</span>
+                    </p>
+                    <p>
+                      Issued Date: <span>05/08/2017</span>
+                    </p>
+                    <p>
+                      <span className="bardcodeCntr" />
+                    </p>
+                  </div>
+                  <div className="col-4">
+                    <img src="" alt="patient_id" />
+                  </div>
+                </div>
+
+                <div className="row cardFooter">
+                  <p>
+                    If lost and found please return to above mention address.
+                  </p>
+                </div>
+              </div>
+
               <div className="tab-container toggle-section">
                 <ul className="nav">
                   <li
