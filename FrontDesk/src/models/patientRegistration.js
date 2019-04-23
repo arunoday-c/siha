@@ -200,5 +200,78 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  updatePatientData: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputparam = { ...req.body };
+      // const utilities = new algaehUtilities();
+
+      // utilities.logger().log("genNumber: ", inputparam.patient_code);
+      // inputparam.registration_date = new Date();
+      _mysql
+        .executeQuery({
+          query:
+            "UPDATE `hims_f_patient` SET `title_id`=?, `full_name`=?, \
+            `arabic_name`=?, `gender`=?, `religion_id`=?,\
+           `date_of_birth`=?, `age`=?, `marital_status`=?, `address1`=?, `address2`=?, `contact_number`=?,\
+           `secondary_contact_number`=?, `email`=?, `emergency_contact_name`=?, `emergency_contact_number`=?,\
+           `relationship_with_patient`=?, `visa_type_id`=?, `nationality_id`=?, `postal_code`=?,\
+           `primary_identity_id`=?, `primary_id_no`=?, `secondary_identity_id`=?, `secondary_id_no`=?,\
+           `photo_file`=?, `primary_id_file`=?, `secondary_id_file`=?, `patient_type`=?,\
+          `city_id`=?,`state_id`=?,`country_id` =?, `updated_by`=?, `updated_date`=? where hims_d_patient_id=?",
+          values: [
+            inputparam.title_id,
+            inputparam.full_name,
+            inputparam.arabic_name,
+            inputparam.gender,
+            inputparam.religion_id,
+            inputparam.date_of_birth != null
+              ? new Date(inputparam.date_of_birth)
+              : inputparam.date_of_birth,
+            inputparam.age,
+            inputparam.marital_status,
+            inputparam.address1,
+            inputparam.address2,
+            inputparam.contact_number,
+            inputparam.secondary_contact_number,
+            inputparam.email,
+            inputparam.emergency_contact_name,
+            inputparam.emergency_contact_number,
+            inputparam.relationship_with_patient,
+            inputparam.visa_type_id,
+            inputparam.nationality_id,
+            inputparam.postal_code,
+            inputparam.primary_identity_id,
+            inputparam.primary_id_no,
+            inputparam.secondary_identity_id,
+            inputparam.secondary_id_no,
+            inputparam.photo_file,
+            inputparam.primary_id_file,
+            inputparam.secondary_id_file,
+            inputparam.patient_type,
+
+            inputparam.city_id,
+            inputparam.state_id,
+            inputparam.country_id,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            inputparam.hims_d_patient_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };

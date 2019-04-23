@@ -76,7 +76,7 @@ class UpdatePatientDetails extends Component {
       state: this,
       callback: () => {
         const err = Validations(this);
-
+        debugger;
         if (!err) {
           AlgaehLoader({ show: true });
 
@@ -103,10 +103,10 @@ class UpdatePatientDetails extends Component {
           delete patientdata.cities;
 
           algaehApiCall({
-            uri: "/frontDesk/update",
+            uri: "/patientRegistration/updatePatientData",
             module: "frontDesk",
             data: patientdata,
-            method: "POST",
+            method: "PUT",
             onSuccess: response => {
               // AlgaehLoader({ show: false });
               if (response.data.success) {
@@ -180,18 +180,6 @@ class UpdatePatientDetails extends Component {
 
   getCtrlCode(patcode) {
     let $this = this;
-    let provider_id = this.props.provider_id || null;
-    let sub_department_id = this.props.sub_department_id || null;
-    let visit_type = this.props.visit_type || null;
-    let hims_d_services_id = this.props.hims_d_services_id || null;
-    let fromAppoinment =
-      this.props.fromAppoinment === undefined
-        ? false
-        : this.props.fromAppoinment;
-
-    let department_id = this.props.department_id || null;
-    let appointment_id = this.props.hims_f_patient_appointment_id || null;
-    let title_id = Window.global["appt-title-id"] || null;
 
     AlgaehLoader({ show: true });
 
@@ -204,28 +192,6 @@ class UpdatePatientDetails extends Component {
         if (response.data.success) {
           let data = response.data.records;
 
-          data.patientRegistration.visitDetails = data.visitDetails;
-          data.patientRegistration.patient_id =
-            data.patientRegistration.hims_d_patient_id;
-          data.patientRegistration.existingPatient = true;
-
-          //Appoinment Start
-          if (fromAppoinment === true) {
-            data.patientRegistration.provider_id = provider_id;
-            data.patientRegistration.doctor_id = provider_id;
-            data.patientRegistration.sub_department_id = sub_department_id;
-
-            data.patientRegistration.visit_type = visit_type;
-            data.patientRegistration.saveEnable = false;
-            data.patientRegistration.clearEnable = true;
-            data.patientRegistration.hims_d_services_id = hims_d_services_id;
-            data.patientRegistration.department_id = department_id;
-            data.patientRegistration.billdetail = false;
-            data.patientRegistration.consultation = "Y";
-            data.patientRegistration.appointment_patient = "Y";
-            data.patientRegistration.appointment_id = appointment_id;
-            data.patientRegistration.title_id = title_id;
-          }
           //Appoinment End
           debugger;
           data.patientRegistration.filePreview =
@@ -236,6 +202,8 @@ class UpdatePatientDetails extends Component {
           data.patientRegistration.date_of_birth = moment(
             data.patientRegistration.date_of_birth
           )._d;
+          data.patientRegistration.saveEnable = false;
+          delete data.visitDetails;
           $this.setState(data.patientRegistration);
         }
         AlgaehLoader({ show: false });

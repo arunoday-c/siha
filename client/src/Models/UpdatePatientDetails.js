@@ -44,7 +44,8 @@ export default {
       secondary_id_file: "",
 
       forceRefresh: undefined,
-      Rerender: false
+      Rerender: false,
+      saveEnable: true
     };
     return output;
   }
