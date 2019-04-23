@@ -330,17 +330,14 @@ class ValidateBills extends PureComponent {
         }}
         openPopup={this.props.openPopup}
       >
-        <div className="popupInner ClaimValidationPopup">
+        <div className="popupInner">
           {/* {JSON.stringify(this.props.data)} */}
-          <div
-            className="popRightDiv"
-            style={{ paddingTop: 15, paddingBottom: 15 }}
-          >
-            <div className="row ">
-              <div className="col-lg-8">
-                <div id="claimGrid_cntr">
+          <div className="popRightDiv">
+            <div className="row">
+              <div className="col-8">
+                <div id="ClaimGrid_Cntr">
                   <AlgaehDataGrid
-                    id="validate-bills-grid"
+                    id="ClaimGrid"
                     columns={[
                       // {
                       //   fieldName: "actions",
@@ -491,7 +488,7 @@ class ValidateBills extends PureComponent {
                 </div>
                 <div id="invoiceDetailGrid_Cntr">
                   <AlgaehDataGrid
-                    id="validate-bills-grid"
+                    id="invoiceDetailGrid"
                     columns={[
                       {
                         fieldName: "quantity",
@@ -643,11 +640,11 @@ class ValidateBills extends PureComponent {
                     }}
                   />
                 </div>
-              </div>
-
-              <div className="col-lg-4">
+              </div>{" "}
+              <div className="col-4">
                 <div className="row">
-                  <div className="col-lg-6  margin-top-15">
+                  {" "}
+                  <div className="col-12  margin-top-15">
                     <div className="image-drop-area">
                       <Dropzone
                         onDrop={() => {}}
@@ -682,7 +679,7 @@ class ValidateBills extends PureComponent {
                       </Dropzone>
                     </div>
                   </div>
-                  <div className="col-lg-6 margin-top-15">
+                  <div className="col-12 margin-top-15">
                     <div className="image-drop-area">
                       <Dropzone
                         onDrop={() => {}}
@@ -716,7 +713,7 @@ class ValidateBills extends PureComponent {
                         />
                       </Dropzone>
                     </div>
-                  </div>
+                  </div>{" "}
                   <AlagehFormGroup
                     div={{ className: "col  margin-top-15 " }}
                     label={{
@@ -735,10 +732,9 @@ class ValidateBills extends PureComponent {
                       }
                     }}
                   />
-
                   <div
                     className="col-2"
-                    style={{ padding: 0, paddingTop: "40px" }}
+                    style={{ padding: 0, paddingTop: "39px" }}
                   >
                     <i
                       onClick={this.icdSearch.bind(this)}
@@ -748,19 +744,18 @@ class ValidateBills extends PureComponent {
                       }}
                     />
                   </div>
-
                   <div className="col-3">
                     <button
                       onClick={this.addICDtoInvoice.bind(this)}
                       className="btn btn-primary margin-top-15"
-                      style={{ marginTop: 36 }}
+                      style={{ marginTop: 32 }}
                     >
                       Add
                     </button>
                   </div>
                   <div className="col-12 margin-top-15" id="icd_bill_cntr">
                     <AlgaehDataGrid
-                      id="validate-bills-grid"
+                      id="icd_bill_Grid"
                       columns={[
                         {
                           fieldName: "actions",
