@@ -450,3 +450,8 @@ header {
     }
   }
 }
+@media only screen and (max-width: 600px) {
+  .navTopBarRight {
+    display: none;
+  }
+}
