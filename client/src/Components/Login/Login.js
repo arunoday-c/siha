@@ -176,7 +176,7 @@ export default class Login extends Component {
                 <div className="row">
                   <div className="col-12">
                     <div className="companyLogo" />
-                    <h3 className="LoginCntrHdg">Login In</h3>
+                    <h3 className="LoginCntrHdg">Login</h3>
                   </div>
                   <div
                     className="col-12"
@@ -269,10 +269,13 @@ export default class Login extends Component {
                           type="submit"
                           tabIndex="4"
                         >
-                          Log In
+                          Login
                         </button>
                         <p className="frgtPass">
-                          <a>Forgot Password?</a>
+                          FORGOT PASSWORD? |{" "}
+                          <a href="mailto:we@algaeh.com?Subject=Hello%20New%20Password%20Requesting">
+                            CONTACT ADMINISTRATOR
+                          </a>
                         </p>
                       </div>
                     </form>

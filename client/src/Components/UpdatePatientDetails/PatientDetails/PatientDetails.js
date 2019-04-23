@@ -217,7 +217,7 @@ class UpdatePatientForm extends Component {
         <MyContext.Consumer>
           {context => (
             <div
-              className="hptl-phase1-add-patient-form"
+              className="hptl-phase1-add-patient-form margin-top-15"
               data-validate="demographicDetails"
             >
               <div className="col-lg-12">
@@ -795,118 +795,116 @@ class UpdatePatientForm extends Component {
                   </div>
                 </div>
 
-                <div className="col-lg-12">
-                  <div className="row" style={{ paddingBottom: "10px" }}>
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "secondary_contact_number"
-                      }}
-                      textBox={{
-                        value: this.state.secondary_contact_number,
-                        className: "txt-fld",
-                        name: "secondary_contact_number",
+                <div className="row" style={{ paddingBottom: "10px" }}>
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "secondary_contact_number"
+                    }}
+                    textBox={{
+                      value: this.state.secondary_contact_number,
+                      className: "txt-fld",
+                      name: "secondary_contact_number",
 
-                        others: {
-                          placeholder: "(+01)123-456-7890",
-                          type: "number"
-                        }
-                      }}
-                    />
+                      others: {
+                        placeholder: "(+01)123-456-7890",
+                        type: "number"
+                      }
+                    }}
+                  />
 
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "emergency_contact_number"
-                      }}
-                      textBox={{
-                        value: this.state.emergency_contact_number,
-                        className: "txt-fld",
-                        name: "emergency_contact_number",
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "emergency_contact_number"
+                    }}
+                    textBox={{
+                      value: this.state.emergency_contact_number,
+                      className: "txt-fld",
+                      name: "emergency_contact_number",
 
-                        others: {
-                          placeholder: "(+01)123-456-7890",
-                          type: "number"
-                        }
-                      }}
-                    />
+                      others: {
+                        placeholder: "(+01)123-456-7890",
+                        type: "number"
+                      }
+                    }}
+                  />
 
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "emergency_contact_name"
-                      }}
-                      textBox={{
-                        value: this.state.emergency_contact_name,
-                        className: "txt-fld",
-                        name: "emergency_contact_name",
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "emergency_contact_name"
+                    }}
+                    textBox={{
+                      value: this.state.emergency_contact_name,
+                      className: "txt-fld",
+                      name: "emergency_contact_name",
 
-                        others: {
-                          disabled: this.state.existingPatient
-                        }
-                      }}
-                    />
+                      others: {
+                        disabled: this.state.existingPatient
+                      }
+                    }}
+                  />
 
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "relationship_with_patient"
-                      }}
-                      textBox={{
-                        value: this.state.relationship_with_patient,
-                        className: "txt-fld",
-                        name: "relationship_with_patient",
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "relationship_with_patient"
+                    }}
+                    textBox={{
+                      value: this.state.relationship_with_patient,
+                      className: "txt-fld",
+                      name: "relationship_with_patient",
 
-                        others: {
-                          disabled: this.state.existingPatient
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "email"
-                      }}
-                      textBox={{
-                        value: this.state.email,
-                        className: "txt-fld",
-                        name: "email",
+                      others: {
+                        disabled: this.state.existingPatient
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "email"
+                    }}
+                    textBox={{
+                      value: this.state.email,
+                      className: "txt-fld",
+                      name: "email",
 
-                        others: {
-                          placeholder: "Enter Email Address",
-                          type: "email"
-                        }
-                      }}
-                    />
-                  </div>
-                  <div className="row" style={{ paddingBottom: "10px" }}>
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      label={{
-                        fieldName: "postal_code"
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "postal_code",
-                        value: this.state.postal_code
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "address2"
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "address2",
-                        value: this.state.address2,
+                      others: {
+                        placeholder: "Enter Email Address",
+                        type: "email"
+                      }
+                    }}
+                  />
+                </div>
+                <div className="row" style={{ paddingBottom: "10px" }}>
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      fieldName: "postal_code"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "postal_code",
+                      value: this.state.postal_code
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "address2"
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "address2",
+                      value: this.state.address2,
 
-                        others: {
-                          placeholder: "Enter Full Address 2"
-                        }
-                      }}
-                    />
-                  </div>
+                      others: {
+                        placeholder: "Enter Full Address 2"
+                      }
+                    }}
+                  />
                 </div>
               </div>
             </div>

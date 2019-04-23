@@ -7,7 +7,11 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { getCookie } from "../../utils/algaehApiCall.js";
+import {
+  algaehApiCall,
+  getCookie,
+  swalMessage
+} from "../../utils/algaehApiCall.js";
 import {
   AlgaehCloseContainer,
   getAmountFormart
@@ -383,13 +387,42 @@ class Dashboard extends Component {
     super(props);
     this.state = {
       sidBarOpen: true,
-      showDetails: "d-none"
+      showDetails: "d-none",
+      today_list: []
     };
+    this.loadListofData();
   }
 
   showDetailHandler(event) {
     this.setState({
       showDetails: this.state.showDetails === "d-block" ? "d-none" : "d-block"
+    });
+  }
+
+  loadListofData() {
+    debugger;
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getMyDay",
+      data: {
+        fromDate: new Date(),
+        toDate: new Date()
+      },
+      method: "GET",
+      cancelRequestId: "getMyDay",
+      onSuccess: response => {
+        if (response.data.success) {
+          debugger;
+          this.setState({
+            today_list: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   }
 
@@ -500,7 +533,7 @@ class Dashboard extends Component {
         </div>
 
         <div className="row">
-          <div className="col-4">
+          <div className="col-lg-4 col-md-12">
             <div className="row">
               {/* <div className="col-12">
                 <div className="card animated fadeInUp faster">
@@ -545,150 +578,117 @@ class Dashboard extends Component {
               </div>
             </div>
           </div>
-          <div className="col-8">
-            <div className="col-12">
-              <div className="card animated fadeInUp faster">
-                <h6>Todays Patients</h6>
-                <div className="dashboardGridCntr">
-                  <table className="table  table-responsive  table-bordered table-sm table-striped">
-                    <thead>
-                      <tr>
-                        <th>Patient Code</th>
-                        <th>Patient Name</th>
-                        <th>Gender</th>
-                        <th>Age</th>
-                        <th>Appointment Type</th>
-                        <th>Visit Type</th>
-                        <th>Complaints</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>PAT-A-0000693</td>
-                        <td>Gulam Mustafa</td>
-                        <td>Male</td>
-                        <td>44</td>
-                        <td>Walk In</td>
-                        <td>New Visit</td>
-                        <td>Back Pain</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000691</td>
-                        <td>Kamalnath Singh</td>
-                        <td>Male</td>
-                        <td>56</td>
-                        <td>Appointment</td>
-                        <td>New Visit</td>
-                        <td>Joint Pain</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Rehmat Fatima</td>
-                        <td>Female</td>
-                        <td>24</td>
-                        <td>Walk In</td>
-                        <td>New Visit</td>
-                        <td>Severe Headache</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000654</td>
-                        <td>Syed Al-Hameed</td>
-                        <td>Male</td>
-                        <td>36</td>
-                        <td>Walk In</td>
-                        <td>Follow Up</td>
-                        <td>Severe Headache</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Rehmat Fatima</td>
-                        <td>Female</td>
-                        <td>24</td>
-                        <td>Appointment</td>
-                        <td>Follow Up</td>
-                        <td>Knee Pain</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Hakeem Usmani</td>
-                        <td>Male</td>
-                        <td>41</td>
-                        <td>Appointment</td>
-                        <td>New Visit</td>
-                        <td>Fever</td>
-                      </tr>
-                    </tbody>
-                  </table>
+          <div className="col-lg-8 col-md-12">
+            <div className="row">
+              <div className="col-12">
+                <div className="card animated fadeInUp faster">
+                  <h6>Todays Patients</h6>
+                  <div className="dashboardGridCntr table-responsive">
+                    <table className="table table-bordered table-sm table-striped">
+                      <thead>
+                        <tr>
+                          <th>Patient Code</th>
+                          <th>Patient Name</th>
+                          <th>Gender</th>
+                          <th>Age</th>
+                          <th>Appointment Type</th>
+                          <th>Visit Type</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {/* today_list */}
+
+                        {this.state.today_list.map((patient_data, index) => (
+                          <tr key={index}>
+                            <td>{patient_data.patient_code}</td>
+                            <td>{patient_data.full_name}</td>
+                            <td>{patient_data.gender}</td>
+                            <td>{patient_data.age}</td>
+                            <td>
+                              {patient_data.appointment_patient === "N"
+                                ? "Walk In"
+                                : "Appoinment"}
+                            </td>
+                            <td>
+                              {patient_data.new_visit_patient === "Y"
+                                ? "Net Visit"
+                                : "Follow Up"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-12">
-              <div className="card animated fadeInUp faster">
-                <h6>Ordered Service Status</h6>
-                <div className="dashboardGridCntr">
-                  <table className="table  table-responsive table-bordered table-sm table-striped">
-                    <thead>
-                      <tr>
-                        <th>Patient Code</th>
-                        <th>Patient Name</th>
-                        <th>Service Ordered</th>
-                        <th>Ordered Date</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>PAT-A-0000693</td>
-                        <td>Gulam Mustafa</td>
-                        <td>Acetylcholine receptor antibody</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000691</td>
-                        <td>Kamalnath Singh</td>
-                        <td>CBC</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Rehmat Fatima</td>
-                        <td>Activated Protein C Resistance (APCR)</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000654</td>
-                        <td>Syed Al-Hameed</td>
-                        <td>Acute Hepatitis Panel</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Rehmat Fatima</td>
-                        <td>Acid Fast Bacilli (AFB) Smear</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <td>PAT-A-0000682</td>
-                        <td>Hakeem Usmani</td>
-                        <td>17-Ketosteroids</td>
-                        <td>19-04-2018</td>
-                        <td>Pending</td>
-                        <td>-</td>
-                      </tr>
-                    </tbody>
-                  </table>
+              <div className="col-12">
+                <div className="card animated fadeInUp faster">
+                  <h6>Ordered Service Status</h6>
+                  <div className="dashboardGridCntr table-responsive">
+                    <table className="table table-bordered table-sm table-striped">
+                      <thead>
+                        <tr>
+                          <th>Patient Code</th>
+                          <th>Patient Name</th>
+                          <th>Service Ordered</th>
+                          <th>Ordered Date</th>
+                          <th>Status</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>PAT-A-0000693</td>
+                          <td>Gulam Mustafa</td>
+                          <td>Acetylcholine receptor antibody</td>
+                          <td>19-04-2018</td>
+                          <td>Pending</td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>PAT-A-0000691</td>
+                          <td>Kamalnath Singh</td>
+                          <td>CBC</td>
+                          <td>19-04-2018</td>
+                          <td>Pending</td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>PAT-A-0000682</td>
+                          <td>Rehmat Fatima</td>
+                          <td>Activated Protein C Resistance (APCR)</td>
+                          <td>19-04-2018</td>
+                          <td>Pending</td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>PAT-A-0000654</td>
+                          <td>Syed Al-Hameed</td>
+                          <td>Acute Hepatitis Panel</td>
+                          <td>19-04-2018</td>
+                          <td>Pending</td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>PAT-A-0000682</td>
+                          <td>Rehmat Fatima</td>
+                          <td>Acid Fast Bacilli (AFB) Smear</td>
+                          <td>19-04-2018</td>
+                          <td>Pending</td>
+                          <td>-</td>
+                        </tr>
+                        <tr>
+                          <td>PAT-A-0000682</td>
+                          <td>Hakeem Usmani</td>
+                          <td>17-Ketosteroids</td>
+                          <td>19-04-2018</td>
+                          <td>Pending</td>
+                          <td>-</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>

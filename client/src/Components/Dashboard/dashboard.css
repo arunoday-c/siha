@@ -53,8 +53,12 @@
       position: relative; }
       .dashboard .card .dashboardChartsCntr h6 {
         text-align: center; }
+    .dashboard .card .table-responsive {
+      width: 97%;
+      margin-left: 1.5%;
+      margin-right: 1.5%; }
     .dashboard .card .dashboardGridCntr {
-      margin: 10px;
+      margin-bottom: 5px;
       height: auto;
       position: relative; }
       .dashboard .card .dashboardGridCntr h6 {

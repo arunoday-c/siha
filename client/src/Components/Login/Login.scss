@@ -8,6 +8,8 @@
     text-align: center;
     color: $color-white;
     font-size: 2em;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
   }
 
   .form-group {
@@ -99,6 +101,14 @@
     font-size: 12px;
     margin-top: 20px;
     margin-bottom: 0;
+    color: $color-white;
+    a {
+      color: $color-white;
+      text-decoration: underline;
+    }
+    a:hover {
+      text-decoration: none;
+    }
   }
   .ui.fluid.dropdown {
     .menu {
@@ -153,6 +163,7 @@
     font-weight: normal;
     margin-bottom: 10px;
     padding-left: 20px;
+    color: $color-white;
   }
   .txt-fld {
     background: none !important;
@@ -188,14 +199,14 @@
   left: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: $color-white;
   font-size: 0.7rem;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5);
   a {
-    text-decoration: none;
-    color: $secondary-color;
+    color: $color-white;
+    text-decoration: underline;
   }
   a:hover {
-    text-decoration: underline;
+    text-decoration: none;
   }
 }

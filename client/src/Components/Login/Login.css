@@ -6,7 +6,9 @@
     margin-top: 0.7em;
     text-align: center;
     color: #fff;
-    font-size: 2em; }
+    font-size: 2em;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); }
   .login .form-group {
     margin-bottom: 0.7em; }
   .login .ui.input > input {
@@ -79,7 +81,13 @@
     text-align: center;
     font-size: 12px;
     margin-top: 20px;
-    margin-bottom: 0; }
+    margin-bottom: 0;
+    color: #fff; }
+    .login .frgtPass a {
+      color: #fff;
+      text-decoration: underline; }
+    .login .frgtPass a:hover {
+      text-decoration: none; }
   .login .ui.fluid.dropdown .menu {
     background-color: white;
     border-radius: 20px;
@@ -119,7 +127,8 @@
   .login .checkbox {
     font-weight: normal;
     margin-bottom: 10px;
-    padding-left: 20px; }
+    padding-left: 20px;
+    color: #fff; }
   .login .txt-fld {
     background: none !important; }
 
@@ -156,7 +165,7 @@
   font-size: 0.7rem;
   text-shadow: 0 2px 3px rgba(0, 0, 0, 0.5); }
   .loginFooter a {
-    text-decoration: none;
-    color: #f58220; }
-  .loginFooter a:hover {
+    color: #fff;
     text-decoration: underline; }
+  .loginFooter a:hover {
+    text-decoration: none; }
