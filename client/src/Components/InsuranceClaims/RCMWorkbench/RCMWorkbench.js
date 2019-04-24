@@ -70,8 +70,6 @@ class RCMWorkbench extends Component {
   }
 
   addClaimsArray(row, e) {
-    
-
     if (row.claim_validated === "P") {
       e.preventDefault();
       swalMessage({
@@ -227,9 +225,7 @@ class RCMWorkbench extends Component {
 
         <BreadCrumb
           title={
-            <AlgaehLabel
-              label={{ forceLabel: "RCM Desk", align: "ltr" }}
-            />
+            <AlgaehLabel label={{ forceLabel: "RCM Desk", align: "ltr" }} />
           }
           breadStyle={this.props.breadStyle}
           pageNavPath={[
@@ -487,6 +483,12 @@ class RCMWorkbench extends Component {
                       {
                         fieldName: "network_type",
                         label: <AlgaehLabel label={{ forceLabel: "Plan" }} />
+                      },
+                      {
+                        fieldName: "card_number",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Card Number" }} />
+                        )
                       },
                       {
                         fieldName: "invoice_date",
