@@ -2,15 +2,20 @@ import React, { Component } from "react";
 import "./patientprofile.css";
 import Overview from "./Overview/Overview";
 import Subjective from "./Subjective/Subjective";
+import BasicSubjective from "./Subjective/BasicSubjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import ExamDiagramStandolone from "./ExamDiagramStandolone/ExamDiagramStandolone";
 import Assesment from "./Assessment/Assessment";
 import Plan from "./Plan/Plan";
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
 import AlgaehFile from "../Wrapper/algaehFileUpload";
-import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  cancelRequest,
+  getCookie
+} from "../../utils/algaehApiCall";
 import moment from "moment";
-import { setGlobal } from "../../utils/GlobalFunctions";
+import { setGlobal, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -29,8 +34,15 @@ import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
 import DentalForm from "./DentalForm/DentalForm";
 import Eye from "./Eye/Eye";
+import _ from "lodash";
+
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
+const selected_module = getCookie("module_id");
+const active_modules = JSON.parse(
+  AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
+);
+
 class PatientProfile extends Component {
   constructor(props) {
     super(props);
@@ -164,6 +176,11 @@ class PatientProfile extends Component {
   }
 
   render() {
+    debugger;
+
+    const module_plan = _.filter(active_modules, f => {
+      return f.module_id === parseInt(selected_module);
+    });
     const _pat_profile =
       this.props.patient_profile !== undefined &&
       this.props.patient_profile.length > 0
@@ -246,14 +263,13 @@ class PatientProfile extends Component {
           <div className="patientName">
             <h6>{_pat_profile.full_name}</h6>
             <p>
-              {_pat_profile.gender} ,{_pat_profile.age_in_years}Y{" "}
+              {_pat_profile.gender} ,{_pat_profile.age_in_years}Y
               {_pat_profile.age_in_months}M {_pat_profile.age_in_days}D
             </p>
           </div>
           <div className="patientDemographic">
-            {" "}
             <span>
-              DOB:{" "}
+              DOB:
               <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
             {/* <span>
@@ -263,7 +279,7 @@ class PatientProfile extends Component {
               Nationality: <b>{_pat_profile.nationality}</b>
             </span>
             <span>
-              Payment:{" "}
+              Payment:
               <b>
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
@@ -278,7 +294,7 @@ class PatientProfile extends Component {
               MRN: <b>{_pat_profile.patient_code}</b>
             </span>
             <span>
-              Encounter:{" "}
+              Encounter:
               <b>
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY | hh:mm a"
@@ -289,7 +305,7 @@ class PatientProfile extends Component {
           {_Vitals.length > 0 ? (
             <div className="patientVital">
               <span>
-                Vitals updated on:{" "}
+                Vitals updated on:
                 <b>{_Vitals[_Vitals.length - 1]["updated_Date"]}</b>
               </span>
               <br />
@@ -317,161 +333,292 @@ class PatientProfile extends Component {
           </div>
         </div>
         <div className="patientTopNav box-shadow-normal">
-          <ul className="nav">
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="subjective"
-                className="nav-link active"
-              >
-                Subjective
-              </span>
-            </li>
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="phy_exam"
-                className="nav-link"
-              >
-                Physical Examination
-              </span>
-            </li>
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="exam_diagram"
-                className="nav-link"
-              >
-                Examination Diagram
-              </span>
-            </li>
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="assesment"
-                className="nav-link"
-              >
-                Assesment
-              </span>
-            </li>
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="plan"
-                className="nav-link"
-              >
-                Plan
-              </span>
-            </li>
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="dental"
-                className="nav-link"
-              >
-                Dental
-              </span>
-            </li>{" "}
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="dental_form"
-                className="nav-link"
-              >
-                Dental Form
-              </span>
-            </li>
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="eye"
-                className="nav-link"
-              >
-                Eye
-              </span>
-            </li>
-            <li className="nav-item">
-              <span
-                onClick={this.changeTabs}
-                algaehsoap="summary"
-                className="nav-link"
-              >
-                Summary
-              </span>
-            </li>
-            <ul className="float-right patient-quick-info">
-              <li>
-                <i className="fas fa-allergies" />
-                <section>
-                  <b className="top-nav-sec-hdg">Allergies:</b>
-                  <p>
-                    {_patient_allergies.map((data, index) => (
-                      <React.Fragment key={index}>
-                        <b>{data.allergy_type_desc}</b>
-                        {data.allergyList.map((allergy, aIndex) => (
-                          <span
-                            key={aIndex}
-                            className={
-                              "listofA-D-D " +
-                              (allergy.allergy_inactive === "Y" ? "red" : "")
-                            }
-                            title={
-                              "Onset Date : " +
-                              allergy.onset_date +
-                              "\n Comment : " +
-                              allergy.comment +
-                              "\n Severity : " +
-                              allergy.severity
-                            }
-                          >
-                            {allergy.allergy_name}
+          {module_plan[0].module_plan === "G" ? (
+            <ul className="nav">
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="subjective"
+                  className="nav-link active"
+                >
+                  Subjective
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="phy_exam"
+                  className="nav-link"
+                >
+                  Physical Examination
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="exam_diagram"
+                  className="nav-link"
+                >
+                  Examination Diagram
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="assesment"
+                  className="nav-link"
+                >
+                  Assesment
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="plan"
+                  className="nav-link"
+                >
+                  Plan
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="dental"
+                  className="nav-link"
+                >
+                  Dental
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="dental_form"
+                  className="nav-link"
+                >
+                  Dental Form
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="eye"
+                  className="nav-link"
+                >
+                  Eye
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="summary"
+                  className="nav-link"
+                >
+                  Summary
+                </span>
+              </li>
+              <ul className="float-right patient-quick-info">
+                <li>
+                  <i className="fas fa-allergies" />
+                  <section>
+                    <b className="top-nav-sec-hdg">Allergies:</b>
+                    <p>
+                      {_patient_allergies.map((data, index) => (
+                        <React.Fragment key={index}>
+                          <b>{data.allergy_type_desc}</b>
+                          {data.allergyList.map((allergy, aIndex) => (
+                            <span
+                              key={aIndex}
+                              className={
+                                "listofA-D-D " +
+                                (allergy.allergy_inactive === "Y" ? "red" : "")
+                              }
+                              title={
+                                "Onset Date : " +
+                                allergy.onset_date +
+                                "\n Comment : " +
+                                allergy.comment +
+                                "\n Severity : " +
+                                allergy.severity
+                              }
+                            >
+                              {allergy.allergy_name}
+                            </span>
+                          ))}
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </section>
+                </li>
+                <li>
+                  <i className="fas fa-diagnoses" />
+                  <section>
+                    <b className="top-nav-sec-hdg">Diagnosis:</b>
+                    <p>
+                      {_diagnosis.map((item, index) => (
+                        <React.Fragment key={index}>
+                          <span key={index} className="listofA-D-D">
+                            {item.icd_code} | {item.icd_description} |
+                            {item.diagnosis_type === "S"
+                              ? "Secondary"
+                              : "Primary"}
+                            | {item.final_daignosis}
                           </span>
-                        ))}
-                      </React.Fragment>
-                    ))}
-                  </p>
-                </section>
-              </li>
-              <li>
-                <i className="fas fa-diagnoses" />
-                <section>
-                  <b className="top-nav-sec-hdg">Diagnosis:</b>
-                  <p>
-                    {_diagnosis.map((item, index) => (
-                      <React.Fragment key={index}>
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </section>
+                </li>
+                <li>
+                  <i className="fas fa-utensils" />
+                  <section>
+                    <b className="top-nav-sec-hdg">Diet:</b>
+                    <p>
+                      {_diet.map((data, index) => (
                         <span key={index} className="listofA-D-D">
-                          {item.icd_code} | {item.icd_description} |
-                          {item.diagnosis_type === "S"
-                            ? "Secondary"
-                            : "Primary"}{" "}
-                          | {item.final_daignosis}
+                          {data.icd_description}
                         </span>
-                      </React.Fragment>
-                    ))}
-                  </p>
-                </section>
-              </li>
-              <li>
-                <i className="fas fa-utensils" />
-                <section>
-                  <b className="top-nav-sec-hdg">Diet:</b>
-                  <p>
-                    {_diet.map((data, index) => (
-                      <span key={index} className="listofA-D-D">
-                        {data.icd_description}
-                      </span>
-                    ))}
-                  </p>
-                </section>
-              </li>
+                      ))}
+                    </p>
+                  </section>
+                </li>
+              </ul>
             </ul>
-          </ul>
+          ) : (
+            <ul className="nav">
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="subjective"
+                  className="nav-link active"
+                >
+                  Subjective
+                </span>
+              </li>
+
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="plan"
+                  className="nav-link"
+                >
+                  Plan
+                </span>
+              </li>
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="summary"
+                  className="nav-link"
+                >
+                  Summary
+                </span>
+              </li>
+              <ul className="float-right patient-quick-info">
+                <li>
+                  <i className="fas fa-allergies" />
+                  <section>
+                    <b className="top-nav-sec-hdg">Allergies:</b>
+                    <p>
+                      {_patient_allergies.map((data, index) => (
+                        <React.Fragment key={index}>
+                          <b>{data.allergy_type_desc}</b>
+                          {data.allergyList.map((allergy, aIndex) => (
+                            <span
+                              key={aIndex}
+                              className={
+                                "listofA-D-D " +
+                                (allergy.allergy_inactive === "Y" ? "red" : "")
+                              }
+                              title={
+                                "Onset Date : " +
+                                allergy.onset_date +
+                                "\n Comment : " +
+                                allergy.comment +
+                                "\n Severity : " +
+                                allergy.severity
+                              }
+                            >
+                              {allergy.allergy_name}
+                            </span>
+                          ))}
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </section>
+                </li>
+                <li>
+                  <i className="fas fa-diagnoses" />
+                  <section>
+                    <b className="top-nav-sec-hdg">Diagnosis:</b>
+                    <p>
+                      {_diagnosis.map((item, index) => (
+                        <React.Fragment key={index}>
+                          <span key={index} className="listofA-D-D">
+                            {item.icd_code} | {item.icd_description} |
+                            {item.diagnosis_type === "S"
+                              ? "Secondary"
+                              : "Primary"}
+                            | {item.final_daignosis}
+                          </span>
+                        </React.Fragment>
+                      ))}
+                    </p>
+                  </section>
+                </li>
+                <li>
+                  <i className="fas fa-utensils" />
+                  <section>
+                    <b className="top-nav-sec-hdg">Diet:</b>
+                    <p>
+                      {_diet.map((data, index) => (
+                        <span key={index} className="listofA-D-D">
+                          {data.icd_description}
+                        </span>
+                      ))}
+                    </p>
+                  </section>
+                </li>
+              </ul>
+            </ul>
+          )}
         </div>
         <div className="patientContentArea">
-          {this.state.pageDisplay === "overview" ? (
+          {module_plan[0].module_plan === "G" ? (
+            this.state.pageDisplay === "overview" ? (
+              <Overview />
+            ) : this.state.pageDisplay === "subjective" ? (
+              <Subjective />
+            ) : this.state.pageDisplay === "phy_exam" ? (
+              <PhysicalExamination />
+            ) : this.state.pageDisplay === "exam_diagram" ? (
+              <ExamDiagramStandolone />
+            ) : this.state.pageDisplay === "assesment" ? (
+              <Assesment vat_applicable={this.vatApplicable()} />
+            ) : this.state.pageDisplay === "plan" ? (
+              <Plan />
+            ) : this.state.pageDisplay === "summary" ? (
+              <Summary />
+            ) : this.state.pageDisplay === "dental" ? (
+              <Dental />
+            ) : this.state.pageDisplay === "dental_form" ? (
+              <DentalForm />
+            ) : this.state.pageDisplay === "eye" ? (
+              <Eye />
+            ) : null
+          ) : this.state.pageDisplay === "overview" ? (
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (
-            <Subjective />
+            <BasicSubjective />
+          ) : this.state.pageDisplay === "plan" ? (
+            <Plan />
+          ) : this.state.pageDisplay === "summary" ? (
+            <Summary />
+          ) : null}
+          {/* {this.state.pageDisplay === "overview" ? (
+            <Overview />
+          ) : this.state.pageDisplay === "subjective" ? (
+            // <Subjective />
+            <BasicSubjective />
           ) : this.state.pageDisplay === "phy_exam" ? (
             <PhysicalExamination />
           ) : this.state.pageDisplay === "exam_diagram" ? (
@@ -488,7 +635,7 @@ class PatientProfile extends Component {
             <DentalForm />
           ) : this.state.pageDisplay === "eye" ? (
             <Eye />
-          ) : null}
+          ) : null} */}
         </div>
       </div>
     );
