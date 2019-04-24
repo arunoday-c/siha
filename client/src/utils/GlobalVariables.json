@@ -922,5 +922,10 @@
     { "name": "Consumption", "value": "CS" },
     { "name": "Receipt", "value": "REC" },
     { "name": "Delivery Note", "value": "DN" }
+  ],
+  "MODULE_PLAN": [
+    { "name": "Silver", "value": "S" },
+    { "name": "Gold", "value": "G" },
+    { "name": "Platinum", "value": "P" }
   ]
 }

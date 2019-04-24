@@ -58,11 +58,13 @@ class PersistentDrawer extends React.Component {
       method: "GET",
       onSuccess: dataResponse => {
         if (dataResponse.data.success) {
+          debugger;
           const _module = Enumarable.from(dataResponse.data.records)
             .select(s => {
               return {
-                algaeh_d_module_id: s.algaeh_d_module_id,
-                module_code: s.module_code
+                module_id: s.module_id,
+                module_code: s.module_code,
+                module_plan: s.module_plan
               };
             })
             .toArray();
@@ -361,6 +363,7 @@ class PersistentDrawer extends React.Component {
     const _menuselected = e.currentTarget.getAttribute("menuselected");
     const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
     setCookie("ScreenName", name, 30);
+    setCookie("module_id", submenu.module_id, 30);
     // AlgaehLoader({ show: true });
 
     this.setState({

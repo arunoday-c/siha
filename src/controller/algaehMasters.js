@@ -22,7 +22,8 @@ import {
   deleteScreenForRole,
   deleteModuleForRole,
   assignScreens,
-  assignComponents
+  assignComponents,
+  updateAlgaehModules
 } from "../model/algaehMasters";
 
 export default ({ config, db }) => {
@@ -44,6 +45,7 @@ export default ({ config, db }) => {
     }
     next();
   });
+
   // created by irfan :to add
   api.post("/addAlgaehRoleMAster", addAlgaehRoleMAster, (req, res, next) => {
     let result = req.records;
@@ -423,6 +425,22 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.put("/updateAlgaehModules", updateAlgaehModules, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
 
   return api;
 };
