@@ -301,7 +301,7 @@ class Vitals extends Component {
                             <ul className="vitals-box">
                               {data.list.map((vitals, ind) => (
                                 <li className="each-vitals-box" key={ind}>
-                                  <p>{vitals.vitals_name}</p>
+                                  <p>{vitals.vital_short_name}</p>
                                   <span>{vitals.vital_value}</span>
                                   <span>{vitals.formula_value}</span>
                                 </li>

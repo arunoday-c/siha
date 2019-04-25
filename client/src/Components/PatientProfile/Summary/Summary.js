@@ -147,12 +147,13 @@ class Summary extends Component {
                 <p>Not recorded</p>
               ) : (
                 <p>
-                  Patient {_pat_episode.patient_name} ,{_pat_episode.gender}{" "}
-                  aged {_pat_episode.age} Yrs Visited{" "}
-                  {_pat_episode.sub_department_name} Department on{" "}
-                  {_pat_episode.visit_date} for the chief complaint of{" "}
-                  {_pat_episode.chief_complaint}, from {_pat_episode.onset_date}
-                  .
+                  Patient <b>{_pat_episode.patient_name}</b>,{" "}
+                  {_pat_episode.gender}, {_pat_episode.age} Yrs,
+                  <br />
+                  visited <b>{_pat_episode.sub_department_name}</b> Department
+                  on <b>{_pat_episode.visit_date} </b> for the Chief complaint
+                  of <b>{_pat_episode.chief_complaint}</b> from{" "}
+                  {_pat_episode.onset_date}.
                 </p>
               )}
             </div>
@@ -166,7 +167,6 @@ class Summary extends Component {
                       <div key={index} className="col vitals-sec">
                         <div className="counter">
                           <h4 className="timer count-title count-number">
-                            {" "}
                             {row.vital_value}
                           </h4>
                           <p className="count-text ">{row.vitals_name}</p>
@@ -178,6 +178,87 @@ class Summary extends Component {
                   )}
                 </div>
               </div>
+            </div>
+            <div className="bd-callout bd-callout-theme">
+              <h6>Diagnosis</h6>
+              <div className="row">
+                <div className="col">
+                  <h6 className="danger">
+                    {_pat_patientDiagnosis.length > 0
+                      ? _pat_patientDiagnosis.map((data, index) =>
+                          data.diagnosis_type === "P"
+                            ? "Primary: " + data.icd_description
+                            : null
+                        )
+                      : "No Diagnosis added"}
+                  </h6>
+                </div>
+
+                <div className="col">
+                  <h6 className="">
+                    {_pat_patientDiagnosis.map((data, index) =>
+                      data.diagnosis_type === "S"
+                        ? "Secondary: " + data.icd_description
+                        : null
+                    )}
+                  </h6>
+                </div>
+              </div>
+            </div>
+            <div className="bd-callout bd-callout-theme">
+              <h6>Medication</h6>
+              <table className="table table-sm table-bordered customTable">
+                <thead className="table-primary">
+                  <tr>
+                    <th>Sl. No.</th>
+                    <th>Generic Name</th>
+                    <th>Dosage</th>
+                    <th>Frequency</th>
+                    <th>Duration(days)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.patientMedications.length > 0
+                    ? this.state.patientMedications.map((data, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>{data.generic_name}</td>
+                          <td>{data.dosage}</td>
+                          <td>{data.frequency_type}</td>
+                          <td>{data.no_of_days}</td>
+                        </tr>
+                      ))
+                    : null}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="bd-callout bd-callout-theme">
+              <h6>Ordered Services</h6>
+              <table className="table table-sm table-bordered customTable">
+                <thead className="table-primary">
+                  <tr>
+                    <th>Sl. No.</th>
+                    <th>Service Code</th>
+                    <th>Service Name</th>
+                    <th>Qty</th>
+                    <th>Service Charge</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.patientMedications.length > 0
+                    ? this.state.patientMedications.map((data, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>Service Code</td>
+                          <td>Service Name</td>
+                          <td>Qty</td>
+                          <td>Service Charge</td>
+                        </tr>
+                      ))
+                    : null}
+                </tbody>
+              </table>
             </div>
 
             <div className="bd-callout bd-callout-theme">
@@ -233,60 +314,6 @@ class Summary extends Component {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="bd-callout bd-callout-theme">
-              <h6>Medication</h6>
-              <table className="table table-sm table-bordered customTable">
-                <thead className="table-primary">
-                  <tr>
-                    <th>Sl. No.</th>
-                    <th>Generic Name</th>
-                    <th>Dosage</th>
-                    <th>Frequency</th>
-                    <th>Duration(days)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.patientMedications.length > 0
-                    ? this.state.patientMedications.map((data, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>{data.generic_name}</td>
-                          <td>{data.dosage}</td>
-                          <td>{data.frequency_type}</td>
-                          <td>{data.no_of_days}</td>
-                        </tr>
-                      ))
-                    : null}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="bd-callout bd-callout-theme">
-              <h6>Diagnosis</h6>
-              <div className="row">
-                <div className="col">
-                  <h6 className="danger">
-                    {_pat_patientDiagnosis.length > 0
-                      ? _pat_patientDiagnosis.map((data, index) =>
-                          data.diagnosis_type === "P"
-                            ? "Primary: " + data.icd_description
-                            : null
-                        )
-                      : "No Diagnosis added"}
-                  </h6>
-                </div>
-
-                <div className="col">
-                  <h6 className="">
-                    {_pat_patientDiagnosis.map((data, index) =>
-                      data.diagnosis_type === "S"
-                        ? "Secondary: " + data.icd_description
-                        : null
-                    )}
-                  </h6>
-                </div>
-              </div>
             </div>
           </div>
           <div className="col-md-3 col-lg-3">
