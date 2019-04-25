@@ -1,7 +1,6 @@
 import "../../src/index.css";
 
 export function printReport(data) {
-  debugger;
   return `
     
     <table class="UCAF20_Report">

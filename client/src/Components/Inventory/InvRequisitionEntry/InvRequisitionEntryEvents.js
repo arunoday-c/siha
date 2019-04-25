@@ -7,7 +7,6 @@ import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
 const requisitionEvent = ($this, ctrl, e) => {
-  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
@@ -17,7 +16,7 @@ const requisitionEvent = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  debugger;
+
   $this.props.getRequisitionEntry({
     uri: "/inventoryrequisitionEntry/getinventoryrequisitionEntry",
     module: "inventory",
@@ -128,7 +127,6 @@ const AuthorizeRequisitionEntry = ($this, authorize) => {
 };
 
 const LocationchangeTexts = ($this, location, ctrl, e) => {
-  debugger;
   e = ctrl || e;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;

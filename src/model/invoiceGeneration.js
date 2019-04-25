@@ -188,8 +188,8 @@ let addInvoiceGeneration = (req, res, next) => {
             "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,\
               net_amount, patient_resp,patient_tax, patient_payable, company_resp, company_tax, company_payable, \
               sec_company_resp, sec_company_tax, sec_company_payable,insurance_provider_id, sub_insurance_id, network_id, network_office_id, \
-              created_date,created_by,updated_date,updated_by) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              card_number,created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               new Date(input.invoice_date),
@@ -212,6 +212,7 @@ let addInvoiceGeneration = (req, res, next) => {
               input.sub_insurance_id,
               input.network_id,
               input.network_office_id,
+              input.card_number,
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
@@ -598,7 +599,7 @@ let getInvoicesForClaims = (req, res, next) => {
           }
           connection.query(
             "SELECT hims_f_invoice_header_id, invoice_number, invoice_date, IH.patient_id, visit_id,\
-            IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, gross_amount,\
+            IH.insurance_provider_id, IH.sub_insurance_id, IH.network_id, IH.network_office_id, IH.card_number, gross_amount,\
             discount_amount, patient_resp, patient_tax, patient_payable, company_resp, company_tax, \
             company_payable, sec_company_resp, sec_company_tax, sec_company_payable, submission_date,\
             submission_ammount, remittance_date, remittance_ammount, denial_ammount,claim_validated,\

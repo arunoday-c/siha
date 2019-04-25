@@ -121,7 +121,6 @@ const LeaveSalProcess = $this => {
     module: "hrManagement",
     data: inputObj,
     onSuccess: response => {
-      debugger;
       if (response.data.success) {
         if (response.data.result.length > 0) {
           let salaryObj = [];
@@ -130,7 +129,6 @@ const LeaveSalProcess = $this => {
           // let data = response.data.result;
 
           for (let i = 0; i < leave_salary_detail.length; i++) {
-            debugger;
             salaryObj = Enumerable.from(response.data.result[0])
               .where(
                 w =>

@@ -71,7 +71,6 @@ class NewPackage extends PureComponent {
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.PackagesPop.hims_d_package_header_id !== undefined) {
       let IOputs = newProps.PackagesPop;
       this.setState({ ...this.state, ...IOputs });
@@ -79,7 +78,6 @@ class NewPackage extends PureComponent {
   }
 
   onClose = e => {
-    debugger;
     this.setState(
       {
         hims_d_package_header_id: null,

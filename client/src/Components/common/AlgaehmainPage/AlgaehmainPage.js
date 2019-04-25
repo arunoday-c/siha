@@ -61,8 +61,9 @@ class PersistentDrawer extends React.Component {
           const _module = Enumarable.from(dataResponse.data.records)
             .select(s => {
               return {
-                algaeh_d_module_id: s.algaeh_d_module_id,
-                module_code: s.module_code
+                module_id: s.module_id,
+                module_code: s.module_code,
+                module_plan: s.module_plan
               };
             })
             .toArray();
@@ -233,7 +234,7 @@ class PersistentDrawer extends React.Component {
     setCookie("prevLanguage", prevLang, 30);
 
     let renderComp = this.state.renderComponent;
-    debugger;
+
     // var last2 = renderComp.slice(-2);
     // if (last2 === "Ar") {
     //   renderComp = renderComp.substring(0, renderComp.length - 2);
@@ -352,7 +353,6 @@ class PersistentDrawer extends React.Component {
     //     ? this.state.Language.charAt(0).toUpperCase() +
     //       this.state.Language.slice(1)
     //     : "");
-    debugger;
 
     let screenName = submenu.page_to_redirect.replace(/\s/g, "");
 
@@ -361,6 +361,7 @@ class PersistentDrawer extends React.Component {
     const _menuselected = e.currentTarget.getAttribute("menuselected");
     const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
     setCookie("ScreenName", name, 30);
+    setCookie("module_id", submenu.module_id, 30);
     // AlgaehLoader({ show: true });
 
     this.setState({

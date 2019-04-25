@@ -163,8 +163,6 @@ export default class ReportUI extends Component {
   }
   onChangeReportPreview(type) {
     if (type === "PDF") {
-      debugger;
-
       const _element = this.algehPrintRef;
       const date_time = moment(new Date()).format("DD-MM-YYYY HH:mm:ss");
       const _hasSelection = _element.querySelector("section");
@@ -173,7 +171,6 @@ export default class ReportUI extends Component {
       }
       html2canvas(_element)
         .then(canvas => {
-          debugger;
           if (_hasSelection !== undefined)
             _hasSelection.classList.remove("forPDF");
           let pdf = new jsPDF("l", "mm", "a4");
@@ -242,11 +239,9 @@ export default class ReportUI extends Component {
           onSuccess: response => {
             let buttonDisable = true;
             if (response.data.success === true) {
-              debugger;
               new Promise((resolve, reject) => {
                 resolve(response.data.records);
               }).then(data => {
-                debugger;
                 if (Array.isArray(data)) {
                   if (data.length > 0) {
                     buttonDisable = false;

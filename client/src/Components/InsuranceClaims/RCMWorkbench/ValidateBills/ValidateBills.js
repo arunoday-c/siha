@@ -14,6 +14,7 @@ import noImage from "../../../../assets/images/images.webp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 //import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 
 class ValidateBills extends PureComponent {
   constructor(props) {
@@ -62,6 +63,15 @@ class ValidateBills extends PureComponent {
         }
       );
     }
+  }
+
+  imageDetails(type) {
+    // if (context !== undefined) {
+    //   context.updateState({
+    //     ...this.state,
+    //     [type]: this[type]
+    //   });
+    // }
   }
 
   addICDtoInvoice() {
@@ -322,6 +332,10 @@ class ValidateBills extends PureComponent {
         ? this.state.invoices.invoiceDetails
         : [];
 
+    const card_number =
+      this.state.invoices !== undefined
+        ? this.state.invoices.card_number
+        : null;
     return (
       <AlgaehModalPopUp
         title="Claim Validation"
@@ -640,43 +654,53 @@ class ValidateBills extends PureComponent {
                     }}
                   />
                 </div>
-              </div>{" "}
+              </div>
               <div className="col-4">
                 <div className="row">
-                  {" "}
                   <div className="col-12  margin-top-15">
-                    <div className="image-drop-area">
-                      <Dropzone
-                        onDrop={() => {}}
-                        id="insurance"
-                        className="dropzone"
+                    <div className="col-lg-6 insurCrdImg">
+                      <AlgaehFileUploader
+                        ref={patInsuranceFrontImg => {
+                          this.patInsuranceFrontImg = patInsuranceFrontImg;
+                        }}
+                        noImage="insurance-card-front"
+                        name="patInsuranceFrontImg"
                         accept="image/*"
-                        multiple={false}
-                        name="image"
-                      >
-                        <img
-                          src={this.state.img}
-                          alt="Insurance Image"
-                          onError={e => {
-                            e.target.src = noImage;
-                          }}
-                        />
+                        textAltMessage="Front Side"
+                        serviceParameters={{
+                          uniqueID: card_number + "_front",
+                          fileType: "Patients",
+                          processDelay: this.imageDetails.bind(
+                            this,
+                            "patInsuranceFrontImg"
+                          )
+                        }}
+                        renderPrevState={this.state.patInsuranceFrontImg}
+                        // forceRefresh={this.state.forceRefresh}
+                      />
+                    </div>
 
-                        <div className="attach-design text-center">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Photo"
-                            }}
-                          />
-                        </div>
-                        <div
-                          style={{
-                            width: this.state.percent + "%",
-                            height: 3,
-                            backgroundColor: "#E1AE54"
-                          }}
-                        />
-                      </Dropzone>
+                    <div className="col-lg-6 insurCrdImg">
+                      <AlgaehFileUploader
+                        ref={patInsuranceBackImg => {
+                          this.patInsuranceBackImg = patInsuranceBackImg;
+                        }}
+                        noImage="insurance-card-back"
+                        name="patInsuranceBackImg"
+                        accept="image/*"
+                        textAltMessage="Back Side"
+                        serviceParameters={{
+                          uniqueID: card_number + "_back",
+                          fileType: "Patients",
+                          processDelay: this.imageDetails.bind(
+                            this,
+                            "patInsuranceBackImg"
+                          )
+                        }}
+                        renderPrevState={this.state.patInsuranceBackImg}
+                        forceRefresh={this.state.forceRefresh}
+                      />
+                      <div />
                     </div>
                   </div>
                   <div className="col-12 margin-top-15">
@@ -713,7 +737,7 @@ class ValidateBills extends PureComponent {
                         />
                       </Dropzone>
                     </div>
-                  </div>{" "}
+                  </div>
                   <AlagehFormGroup
                     div={{ className: "col  margin-top-15 " }}
                     label={{

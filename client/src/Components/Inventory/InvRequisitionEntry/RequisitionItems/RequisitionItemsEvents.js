@@ -34,7 +34,6 @@ const numberchangeTexts = ($this, context, e) => {
 };
 
 const itemchangeText = ($this, context, e) => {
-  debugger;
   let name = e.name || e.target.name;
   if ($this.state.requistion_type === "PR") {
     if ($this.state.from_location_id !== null) {
@@ -53,7 +52,6 @@ const itemchangeText = ($this, context, e) => {
           mappingName: "inventoryitemdetaillist"
         },
         afterSuccess: data => {
-          debugger;
           getItemLocationStock($this, context, {
             location_id: $this.state.from_location_id,
             item_id: value,
@@ -343,7 +341,6 @@ const getItemLocationStock = ($this, context, value) => {
       mappingName: "inventoryitemBatch"
     },
     afterSuccess: data => {
-      debugger;
       if (data.length !== 0) {
         let total_quantity = 0;
         for (let i = 0; i < data.length; i++) {

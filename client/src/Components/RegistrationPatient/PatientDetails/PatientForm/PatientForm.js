@@ -204,14 +204,12 @@ class AddPatientForm extends Component {
     }
   }
   imageDetails(context, type) {
-    debugger;
     this.setState({ [type]: this[type] });
     if (context !== undefined) {
       context.updateState({ ...this.state, [type]: this[type] });
     }
   }
   render() {
-    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>

@@ -5,8 +5,6 @@ import { ReportHeader } from "../ReportHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 export function printReport(data) {
-  debugger;
-
   const calculteTotal = details => {
     let final_amount = 0;
 

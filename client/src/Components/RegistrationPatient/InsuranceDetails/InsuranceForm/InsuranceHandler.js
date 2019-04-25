@@ -38,7 +38,6 @@ const insurancehandle = ($this, context, e) => {
       type: "warning"
     });
   } else {
-    debugger;
     $this.setState(
       {
         primary_insurance_provider_id: e.selected.insurance_provider_id,
@@ -350,7 +349,6 @@ const ProcessInsurance = ($this, context) => {
       type: "error"
     });
   } else {
-    debugger;
     let serviceInput = [
       {
         insured: $this.state.insured,
@@ -474,9 +472,7 @@ const radioChange = ($this, context, e) => {
           primary_effective_end_date: null
         },
         () => {
-          debugger;
           if (value !== "Y") {
-            debugger;
             if ($this.state.doctor_id !== null) {
               ProcessInsurance($this, context);
             }

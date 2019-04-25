@@ -355,7 +355,6 @@ export default [
             },
             events: {
               onChange: (reportState, currentValue, callback) => {
-                debugger;
                 let reportQuery =
                   currentValue.value === "OP"
                     ? "opBillReceipt"
@@ -470,7 +469,6 @@ export default [
             },
             events: {
               onChange: (reportState, currentValue, callback) => {
-                debugger;
                 let reportQuery =
                   currentValue.value === "OP"
                     ? "opBillReceipt"

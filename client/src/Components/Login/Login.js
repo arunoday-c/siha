@@ -67,7 +67,6 @@ export default class Login extends Component {
       data: this.state,
       timeout: 10000,
       onSuccess: response => {
-        debugger;
         if (response.data.success === true) {
           setCookie("userName", response.data.records.username);
           setCookie("keyResources", response.data.records.keyResources, 30);
@@ -94,7 +93,6 @@ export default class Login extends Component {
       },
       onFailure: error => {
         if (error) {
-          debugger;
           if (error.response) {
             if (
               error.response.status !== null &&

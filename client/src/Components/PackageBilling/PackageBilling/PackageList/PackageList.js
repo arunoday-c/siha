@@ -21,7 +21,6 @@ class PackageList extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     let InputOutput = nextProps.PackageIOputs;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -55,7 +54,6 @@ class PackageList extends PureComponent {
   };
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <div className="hptl-phase1-op-display-billing-form">

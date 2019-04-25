@@ -4,8 +4,6 @@ import { getCookie } from "../../utils/algaehApiCall";
 import { ReportHeader } from "../ReportHeader";
 
 export function printReport(data) {
-  debugger;
-
   return `<div class="cashReciptStyles">
   <div class="print-body">
   <header> ${ReportHeader(data, "Material Requisition")} </header> 

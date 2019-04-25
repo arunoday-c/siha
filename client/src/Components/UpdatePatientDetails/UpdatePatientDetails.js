@@ -76,7 +76,7 @@ class UpdatePatientDetails extends Component {
       state: this,
       callback: () => {
         const err = Validations(this);
-        debugger;
+
         if (!err) {
           AlgaehLoader({ show: true });
 
@@ -110,7 +110,6 @@ class UpdatePatientDetails extends Component {
             onSuccess: response => {
               // AlgaehLoader({ show: false });
               if (response.data.success) {
-                debugger;
                 let _arrayImages = [];
                 if (_patImage !== undefined) {
                   _arrayImages.push(
@@ -193,7 +192,7 @@ class UpdatePatientDetails extends Component {
           let data = response.data.records;
 
           //Appoinment End
-          debugger;
+
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
           data.patientRegistration.arabic_name =
@@ -221,7 +220,6 @@ class UpdatePatientDetails extends Component {
   //Render Page Start Here
 
   render() {
-    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}
@@ -343,7 +341,6 @@ class UpdatePatientDetails extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger;
                 this.setState({ ...obj });
               }
             }}

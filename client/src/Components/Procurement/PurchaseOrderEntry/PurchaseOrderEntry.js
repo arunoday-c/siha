@@ -59,7 +59,6 @@ class PurchaseOrderEntry extends Component {
       .where(w => w.location_type === "WH")
       .toArray();
 
-    debugger;
     const Location_data =
       this.state.po_from === "PHR"
         ? this.state.pharmcy_location_id !== null

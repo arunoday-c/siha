@@ -68,7 +68,6 @@ class Category extends Component {
   }
 
   updateSpeciality(data) {
-    debugger;
     data.department_status === "I"
       ? algaehApiCall({
           uri: "/specialityAndCategory/makeEmployeeCategoryInActive",
@@ -140,7 +139,6 @@ class Category extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        debugger;
         algaehApiCall({
           uri: "/specialityAndCategory/deleteEmployeeCategoryMaster",
           module: "masterSettings",
@@ -149,7 +147,6 @@ class Category extends Component {
           },
           method: "DELETE",
           onSuccess: response => {
-            debugger;
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",

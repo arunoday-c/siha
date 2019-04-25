@@ -24,7 +24,6 @@ export default function ScreenAssignmentEvents() {
       }
     },
     assignScreens: $this => {
-      debugger;
       //To build delete inputs
       let inputObj = { role_id: $this.state.role_id };
       let delete_modules = [];
@@ -131,7 +130,6 @@ export default function ScreenAssignmentEvents() {
       inputObj.delete_screens = delete_screens;
       inputObj.update_screens = update_screens;
 
-      debugger;
       algaehApiCall({
         uri: "/algaehMasters/assignScreens",
         method: "POST",
@@ -185,7 +183,6 @@ export default function ScreenAssignmentEvents() {
     },
 
     changeScreen: ($this, data, e) => {
-      debugger;
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
@@ -219,7 +216,6 @@ export default function ScreenAssignmentEvents() {
       $this.setState({ modules: newModule });
     },
     changeModules: ($this, data, e) => {
-      debugger;
       const _status = e.target.checked;
       let val = parseInt(e.target.value, 10);
 
@@ -311,13 +307,11 @@ function getRoles($this, group_id) {
 function getRoleActiveModules($this, role_id) {
   let inputObj = { role_id: role_id, from_assignment: "Y" };
 
-  debugger;
   algaehApiCall({
     uri: "/algaehMasters/getRoleBaseActiveModules",
     method: "GET",
     data: inputObj,
     onSuccess: res => {
-      debugger;
       if (res.data.success) {
         let data = res.data.records;
         let modules = $this.state.modules;
@@ -348,7 +342,6 @@ function getRoleActiveModules($this, role_id) {
             };
           });
         });
-        debugger;
 
         $this.setState({
           modules: modules

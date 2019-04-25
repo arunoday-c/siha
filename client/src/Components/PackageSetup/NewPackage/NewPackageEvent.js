@@ -8,7 +8,6 @@ import {
 export default function NewPackageEvent() {
   return {
     texthandle: ($this, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
 
@@ -17,7 +16,6 @@ export default function NewPackageEvent() {
       });
     },
     serviceHandeler: ($this, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
 
@@ -27,8 +25,6 @@ export default function NewPackageEvent() {
       });
     },
     pakageamtHandaler: ($this, e) => {
-      debugger;
-
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
 
@@ -65,7 +61,6 @@ export default function NewPackageEvent() {
       );
     },
     AddToList: $this => {
-      debugger;
       let isError = false;
       if ($this.state.s_service_type === null) {
         isError = true;
@@ -142,7 +137,6 @@ export default function NewPackageEvent() {
       }
     },
     DeleteService: ($this, row) => {
-      debugger;
       let PakageDetail = $this.state.PakageDetail;
       let deletePackage = $this.state.deletePackage;
       let insertPackage = $this.state.insertPackage;

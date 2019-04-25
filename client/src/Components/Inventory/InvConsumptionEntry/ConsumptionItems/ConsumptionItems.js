@@ -94,7 +94,6 @@ class ConsumptionItems extends Component {
     ConsumptionItemsEvents().AddItems(this, context);
   }
   dateFormater(date) {
-    debugger;
     if (date !== null) {
       return String(moment(date).format(Options.dateFormat));
     }

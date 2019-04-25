@@ -22,7 +22,6 @@ const datehandle = ($this, ctrl, e) => {
   });
 };
 const ProcessItemMoment = $this => {
-  debugger;
   let inputObj = {};
   if ($this.state.location_id !== null) {
     inputObj.from_location_id = $this.state.location_id;

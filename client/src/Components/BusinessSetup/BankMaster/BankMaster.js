@@ -64,7 +64,6 @@ class BankMaster extends Component {
     });
   }
   addBank(e) {
-    debugger;
     e.preventDefault();
 
     AlgaehValidation({
@@ -105,7 +104,6 @@ class BankMaster extends Component {
   }
 
   updateBankMaster(data) {
-    debugger;
     algaehApiCall({
       uri: "/bankmaster/updateBank",
       module: "masterSettings",
@@ -149,7 +147,6 @@ class BankMaster extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        debugger;
         algaehApiCall({
           uri: "/bankmaster/deleteBank",
           module: "masterSettings",
@@ -158,7 +155,6 @@ class BankMaster extends Component {
           },
           method: "DELETE",
           onSuccess: response => {
-            debugger;
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",

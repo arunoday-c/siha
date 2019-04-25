@@ -94,7 +94,6 @@ class PayRollDetails extends Component {
   }
 
   render() {
-    debugger;
     // const earnings = Enumerable.from(this.props.payrollcomponents)
     //   .where(
     //     w =>

@@ -48,7 +48,6 @@ class ProjectActivityMgmnt extends Component {
   }
 
   updateActivity(updateFor, row) {
-    debugger;
     if (updateFor === "Main") {
       ProjectActMgmntEvent().UpdateMainActivity(this, row);
     } else if (updateFor === "Sub") {

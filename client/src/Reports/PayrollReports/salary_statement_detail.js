@@ -9,8 +9,6 @@ import {
 } from "../../utils/GlobalFunctions";
 
 export function printReport(result) {
-  debugger;
-
   if (result === undefined) return null;
   const header_data = result.components || [];
   const detail_data = result.employees || [];
@@ -53,7 +51,7 @@ export function printReport(result) {
   };
 
   const assignDeductData = (employee_deduction, deduct) => {
-    // debugger;
+    //
     data_amount = _.filter(employee_deduction, f => {
       return f.deductions_id === deduct.hims_d_earning_deduction_id;
     });
@@ -131,7 +129,6 @@ export function printReport(result) {
   };
 
   const decuctSumup = deduct => {
-    debugger;
     let decuct_amount = 0;
     let decuct_comp = _.filter(deduct_array_amount, f => {
       return f.deductions_id === deduct.hims_d_earning_deduction_id;
@@ -147,7 +144,6 @@ export function printReport(result) {
   };
 
   const contributeSumup = contrib => {
-    debugger;
     let contribute_amount = 0;
     let contribute_comp = _.filter(contri_array_amount, f => {
       return f.contributions_id === contrib.hims_d_earning_deduction_id;

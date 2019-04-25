@@ -47,7 +47,6 @@ export default class WPS extends Component {
     WPSEvents().BankEventHandaler(this, e);
   }
   generateCSV() {
-    debugger;
     WPSEvents().generateSIFFile(this);
   }
 

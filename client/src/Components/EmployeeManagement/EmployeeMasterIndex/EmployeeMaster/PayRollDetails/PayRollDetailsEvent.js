@@ -5,7 +5,6 @@ import { AlgaehValidation } from "../../../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 
 const earntexthandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (
@@ -39,7 +38,6 @@ const earntexthandle = ($this, e) => {
 };
 
 const deducttexthandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (
@@ -72,7 +70,6 @@ const deducttexthandle = ($this, e) => {
 };
 
 const contributtexthandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (

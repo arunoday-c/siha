@@ -68,7 +68,6 @@ class EarningsDeductions extends Component {
   }
 
   updateEarningsDeductions(data) {
-    debugger;
     algaehApiCall({
       // uri: "/employee/updateEarningDeduction",
       uri: "/payrollsettings/updateEarningDeduction",
@@ -366,7 +365,6 @@ class EarningsDeductions extends Component {
   }
 
   changeGridEditors(row, e) {
-    debugger;
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
     row[name] = value;

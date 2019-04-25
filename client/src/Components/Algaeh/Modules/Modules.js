@@ -3,7 +3,8 @@ import "./modules.css";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -95,8 +96,41 @@ class Modules extends Component {
       }
     });
   }
+
+  onchangegridcol(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
+
   deleteModules() {}
-  updateModules() {}
+
+  updateModules(data) {
+    algaehApiCall({
+      uri: "/algaehMasters/updateAlgaehModules",
+      method: "PUT",
+      data: {
+        algaeh_d_module_id: data.algaeh_d_module_id,
+        module_plan: data.module_plan,
+        display_order: data.display_order
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   render() {
     return (
@@ -215,7 +249,25 @@ class Modules extends Component {
               }}
             />
 
-            <div className="col-lg-3">
+            <AlagehAutoComplete
+              div={{ className: "col-lg-2" }}
+              label={{
+                forceLabel: "Module Plan"
+              }}
+              selector={{
+                name: "module_plan",
+                className: "select-fld",
+                value: this.state.module_plan,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.MODULE_PLAN
+                },
+                onChange: this.dropDownHandle.bind(this)
+              }}
+            />
+
+            <div className="col-lg-2">
               <button
                 type="submit"
                 style={{ marginTop: 21 }}
@@ -234,29 +286,88 @@ class Modules extends Component {
               columns={[
                 {
                   fieldName: "module_code",
-                  label: "Module Code",
+                  label: <AlgaehLabel label={{ forceLabel: "Module Code" }} />,
                   disabled: true
                 },
                 {
                   fieldName: "module_name",
-                  label: "Module Name"
+                  label: <AlgaehLabel label={{ forceLabel: "Module Name" }} />,
+                  disabled: true
+                },
+                {
+                  fieldName: "module_plan",
+                  label: <AlgaehLabel label={{ forceLabel: "Module Plan" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        {row.module_plan === "S"
+                          ? "Silver"
+                          : row.module_plan === "G"
+                          ? "Gold"
+                          : "Platinum"}
+                      </span>
+                    );
+                  },
+                  editorTemplate: row => {
+                    return (
+                      <AlagehAutoComplete
+                        div={{}}
+                        selector={{
+                          name: "module_plan",
+                          className: "select-fld",
+                          value: row.module_plan,
+                          dataSource: {
+                            textField: "name",
+                            valueField: "value",
+                            data: GlobalVariables.MODULE_PLAN
+                          },
+                          onChange: this.onchangegridcol.bind(this, row)
+                        }}
+                      />
+                    );
+                  }
                 },
 
                 {
                   fieldName: "icons",
-                  label: "Icons"
+                  label: <AlgaehLabel label={{ forceLabel: "Icons" }} />,
+                  disabled: true
                 },
                 {
                   fieldName: "other_language",
-                  label: "Other Language"
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Other Language" }} />
+                  ),
+                  disabled: true
                 },
                 {
                   fieldName: "licence_key",
-                  label: "Licence Key"
+                  label: <AlgaehLabel label={{ forceLabel: "Licence Key" }} />,
+                  disabled: true
                 },
                 {
                   fieldName: "display_order",
-                  label: "Display Order"
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Display Order" }} />
+                  ),
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{}}
+                        textBox={{
+                          value: row.display_order,
+                          className: "txt-fld",
+                          name: "display_order",
+                          events: {
+                            onChange: this.onchangegridcol.bind(this, row)
+                          },
+                          others: {
+                            type: "number"
+                          }
+                        }}
+                      />
+                    );
+                  }
                 }
               ]}
               keyId="algaeh_d_module_id"

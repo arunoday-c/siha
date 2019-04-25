@@ -160,7 +160,6 @@ class PhySchSetup extends Component {
   }
 
   checkHandle(e) {
-    debugger;
     let myRow = JSON.parse(e.currentTarget.getAttribute("row"));
     myRow.schedule_status = this.state.schedule_status;
     myRow.default_slot = this.state.slot;
@@ -244,7 +243,6 @@ class PhySchSetup extends Component {
           data: this.state.send_obj,
           onSuccess: response => {
             if (response.data.success) {
-              debugger;
               console.log("after save", response.data);
               document.getElementById("srch-sch").click();
               this.resetSaveState();
