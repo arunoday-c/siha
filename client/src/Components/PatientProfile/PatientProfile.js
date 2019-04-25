@@ -23,12 +23,13 @@ import {
   getPatientDiagnosis,
   getPatientAllergies
 } from "./PatientProfileHandlers";
-import AlgaehReport from "../Wrapper/printReports";
+// import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
 import DentalForm from "./DentalForm/DentalForm";
 import Eye from "./Eye/Eye";
+// import UCAF from "../UCAF/UCAFReport";
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
 class PatientProfile extends Component {
@@ -43,7 +44,9 @@ class PatientProfile extends Component {
         this.props.patient_profile !== undefined &&
         this.props.patient_profile.length > 0
           ? this.props.patient_profile[0].patient_code
-          : ""
+          : "",
+      openUCAF: false,
+      UCAFData: undefined
     };
     getPatientProfile(this);
     getPatientVitals(this);
@@ -80,6 +83,7 @@ class PatientProfile extends Component {
   }
 
   openUCAFReport(data, e) {
+    let that = this;
     algaehApiCall({
       uri: "/ucaf/getPatientUCAF",
       method: "GET",
@@ -88,14 +92,16 @@ class PatientProfile extends Component {
         visit_date: "2018-09-15"
       },
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           // const _dataG = response.data.records[0];
-          AlgaehReport({
-            report: {
-              fileName: "ucafReport"
-            },
-            data: data
-          });
+          // AlgaehReport({
+          //   report: {
+          //     fileName: "ucafReport"
+          //   },
+          //   data: data
+          // });
+          that.setState({ openUCAF: true, UCAFData: data });
         }
       }
     });
@@ -162,7 +168,18 @@ class PatientProfile extends Component {
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
     document.getElementById("ehr-router").click();
   }
-
+  renderUCAFReport() {
+    return null;
+    // return (
+    //   <React.Fragment>
+    //     {this.state.UCAFData !== undefined ? (
+    //       <AlgaehModalPopUp title="UCAF 2.0" openPopup={this.state.openUCAF}>
+    //         {/* {UCAF(this.state.UCAFData)} */}
+    //       </AlgaehModalPopUp>
+    //     ) : null}
+    //   </React.Fragment>
+    // );
+  }
   render() {
     const _pat_profile =
       this.props.patient_profile !== undefined &&
@@ -490,6 +507,7 @@ class PatientProfile extends Component {
             <Eye />
           ) : null}
         </div>
+        {this.renderUCAFReport()}
       </div>
     );
   }
