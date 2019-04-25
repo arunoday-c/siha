@@ -26,7 +26,6 @@ class MRDList extends Component {
     if (e !== undefined) e.preventDefault();
     algaehLoader({ show: true });
 
-    debugger;
     // let reg_date = moment(this.state.registration_date).isValid()
     //   ? this.state.registration_date
     //   : null;

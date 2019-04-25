@@ -318,7 +318,6 @@ const getPatientEncounterDetails = $this => {
     onSuccess: response => {
       let data = response.data.records[0];
       if (response.data.success) {
-        debugger;
         $this.setState({
           assesment_notes: data.assesment_notes
         });

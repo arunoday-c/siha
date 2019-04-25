@@ -163,7 +163,7 @@ const InsertUpdateEmployee = $this => {
     onSuccess: () => {
       const err = Validations($this);
       console.log("Input:", $this.state);
-      debugger;
+
       if (!err) {
         if ($this.state.personalDetails.insertdeptDetails.length > 0) {
           for (

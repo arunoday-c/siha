@@ -179,7 +179,6 @@ class DeptUserDetails extends Component {
   // }
 
   render() {
-    debugger;
     const _depservices = Enumerable.from(this.props.depservices)
       .where(w => w.service_type_id === 1)
       .toArray();

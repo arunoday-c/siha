@@ -5,7 +5,6 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
-  debugger;
   let input =
     $this.state.select_invoice === "CH"
       ? "pv.invoice_generated='N'"
@@ -178,7 +177,6 @@ const FinalizedAndInvoice = $this => {
       type: "warning"
     });
   } else {
-    debugger;
     algaehApiCall({
       uri: "/invoiceGeneration/addInvoiceGeneration",
       data: $this.state,

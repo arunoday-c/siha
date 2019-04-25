@@ -26,7 +26,7 @@ const PatientSearch = ($this, context, e) => {
 
 const selectVisit = ($this, context, e) => {
   //   let $this = this;
-  debugger;
+
   let mode_of_pay = "Self";
   let applydiscount = false;
   // let x = Enumerable.from($this.state.visitDetails)
@@ -55,7 +55,7 @@ const selectVisit = ($this, context, e) => {
     mode_of_pay = "Insurance";
     applydiscount = true;
   }
-  debugger;
+
   $this.setState(
     {
       incharge_or_provider: e.selected.doctor_id,

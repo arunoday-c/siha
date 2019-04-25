@@ -44,7 +44,6 @@ class PhysicalExamination extends Component {
   }
 
   componentWillUnmount() {
-    debugger;
     if (this.state.examination_notes !== null) {
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientEncounter",
@@ -55,7 +54,6 @@ class PhysicalExamination extends Component {
         },
         onSuccess: response => {
           if (response.data.success) {
-            debugger;
           }
         }
       });
@@ -73,7 +71,6 @@ class PhysicalExamination extends Component {
 
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           let data = response.data.records[0];
           this.setState({
             examination_notes: data.examination_notes

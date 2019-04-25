@@ -3,7 +3,6 @@ import moment from "moment";
 import "../report-style.css";
 
 export function printReport(data) {
-  debugger;
   return `
   <div class="print-body">
     <header> ${incomeHeader(data)} </header> 

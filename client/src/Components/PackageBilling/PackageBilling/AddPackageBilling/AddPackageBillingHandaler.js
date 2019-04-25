@@ -41,7 +41,6 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 // };
 
 const serviceHandeler = ($this, context, e) => {
-  debugger;
   $this.setState(
     {
       [e.name]: e.value,

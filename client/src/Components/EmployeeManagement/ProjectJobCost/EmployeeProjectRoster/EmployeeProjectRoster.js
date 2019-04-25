@@ -107,7 +107,6 @@ class EmployeeProjectRoster extends Component {
 
   showModal(row, e) {
     if (e.target.tagName === "TD") {
-      debugger;
       if (e.ctrlKey || e.metaKey) {
         e.currentTarget.lastElementChild.firstElementChild.click();
       } else {
@@ -269,7 +268,6 @@ class EmployeeProjectRoster extends Component {
         type: "warning"
       });
     } else {
-      debugger;
       let sendData = {
         employee_id: data.id,
         project_id: this.state.copyData.project_id,
@@ -637,7 +635,6 @@ class EmployeeProjectRoster extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            debugger;
             this.setState({
               employees: res.data.records,
               loading: false

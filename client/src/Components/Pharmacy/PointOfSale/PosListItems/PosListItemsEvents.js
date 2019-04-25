@@ -160,7 +160,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
         },
         onSuccess: response => {
           if (response.data.success) {
-            debugger;
             let data = response.data.records;
             if (data.locationResult.length > 0) {
               getUnitCost($this, context, e.service_id);

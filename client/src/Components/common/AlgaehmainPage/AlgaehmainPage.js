@@ -58,7 +58,6 @@ class PersistentDrawer extends React.Component {
       method: "GET",
       onSuccess: dataResponse => {
         if (dataResponse.data.success) {
-          debugger;
           const _module = Enumarable.from(dataResponse.data.records)
             .select(s => {
               return {
@@ -235,7 +234,7 @@ class PersistentDrawer extends React.Component {
     setCookie("prevLanguage", prevLang, 30);
 
     let renderComp = this.state.renderComponent;
-    debugger;
+
     // var last2 = renderComp.slice(-2);
     // if (last2 === "Ar") {
     //   renderComp = renderComp.substring(0, renderComp.length - 2);
@@ -354,7 +353,6 @@ class PersistentDrawer extends React.Component {
     //     ? this.state.Language.charAt(0).toUpperCase() +
     //       this.state.Language.slice(1)
     //     : "");
-    debugger;
 
     let screenName = submenu.page_to_redirect.replace(/\s/g, "");
 

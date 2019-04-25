@@ -49,6 +49,7 @@ export default class AlgaehFileUploader extends Component {
     //   });
     //   return;
     // }
+
     if (nextProps.renderPrevState !== undefined) {
       this.setState({ ...nextProps.renderPrevState.state });
       return;

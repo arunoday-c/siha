@@ -59,7 +59,6 @@ class ValidateBills extends PureComponent {
           invoices: nextProps.data
         },
         () => {
-          debugger;
           this.getInvoiceICDs();
         }
       );
@@ -333,7 +332,6 @@ class ValidateBills extends PureComponent {
         ? this.state.invoices.invoiceDetails
         : [];
 
-    debugger;
     const card_number =
       this.state.invoices !== undefined
         ? this.state.invoices.card_number

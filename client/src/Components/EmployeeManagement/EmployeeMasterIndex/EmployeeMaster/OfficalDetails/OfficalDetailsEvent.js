@@ -98,7 +98,6 @@ const dateFormater = ($this, value) => {
 };
 
 const bankEventhandle = ($this, e) => {
-  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   $this.setState({

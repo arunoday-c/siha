@@ -88,7 +88,6 @@ const deleteLocation = ($this, row) => {
 };
 
 const Validations = $this => {
-  debugger;
   let isError = false;
   if ($this.props.location.length > 0) {
     if ($this.state.location_type === "WH") {

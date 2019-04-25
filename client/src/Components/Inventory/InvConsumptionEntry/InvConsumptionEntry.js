@@ -102,7 +102,6 @@ class InvConsumptionEntry extends Component {
     ConsumptionItemsEvents().SaveConsumptionEntry(this);
   }
   getCtrlCode(docNumber) {
-    debugger;
     ConsumptionItemsEvents().getCtrlCode(this, docNumber);
   }
   ClearData() {

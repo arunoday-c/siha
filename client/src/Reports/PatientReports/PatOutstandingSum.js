@@ -5,7 +5,6 @@ import "../report-style.css";
 import moment from "moment";
 
 export function printReport(result) {
-  debugger;
   if (result === undefined) return null;
   const data = result;
   if (data === undefined) return null;

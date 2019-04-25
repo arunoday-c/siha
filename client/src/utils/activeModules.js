@@ -1,5 +1,4 @@
 export function SaveActiveModules(options) {
-  debugger;
   if (options === undefined) {
     return;
   }
@@ -20,7 +19,6 @@ export function SaveActiveModules(options) {
           .transaction(options.tableName, "readwrite")
           .objectStore(options.tableName);
         options.rows.forEach(function(customer) {
-          debugger;
           customerObjectStore.add(customer);
         });
       };

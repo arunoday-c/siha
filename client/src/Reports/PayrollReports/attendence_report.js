@@ -6,7 +6,7 @@ export function printReport(result) {
   if (result === undefined) return null;
   const data = result;
   if (data === undefined) return null;
-  debugger;
+
   let total_worked_hours = _.sumBy(data, s => parseFloat(s.total_hours));
   let ot_work_hours = _.sumBy(data, s => parseFloat(s.ot_work_hours));
   let shortage_hours = _.sumBy(data, s => parseFloat(s.shortage_hours));

@@ -176,8 +176,6 @@ class PatientProfile extends Component {
   }
 
   render() {
-    debugger;
-
     const module_plan = _.filter(active_modules, f => {
       return f.module_id === parseInt(selected_module);
     });

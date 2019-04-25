@@ -35,7 +35,6 @@ export default function ProjectPayrollEvents() {
       });
     },
     LoadProjectDetails: $this => {
-      debugger;
       if ($this.state.project_id === null && $this.state.employee_id === null) {
         swalMessage({
           title: "Please select Project or Employee.",
@@ -63,7 +62,6 @@ export default function ProjectPayrollEvents() {
           data: inputObj,
           method: "GET",
           onSuccess: response => {
-            debugger;
             if (response.data.records.project_wise_payroll.length > 0) {
               // let data = response.data.records.result;
 

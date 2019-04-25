@@ -6,8 +6,6 @@ import { getAmountFormart } from "../../utils/GlobalFunctions";
 import "../report-style.css";
 
 export function printReport(data) {
-  debugger;
-
   return `<div class="cashReciptStyles">
   <div class="print-body">
   <header> ${ReportHeader(data, "Purchase Order")} </header> 

@@ -63,7 +63,7 @@ const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
-  debugger;
+
   $this.setState({
     [name]: value,
     item_category_id: e.selected.category_id,
@@ -94,7 +94,7 @@ const AddItems = $this => {
         document.querySelector("[name='unit_cost']").focus();
       } else {
         let inventory_stock_detail = $this.state.inventory_stock_detail;
-        debugger;
+
         let itemObj = {
           location_id: $this.state.location_id,
           location_type: $this.state.location_type,
@@ -286,7 +286,6 @@ const PostInitialStock = $this => {
 };
 
 const printBarcode = ($this, row, e) => {
-  debugger;
   AlgaehReport({
     report: {
       fileName: "sampleBarcode",

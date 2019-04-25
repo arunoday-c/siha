@@ -604,7 +604,7 @@ class ChiefComplaints extends Component {
   }
 
   HPIDropdownHandle(e) {
-    debugger;
+    
     // this.setState({
     //   [e.name]: Enumerable.from(e.arrayList)
     //     .select(s => s.displayValue)

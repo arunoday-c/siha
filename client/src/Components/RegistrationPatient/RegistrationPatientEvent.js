@@ -162,7 +162,6 @@ const ClearData = ($this, e) => {
 };
 
 const getHospitalDetails = $this => {
-  debugger;
   $this.props.getHospitalDetails({
     uri: "/organization/getOrganization",
     method: "GET",

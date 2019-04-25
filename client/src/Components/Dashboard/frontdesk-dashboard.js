@@ -408,7 +408,6 @@ class Dashboard extends Component {
   //     },
   //     afterSuccess: data => {
   //       if (data.length > 0) {
-  //         debugger;
   //         sessionStorage.removeItem("CurrencyDetail");
   //         sessionStorage.setItem(
   //           "CurrencyDetail",

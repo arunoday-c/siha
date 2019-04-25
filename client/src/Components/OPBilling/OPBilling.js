@@ -240,7 +240,6 @@ class OPBilling extends Component {
       data: { bill_number: billcode },
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           let data = response.data.records;
 
           let x = Enumerable.from($this.props.patienttype)
@@ -252,7 +251,6 @@ class OPBilling extends Component {
           } else {
             data.patient_type = "Not Selected";
           }
-          debugger;
 
           let visitDetails = data;
 

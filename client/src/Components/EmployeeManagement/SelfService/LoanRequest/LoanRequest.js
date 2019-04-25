@@ -240,7 +240,7 @@ class LoanRequest extends Component {
   dropDownHandler(value) {
     let present_month = moment(new Date()).format("M");
     let present_year = moment().year();
-    debugger;
+
     switch (value.name) {
       case "loan_id":
         this.setState({
