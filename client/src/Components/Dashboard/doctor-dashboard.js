@@ -400,7 +400,6 @@ class Dashboard extends Component {
   }
 
   loadListofData() {
-    debugger;
     algaehApiCall({
       uri: "/doctorsWorkBench/getMyDay",
       data: {
@@ -411,7 +410,6 @@ class Dashboard extends Component {
       cancelRequestId: "getMyDay",
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           this.setState({
             today_list: response.data.records
           });
@@ -441,7 +439,6 @@ class Dashboard extends Component {
   //     },
   //     afterSuccess: data => {
   //       if (data.length > 0) {
-  //         debugger;
   //         sessionStorage.removeItem("CurrencyDetail");
   //         sessionStorage.setItem(
   //           "CurrencyDetail",

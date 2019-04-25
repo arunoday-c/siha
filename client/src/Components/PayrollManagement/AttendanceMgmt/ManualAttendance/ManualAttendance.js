@@ -139,7 +139,6 @@ class ManualAttendance extends Component {
   }
 
   selectData(e) {
-    debugger;
     if (e.target.name === "month_wise") {
       this.setState({
         select_wise: "M",
@@ -180,7 +179,6 @@ class ManualAttendance extends Component {
   }
 
   render() {
-    debugger;
     const timesheet_entry =
       this.state.manual_timesheet_entry === "D"
         ? "sub_department_id"
@@ -203,7 +201,6 @@ class ManualAttendance extends Component {
         ? "Select a Dept."
         : "Select Project";
 
-    debugger;
     return (
       <div id="ManualAttendanceScreen">
         <div className="row inner-top-search" data-validate="loadEmployee">

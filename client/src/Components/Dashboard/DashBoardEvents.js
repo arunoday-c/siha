@@ -6,7 +6,6 @@ import Enumerable from "linq";
 export default function DashBoardEvents() {
   return {
     getSampleCollectionDetails: $this => {
-      debugger;
       let inputobj = {};
 
       let month = moment(new Date()).format("MM");

@@ -31,7 +31,6 @@ export default class EndServiceOption extends Component {
   }
 
   addServiceRange() {
-    debugger;
     AlgaehValidation({
       querySelector: "data-validate='addServRng'",
       alertTypeIcon: "warning",
@@ -121,7 +120,6 @@ export default class EndServiceOption extends Component {
       querySelector: "data-validate='addErndv'",
       alertTypeIcon: "warning",
       onSuccess: () => {
-        debugger;
         if ($this.state.earning_comp.length > 4) {
           swalMessage({
             title: "Cannot Add More than 4 Components",
@@ -264,7 +262,6 @@ export default class EndServiceOption extends Component {
       method: "GET",
       module: "hrManagement",
       onSuccess: res => {
-        debugger;
         if (res.data.success) {
           if (res.data.result.invalid_input !== true) {
             this.setState({

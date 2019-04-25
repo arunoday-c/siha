@@ -6,15 +6,12 @@ import Enumerable from "linq";
 export default function PackageSetupEvent() {
   return {
     getPackage: $this => {
-      debugger;
       algaehApiCall({
         uri: "/packagesetup/getPackage",
         module: "masterSettings",
         method: "GET",
         onSuccess: response => {
-          debugger;
           if (response.data.success) {
-            debugger;
             let ItemList = Enumerable.from(response.data.records)
               .groupBy("$.hims_d_package_header_id", null, (k, g) => {
                 let firstRecordSet = Enumerable.from(g).firstOrDefault();

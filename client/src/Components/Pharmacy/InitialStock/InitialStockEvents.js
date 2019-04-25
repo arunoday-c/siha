@@ -291,7 +291,6 @@ const PostInitialStock = $this => {
 };
 
 const printBarcode = ($this, row, e) => {
-  debugger;
   AlgaehReport({
     report: {
       fileName: "sampleBarcode",

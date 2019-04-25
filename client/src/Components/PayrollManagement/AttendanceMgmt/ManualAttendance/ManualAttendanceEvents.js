@@ -78,7 +78,6 @@ export default function ManualAttendanceEvents() {
           type: "warning"
         });
       } else {
-        debugger;
         let InputObj = {
           branch_id: $this.state.hospital_id,
 
@@ -112,7 +111,6 @@ export default function ManualAttendanceEvents() {
           data: InputObj,
           onSuccess: res => {
             if (res.data.success) {
-              debugger;
               $this.setState({
                 employee_details: res.data.records.result,
                 dataExist: res.data.records.dataExist,
@@ -190,7 +188,6 @@ export default function ManualAttendanceEvents() {
     },
 
     gdtimehandle: ($this, row, e) => {
-      debugger;
       let name = e.name || e.target.name;
       let value = e.value || e.target.value;
       let diff_hour = null;
@@ -222,7 +219,6 @@ export default function ManualAttendanceEvents() {
             type: "warning"
           });
         } else {
-          debugger;
           let start = row.in_time.split(":");
           let end = value.split(":");
           var out_startDate = new Date(0, 0, 0, start[0], start[1], 0);
@@ -271,7 +267,6 @@ export default function ManualAttendanceEvents() {
       });
     },
     ProcessAttendanceEvent: $this => {
-      debugger;
       for (let i = 0; i < $this.state.employee_details.length; i++) {
         let strWorked_Hours = $this.state.employee_details[i].worked_hours;
         if (strWorked_Hours === null || strWorked_Hours === undefined) {
@@ -312,7 +307,6 @@ export default function ManualAttendanceEvents() {
       // }
     },
     validateDateTime: dateTime => {
-      debugger;
       if (dateTime === null) {
         return null;
       }

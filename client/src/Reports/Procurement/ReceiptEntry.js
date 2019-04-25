@@ -5,8 +5,6 @@ import { ReportHeader } from "../ReportHeader";
 import { getAmountFormart } from "../../utils/GlobalFunctions";
 // import _ from "lodash";
 export function printReport(data) {
-  debugger;
-
   return `<div class="cashReciptStyles">
   <div class="print-body">
   <header> ${ReportHeader(data, "Delivery Note")} </header> 

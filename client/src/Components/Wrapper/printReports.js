@@ -46,7 +46,6 @@ export function accessReport(options) {
 }
 
 const AlgaehReport = options => {
-  debugger;
   if (options.plotUI !== undefined) {
     plotUI(options);
   } else {
@@ -55,7 +54,6 @@ const AlgaehReport = options => {
 };
 
 const plotUI = options => {
-  debugger;
   try {
     ReactDOM.render(<ReportUI options={options} />, reportWindow);
   } catch (e) {

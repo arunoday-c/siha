@@ -21,7 +21,7 @@ export default class WeeklyAttendance extends Component {
     super(props);
     const _yearAndMonth = moment(new Date()).format("YYYY-MM") + "01";
     let _fromDate = moment(_yearAndMonth, "YYYY-MM-DD").format("YYYY-MM-DD");
-    debugger;
+
     this.state = {
       attendance_type: "MW",
       year: moment().year(),
@@ -221,9 +221,8 @@ export default class WeeklyAttendance extends Component {
     const _actualHours =
       parseInt(cumulative_mins / 60) + ":" + (cumulative_mins % 60);
 
-    debugger;
     // let _exces = Enumerable.from(data).select(s => {
-    //   debugger;
+    //
     //   let actTime = moment(s.actual_hours + ":" + s.actual_minutes);
     //   let worked = moment(s.worked_hours, "HH.mm");
     //   return worked.diff(actTime).format("HH.mm");
@@ -295,7 +294,7 @@ export default class WeeklyAttendance extends Component {
           .endOf("month")
           .format("YYYY-MM-DD");
       }
-      debugger;
+
       algaehApiCall({
         uri:
           this.state.option_attendance_type === "DM"
@@ -313,7 +312,6 @@ export default class WeeklyAttendance extends Component {
         },
         onSuccess: res => {
           if (res.data.success) {
-            debugger;
             let data =
               this.state.option_attendance_type === "DM"
                 ? res.data.result
@@ -384,7 +382,7 @@ export default class WeeklyAttendance extends Component {
         .endOf("month")
         .format("YYYY-MM-DD");
     }
-    debugger;
+
     algaehApiCall({
       uri:
         this.state.option_attendance_type === "DM"
@@ -403,7 +401,6 @@ export default class WeeklyAttendance extends Component {
       },
       module: "hrManagement",
       onSuccess: res => {
-        debugger;
         if (res.data.success) {
           swalMessage({
             title: "Posted Successfully. . ",
@@ -492,7 +489,6 @@ export default class WeeklyAttendance extends Component {
   }
 
   getExcessShortage(data) {
-    debugger;
     let strWorking = data.worked_hours.split(".");
     // console.log("strWorking", strWorking);
     // console.log("strWorking", strWorking[0]);
@@ -571,7 +567,6 @@ export default class WeeklyAttendance extends Component {
   }
 
   getTotalShortage(data) {
-    debugger;
     let total_hrs = Enumerable.from(data).sum(s => s.shortage_hr);
     let total_mins = Enumerable.from(data).sum(s => s.shortage_min);
     let cumulative_mins = total_hrs * 60 + total_mins;
@@ -580,7 +575,6 @@ export default class WeeklyAttendance extends Component {
   }
 
   getTotalOT(data) {
-    debugger;
     let total_hrs = Enumerable.from(data).sum(s => s.ot_hr);
     let total_mins = Enumerable.from(data).sum(s => s.ot_min);
     let cumulative_mins = total_hrs * 60 + total_mins;
@@ -653,7 +647,7 @@ export default class WeeklyAttendance extends Component {
     let time_sheet_ids = Enumerable.from(this.state.time_sheet)
       .select(s => s.hims_f_daily_time_sheet_id)
       .toArray();
-    // debugger;
+    //
     algaehApiCall({
       uri: "/attendance/considerOverTimeOrShortage",
       method: "PUT",

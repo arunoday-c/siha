@@ -57,7 +57,6 @@ class DisPatientForm extends Component {
   }
 
   render() {
-    debugger;
     return (
       <React.Fragment>
         <MyContext.Consumer>

@@ -20,7 +20,6 @@ export default function WPSEvents() {
             module: "hrManagement",
             onSuccess: res => {
               if (res.data.success) {
-                debugger;
                 let data = res.data.records;
                 $this.setState({
                   employees: data.employees,
@@ -107,7 +106,6 @@ export default function WPSEvents() {
     },
 
     generateSIFFile: $this => {
-      debugger;
       let employees = $this.state.employees;
       let today = moment().format("YYYYMMDD");
       //Header Data
@@ -186,7 +184,6 @@ export default function WPSEvents() {
       link.click();
     },
     BankEventHandaler: ($this, e) => {
-      debugger;
       $this.setState({
         [e.name]: e.value,
         employer_cr_no: e.selected.employer_cr_no,

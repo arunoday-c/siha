@@ -421,7 +421,6 @@ class RadResultEntry extends Component {
                       }}
                       needConvertion={false}
                       addDataTag={false}
-                      ////debugger
                       serviceParameters={{
                         uniqueID: {
                           templateID: this.state.template_id,

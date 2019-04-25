@@ -76,7 +76,6 @@ class AddPackageBilling extends Component {
   }
 
   ShowPackList(row, e) {
-    debugger;
     let package_List = this.state.package_List;
     let packages = _.filter(
       package_List,
@@ -180,14 +179,12 @@ class AddPackageBilling extends Component {
                     }
                   });
 
-                  debugger;
                   algaehApiCall({
                     uri: "/billing/getPakageDetails",
                     module: "billing",
                     method: "GET",
                     data: { package_service_id: $this.state.s_service },
                     onSuccess: response => {
-                      debugger;
                       if (response.data.success) {
                         if (context !== null) {
                           // package_List.splice(0, 0, response.data.records);

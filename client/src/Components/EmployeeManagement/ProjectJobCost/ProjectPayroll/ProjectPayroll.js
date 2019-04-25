@@ -107,7 +107,7 @@ class ProjectPayroll extends Component {
         : this.props.projects.filter(
             f => f.hims_d_project_id === this.state.project_id
           );
-    debugger;
+
     return (
       <div className="projectPayrollScreen">
         <div className="row  inner-top-search">

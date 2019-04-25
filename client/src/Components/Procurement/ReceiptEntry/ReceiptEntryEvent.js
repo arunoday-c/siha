@@ -191,7 +191,6 @@ const DeliverySearch = ($this, e) => {
               }
 
               for (let i = 0; i < data.dn_entry_detail.length; i++) {
-                debugger;
                 data.dn_entry_detail[i].outstanding_quantity = 0;
                 data.dn_entry_detail[i].quantity_recieved_todate = Math.abs(
                   data.dn_entry_detail[i].dn_quantity -

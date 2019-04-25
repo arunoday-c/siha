@@ -26,7 +26,7 @@ import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
 class PersonalDetails extends Component {
   constructor(props) {
     super(props);
-    debugger;
+
     const _activeModel = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
     );
@@ -100,7 +100,7 @@ class PersonalDetails extends Component {
 
   render() {
     // let FrontDeskActive =
-    debugger;
+
     const FrontDeskActive = Enumarable.from(this.state.activeModel)
       .where(w => w.module_code === "FTDSK")
       .toArray();

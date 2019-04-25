@@ -37,7 +37,6 @@ export default function ConsumptionItemsEvents() {
     },
 
     itemchangeText: ($this, context, e) => {
-      debugger;
       let name = e.name || e.target.name;
 
       if ($this.state.location_id !== null) {

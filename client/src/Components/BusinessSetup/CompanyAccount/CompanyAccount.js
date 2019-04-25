@@ -98,7 +98,6 @@ class CompanyAccount extends Component {
   }
 
   addCompanyAccount(e) {
-    debugger;
     e.preventDefault();
 
     AlgaehValidation({
@@ -138,7 +137,6 @@ class CompanyAccount extends Component {
   }
 
   updateCompanyAccount(data) {
-    debugger;
     algaehApiCall({
       uri: "/companyAccount/updateCompanyAccount",
       module: "masterSettings",
@@ -181,7 +179,6 @@ class CompanyAccount extends Component {
       cancelButtonText: "No"
     }).then(willDelete => {
       if (willDelete.value) {
-        debugger;
         algaehApiCall({
           uri: "/companyAccount/deleteCompanyAccount",
           module: "masterSettings",
@@ -190,7 +187,6 @@ class CompanyAccount extends Component {
           },
           method: "DELETE",
           onSuccess: response => {
-            debugger;
             if (response.data.success) {
               swalMessage({
                 title: "Record deleted successfully . .",

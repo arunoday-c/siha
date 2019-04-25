@@ -66,7 +66,6 @@ class RegistrationPatient extends Component {
     setGlobal({ selectedLang: "en" });
   }
   componentDidMount() {
-    debugger;
     let prevLang = getCookie("Language");
     setGlobal({ selectedLang: prevLang });
 
@@ -224,7 +223,6 @@ class RegistrationPatient extends Component {
   }
 
   componentWillReceiveProps() {
-    debugger;
     let prevLang = getCookie("Language");
     if (prevLang !== this.state.selectedLang) {
       setGlobal({ selectedLang: prevLang });
@@ -476,7 +474,6 @@ class RegistrationPatient extends Component {
                   onSuccess: response => {
                     // AlgaehLoader({ show: false });
                     if (response.data.success) {
-                      debugger;
                       let _arrayImages = [];
                       if (_patImage !== undefined) {
                         _arrayImages.push(
@@ -668,7 +665,7 @@ class RegistrationPatient extends Component {
             data.patientRegistration.title_id = title_id;
           }
           //Appoinment End
-          debugger;
+
           data.patientRegistration.filePreview =
             "data:image/png;base64, " + data.patient_Image;
           data.patientRegistration.arabic_name =
@@ -712,7 +709,6 @@ class RegistrationPatient extends Component {
   //Render Page Start Here
 
   render() {
-    debugger;
     return (
       <div id="attach" style={{ marginBottom: "50px" }}>
         {/* <Barcode value='PAT-A-000017'/> */}
@@ -834,7 +830,6 @@ class RegistrationPatient extends Component {
             value={{
               state: this.state,
               updateState: obj => {
-                debugger;
                 this.setState({ ...obj });
               }
             }}

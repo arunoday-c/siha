@@ -35,7 +35,6 @@ export default class ExaminationDiagram extends Component {
     });
   };
   diagrams(item) {
-    debugger;
     this.setState({
       image: item.selected.image,
       name: item.selected.name

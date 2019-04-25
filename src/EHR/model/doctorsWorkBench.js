@@ -1437,7 +1437,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
 
         let qry = "";
 
-        debugger;
+        
         for (let i = 0; i < req.body.chief_complaints.length; i++) {
           const _complaint_inactive_date =
             inputParam[i].complaint_inactive_date != null
@@ -1468,7 +1468,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
           );
           console.log("qry: ", qry);
         }
-        debugger;
+        
 
         //         for (let i = 0; i < req.body.chief_complaints.length; i++) {
         //           const _complaint_inactive_date =

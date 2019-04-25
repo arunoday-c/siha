@@ -36,7 +36,6 @@ const getItemLocationStock = $this => {
     method: "GET",
     data: inputObj,
     onSuccess: response => {
-      debugger;
       if (response.data.success === true) {
         $this.setState({
           ListItems: response.data.records

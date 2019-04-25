@@ -150,7 +150,6 @@ const RequisitionSearch = ($this, e) => {
 
           onSuccess: response => {
             if (response.data.success === true) {
-              debugger;
               let data = response.data.records;
               AlgaehLoader({ show: true });
               let from_location_id = data.from_location_id;
@@ -224,7 +223,6 @@ const RequisitionSearch = ($this, e) => {
         //     mappingName: "inventoryrequisitionentry"
         //   },
         //   afterSuccess: data => {
-        //     debugger;
         //     AlgaehLoader({ show: true });
         //     let from_location_id = data.from_location_id;
         //     let from_location_type = data.from_location_type;

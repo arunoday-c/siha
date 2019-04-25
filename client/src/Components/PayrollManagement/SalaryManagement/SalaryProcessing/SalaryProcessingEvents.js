@@ -61,7 +61,7 @@ const SalaryProcess = ($this, from) => {
               finalizeBtn: finalizeBtn
             });
             AlgaehLoader({ show: false });
-            debugger;
+
             if (from === "load") {
               swalMessage({
                 title: strMessage,
@@ -129,7 +129,6 @@ const ClearData = $this => {
 const FinalizeSalary = $this => {
   AlgaehLoader({ show: true });
 
-  debugger;
   const salary_header_id = _.map($this.state.salaryprocess_header, o => {
     return o.hims_f_salary_id;
   });

@@ -241,7 +241,6 @@ let getRoleBaseActiveModules = (req, res, next) => {
       role_id = req.query.role_id;
     }
 
-    debugger;
 
     if (
       (req.userIdentity.role_type == "SU" &&

@@ -24,7 +24,6 @@ export default function ProjectActMgmntEvent() {
     },
 
     addMainActivity: $this => {
-      debugger;
       if ($this.state.description === null || $this.state.description === "") {
         swalMessage({
           title: "Main Activity. Cannot be blank.",
@@ -41,7 +40,6 @@ export default function ProjectActMgmntEvent() {
           data: inputObj,
           method: "POST",
           onSuccess: res => {
-            debugger;
             if (res.data.success) {
               clearState($this);
               getMainActivites($this);
@@ -110,8 +108,6 @@ export default function ProjectActMgmntEvent() {
     },
 
     UpdateMainActivity: ($this, row) => {
-      debugger;
-
       if (row.description === null || row.description === "") {
         swalMessage({
           title: "Main Activity. Cannot be blank.",
@@ -128,7 +124,6 @@ export default function ProjectActMgmntEvent() {
           data: inputObj,
           method: "PUT",
           onSuccess: res => {
-            debugger;
             if (res.data.success) {
               clearState($this);
               getMainActivites($this);
@@ -150,8 +145,6 @@ export default function ProjectActMgmntEvent() {
     },
 
     UpdateSubActivity: ($this, row) => {
-      debugger;
-
       if (row.activity_id === null || row.activity_id === "") {
         swalMessage({
           title: "Main Activity. Cannot be blank.",

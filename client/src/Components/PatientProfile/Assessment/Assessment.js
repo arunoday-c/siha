@@ -77,7 +77,6 @@ class Assessment extends Component {
   }
 
   componentWillUnmount() {
-    debugger;
     if (this.state.assesment_notes !== null) {
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientEncounter",
@@ -85,12 +84,12 @@ class Assessment extends Component {
         data: {
           assesment_notes: this.state.assesment_notes,
           hims_f_patient_encounter_id: Window.global.encounter_id
-        },
-        onSuccess: response => {
-          if (response.data.success) {
-            debugger;
-          }
         }
+        // onSuccess: response => {
+        //   if (response.data.success) {
+
+        //   }
+        // }
       });
     }
   }
