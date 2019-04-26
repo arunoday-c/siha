@@ -131,36 +131,38 @@ class PatientProfile extends Component {
           }}
           title="Alert"
         >
-          <div>
-            <span>Patient is Allergic</span>
-            <span>Listed below are the following allergies</span>
-            <br />
-
-            {_patient_allergies.map((tables, index) => (
-              <table
-                key={index}
-                className="table table-sm table-bordered customTable"
-              >
-                <thead className="table-primary">
-                  <tr>
-                    <th> {tables.allergy_type_desc} </th>
-                    <th>Onset</th>
-                    <th>Comment</th>
-                    <th>Inactive</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tables.allergyList.map((rows, rIndex) => (
-                    <tr key={rIndex}>
-                      <td> {rows.allergy_name} </td>
-                      <td>{this.decissionAllergyOnSet(rows)}</td>
-                      <td>{rows.comment}</td>
-                      <td>{rows.allergy_inactive === "Y" ? "Yes" : "No"}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ))}
+          <div className="popupInner">
+            <div className="popRightDiv">
+              <div className="table-responsive">
+                {_patient_allergies.map((tables, index) => (
+                  <table
+                    key={index}
+                    className="table table-sm table-bordered customTable"
+                  >
+                    <thead className="table-primary">
+                      <tr>
+                        <th> {tables.allergy_type_desc} </th>
+                        <th>Onset</th>
+                        <th>Comment</th>
+                        <th>Inactive</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tables.allergyList.map((rows, rIndex) => (
+                        <tr key={rIndex}>
+                          <td> {rows.allergy_name} </td>
+                          <td>{this.decissionAllergyOnSet(rows)}</td>
+                          <td>{rows.comment}</td>
+                          <td>
+                            {rows.allergy_inactive === "Y" ? "Yes" : "No"}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ))}
+              </div>
+            </div>
           </div>
         </AlgaehModalPopUp>
       );
