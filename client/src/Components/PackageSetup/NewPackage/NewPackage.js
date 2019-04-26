@@ -17,6 +17,8 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
 
+import GlobalVariables from "../../../utils/GlobalVariables";
+
 class NewPackage extends PureComponent {
   constructor(props) {
     super(props);
@@ -35,7 +37,11 @@ class NewPackage extends PureComponent {
       insertPackage: [],
       s_service_amount: null,
       s_service_type: null,
-      s_service: null
+      s_service: null,
+      package_type: "S",
+      advance_percentage: 0,
+      advance_amount: 0,
+      advance_type: "P"
     };
   }
 
@@ -122,6 +128,14 @@ class NewPackage extends PureComponent {
 
   InsertPackages(e) {
     NewPackageEvent().AddPackages(this, e);
+  }
+
+  texthandle(e) {
+    NewPackageEvent().texthandle(this, e);
+  }
+
+  discounthandle(e) {
+    NewPackageEvent().discounthandle(this, e);
   }
 
   render() {
@@ -236,6 +250,120 @@ class NewPackage extends PureComponent {
                         )}
                       </h6>
                     </div>
+
+                    <div className="customRadio">
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="package_type"
+                          value="S"
+                          checked={
+                            this.state.package_type === "S" ? true : false
+                          }
+                          onChange={this.texthandle.bind(this)}
+                        />
+                        <span>Static Package</span>
+                      </label>
+
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          name="package_type"
+                          value="M"
+                          checked={
+                            this.state.package_type === "M" ? true : false
+                          }
+                          onChange={this.texthandle.bind(this)}
+                        />
+                        <span>Multi Visit Package</span>
+                      </label>
+                    </div>
+
+                    {this.state.package_type === "M" ? (
+                      <div>
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "expiry_days",
+                            isImp:
+                              this.state.package_type === "M" ? true : false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "expiry_days",
+                            value: this.state.expiry_days,
+                            events: {
+                              onChange: this.texthandle.bind(this)
+                            },
+                            others: {
+                              type: "number"
+                            }
+                          }}
+                        />
+
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          label={{
+                            fieldName: "advance_type",
+                            isImp:
+                              this.state.package_type === "M" ? true : false
+                          }}
+                          selector={{
+                            name: "advance_type",
+                            className: "select-fld",
+                            value: this.state.advance_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_DISCOUNT
+                            },
+                            onChange: this.texthandle.bind(this)
+                          }}
+                        />
+
+                        {this.state.advance_type === "P" ? (
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "Advance %"
+                            }}
+                            textBox={{
+                              decimal: { allowNegative: false },
+                              value: this.state.advance_percentage,
+                              className: "txt-fld",
+                              name: "advance_percentage",
+                              events: {
+                                onChange: this.discounthandle.bind(this)
+                              },
+                              others: {
+                                min: 0,
+                                max: 100
+                              }
+                            }}
+                          />
+                        ) : (
+                          <AlagehFormGroup
+                            div={{ className: "col" }}
+                            label={{
+                              forceLabel: "Advance Amount"
+                            }}
+                            textBox={{
+                              decimal: { allowNegative: false },
+                              value: this.state.advance_amount,
+                              className: "txt-fld",
+                              name: "advance_amount",
+                              events: {
+                                onChange: this.texthandle.bind(this)
+                              },
+                              others: {
+                                min: 0,
+                                max: 100
+                              }
+                            }}
+                          />
+                        )}
+                      </div>
+                    ) : null}
                   </div>
                   <div className="row">
                     <AlagehAutoComplete
