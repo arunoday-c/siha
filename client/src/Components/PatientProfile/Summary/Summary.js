@@ -234,34 +234,6 @@ class Summary extends Component {
             </div>
 
             <div className="bd-callout bd-callout-theme">
-              <h6>Ordered Services</h6>
-              <table className="table table-sm table-bordered customTable">
-                <thead className="table-primary">
-                  <tr>
-                    <th>Sl. No.</th>
-                    <th>Service Code</th>
-                    <th>Service Name</th>
-                    <th>Qty</th>
-                    <th>Service Charge</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.patientMedications.length > 0
-                    ? this.state.patientMedications.map((data, index) => (
-                        <tr key={index}>
-                          <td>{index + 1}</td>
-                          <td>Service Code</td>
-                          <td>Service Name</td>
-                          <td>Qty</td>
-                          <td>Service Charge</td>
-                        </tr>
-                      ))
-                    : null}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="bd-callout bd-callout-theme">
               <h6>Family History</h6>
               <ul>
                 {_pat_familyHistory.map((data, index) => (
