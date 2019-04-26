@@ -93,7 +93,7 @@ class PhysicalExamination extends Component {
           <div className="col-lg-8">
             <Examination />
             <div className="row">
-              <div className="col-4 margin-top-15">
+              <div className="col-12 margin-top-15">
                 <div className="portlet portlet-bordered">
                   <div className="portlet-title">
                     <div className="caption">
@@ -126,69 +126,6 @@ class PhysicalExamination extends Component {
                           }
                         }}
                       />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-8  margin-top-15">
-                <div className="portlet portlet-bordered">
-                  <div className="portlet-title">
-                    <div className="caption">
-                      <h3 className="caption-subject">Examination Diagram</h3>
-                    </div>
-                    <div className="actions">
-                      <a
-                        className="btn btn-primary btn-circle active"
-                        onClick={this.OpenDiagram.bind(this)}
-                      >
-                        {/* <ExaminationDiagram
-                          open={this.state.isOpen}
-                          onClose={this.CloseModel.bind(this)}
-                        /> */}
-                        <i className="fas fa-plus" />
-                      </a>
-                    </div>
-                  </div>
-                  <div className="portlet-body">
-                    <div className="row">
-                      <div className="col-12" id="ExamDiagram_Cntr">
-                        <AlgaehDataGrid
-                          id="ExamDiagram"
-                          datavalidate="ExamDiagram"
-                          columns={[
-                            {
-                              fieldName: "Diagram",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Diagram" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "Remarks",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Remarks" }}
-                                />
-                              )
-                            },
-                            {
-                              fieldName: "UpdatedDate",
-                              label: (
-                                <AlgaehLabel
-                                  label={{ forceLabel: "Updated On" }}
-                                />
-                              )
-                            }
-                          ]}
-                          keyId=""
-                          dataSource={{ data: [] }}
-                          isEditable={true}
-                          paging={{ page: 0, rowsPerPage: 5 }}
-                          events={{}}
-                          others={{}}
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>

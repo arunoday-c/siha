@@ -94,7 +94,7 @@ class RequisitionItems extends Component {
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col-3" }}
                         label={{ forceLabel: "Item Name" }}
                         selector={{
                           name: "item_id",
