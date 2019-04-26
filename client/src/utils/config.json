@@ -57,6 +57,10 @@
     "MRD": {
       "port": 3016,
       "url": ""
+    },
+    "reports": {
+      "port": 3018,
+      "url": ""
     }
   },
   "apiAuth": {

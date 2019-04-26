@@ -2,14 +2,7 @@ import React, { Component } from "react";
 import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
 import { algaehApiCall, swalMessage } from "../utils/algaehApiCall";
-import AlgaehReport from "./Wrapper/printReports";
-import FrontDesk from "../Search/FrontDesk.json";
-import AlgaehAutoSearch from "./Wrapper/autoSearch";
-import AlgaehCanvas from "./Wrapper/algaehCanvas";
-const services = [
-  { service_name: "Consultation", sl_no: 1 },
-  { service_name: "Procedure", sl_no: 2 }
-];
+import FileViewer from "react-file-viewer";
 
 class Experiment extends Component {
   constructor(props) {
@@ -18,7 +11,8 @@ class Experiment extends Component {
       patImg: "",
       openAuth: false,
       name: "i",
-      image: undefined
+      image: undefined,
+      report: undefined
     };
 
     // console.log("Chunk:", _.chunk(services, 1));
@@ -72,23 +66,34 @@ class Experiment extends Component {
         <button
           className="btn btn-primary"
           onClick={() => {
-            AlgaehReport({
-              report: {
-                fileName: "haematologyReport"
+            let that = this;
+            algaehApiCall({
+              uri: "/report",
+              method: "GET",
+              module: "reports",
+              headers: {
+                Accept: "blob"
               },
+              others: { responseType: "blob" },
               data: {
-                services: services,
-                remarks: 500 + " by Cash",
-                total_amount: 500,
-                payment_type: "cash",
-                patient_code: "PAT-A-00005678",
-                full_name: "Allah Bakash",
-                advance_amount: "PAT-00000asdfadsf",
-                invoice_number: "INV-A-0000989",
-                receipt_number: "PAT-00000asdfadsf",
-                receipt_date: "13-11-2018",
-                doctor_name: "Dr. Norman John",
-                bill_details: "PAT-00000asdfadsf"
+                rep: {
+                  reportName: "CustomerReport.prpt",
+                  reportParams: [{ name: "hims_d_employee_id", value: 3 }],
+                  outputFileType: "EXCEL", //"EXCEL", //"PDF",
+                  outputFileName: "CustomerReport$outputFileName",
+                  printDetails: false,
+                  reportLocation: "$reportLocation"
+                }
+              },
+              onSuccess: res => {
+                debugger;
+                let reader = new FileReader();
+                reader.onloadend = () => {
+                  debugger;
+                  that.setState({ report: reader.result });
+                };
+
+                reader.readAsDataURL(res.data);
               }
             });
           }}
@@ -115,19 +120,9 @@ class Experiment extends Component {
           The Above component has a bug so this is how our wrapper handles We
           can still use the other elements apart from the crashed element
         </div>
-        <div className="col">
-          <AlgaehAutoSearch
-            title="Testing Title"
-            id="patient_code_search"
-            template={result => {
-              return <div className="description">{result.full_name}</div>;
-            }}
-            columns={FrontDesk}
-            displayField="full_name"
-            //extraParameters={{}}
-            searchName="patients"
-          />
-        </div>
+        {this.state.report !== undefined ? (
+          <embed src={this.state.report} width="800" height="500" />
+        ) : null}
         <div className="col">
           <button
             onClick={() => {
@@ -158,8 +153,49 @@ class Experiment extends Component {
         <br />
         <br />
         <br />
-        {/* <button onClick={this.OTSTCAL.bind(this)}>ARRAY STUFF</button> */}
-        <AlgaehCanvas fileType="Patients" uniqueID="PAT-A-0000626" />
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            let that = this;
+            algaehApiCall({
+              uri: "/report",
+              method: "GET",
+              module: "reports",
+              headers: {
+                Accept: "blob"
+              },
+              others: { responseType: "blob" },
+              data: {
+                report: {
+                  reportName: "ucaf",
+                  reportParams: [
+                    { name: "hims_d_patient_id", value: 18 },
+                    {
+                      name: "visit_date",
+                      value: new Date("2018-10-31 00:00:00")
+                    }
+                  ],
+                  outputFileType: "PDF", //"EXCEL", //"PDF",
+                  outputFileName: "CustomerReport$outputFileName",
+                  printDetails: false,
+                  reportLocation: "$reportLocation"
+                }
+              },
+              onSuccess: res => {
+                debugger;
+                let reader = new FileReader();
+                reader.onloadend = () => {
+                  debugger;
+                  that.setState({ report: reader.result });
+                };
+
+                reader.readAsDataURL(res.data);
+              }
+            });
+          }}
+        >
+          UCAF Report
+        </button>
       </div>
     );
   }
