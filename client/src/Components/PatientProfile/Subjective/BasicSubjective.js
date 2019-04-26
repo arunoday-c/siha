@@ -83,7 +83,7 @@ class BasicSubjective extends Component {
           </div>
           <div className="col-9">
             <div className="row">
-              <div className="col-6">
+              <div className="col-8">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-body">
                     <div className="row">
@@ -184,17 +184,7 @@ class BasicSubjective extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-6">
-                <div className="portlet portlet-bordered margin-bottom-15">
-                  {/* <div className="portlet-title">
-                    <div className="caption">
-                      <h3 className="caption-subject">Order Service</h3>
-                    </div>
-                  </div> */}
-                  <div className="portlet-body">Final Diag.</div>
-                </div>
-              </div>
-              <div className="col-6">
+              <div className="col-4">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   {/* <div className="portlet-title">
                     <div className="caption">
@@ -223,58 +213,61 @@ class BasicSubjective extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-6">
+
+              <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   {/* <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Order Service</h3>
                     </div>
                   </div> */}
-                  <div className="portlet-body">
-                    <div className="col-lg-12">
-                      <div className="tab-container toggle-section">
-                        <ul className="nav">
-                          <li
-                            algaehtabs={"Orders"}
-                            className={"nav-item tab-button active"}
-                            onClick={this.openTab.bind(this)}
-                          >
-                            {
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Orders"
-                                }}
-                              />
-                            }
-                          </li>
+                  <div className="portlet-body">Final Diag.</div>
+                </div>
+              </div>
+              <div className="col-lg-12">
+                <div className="tab-container toggle-section">
+                  <ul className="nav">
+                    <li
+                      algaehtabs={"Orders"}
+                      className={"nav-item tab-button active"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Orders"
+                          }}
+                        />
+                      }
+                    </li>
 
-                          <li
-                            algaehtabs={"LabResults"}
-                            className={"nav-item tab-button"}
-                            onClick={this.openTab.bind(this)}
-                          >
-                            {
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Lab Results"
-                                }}
-                              />
-                            }
-                          </li>
-                          <li
-                            algaehtabs={"RisResults"}
-                            className={"nav-item tab-button"}
-                            onClick={this.openTab.bind(this)}
-                          >
-                            {
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "RIS Results"
-                                }}
-                              />
-                            }
-                          </li>
-                          {/* <li
+                    <li
+                      algaehtabs={"LabResults"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Lab Results"
+                          }}
+                        />
+                      }
+                    </li>
+                    <li
+                      algaehtabs={"RisResults"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "RIS Results"
+                          }}
+                        />
+                      }
+                    </li>
+                    {/* <li
                             algaehtabs={"AssesmentsNotes"}
                             className={"nav-item tab-button"}
                             onClick={this.openTab.bind(this)}
@@ -287,20 +280,18 @@ class BasicSubjective extends Component {
                               />
                             }
                           </li> */}
-                        </ul>
-                      </div>
+                  </ul>
+                </div>
 
-                      <div className="grid-section">
-                        {this.state.pageDisplay === "Orders" ? (
-                          <OrderedList
-                            vat_applicable={this.props.vat_applicable}
-                          />
-                        ) : this.state.pageDisplay === "LabResults" ? (
-                          <LabResults />
-                        ) : this.state.pageDisplay === "RisResults" ? (
-                          <RadResults />
-                        ) : null}
-                        {/* this.state.pageDisplay === "AssesmentsNotes" ? (
+                <div className="grid-section">
+                  {this.state.pageDisplay === "Orders" ? (
+                    <OrderedList vat_applicable={this.props.vat_applicable} />
+                  ) : this.state.pageDisplay === "LabResults" ? (
+                    <LabResults />
+                  ) : this.state.pageDisplay === "RisResults" ? (
+                    <RadResults />
+                  ) : null}
+                  {/* this.state.pageDisplay === "AssesmentsNotes" ? (
                           <div className="row">
                             <div className="container-fluid">
                               <AlagehFormGroup
@@ -328,9 +319,6 @@ class BasicSubjective extends Component {
                             </div>
                           </div>
                         ) : null */}
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
