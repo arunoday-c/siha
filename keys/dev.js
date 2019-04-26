@@ -19,6 +19,8 @@ exports.default = {
     database: "hims_test_db",
     // database: "algaeh_hrms_oman_db",
 
+    //database: "medical_db",
+
     multipleStatements: true,
     acquireTimeout: 20000,
     dateStrings: true,
