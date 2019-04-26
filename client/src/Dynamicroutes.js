@@ -102,9 +102,9 @@ const PageToPlot = {
   Appointment: React.lazy(() =>
     retry(() => import("./Components/FrontDesk/FrontDesk"))
   ),
-  AppointmentAr: React.lazy(() =>
-    retry(() => import("./Components/AppointmentAr/AppointmentAr"))
-  ),
+  // AppointmentAr: React.lazy(() =>
+  //   retry(() => import("./Components/AppointmentAr/AppointmentAr"))
+  // ),
   PharmacySetup: React.lazy(() =>
     retry(() => import("./Components/PharmacySetup/PharmacySetup"))
   ),
@@ -130,14 +130,14 @@ const PageToPlot = {
   PhysicianScheduleSetup: React.lazy(() =>
     retry(() => import("./Components/PhysicianScheduleSetup/PhySchSetup"))
   ),
-  FrontDeskAr: React.lazy(() =>
-    retry(() =>
-      import("./Components/RegistrationPatientAr/RegistrationPatientAr")
-    )
-  ),
-  OPBillingAr: React.lazy(() =>
-    retry(() => import("./Components/OPBillingAr/OPBillingAr"))
-  ),
+  // FrontDeskAr: React.lazy(() =>
+  //   retry(() =>
+  //     import("./Components/RegistrationPatientAr/RegistrationPatientAr")
+  //   )
+  // ),
+  // OPBillingAr: React.lazy(() =>
+  //   retry(() => import("./Components/OPBillingAr/OPBillingAr"))
+  // ),
   DoctorCommission: React.lazy(() =>
     retry(() => import("./Components/DoctorCommission/DoctorCommission"))
   ),

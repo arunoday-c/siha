@@ -124,6 +124,15 @@ const updatePatientAllergy = ($this, row) => {
 
 const updatePatientROS = ($this, row) => {};
 
+const assnotetexthandle = ($this, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
+};
+
 export {
   getAllAllergies,
   getReviewOfSystems,
@@ -133,5 +142,6 @@ export {
   datehandle,
   texthandle,
   updatePatientAllergy,
-  updatePatientROS
+  updatePatientROS,
+  assnotetexthandle
 };

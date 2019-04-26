@@ -6,19 +6,24 @@ import { bindActionCreators } from "redux";
 import "./LabResult.css";
 import "./../../../../styles/site.css";
 
-import { getLabResult, getAnalytes } from "./LabResultEvents";
+import {
+  getLabResult,
+  getAnalytes,
+  ShowTestAnalyte,
+  CloseTestAnalyte
+} from "./LabResultEvents";
 
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import moment from "moment";
 import Options from "../../../../Options.json";
-
+import TestAnalytes from "./TestAnalytes";
 class LabResult extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { lab_result: [] };
+    this.state = { lab_result: [], openAna: false, test_analytes: [] };
   }
 
   componentDidMount() {
@@ -52,25 +57,13 @@ class LabResult extends Component {
     }
   };
 
-  ShowCollectionModel(row, e) {
-    this.setState({
-      isOpen: !this.state.isOpen,
-      selected_patient: row
-    });
-  }
-  CloseCollectionModel(e) {
-    this.setState({
-      isOpen: !this.state.isOpen
-    });
-  }
-
   render() {
     return (
       <React.Fragment>
         <div className="hptl-phase1-lab-result-form">
           <div className="container-fluid">
             <div className="row form-details">
-              <div className="col-lg-5" id="LabTestName">
+              <div className="col-lg-12" id="LabTestName">
                 <AlgaehDataGrid
                   id="Lab_list_grid"
                   columns={[
@@ -88,7 +81,8 @@ class LabResult extends Component {
                         return (
                           <span
                             className="pat-code"
-                            onClick={getAnalytes.bind(this, this, row)}
+                            // onClick={getAnalytes.bind(this, this, row)}
+                            onClick={ShowTestAnalyte.bind(this, this, row)}
                           >
                             {display !== null && display.length !== 0
                               ? display[0].service_name
@@ -118,6 +112,7 @@ class LabResult extends Component {
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
                       ),
                       displayTemplate: row => {
+                        debugger;
                         let display =
                           this.props.assdeptanddoctors.doctors === undefined
                             ? []
@@ -156,7 +151,27 @@ class LabResult extends Component {
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
               </div>
-              <div className="col-lg-7" id="LabTestResult">
+
+              <TestAnalytes
+                show={this.state.openAna}
+                onClose={CloseTestAnalyte.bind(this, this)}
+                HeaderCaption={
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Test Analytes",
+                      align: "ltr"
+                    }}
+                  />
+                }
+                inputsparameters={{
+                  test_analytes: this.state.test_analytes,
+                  service_code: this.state.service_code,
+                  service_name: this.state.service_name,
+                  patient_code: this.state.patient_code,
+                  full_name: this.state.full_name
+                }}
+              />
+              {/* <div className="col-lg-7" id="LabTestResult">
                 <AlgaehDataGrid
                   id="Lab_Result_grid"
                   columns={[
@@ -268,7 +283,7 @@ class LabResult extends Component {
                   }}
                   paging={{ page: 0, rowsPerPage: 10 }}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

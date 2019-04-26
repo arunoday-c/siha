@@ -28,4 +28,37 @@ const getAnalytes = ($this, row) => {
   });
 };
 
-export { getLabResult, getAnalytes };
+const ShowTestAnalyte = ($this, row) => {
+  debugger;
+
+  $this.props.getTestAnalytes({
+    uri: "/laboratory/getTestAnalytes",
+    module: "laboratory",
+    method: "GET",
+    data: { order_id: row.hims_f_lab_order_id },
+    redux: {
+      type: "LAB_RESULT_GET_DATA",
+      mappingName: "testanalytes"
+    },
+    afterSuccess: data => {
+      $this.setState({
+        ...$this.state,
+        openAna: !$this.state.openAna,
+        test_analytes: data,
+        service_code: row.service_code,
+        service_name: row.service_name,
+        patient_code: row.patient_code,
+        full_name: row.full_name
+      });
+    }
+  });
+};
+
+const CloseTestAnalyte = $this => {
+  debugger;
+  $this.setState({
+    ...$this.state,
+    openAna: !$this.state.openAna
+  });
+};
+export { getLabResult, getAnalytes, ShowTestAnalyte, CloseTestAnalyte };

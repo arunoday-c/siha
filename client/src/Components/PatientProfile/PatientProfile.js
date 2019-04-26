@@ -607,7 +607,7 @@ class PatientProfile extends Component {
           ) : this.state.pageDisplay === "overview" ? (
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (
-            <BasicSubjective />
+            <BasicSubjective vat_applicable={this.vatApplicable()} />
           ) : this.state.pageDisplay === "plan" ? (
             <Plan />
           ) : this.state.pageDisplay === "summary" ? (

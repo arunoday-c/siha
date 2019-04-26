@@ -230,6 +230,20 @@
         "fieldName": "cpt_desc",
         "label": "CPT Description"
       }
+    ],
+    "servicemaster": [
+      {
+        "fieldName": "service_code",
+        "label": "Service Code"
+      },
+      {
+        "fieldName": "service_name",
+        "label": "Service Name"
+      },
+      {
+        "fieldName": "service_type",
+        "label": "Service Type"
+      }
     ]
   },
   "Invoice": {
