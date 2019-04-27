@@ -9,6 +9,12 @@ import {
   updateSubDepartment
 } from "../models/department";
 
+import algaehPath from "algaeh-module-bridge";
+
+const { addInventoryLocation } = algaehPath(
+  "algaeh-inventory/src/models/inventory"
+);
+
 export default () => {
   let api = Router();
   const utlities = new algaehUtlities();
@@ -48,14 +54,19 @@ export default () => {
     });
     next();
   });
-  api.post("/add/subdepartment", addSubDepartment, (req, res, next) => {
-    let result = req.records;
-    res.status(utlities.httpStatus().ok).json({
-      success: true,
-      records: result
-    });
-    next();
-  });
+  api.post(
+    "/add/subdepartment",
+    addInventoryLocation,
+    addSubDepartment,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(utlities.httpStatus().ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    }
+  );
   api.put("updateSubDepartment", updateSubDepartment, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({

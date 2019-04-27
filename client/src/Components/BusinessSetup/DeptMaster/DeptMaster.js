@@ -14,7 +14,10 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import {
+  AlgaehValidation,
+  AlgaehOpenContainer
+} from "../../../utils/GlobalFunctions";
 import swal from "sweetalert2";
 import moment from "moment";
 
@@ -29,6 +32,7 @@ class DeptMaster extends Component {
       effective_start_date: new Date(),
       showSubDeptModal: false
     };
+    this.getLocation();
     this.getAllDepartments();
   }
 
@@ -265,6 +269,7 @@ class DeptMaster extends Component {
             effective_start_date: data.effective_start_date,
             hims_d_sub_department_id: data.hims_d_sub_department_id
           },
+          module: "masterSettings",
           method: "PUT",
           onSuccess: response => {
             if (response.data.success) {
@@ -311,6 +316,7 @@ class DeptMaster extends Component {
       module: "masterSettings",
       onSuccess: response => {
         if (response.data.success) {
+          debugger;
           this.setState({ subDepartments: response.data.records });
         }
       },
@@ -340,6 +346,10 @@ class DeptMaster extends Component {
   }
 
   addSubDepartment(e) {
+    const hospital = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    );
+
     e.preventDefault();
     AlgaehValidation({
       querySelector: "data-validate='subdepDiv'",
@@ -350,11 +360,16 @@ class DeptMaster extends Component {
           sub_department_code: this.state.sub_department_code,
           sub_department_name: this.state.sub_department_name,
           arabic_sub_department_name: this.state.arabic_sub_department_name,
-          effective_start_date: this.state.effective_start_date
+          effective_start_date: this.state.effective_start_date,
+
+          location_description: this.state.sub_department_name,
+          hospital_id: hospital.hims_d_hospital_id,
+          location_type: "SS"
         };
 
         algaehApiCall({
           uri: "/department/add/subdepartment",
+          module: "masterSettings",
           method: "POST",
           data: sen_data,
           onSuccess: response => {
@@ -513,6 +528,28 @@ class DeptMaster extends Component {
                     }}
                   />
 
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{ forceLabel: "Select Location" }}
+                    selector={{
+                      name: "inventory_location_id",
+                      className: "select-fld",
+                      value: this.state.inventory_location_id,
+                      dataSource: {
+                        textField: "location_description",
+                        valueField: "hims_d_inventory_location_id",
+                        data: this.props.inventorylocations
+                      },
+
+                      onChange: this.textHandle.bind(this),
+                      onClear: () => {
+                        this.setState({
+                          inventory_location_id: null
+                        });
+                      }
+                    }}
+                  />
+
                   <AlgaehDateHandler
                     div={{ className: "col" }}
                     label={{ fieldName: "effective_start_date", isImp: true }}
@@ -629,6 +666,7 @@ class DeptMaster extends Component {
                             <AlgaehLabel label={{ forceLabel: "Location" }} />
                           ),
                           displayTemplate: row => {
+                            debugger;
                             let display =
                               this.props.inventorylocations === undefined
                                 ? []
@@ -646,25 +684,53 @@ class DeptMaster extends Component {
                               </span>
                             );
                           },
+
                           editorTemplate: row => {
-                            let display =
-                              this.props.inventorylocations === undefined
-                                ? []
-                                : this.props.inventorylocations.filter(
-                                    f =>
-                                      f.hims_d_inventory_location_id ===
-                                      row.inventory_location_id
-                                  );
-
                             return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? display[0].location_description
-                                  : ""}
-                              </span>
+                              <AlagehAutoComplete
+                                div={{}}
+                                selector={{
+                                  name: "inventory_location_id",
+                                  className: "select-fld",
+                                  value: row.inventory_location_id,
+                                  dataSource: {
+                                    textField: "location_description",
+                                    valueField: "hims_d_inventory_location_id",
+                                    data: this.props.inventorylocations
+                                  },
+                                  others: {
+                                    errormessage: "Location - cannot be blank",
+                                    required: true
+                                  },
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  ),
+                                  onClear: row => {
+                                    row.inventory_location_id = null;
+                                    row.update();
+                                  }
+                                }}
+                              />
                             );
-                          },
-                          disabled: true
+
+                            // let display =
+                            //   this.props.inventorylocations === undefined
+                            //     ? []
+                            //     : this.props.inventorylocations.filter(
+                            //         f =>
+                            //           f.hims_d_inventory_location_id ===
+                            //           row.inventory_location_id
+                            //       );
+
+                            // return (
+                            //   <span>
+                            //     {display !== undefined && display.length !== 0
+                            //       ? display[0].location_description
+                            //       : ""}
+                            //   </span>
+                            // );
+                          }
                         },
                         {
                           fieldName: "effective_start_date",

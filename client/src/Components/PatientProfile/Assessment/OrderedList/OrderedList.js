@@ -120,15 +120,20 @@ class OrderedList extends PureComponent {
                     fieldName: "actions",
                     label: <AlgaehLabel label={{ forceLabel: "Details" }} />,
                     displayTemplate: row => {
+                      debugger;
                       return (
                         <i
                           style={{
                             pointerEvents:
+                              row.service_type_id === 2 ||
+                              row.service_type_id === 14 ||
                               row.service_type_id === "2" ||
                               row.service_type_id === "14"
                                 ? ""
                                 : "none",
                             opacity:
+                              row.service_type_id === 2 ||
+                              row.service_type_id === 14 ||
                               row.service_type_id === "2" ||
                               row.service_type_id === "14"
                                 ? ""

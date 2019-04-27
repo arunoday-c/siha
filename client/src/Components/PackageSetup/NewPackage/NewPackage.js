@@ -41,7 +41,8 @@ class NewPackage extends PureComponent {
       package_type: "S",
       advance_percentage: 0,
       advance_amount: 0,
-      advance_type: "P"
+      advance_type: "P",
+      qty: 1
     };
   }
 
@@ -416,6 +417,29 @@ class NewPackage extends PureComponent {
                         }
                       }}
                     />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Quantity",
+                        isImp: true
+                      }}
+                      textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ","
+                        },
+                        className: "txt-fld",
+                        name: "qty",
+                        value: this.state.qty,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        others: {
+                          step: "1"
+                        }
+                      }}
+                    />
                     <div className="col-2 form-group">
                       <button
                         className="btn btn-primary"
@@ -509,6 +533,14 @@ class NewPackage extends PureComponent {
                                   </span>
                                 );
                               }
+                            },
+                            {
+                              fieldName: "qty",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Quantity" }}
+                                />
+                              )
                             },
                             {
                               fieldName: "service_amount",

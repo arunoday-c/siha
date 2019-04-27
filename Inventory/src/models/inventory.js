@@ -211,6 +211,7 @@ module.exports = {
         .then(result => {
           _mysql.releaseConnection();
           req.records = result;
+          req.body.inventory_location_id = result.insertId;
           next();
         })
         .catch(error => {
