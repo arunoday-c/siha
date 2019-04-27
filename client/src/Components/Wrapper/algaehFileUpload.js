@@ -318,7 +318,7 @@ export default class AlgaehFileUploader extends Component {
         </div>
       );
     } else {
-      null;
+      return null;
     }
   }
 
@@ -326,7 +326,7 @@ export default class AlgaehFileUploader extends Component {
     if (this.state.showZoom) {
       return (
         <div className="Image-cropper zoomCntr">
-          <img src={this.state.filePreview} />
+          <img src={this.state.filePreview} alt="image" />
           <div className="row crop-action">
             {" "}
             <button
@@ -475,7 +475,7 @@ export default class AlgaehFileUploader extends Component {
           </p>
         </div>
       );
-    } else null;
+    } else return null;
   }
   webCamHandler(e) {
     this.setState({
@@ -522,7 +522,7 @@ export default class AlgaehFileUploader extends Component {
           </div>
         </div>
       );
-    } else null;
+    } else return null;
   }
   implementLoader() {
     if (this.state.showLoader) {
@@ -531,7 +531,7 @@ export default class AlgaehFileUploader extends Component {
           <i className="fas fa-spinner fa-spin" />
         </div>
       );
-    } else null;
+    } else return null;
   }
 
   zoomHandler(e) {
