@@ -78,10 +78,10 @@ class BasicSubjective extends Component {
     return (
       <div className="subjective">
         <div className="row margin-top-15">
-          <div className="col-lg-3">
+          {/* <div className="col-lg-3">
             <Vitals />
-          </div>
-          <div className="col-9">
+          </div> */}
+          <div className="col">
             <div className="row">
               <div className="col-8">
                 <div className="portlet portlet-bordered margin-bottom-15">
@@ -322,6 +322,34 @@ class BasicSubjective extends Component {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="col-1">
+            <ul className="rightActionIcon">
+              <li>
+                <i className="fas fa-pen" />
+              </li>{" "}
+              <li>
+                <i className="fas fa-pen" />
+              </li>{" "}
+              <li>
+                <i className="fas fa-pen" />
+              </li>{" "}
+              <li>
+                <i className="fas fa-pen" />
+              </li>{" "}
+              <li>
+                <i className="fas fa-pen" />
+              </li>{" "}
+              <li>
+                <i className="fas fa-pen" />
+              </li>{" "}
+              <li>
+                <i className="fas fa-pen" />
+              </li>{" "}
+              <li>
+                <i className="fas fa-pen" />
+              </li>
+            </ul>
           </div>
           {/* 
           <div className="col-lg-9">

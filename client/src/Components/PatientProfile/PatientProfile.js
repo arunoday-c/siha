@@ -320,11 +320,11 @@ class PatientProfile extends Component {
           </div>
           {_Vitals.length > 0 ? (
             <div className="patientVital">
-              <span>
+              {/* <span>
                 Vitals updated on:
                 <b>{_Vitals[_Vitals.length - 1]["updated_Date"]}</b>
               </span>
-              <br />
+              <br /> */}
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
                   {console.log("Viatal Details", row)}
