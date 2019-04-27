@@ -10,13 +10,15 @@ import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import Options from "../../../../Options.json";
+import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
 
 class OrderedList extends PureComponent {
   constructor(props) {
     super(props);
 
     this.state = {
-      isOpen: false
+      isOpen: false,
+      isOpenItems: false
     };
   }
 
@@ -48,6 +50,20 @@ class OrderedList extends PureComponent {
         });
       }
     );
+  }
+
+  ShowProcedureModel(e) {
+    this.setState({
+      ...this.state,
+      isOpenItems: !this.state.isOpenItems
+    });
+  }
+
+  CloseProcedureModel(e) {
+    this.setState({
+      ...this.state,
+      isOpenItems: !this.state.isOpenItems
+    });
   }
 
   componentDidMount() {
@@ -140,6 +156,7 @@ class OrderedList extends PureComponent {
                                 : "0.1"
                           }}
                           className="fas fa-eye"
+                          onClick={this.ShowProcedureModel.bind(this)}
                         />
                       );
                     },
@@ -284,6 +301,12 @@ class OrderedList extends PureComponent {
           onClose={this.CloseModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
           addNew={true}
+        />
+
+        <OrderProcedureItems
+          show={this.state.isOpenItems}
+          onClose={this.CloseProcedureModel.bind(this)}
+          inputsparameters={{}}
         />
       </div>
     );

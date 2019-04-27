@@ -248,24 +248,28 @@ module.exports = {
             })
             .then(pro_head_result => {
               if (pro_head_result.insertId > 0) {
+                let IncludeValues = ["item_id", "service_id", "qty"];
+
+                utilities
+                  .logger()
+                  .log("pharmacy_stock_detail: ", input.pharmacy_stock_detail);
+
                 _mysql
                   .executeQuery({
-                    query:
-                      " INSERT INTO `hims_d_procedure_detail` (procedure_header_id, item_id, service_id, qty,\
-                         created_by, created_date, updated_by, updated_date) values (?,?,?,?,?,?,?,?)",
-                    values: [
-                      pro_head_result.insertId,
-                      input.item_id,
-                      input.service_id,
-                      input.qty,
-                      req.userIdentity.algaeh_d_app_user_id,
-                      new Date(),
-                      req.userIdentity.algaeh_d_app_user_id,
-                      new Date()
-                    ],
-
+                    query: "INSERT INTO hims_d_procedure_detail(??) VALUES ?",
+                    values: input.pharmacy_stock_detail,
+                    includeValues: IncludeValues,
+                    extraValues: {
+                      procedure_header_id: pro_head_result.insertId,
+                      created_by: req.userIdentity.algaeh_d_app_user_id,
+                      created_date: new Date(),
+                      updated_by: req.userIdentity.algaeh_d_app_user_id,
+                      updated_date: new Date()
+                    },
+                    bulkInsertOrUpdate: true,
                     printQuery: true
                   })
+
                   .then(detail_result => {
                     _mysql.commitTransaction(() => {
                       _mysql.releaseConnection();
