@@ -134,7 +134,7 @@
     .patientProfile .patientTopNav ul li:after {
       display: block;
       content: "";
-      border-bottom: solid 3px #00a9ad;
+      border-bottom: solid 3px #00a796;
       transform: scaleX(0);
       transition: transform 150ms ease-in-out; }
     .patientProfile .patientTopNav ul li:hover:after {
@@ -146,9 +146,9 @@
       cursor: pointer;
       font-size: 0.8em; }
     .patientProfile .patientTopNav ul li span.active {
-      border-bottom: solid 3px #00a9ad;
+      border-bottom: solid 3px #00a796;
       color: #fff;
-      background: #34b8bc; }
+      background: #00a796; }
       .patientProfile .patientTopNav ul li span.active:hover {
         cursor: default;
         color: #fff; }
@@ -157,7 +157,7 @@
         border: none !important;
         cursor: pointer; }
   .patientProfile .patientTopNav .patient-quick-info {
-    color: #34b8bc;
+    color: #00a796;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -165,7 +165,7 @@
     right: 20px; }
     .patientProfile .patientTopNav .patient-quick-info li {
       background: #ffffff;
-      color: #53bcb1;
+      color: #00a796;
       padding: 4px 10px 3px;
       cursor: pointer;
       margin: 0 10px;
@@ -177,7 +177,7 @@
         position: absolute;
         right: 0;
         top: 30px;
-        background: #53bdb1;
+        background: #00a796;
         z-index: 9;
         padding: 10px;
         border-radius: 5px;
@@ -185,19 +185,19 @@
         display: none; }
         .patientProfile .patientTopNav .patient-quick-info li section b.top-nav-sec-hdg {
           text-align: center;
-          border-bottom: 1px solid #337e74;
+          border-bottom: 1px solid #007468;
           margin-left: -10px;
           margin-right: -10px;
           padding-bottom: 11px; }
         .patientProfile .patientTopNav .patient-quick-info li section b {
           display: block;
-          border-bottom: 1px solid #3f9c90;
+          border-bottom: 1px solid #007468;
           margin-bottom: 10px;
           padding-bottom: 5px; }
         .patientProfile .patientTopNav .patient-quick-info li section .listofA-D-D {
           display: inline-block;
           margin-right: 8px;
-          border: 1px solid #317970;
+          border: 1px solid #007468;
           padding: 3px 10px;
           margin: 0;
           color: #fff;
@@ -212,7 +212,7 @@
           margin: -10px;
           padding: 10px; }
     .patientProfile .patientTopNav .patient-quick-info li:hover {
-      background: #53bcb1;
+      background: #007468;
       color: #fff;
       padding: 4px 10px; }
       .patientProfile .patientTopNav .patient-quick-info li:hover section {
@@ -246,7 +246,7 @@
       cursor: pointer; }
     .moreActionUl li span:hover {
       color: #fff;
-      background: #34b8bc; }
+      background: #00a796; }
 
 .moreAction:hover .moreActionUl {
   display: block; }

@@ -169,7 +169,7 @@
         &:after {
           display: block;
           content: "";
-          border-bottom: solid 3px #00a9ad;
+          border-bottom: solid 3px $primary-color;
           transform: scaleX(0);
           transition: transform 150ms ease-in-out;
         }
@@ -184,9 +184,9 @@
           font-size: 0.8em;
         }
         span.active {
-          border-bottom: solid 3px #00a9ad;
+          border-bottom: solid 3px $primary-color;
           color: #fff;
-          background: #34b8bc;
+          background: $primary-color;
           &:hover {
             cursor: default;
             color: #fff;
@@ -200,7 +200,7 @@
       }
     }
     .patient-quick-info {
-      color: #34b8bc;
+      color: $primary-color;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -208,7 +208,7 @@
       right: 20px;
       li {
         background: #ffffff;
-        color: #53bcb1;
+        color: $primary-color;
         padding: 4px 10px 3px;
         cursor: pointer;
         margin: 0 10px;
@@ -220,7 +220,7 @@
           position: absolute;
           right: 0;
           top: 30px;
-          background: #53bdb1;
+          background: $primary-color;
           z-index: 9;
           padding: 10px;
           border-radius: 5px;
@@ -228,21 +228,21 @@
           display: none;
           b.top-nav-sec-hdg {
             text-align: center;
-            border-bottom: 1px solid #337e74;
+            border-bottom: 1px solid darken($primary-color, 10%);
             margin-left: -10px;
             margin-right: -10px;
             padding-bottom: 11px;
           }
           b {
             display: block;
-            border-bottom: 1px solid #3f9c90;
+            border-bottom: 1px solid darken($primary-color, 10%);
             margin-bottom: 10px;
             padding-bottom: 5px;
           }
           .listofA-D-D {
             display: inline-block;
             margin-right: 8px;
-            border: 1px solid #317970;
+            border: 1px solid darken($primary-color, 10%);
             padding: 3px 10px;
             margin: 0;
             color: #fff;
@@ -262,7 +262,7 @@
         }
       }
       li:hover {
-        background: #53bcb1;
+        background: darken($primary-color, 10%);
         color: #fff;
         padding: 4px 10px;
         section {
@@ -303,7 +303,7 @@
     }
     span:hover {
       color: #fff;
-      background: #34b8bc;
+      background: $primary-color;
     }
   }
 }
