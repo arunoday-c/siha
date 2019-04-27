@@ -96,7 +96,7 @@ class RequisitionItems extends Component {
                   <div className="portlet portlet-bordered margin-bottom-15">
                     <div className="row">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-4" }}
+                        div={{ className: "col-3" }}
                         label={{ forceLabel: "Item Name" }}
                         selector={{
                           name: "item_id",
@@ -114,7 +114,7 @@ class RequisitionItems extends Component {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-1" }}
                         label={{ forceLabel: "UOM", isImp: true }}
                         selector={{
                           name: "item_uom",
@@ -134,7 +134,7 @@ class RequisitionItems extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-2" }}
                         label={{ forceLabel: "Item Category" }}
                         selector={{
                           name: "item_category_id",
@@ -152,7 +152,7 @@ class RequisitionItems extends Component {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col" }}
+                        div={{ className: "col-2" }}
                         label={{ forceLabel: "Item Group" }}
                         selector={{
                           name: "item_group_id",

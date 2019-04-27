@@ -35,7 +35,7 @@ class OrderedList extends PureComponent {
       },
       () => {
         this.props.getOrderList({
-          uri: "/orderAndPreApproval/selectOrderServices",
+          uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
           method: "GET",
           data: {
             visit_id: Window.global["visit_id"]
@@ -88,7 +88,7 @@ class OrderedList extends PureComponent {
     }
 
     this.props.getOrderList({
-      uri: "/orderAndPreApproval/selectOrderServices",
+      uri: "/orderAndPreApproval/selectOrderServicesbyDoctor",
       method: "GET",
       data: {
         visit_id: Window.global["visit_id"]

@@ -57,7 +57,7 @@ class DietAdvice extends Component {
       <div className="hptl-diet-advice-form">
         <div className="row" style={{ paddingBottom: "10px" }}>
           <AlgaehDateHandler
-            div={{ className: "col" }}
+            div={{ className: "col-5" }}
             label={{ forceLabel: "Till Date" }}
             textBox={{ className: "txt-fld", name: "till_date" }}
             minDate={new Date()}
@@ -67,7 +67,7 @@ class DietAdvice extends Component {
             value={this.state.till_date}
           />
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col-5" }}
             label={{ forceLabel: "Diet" }}
             selector={{
               name: "diet_id",
@@ -82,7 +82,7 @@ class DietAdvice extends Component {
             }}
           />
 
-          <div className="col-lg-2 actions" style={{ paddingTop: "3.5vh" }}>
+          <div className="col-2 actions" style={{ paddingTop: "3.5vh" }}>
             <a
               // href="javascript"
               className="btn btn-primary btn-circle active"

@@ -345,6 +345,13 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_consumption_header",
         orderBy: "hims_f_inventory_consumption_header_id desc"
+      },
+      {
+        searchName: "servicemaster",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS * from hims_d_services S left outer join hims_d_service_type ST on \
+          S.service_type_id=ST.hims_d_service_type_id where S.service_status='A' ",
+        orderBy: "hims_d_services_id desc"
       }
     ]
   };
