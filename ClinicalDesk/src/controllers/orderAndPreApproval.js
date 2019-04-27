@@ -1,6 +1,9 @@
 import { Router } from "express";
 import algaehUtilities from "algaeh-utilities/utilities";
-import { insertInvOrderedServices } from "../models/orderAndPreApproval";
+import {
+  insertInvOrderedServices,
+  addProcedureItems
+} from "../models/orderAndPreApproval";
 export default () => {
   const api = Router();
   const utilities = new algaehUtilities();
@@ -17,6 +20,14 @@ export default () => {
       delete req.records;
     }
   );
+  api.post("/addProcedureItems", addProcedureItems, (req, res, next) => {
+    const _records = req.records;
+    res.status(utilities.httpStatus().ok).json({
+      success: true,
+      records: _records
+    });
+    delete req.records;
+  });
 
   return api;
 };
