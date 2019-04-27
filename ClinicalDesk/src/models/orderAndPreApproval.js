@@ -226,7 +226,8 @@ module.exports = {
             input.extended_cost,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
           ]
         })
         .then(result => {
