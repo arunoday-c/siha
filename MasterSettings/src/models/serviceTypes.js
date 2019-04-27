@@ -295,5 +295,43 @@ module.exports = {
           next(e);
         });
       });
+  },
+
+  getProcedures: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    try {
+      let strQry = "";
+
+      if (input.hims_d_procedure_id > 0) {
+        strQry = ` and  hims_d_procedure_id=${input.hims_d_procedure_id}`;
+      } else if (input.service_id > 0) {
+        strQry = ` and PH.service_id=${input.service_id} `;
+      }
+      _mysql
+        .executeQuery({
+          query: `select hims_d_procedure_id,procedure_code,procedure_desc,procedure_status,\
+            PH.service_id as header_service_id,S.service_code as header_service_code,\
+            S.service_name as header_service_name,hims_d_procedure_detail_id, item_id,\
+            qty,PD.service_id as detail_service_id,SR.service_code as detail_service_code,\
+            SR.service_name as detail_service_name from hims_d_procedure PH inner join \
+            hims_d_services S on PH.service_id=S.hims_d_services_id inner join hims_d_procedure_detail PD \
+            inner join hims_d_services SR on PD.service_id=SR.hims_d_services_id\
+            where PH.record_status='A' and PD.record_status='A' ${strQry}`
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
