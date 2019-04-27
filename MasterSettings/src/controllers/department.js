@@ -4,7 +4,9 @@ import {
   addDepartment,
   updateDepartment,
   selectDepartment,
-  selectSubDepartment
+  selectSubDepartment,
+  addSubDepartment,
+  updateSubDepartment
 } from "../models/department";
 
 export default () => {
@@ -39,6 +41,22 @@ export default () => {
   });
 
   api.get("/get/subdepartment", selectSubDepartment, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+  api.post("/add/subdepartment", addSubDepartment, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+  api.put("updateSubDepartment", updateSubDepartment, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
