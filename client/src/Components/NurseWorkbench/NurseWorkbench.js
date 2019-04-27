@@ -1892,6 +1892,12 @@ class NurseWorkbench extends Component {
                 </div>
                 {/* Chief Complaint End */}
 
+                <hr />
+
+                <h6>Nurse Order Service</h6>
+                <div className="row">
+                  Nurse Order Service Container Add Here
+                </div>
                 {/* Notes Start */}
                 <hr />
                 <h6>Enter Nurse Notes</h6>
