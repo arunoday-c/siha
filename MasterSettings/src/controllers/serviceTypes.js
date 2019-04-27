@@ -6,7 +6,8 @@ import {
   addServices,
   updateServices,
   addProcedure,
-  getProcedures
+  getProcedures,
+  updateProcedures
 } from "../models/serviceTypes";
 
 export default () => {
@@ -58,6 +59,15 @@ export default () => {
   });
 
   api.get("/getProcedures", getProcedures, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+
+  api.put("/updateProcedures", updateProcedures, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
