@@ -196,5 +196,77 @@ module.exports = {
       reject(error);
       next(e);
     });
+  },
+  addSubDepartment: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "INSERT INTO `hims_d_sub_department` (sub_department_code,sub_department_name,\
+            arabic_sub_department_name,sub_department_desc,department_id,effective_start_date,\
+            effective_end_date,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+        values: [
+          input.sub_department_code,
+          input.sub_department_name,
+          input.arabic_sub_department_name,
+          input.sub_department_desc,
+          input.department_id,
+          input.effective_start_date,
+          input.effective_end_date,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+  updateSubDepartment: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE `hims_d_sub_department`\
+        SET `sub_department_name`=?, `sub_department_desc`=?,arabic_sub_department_name=?\
+        , `effective_start_date`=?, `effective_end_date`=? \
+        ,`updated_date`=?, `updated_by`=?\
+        WHERE `record_status`='A' AND `hims_d_sub_department_id`=? ;",
+        values: [
+          input.sub_department_name,
+          input.sub_department_desc,
+          input.arabic_sub_department_name,
+          input.effective_start_date,
+          input.effective_end_date,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_d_sub_department_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   }
 };

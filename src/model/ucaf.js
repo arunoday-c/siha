@@ -15,19 +15,32 @@ let getPatientUCAF = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "SELECT * FROM `hims_f_ucaf_header` where patient_id=? and (visit_id =? or date(visit_date)=date(?));",
-        values: [_input.patient_id, _input.visit_id, _input.visit_date]
+          "SELECT * FROM `hims_f_ucaf_header` where patient_id=? and (visit_id =? or date(visit_date)=date(?));select insured from hims_f_patient_visit where hims_f_patient_visit_id=?; ",
+        values: [
+          _input.patient_id,
+          _input.visit_id,
+          _input.visit_date,
+          _input.visit_id
+        ],
+        printQuery: true
       })
       .then(result => {
-        if (result.length == 0) {
+        const _isInsured = result[1][0]["insured"];
+        if (_isInsured == "N") {
+          _mysql.releaseConnection();
+          next(new Error("Patient don't have any insurance"));
+          return;
+        }
+
+        if (result[0].length == 0) {
           _mysql
             .executeQuery({
               query:
                 "select  V.patient_id,V.hims_f_patient_visit_id as visit_id, \
-                E.full_name as provider_name,V.new_visit_patient,'N' as patient_emergency_case,\
+                E.full_name as provider_name,V.new_visit_patient,null as patient_emergency_case,\
                 V.appointment_patient,SD.sub_department_name,\
                 P.patient_code,P.marital_status as patient_marital_status,date(V.visit_date) as visit_date,\
-                P.full_name as patient_full_name,'OP' as case_type ,\
+                P.full_name as patient_full_name,'OP' as case_type ,P.gender,V.age_in_years,\
                 IM.primary_policy_num,IM.primary_effective_start_date, \
                 IM.primary_effective_end_date,IM.primary_card_number \
                 from hims_f_patient_visit V inner join hims_d_employee E \
@@ -70,7 +83,7 @@ let getPatientUCAF = (req, res, next) => {
                 S.hims_d_services_id = D.services_id left outer join hims_d_cpt_code CPT on \
                 CPT.hims_d_cpt_code_id = S.cpt_code inner join hims_d_service_type ST on \
                 ST.hims_d_service_type_id = D.service_type_id \
-                where (date(V.visit_date) = date(?) or visit_id=?) and V.patient_id = ?;\
+                where V.patient_id = ? and (date(V.visit_date) = date(?) or visit_id=?)  ;\
                 select G.generic_name,'' as type,PD.dispense as quantity from hims_f_prescription PH inner join \
                 hims_f_prescription_detail PD on PD.prescription_id = PH.hims_f_prescription_id inner \
                 join hims_f_patient_visit V on V.episode_id = PH.episode_id  left join hims_d_item_generic G on \
@@ -106,12 +119,16 @@ let getPatientUCAF = (req, res, next) => {
                 _input.visit_id,
                 _input.patient_id,
                 _input.visit_date,
+                _input.visit_id,
+                _input.patient_id,
+                _input.visit_date,
                 _input.visit_id
-              ],
-              printQuery: true
+              ]
             })
             .then(outputResult => {
-              const _fields = outputResult[0][0];
+              const _fields =
+                outputResult[0].length > 0 ? { ...outputResult[0][0] } : {};
+
               for (var i = 0; i < outputResult[1].length; i++) {
                 const _out = outputResult[1][i];
                 const _vital = _out["patient_vitals"];
@@ -126,19 +143,20 @@ let getPatientUCAF = (req, res, next) => {
                 )
                   _fields[_vital] = _out["vital_value"];
               }
+              _fields["patient_chief_comp_main_symptoms"] = "";
               for (var i = 0; i < outputResult[2].length; i++) {
                 const _out = outputResult[2][i];
                 if (_fields["patient_duration_of_illness"] == null) {
-                  _fields["patient_duration_of_illness"] = _out["onset_date"];
+                  _fields["patient_duration_of_illness"] = _out["duration"];
                 } else {
                   if (_out["comment"] == "") {
                     _fields["patient_chief_comp_main_symptoms"] +=
-                      _fields["hpi_description"] +
+                      _out["hpi_description"] +
                       " has pain as " +
-                      _fields["pain"] +
+                      _out["pain"] +
                       " ";
                     "sverity as " +
-                      _fields["severity"] +
+                      _out["severity"] +
                       "  from date " +
                       _out["onset_date"];
                   } else {
@@ -147,6 +165,7 @@ let getPatientUCAF = (req, res, next) => {
                   }
                 }
               }
+              _fields["patient_diagnosys"] = "";
               for (var i = 0; i < outputResult[3].length; i++) {
                 const _out = outputResult[3][i];
                 _fields["patient_diagnosys"] +=
@@ -156,7 +175,7 @@ let getPatientUCAF = (req, res, next) => {
 
               for (var i = 1; i < 5; i++) {
                 if (_fields["patient_principal_code_" + i] === undefined) {
-                  _fields["patient_principal_code_" + i] = null;
+                  _fields["patient_principal_code_" + i] = undefined;
                 }
               }
               _fields["patient_chronic"] = "N";
@@ -169,6 +188,7 @@ let getPatientUCAF = (req, res, next) => {
               _fields["patient_infertility"] = "N";
               _fields["patient_pregnancy"] = "N";
               _fields["patient_indicated_LMP"] = "N";
+
               _mysql
                 .executeQueryWithTransaction({
                   query:
@@ -181,10 +201,53 @@ let getPatientUCAF = (req, res, next) => {
                 `patient_diagnosys`,`patient_principal_code_1`,`patient_principal_code_2`,\
                 `patient_principal_code_3`,`patient_principal_code_4`,`patient_chronic`,`patient_congenetal`,\
                 `patient_rta`,`patient_work_related`,`patient_vaccination`,`patient_check_up`,\
-                `patient_psychiatric`,`patient_infertility`,`patient_pregnancy`,`patient_indicated_LMP`) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
+                `patient_psychiatric`,`patient_infertility`,`patient_pregnancy`,`patient_indicated_LMP`,\
+                `patient_gender`,`age_in_years`) \
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
                 ",
-                  values: [_fields]
+                  values: [
+                    _fields.patient_id,
+                    _fields.visit_id,
+                    _fields.visit_date,
+                    _fields.provider_name,
+                    _fields.new_visit_patient,
+                    _fields.appointment_patient,
+                    _fields.sub_department_name,
+                    _fields.patient_code,
+                    _fields.patient_marital_status,
+                    _fields.patient_full_name,
+                    _fields.case_type,
+                    _fields.patient_emergency_case,
+                    _fields.patient_bp_sys,
+                    _fields.patient_bp_dia,
+                    _fields.patient_pulse,
+                    _fields.patient_temp,
+                    _fields.patient_weight,
+                    _fields.patient_height,
+                    _fields.patient_respiratory_rate,
+                    _fields.patient_duration_of_illness,
+                    _fields.patient_chief_comp_main_symptoms,
+                    _fields.patient_significant_signs,
+                    _fields.patient_other_conditions,
+                    _fields.patient_diagnosys,
+                    _fields.patient_principal_code_1,
+                    _fields.patient_principal_code_2,
+                    _fields.patient_principal_code_3,
+                    _fields.patient_principal_code_4,
+                    _fields.patient_chronic,
+                    _fields.patient_congenetal,
+                    _fields.patient_rta,
+                    _fields.patient_work_related,
+                    _fields.patient_vaccination,
+                    _fields.patient_check_up,
+                    _fields.patient_psychiatric,
+                    _fields.patient_infertility,
+                    _fields.patient_pregnancy,
+                    _fields.patient_indicated_LMP,
+                    _fields.patient_gender,
+                    _fields.age_in_years
+                  ]
+                  // printQuery: true
                 })
                 .then(headerResult => {
                   req["hims_f_ucaf_header_id"] = headerResult["insertId"];
@@ -196,6 +259,7 @@ let getPatientUCAF = (req, res, next) => {
                         hims_f_ucaf_header_id: headerResult["insertId"]
                       },
                       bulkInsertOrUpdate: true
+                      // printQuery: true
                     })
                     .then(serviceResult => {
                       _mysql
@@ -212,7 +276,7 @@ let getPatientUCAF = (req, res, next) => {
                           _mysql
                             .executeQuery({
                               query:
-                                "INSERT INTO hims_f_ucaf_medication (??) values ?",
+                                "INSERT INTO hims_f_ucaf_insurance_details (??) values ?",
                               values: outputResult[6],
                               extraValues: {
                                 hims_f_ucaf_header_id: headerResult["insertId"]
@@ -220,24 +284,24 @@ let getPatientUCAF = (req, res, next) => {
                               bulkInsertOrUpdate: true
                             })
                             .then(insuranceResult => {
-                              _mysql.commitTransaction(error => {
-                                if (error) {
-                                  _mysql.rollBackTransaction(() => {
-                                    next(error);
+                              _getUcafDetails(_mysql, req)
+                                .then(allResult => {
+                                  _mysql.commitTransaction(error => {
+                                    _mysql.releaseConnection();
+                                    if (error) {
+                                      _mysql.rollBackTransaction(() => {
+                                        next(error);
+                                      });
+                                    }
                                   });
-                                } else {
-                                  _getUcafDetails(_mysq, req)
-                                    .then(allResult => {
-                                      _mysql.releaseConnection();
-                                      req.records = { result, allResult };
-                                      next();
-                                    })
-                                    .catch(error => {
-                                      _mysql.releaseConnection();
-                                      next(error);
-                                    });
-                                }
-                              });
+
+                                  req.records = allResult;
+                                  next();
+                                })
+                                .catch(error => {
+                                  _mysql.releaseConnection();
+                                  next(error);
+                                });
                             })
                             .catch(error => {
                               _mysql.rollBackTransaction(() => {
@@ -256,6 +320,11 @@ let getPatientUCAF = (req, res, next) => {
                         next(error);
                       });
                     });
+                })
+                .catch(error => {
+                  _mysql.rollBackTransaction(() => {
+                    next(error);
+                  });
                 });
             })
             .catch(error => {
@@ -264,11 +333,12 @@ let getPatientUCAF = (req, res, next) => {
               });
             });
         } else {
-          req["hims_f_ucaf_header"] = result[0]["hims_f_ucaf_header_id"];
+          req["hims_f_ucaf_header_id"] = result[0][0]["hims_f_ucaf_header_id"];
           _getUcafDetails(_mysql, req)
             .then(allResult => {
               _mysql.releaseConnection();
-              req.records = { result, allResult };
+
+              req.records = allResult;
               next();
             })
             .catch(error => {
@@ -291,17 +361,25 @@ const _getUcafDetails = (_mysql, req) => {
     _mysql
       .executeQuery({
         query:
-          "select * from hims_f_ucaf_insurance_details where hims_f_ucaf_header_id=?; \
-       select * from hims_f_ucaf_medication where hims_f_ucaf_header_id=?; \
-       select * from hims_f_ucaf_services where hims_f_ucaf_header_id=?;",
+          "select * from hims_f_ucaf_header where hims_f_ucaf_header_id=?; \
+          select * from hims_f_ucaf_insurance_details where hims_f_ucaf_header_id=?; \
+          select * from hims_f_ucaf_medication where hims_f_ucaf_header_id=?; \
+          select * from hims_f_ucaf_services where hims_f_ucaf_header_id=?;",
         values: [
           req.hims_f_ucaf_header_id,
           req.hims_f_ucaf_header_id,
+          req.hims_f_ucaf_header_id,
           req.hims_f_ucaf_header_id
-        ]
+        ],
+        printQuery: true
       })
       .then(result => {
-        resolve(result);
+        resolve({
+          hims_f_ucaf_header: result[0],
+          hims_f_ucaf_insurance_details: result[1],
+          hims_f_ucaf_medication: result[2],
+          hims_f_ucaf_services: result[3]
+        });
       })
       .catch(error => {
         reject(error);

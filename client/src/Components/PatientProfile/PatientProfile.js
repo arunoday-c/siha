@@ -12,7 +12,8 @@ import AlgaehFile from "../Wrapper/algaehFileUpload";
 import {
   algaehApiCall,
   cancelRequest,
-  getCookie
+  getCookie,
+  swalMessage
 } from "../../utils/algaehApiCall";
 import moment from "moment";
 import { setGlobal, AlgaehOpenContainer } from "../../utils/GlobalFunctions";
@@ -36,6 +37,7 @@ import DentalForm from "./DentalForm/DentalForm";
 import Eye from "./Eye/Eye";
 import _ from "lodash";
 
+const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
 const selected_module = getCookie("module_id");
@@ -99,21 +101,21 @@ class PatientProfile extends Component {
       uri: "/ucaf/getPatientUCAF",
       method: "GET",
       data: {
-        patient_id: "580",
-        visit_date: "2018-09-15"
+        patient_id: Window.global["current_patient"],
+        visit_id: Window.global["visit_id"]
+        // visit_date: "2018-09-15"
       },
       onSuccess: response => {
         debugger;
         if (response.data.success) {
-          // const _dataG = response.data.records[0];
-          // AlgaehReport({
-          //   report: {
-          //     fileName: "ucafReport"
-          //   },
-          //   data: data
-          // });
-          that.setState({ openUCAF: true, UCAFData: data });
+          that.setState({ openUCAF: true, UCAFData: response.data.records });
         }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "warning"
+        });
       }
     });
   }
@@ -182,16 +184,11 @@ class PatientProfile extends Component {
     document.getElementById("ehr-router").click();
   }
   renderUCAFReport() {
-    return null;
-    // return (
-    //   <React.Fragment>
-    //     {this.state.UCAFData !== undefined ? (
-    //       <AlgaehModalPopUp title="UCAF 2.0" openPopup={this.state.openUCAF}>
-    //         {/* {UCAF(this.state.UCAFData)} */}
-    //       </AlgaehModalPopUp>
-    //     ) : null}
-    //   </React.Fragment>
-    // );
+    return (
+      <AlgaehModalPopUp openPopup={this.state.openUCAF} title="UCAF 2.0">
+        <UcafEditor dataProps={this.state.UCAFData} />
+      </AlgaehModalPopUp>
+    );
   }
   render() {
     const module_plan = _.filter(active_modules, f => {
@@ -320,11 +317,11 @@ class PatientProfile extends Component {
           </div>
           {_Vitals.length > 0 ? (
             <div className="patientVital">
-              <span>
+              {/* <span>
                 Vitals updated on:
                 <b>{_Vitals[_Vitals.length - 1]["updated_Date"]}</b>
               </span>
-              <br />
+              <br /> */}
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
                   {console.log("Viatal Details", row)}
@@ -631,28 +628,6 @@ class PatientProfile extends Component {
           ) : this.state.pageDisplay === "summary" ? (
             <Summary />
           ) : null}
-          {/* {this.state.pageDisplay === "overview" ? (
-            <Overview />
-          ) : this.state.pageDisplay === "subjective" ? (
-            // <Subjective />
-            <BasicSubjective />
-          ) : this.state.pageDisplay === "phy_exam" ? (
-            <PhysicalExamination />
-          ) : this.state.pageDisplay === "exam_diagram" ? (
-            <ExamDiagramStandolone />
-          ) : this.state.pageDisplay === "assesment" ? (
-            <Assesment vat_applicable={this.vatApplicable()} />
-          ) : this.state.pageDisplay === "plan" ? (
-            <Plan />
-          ) : this.state.pageDisplay === "summary" ? (
-            <Summary />
-          ) : this.state.pageDisplay === "dental" ? (
-            <Dental />
-          ) : this.state.pageDisplay === "dental_form" ? (
-            <DentalForm />
-          ) : this.state.pageDisplay === "eye" ? (
-            <Eye />
-          ) : null} */}
         </div>
         {this.renderUCAFReport()}
       </div>
