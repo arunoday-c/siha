@@ -117,6 +117,32 @@ class OrderedList extends PureComponent {
                 id="Orderd_list"
                 columns={[
                   {
+                    fieldName: "actions",
+                    label: <AlgaehLabel label={{ forceLabel: "Details" }} />,
+                    displayTemplate: row => {
+                      return (
+                        <i
+                          style={{
+                            pointerEvents:
+                              row.service_type_id === "2" ||
+                              row.service_type_id === "14"
+                                ? ""
+                                : "none",
+                            opacity:
+                              row.service_type_id === "2" ||
+                              row.service_type_id === "14"
+                                ? ""
+                                : "0.1"
+                          }}
+                          className="fas fa-eye"
+                        />
+                      );
+                    },
+                    others: {
+                      fixed: "left"
+                    }
+                  },
+                  {
                     fieldName: "created_date",
                     label: (
                       <AlgaehLabel label={{ fieldName: "created_date" }} />

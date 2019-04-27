@@ -5,11 +5,11 @@ import {
   AlagehFormGroup,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
+  Modal
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import Modal from "@material-ui/core/Modal";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -30,6 +30,26 @@ class DeptMaster extends Component {
       showSubDeptModal: false
     };
     this.getAllDepartments();
+  }
+
+  getLocation() {
+    if (
+      this.props.inventorylocations === undefined ||
+      this.props.inventorylocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/inventory/getInventoryLocation",
+        module: "inventory",
+        data: {
+          location_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "LOCATIONS_GET_DATA",
+          mappingName: "inventorylocations"
+        }
+      });
+    }
   }
 
   dropDownHandle(value) {
@@ -604,6 +624,49 @@ class DeptMaster extends Component {
                           }
                         },
                         {
+                          fieldName: "inventory_location_id",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Location" }} />
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.inventorylocations === undefined
+                                ? []
+                                : this.props.inventorylocations.filter(
+                                    f =>
+                                      f.hims_d_inventory_location_id ===
+                                      row.inventory_location_id
+                                  );
+
+                            return (
+                              <span>
+                                {display !== undefined && display.length !== 0
+                                  ? display[0].location_description
+                                  : ""}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
+                            let display =
+                              this.props.inventorylocations === undefined
+                                ? []
+                                : this.props.inventorylocations.filter(
+                                    f =>
+                                      f.hims_d_inventory_location_id ===
+                                      row.inventory_location_id
+                                  );
+
+                            return (
+                              <span>
+                                {display !== undefined && display.length !== 0
+                                  ? display[0].location_description
+                                  : ""}
+                              </span>
+                            );
+                          },
+                          disabled: true
+                        },
+                        {
                           fieldName: "effective_start_date",
                           label: (
                             <label className="style_Label">
@@ -892,6 +955,7 @@ class DeptMaster extends Component {
                   );
                 }
               },
+
               {
                 fieldName: "department_type",
                 label: <AlgaehLabel label={{ fieldName: "department_type" }} />,
@@ -975,7 +1039,8 @@ class DeptMaster extends Component {
 function mapStateToProps(state) {
   return {
     departments: state.departments,
-    subdepartments: state.subdepartments
+    subdepartments: state.subdepartments,
+    inventorylocations: state.inventorylocations
   };
 }
 
@@ -983,7 +1048,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getAllDepartments: AlgaehActions,
-      getAllSubDepartments: AlgaehActions
+      getAllSubDepartments: AlgaehActions,
+      getLocation: AlgaehActions
     },
     dispatch
   );

@@ -159,14 +159,14 @@ module.exports = {
         if (input.department_id > 0) {
           query =
             "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
-          sub_department_desc, department_id, effective_start_date, effective_end_date, sub_department_status\
+            inventory_location_id,sub_department_desc, department_id, effective_start_date, effective_end_date, sub_department_status\
           from  hims_d_sub_department where record_status='A' and department_id=? order by hims_d_sub_department_id desc";
 
           values.push(input.department_id);
         } else {
           query =
             "select hims_d_sub_department_id, sub_department_code, sub_department_name, arabic_sub_department_name,\
-          sub_department_desc, department_id, effective_start_date, effective_end_date, sub_department_status\
+            inventory_location_id,sub_department_desc, department_id, effective_start_date, effective_end_date, sub_department_status\
           from  hims_d_sub_department where record_status='A' order by hims_d_sub_department_id desc";
         }
 
