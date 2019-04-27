@@ -28,6 +28,10 @@ hbs.registerHelper("countOf", function(data) {
   data = Array.isArray(data) ? data : [];
   return data.length;
 });
+hbs.registerHelper("if", function(value1, value2, options) {
+  if (value1 == value2) return options.fn(this);
+  else return options.inverse(this);
+});
 
 hbs.registerHelper("dateTime", function(value, type) {
   type = type || "date";
@@ -59,8 +63,9 @@ hbs.registerHelper("groupBy", function(data, groupby, callBack) {
   }
 });
 
-hbs.registerHelper("customFunction", function(callBack) {
-  return callBack({ moment, _ });
+hbs.registerHelper("algaehCustom", function(callBack) {
+  const fun = eval(callBack);
+  return fun({ moment, _ });
 });
 
 module.exports = {
@@ -73,7 +78,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT report_query,report_input_series from algaeh_d_reports where status='A' and report_name=?",
+            "SELECT report_query,report_input_series,data_manupulation from algaeh_d_reports where status='A' and report_name=?",
           values: [_inputParam.reportName]
         })
         .then(data => {
@@ -86,7 +91,6 @@ module.exports = {
                 _inputParam.reportParams,
                 f => f.name == _inputOrders[i]
               );
-
               if (_params != undefined) {
                 _value.push(_params.value);
               }
@@ -95,7 +99,8 @@ module.exports = {
             _mysql
               .executeQuery({
                 query: _data.report_query,
-                values: _value
+                values: _value,
+                printQuery: true
               })
               .then(result => {
                 _mysql.releaseConnection();
@@ -108,6 +113,15 @@ module.exports = {
                   _inputParam.outputFileType == null
                     ? "PDF"
                     : _inputParam.outputFileType;
+
+                if (
+                  _data.data_manupulation != null &&
+                  _data.data_manupulation != ""
+                ) {
+                  const data_string = "`" + _data.data_manupulation + "`";
+                  const _resu = eval(data_string);
+                  result = JSON.parse(_resu);
+                }
 
                 switch (_reportType) {
                   case "PDF":

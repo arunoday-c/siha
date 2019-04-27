@@ -11,38 +11,52 @@
     </tr>
     <tr>
         <td><label>Provider Name</label></td>
-        <td colspan="5">{{hospital_name}}</td>
+        <td colspan="5">{{header.provider_name}}</td>
     </tr>
     <tr>
         <td><label>Insurance Company Name</label></td>
-        <td colspan="2">{{pri_insurance_company}}</td>
+        <td colspan="2">{{insurance.0.primary_insurance_company_name}}</td>
         <td><label>TPA Company Name</label> </td>
-        <td>{{pri_TPA_company_name}}</td>
+        <td>{{insurance.0.primary_tpa_insurance_company_name}}</td>
     </tr>
     <tr>
         <td><label>Patient File No</label></td>
-        <td colspan="2">{{patient_code}}</td>
+        <td colspan="2">{{header.patient_code}}</td>
         <td><label>Department</label></td>
-        <td>{{sub_department_name}}</td>
+        <td>{{header.sub_department_name}}</td>
     </tr>
     <tr>
-        <td>Single</td>
-        <td colspan="2">Married</td>
-        <td>Plan Type</td>
+
+        <td>Single ( {{#if header.patient_marital_status "Single" }}
+            <span>&#10004;</span>
+            {{/if}}
+            ) </td>
+        <td colspan="2">Married ( {{#if header.patient_marital_status "Married"}}
+            <span>&#10004;</span>
+            {{/if}}
+            )</td>
+        <td>Plan Type ( {{#if header.patient_marital_status "Plan Type"}}
+            <span>&#10004;</span>
+            {{/if}}
+            )</td>
         <td></td>
     </tr>
     <tr>
         <td>Date Of Visit</td>
-        <td colspan="2"> {{visit_date}}</td>
+        <td colspan="2"> {{header.visit_date}}</td>
         <td></td>
         <td></td>
     </tr>
     <tr>
-        <td>New Visit (<span>&#10004;</span>)</td>
-        <td>Follow Up ()</td>
-        <td>Refill ()</td>
-        <td>Walk In (<span>&#10004;</span>)</td>
-        <td>Referal (<span></span>)</td>
+        <td>New Visit ( {{#if header.new_visit_patient "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Follow Up ( {{#if header.new_visit_patient "N"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Refill ( )</td>
+        <td>Walk In ( )</td>
+        <td>Referal ( )</td>
 
     </tr>
     <tr>
@@ -52,45 +66,56 @@
         <td colspan="6">To be completed by Attending PHYSICIAN: Please tick (&#10004;)</td>
     </tr>
     <tr>
-        <td>Inpatient (<span></span>)</td>
-        <td>Outpatient (<span></span>)</td>
-        <td>Emergency Case (<span></span>)</td>
-        <td colspan="3">Emergency Care Level 1(<span></span>) | 2(<span></span>) | 3(<span></span>)</td>
+        <td>Inpatient ( {{#if header.case_type "IP"}}
+            <span>&#10004;</span>
+            {{/if}}
+            )
+        </td>
+        <td>Outpatient ( {{#if header.case_type "OP"}}
+            <span>&#10004;</span>
+            {{/if}})</td>
+        <td>Emergency Case ( {{#if header.patient_emergency_case ""}}
+            <span></span>
+            {{else}}
+            <span>&#10004;</span>
+            {{/if}}
+            )</td>
+        <td colspan="3">Emergency Care Level 1( {{#if header.patient_emergency_case "L1"}}
+            <span>&#10004;</span>
+            {{/if}}
+            ) | 2( {{#if header.patient_emergency_case "L2"}}
+            <span>&#10004;</span>
+            {{/if}} ) | 3( {{#if header.patient_emergency_case "L2"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
     </tr>
     <tr>
-        <td>BP Sys: 108</td>
-        <td>BP Dias: 83</td>
-        <td>Pulse: 88</td>
-        <td>Temp: 37</td>
-        <td colspan="2">Duration Of Illness:</td>
+        <td>BP Sys: {{header.patient_bp_sys}}</td>
+        <td>BP Dias: {{header.patient_bp_dia}}</td>
+        <td>Pulse: {{header.patient_pulse}}</td>
+        <td>Temp: {{header.patient_temp}}</td>
+        <td colspan="2">Duration Of Illness: {{header.patient_duration_of_illness}}</td>
     </tr>
     <tr>
-        <td colspan="6">Chief Complaint and Main Symptoms: <span>patient complained of easy fatigability, low
-                energy
-                and weakness, cold intolerance and muscle cramps need to check again TSH and FT4 for dose of
-                medicine</span></td>
+        <td colspan="6">Chief Complaint and Main Symptoms: <span>{{header.patient_chief_comp_main_symptoms}}</span></td>
     </tr>
     <tr>
-        <td colspan="6">Significant Signs: <span>patient complained of easy fatigability, low energy and weakness,
-                cold
-                intolerance and muscle cramps need to check again TSH and FT4 for dose of medicine</span></td>
+        <td colspan="6">Significant Signs: <span>{{header.patient_significant_signs}}</span></td>
     </tr>
     <tr>
-        <td colspan="6">Other Conditions: <span>patient complained of easy fatigability, low energy and weakness,
-                cold
-                intolerance and muscle cramps need to check again TSH and FT4 for dose of medicine</span></td>
+        <td colspan="6">Other Conditions: <span>{{header.patient_other_conditions}}</span></td>
     </tr>
     <tr>
-        <td colspan="6">Diagnosis: <span>E03.9 - Hypothyroidism, unspecified</span></td>
+        <td colspan="6">Diagnosis: <span>{{header.patient_diagnosys}}</span></td>
     </tr>
     <tr>
-        <td>Principal Code: <span>E03.9 - Hypothyroidism, unspecified</span></td>
+        <td>Principal Code: <span>{{header.patient_principal_code_1}}</span></td>
 
-        <td>2nd Code: <span>E03.9 - Hypothyroidism, unspecified</span></td>
+        <td>2nd Code: <span>{{header.patient_principal_code_2}}</span></td>
 
-        <td>3rd Code:<span>E03.9 - Hypothyroidism, unspecified</span></td>
+        <td>3rd Code:<span>{{header.patient_principal_code_3}}</span></td>
 
-        <td>4th Code: <span>E03.9 - Hypothyroidism, unspecified</span></td>
+        <td>4th Code: <span>{{header.patient_principal_code_4}}</span></td>
         <td></td>
         <td></td>
     </tr>
@@ -98,18 +123,39 @@
         <td colspan="6">Please tick (&#10004;) where appropriate</td>
     </tr>
     <tr>
-        <td>Chronic (&#10004;)</td>
-        <td>Congenital (&#10004;)</td>
-        <td>RTA (&#10004;)</td>
-        <td>Work Related (&#10004;)</td>
-        <td>Vaccination (&#10004;)</td>
-        <td>Check-Up (&#10004;)</td>
+        <td>Chronic ( {{#if header.patient_chronic "Y"}}
+            <span>&#10004;</span>
+            {{/if}}
+            )</td>
+        <td>Congenital ( {{#if header.patient_congenetal "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>RTA ( {{#if header.patient_rta "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Work Related ( {{#if header.patient_work_related "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Vaccination ( {{#if header.patient_vaccination "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Check-Up ( {{#if header.patient_check_up "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
     </tr>
     <tr>
-        <td>Psychiatric (&#10004;)</td>
-        <td>Infertility (&#10004;)</td>
-        <td>Pregnancy (&#10004;)</td>
-        <td>Indicate LMP (&#10004;)</td>
+        <td>Psychiatric ( {{#if header.patient_psychiatric "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Infertility ( {{#if header.patient_infertility "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Pregnancy ( {{#if header.patient_pregnancy "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Indicate LMP ( {{#if header.patient_indicated_LMP "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
         <td></td>
         <td></td>
     </tr>
@@ -129,20 +175,18 @@
                         <th scope="col">Cost</th>
                     </tr>
                 </thead>
-                <tbody data-list="servicesTable">
-
+                <tbody>
+                    {{#each services }}
+                    <tr>
+                        <td scope="row">{{service_code}}</td>
+                        <td>{{service_name}}</td>
+                        <td>{{service_type}}</td>
+                        <td>{{service_quantity}}</td>
+                        <td>{{service_net_amout}}</td>
+                    </tr>
+                    {{/each}}
                 </tbody>
             </table>
-            <script id="servicesTable" type="text/x-algaeh-template">
-                    <tr>
-                        <td scope="row" data-list-parameter="cpt_code">10014</td>
-                        <td data-list-parameter="description">Internal Medicine Fee- Consultant -Dr. Waleed Al Baker</td>
-                        <td data-list-parameter="service_type">Consultation</td>
-                        <td data-list-parameter="cpt_qty">1</td>
-                        <td data-list-parameter="cpt_amt">80.00</td>
-                    </tr>
-                  
-                 </script>
         </td>
     </tr>
     <tr>
@@ -169,33 +213,33 @@
                     </tr>
                 </thead>
                 <tbody>
+                    {{#each medication}}
                     <tr>
-                        <td scope="row">10014</td>
-                        <td>Internal Medicine Fee- Consultant -Dr. Waleed Al Baker</td>
-                        <td>Consultation</td>
+                        <td scope="row">{{generic_name}}</td>
+                        <td>{{type}}</td>
+                        <td>{{quantity}}</td>
                     </tr>
-                    <tr>
-                        <td scope="row">10014</td>
-                        <td>Internal Medicine Fee- Consultant -Dr. Waleed Al Baker</td>
-                        <td>Consultation</td>
-                    </tr>
+                    {{/each}}
                 </tbody>
             </table>
         </td>
     </tr>
     <tr>
         <td colspan="2">Is Case Management From ( CMFI.0 ) Included</td>
-        <td colspan="4">Yes (&#10004;) | No ( )</td>
+        <td colspan="4">Yes ( {{#if header.patient_cmfi "Y"}}
+            <span>&#10004;</span>
+            {{/if}} ) | No ( {{#if header.patient_cmfi "N"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
     </tr>
     <tr>
         <td colspan="2">Please Specify Possible line of Management When Applicable:</td>
         <td colspan="4">
-            .................................................................................................................
-            ...................................................................................</td>
+            {{header.patient_cmfi_comments}}</td>
     </tr>
     <tr>
-        <td colspan="3">Estimated Length of Stay: <b>Days</b></td>
-        <td colspan="3">Expected Date of Admission: <b>20th Nov 2018</b></td>
+        <td colspan="3">Estimated Length of Stay: <b>{{header.patient_estimated_length_of_stay}} Days</b></td>
+        <td colspan="3">Expected Date of Admission: <b>{{header.patient_expected_date_of_addmission}}</b></td>
     </tr>
 
     <tr>
@@ -212,43 +256,47 @@
     </tr>
 
     <tr>
-        <td colspan="3">Dr. Waleed Al Baker</td>
-        <td colspan="3">....................................................................</td>
+        <td colspan="3">{{header.provider_name}}</td>
+        <td colspan="3">{{header.name_relation_guardian}}</td>
     </tr>
     <tr>
         <td colspan="3">Signature and Stamp</td>
-        <td colspan="3">Name and Relationship(if Guardian) Signature</td>
+        <td colspan="3">Name and Relationship(if Guardian) Signature :</td>
     </tr>
     <tr>
-        <td colspan="3">29/10/2018</td>
-        <td colspan="3">29/10/2018</td>
+        <td colspan="3">{{header.physican_capture_date}}</td>
+        <td colspan="3">{{header.relation_guardian_date}}</td>
     </tr>
     <tr>
         <td colspan="6" style="background:#f2f2f2;height:20px;"></td>
     </tr>
     <tr>
         <td>For Insurance Company Use Only:</td>
-        <td>Approved: (&#10004;)</td>
-        <td>Not Approved: (&#10004;)</td>
-        <td>Approval No: (&#10004;)</td>
-        <td>Approval validity (&#10004;)</td>
-        <td>............. Days</td>
+        <td>Approved: ( {{#if header.insurance_company_use_only_approved "Y"}}
+            <span>&#10004;</span>
+            {{/if}}
+            )</td>
+        <td>Not Approved: ( {{#if header.insurance_company_use_only_not_approved "Y"}}
+            <span>&#10004;</span>
+            {{/if}} )</td>
+        <td>Approval No: {{header.insurance_company_use_only_approval_no }}</td>
+        <td>Approval validity:</td>
+        <td>{{header.insurance_company_use_only_approval_validity_days}} Days</td>
     </tr>
     <tr>
         <td colspan="2">Comments (include approved days/services if different from the requested):</td>
         <td colspan="4">
-            .................................................................................................................
-            ...................................................................................</td>
+            {{header.insurance_company_use_only_comments}} </td>
     </tr>
     <tr>
         <td colspan="6"></td>
     </tr>
     <tr>
         <td>Approved/Disapproved By:</td>
-        <td>..........................................................</td>
-        <td>Signature: (&#10004;)</td>
+        <td>{{header.insurance_company_use_only_approved_by}}</td>
+        <td>Signature:</td>
         <td>..........................................................</td>
         <td>Date</td>
-        <td>..../..../.....</td>
+        <td>{{header.insurance_company_use_only_approved_date}}</td>
     </tr>
 </table>
