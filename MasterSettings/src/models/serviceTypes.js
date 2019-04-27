@@ -1,4 +1,7 @@
 import algaehMysql from "algaeh-mysql";
+import algaehUtilities from "algaeh-utilities/utilities";
+import mysql from "mysql";
+
 module.exports = {
   addServices: (req, res, next) => {
     let inputParam = req.body;
@@ -232,12 +235,13 @@ module.exports = {
           _mysql
             .executeQuery({
               query:
-                " INSERT INTO `hims_d_procedure` (procedure_code,procedure_desc,service_id,\
-          created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?)",
+                "INSERT INTO `hims_d_procedure` (procedure_code,procedure_desc,service_id,procedure_type,\
+          created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?,?)",
               values: [
                 input.procedure_code,
                 input.procedure_desc,
                 result.insertId,
+                input.procedure_type,
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
@@ -250,14 +254,10 @@ module.exports = {
               if (pro_head_result.insertId > 0) {
                 let IncludeValues = ["item_id", "service_id", "qty"];
 
-                utilities
-                  .logger()
-                  .log("pharmacy_stock_detail: ", input.pharmacy_stock_detail);
-
                 _mysql
                   .executeQuery({
                     query: "INSERT INTO hims_d_procedure_detail(??) VALUES ?",
-                    values: input.pharmacy_stock_detail,
+                    values: input.ProcedureDetail,
                     includeValues: IncludeValues,
                     extraValues: {
                       procedure_header_id: pro_head_result.insertId,
@@ -309,20 +309,24 @@ module.exports = {
       let strQry = "";
 
       if (input.hims_d_procedure_id > 0) {
-        strQry = ` and  hims_d_procedure_id=${input.hims_d_procedure_id}`;
+        strQry += ` and  hims_d_procedure_id=${input.hims_d_procedure_id}`;
       } else if (input.service_id > 0) {
-        strQry = ` and PH.service_id=${input.service_id} `;
+        strQry += ` and PH.service_id=${input.service_id} `;
       }
       _mysql
         .executeQuery({
-          query: `select hims_d_procedure_id,procedure_code,procedure_desc,procedure_status,\
+          query:
+            "select hims_d_procedure_id,procedure_code,procedure_desc,procedure_status,PH.procedure_type,\
             PH.service_id as header_service_id,S.service_code as header_service_code,\
-            S.service_name as header_service_name,hims_d_procedure_detail_id, item_id,\
-            qty,PD.service_id as detail_service_id,SR.service_code as detail_service_code,\
+            S.service_name as header_service_name,hims_d_procedure_detail_id, procedure_header_id, item_id,\
+            qty,PD.service_id,SR.service_code as detail_service_code,\
             SR.service_name as detail_service_name from hims_d_procedure PH inner join \
             hims_d_services S on PH.service_id=S.hims_d_services_id inner join hims_d_procedure_detail PD \
+            on PH.hims_d_procedure_id=PD.procedure_header_id\
             inner join hims_d_services SR on PD.service_id=SR.hims_d_services_id\
-            where PH.record_status='A' and PD.record_status='A' ${strQry}`
+            where PH.record_status='A' and PD.record_status='A'" +
+            strQry +
+            " order by hims_d_procedure_id desc;"
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -336,6 +340,135 @@ module.exports = {
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
+    }
+  },
+
+  updateProcedures: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+
+      const utilities = new algaehUtilities();
+      utilities.logger().log("input: ", input);
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "UPDATE `hims_d_procedure` SET `procedure_code`=?, `procedure_desc`=?, `service_id`=?,\
+          `procedure_type`=?,`updated_date`=?, `updated_by`=? \
+          WHERE record_status='A' and `hims_d_procedure_id`=?",
+          values: [
+            input.procedure_code,
+            input.procedure_desc,
+            input.service_id,
+            input.procedure_type,
+
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            input.hims_d_procedure_id
+          ],
+          printQuery: true
+        })
+        .then(headerResult => {
+          if (headerResult != null) {
+            new Promise((resolve, reject) => {
+              try {
+                if (input.insertProcedure.length != 0) {
+                  const IncludeValues = [
+                    "procedure_header_id",
+                    "item_id",
+                    "service_id",
+                    "qty"
+                  ];
+
+                  _mysql
+                    .executeQuery({
+                      query: "INSERT INTO hims_d_procedure_detail(??) VALUES ?",
+                      values: input.insertProcedure,
+                      includeValues: IncludeValues,
+                      extraValues: {
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        created_date: new Date(),
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_date: new Date()
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
+                    .then(insertProcedure => {
+                      return resolve(insertProcedure);
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                        reject(error);
+                      });
+                    });
+                } else {
+                  return resolve();
+                }
+              } catch (e) {
+                reject(e);
+              }
+            })
+              .then(results => {
+                if (input.deleteProcedure.length != 0) {
+                  let qry = "";
+                  let inputParam = req.body.deleteProcedure;
+                  for (let i = 0; i < req.body.deleteProcedure.length; i++) {
+                    qry += mysql.format(
+                      "DELETE FROM `hims_d_procedure_detail` where hims_d_procedure_detail_id=?;",
+                      [inputParam[i].hims_d_procedure_detail_id]
+                    );
+                  }
+
+                  _mysql
+                    .executeQuery({
+                      query: qry,
+                      printQuery: true
+                    })
+                    .then(deleteProcedure => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = deleteProcedure;
+                        next();
+                      });
+                    })
+                    .catch(error => {
+                      _mysql.rollBackTransaction(() => {
+                        next(error);
+                        reject(error);
+                      });
+                    });
+                } else {
+                  _mysql.commitTransaction(() => {
+                    _mysql.releaseConnection();
+                    req.records = results;
+                    next();
+                  });
+                }
+              })
+              .catch(error => {
+                _mysql.rollBackTransaction(() => {
+                  next(error);
+                });
+              });
+          } else {
+            _mysql.commitTransaction(() => {
+              _mysql.releaseConnection();
+              req.records = headerResult;
+              next();
+            });
+          }
+        })
+        .catch(error => {
+          _mysql.rollBackTransaction(() => {
+            next(error);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
     }
   }
 };

@@ -1437,7 +1437,6 @@ let updatePatientChiefComplaints = (req, res, next) => {
 
         let qry = "";
 
-        
         for (let i = 0; i < req.body.chief_complaints.length; i++) {
           const _complaint_inactive_date =
             inputParam[i].complaint_inactive_date != null
@@ -1468,7 +1467,6 @@ let updatePatientChiefComplaints = (req, res, next) => {
           );
           console.log("qry: ", qry);
         }
-        
 
         //         for (let i = 0; i < req.body.chief_complaints.length; i++) {
         //           const _complaint_inactive_date =
@@ -2826,12 +2824,16 @@ let updatePatientEncounter = (req, res, next) => {
       strQuery = "assesment_notes = '" + inputData.assesment_notes + "'";
     }
 
+    if (inputData.significant_signs != null) {
+      strQuery = "significant_signs = '" + inputData.significant_signs + "'";
+    }
+
     if (strQuery != "") {
       db.getConnection((error, connection) => {
         connection.query(
           "UPDATE hims_f_patient_encounter Set " +
             strQuery +
-            " where hims_f_patient_encounter_id",
+            " where hims_f_patient_encounter_id=?",
           [inputData.hims_f_patient_encounter_id],
           (error, result) => {
             releaseDBConnection(db, connection);
@@ -2862,7 +2864,7 @@ let getPatientEncounter = (req, res, next) => {
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT examination_notes,assesment_notes FROM hims_f_patient_encounter where hims_f_patient_encounter_id=?;",
+        "SELECT examination_notes,assesment_notes, significant_signs FROM hims_f_patient_encounter where hims_f_patient_encounter_id=?;",
         [req.query.hims_f_patient_encounter_id],
         (error, result) => {
           releaseDBConnection(db, connection);

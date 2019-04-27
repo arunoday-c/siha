@@ -927,5 +927,9 @@
     { "name": "Silver", "value": "S" },
     { "name": "Gold", "value": "G" },
     { "name": "Platinum", "value": "P" }
+  ],
+  "PROCEDURE_TYPE": [
+    { "name": "General", "value": "GN" },
+    { "name": "Dental", "value": "DN" }
   ]
 }

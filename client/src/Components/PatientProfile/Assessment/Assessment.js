@@ -85,11 +85,6 @@ class Assessment extends Component {
           assesment_notes: this.state.assesment_notes,
           hims_f_patient_encounter_id: Window.global.encounter_id
         }
-        // onSuccess: response => {
-        //   if (response.data.success) {
-
-        //   }
-        // }
       });
     }
   }
@@ -455,10 +450,10 @@ class Assessment extends Component {
                 <div className="row">
                   <div className="container-fluid">
                     <AlagehFormGroup
-                      div={{ className: "col-lg-12 form-details" }}
+                      div={{ className: "col-lg-12 textArea" }}
                       label={{
-                        forceLabel: "Assesment Notes",
-                        isImp: true
+                        forceLabel: "",
+                        isImp: false
                       }}
                       textBox={{
                         className: "txt-fld",
@@ -466,11 +461,12 @@ class Assessment extends Component {
                         value: this.state.assesment_notes,
                         others: {
                           multiline: true,
-                          rows: "4",
+                          rows: "6",
                           style: {
                             height: "25vh"
                           }
                         },
+                        options: {},
                         events: {
                           onChange: assnotetexthandle.bind(this, this)
                         }
