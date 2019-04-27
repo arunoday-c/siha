@@ -2123,7 +2123,7 @@ let assignComponents = (req, res, next) => {
 };
 
 //created by irfan:
-let method1 = (req, res, next) => {
+let method2 = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
   let input = req.body;
@@ -2164,6 +2164,32 @@ let method1 = (req, res, next) => {
             });
         }, 3000);
       }
+    })
+    .catch(e => {
+      console.log("error", e);
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    });
+};
+
+//created by irfan:
+let method1 = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  let input = req.body;
+  _mysql
+    .executeQueryWithTransaction({
+      query: " call method1 (?,?)",
+      values: [input.amount, req.userIdentity.username],
+      printQuery: true
+    })
+    .then(res2 => {
+      _mysql.commitTransaction(() => {
+        _mysql.releaseConnection();
+        req.records = res2;
+        next();
+      });
     })
     .catch(e => {
       console.log("error", e);
