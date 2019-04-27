@@ -81,9 +81,9 @@ class BasicSubjective extends Component {
           {/* <div className="col-lg-3">
             <Vitals />
           </div> */}
-          <div className="col">
+          <div className="col-3">
             <div className="row">
-              <div className="col-8">
+              <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-body">
                     <div className="row">
@@ -184,7 +184,7 @@ class BasicSubjective extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-4">
+              <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   {/* <div className="portlet-title">
                     <div className="caption">
@@ -213,7 +213,39 @@ class BasicSubjective extends Component {
                   </div>
                 </div>
               </div>
-
+              <div className="col-12">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  {/* <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Significant Signs</h3>
+                    </div>
+                  </div> */}
+                  <div className="portlet-body">
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Enter Significant Signs",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "",
+                          value: "",
+                          events: {},
+                          option: {
+                            type: "text"
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col">
+            <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   {/* <div className="portlet-title">
@@ -224,7 +256,7 @@ class BasicSubjective extends Component {
                   <div className="portlet-body">Final Diag.</div>
                 </div>
               </div>
-              <div className="col-lg-12">
+              <div className="col-12">
                 <div className="tab-container toggle-section">
                   <ul className="nav">
                     <li
@@ -323,31 +355,19 @@ class BasicSubjective extends Component {
               </div>
             </div>
           </div>
-          <div className="col-1">
+          <div className="">
             <ul className="rightActionIcon">
               <li>
-                <i className="fas fa-pen" />
+                <i className="fas fa-allergies" />
               </li>{" "}
               <li>
-                <i className="fas fa-pen" />
+                <i className="fas fa-pills" />
               </li>{" "}
               <li>
-                <i className="fas fa-pen" />
+                <i className="fas fa-hourglass-half" />
               </li>{" "}
               <li>
-                <i className="fas fa-pen" />
-              </li>{" "}
-              <li>
-                <i className="fas fa-pen" />
-              </li>{" "}
-              <li>
-                <i className="fas fa-pen" />
-              </li>{" "}
-              <li>
-                <i className="fas fa-pen" />
-              </li>{" "}
-              <li>
-                <i className="fas fa-pen" />
+                <i className="fas fa-notes-medical" />
               </li>
             </ul>
           </div>
