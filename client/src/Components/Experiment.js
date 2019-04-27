@@ -4,6 +4,14 @@ import "react-table/react-table.css";
 import { algaehApiCall, swalMessage } from "../utils/algaehApiCall";
 import FileViewer from "react-file-viewer";
 
+import {
+  AlgaehDataGrid,
+  AlgaehDateHandler,
+  AlagehAutoComplete,
+  AlagehFormGroup,
+  AlgaehLabel,
+  AlgaehModalPopUp
+} from "./Wrapper/algaehWrapper";
 class Experiment extends Component {
   constructor(props) {
     super(props);
@@ -19,8 +27,11 @@ class Experiment extends Component {
   }
 
   texthandle(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
     this.setState({
-      name: e.target.value
+      [name]: value
     });
 
     // Example for functional setState below.
@@ -115,6 +126,46 @@ class Experiment extends Component {
               Click me to Crash me
             </button>
           </AlgaehErrorBoundary>
+        </div>
+        <div className="row">
+          <AlagehFormGroup
+            div={{ className: "col form-group" }}
+            label={{
+              forceLabel: "Enter Amount",
+              isImp: false
+            }}
+            textBox={{
+              className: "txt-fld",
+              name: "amount",
+              value: this.state.amount,
+              events: {
+                onChange: this.texthandle.bind(this, this)
+              },
+              option: {
+                type: "text"
+              }
+            }}
+          />
+          <div className="col">
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                algaehApiCall({
+                  uri: "/algaehMasters/method1",
+                  method: "POST",
+                  data: { amount: this.state.amount },
+                  onSuccess: res => {
+                    swalMessage({
+                      title: "Killed It !!",
+                      type: "success"
+                    });
+                  }
+                });
+              }}
+            >
+              Submit
+            </button>
+          </div>
         </div>
         <div>
           The Above component has a bug so this is how our wrapper handles We

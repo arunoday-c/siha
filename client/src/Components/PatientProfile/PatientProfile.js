@@ -36,6 +36,7 @@ import Dental from "./Dental/Dental";
 import DentalForm from "./DentalForm/DentalForm";
 import Eye from "./Eye/Eye";
 import _ from "lodash";
+import Allergies from "./Allergies/Allergies";
 
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
@@ -59,7 +60,8 @@ class PatientProfile extends Component {
           ? this.props.patient_profile[0].patient_code
           : "",
       openUCAF: false,
-      UCAFData: undefined
+      UCAFData: undefined,
+      openAlergy: false
     };
     getPatientProfile(this);
     getPatientVitals(this);
@@ -67,6 +69,18 @@ class PatientProfile extends Component {
     getPatientDiet(this);
     getPatientDiagnosis(this);
     this.changeTabs = this.changeTabs.bind(this);
+  }
+
+  openAllergies(e) {
+    this.setState({
+      openAlergy: true
+    });
+  }
+
+  closeAllergies(e) {
+    this.setState({
+      openAlergy: false
+    });
   }
 
   changeTabs(e) {
@@ -434,7 +448,17 @@ class PatientProfile extends Component {
                 <li>
                   <i className="fas fa-allergies" />
                   <section>
-                    <b className="top-nav-sec-hdg">Allergies:</b>
+                    <b className="top-nav-sec-hdg">
+                      Allergies
+                      <span
+                        className="fas fa-plus miniActionIcon"
+                        onClick={this.openAllergies.bind(this)}
+                      />
+                      <Allergies
+                        openAllergyModal={this.state.openAlergy}
+                        onClose={this.closeAllergies.bind(this)}
+                      />
+                    </b>
                     <p>
                       {_patient_allergies.map((data, index) => (
                         <React.Fragment key={index}>
@@ -466,7 +490,7 @@ class PatientProfile extends Component {
                 <li>
                   <i className="fas fa-diagnoses" />
                   <section>
-                    <b className="top-nav-sec-hdg">Diagnosis:</b>
+                    <b className="top-nav-sec-hdg">Diagnosis</b>
                     <p>
                       {_diagnosis.map((item, index) => (
                         <React.Fragment key={index}>
@@ -485,7 +509,7 @@ class PatientProfile extends Component {
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
-                    <b className="top-nav-sec-hdg">Diet:</b>
+                    <b className="top-nav-sec-hdg">Diet</b>
                     <p>
                       {_diet.map((data, index) => (
                         <span key={index} className="listofA-D-D">
