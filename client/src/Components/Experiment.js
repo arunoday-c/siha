@@ -139,7 +139,7 @@ class Experiment extends Component {
               name: "amount",
               value: this.state.amount,
               events: {
-                onChange: this.texthandle.bind(this, this)
+                onChange: this.texthandle.bind(this)
               },
               option: {
                 type: "text"
