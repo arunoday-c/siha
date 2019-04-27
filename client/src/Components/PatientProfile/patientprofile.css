@@ -250,3 +250,18 @@
 
 .moreAction:hover .moreActionUl {
   display: block; }
+
+.miniActionIcon {
+  border: 1px solid #fff;
+  border-radius: 100px;
+  height: 24px !important;
+  width: 24px !important;
+  padding: 0 !important;
+  color: #fff !important;
+  text-align: center !important;
+  line-height: 21px;
+  margin-left: 10px; }
+  .miniActionIcon:hover {
+    cursor: pointer;
+    background: #fff !important;
+    color: #00a796 !important; }

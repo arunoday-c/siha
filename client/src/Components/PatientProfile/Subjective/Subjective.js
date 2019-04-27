@@ -23,7 +23,30 @@ class Subjective extends Component {
             <ChiefComplaints />
             <div className="row">
               <div className="col-lg-6">
-                <Allergies />
+                {/* <Allergies /> */}
+
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Significant Signs</h3>
+                    </div>
+                    {/* <div className="actions">
+              <a className="btn btn-primary btn-circle active">
+              <i className="fas fa-pen" />
+              </a>
+              </div> */}
+                  </div>
+                  <div className="portlet-body">
+                    <div className="row">
+                      <div className="col-12">
+                        <textarea
+                          className="textArea"
+                          style={{ height: "21vh" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="col-lg-6">
                 <ReviewofSystems />
@@ -59,7 +82,7 @@ export default Subjective;
 //   onChange: this.dropDownHandle.bind(this),
 //   userList: list => {
 //     //TODO need to change with appropriate service call --noor
-//     
+//
 //     alert(JSON.stringify(list));
 //   }
 // }}

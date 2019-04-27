@@ -11,6 +11,8 @@ import {
   //   AlagehFormGroup,
   //   AlagehAutoComplete,
   //   AlgaehDateHandler,
+  AlagehAutoComplete,
+  AlgaehDataGrid,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 
@@ -60,47 +62,225 @@ class OrderProcedureItems extends PureComponent {
             title="Procedure Items"
             openPopup={this.props.show}
           >
-            <div className="col-lg-12 popupInner">
-              <div className="row">
-                <div className="col-lg-3">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Patient Code"
-                    }}
-                  />
-                  <h6>
-                    {this.props.inputsparameters.patient_code
-                      ? this.props.inputsparameters.patient_code
-                      : "Patient Code"}
-                  </h6>
-                </div>
-                <div className="col-lg-6">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Patient Name"
-                    }}
-                  />
-                  <h6>
-                    {this.props.inputsparameters.full_name
-                      ? this.props.inputsparameters.full_name
-                      : "Patient Name"}
-                  </h6>
-                </div>
+            <div className="row">
+              <div className="col-lg-12 popupInner">
+                <div className="popRightDiv">
+                  <div className="row">
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Patient Code"
+                        }}
+                      />
+                      <h6>
+                        {this.props.inputsparameters.patient_code
+                          ? this.props.inputsparameters.patient_code
+                          : "Patient Code"}
+                      </h6>
+                    </div>
+                    <div className="col-4">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Patient Name"
+                        }}
+                      />
+                      <h6>
+                        {this.props.inputsparameters.full_name
+                          ? this.props.inputsparameters.full_name
+                          : "Patient Name"}
+                      </h6>
+                    </div>
 
-                <div className="col-lg-3">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Procedure Name"
-                    }}
-                  />
-                  <h6>
-                    {this.props.inputsparameters.full_name
-                      ? this.props.inputsparameters.full_name
-                      : "Procedure Name"}
-                  </h6>
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Procedure Name"
+                        }}
+                      />
+                      <h6>
+                        {this.props.inputsparameters.full_name
+                          ? this.props.inputsparameters.full_name
+                          : "Procedure Name"}
+                      </h6>
+                    </div>
+                  </div>{" "}
+                  <hr style={{ margin: "0rem" }} className="margin-bottom-15" />
+                  <div className="row">
+                    <div className="col-6">
+                      <h4
+                        style={{
+                          marginTop: 32
+                        }}
+                      >
+                        Existing Items
+                      </h4>
+                    </div>
+                    <div className="col-6">
+                      <div className="row">
+                        <AlagehAutoComplete
+                          div={{ className: "col-8" }}
+                          label={{ forceLabel: "Select Items", isImp: false }}
+                          selector={{
+                            name: "",
+                            className: "select-fld",
+                            dataSource: {},
+                            others: {}
+                          }}
+                        />
+                        <div className="col">
+                          {" "}
+                          <button
+                            className="btn btn-primary"
+                            style={{ float: "right", marginTop: 19 }}
+                          >
+                            Add New Item
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-6" id="ExisitingItemsGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="ExisitingItemsGrid"
+                        datavalidate="ExisitingItemsGrid"
+                        columns={[
+                          {
+                            fieldName: "actionCheck",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Select" }} />
+                            ),
+                            others: { maxWidth: 60, align: "center" }
+                          },
+                          {
+                            fieldName: "itemID",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Item Code" }}
+                              />
+                            ),
+                            others: { maxWidth: 100, align: "center" }
+                          },
+                          {
+                            fieldName: "ItemName",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Item Name" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "QtyItem",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Qty" }} />
+                            ),
+                            others: { maxWidth: 50, align: "center" }
+                          },
+                          {
+                            fieldName: "BatchItem",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Batch" }} />
+                            ),
+                            others: { maxWidth: 80, align: "center" }
+                          },
+                          {
+                            fieldName: "itemExpiry",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Item Expiry" }}
+                              />
+                            ),
+                            others: { maxWidth: 80, align: "center" }
+                          },
+                          {
+                            fieldName: "QtyHand",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Qty in Hand" }}
+                              />
+                            ),
+                            others: { maxWidth: 50, align: "center" }
+                          }
+                        ]}
+                        keyId=""
+                        dataSource={{ data: [] }}
+                        isEditable={false}
+                        paging={{ page: 0, rowsPerPage: 5 }}
+                        events={{}}
+                        others={{}}
+                      />
+                    </div>
+                    <div className="col-6" id="NewItemsGrid_Cntr">
+                      <AlgaehDataGrid
+                        id="NewItemsGrid"
+                        datavalidate="NewItemsGrid"
+                        columns={[
+                          {
+                            fieldName: "actionCheck",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Select" }} />
+                            ),
+                            others: { maxWidth: 60, align: "center" }
+                          },
+                          {
+                            fieldName: "itemID",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Item Code" }}
+                              />
+                            ),
+                            others: { maxWidth: 100, align: "center" }
+                          },
+                          {
+                            fieldName: "ItemName",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Item Name" }}
+                              />
+                            )
+                          },
+                          {
+                            fieldName: "QtyItem",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Qty" }} />
+                            ),
+                            others: { maxWidth: 50, align: "center" }
+                          },
+                          {
+                            fieldName: "BatchItem",
+                            label: (
+                              <AlgaehLabel label={{ forceLabel: "Batch" }} />
+                            ),
+                            others: { maxWidth: 80, align: "center" }
+                          },
+                          {
+                            fieldName: "itemExpiry",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Item Expiry" }}
+                              />
+                            ),
+                            others: { maxWidth: 80, align: "center" }
+                          },
+                          {
+                            fieldName: "QtyHand",
+                            label: (
+                              <AlgaehLabel
+                                label={{ forceLabel: "Qty in Hand" }}
+                              />
+                            ),
+                            others: { maxWidth: 50, align: "center" }
+                          }
+                        ]}
+                        keyId=""
+                        dataSource={{ data: [] }}
+                        isEditable={false}
+                        paging={{ page: 0, rowsPerPage: 5 }}
+                        events={{}}
+                        others={{}}
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <hr style={{ margin: "0rem" }} />
             </div>
             <div className=" popupFooter">
               <div className="col-lg-12">
