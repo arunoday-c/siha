@@ -68,6 +68,7 @@ class PatientProfile extends Component {
     getPatientAllergies(this);
     getPatientDiet(this);
     getPatientDiagnosis(this);
+    this.getLocation();
     this.changeTabs = this.changeTabs.bind(this);
   }
 
@@ -81,6 +82,26 @@ class PatientProfile extends Component {
     this.setState({
       openAlergy: false
     });
+  }
+
+  getLocation() {
+    if (
+      this.props.inventorylocations === undefined ||
+      this.props.inventorylocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/inventory/getInventoryLocation",
+        module: "inventory",
+        data: {
+          location_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "LOCATIONS_GET_DATA",
+          mappingName: "inventorylocations"
+        }
+      });
+    }
   }
 
   changeTabs(e) {
@@ -673,7 +694,8 @@ function mapStateToProps(state) {
     patient_allergies: state.patient_allergies,
     patient_vitals: state.patient_vitals,
     patient_diet: state.patient_diet,
-    patient_diagnosis: state.patient_diagnosis
+    patient_diagnosis: state.patient_diagnosis,
+    inventorylocations: state.inventorylocations
   };
 }
 
@@ -684,7 +706,8 @@ function mapDispatchToProps(dispatch) {
       getPatientAllergies: AlgaehActions,
       getPatientVitals: AlgaehActions,
       getPatientDiet: AlgaehActions,
-      getPatientDiagnosis: AlgaehActions
+      getPatientDiagnosis: AlgaehActions,
+      getLocation: AlgaehActions
     },
     dispatch
   );

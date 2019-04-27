@@ -352,6 +352,18 @@ let algaehSearchConfig = searchName => {
           "select SQL_CALC_FOUND_ROWS * from hims_d_services S left outer join hims_d_service_type ST on \
           S.service_type_id=ST.hims_d_service_type_id where S.service_status='A' ",
         orderBy: "hims_d_services_id desc"
+      },
+      {
+        searchName: "invitemmaster",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS IM.hims_d_inventory_item_master_id,IM.item_description,IM.category_id, IM.sales_uom_id,IM.service_id, \
+          IM.group_id,IC.category_desc,IG.group_description, PU.uom_description, IL.inventory_location_id, \
+          IL.batchno,IL.expirydt,IL.barcode,IL.qtyhand,IL.avgcost,IL.sales_uom,IL.grnno  from hims_d_inventory_item_master IM, \
+          hims_d_inventory_tem_category IC, hims_d_inventory_item_group IG, hims_d_inventory_uom PU, \
+          hims_m_inventory_item_location IL where IM.category_id = IC.hims_d_inventory_tem_category_id \
+          and IM.group_id = IG.hims_d_inventory_item_group_id and IM.sales_uom_id=PU.hims_d_inventory_uom_id \
+          and IL.item_id = IM.hims_d_inventory_item_master_id",
+        orderBy: "IM.hims_d_inventory_item_master_id desc"
       }
     ]
   };

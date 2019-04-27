@@ -71,7 +71,8 @@ class OrderedList extends PureComponent {
           this.setState({
             ...this.state,
             isOpenItems: !this.state.isOpenItems,
-            procedure_name: data[0].procedure_desc
+            procedure_name: data[0].procedure_desc,
+            hims_d_procedure_id: data[0].hims_d_procedure_id
           });
         }
       },
@@ -335,7 +336,8 @@ class OrderedList extends PureComponent {
           inputsparameters={{
             patient_code: this.props.patient_profile[0].patient_code,
             full_name: this.props.patient_profile[0].full_name,
-            procedure_name: this.state.procedure_name
+            procedure_name: this.state.procedure_name,
+            procedure_id: this.state.hims_d_procedure_id
           }}
         />
       </div>

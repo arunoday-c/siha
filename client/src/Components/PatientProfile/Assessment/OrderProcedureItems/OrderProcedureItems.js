@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -17,30 +17,39 @@ import _ from "lodash";
 
 // import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 
-// import {
-//   texthandle,
-//   datehandle,
-//   cashtexthandle,
-//   cardtexthandle,
-//   chequetexthandle,
-//   checkcashhandaler,
-//   checkcardhandaler,
-//   checkcheckhandaler,
-//   Validations,
-//   countertexthandle,
-//   getCashiersAndShiftMAP
-// } from "./AdvanceModalHandaler";
+import OrderProcedureItemsEvent from "./OrderProcedureItemsEvent";
 
 // import AlgaehLoader from "../Wrapper/fullPageLoader";
 // import { getAmountFormart } from "../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
-class OrderProcedureItems extends PureComponent {
+class OrderProcedureItems extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      inventory_location_id: null
+      inventory_location_id: null,
+      existing_new: "E",
+
+      item_id: null,
+      item_category_id: null,
+      item_group_id: null,
+      uom_id: null,
+      batchno: null,
+      expirydt: null,
+      barcode: null,
+      grn_no: null,
+      qtyhand: null,
+      unit_cost: null,
+
+      Procedure_items: [],
+      location_name: null,
+      location_type: null,
+      procedure_id: null,
+      location_id: null,
+      location_type: null,
+      patient_id: null,
+      episode_id: null
     };
     this.getDepartments();
   }
@@ -58,7 +67,6 @@ class OrderProcedureItems extends PureComponent {
               this.props.patient_profile[0].sub_department_id
             );
           });
-
           this.setState({
             inventory_location_id: Departmant_Location[0].inventory_location_id
           });
@@ -73,19 +81,16 @@ class OrderProcedureItems extends PureComponent {
     });
 
     if (
-      this.props.inventorylocations === undefined ||
-      this.props.inventorylocations.length === 0
+      this.props.inventoryitemlist === undefined ||
+      this.props.inventoryitemlist.length === 0
     ) {
-      this.props.getLocation({
-        uri: "/inventory/getInventoryLocation",
+      this.props.getItems({
+        uri: "/inventory/getItemMaster",
         module: "inventory",
-        data: {
-          location_status: "A"
-        },
         method: "GET",
         redux: {
-          type: "LOCATIONS_GET_DATA",
-          mappingName: "inventorylocations"
+          type: "ITEM_GET_DATA",
+          mappingName: "inventoryitemlist"
         }
       });
     }
@@ -95,7 +100,7 @@ class OrderProcedureItems extends PureComponent {
     this.props.onClose && this.props.onClose(e);
   };
 
-  render() {
+  componentDidMount() {
     debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
@@ -106,7 +111,57 @@ class OrderProcedureItems extends PureComponent {
               this.state.inventory_location_id
             );
           })
-        : null;
+        : [];
+
+    if (Location_name.length > 0) {
+      this.setState({
+        location_name: Location_name[0].location_description,
+        location_type: Location_name[0].location_type
+      });
+    }
+  }
+
+  componentWillReceiveProps() {
+    debugger;
+    let Location_name =
+      this.props.inventorylocations !== undefined &&
+      this.props.inventorylocations.length > 0
+        ? _.filter(this.props.inventorylocations, f => {
+            return (
+              f.hims_d_inventory_location_id ===
+              this.state.inventory_location_id
+            );
+          })
+        : [];
+
+    if (Location_name.length > 0) {
+      this.setState({
+        location_name: Location_name[0].location_description,
+        location_type: Location_name[0].location_type
+      });
+    }
+  }
+
+  texthandle(e) {
+    OrderProcedureItemsEvent().texthandle(this, e);
+  }
+
+  itemSearch() {
+    OrderProcedureItemsEvent().itemSearch(this);
+  }
+
+  quantityEvent(e) {
+    OrderProcedureItemsEvent().quantityEvent(this, e);
+  }
+
+  addItems() {
+    OrderProcedureItemsEvent().addItems(this);
+  }
+  SaveProcedureItems() {
+    OrderProcedureItemsEvent().SaveProcedureItems(this);
+  }
+  render() {
+    debugger;
 
     return (
       <React.Fragment>
@@ -167,8 +222,8 @@ class OrderProcedureItems extends PureComponent {
                         }}
                       />
                       <h6>
-                        {Location_name !== null
-                          ? Location_name[0].location_description
+                        {this.state.location_name
+                          ? this.state.location_name
                           : "Location Name"}
                       </h6>
                     </div>
@@ -186,18 +241,24 @@ class OrderProcedureItems extends PureComponent {
                             <label className="radio inline">
                               <input
                                 type="radio"
-                                name="ExistingNew"
-                                //  checked={this.state.all}
-                                // onChange={this.changeChecks.bind(this)}
+                                name="existing_new"
+                                value="E"
+                                checked={
+                                  this.state.existing_new === "E" ? true : false
+                                }
+                                onChange={this.texthandle.bind(this)}
                               />
                               <span>Existing</span>
                             </label>
                             <label className="radio inline">
                               <input
                                 type="radio"
-                                name="ExistingNew"
-                                // checked={this.state.sunday}
-                                // onChange={this.changeChecks.bind(this)}
+                                name="existing_new"
+                                value="N"
+                                checked={
+                                  this.state.existing_new === "N" ? true : false
+                                }
+                                onChange={this.texthandle.bind(this)}
                               />
                               <span>New</span>
                             </label>
@@ -210,7 +271,11 @@ class OrderProcedureItems extends PureComponent {
                               <AlgaehLabel
                                 label={{ forceLabel: "Search Items" }}
                               />
-                              <h6>----------</h6>
+                              <h6>
+                                {this.state.item_description
+                                  ? this.state.item_description
+                                  : "----------"}
+                              </h6>
                             </div>
                             <div className="col spotlightSearchIconBox">
                               <i
@@ -220,7 +285,7 @@ class OrderProcedureItems extends PureComponent {
                                   paddingLeft: 3,
                                   cursor: "pointer"
                                 }}
-                                //    onClick={SearchDetails.bind(this, this)}
+                                onClick={this.itemSearch.bind(this, this)}
                               />
                             </div>
                           </div>
@@ -234,9 +299,9 @@ class OrderProcedureItems extends PureComponent {
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "",
-                            value: "",
-                            events: {},
+                            name: "quantity",
+                            value: this.state.quantity,
+                            events: { onChange: this.quantityEvent.bind(this) },
                             option: {
                               type: "number"
                             }
@@ -246,6 +311,7 @@ class OrderProcedureItems extends PureComponent {
                           <button
                             className="btn btn-primary"
                             style={{ float: "right", marginTop: 19 }}
+                            onClick={this.addItems.bind(this)}
                           >
                             Add Item
                           </button>
@@ -258,45 +324,48 @@ class OrderProcedureItems extends PureComponent {
                         datavalidate="ExisitingNewItemsGrid"
                         columns={[
                           {
-                            fieldName: "actionCheck",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Select" }} />
-                            ),
-                            others: { maxWidth: 60, align: "center" }
-                          },
-                          {
-                            fieldName: "itemID",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Item Code" }}
-                              />
-                            ),
-                            others: { maxWidth: 100, align: "center" }
-                          },
-                          {
-                            fieldName: "ItemName",
+                            fieldName: "item_id",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Item Name" }}
                               />
-                            )
+                            ),
+                            displayTemplate: row => {
+                              let display =
+                                this.props.inventoryitemlist === undefined
+                                  ? []
+                                  : this.props.inventoryitemlist.filter(
+                                      f =>
+                                        f.hims_d_inventory_item_master_id ===
+                                        row.item_id
+                                    );
+
+                              return (
+                                <span>
+                                  {display !== undefined && display.length !== 0
+                                    ? display[0].item_description
+                                    : ""}
+                                </span>
+                              );
+                            },
+                            disabled: true
                           },
                           {
-                            fieldName: "QtyItem",
+                            fieldName: "quantity",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Qty" }} />
                             ),
                             others: { maxWidth: 80, align: "center" }
                           },
                           {
-                            fieldName: "BatchItem",
+                            fieldName: "batchno",
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Batch" }} />
                             ),
                             others: { maxWidth: 80, align: "center" }
                           },
                           {
-                            fieldName: "itemExpiry",
+                            fieldName: "expirydt",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Item Expiry" }}
@@ -305,7 +374,7 @@ class OrderProcedureItems extends PureComponent {
                             others: { maxWidth: 150, align: "center" }
                           },
                           {
-                            fieldName: "QtyHand",
+                            fieldName: "qtyhand",
                             label: (
                               <AlgaehLabel
                                 label={{ forceLabel: "Qty in Hand" }}
@@ -314,8 +383,8 @@ class OrderProcedureItems extends PureComponent {
                             others: { maxWidth: 150, align: "center" }
                           }
                         ]}
-                        keyId=""
-                        dataSource={{ data: [] }}
+                        keyId="actionCheck"
+                        dataSource={{ data: this.state.Procedure_items }}
                         isEditable={false}
                         paging={{ page: 0, rowsPerPage: 10 }}
                         events={{}}
@@ -330,7 +399,11 @@ class OrderProcedureItems extends PureComponent {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-12">
-                    <button type="button" className="btn btn-primary">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={this.SaveProcedureItems.bind(this)}
+                    >
                       Save
                     </button>
                     <button
@@ -356,14 +429,16 @@ class OrderProcedureItems extends PureComponent {
 function mapStateToProps(state) {
   return {
     patient_profile: state.patient_profile,
-    inventorylocations: state.inventorylocations
+    inventorylocations: state.inventorylocations,
+    inventoryitemlist: state.inventoryitemlist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
+      getItems: AlgaehActions
     },
     dispatch
   );
