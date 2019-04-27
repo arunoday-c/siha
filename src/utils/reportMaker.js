@@ -227,6 +227,17 @@ let algaehReportConfig = reportName => {
           left join hims_d_sub_department SD on E.sub_department_id=SD.hims_d_sub_department_id\
           where GP.year=? and GP.month=? and E.hospital_id=? and E.sub_department_id=?;",
         questionOrder: ["year", "month", "hospital_id", "sub_department_id"]
+      },
+      {
+        reportName: "procedureExistingItem",
+        reportQuery:
+          " select batchno,expirydt,barcode,qtyhand,qtypo,cost_uom,avgcost,\
+          last_purchase_cost,item_type,item_id,item_description,item_code from\
+          hims_m_inventory_item_location L inner join hims_d_item_master IM on L.item_id=IM.hims_d_item_master_id\
+          where inventory_location_id=? and item_id in (select item_id from  hims_d_procedure PH\
+          inner join hims_d_procedure_detail PD on PH.hims_d_procedure_id=PD.procedure_header_id\
+          where PH.service_id=? and PH.record_status='A') and L.record_status='A'  ",
+        questionOrder: ["inventory_location_id", "service_id"]
       }
     ]
   };

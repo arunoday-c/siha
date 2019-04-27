@@ -6,12 +6,10 @@ import { bindActionCreators } from "redux";
 // import moment from "moment";
 import "./OrderProcedureItems.css";
 import "../../../../styles/site.css";
+
 import {
   AlgaehLabel,
-  //   AlagehFormGroup,
-  //   AlagehAutoComplete,
-  //   AlgaehDateHandler,
-  AlagehAutoComplete,
+  AlagehFormGroup,
   AlgaehDataGrid,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
@@ -177,42 +175,87 @@ class OrderProcedureItems extends PureComponent {
                   </div>
                   <hr style={{ margin: "0rem" }} className="margin-bottom-15" />
                   <div className="row">
-                    <div className="col-6">
-                      <h4
-                        style={{
-                          marginTop: 32
-                        }}
-                      >
-                        Existing Items
-                      </h4>
-                    </div>
-                    <div className="col-6">
+                    <div className="col-12">
                       <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col-8" }}
-                          label={{ forceLabel: "Select Items", isImp: false }}
-                          selector={{
+                        <div className="col-2">
+                          {/* <label>Working Days</label> */}
+                          <div
+                            className="customRadio"
+                            style={{ marginTop: 21 }}
+                          >
+                            <label className="radio inline">
+                              <input
+                                type="radio"
+                                name="ExistingNew"
+                                //  checked={this.state.all}
+                                // onChange={this.changeChecks.bind(this)}
+                              />
+                              <span>Existing</span>
+                            </label>
+                            <label className="radio inline">
+                              <input
+                                type="radio"
+                                name="ExistingNew"
+                                // checked={this.state.sunday}
+                                // onChange={this.changeChecks.bind(this)}
+                              />
+                              <span>New</span>
+                            </label>
+                          </div>
+                        </div>
+
+                        <div className="col-4  margin-top-15">
+                          <div className="row spotlightSearchBox">
+                            <div className="col-lg-9">
+                              <AlgaehLabel
+                                label={{ forceLabel: "Search Items" }}
+                              />
+                              <h6>----------</h6>
+                            </div>
+                            <div className="col spotlightSearchIconBox">
+                              <i
+                                className="fas fa-search fa-lg"
+                                style={{
+                                  paddingTop: 17,
+                                  paddingLeft: 3,
+                                  cursor: "pointer"
+                                }}
+                                //    onClick={SearchDetails.bind(this, this)}
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <AlagehFormGroup
+                          div={{ className: "col-2 form-group" }}
+                          label={{
+                            forceLabel: "Qty",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
                             name: "",
-                            className: "select-fld",
-                            dataSource: {},
-                            others: {}
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "number"
+                            }
                           }}
                         />
-                        <div className="col">
-                          {" "}
+                        <div className="col-2">
                           <button
                             className="btn btn-primary"
                             style={{ float: "right", marginTop: 19 }}
                           >
-                            Add New Item
+                            Add Item
                           </button>
                         </div>
                       </div>
                     </div>
-                    <div className="col-6" id="ExisitingItemsGrid_Cntr">
+                    <div className="col-12" id="ExisitingNewItemsGrid_Cntr">
                       <AlgaehDataGrid
-                        id="ExisitingItemsGrid"
-                        datavalidate="ExisitingItemsGrid"
+                        id="ExisitingNewItemsGrid"
+                        datavalidate="ExisitingNewItemsGrid"
                         columns={[
                           {
                             fieldName: "actionCheck",
@@ -243,7 +286,7 @@ class OrderProcedureItems extends PureComponent {
                             label: (
                               <AlgaehLabel label={{ forceLabel: "Qty" }} />
                             ),
-                            others: { maxWidth: 50, align: "center" }
+                            others: { maxWidth: 80, align: "center" }
                           },
                           {
                             fieldName: "BatchItem",
@@ -259,7 +302,7 @@ class OrderProcedureItems extends PureComponent {
                                 label={{ forceLabel: "Item Expiry" }}
                               />
                             ),
-                            others: { maxWidth: 80, align: "center" }
+                            others: { maxWidth: 150, align: "center" }
                           },
                           {
                             fieldName: "QtyHand",
@@ -268,83 +311,13 @@ class OrderProcedureItems extends PureComponent {
                                 label={{ forceLabel: "Qty in Hand" }}
                               />
                             ),
-                            others: { maxWidth: 50, align: "center" }
+                            others: { maxWidth: 150, align: "center" }
                           }
                         ]}
                         keyId=""
                         dataSource={{ data: [] }}
                         isEditable={false}
-                        paging={{ page: 0, rowsPerPage: 5 }}
-                        events={{}}
-                        others={{}}
-                      />
-                    </div>
-                    <div className="col-6" id="NewItemsGrid_Cntr">
-                      <AlgaehDataGrid
-                        id="NewItemsGrid"
-                        datavalidate="NewItemsGrid"
-                        columns={[
-                          {
-                            fieldName: "actionCheck",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Select" }} />
-                            ),
-                            others: { maxWidth: 60, align: "center" }
-                          },
-                          {
-                            fieldName: "itemID",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Item Code" }}
-                              />
-                            ),
-                            others: { maxWidth: 100, align: "center" }
-                          },
-                          {
-                            fieldName: "ItemName",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Item Name" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "QtyItem",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Qty" }} />
-                            ),
-                            others: { maxWidth: 50, align: "center" }
-                          },
-                          {
-                            fieldName: "BatchItem",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Batch" }} />
-                            ),
-                            others: { maxWidth: 80, align: "center" }
-                          },
-                          {
-                            fieldName: "itemExpiry",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Item Expiry" }}
-                              />
-                            ),
-                            others: { maxWidth: 80, align: "center" }
-                          },
-                          {
-                            fieldName: "QtyHand",
-                            label: (
-                              <AlgaehLabel
-                                label={{ forceLabel: "Qty in Hand" }}
-                              />
-                            ),
-                            others: { maxWidth: 50, align: "center" }
-                          }
-                        ]}
-                        keyId=""
-                        dataSource={{ data: [] }}
-                        isEditable={false}
-                        paging={{ page: 0, rowsPerPage: 5 }}
+                        paging={{ page: 0, rowsPerPage: 10 }}
                         events={{}}
                         others={{}}
                       />
