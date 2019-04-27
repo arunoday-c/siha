@@ -96,7 +96,8 @@ export default function NewPackageEvent() {
         let InputObj = {
           service_type_id: $this.state.s_service_type,
           service_id: $this.state.s_service,
-          service_amount: $this.state.s_service_amount
+          service_amount: $this.state.s_service_amount,
+          qty: $this.state.qty
         };
 
         if ($this.state.hims_d_package_header_id !== null) {
@@ -104,7 +105,8 @@ export default function NewPackageEvent() {
             package_header_id: $this.state.hims_d_package_header_id,
             service_type_id: $this.state.s_service_type,
             service_id: $this.state.s_service,
-            service_amount: $this.state.s_service_amount
+            service_amount: $this.state.s_service_amount,
+            qty: $this.state.qty
           };
           insertPackage.push(InsertObj);
         }
@@ -127,7 +129,8 @@ export default function NewPackageEvent() {
           total_service_amount: total_service_amount,
           pl_amount: pl_amount,
           profit_loss: profit_loss,
-          insertPackage: insertPackage
+          insertPackage: insertPackage,
+          qty: 0
         });
       } else {
         swalMessage({

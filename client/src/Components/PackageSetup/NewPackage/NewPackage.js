@@ -41,7 +41,8 @@ class NewPackage extends PureComponent {
       package_type: "S",
       advance_percentage: 0,
       advance_amount: 0,
-      advance_type: "P"
+      advance_type: "P",
+      qty: 1
     };
   }
 
@@ -171,7 +172,10 @@ class NewPackage extends PureComponent {
               </div>
 
               <div className="popupInner">
-                <div className="col-12 popRightDiv">
+                <div
+                  className="col-12 popRightDiv"
+                  style={{ maxHeight: "76vh" }}
+                >
                   <div className="row">
                     <AlagehFormGroup
                       div={{ className: "col form-group" }}
@@ -250,8 +254,9 @@ class NewPackage extends PureComponent {
                         )}
                       </h6>
                     </div>
-
-                    <div className="customRadio">
+                  </div>
+                  <div className="row">
+                    <div className="col-4 customRadio form-group">
                       <label className="radio inline">
                         <input
                           type="radio"
@@ -280,88 +285,90 @@ class NewPackage extends PureComponent {
                     </div>
 
                     {this.state.package_type === "M" ? (
-                      <div>
-                        <AlagehFormGroup
-                          div={{ className: "col" }}
-                          label={{
-                            fieldName: "expiry_days",
-                            isImp:
-                              this.state.package_type === "M" ? true : false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "expiry_days",
-                            value: this.state.expiry_days,
-                            events: {
-                              onChange: this.texthandle.bind(this)
-                            },
-                            others: {
-                              type: "number"
-                            }
-                          }}
-                        />
-
-                        <AlagehAutoComplete
-                          div={{ className: "col" }}
-                          label={{
-                            fieldName: "advance_type",
-                            isImp:
-                              this.state.package_type === "M" ? true : false
-                          }}
-                          selector={{
-                            name: "advance_type",
-                            className: "select-fld",
-                            value: this.state.advance_type,
-                            dataSource: {
-                              textField: "name",
-                              valueField: "value",
-                              data: GlobalVariables.FORMAT_DISCOUNT
-                            },
-                            onChange: this.texthandle.bind(this)
-                          }}
-                        />
-
-                        {this.state.advance_type === "P" ? (
+                      <div className="col">
+                        <div className="row">
                           <AlagehFormGroup
-                            div={{ className: "col" }}
+                            div={{ className: "col form-group" }}
                             label={{
-                              forceLabel: "Advance %"
+                              fieldName: "expiry_days",
+                              isImp:
+                                this.state.package_type === "M" ? true : false
                             }}
                             textBox={{
-                              decimal: { allowNegative: false },
-                              value: this.state.advance_percentage,
                               className: "txt-fld",
-                              name: "advance_percentage",
-                              events: {
-                                onChange: this.discounthandle.bind(this)
-                              },
-                              others: {
-                                min: 0,
-                                max: 100
-                              }
-                            }}
-                          />
-                        ) : (
-                          <AlagehFormGroup
-                            div={{ className: "col" }}
-                            label={{
-                              forceLabel: "Advance Amount"
-                            }}
-                            textBox={{
-                              decimal: { allowNegative: false },
-                              value: this.state.advance_amount,
-                              className: "txt-fld",
-                              name: "advance_amount",
+                              name: "expiry_days",
+                              value: this.state.expiry_days,
                               events: {
                                 onChange: this.texthandle.bind(this)
                               },
                               others: {
-                                min: 0,
-                                max: 100
+                                type: "number"
                               }
                             }}
                           />
-                        )}
+
+                          <AlagehAutoComplete
+                            div={{ className: "col form-group" }}
+                            label={{
+                              fieldName: "advance_type",
+                              isImp:
+                                this.state.package_type === "M" ? true : false
+                            }}
+                            selector={{
+                              name: "advance_type",
+                              className: "select-fld",
+                              value: this.state.advance_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_DISCOUNT
+                              },
+                              onChange: this.texthandle.bind(this)
+                            }}
+                          />
+
+                          {this.state.advance_type === "P" ? (
+                            <AlagehFormGroup
+                              div={{ className: "col form-group" }}
+                              label={{
+                                forceLabel: "Advance %"
+                              }}
+                              textBox={{
+                                decimal: { allowNegative: false },
+                                value: this.state.advance_percentage,
+                                className: "txt-fld",
+                                name: "advance_percentage",
+                                events: {
+                                  onChange: this.discounthandle.bind(this)
+                                },
+                                others: {
+                                  min: 0,
+                                  max: 100
+                                }
+                              }}
+                            />
+                          ) : (
+                            <AlagehFormGroup
+                              div={{ className: "col form-group" }}
+                              label={{
+                                forceLabel: "Advance Amount"
+                              }}
+                              textBox={{
+                                decimal: { allowNegative: false },
+                                value: this.state.advance_amount,
+                                className: "txt-fld",
+                                name: "advance_amount",
+                                events: {
+                                  onChange: this.texthandle.bind(this)
+                                },
+                                others: {
+                                  min: 0,
+                                  max: 100
+                                }
+                              }}
+                            />
+                          )}
+                        </div>
                       </div>
                     ) : null}
                   </div>
@@ -413,6 +420,29 @@ class NewPackage extends PureComponent {
                           this.setState({
                             s_service: null
                           });
+                        }
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-2" }}
+                      label={{
+                        forceLabel: "Quantity",
+                        isImp: true
+                      }}
+                      textBox={{
+                        number: {
+                          allowNegative: false,
+                          thousandSeparator: ","
+                        },
+                        className: "txt-fld",
+                        name: "qty",
+                        value: this.state.qty,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        },
+                        others: {
+                          step: "1"
                         }
                       }}
                     />
@@ -509,6 +539,14 @@ class NewPackage extends PureComponent {
                                   </span>
                                 );
                               }
+                            },
+                            {
+                              fieldName: "qty",
+                              label: (
+                                <AlgaehLabel
+                                  label={{ forceLabel: "Quantity" }}
+                                />
+                              )
                             },
                             {
                               fieldName: "service_amount",

@@ -40,7 +40,8 @@ module.exports = {
             const IncludeValues = [
               "service_type_id",
               "service_id",
-              "service_amount"
+              "service_amount",
+              "qty"
             ];
             _mysql
               .executeQuery({
@@ -98,7 +99,7 @@ module.exports = {
             "select PH.hims_d_package_header_id,PH.package_code, PH.package_name, PH.package_amount,\
             PH.total_service_amount, PH.profit_loss,PH.pl_amount, PH.package_service_id, PH.package_type,\
             PH.expiry_days, PH.advance_type, PH.advance_amount, PH.advance_percentage,\
-            PD.hims_d_package_detail_id,PD.service_type_id,PD.service_id,PD.service_amount \
+            PD.hims_d_package_detail_id,PD.service_type_id,PD.service_id,PD.service_amount,PD.qty \
             from hims_d_package_header PH, hims_d_package_detail PD where \
             PH.hims_d_package_header_id=PD.package_header_id " +
             _strQry +
@@ -161,7 +162,8 @@ module.exports = {
                     "package_header_id",
                     "service_type_id",
                     "service_id",
-                    "service_amount"
+                    "service_amount",
+                    "qty"
                   ];
 
                   _mysql
