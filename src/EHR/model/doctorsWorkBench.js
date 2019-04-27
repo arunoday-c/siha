@@ -902,10 +902,10 @@ let getPatientProfile = (req, res, next) => {
     db.getConnection((error, connection) => {
       connection.query(
         "SELECT P.hims_d_patient_id,P.full_name,P.patient_code,P.vat_applicable,P.gender,P.date_of_birth,P.contact_number,N.nationality,\
-        PV.age_in_years,PV.age_in_months,PV.age_in_days,PE.payment_type,PE.updated_date as Encounter_Date \
-from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
-inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
-PV.hims_f_patient_visit_id=PE.visit_id where P.hims_d_patient_id=? and PE.episode_id=?;",
+        PV.age_in_years,PV.age_in_months,PV.age_in_days, PV.sub_department_id, PE.payment_type,PE.updated_date as Encounter_Date \
+        from ( (hims_f_patient P inner join hims_f_patient_encounter PE  on P.hims_d_patient_id=PE.patient_id)\
+        inner join hims_d_nationality N on N.hims_d_nationality_id=P.nationality_id ) inner join hims_f_patient_visit PV on \
+        PV.hims_f_patient_visit_id=PE.visit_id  where P.hims_d_patient_id=? and PE.episode_id=?;",
         [inputData.patient_id, inputData.episode_id],
         (error, result) => {
           releaseDBConnection(db, connection);

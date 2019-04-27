@@ -8,9 +8,14 @@ import OrderingServices from "../OrderingServices/OrderingServices";
 import "./OrderedList.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
-import { getCookie } from "../../../../utils/algaehApiCall";
+import {
+  getCookie,
+  algaehApiCall,
+  swalMessage
+} from "../../../../utils/algaehApiCall";
 import Options from "../../../../Options.json";
 import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
+import _ from "lodash";
 
 class OrderedList extends PureComponent {
   constructor(props) {
@@ -18,7 +23,8 @@ class OrderedList extends PureComponent {
 
     this.state = {
       isOpen: false,
-      isOpenItems: false
+      isOpenItems: false,
+      procedure_name: null
     };
   }
 
@@ -45,18 +51,38 @@ class OrderedList extends PureComponent {
           redux: {
             type: "ORDER_SERVICES_GET_DATA",
             mappingName: "orderedList"
-          },
-          afterSuccess: data => {}
+          }
         });
       }
     );
   }
 
-  ShowProcedureModel(e) {
-    this.setState({
-      ...this.state,
-      isOpenItems: !this.state.isOpenItems
+  ShowProcedureModel(row, e) {
+    algaehApiCall({
+      uri: "/serviceType/getProcedures",
+      method: "GET",
+      module: "masterSettings",
+      data: { service_id: row.services_id },
+      onSuccess: response => {
+        debugger;
+        if (response.data.success === true) {
+          let data = response.data.records;
+
+          this.setState({
+            ...this.state,
+            isOpenItems: !this.state.isOpenItems,
+            procedure_name: data[0].procedure_desc
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
+    // row.services_id
   }
 
   CloseProcedureModel(e) {
@@ -124,6 +150,7 @@ class OrderedList extends PureComponent {
   }
 
   render() {
+    debugger;
     return (
       <div className="hptl-phase1-ordering-services-form form-details margin-bottom-15">
         <div className="col-lg-12">
@@ -136,7 +163,6 @@ class OrderedList extends PureComponent {
                     fieldName: "actions",
                     label: <AlgaehLabel label={{ forceLabel: "Details" }} />,
                     displayTemplate: row => {
-                      debugger;
                       return (
                         <i
                           style={{
@@ -156,7 +182,7 @@ class OrderedList extends PureComponent {
                                 : "0.1"
                           }}
                           className="fas fa-eye"
-                          onClick={this.ShowProcedureModel.bind(this)}
+                          onClick={this.ShowProcedureModel.bind(this, row)}
                         />
                       );
                     },
@@ -306,7 +332,11 @@ class OrderedList extends PureComponent {
         <OrderProcedureItems
           show={this.state.isOpenItems}
           onClose={this.CloseProcedureModel.bind(this)}
-          inputsparameters={{}}
+          inputsparameters={{
+            patient_code: this.props.patient_profile[0].patient_code,
+            full_name: this.props.patient_profile[0].full_name,
+            procedure_name: this.state.procedure_name
+          }}
         />
       </div>
     );
@@ -317,7 +347,8 @@ function mapStateToProps(state) {
   return {
     servicetype: state.servicetype,
     serviceslist: state.serviceslist,
-    orderedList: state.orderedList
+    orderedList: state.orderedList,
+    patient_profile: state.patient_profile
   };
 }
 

@@ -15,6 +15,7 @@ import {
   AlgaehDataGrid,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
+import _ from "lodash";
 
 // import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 
@@ -34,17 +35,62 @@ import {
 
 // import AlgaehLoader from "../Wrapper/fullPageLoader";
 // import { getAmountFormart } from "../../utils/GlobalFunctions";
-// import {
-//   algaehApiCall,
-//   swalMessage,
-//   getCookie
-// } from "../../utils/algaehApiCall.js";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class OrderProcedureItems extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      inventory_location_id: null
+    };
+    this.getDepartments();
+  }
+  getDepartments() {
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+
+      method: "GET",
+      module: "masterSettings",
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const Departmant_Location = _.filter(response.data.records, f => {
+            return (
+              f.hims_d_sub_department_id ===
+              this.props.patient_profile[0].sub_department_id
+            );
+          });
+
+          this.setState({
+            inventory_location_id: Departmant_Location[0].inventory_location_id
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+
+    if (
+      this.props.inventorylocations === undefined ||
+      this.props.inventorylocations.length === 0
+    ) {
+      this.props.getLocation({
+        uri: "/inventory/getInventoryLocation",
+        module: "inventory",
+        data: {
+          location_status: "A"
+        },
+        method: "GET",
+        redux: {
+          type: "LOCATIONS_GET_DATA",
+          mappingName: "inventorylocations"
+        }
+      });
+    }
   }
 
   onClose = e => {
@@ -52,6 +98,18 @@ class OrderProcedureItems extends PureComponent {
   };
 
   render() {
+    debugger;
+    let Location_name =
+      this.props.inventorylocations !== undefined &&
+      this.props.inventorylocations.length > 0
+        ? _.filter(this.props.inventorylocations, f => {
+            return (
+              f.hims_d_inventory_location_id ===
+              this.state.inventory_location_id
+            );
+          })
+        : null;
+
     return (
       <React.Fragment>
         <div>
@@ -78,7 +136,7 @@ class OrderProcedureItems extends PureComponent {
                           : "Patient Code"}
                       </h6>
                     </div>
-                    <div className="col-4">
+                    <div className="col-3">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Patient Name"
@@ -98,12 +156,25 @@ class OrderProcedureItems extends PureComponent {
                         }}
                       />
                       <h6>
-                        {this.props.inputsparameters.full_name
-                          ? this.props.inputsparameters.full_name
+                        {this.props.inputsparameters.procedure_name
+                          ? this.props.inputsparameters.procedure_name
                           : "Procedure Name"}
                       </h6>
                     </div>
-                  </div>{" "}
+
+                    <div className="col-3">
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Location Name"
+                        }}
+                      />
+                      <h6>
+                        {Location_name !== null
+                          ? Location_name[0].location_description
+                          : "Location Name"}
+                      </h6>
+                    </div>
+                  </div>
                   <hr style={{ margin: "0rem" }} className="margin-bottom-15" />
                   <div className="row">
                     <div className="col-6">
@@ -311,15 +382,15 @@ class OrderProcedureItems extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    patient_profile: state.patient_profile
+    patient_profile: state.patient_profile,
+    inventorylocations: state.inventorylocations
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getShifts: AlgaehActions,
-      getCounters: AlgaehActions
+      getLocation: AlgaehActions
     },
     dispatch
   );

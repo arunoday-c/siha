@@ -53,7 +53,7 @@ export default function ProceduresEvent() {
         let insertProcedure = $this.state.insertProcedure;
 
         let InputObj = {
-          s_service: $this.state.service_id,
+          service_id: $this.state.s_service,
           item_id: $this.state.item_id,
           qty: $this.state.qty
         };
@@ -62,7 +62,7 @@ export default function ProceduresEvent() {
           let InsertObj = {
             procedure_header_id: $this.state.hims_d_procedure_id,
             item_id: $this.state.item_id,
-            s_service: $this.state.service_id,
+            service_id: $this.state.s_service,
             qty: $this.state.qty
           };
           insertProcedure.push(InsertObj);

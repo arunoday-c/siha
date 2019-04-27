@@ -195,110 +195,176 @@ module.exports = {
   addProcedure: (req, res, next) => {
     let input = req.body;
     const _mysql = new algaehMysql();
+    const utilities = new algaehUtilities();
+    utilities.logger().log("input: ", input);
 
-    _mysql
-      .executeQueryWithTransaction({
-        query:
-          "INSERT INTO `hims_d_services` (service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
+    if (input.service_id === null) {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO `hims_d_services` (service_code,cpt_code,service_name,arabic_service_name,service_desc,sub_department_id,\
         hospital_id,service_type_id,procedure_type,standard_fee,followup_free_fee,followup_paid_fee,\
         discount,vat_applicable,vat_percent,service_status,effective_start_date,effectice_end_date,\
         created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
-        values: [
-          input.service_code,
-          input.cpt_code,
-          input.service_name,
-          input.arabic_service_name,
-          input.service_desc,
-          input.sub_department_id,
-          input.hospital_id,
-          input.service_type_id,
-          input.procedure_type,
-          input.standard_fee,
-          input.followup_free_fee,
-          input.followup_paid_fee,
-          input.discount,
-          input.vat_applicable,
-          input.vat_percent,
-          input.service_status,
-          input.effective_start_date,
-          input.effectice_end_date,
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date()
-        ],
+          values: [
+            input.service_code,
+            input.cpt_code,
+            input.service_name,
+            input.arabic_service_name,
+            input.service_desc,
+            input.sub_department_id,
+            input.hospital_id,
+            input.service_type_id,
+            input.procedure_type,
+            input.standard_fee,
+            input.followup_free_fee,
+            input.followup_paid_fee,
+            input.discount,
+            input.vat_applicable,
+            input.vat_percent,
+            input.service_status,
+            input.effective_start_date,
+            input.effectice_end_date,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ],
 
-        printQuery: true
-      })
-      .then(result => {
-        if (result.insertId > 0) {
-          _mysql
-            .executeQuery({
-              query:
-                "INSERT INTO `hims_d_procedure` (procedure_code,procedure_desc,service_id,procedure_type,\
+          printQuery: true
+        })
+        .then(result => {
+          if (result.insertId > 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "INSERT INTO `hims_d_procedure` (procedure_code,procedure_desc,service_id,procedure_type,\
           created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?,?)",
-              values: [
-                input.procedure_code,
-                input.procedure_desc,
-                result.insertId,
-                input.procedure_type,
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date(),
-                req.userIdentity.algaeh_d_app_user_id,
-                new Date()
-              ],
+                values: [
+                  input.procedure_code,
+                  input.procedure_desc,
+                  result.insertId,
+                  input.procedure_type,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date(),
+                  req.userIdentity.algaeh_d_app_user_id,
+                  new Date()
+                ],
 
-              printQuery: true
-            })
-            .then(pro_head_result => {
-              if (pro_head_result.insertId > 0) {
-                let IncludeValues = ["item_id", "service_id", "qty"];
+                printQuery: true
+              })
+              .then(pro_head_result => {
+                if (pro_head_result.insertId > 0) {
+                  let IncludeValues = ["item_id", "service_id", "qty"];
 
-                _mysql
-                  .executeQuery({
-                    query: "INSERT INTO hims_d_procedure_detail(??) VALUES ?",
-                    values: input.ProcedureDetail,
-                    includeValues: IncludeValues,
-                    extraValues: {
-                      procedure_header_id: pro_head_result.insertId,
-                      created_by: req.userIdentity.algaeh_d_app_user_id,
-                      created_date: new Date(),
-                      updated_by: req.userIdentity.algaeh_d_app_user_id,
-                      updated_date: new Date()
-                    },
-                    bulkInsertOrUpdate: true,
-                    printQuery: true
-                  })
+                  _mysql
+                    .executeQuery({
+                      query: "INSERT INTO hims_d_procedure_detail(??) VALUES ?",
+                      values: input.ProcedureDetail,
+                      includeValues: IncludeValues,
+                      extraValues: {
+                        procedure_header_id: pro_head_result.insertId,
+                        created_by: req.userIdentity.algaeh_d_app_user_id,
+                        created_date: new Date(),
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
+                        updated_date: new Date()
+                      },
+                      bulkInsertOrUpdate: true,
+                      printQuery: true
+                    })
 
-                  .then(detail_result => {
-                    _mysql.commitTransaction(() => {
-                      _mysql.releaseConnection();
-                      req.records = detail_result;
-                      next();
+                    .then(detail_result => {
+                      _mysql.commitTransaction(() => {
+                        _mysql.releaseConnection();
+                        req.records = detail_result;
+                        next();
+                      });
+                    })
+                    .catch(e => {
+                      _mysql.rollBackTransaction(() => {
+                        next(e);
+                      });
                     });
-                  })
-                  .catch(e => {
-                    _mysql.rollBackTransaction(() => {
-                      next(e);
-                    });
-                  });
-              }
+                }
 
-              //----------------
-            })
-            .catch(e => {
-              _mysql.rollBackTransaction(() => {
-                next(e);
+                //----------------
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
               });
-            });
-        }
-      })
-      .catch(e => {
-        console.log("error", e);
-        _mysql.rollBackTransaction(() => {
-          next(e);
+          }
+        })
+        .catch(e => {
+          console.log("error", e);
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
         });
-      });
+    } else {
+      _mysql
+        .executeQueryWithTransaction({
+          query:
+            "INSERT INTO `hims_d_procedure` (procedure_code,procedure_desc,service_id,procedure_type,\
+          created_by,created_date,updated_by,updated_date) values (?,?,?,?,?,?,?,?)",
+          values: [
+            input.procedure_code,
+            input.procedure_desc,
+            input.service_id,
+            input.procedure_type,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date()
+          ],
+
+          printQuery: true
+        })
+        .then(pro_head_result => {
+          utilities.logger().log("pro_head_result: ");
+          if (pro_head_result.insertId > 0) {
+            let IncludeValues = ["item_id", "service_id", "qty"];
+
+            _mysql
+              .executeQuery({
+                query: "INSERT INTO hims_d_procedure_detail(??) VALUES ?",
+                values: input.ProcedureDetail,
+                includeValues: IncludeValues,
+                extraValues: {
+                  procedure_header_id: pro_head_result.insertId,
+                  created_by: req.userIdentity.algaeh_d_app_user_id,
+                  created_date: new Date(),
+                  updated_by: req.userIdentity.algaeh_d_app_user_id,
+                  updated_date: new Date()
+                },
+                bulkInsertOrUpdate: true,
+                printQuery: true
+              })
+
+              .then(detail_result => {
+                utilities.logger().log("detail_result: ");
+                _mysql.commitTransaction(() => {
+                  _mysql.releaseConnection();
+                  req.records = detail_result;
+                  next();
+                });
+              })
+              .catch(e => {
+                _mysql.rollBackTransaction(() => {
+                  next(e);
+                });
+              });
+          }
+
+          //----------------
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    }
   },
 
   getProcedures: (req, res, next) => {
@@ -326,7 +392,8 @@ module.exports = {
             inner join hims_d_services SR on PD.service_id=SR.hims_d_services_id\
             where PH.record_status='A' and PD.record_status='A'" +
             strQry +
-            " order by hims_d_procedure_id desc;"
+            " order by hims_d_procedure_id desc;",
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();
