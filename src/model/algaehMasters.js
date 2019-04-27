@@ -241,7 +241,6 @@ let getRoleBaseActiveModules = (req, res, next) => {
       role_id = req.query.role_id;
     }
 
-
     if (
       (req.userIdentity.role_type == "SU" &&
         req.userIdentity.user_type == "SU" &&
@@ -2122,6 +2121,55 @@ let assignComponents = (req, res, next) => {
     next(e);
   }
 };
+
+//created by irfan:
+let method1 = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  //let modules = req.body.inputs;
+
+  _mysql
+    .executeQueryWithTransaction({
+      query:
+        "select bank_id, customer_name, amount, queue from aa_bank where bank_id=1",
+
+      printQuery: true
+    })
+    .then(result => {
+      if (result.length > 0) {
+        let new_amount = result[0]["amount"] + 100;
+
+        //console.log("started waiting at:", new Date());
+        setTimeout(console.log("started waiting at:", new Date()), 2000);
+        _mysql
+          .executeQuery({
+            query: " update aa_bank set amount=? ,queue=? where bank_id=1",
+            values: [new_amount, req.userIdentity.algaeh_d_app_user_id],
+            printQuery: true
+          })
+          .then(res2 => {
+            _mysql.commitTransaction(() => {
+              console.log("ended waiting at:", new Date());
+              _mysql.releaseConnection();
+              req.records = res2;
+              next();
+            });
+          })
+          .catch(e => {
+            console.log("error", e);
+            _mysql.rollBackTransaction(() => {
+              next(e);
+            });
+          });
+      }
+    })
+    .catch(e => {
+      console.log("error", e);
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    });
+};
 module.exports = {
   addAlgaehGroupMAster,
   addAlgaehRoleMAster,
@@ -2143,5 +2191,6 @@ module.exports = {
   deleteModuleForRole,
   assignScreens,
   assignComponents,
-  updateAlgaehModules
+  updateAlgaehModules,
+  method1
 };

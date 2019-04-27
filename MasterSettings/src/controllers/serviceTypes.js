@@ -4,7 +4,8 @@ import {
   getServiceType,
   getServices,
   addServices,
-  updateServices
+  updateServices,
+  addProcedure
 } from "../models/serviceTypes";
 
 export default () => {
@@ -39,6 +40,14 @@ export default () => {
   });
 
   api.get("/getService", getServices, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+  api.post("/addProcedure", addProcedure, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,
