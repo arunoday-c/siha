@@ -196,5 +196,51 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  addProcedureItems: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+      _mysql
+        .executeQuery({
+          query:
+            "INSERT INTO hims_f_procedure_items(procedure_id,location_id,\
+            location_type,item_id,item_category_id,item_group_id,uom_id,batchno,\
+            expirydt,barcode,grn_no,unit_cost,quantity,extended_cost,created_by,\
+            created_date,updated_by,updated_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          values: [
+            input.procedure_id,
+            input.location_id,
+            input.location_type,
+            input.item_id,
+            input.item_category_id,
+            input.item_group_id,
+            input.uom_id,
+            input.batchno,
+            input.expirydt,
+            input.barcode,
+            input.grn_no,
+            input.unit_cost,
+            input.quantity,
+            input.extended_cost,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id
+          ]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
