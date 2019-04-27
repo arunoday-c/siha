@@ -357,6 +357,10 @@ class BasicSubjective extends Component {
           </div>
           <div className="">
             <ul className="rightActionIcon">
+              {" "}
+              <li>
+                <i className="fas fa-heartbeat" />
+              </li>{" "}
               <li>
                 <i className="fas fa-allergies" />
               </li>{" "}
