@@ -50,3 +50,27 @@
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px; }
+
+.rightActionIcon {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 45px;
+  float: right; }
+  .rightActionIcon li {
+    list-style: none;
+    margin: 0 0 5px 0;
+    padding: 0;
+    background: #fff;
+    font-size: 1.5rem;
+    border-radius: 7px 0 0 7px;
+    text-align: center;
+    width: 45px;
+    line-height: 45px;
+    height: 45px;
+    /* float: right; */
+    display: block; }
+    .rightActionIcon li:hover {
+      color: #fff;
+      background: #00a796;
+      cursor: pointer; }
