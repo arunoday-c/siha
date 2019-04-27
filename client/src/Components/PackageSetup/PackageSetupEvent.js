@@ -27,6 +27,12 @@ export default function PackageSetupEvent() {
                   profit_loss: firstRecordSet.profit_loss,
                   pl_amount: firstRecordSet.pl_amount,
 
+                  package_type: firstRecordSet.package_type,
+                  expiry_days: firstRecordSet.expiry_days,
+                  advance_type: firstRecordSet.advance_type,
+                  advance_amount: firstRecordSet.advance_amount,
+                  advance_percentage: firstRecordSet.advance_percentage,
+
                   PakageDetail: g.getSource()
                 };
               })

@@ -233,6 +233,23 @@ export default function NewPackageEvent() {
           }
         }
       });
+    },
+
+    discounthandle: ($this, e) => {
+      debugger;
+      let advance_percentage = 0,
+        advance_amount = 0;
+      advance_percentage =
+        e.target.value === undefined ? "" : parseFloat(e.target.value);
+      advance_amount =
+        e.target.value === ""
+          ? 0
+          : (parseFloat($this.state.package_amount) * advance_percentage) / 100;
+
+      $this.setState({
+        advance_percentage: advance_percentage,
+        advance_amount: advance_amount
+      });
     }
   };
 }
