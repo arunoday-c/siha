@@ -361,6 +361,9 @@ class BasicSubjective extends Component {
                 <i className="fas fa-allergies" />
               </li>{" "}
               <li>
+                <i className="fas fa-utensils" />
+              </li>{" "}
+              <li>
                 <i className="fas fa-pills" />
               </li>{" "}
               <li>
