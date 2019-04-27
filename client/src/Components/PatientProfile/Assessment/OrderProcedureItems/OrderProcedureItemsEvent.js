@@ -4,6 +4,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 //   AlgaehValidation,
 //   AlgaehOpenContainer
 // } from "../../../utils/GlobalFunctions";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -48,6 +49,7 @@ export default function OrderProcedureItemsEvent() {
         expirydt: $this.state.expirydt,
         barcode: $this.state.barcode,
         grn_no: $this.state.grn_no,
+        grn_number: $this.state.grn_no,
         qtyhand: $this.state.qtyhand,
         unit_cost: $this.state.unit_cost,
         extended_cost: $this.state.extended_cost,
@@ -64,11 +66,12 @@ export default function OrderProcedureItemsEvent() {
       });
     },
     SaveProcedureItems: $this => {
+      AlgaehLoader({ show: true });
       algaehApiCall({
-        uri: "/orderAndPreApproval/addProcedureItems",
+        uri: "/inventory/addProcedureItems",
+        module: "inventory",
         data: $this.state,
         method: "POST",
-        module: "clicnicalDesk",
         onSuccess: response => {
           debugger;
           if (response.data.success === true) {
@@ -82,6 +85,7 @@ export default function OrderProcedureItemsEvent() {
               module: "inventory",
               data: $this.state,
               onSuccess: response => {
+                AlgaehLoader({ show: false });
                 if (response.data.success === true) {
                   swalMessage({
                     title: "Saved successfully . .",
@@ -90,15 +94,19 @@ export default function OrderProcedureItemsEvent() {
                 }
               },
               onFailure: err => {
+                AlgaehLoader({ show: false });
                 swalMessage({
                   title: err.message,
                   type: "error"
                 });
               }
             });
+          } else {
+            AlgaehLoader({ show: false });
           }
         },
         onFailure: error => {
+          AlgaehLoader({ show: false });
           swalMessage({
             title: error.message,
             type: "error"

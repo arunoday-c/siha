@@ -824,5 +824,59 @@ module.exports = {
         next(e);
       });
     }
+  },
+
+  addProcedureItems: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.body;
+
+      const IncludeValues = [
+        "patient_id",
+        "episode_id",
+        "procedure_id",
+        "location_id",
+        "location_type",
+        "item_id",
+        "item_category_id",
+        "item_group_id",
+        "uom_id",
+        "batchno",
+        "expirydt",
+        "barcode",
+        "grn_no",
+        "unit_cost",
+        "quantity",
+        "qtyhand",
+        "extended_cost"
+      ];
+
+      _mysql
+        .executeQuery({
+          query: "INSERT INTO hims_f_procedure_items(??) VALUES ?",
+          values: input.Procedure_items,
+          includeValues: IncludeValues,
+          extraValues: {
+            created_by: req.userIdentity.algaeh_d_app_user_id,
+            created_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            updated_date: new Date()
+          },
+          bulkInsertOrUpdate: true,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
 };
