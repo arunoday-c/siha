@@ -3,9 +3,9 @@ import "./examination.css";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
-import Modal from "@material-ui/core/Modal";
 import {
   getAllDepartmentBased,
   getPatientPhysicalExamination
@@ -294,215 +294,204 @@ class Examination extends Component {
       <React.Fragment>
         {/* Examination Modal Start*/}
 
-        <Modal open={this.state.openExamnModal}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
+        <AlgaehModalPopUp
+          events={{
+            onClose: this.handleClose.bind(this)
+          }}
+          title="Add Examination"
+          openPopup={this.state.openExamnModal}
+        >
+          <div className="popupInner">
+            <div className="col-lg-12">
               <div className="row">
-                <div className="col-lg-8">
-                  <h4>Add Examination</h4>
-                </div>
-                <div className="col-lg-4">
-                  <button type="button" className="" onClick={this.handleClose}>
-                    <i className="fas fa-times-circle" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="popupInner">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-3 popLeftDiv">
-                    <label className="switch">
-                      <input
-                        className="switch-input"
-                        type="checkbox"
-                        onChange={this.changeGeneralOrSpecific.bind(this)}
-                      />
-                      <span
-                        className="switch-label"
-                        data-off="Specific"
-                        data-on="General"
-                      />
-                      <span className="switch-handle" />
-                    </label>
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-12" }}
-                        label={{
-                          fieldName: "exmn_type"
-                        }}
-                        selector={{
-                          name: "hims_d_physical_examination_header_id",
-                          className: "select-fld",
-                          value: this.state
-                            .hims_d_physical_examination_header_id,
-                          dataSource: {
-                            textField: "description",
-                            valueField: "hims_d_physical_examination_header_id",
-                            data: _specility
-                          },
-                          onChange: this.onChangePhysicalExamination.bind(this),
-                          onClear: this.onClearPhysicalExam.bind(this)
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-12 margin-top-15" }}
-                        label={{
-                          fieldName: "exmn_desc"
-                        }}
-                        selector={{
-                          name: "hims_d_physical_examination_details_id",
-                          className: "select-fld",
-                          value: this.state
-                            .hims_d_physical_examination_details_id,
-                          dataSource: {
-                            textField: "detail_description",
-                            valueField:
-                              "hims_d_physical_examination_details_id",
-                            data: this.state.specilityDetail
-                          },
-                          onChange: this.onChangePhysicalExamitionDetail.bind(
-                            this
-                          ),
-                          onClear: this.onClearPhysicalExamDetail.bind(this)
-                        }}
-                      />
-
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-12 margin-top-15" }}
-                        label={{
-                          fieldName: "exmn"
-                        }}
-                        selector={{
-                          name: "hims_d_physical_examination_subdetails_id",
-                          className: "select-fld",
-                          value: this.state
-                            .hims_d_physical_examination_subdetails_id,
-                          dataSource: {
-                            textField: "sub_detail_description",
-                            valueField:
-                              "hims_d_physical_examination_subdetails_id",
-                            data: this.state.specilitySubDetail
-                          },
-                          onChange: this.dropDownHandle.bind(this)
-                        }}
-                      />
-
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-12 margin-top-15" }}
-                        label={{
-                          fieldName: "comments",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "examination_comment",
-                          others: {
-                            multiline: true,
-                            rows: "4"
-                          },
-                          value: this.state.examination_comment,
-                          events: {
-                            onChange: this.texthandle.bind(this)
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="col-lg-9 popRightDiv">
-                    <h6>List of Examinations</h6>
-                    <hr />
-                    <AlgaehDataGrid
-                      id="patient-exam-grid"
-                      columns={[
-                        {
-                          fieldName: "header_description",
-                          label: "Examination Type",
-                          disabled: true
-                        },
-                        {
-                          fieldName: "detail_description",
-                          label: "Examination Description",
-                          disabled: true
-                        },
-                        {
-                          fieldName: "subdetail_description",
-                          label: "Examination",
-                          disabled: true
-                        },
-
-                        {
-                          fieldName: "comments",
-                          label: "Comments",
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  value: row.comments,
-                                  className: "txt-fld",
-                                  name: "comments",
-                                  events: {
-                                    onChange: this.texthandler.bind(this, row)
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        }
-                      ]}
-                      keyId="hims_f_episode_examination_id"
-                      dataSource={{
-                        data: this.props.all_patient_examinations
+                <div className="col-lg-3 popLeftDiv">
+                  <label className="switch">
+                    <input
+                      className="switch-input"
+                      type="checkbox"
+                      onChange={this.changeGeneralOrSpecific.bind(this)}
+                    />
+                    <span
+                      className="switch-label"
+                      data-off="Specific"
+                      data-on="General"
+                    />
+                    <span className="switch-handle" />
+                  </label>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12" }}
+                      label={{
+                        fieldName: "exmn_type"
                       }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      events={{
-                        onDelete: this.deletePatientExamn.bind(this),
-                        onEdit: row => {},
-                        onDone: this.updateExamination.bind(this)
+                      selector={{
+                        name: "hims_d_physical_examination_header_id",
+                        className: "select-fld",
+                        value: this.state.hims_d_physical_examination_header_id,
+                        dataSource: {
+                          textField: "description",
+                          valueField: "hims_d_physical_examination_header_id",
+                          data: _specility
+                        },
+                        onChange: this.onChangePhysicalExamination.bind(this),
+                        onClear: this.onClearPhysicalExam.bind(this)
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12 margin-top-15" }}
+                      label={{
+                        fieldName: "exmn_desc"
+                      }}
+                      selector={{
+                        name: "hims_d_physical_examination_details_id",
+                        className: "select-fld",
+                        value: this.state
+                          .hims_d_physical_examination_details_id,
+                        dataSource: {
+                          textField: "detail_description",
+                          valueField: "hims_d_physical_examination_details_id",
+                          data: this.state.specilityDetail
+                        },
+                        onChange: this.onChangePhysicalExamitionDetail.bind(
+                          this
+                        ),
+                        onClear: this.onClearPhysicalExamDetail.bind(this)
+                      }}
+                    />
+
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12 margin-top-15" }}
+                      label={{
+                        fieldName: "exmn"
+                      }}
+                      selector={{
+                        name: "hims_d_physical_examination_subdetails_id",
+                        className: "select-fld",
+                        value: this.state
+                          .hims_d_physical_examination_subdetails_id,
+                        dataSource: {
+                          textField: "sub_detail_description",
+                          valueField:
+                            "hims_d_physical_examination_subdetails_id",
+                          data: this.state.specilitySubDetail
+                        },
+                        onChange: this.dropDownHandle.bind(this)
+                      }}
+                    />
+
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-12 margin-top-15" }}
+                      label={{
+                        fieldName: "comments",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "examination_comment",
+                        others: {
+                          multiline: true,
+                          rows: "4"
+                        },
+                        value: this.state.examination_comment,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        }
                       }}
                     />
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className=" popupFooter">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-4">
-                    <button
-                      onClick={this.addExaminationToPatient.bind(this)}
-                      type="button"
-                      className="btn btn-primary"
-                    >
-                      Add Examination
-                    </button>
-                    <button
-                      onClick={this.resetExmnState.bind(this)}
-                      type="button"
-                      className="btn btn-default"
-                    >
-                      Clear
-                    </button>
-                  </div>
-                  <div className="col-lg-8">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={this.handleClose}
-                    >
-                      Close
-                    </button>
-                  </div>
+
+                <div className="col-lg-9 popRightDiv">
+                  <h6>List of Examinations</h6>
+                  <hr />
+                  <AlgaehDataGrid
+                    id="patient-exam-grid"
+                    columns={[
+                      {
+                        fieldName: "header_description",
+                        label: "Examination Type",
+                        disabled: true
+                      },
+                      {
+                        fieldName: "detail_description",
+                        label: "Examination Description",
+                        disabled: true
+                      },
+                      {
+                        fieldName: "subdetail_description",
+                        label: "Examination",
+                        disabled: true
+                      },
+
+                      {
+                        fieldName: "comments",
+                        label: "Comments",
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.comments,
+                                className: "txt-fld",
+                                name: "comments",
+                                events: {
+                                  onChange: this.texthandler.bind(this, row)
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      }
+                    ]}
+                    keyId="hims_f_episode_examination_id"
+                    dataSource={{
+                      data: this.props.all_patient_examinations
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    events={{
+                      onDelete: this.deletePatientExamn.bind(this),
+                      onEdit: row => {},
+                      onDone: this.updateExamination.bind(this)
+                    }}
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </Modal>
+          <div className=" popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-4">
+                  <button
+                    onClick={this.addExaminationToPatient.bind(this)}
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    Add Examination
+                  </button>
+                  <button
+                    onClick={this.resetExmnState.bind(this)}
+                    type="button"
+                    className="btn btn-default"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="col-lg-8">
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.handleClose}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AlgaehModalPopUp>
 
         {/* Examination Modal End */}
         <div className="portlet portlet-bordered margin-top-15">

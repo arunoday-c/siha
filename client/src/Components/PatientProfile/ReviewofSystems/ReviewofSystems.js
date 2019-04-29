@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Modal from "@material-ui/core/Modal";
 import {
   AlgaehDataGrid,
   AlagehAutoComplete,
   AlagehFormGroup,
-  AlgaehLabel
+  AlgaehLabel,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -204,198 +204,190 @@ class ReviewofSystems extends Component {
     return (
       <React.Fragment>
         {/* ROS Modal Start */}
-        <Modal open={this.state.openROSModal}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
+        <AlgaehModalPopUp
+          events={{
+            onClose: this.handleClose.bind(this)
+          }}
+          title="Add Review Systems"
+          openPopup={this.state.openROSModal}
+        >
+          <div className="popupInner">
+            <div className="col-lg-12">
               <div className="row">
-                <div className="col-lg-8">
-                  <h4>Add Review Systems</h4>
-                </div>
-                <div className="col-lg-4">
-                  <button type="button" className="" onClick={this.handleClose}>
-                    <i className="fas fa-times-circle" />
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="popupInner">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-4 popLeftDiv">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-12" }}
-                        label={{
-                          forceLabel: "Review System",
-                          fieldName: "sample"
-                        }}
-                        selector={{
-                          name: "hims_d_review_of_system_header_id",
-                          className: "select-fld",
-                          value: this.state.hims_d_review_of_system_header_id,
-                          dataSource: {
-                            textField: "description",
-                            valueField: "hims_d_review_of_system_header_id",
-                            data: this.props.allros
-                          },
-                          onChange: this.rosDropDownHandle.bind(this)
-                        }}
-                      />
+                <div className="col-lg-4 popLeftDiv">
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12" }}
+                      label={{
+                        forceLabel: "Review System",
+                        fieldName: "sample"
+                      }}
+                      selector={{
+                        name: "hims_d_review_of_system_header_id",
+                        className: "select-fld",
+                        value: this.state.hims_d_review_of_system_header_id,
+                        dataSource: {
+                          textField: "description",
+                          valueField: "hims_d_review_of_system_header_id",
+                          data: this.props.allros
+                        },
+                        onChange: this.rosDropDownHandle.bind(this)
+                      }}
+                    />
 
-                      <AlagehAutoComplete
-                        div={{ className: "col-lg-12 margin-top-15" }}
-                        label={{
-                          forceLabel: "Symptoms",
-                          fieldName: "sample"
-                        }}
-                        selector={{
-                          name: "hims_d_review_of_system_details_id",
-                          className: "select-fld",
-                          value: this.state.hims_d_review_of_system_details_id,
-                          dataSource: {
-                            textField: "detail_description",
-                            valueField: "hims_d_review_of_system_details_id",
-                            data: this.props.allrosdetails
-                          },
-                          onChange: this.dropDownHandle.bind(this)
-                        }}
-                      />
+                    <AlagehAutoComplete
+                      div={{ className: "col-lg-12 margin-top-15" }}
+                      label={{
+                        forceLabel: "Symptoms",
+                        fieldName: "sample"
+                      }}
+                      selector={{
+                        name: "hims_d_review_of_system_details_id",
+                        className: "select-fld",
+                        value: this.state.hims_d_review_of_system_details_id,
+                        dataSource: {
+                          textField: "detail_description",
+                          valueField: "hims_d_review_of_system_details_id",
+                          data: this.props.allrosdetails
+                        },
+                        onChange: this.dropDownHandle.bind(this)
+                      }}
+                    />
 
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-12 margin-top-15" }}
-                        label={{
-                          forceLabel: "Remarks",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "ros_comment",
-                          others: {
-                            multiline: true,
-                            rows: "4"
-                          },
-                          value: this.state.ros_comment,
-                          events: {
-                            onChange: this.texthandle.bind(this)
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                  <div className="col-lg-8 popRightDiv">
-                    <h6> List of Review Systems</h6>
-                    <hr />
-                    <div id="ros-grid-cntr">
-                      <AlgaehDataGrid
-                        id="ros-grid"
-                        columns={[
-                          {
-                            fieldName: "header_description",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "System" }} />
-                            ),
-                            disabled: true
-                          },
-                          {
-                            fieldName: "detail_description",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Symptoms" }} />
-                            ),
-                            disabled: true
-                          },
-                          {
-                            fieldName: "comment",
-                            label: (
-                              <AlgaehLabel label={{ forceLabel: "Remarks" }} />
-                            ),
-                            editorTemplate: row => {
-                              return (
-                                <AlagehFormGroup
-                                  div={{}}
-                                  textBox={{
-                                    value: row.comment,
-                                    className: "txt-fld",
-                                    name: "comment",
-                                    events: {
-                                      onChange: this.texthandler.bind(this, row)
-                                    }
-                                  }}
-                                />
-                              );
-                            }
-                          }
-                        ]}
-                        keyId="ros"
-                        dataSource={{
-                          data: this.props.patientros
-                        }}
-                        isEditable={true}
-                        paging={{ page: 0, rowsPerPage: 10 }}
-                        events={{
-                          onDelete: this.deleteROS.bind(this),
-                          onEdit: row => {},
-                          onDone: this.updatePatientROS.bind(this)
-                        }}
-                      />
-                    </div>
-                    <div className="row">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-12 margin-top-15" }}
-                        label={{
-                          forceLabel: "Overall comments",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "comment",
-                          others: {
-                            multiline: true,
-                            rows: "4"
-                          },
-                          value: this.state.comment,
-                          events: {
-                            onChange: this.texthandle.bind(this)
-                          }
-                        }}
-                      />
-                    </div>
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-12 margin-top-15" }}
+                      label={{
+                        forceLabel: "Remarks",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "ros_comment",
+                        others: {
+                          multiline: true,
+                          rows: "4"
+                        },
+                        value: this.state.ros_comment,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        }
+                      }}
+                    />
                   </div>
                 </div>
-              </div>
-            </div>
-            <div className=" popupFooter">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-4">
-                    <button
-                      onClick={this.addPatientROS.bind(this)}
-                      type="button"
-                      className="btn btn-primary"
-                    >
-                      Add to Review List
-                    </button>
-                    <button
-                      onClick={this.resetPatientROS.bind(this)}
-                      type="button"
-                      className="btn btn-default"
-                    >
-                      Clear
-                    </button>
+                <div className="col-lg-8 popRightDiv">
+                  <h6> List of Review Systems</h6>
+                  <hr />
+                  <div id="ros-grid-cntr">
+                    <AlgaehDataGrid
+                      id="ros-grid"
+                      columns={[
+                        {
+                          fieldName: "header_description",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "System" }} />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "detail_description",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Symptoms" }} />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "comment",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "Remarks" }} />
+                          ),
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{}}
+                                textBox={{
+                                  value: row.comment,
+                                  className: "txt-fld",
+                                  name: "comment",
+                                  events: {
+                                    onChange: this.texthandler.bind(this, row)
+                                  }
+                                }}
+                              />
+                            );
+                          }
+                        }
+                      ]}
+                      keyId="ros"
+                      dataSource={{
+                        data: this.props.patientros
+                      }}
+                      isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onDelete: this.deleteROS.bind(this),
+                        onEdit: row => {},
+                        onDone: this.updatePatientROS.bind(this)
+                      }}
+                    />
                   </div>
-                  <div className="col-lg-8">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={this.handleClose}
-                    >
-                      Close
-                    </button>
+                  <div className="row">
+                    <AlagehFormGroup
+                      div={{ className: "col-lg-12 margin-top-15" }}
+                      label={{
+                        forceLabel: "Overall comments",
+                        isImp: false
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "comment",
+                        others: {
+                          multiline: true,
+                          rows: "4"
+                        },
+                        value: this.state.comment,
+                        events: {
+                          onChange: this.texthandle.bind(this)
+                        }
+                      }}
+                    />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </Modal>
+          <div className=" popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-4">
+                  <button
+                    onClick={this.addPatientROS.bind(this)}
+                    type="button"
+                    className="btn btn-primary"
+                  >
+                    Add to Review List
+                  </button>
+                  <button
+                    onClick={this.resetPatientROS.bind(this)}
+                    type="button"
+                    className="btn btn-default"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="col-lg-8">
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.handleClose}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AlgaehModalPopUp>
 
         {/* ROS Modal End */}
 
