@@ -9,7 +9,7 @@ import { texthandle, saveTemplate, rtehandle } from "./RadTemplateEvents";
 
 import "./RadTemplate.css";
 import "./../../../styles/site.css";
-import { Modal } from "../../Wrapper/algaehWrapper";
+import { AlgaehModalPopUp } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 
 export default class RadTemplate extends PureComponent {
@@ -50,110 +50,96 @@ export default class RadTemplate extends PureComponent {
   render() {
     return (
       <React.Fragment>
-        <Modal open={this.props.openTemplate}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
-              <div className="row">
-                <div className="col-lg-8">
-                  <h4> Radiology Template Editor</h4>
-                </div>
-                <div className="col-lg-4">
-                  <button
-                    type="button"
-                    className=""
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
-                  >
-                    <i className="fas fa-times-circle" />
-                  </button>
-                </div>
-              </div>
-            </div>
-            {/* <div className="popupInner">
+        <AlgaehModalPopUp
+          events={{
+            onClose: this.onClose.bind(this)
+          }}
+          title="Radiology Template Editor"
+          openPopup={this.props.openTemplate}
+        >
+          {/* <div className="popupInner">
               <div className="col-12 popRightDiv"> */}
-            <MyContext.Consumer>
-              {context => (
-                <div className="hptl-phase1-add-rad-tamplate-form">
-                  <div className="popupInner">
-                    <div className="popRightDiv">
-                      <div className="row">
-                        <AlagehFormGroup
-                          div={{ className: "col-lg-6" }}
-                          label={{
-                            fieldName: "template_name",
-                            isImp: true
+          <MyContext.Consumer>
+            {context => (
+              <div className="hptl-phase1-add-rad-tamplate-form">
+                <div className="popupInner">
+                  <div className="popRightDiv">
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-6" }}
+                        label={{
+                          fieldName: "template_name",
+                          isImp: true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "template_name",
+                          value: this.state.template_name,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          }
+                        }}
+                      />
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-12 editor">
+                        <RichTextEditor
+                          value={this.state.template_html}
+                          onChange={rtehandle.bind(this, this, context)}
+                          modules={{
+                            toolbar: [
+                              [{ header: [1, 2, false] }],
+                              [
+                                "bold",
+                                "italic",
+                                "underline",
+                                "strike",
+                                "blockquote",
+                                { list: "ordered" },
+                                { list: "bullet" },
+                                { indent: "-1" },
+                                { indent: "+1" },
+                                "image",
+                                { color: [] },
+                                { background: [] }
+                              ]
+                            ]
                           }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "template_name",
-                            value: this.state.template_name,
-                            events: {
-                              onChange: texthandle.bind(this, this, context)
-                            }
-                          }}
+                          style={{ minHeight: "40vh" }}
                         />
                       </div>
-                      <div className="row">
-                        <div className="col-lg-12 editor">
-                          <RichTextEditor
-                            value={this.state.template_html}
-                            onChange={rtehandle.bind(this, this, context)}
-                            modules={{
-                              toolbar: [
-                                [{ header: [1, 2, false] }],
-                                [
-                                  "bold",
-                                  "italic",
-                                  "underline",
-                                  "strike",
-                                  "blockquote",
-                                  { list: "ordered" },
-                                  { list: "bullet" },
-                                  { indent: "-1" },
-                                  { indent: "+1" },
-                                  "image",
-                                  { color: [] },
-                                  { background: [] }
-                                ]
-                              ]
-                            }}
-                            style={{ minHeight: "40vh" }}
-                          />
-                        </div>
-                      </div>
                     </div>
                   </div>
+                </div>
 
-                  <div className="popupFooter">
-                    <div className="col-lg-12">
-                      <div className="row">
-                        <div className="col-lg-4"> &nbsp;</div>
+                <div className="popupFooter">
+                  <div className="col-lg-12">
+                    <div className="row">
+                      <div className="col-lg-4"> &nbsp;</div>
 
-                        <div className="col-lg-8">
-                          <button
-                            className="btn btn-primary"
-                            onClick={saveTemplate.bind(this, this, context)}
-                          >
-                            Save
-                          </button>
-                          <button
-                            className="btn btn-default"
-                            onClick={e => {
-                              this.onClose(e);
-                            }}
-                          >
-                            Close
-                          </button>
-                        </div>
+                      <div className="col-lg-8">
+                        <button
+                          className="btn btn-primary"
+                          onClick={saveTemplate.bind(this, this, context)}
+                        >
+                          Save
+                        </button>
+                        <button
+                          className="btn btn-default"
+                          onClick={e => {
+                            this.onClose(e);
+                          }}
+                        >
+                          Close
+                        </button>
                       </div>
                     </div>
                   </div>
                 </div>
-              )}
-            </MyContext.Consumer>
-          </div>
-        </Modal>
+              </div>
+            )}
+          </MyContext.Consumer>
+        </AlgaehModalPopUp>
       </React.Fragment>
     );
   }

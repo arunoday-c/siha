@@ -1,11 +1,9 @@
 import FormGroup from "./formGroup";
 import Label from "./label";
-import Selector from "./selector";
+// import Selector from "./selector";
 import DateHandler from "./datePicker";
 import AutoComplete from "./autoComplete";
 import DataGrid from "./grid";
-import Tooltip from "@material-ui/core/Tooltip";
-import Modal from "@material-ui/core/Modal";
 import AlgaehSearch from "./globalSearch";
 import AlgaehModalPopUp from "./modulePopUp";
 import algaehErrorBoundary from "./algaehErrorBoundary";
@@ -13,7 +11,7 @@ import "hijri-date";
 
 const AlgaehLabel = Label;
 const AlagehFormGroup = FormGroup;
-const AlgaehSelector = Selector;
+// const AlgaehSelector = Selector;
 const AlgaehDateHandler = DateHandler;
 const AlagehAutoComplete = AutoComplete;
 const AlgaehDataGrid = DataGrid;
@@ -29,13 +27,11 @@ const AlgaehConvertToHijri = date => {
 export {
   AlgaehLabel,
   AlagehFormGroup,
-  AlgaehSelector,
+  // AlgaehSelector,
   AlgaehDateHandler,
   AlgaehConvertToHijri,
   AlagehAutoComplete,
   AlgaehDataGrid,
-  Tooltip,
-  Modal,
   AlgaehGlobalSearch,
   AlgaehModalPopUp,
   AlgaehErrorBoundary

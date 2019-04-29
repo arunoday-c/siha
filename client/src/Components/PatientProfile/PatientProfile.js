@@ -41,14 +41,15 @@ import Allergies from "./Allergies/Allergies";
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
-const selected_module = getCookie("module_id");
-const active_modules = JSON.parse(
-  AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
-);
 
 class PatientProfile extends Component {
   constructor(props) {
     super(props);
+    this.selected_module = getCookie("module_id");
+    this.active_modules = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
+    );
+
     allergyPopUp = props.open_allergy_popup;
     this.state = {
       pageDisplay: "subjective",
@@ -63,6 +64,7 @@ class PatientProfile extends Component {
       UCAFData: undefined,
       openAlergy: false
     };
+
     getPatientProfile(this);
     getPatientVitals(this);
     getPatientAllergies(this);
@@ -226,8 +228,8 @@ class PatientProfile extends Component {
     );
   }
   render() {
-    const module_plan = _.filter(active_modules, f => {
-      return f.module_id === parseInt(selected_module);
+    const module_plan = _.find(this.active_modules, f => {
+      return f.module_id === parseInt(this.selected_module);
     });
     const _pat_profile =
       this.props.patient_profile !== undefined &&
@@ -382,7 +384,7 @@ class PatientProfile extends Component {
           </div>
         </div>
         <div className="patientTopNav box-shadow-normal">
-          {module_plan[0].module_plan === "G" ? (
+          {module_plan === undefined || module_plan.module_plan === "G" ? (
             <ul className="nav">
               <li className="nav-item">
                 <span
@@ -642,7 +644,7 @@ class PatientProfile extends Component {
           )}
         </div>
         <div className="patientContentArea">
-          {module_plan[0].module_plan === "G" ? (
+          {module_plan === undefined || module_plan.module_plan === "G" ? (
             this.state.pageDisplay === "overview" ? (
               <Overview />
             ) : this.state.pageDisplay === "subjective" ? (

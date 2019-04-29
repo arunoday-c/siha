@@ -4,7 +4,7 @@ import PatientDetails from "./PatientDetails/PatientDetails";
 import RequestDetails from "./RequestDetails/RequestDetails";
 import ApprovalDetails from "./ApprovalDetails/ApprovalDetails";
 import Attachments from "./Attachments/Attachments";
-import { Modal } from "../../Wrapper/algaehWrapper";
+import { AlgaehModalPopUp } from "../../Wrapper/algaehWrapper";
 import "./../../../styles/site.css";
 import "./PreApprovalStatus.css";
 import MyContext from "../../../utils/MyContext.js";
@@ -26,76 +26,59 @@ export default class PreApprovalStatus extends PureComponent {
     return (
       <React.Fragment>
         <div>
-          <Modal open={this.props.open}>
-            <div className="algaeh-modal">
-              <MyContext.Provider
-                value={{
-                  state: this.state,
-                  updateState: obj => {
-                    this.setState({ ...obj });
-                  }
-                }}
-              >
-                <div className="popupHeader">
+          <AlgaehModalPopUp
+            events={{
+              onClose: this.onClose.bind(this)
+            }}
+            title="Cancel Working Hours"
+            openPopup={this.props.open}
+          >
+            <MyContext.Provider
+              value={{
+                state: this.state,
+                updateState: obj => {
+                  this.setState({ ...obj });
+                }
+              }}
+            >
+              <div className="col-lg-12 popupInner" style={{ height: "75vh" }}>
+                <div className="main_div" position="fixed">
+                  <PatientDetails
+                    selected_services={this.props.selected_services}
+                  />
+                  <RequestDetails
+                    selected_services={this.props.selected_services}
+                  />
+                  <ApprovalDetails
+                    selected_services={this.props.selected_services}
+                  />
+                  <Attachments />
+                </div>
+              </div>
+              <div className=" popupFooter">
+                <div className="col-lg-12">
                   <div className="row">
-                    <div className="col-lg-8">
-                      <h4>{this.props.HeaderCaption}</h4>
-                    </div>
-                    <div className="col-lg-4">
+                    <div className="col-lg-12">
                       <button
-                        type="button"
-                        className=""
+                        className="btn btn-primary"
+                        onClick={UpdatePreApproval.bind(this, this)}
+                      >
+                        Update
+                      </button>
+                      <button
+                        className="btn btn-default"
                         onClick={e => {
                           this.onClose(e);
                         }}
                       >
-                        <i className="fas fa-times-circle" />
+                        Close
                       </button>
                     </div>
                   </div>
                 </div>
-                <div
-                  className="col-lg-12 popupInner"
-                  style={{ height: "75vh" }}
-                >
-                  <div className="main_div" position="fixed">
-                    <PatientDetails
-                      selected_services={this.props.selected_services}
-                    />
-                    <RequestDetails
-                      selected_services={this.props.selected_services}
-                    />
-                    <ApprovalDetails
-                      selected_services={this.props.selected_services}
-                    />
-                    <Attachments />
-                  </div>
-                </div>
-                <div className=" popupFooter">
-                  <div className="col-lg-12">
-                    <div className="row">
-                      <div className="col-lg-12">
-                        <button
-                          className="btn btn-primary"
-                          onClick={UpdatePreApproval.bind(this, this)}
-                        >
-                          Update
-                        </button>
-                        <button
-                          className="btn btn-default"
-                          onClick={e => {
-                            this.onClose(e);
-                          }}
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </MyContext.Provider>
-            </div>
-          </Modal>
+              </div>
+            </MyContext.Provider>
+          </AlgaehModalPopUp>
         </div>
       </React.Fragment>
     );
