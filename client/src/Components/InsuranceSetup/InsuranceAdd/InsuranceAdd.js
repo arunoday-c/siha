@@ -5,7 +5,7 @@ import { bindActionCreators } from "redux";
 
 import "./../../../styles/site.css";
 import "./InsuranceAdd.css";
-import { Modal } from "../../Wrapper/algaehWrapper";
+import { AlgaehModalPopUp } from "../../Wrapper/algaehWrapper";
 
 import InsuranceProvider from "../InsuranceProvider/InsuranceProvider";
 import SubInsurance from "../SubInsurance/SubInsurance";
@@ -166,125 +166,14 @@ class InsuranceAdd extends PureComponent {
       <React.Fragment>
         <div className="hptl-phase1-add-insurance-form">
           {this.props.addfunctionality === true ? (
-            <Modal open={this.props.open}>
-              <div className="algaeh-modal">
-                <div className="popupHeader">
-                  <div className="row">
-                    <div className="col-lg-8">
-                      <h4>{this.props.HeaderCaption}</h4>
-                    </div>
-                    <div className="col-lg-4">
-                      <button
-                        type="button"
-                        className=""
-                        onClick={e => {
-                          this.onClose(e);
-                        }}
-                      >
-                        <i className="fas fa-times-circle" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <div className="popupInner">
-                  <MyContext.Provider
-                    value={{
-                      state: this.state,
-                      updateState: obj => {
-                        this.setState({ ...obj });
-                      }
-                    }}
-                  >
-                    <div className="stepper-set">
-                      <Stepper
-                        activeStep={activeStep}
-                        alternativeLabel
-                        style={{
-                          backgroundColor: "#DFFFFD",
-                          borderBottom: "1px solid #E6E6E6"
-                        }}
-                      >
-                        {steps.map(label => {
-                          return (
-                            <Step key={label}>
-                              <StepLabel>{label}</StepLabel>
-                            </Step>
-                          );
-                        })}
-                      </Stepper>
-                    </div>
-                    {this.state.activeStep === steps.length ? null : (
-                      <div>{getStepContent(activeStep, this)}</div>
-                    )}
-                  </MyContext.Provider>
-                </div>
-
-                <div className="popupFooter">
-                  <div className="col-lg-12">
-                    <div className="row">
-                      <div className="col-lg-4">
-                        <button
-                          disabled={activeStep === 0}
-                          onClick={handleBack.bind(this, this)}
-                          type="button"
-                          className="btn btn-default button-left"
-                        >
-                          Previous
-                        </button>
-                      </div>
-                      <div className="col-lg-8">
-                        <button
-                          type="button"
-                          className="btn btn-primary"
-                          onClick={handleNext.bind(this, this, "Next")}
-                        >
-                          {activeStep === steps.length - 1
-                            ? "Finish"
-                            : "Save & Next"}
-                        </button>
-                        <button
-                          onClick={handleNext.bind(this, this, "Close")}
-                          type="button"
-                          className="btn btn-default"
-                        >
-                          Save & Close
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-default"
-                          onClick={e => {
-                            this.onClose(e);
-                          }}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Modal>
-          ) : (
-            <Modal open={this.props.open}>
-              <div className="algaeh-modal">
-                <div className="popupHeader">
-                  <div className="row">
-                    <div className="col-lg-8">
-                      <h4>{this.props.HeaderCaption}</h4>
-                    </div>
-                    <div className="col-lg-4">
-                      <button
-                        type="button"
-                        className=""
-                        onClick={e => {
-                          this.onClose(e);
-                        }}
-                      >
-                        <i className="fas fa-times-circle" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+            <AlgaehModalPopUp
+              events={{
+                onClose: this.onClose.bind(this)
+              }}
+              title={this.props.HeaderCaption}
+              openPopup={this.props.open}
+            >
+              <div className="popupInner">
                 <MyContext.Provider
                   value={{
                     state: this.state,
@@ -293,21 +182,60 @@ class InsuranceAdd extends PureComponent {
                     }
                   }}
                 >
-                  <div className="popupInner">
-                    {getStepContent(this.props.opencomponent, this)}
+                  <div className="stepper-set">
+                    <Stepper
+                      activeStep={activeStep}
+                      alternativeLabel
+                      style={{
+                        backgroundColor: "#DFFFFD",
+                        borderBottom: "1px solid #E6E6E6"
+                      }}
+                    >
+                      {steps.map(label => {
+                        return (
+                          <Step key={label}>
+                            <StepLabel>{label}</StepLabel>
+                          </Step>
+                        );
+                      })}
+                    </Stepper>
                   </div>
+                  {this.state.activeStep === steps.length ? null : (
+                    <div>{getStepContent(activeStep, this)}</div>
+                  )}
+                </MyContext.Provider>
+              </div>
 
-                  <div className="popupFooter">
-                    <div className="col-lg-12">
-                      {this.props.opencomponent === "1" ? (
-                        <button
-                          onClick={updatedata.bind(this, this)}
-                          type="button"
-                          className="btn btn-primary"
-                        >
-                          Update
-                        </button>
-                      ) : null}
+              <div className="popupFooter">
+                <div className="col-lg-12">
+                  <div className="row">
+                    <div className="col-lg-4">
+                      <button
+                        disabled={activeStep === 0}
+                        onClick={handleBack.bind(this, this)}
+                        type="button"
+                        className="btn btn-default button-left"
+                      >
+                        Previous
+                      </button>
+                    </div>
+                    <div className="col-lg-8">
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={handleNext.bind(this, this, "Next")}
+                      >
+                        {activeStep === steps.length - 1
+                          ? "Finish"
+                          : "Save & Next"}
+                      </button>
+                      <button
+                        onClick={handleNext.bind(this, this, "Close")}
+                        type="button"
+                        className="btn btn-default"
+                      >
+                        Save & Close
+                      </button>
                       <button
                         type="button"
                         className="btn btn-default"
@@ -315,13 +243,57 @@ class InsuranceAdd extends PureComponent {
                           this.onClose(e);
                         }}
                       >
-                        Close
+                        Cancel
                       </button>
                     </div>
                   </div>
-                </MyContext.Provider>
+                </div>
               </div>
-            </Modal>
+            </AlgaehModalPopUp>
+          ) : (
+            <AlgaehModalPopUp
+              events={{
+                onClose: this.onClose.bind(this)
+              }}
+              title={this.props.HeaderCaption}
+              openPopup={this.props.open}
+            >
+              <MyContext.Provider
+                value={{
+                  state: this.state,
+                  updateState: obj => {
+                    this.setState({ ...obj });
+                  }
+                }}
+              >
+                <div className="popupInner">
+                  {getStepContent(this.props.opencomponent, this)}
+                </div>
+
+                <div className="popupFooter">
+                  <div className="col-lg-12">
+                    {this.props.opencomponent === "1" ? (
+                      <button
+                        onClick={updatedata.bind(this, this)}
+                        type="button"
+                        className="btn btn-primary"
+                      >
+                        Update
+                      </button>
+                    ) : null}
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </MyContext.Provider>
+            </AlgaehModalPopUp>
           )}
         </div>
       </React.Fragment>

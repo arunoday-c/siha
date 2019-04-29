@@ -226,7 +226,7 @@ class PatientProfile extends Component {
     );
   }
   render() {
-    const module_plan = _.filter(active_modules, f => {
+    const module_plan = _.find(active_modules, f => {
       return f.module_id === parseInt(selected_module);
     });
     const _pat_profile =
@@ -382,7 +382,7 @@ class PatientProfile extends Component {
           </div>
         </div>
         <div className="patientTopNav box-shadow-normal">
-          {module_plan[0].module_plan === "G" ? (
+          {module_plan === undefined || module_plan.module_plan === "G" ? (
             <ul className="nav">
               <li className="nav-item">
                 <span
@@ -642,7 +642,7 @@ class PatientProfile extends Component {
           )}
         </div>
         <div className="patientContentArea">
-          {module_plan[0].module_plan === "G" ? (
+          {module_plan === undefined || module_plan.module_plan === "G" ? (
             this.state.pageDisplay === "overview" ? (
               <Overview />
             ) : this.state.pageDisplay === "subjective" ? (

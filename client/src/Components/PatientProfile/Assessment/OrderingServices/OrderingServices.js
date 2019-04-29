@@ -8,7 +8,7 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehAutoComplete,
-  Modal
+  AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -213,520 +213,487 @@ class OrderingServices extends Component {
   render() {
     return (
       <div className="hptl-phase1-ordering-services-form">
-        <Modal open={this.props.open}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
+        <AlgaehModalPopUp
+          events={{
+            onClose: this.onClose.bind(this)
+          }}
+          title="Order Services"
+          openPopup={this.props.open}
+        >
+          <div className="popupInner">
+            <div className="col-lg-12">
               <div className="row">
-                <div className="col-lg-8">
-                  <h4>Order Services</h4>
-                </div>
-                <div className="col-lg-4">
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "sel_srvc_typ"
+                  }}
+                  selector={{
+                    name: "s_service_type",
+                    className: "select-fld",
+                    value: this.state.s_service_type,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "service_type"
+                          : "arabic_service_type",
+                      valueField: "hims_d_service_type_id",
+                      data: this.props.servicetype
+                    },
+                    onChange: serviceTypeHandeler.bind(this, this)
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "sel_srvc"
+                  }}
+                  selector={{
+                    name: "s_service",
+                    className: "select-fld",
+                    value: this.state.s_service,
+                    dataSource: {
+                      textField:
+                        this.state.selectedLang === "en"
+                          ? "service_name"
+                          : "arabic_service_name",
+                      valueField: "hims_d_services_id",
+                      data: this.props.services
+                    },
+                    onChange: serviceHandeler.bind(this, this)
+                  }}
+                />
+
+                <AlagehAutoComplete
+                  div={{ className: "col-lg-3" }}
+                  label={{
+                    fieldName: "tst_type"
+                  }}
+                  selector={{
+                    name: "test_type",
+                    className: "select-fld",
+                    value: this.state.test_type,
+                    dataSource: {
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.FORMAT_PRIORITY
+                    },
+                    onChange: texthandle.bind(this, this)
+                  }}
+                />
+
+                <div className="col-lg-3">
                   <button
-                    type="button"
-                    className=""
-                    onClick={e => {
-                      this.onClose(e);
-                    }}
+                    className="btn btn-primary"
+                    style={{ marginTop: "24px" }}
+                    onClick={ProcessService.bind(this, this)}
+                    disabled={this.state.addNewService}
                   >
-                    <i className="fas fa-times-circle" />
+                    Add New Service
                   </button>
                 </div>
               </div>
-            </div>
+              <div className="row">
+                <div className="col-md-10 col-lg-12" id="doctorOrder">
+                  <AlgaehDataGrid
+                    id="Services_Ordering"
+                    columns={[
+                      {
+                        fieldName: "service_type_id",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "service_type_id" }}
+                          />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.servicetype === undefined
+                              ? []
+                              : this.props.servicetype.filter(
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
 
-            <div className="popupInner">
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_type
+                                  : display[0].arabic_service_type
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.servicetype === undefined
+                              ? []
+                              : this.props.servicetype.filter(
+                                  f =>
+                                    f.hims_d_service_type_id ===
+                                    row.service_type_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_type
+                                  : display[0].arabic_service_type
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "services_id",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "services_id" }} />
+                        ),
+                        displayTemplate: row => {
+                          let display =
+                            this.props.serviceslist === undefined
+                              ? []
+                              : this.props.serviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          let display =
+                            this.props.serviceslist === undefined
+                              ? []
+                              : this.props.serviceslist.filter(
+                                  f => f.hims_d_services_id === row.services_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== null && display.length !== 0
+                                ? this.state.selectedLang === "en"
+                                  ? display[0].service_name
+                                  : display[0].arabic_service_name
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "unit_cost",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "unit_cost" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "quantity",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "quantity" }} />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.quantity,
+                                className: "txt-fld",
+                                name: "quantity",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  onBlur: calculateAmount.bind(this, this, row),
+                                  onFocus: e => {
+                                    e.target.oldvalue = e.target.value;
+                                  }
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "gross_amount",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "gross_amount" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "discount_percentage",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "discount_percentage" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                decimal: { allowNegative: false },
+                                value: row.discount_percentage,
+                                className: "txt-fld",
+                                name: "discount_percentage",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  onBlur: calculateAmount.bind(this, this, row),
+                                  onFocus: e => {
+                                    e.target.oldvalue = e.target.value;
+                                  }
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "discount_amout",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "discount_amout" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                decimal: { allowNegative: false },
+                                value: row.discount_amout,
+                                className: "txt-fld",
+                                name: "discount_amout",
+                                events: {
+                                  onChange: onchangegridcol.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  onBlur: calculateAmount.bind(this, this, row),
+                                  onFocus: e => {
+                                    e.target.oldvalue = e.target.value;
+                                  }
+                                }
+                              }}
+                            />
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "net_amout",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "net_amout" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "insurance_yesno",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "insurance" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.insurance_yesno === "Y"
+                            ? "Covered"
+                            : "Not Covered";
+                        },
+                        editorTemplate: row => {
+                          return row.insurance_yesno === "Y"
+                            ? "Covered"
+                            : "Not Covered";
+                        }
+                      },
+                      {
+                        fieldName: "pre_approval",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "pre_approval" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <span>
+                              {row.pre_approval === "Y"
+                                ? "Required"
+                                : "Not Required"}
+                              {row.pre_approval === "Y" ? (
+                                <button
+                                  className="btn btn-primary btn-rounded"
+                                  onClick={this.playclick.bind(this)}
+                                >
+                                  Apply
+                                </button>
+                              ) : null}
+                            </span>
+                          );
+                        },
+                        editorTemplate: row => {
+                          return (
+                            <span>
+                              {row.pre_approval === "Y"
+                                ? "Required"
+                                : "Not Required"}
+                              {row.pre_approval === "Y" ? (
+                                <button
+                                  className="btn btn-primary btn-rounded"
+                                  onClick={this.playclick.bind(this)}
+                                >
+                                  Apply
+                                </button>
+                              ) : null}
+                            </span>
+                          );
+                        }
+                      },
+                      {
+                        fieldName: "total_tax",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "total_tax" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "patient_payable",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "patient_payable" }}
+                          />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "company_payble",
+                        label: (
+                          <AlgaehLabel
+                            label={{ fieldName: "company_payble" }}
+                          />
+                        ),
+                        disabled: true
+                      }
+                    ]}
+                    keyId="service_type_id"
+                    dataSource={{
+                      data: this.state.orderservicesdata
+                    }}
+                    isEditable={true}
+                    paging={{ page: 0, rowsPerPage: 10 }}
+                    byForceEvents={true}
+                    events={{
+                      onDelete: deleteServices.bind(this, this),
+                      onEdit: EditGrid.bind(this, this),
+                      onCancel: EditGrid.bind(this, this),
+                      onDone: updateBillDetail.bind(this, this)
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="row GridTotalDetails">
+                <div className="col-lg-5" style={{ textAlign: "right" }}>
+                  <div className="row">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sub_ttl"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "dsct_amt"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.discount_amount)}</h5>
+                    </div>
+
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "net_ttl"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.net_total)}</h5>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="col-lg-7">
+                  <div className="row">
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "pat_payable"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "co_payable"
+                        }}
+                      />
+                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                    </div>
+                    <div className="col">
+                      <AlgaehLabel
+                        label={{
+                          fieldName: "sec_co_payable"
+                        }}
+                      />
+                      <h5>
+                        {getAmountFormart(this.state.sec_company_paybale)}
+                      </h5>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr />
+            </div>
+            <div className="popupFooter">
               <div className="col-lg-12">
                 <div className="row">
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "sel_srvc_typ"
-                    }}
-                    selector={{
-                      name: "s_service_type",
-                      className: "select-fld",
-                      value: this.state.s_service_type,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.props.servicetype
-                      },
-                      onChange: serviceTypeHandeler.bind(this, this)
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "sel_srvc"
-                    }}
-                    selector={{
-                      name: "s_service",
-                      className: "select-fld",
-                      value: this.state.s_service,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_name"
-                            : "arabic_service_name",
-                        valueField: "hims_d_services_id",
-                        data: this.props.services
-                      },
-                      onChange: serviceHandeler.bind(this, this)
-                    }}
-                  />
-
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "tst_type"
-                    }}
-                    selector={{
-                      name: "test_type",
-                      className: "select-fld",
-                      value: this.state.test_type,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.FORMAT_PRIORITY
-                      },
-                      onChange: texthandle.bind(this, this)
-                    }}
-                  />
-
-                  <div className="col-lg-3">
-                    <button
-                      className="btn btn-primary"
-                      style={{ marginTop: "24px" }}
-                      onClick={ProcessService.bind(this, this)}
-                      disabled={this.state.addNewService}
-                    >
-                      Add New Service
-                    </button>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="col-md-10 col-lg-12" id="doctorOrder">
-                    <AlgaehDataGrid
-                      id="Services_Ordering"
-                      columns={[
-                        {
-                          fieldName: "service_type_id",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "service_type_id" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.servicetype === undefined
-                                ? []
-                                : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_type
-                                    : display[0].arabic_service_type
-                                  : ""}
-                              </span>
-                            );
-                          },
-                          editorTemplate: row => {
-                            let display =
-                              this.props.servicetype === undefined
-                                ? []
-                                : this.props.servicetype.filter(
-                                    f =>
-                                      f.hims_d_service_type_id ===
-                                      row.service_type_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== undefined && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_type
-                                    : display[0].arabic_service_type
-                                  : ""}
-                              </span>
-                            );
-                          }
-                        },
-
-                        {
-                          fieldName: "services_id",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "services_id" }} />
-                          ),
-                          displayTemplate: row => {
-                            let display =
-                              this.props.serviceslist === undefined
-                                ? []
-                                : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_name
-                                    : display[0].arabic_service_name
-                                  : ""}
-                              </span>
-                            );
-                          },
-                          editorTemplate: row => {
-                            let display =
-                              this.props.serviceslist === undefined
-                                ? []
-                                : this.props.serviceslist.filter(
-                                    f =>
-                                      f.hims_d_services_id === row.services_id
-                                  );
-
-                            return (
-                              <span>
-                                {display !== null && display.length !== 0
-                                  ? this.state.selectedLang === "en"
-                                    ? display[0].service_name
-                                    : display[0].arabic_service_name
-                                  : ""}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "unit_cost",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "unit_cost" }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "quantity",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "quantity" }} />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  value: row.quantity,
-                                  className: "txt-fld",
-                                  name: "quantity",
-                                  events: {
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    onBlur: calculateAmount.bind(
-                                      this,
-                                      this,
-                                      row
-                                    ),
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    }
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-
-                        {
-                          fieldName: "gross_amount",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "gross_amount" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "discount_percentage",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "discount_percentage" }}
-                            />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  decimal: { allowNegative: false },
-                                  value: row.discount_percentage,
-                                  className: "txt-fld",
-                                  name: "discount_percentage",
-                                  events: {
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    onBlur: calculateAmount.bind(
-                                      this,
-                                      this,
-                                      row
-                                    ),
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    }
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "discount_amout",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "discount_amout" }}
-                            />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  decimal: { allowNegative: false },
-                                  value: row.discount_amout,
-                                  className: "txt-fld",
-                                  name: "discount_amout",
-                                  events: {
-                                    onChange: onchangegridcol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    onBlur: calculateAmount.bind(
-                                      this,
-                                      this,
-                                      row
-                                    ),
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    }
-                                  }
-                                }}
-                              />
-                            );
-                          }
-                        },
-
-                        {
-                          fieldName: "net_amout",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "net_amout" }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "insurance_yesno",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "insurance" }} />
-                          ),
-                          displayTemplate: row => {
-                            return row.insurance_yesno === "Y"
-                              ? "Covered"
-                              : "Not Covered";
-                          },
-                          editorTemplate: row => {
-                            return row.insurance_yesno === "Y"
-                              ? "Covered"
-                              : "Not Covered";
-                          }
-                        },
-                        {
-                          fieldName: "pre_approval",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "pre_approval" }}
-                            />
-                          ),
-                          displayTemplate: row => {
-                            return (
-                              <span>
-                                {row.pre_approval === "Y"
-                                  ? "Required"
-                                  : "Not Required"}
-                                {row.pre_approval === "Y" ? (
-                                  <button
-                                    className="btn btn-primary btn-rounded"
-                                    onClick={this.playclick.bind(this)}
-                                  >
-                                    Apply
-                                  </button>
-                                ) : null}
-                              </span>
-                            );
-                          },
-                          editorTemplate: row => {
-                            return (
-                              <span>
-                                {row.pre_approval === "Y"
-                                  ? "Required"
-                                  : "Not Required"}
-                                {row.pre_approval === "Y" ? (
-                                  <button
-                                    className="btn btn-primary btn-rounded"
-                                    onClick={this.playclick.bind(this)}
-                                  >
-                                    Apply
-                                  </button>
-                                ) : null}
-                              </span>
-                            );
-                          }
-                        },
-                        {
-                          fieldName: "total_tax",
-                          label: (
-                            <AlgaehLabel label={{ fieldName: "total_tax" }} />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "patient_payable",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "patient_payable" }}
-                            />
-                          ),
-                          disabled: true
-                        },
-                        {
-                          fieldName: "company_payble",
-                          label: (
-                            <AlgaehLabel
-                              label={{ fieldName: "company_payble" }}
-                            />
-                          ),
-                          disabled: true
-                        }
-                      ]}
-                      keyId="service_type_id"
-                      dataSource={{
-                        data: this.state.orderservicesdata
-                      }}
-                      isEditable={true}
-                      paging={{ page: 0, rowsPerPage: 10 }}
-                      byForceEvents={true}
-                      events={{
-                        onDelete: deleteServices.bind(this, this),
-                        onEdit: EditGrid.bind(this, this),
-                        onCancel: EditGrid.bind(this, this),
-                        onDone: updateBillDetail.bind(this, this)
-                      }}
-                    />
-                  </div>
-                </div>
-
-                <div className="row GridTotalDetails">
-                  <div className="col-lg-5" style={{ textAlign: "right" }}>
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "sub_ttl"
-                          }}
-                        />
-                        <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "dsct_amt"
-                          }}
-                        />
-                        <h5>{getAmountFormart(this.state.discount_amount)}</h5>
-                      </div>
-
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "net_ttl"
-                          }}
-                        />
-                        <h5>{getAmountFormart(this.state.net_total)}</h5>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-7">
-                    <div className="row">
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "pat_payable"
-                          }}
-                        />
-                        <h5>{getAmountFormart(this.state.patient_payable)}</h5>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "co_payable"
-                          }}
-                        />
-                        <h5>{getAmountFormart(this.state.company_payble)}</h5>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "sec_co_payable"
-                          }}
-                        />
-                        <h5>
-                          {getAmountFormart(this.state.sec_company_paybale)}
-                        </h5>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <hr />
-              </div>
-              <div className="popupFooter">
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col-lg-12">
-                      <span className="float-right">
-                        <button
-                          className="btn btn-primary"
-                          onClick={SaveOrdersServices.bind(this, this)}
-                          disabled={this.state.saved}
-                        >
-                          Save
-                        </button>
-                      </span>
-                    </div>
+                  <div className="col-lg-12">
+                    <span className="float-right">
+                      <button
+                        className="btn btn-primary"
+                        onClick={SaveOrdersServices.bind(this, this)}
+                        disabled={this.state.saved}
+                      >
+                        Save
+                      </button>
+                    </span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </Modal>
+        </AlgaehModalPopUp>
       </div>
     );
   }

@@ -558,33 +558,53 @@ module.exports = {
                             //reject adding to schedule
                             if (timeChecking[0].length > 0) {
                               _mysql.rollBackTransaction(() => {
-                                next(e);
-                              });
-                              req.records = {
-                                message: `schedule already exist on ${
-                                  clashingDate[0]
-                                } for doctor_id:${
-                                  input.schedule_detail[doc].provider_id
-                                } from ${timeChecking[0][0].from_work_hr} to 
-                                     ${timeChecking[0][0].to_work_hr}`,
-                                schedule_exist: true
-                              };
-                              next();
-                            } else {
-                              if (timeChecking[1].length > 0) {
-                                _mysql.rollBackTransaction(() => {
-                                  next(e);
-                                });
                                 req.records = {
                                   message: `schedule already exist on ${
                                     clashingDate[0]
                                   } for doctor_id:${
                                     input.schedule_detail[doc].provider_id
-                                  } from ${timeChecking[1][0].from_work_hr} to 
-                                       ${timeChecking[1][0].to_work_hr}`,
+                                  } from ${timeChecking[0][0].from_work_hr} to 
+                                       ${timeChecking[0][0].to_work_hr}`,
                                   schedule_exist: true
                                 };
                                 next();
+                              });
+                              // req.records = {
+                              //   message: `schedule already exist on ${
+                              //     clashingDate[0]
+                              //   } for doctor_id:${
+                              //     input.schedule_detail[doc].provider_id
+                              //   } from ${timeChecking[0][0].from_work_hr} to
+                              //        ${timeChecking[0][0].to_work_hr}`,
+                              //   schedule_exist: true
+                              // };
+                              // next();
+                            } else {
+                              if (timeChecking[1].length > 0) {
+                                _mysql.rollBackTransaction(() => {
+                                  req.records = {
+                                    message: `schedule already exist on ${
+                                      clashingDate[0]
+                                    } for doctor_id:${
+                                      input.schedule_detail[doc].provider_id
+                                    } from ${
+                                      timeChecking[1][0].from_work_hr
+                                    } to 
+                                         ${timeChecking[1][0].to_work_hr}`,
+                                    schedule_exist: true
+                                  };
+                                  next();
+                                });
+                                // req.records = {
+                                //   message: `schedule already exist on ${
+                                //     clashingDate[0]
+                                //   } for doctor_id:${
+                                //     input.schedule_detail[doc].provider_id
+                                //   } from ${timeChecking[1][0].from_work_hr} to
+                                //        ${timeChecking[1][0].to_work_hr}`,
+                                //   schedule_exist: true
+                                // };
+                                // next();
                               }
                             }
                           } else {

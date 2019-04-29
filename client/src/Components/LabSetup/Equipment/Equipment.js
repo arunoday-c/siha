@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 
-import LinearProgress from "@material-ui/core/LinearProgress";
 import "./Equipment.css";
-import Button from "@material-ui/core/Button";
 
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -42,7 +40,7 @@ class Equipment extends Component {
   render() {
     return (
       <div className="lab_section">
-        <LinearProgress id="myProg" style={{ display: "none" }} />
+        {/* <LinearProgress id="myProg" style={{ display: "none" }} /> */}
         <div className="container-fluid">
           <form>
             <div
@@ -212,15 +210,13 @@ class Equipment extends Component {
 
           <div className="row">
             <div className="col-lg-12">
-              <Button
-                variant="outlined"
-                size="small"
-                color="primary"
-                style={{ float: "right" }}
-                // onClick={saveSubInsurance.bind(this, this, context)}
+              <button
+                type="button"
+                className="btn btn-primary"
+                // onClick={this.SavePatientDetails.bind(this)}
               >
                 Save
-              </Button>
+              </button>
             </div>
           </div>
         </div>
