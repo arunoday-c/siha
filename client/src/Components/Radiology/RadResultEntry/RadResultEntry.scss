@@ -1,4 +1,4 @@
-.RadResultEntry {
+.RadResultEntryPopupInner {
   .patientInfo-Top {
     background: white;
     height: 70px;
@@ -18,7 +18,6 @@
       button {
         height: 60px;
         border: 1px solid #e1e1e1;
-        
       }
       i {
         display: block;
@@ -45,19 +44,16 @@
       padding-right: 10px;
       min-height: 57px;
       h6 {
-        
         margin-bottom: 2px;
         color: #000;
         line-height: 1.2rem;
       }
       p {
-        
         margin: 0;
         padding: 0;
       }
     }
     .patientDemographic {
-      
       line-height: 1.3rem;
       border-right: 1px solid #e1e1e1;
       padding-left: 10px;
@@ -71,7 +67,6 @@
       }
     }
     .patientHospitalDetail {
-      
       line-height: 1.3rem;
       border-right: 1px solid #e1e1e1;
       padding-left: 10px;
@@ -85,7 +80,6 @@
       }
     }
     .patientVital {
-      
       width: 210px;
       line-height: 1.3rem;
       padding-left: 10px;
@@ -107,7 +101,7 @@
       button {
         height: 60px;
         border: 1px solid #e1e1e1;
-        
+
         margin-left: 0;
       }
       i {

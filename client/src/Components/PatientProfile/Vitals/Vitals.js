@@ -3,10 +3,10 @@ import "./vitals.css";
 import {
   AlagehFormGroup,
   AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehDateHandler,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
-import Modal from "@material-ui/core/Modal";
 import {
   getVitalHistory,
   getFormula,
@@ -256,96 +256,88 @@ class Vitals extends Component {
       .toArray();
     return (
       <React.Fragment>
-        <Modal open={this.state.openVitalModal}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
-              <div className="row">
-                <div className="col-lg-8">
-                  <h4>Patient Vitals</h4>
+        <AlgaehModalPopUp
+          events={{
+            onClose: this.handleClose.bind(this)
+          }}
+          title="Patient Vitals"
+          openPopup={this.state.openVitalModal}
+        >
+          <div className="col-lg-12 popupInner">
+            <div
+              className="row"
+              style={{
+                paddingTop: "10px"
+              }}
+            >
+              <div
+                className="col-3"
+                style={{ borderBottom: "1px solid #e5e5e5" }}
+              >
+                <h6>Vital Timeline</h6>
+              </div>
+              <div
+                className="col-lg-9"
+                style={{ borderBottom: "1px solid #e5e5e5" }}
+              >
+                <h6>Vital Charts</h6>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-3 popLeftDiv">
+                <div className="timeline">
+                  {_vitalsGroup.map((data, index) => (
+                    <div key={index} className="timelineContainer right">
+                      <div className="content">
+                        <p className="dateStamp">{data.dateTime}</p>
+                        <div className="vitalsCntr">
+                          <ul className="vitals-box">
+                            {data.list.map((vitals, ind) => (
+                              <li className="each-vitals-box" key={ind}>
+                                <p>{vitals.vital_short_name}</p>
+                                <span>{vitals.vital_value}</span>
+                                <span>{vitals.formula_value}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="col-lg-4">
-                  <button type="button" className="" onClick={this.handleClose}>
-                    <i className="fas fa-times-circle" />
+              </div>
+
+              <div className="col-lg-9 popRightDiv">
+                <Line
+                  options={{
+                    scales: {
+                      yAxes: _yAxes
+                    }
+                  }}
+                  data={{
+                    datasets: _plotGraph,
+                    labels: _chartLabels
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-12">
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.handleClose}
+                  >
+                    Close
                   </button>
                 </div>
               </div>
             </div>
-            <div className="col-lg-12 popupInner">
-              <div
-                className="row"
-                style={{
-                  paddingTop: "10px"
-                }}
-              >
-                <div
-                  className="col-3"
-                  style={{ borderBottom: "1px solid #e5e5e5" }}
-                >
-                  <h6>Vital Timeline</h6>
-                </div>
-                <div
-                  className="col-lg-9"
-                  style={{ borderBottom: "1px solid #e5e5e5" }}
-                >
-                  <h6>Vital Charts</h6>
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-3 popLeftDiv">
-                  <div className="timeline">
-                    {_vitalsGroup.map((data, index) => (
-                      <div key={index} className="timelineContainer right">
-                        <div className="content">
-                          <p className="dateStamp">{data.dateTime}</p>
-                          <div className="vitalsCntr">
-                            <ul className="vitals-box">
-                              {data.list.map((vitals, ind) => (
-                                <li className="each-vitals-box" key={ind}>
-                                  <p>{vitals.vital_short_name}</p>
-                                  <span>{vitals.vital_value}</span>
-                                  <span>{vitals.formula_value}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="col-lg-9 popRightDiv">
-                  <Line
-                    options={{
-                      scales: {
-                        yAxes: _yAxes
-                      }
-                    }}
-                    data={{
-                      datasets: _plotGraph,
-                      labels: _chartLabels
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
-            <div className="popupFooter">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={this.handleClose}
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
-        </Modal>
+        </AlgaehModalPopUp>
 
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">

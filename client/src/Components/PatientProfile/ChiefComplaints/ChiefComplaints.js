@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import "./chiefcomplaints.css";
-import Modal from "@material-ui/core/Modal";
+
 import {
   AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete,
   AlagehFormGroup,
-  AlgaehLabel
+  AlgaehLabel,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import {
   getAllChiefComplaints,
@@ -604,7 +605,6 @@ class ChiefComplaints extends Component {
   }
 
   HPIDropdownHandle(e) {
-    
     // this.setState({
     //   [e.name]: Enumerable.from(e.arrayList)
     //     .select(s => s.displayValue)
@@ -713,382 +713,368 @@ class ChiefComplaints extends Component {
     const _HPI = this.state.HPI_masters;
     return (
       <React.Fragment>
-        {/* HPI Modal Start */}
-        <Modal open={this.state.openHpiModal}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
-              <div className="row">
-                <div className="col-lg-8">
-                  <h4>Add / Edit History of Present Illness</h4>
-                </div>
-                <div className="col-lg-4">
-                  <button type="button" className="" onClick={this.handleClose}>
-                    <i className="fas fa-times-circle" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-lg-12 popupInner">
-              <div className="row">
-                <div className="col-lg-3 popLeftDiv">
-                  <div className="row" id="hpiElements_area">
-                    <AlagehAutoComplete
-                      div={{ className: "col-lg-12" }}
-                      label={{
-                        fieldName: "chief_cmpln"
-                      }}
-                      selector={{
-                        name: "hims_f_episode_chief_complaint_id",
-                        className: "select-fld",
-                        value: this.state.hims_f_episode_chief_complaint_id,
-                        dataSource: {
-                          textField: "chief_complaint_name",
-                          valueField: "hims_f_episode_chief_complaint_id",
-                          data: patChiefComplain
-                        },
-                        onChange: this.dropDownHandle.bind(this)
-                      }}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col-lg-12" }}
-                      label={{
-                        fieldName: "duration_onset",
-                        isImp: false
-                      }}
-                      textBox={{
-                        name: "onset_date",
-                        others: {
-                          disabled: true
-                        }
-                      }}
-                      maxDate={new Date()}
-                      value={this.state.onset_date}
-                      events={{
-                        onChange: selectDate => {}
-                      }}
-                    />
-                    <div className="col-12">
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-10" }}
-                          label={{
-                            fieldName: "hpiArea"
-                          }}
-                          selector={{
-                            name: "location",
-                            className: "select-fld",
-                            value: this.state.location,
-                            // multiselect: true,
-                            dataSource: {
-                              textField: "element_description",
-                              valueField: "hims_d_hpi_details_id",
-                              data: _HPI !== undefined ? _HPI.location : []
-                            },
-                            onChange: this.HPIDropdownHandle.bind(this)
-                          }}
-                        />
-                        <div className="actions col-2">
-                          <a
-                            style={{ marginTop: 22, marginLeft: -18 }}
-                            className="btn btn-primary btn-circle active"
-                            elementtype="L"
-                            elementfetch="location"
-                            onClick={this.addNewLocation.bind(this)}
-                          >
-                            <i className="fas fa-plus" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-12">
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-10" }}
-                          label={{
-                            fieldName: "qlty"
-                          }}
-                          selector={{
-                            name: "quality",
-                            className: "select-fld",
-                            value: this.state.quality,
-                            // multiselect: true,
-                            dataSource: {
-                              textField: "element_description",
-                              valueField: "hims_d_hpi_details_id",
-                              data: _HPI !== undefined ? _HPI.quality : []
-                            },
-                            onChange: this.HPIDropdownHandle.bind(this)
-                          }}
-                        />
-                        <div className="actions col-2">
-                          <a
-                            style={{ marginTop: 22, marginLeft: -18 }}
-                            className="btn btn-primary btn-circle active"
-                            elementtype="Q"
-                            elementfetch="quality"
-                            onClick={this.addNewLocation.bind(this)}
-                          >
-                            <i className="fas fa-plus" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-12">
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-10" }}
-                          label={{
-                            fieldName: "ctx"
-                          }}
-                          selector={{
-                            name: "context",
-                            className: "select-fld",
-                            value: this.state.context,
-                            // multiselect: true,
-                            dataSource: {
-                              textField: "element_description",
-                              valueField: "hims_d_hpi_details_id",
-                              data: _HPI !== undefined ? _HPI.context : []
-                            },
-                            onChange: this.HPIDropdownHandle.bind(this)
-                          }}
-                        />
-
-                        <div className="actions col-2">
-                          <a
-                            style={{ marginTop: 22, marginLeft: -18 }}
-                            className="btn btn-primary btn-circle active"
-                            elementtype="C"
-                            elementfetch="context"
-                            onClick={this.addNewLocation.bind(this)}
-                          >
-                            <i className="fas fa-plus" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-12">
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-10" }}
-                          label={{
-                            fieldName: "timing"
-                          }}
-                          selector={{
-                            name: "timing",
-                            className: "select-fld",
-                            // multiselect: true,
-                            value: this.state.timing,
-                            dataSource: {
-                              textField: "element_description",
-                              valueField: "hims_d_hpi_details_id",
-                              data: _HPI !== undefined ? _HPI.timing : []
-                            },
-                            onChange: this.HPIDropdownHandle.bind(this)
-                          }}
-                        />
-
-                        <div className="actions col-2">
-                          <a
-                            style={{ marginTop: 22, marginLeft: -18 }}
-                            className="btn btn-primary btn-circle active"
-                            elementtype="T"
-                            elementfetch="timing"
-                            onClick={this.addNewLocation.bind(this)}
-                          >
-                            <i className="fas fa-plus" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-12">
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-10" }}
-                          label={{
-                            fieldName: "mdfyng_fctr"
-                          }}
-                          selector={{
-                            name: "modifying_factor",
-                            className: "select-fld",
-                            // multiselect: true,
-                            value: this.state.modifying_factor,
-                            dataSource: {
-                              textField: "element_description",
-                              valueField: "hims_d_hpi_details_id",
-                              data:
-                                _HPI !== undefined ? _HPI.modifying_factor : []
-                            },
-                            onChange: this.HPIDropdownHandle.bind(this)
-                          }}
-                        />
-
-                        <div className="actions col-2">
-                          <a
-                            style={{ marginTop: 22, marginLeft: -18 }}
-                            className="btn btn-primary btn-circle active"
-                            elementtype="M"
-                            elementfetch="modifying_factor"
-                            onClick={this.addNewLocation.bind(this)}
-                          >
-                            <i className="fas fa-plus" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="col-12">
-                      <div className="row">
-                        <AlagehAutoComplete
-                          div={{ className: "col-lg-10" }}
-                          label={{
-                            fieldName: "ast_symptms"
-                          }}
-                          selector={{
-                            name: "associated_symptoms",
-                            className: "select-fld",
-                            value: this.state.associated_symptoms,
-                            // multiselect: true,
-                            dataSource: {
-                              textField: "element_description",
-                              valueField: "hims_d_hpi_details_id",
-                              data:
-                                _HPI !== undefined
-                                  ? _HPI.associated_symptoms
-                                  : []
-                            },
-                            onChange: this.HPIDropdownHandle.bind(this)
-                          }}
-                        />
-
-                        <div className="actions col-2">
-                          <a
-                            style={{ marginTop: 22, marginLeft: -18 }}
-                            className="btn btn-primary btn-circle active"
-                            elementtype="A"
-                            elementfetch="associated_symptoms"
-                            onClick={this.addNewLocation.bind(this)}
-                          >
-                            <i className="fas fa-plus" />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-lg-9 popRightDiv">
-                  <div className="row margin-top-15">
-                    <div className="col-lg-12" id="hpi-grid-popup-cntr">
-                      <AlgaehDataGrid
-                        id="hpi-grid"
-                        columns={[
-                          {
-                            fieldName: "chief_complaint",
-                            label: (
-                              <AlgaehLabel
-                                label={{ fieldName: "chief_cmpln" }}
-                              />
-                            )
-                          },
-                          {
-                            fieldName: "element_type",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "hpi_type" }} />
-                            ),
-                            displayTemplate: row => (
-                              <span>
-                                {row.element_type === "L"
-                                  ? "Area"
-                                  : row.element_type === "Q"
-                                  ? "Quality"
-                                  : row.element_type === "C"
-                                  ? "Context"
-                                  : row.element_type === "T"
-                                  ? "Timing"
-                                  : row.element_type === "M"
-                                  ? "Modification Factor"
-                                  : row.element_type === "A"
-                                  ? "Associated Symptoms"
-                                  : ""}
-                              </span>
-                            )
-                          },
-                          {
-                            fieldName: "element_description",
-                            label: (
-                              <AlgaehLabel label={{ fieldName: "hpi_desc" }} />
-                            )
-                          }
-                        ]}
-                        keyId="hpi"
-                        dataSource={{
-                          data: this.state.patientHPIElements
+        <AlgaehModalPopUp
+          events={{
+            onClose: this.handleClose.bind(this)
+          }}
+          title="Add / Edit History of Present Illness"
+          openPopup={this.state.openHpiModal}
+        >
+          <div className="col-lg-12 popupInner">
+            <div className="row">
+              <div className="col-lg-3 popLeftDiv">
+                <div className="row" id="hpiElements_area">
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-12" }}
+                    label={{
+                      fieldName: "chief_cmpln"
+                    }}
+                    selector={{
+                      name: "hims_f_episode_chief_complaint_id",
+                      className: "select-fld",
+                      value: this.state.hims_f_episode_chief_complaint_id,
+                      dataSource: {
+                        textField: "chief_complaint_name",
+                        valueField: "hims_f_episode_chief_complaint_id",
+                        data: patChiefComplain
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col-lg-12" }}
+                    label={{
+                      fieldName: "duration_onset",
+                      isImp: false
+                    }}
+                    textBox={{
+                      name: "onset_date",
+                      others: {
+                        disabled: true
+                      }
+                    }}
+                    maxDate={new Date()}
+                    value={this.state.onset_date}
+                    events={{
+                      onChange: selectDate => {}
+                    }}
+                  />
+                  <div className="col-12">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-10" }}
+                        label={{
+                          fieldName: "hpiArea"
                         }}
-                        isEditable={false}
-                        paging={{ page: 0, rowsPerPage: 10 }}
-                        events={{
-                          onDelete: row => {},
-                          onEdit: row => {},
-                          onDone: row => {}
+                        selector={{
+                          name: "location",
+                          className: "select-fld",
+                          value: this.state.location,
+                          // multiselect: true,
+                          dataSource: {
+                            textField: "element_description",
+                            valueField: "hims_d_hpi_details_id",
+                            data: _HPI !== undefined ? _HPI.location : []
+                          },
+                          onChange: this.HPIDropdownHandle.bind(this)
                         }}
                       />
+                      <div className="actions col-2">
+                        <a
+                          style={{ marginTop: 22, marginLeft: -18 }}
+                          className="btn btn-primary btn-circle active"
+                          elementtype="L"
+                          elementfetch="location"
+                          onClick={this.addNewLocation.bind(this)}
+                        >
+                          <i className="fas fa-plus" />
+                        </a>
+                      </div>
                     </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-12" }}
-                      label={{
-                        fieldName: "cmts",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "comments",
-                        others: {
-                          multiline: true,
-                          rows: "4"
-                        },
-                        //value: this.state.pain,
-                        events: {}
-                      }}
-                    />
+                  </div>
+
+                  <div className="col-12">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-10" }}
+                        label={{
+                          fieldName: "qlty"
+                        }}
+                        selector={{
+                          name: "quality",
+                          className: "select-fld",
+                          value: this.state.quality,
+                          // multiselect: true,
+                          dataSource: {
+                            textField: "element_description",
+                            valueField: "hims_d_hpi_details_id",
+                            data: _HPI !== undefined ? _HPI.quality : []
+                          },
+                          onChange: this.HPIDropdownHandle.bind(this)
+                        }}
+                      />
+                      <div className="actions col-2">
+                        <a
+                          style={{ marginTop: 22, marginLeft: -18 }}
+                          className="btn btn-primary btn-circle active"
+                          elementtype="Q"
+                          elementfetch="quality"
+                          onClick={this.addNewLocation.bind(this)}
+                        >
+                          <i className="fas fa-plus" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-10" }}
+                        label={{
+                          fieldName: "ctx"
+                        }}
+                        selector={{
+                          name: "context",
+                          className: "select-fld",
+                          value: this.state.context,
+                          // multiselect: true,
+                          dataSource: {
+                            textField: "element_description",
+                            valueField: "hims_d_hpi_details_id",
+                            data: _HPI !== undefined ? _HPI.context : []
+                          },
+                          onChange: this.HPIDropdownHandle.bind(this)
+                        }}
+                      />
+
+                      <div className="actions col-2">
+                        <a
+                          style={{ marginTop: 22, marginLeft: -18 }}
+                          className="btn btn-primary btn-circle active"
+                          elementtype="C"
+                          elementfetch="context"
+                          onClick={this.addNewLocation.bind(this)}
+                        >
+                          <i className="fas fa-plus" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-10" }}
+                        label={{
+                          fieldName: "timing"
+                        }}
+                        selector={{
+                          name: "timing",
+                          className: "select-fld",
+                          // multiselect: true,
+                          value: this.state.timing,
+                          dataSource: {
+                            textField: "element_description",
+                            valueField: "hims_d_hpi_details_id",
+                            data: _HPI !== undefined ? _HPI.timing : []
+                          },
+                          onChange: this.HPIDropdownHandle.bind(this)
+                        }}
+                      />
+
+                      <div className="actions col-2">
+                        <a
+                          style={{ marginTop: 22, marginLeft: -18 }}
+                          className="btn btn-primary btn-circle active"
+                          elementtype="T"
+                          elementfetch="timing"
+                          onClick={this.addNewLocation.bind(this)}
+                        >
+                          <i className="fas fa-plus" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-10" }}
+                        label={{
+                          fieldName: "mdfyng_fctr"
+                        }}
+                        selector={{
+                          name: "modifying_factor",
+                          className: "select-fld",
+                          // multiselect: true,
+                          value: this.state.modifying_factor,
+                          dataSource: {
+                            textField: "element_description",
+                            valueField: "hims_d_hpi_details_id",
+                            data:
+                              _HPI !== undefined ? _HPI.modifying_factor : []
+                          },
+                          onChange: this.HPIDropdownHandle.bind(this)
+                        }}
+                      />
+
+                      <div className="actions col-2">
+                        <a
+                          style={{ marginTop: 22, marginLeft: -18 }}
+                          className="btn btn-primary btn-circle active"
+                          elementtype="M"
+                          elementfetch="modifying_factor"
+                          onClick={this.addNewLocation.bind(this)}
+                        >
+                          <i className="fas fa-plus" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-12">
+                    <div className="row">
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-10" }}
+                        label={{
+                          fieldName: "ast_symptms"
+                        }}
+                        selector={{
+                          name: "associated_symptoms",
+                          className: "select-fld",
+                          value: this.state.associated_symptoms,
+                          // multiselect: true,
+                          dataSource: {
+                            textField: "element_description",
+                            valueField: "hims_d_hpi_details_id",
+                            data:
+                              _HPI !== undefined ? _HPI.associated_symptoms : []
+                          },
+                          onChange: this.HPIDropdownHandle.bind(this)
+                        }}
+                      />
+
+                      <div className="actions col-2">
+                        <a
+                          style={{ marginTop: 22, marginLeft: -18 }}
+                          className="btn btn-primary btn-circle active"
+                          elementtype="A"
+                          elementfetch="associated_symptoms"
+                          onClick={this.addNewLocation.bind(this)}
+                        >
+                          <i className="fas fa-plus" />
+                        </a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div className="popupFooter">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-3">
-                    <button
-                      className="btn btn-primary"
-                      onClick={this.HPIElementsSaveToPatient.bind(this)}
-                    >
-                      Add
-                    </button>
-                    <button
-                      className="btn btn-default"
-                      onClick={this.CleanHPIElements.bind(this)}
-                    >
-                      Clear
-                    </button>
+              <div className="col-lg-9 popRightDiv">
+                <div className="row margin-top-15">
+                  <div className="col-lg-12" id="hpi-grid-popup-cntr">
+                    <AlgaehDataGrid
+                      id="hpi-grid"
+                      columns={[
+                        {
+                          fieldName: "chief_complaint",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "chief_cmpln" }} />
+                          )
+                        },
+                        {
+                          fieldName: "element_type",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "hpi_type" }} />
+                          ),
+                          displayTemplate: row => (
+                            <span>
+                              {row.element_type === "L"
+                                ? "Area"
+                                : row.element_type === "Q"
+                                ? "Quality"
+                                : row.element_type === "C"
+                                ? "Context"
+                                : row.element_type === "T"
+                                ? "Timing"
+                                : row.element_type === "M"
+                                ? "Modification Factor"
+                                : row.element_type === "A"
+                                ? "Associated Symptoms"
+                                : ""}
+                            </span>
+                          )
+                        },
+                        {
+                          fieldName: "element_description",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "hpi_desc" }} />
+                          )
+                        }
+                      ]}
+                      keyId="hpi"
+                      dataSource={{
+                        data: this.state.patientHPIElements
+                      }}
+                      isEditable={false}
+                      paging={{ page: 0, rowsPerPage: 10 }}
+                      events={{
+                        onDelete: row => {},
+                        onEdit: row => {},
+                        onDone: row => {}
+                      }}
+                    />
                   </div>
-                  <div className="col-lg-9">
-                    <button
-                      className="btn btn-default"
-                      onClick={this.handleClose}
-                    >
-                      Close
-                    </button>
-                  </div>
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-12" }}
+                    label={{
+                      fieldName: "cmts",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "comments",
+                      others: {
+                        multiline: true,
+                        rows: "4"
+                      },
+                      //value: this.state.pain,
+                      events: {}
+                    }}
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </Modal>
+          <div className="popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-3">
+                  <button
+                    className="btn btn-primary"
+                    onClick={this.HPIElementsSaveToPatient.bind(this)}
+                  >
+                    Add
+                  </button>
+                  <button
+                    className="btn btn-default"
+                    onClick={this.CleanHPIElements.bind(this)}
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="col-lg-9">
+                  <button
+                    className="btn btn-default"
+                    onClick={this.handleClose}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AlgaehModalPopUp>
         {/* HPI MOdal End */}
 
         {/* BEGIN Portlet PORTLET */}

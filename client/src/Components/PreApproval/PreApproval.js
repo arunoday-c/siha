@@ -143,10 +143,7 @@ class PreApproval extends Component {
           ]}
         /> */}
 
-        <div
-          className="row inner-top-search"
-          style={{ marginTop: "75px", paddingBottom: "10px" }}
-        >
+        <div className="row inner-top-search" style={{ paddingBottom: "10px" }}>
           <div className="col-lg-12">
             <div className="row">
               <AlgaehDateHandler

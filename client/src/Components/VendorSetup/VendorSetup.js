@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import "./vendor_setup.css";
-import Modal from "@material-ui/core/Modal";
 import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
 import GlobalVariables from "../../utils/GlobalVariables.json";
 import { AlgaehValidation } from "../../utils/GlobalFunctions";
@@ -255,350 +255,335 @@ class VendorSetup extends Component {
   render() {
     return (
       <div className="vendor_setup">
-        <Modal open={this.state.openModal}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
-              <div className="row">
-                <div className="col-lg-8">
-                  <h4>Add / Edit Vendor</h4>
-                </div>
-                <div className="col-lg-4">
-                  <button
-                    type="button"
-                    className=""
-                    onClick={this.resetSaveState.bind(this)}
-                  >
-                    <i className="fas fa-times-circle" />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="popupInner">
-              <div className="col-lg-12" style={{ minHeight: "60vh" }}>
-                <div className="margin-top-15" data-validate="VendorDiv">
-                  <h6>Business Details</h6>
-                  <hr style={{ margin: 0 }} />
-                  <div className="row">
-                    <AlagehFormGroup
-                      div={{ className: "col" }}
-                      label={{
-                        fieldName: "vendor_code",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "vendor_code",
-                        value: this.state.vendor_code,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          disabled:
-                            this.state.hims_d_vendor_id === null ? false : true
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "vendor_name",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "vendor_name",
-                        value: this.state.vendor_name,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-2" }}
-                      label={{
-                        fieldName: "business_registration_no",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "business_registration_no",
-                        value: this.state.business_registration_no,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-2" }}
-                      label={{
-                        fieldName: "contact_number",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "contact_number",
-                        value: this.state.contact_number,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          type: "number",
-                          min: 0
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "email_id_1",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "email_id_1",
-                        value: this.state.email_id_1,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "email_id_2",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "email_id_2",
-                        value: this.state.email_id_2,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "website",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "website",
-                        value: this.state.website,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "address",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "address",
-                        value: this.state.address,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "country",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "country_id",
-                        className: "select-fld",
-                        value: this.state.country_id,
-                        dataSource: {
-                          textField: "country_name",
-                          valueField: "hims_d_country_id",
-                          data: this.state.countries
-                        },
-                        onChange: this.dropDownHandle.bind(this)
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "state",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "state_id",
-                        className: "select-fld",
-                        value: this.state.state_id,
-                        dataSource: {
-                          textField: "state_name",
-                          valueField: "hims_d_state_id",
-                          data: this.state.states
-                        },
-                        onChange: this.dropDownHandle.bind(this)
-                      }}
-                    />
-                    <AlagehAutoComplete
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "city"
-                      }}
-                      selector={{
-                        name: "city_id",
-                        className: "select-fld",
-                        value: this.state.city_id,
-                        dataSource: {
-                          textField: "city_name",
-                          valueField: "hims_d_city_id",
-                          data: this.state.cities
-                        },
-                        onChange: this.dropDownHandle.bind(this)
-                      }}
-                    />
-                    <AlagehFormGroup
-                      div={{ className: "col-2" }}
-                      label={{
-                        fieldName: "postal_code",
-                        isImp: false
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "postal_code",
-                        value: this.state.postal_code,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                  </div>
-                  <h6 style={{ marginTop: 30 }}>Payment Details</h6>
-                  <hr style={{ margin: 0 }} />
-                  <div className="row">
-                    <AlagehAutoComplete
-                      div={{ className: "col-2" }}
-                      label={{
-                        fieldName: "payment_terms",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "payment_terms",
-                        className: "select-fld",
-                        value: this.state.payment_terms,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.PAYMENT_TERMS
-                        },
-                        onChange: this.dropDownHandle.bind(this)
-                      }}
-                    />
-
-                    <AlagehAutoComplete
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "payment_mode",
-                        isImp: true
-                      }}
-                      selector={{
-                        name: "payment_mode",
-                        className: "select-fld",
-                        value: this.state.payment_mode,
-                        dataSource: {
-                          textField: "name",
-                          valueField: "value",
-                          data: GlobalVariables.PAYMENT_MODE
-                        },
-                        onChange: this.dropDownHandle.bind(this)
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      div={{ className: "col-3" }}
-                      label={{
-                        fieldName: "bank_name",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "bank_name",
-                        value: this.state.bank_name,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        }
-                      }}
-                    />
-                    <div className="col-2" style={{ marginTop: 21 }}>
-                      <input
-                        name="vat_applicable"
-                        checked={this.state.vat_applicable}
-                        type="checkbox"
-                        style={{ marginRight: "5px" }}
-                        onChange={this.changeChecks.bind(this)}
-                      />
-                      <label>VAT Applicable</label>
-                    </div>
-
-                    <AlagehFormGroup
-                      div={{ className: "col-2" }}
-                      label={{
-                        fieldName: "vat_percentage",
-                        isImp: this.state.vat_applicable
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "vat_percentage",
-                        value: this.state.vat_percentage,
-                        events: {
-                          onChange: this.changeTexts.bind(this)
-                        },
-                        others: {
-                          min: 0,
-                          max: 100,
-                          type: "number",
-                          disabled: !this.state.vat_applicable
-                        }
-                      }}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="popupFooter">
-              <div className="col-lg-12">
+        <AlgaehModalPopUp
+          events={{
+            onClose: this.resetSaveState.bind(this)
+          }}
+          title="Add / Edit Vendor"
+          openPopup={this.state.openModal}
+        >
+          <div className="popupInner">
+            <div className="col-lg-12" style={{ minHeight: "60vh" }}>
+              <div className="margin-top-15" data-validate="VendorDiv">
+                <h6>Business Details</h6>
+                <hr style={{ margin: 0 }} />
                 <div className="row">
-                  <div className="col-lg-4">&nbsp;</div>
-                  <div className="col-lg-8">
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={this.addVendorMaster.bind(this)}
-                    >
-                      <label className="style_Label ">
-                        {this.state.btn_txt}
-                      </label>
-                    </button>
+                  <AlagehFormGroup
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "vendor_code",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "vendor_code",
+                      value: this.state.vendor_code,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        disabled:
+                          this.state.hims_d_vendor_id === null ? false : true
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "vendor_name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "vendor_name",
+                      value: this.state.vendor_name,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
 
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={this.resetSaveState.bind(this)}
-                    >
-                      <label className="style_Label ">Cancel</label>
-                    </button>
+                  <AlagehFormGroup
+                    div={{ className: "col-2" }}
+                    label={{
+                      fieldName: "business_registration_no",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "business_registration_no",
+                      value: this.state.business_registration_no,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-2" }}
+                    label={{
+                      fieldName: "contact_number",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "contact_number",
+                      value: this.state.contact_number,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        type: "number",
+                        min: 0
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "email_id_1",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "email_id_1",
+                      value: this.state.email_id_1,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "email_id_2",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "email_id_2",
+                      value: this.state.email_id_2,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "website",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "website",
+                      value: this.state.website,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "address",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "address",
+                      value: this.state.address,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "country",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "country_id",
+                      className: "select-fld",
+                      value: this.state.country_id,
+                      dataSource: {
+                        textField: "country_name",
+                        valueField: "hims_d_country_id",
+                        data: this.state.countries
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "state",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "state_id",
+                      className: "select-fld",
+                      value: this.state.state_id,
+                      dataSource: {
+                        textField: "state_name",
+                        valueField: "hims_d_state_id",
+                        data: this.state.states
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />
+                  <AlagehAutoComplete
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "city"
+                    }}
+                    selector={{
+                      name: "city_id",
+                      className: "select-fld",
+                      value: this.state.city_id,
+                      dataSource: {
+                        textField: "city_name",
+                        valueField: "hims_d_city_id",
+                        data: this.state.cities
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />
+                  <AlagehFormGroup
+                    div={{ className: "col-2" }}
+                    label={{
+                      fieldName: "postal_code",
+                      isImp: false
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "postal_code",
+                      value: this.state.postal_code,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                </div>
+                <h6 style={{ marginTop: 30 }}>Payment Details</h6>
+                <hr style={{ margin: 0 }} />
+                <div className="row">
+                  <AlagehAutoComplete
+                    div={{ className: "col-2" }}
+                    label={{
+                      fieldName: "payment_terms",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "payment_terms",
+                      className: "select-fld",
+                      value: this.state.payment_terms,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.PAYMENT_TERMS
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "payment_mode",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "payment_mode",
+                      className: "select-fld",
+                      value: this.state.payment_mode,
+                      dataSource: {
+                        textField: "name",
+                        valueField: "value",
+                        data: GlobalVariables.PAYMENT_MODE
+                      },
+                      onChange: this.dropDownHandle.bind(this)
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "bank_name",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "bank_name",
+                      value: this.state.bank_name,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      }
+                    }}
+                  />
+                  <div className="col-2" style={{ marginTop: 21 }}>
+                    <input
+                      name="vat_applicable"
+                      checked={this.state.vat_applicable}
+                      type="checkbox"
+                      style={{ marginRight: "5px" }}
+                      onChange={this.changeChecks.bind(this)}
+                    />
+                    <label>VAT Applicable</label>
                   </div>
+
+                  <AlagehFormGroup
+                    div={{ className: "col-2" }}
+                    label={{
+                      fieldName: "vat_percentage",
+                      isImp: this.state.vat_applicable
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "vat_percentage",
+                      value: this.state.vat_percentage,
+                      events: {
+                        onChange: this.changeTexts.bind(this)
+                      },
+                      others: {
+                        min: 0,
+                        max: 100,
+                        type: "number",
+                        disabled: !this.state.vat_applicable
+                      }
+                    }}
+                  />
                 </div>
               </div>
             </div>
           </div>
-        </Modal>
+
+          <div className="popupFooter">
+            <div className="col-lg-12">
+              <div className="row">
+                <div className="col-lg-4">&nbsp;</div>
+                <div className="col-lg-8">
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={this.addVendorMaster.bind(this)}
+                  >
+                    <label className="style_Label ">{this.state.btn_txt}</label>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.resetSaveState.bind(this)}
+                  >
+                    <label className="style_Label ">Cancel</label>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </AlgaehModalPopUp>
 
         <div className="portlet portlet-bordered margin-bottom-15 margin-top-15">
           <div className="portlet-title">
