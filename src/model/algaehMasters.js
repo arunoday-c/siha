@@ -338,7 +338,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
                       page_to_redirect: s.page_to_redirect,
                       other_language: s.other_language,
                       algaeh_m_screen_role_privilage_mapping_id:
-                        s.algaeh_m_screen_role_privilage_mapping_id
+                        s.algaeh_m_screen_role_privilage_mapping_id,
+                      module_id: s.module_id
                     };
                   })
                   .ToArray()

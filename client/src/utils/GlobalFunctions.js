@@ -522,7 +522,6 @@ export function SetBulkState(options) {
         if (_type === "checkbox") {
           _objectCreation[_name] = _allControls[i].checked ? "Y" : "N";
         } else if (_type === "radio") {
-          
           _objectCreation[_name] = _allControls[i].checked
             ? _allControls[i].value
             : "N";
@@ -569,6 +568,7 @@ export function AlgaehCloseContainer(string) {
   return crypted;
 }
 export function AlgaehOpenContainer(string) {
+  debugger;
   var decipher = crypto.createDecipher(algorithm, containerId);
   var dec = decipher.update(string, "hex", "utf8");
   dec += decipher.final("utf8");

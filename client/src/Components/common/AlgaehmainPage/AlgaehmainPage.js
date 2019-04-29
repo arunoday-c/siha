@@ -361,7 +361,7 @@ class PersistentDrawer extends React.Component {
     const _menuselected = e.currentTarget.getAttribute("menuselected");
     const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
     setCookie("ScreenName", name, 30);
-    setCookie("module_id", submenu.module_id, 30);
+    setCookie("module_id", e.currentTarget.getAttribute("moduleid"), 30);
     // AlgaehLoader({ show: true });
 
     this.setState({
@@ -455,6 +455,7 @@ class PersistentDrawer extends React.Component {
                   <li
                     onClick={this.TriggerPath.bind(this, submenu)}
                     menuselected={menu.module_code}
+                    moduleid={menu.module_id}
                     key={indexSub}
                     className={
                       activeNode !== undefined && activeNode !== null
