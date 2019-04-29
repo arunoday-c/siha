@@ -66,6 +66,7 @@ const saveSubInsurance = ($this, context) => {
         }
       },
       onFailure: error => {
+        debugger;
         swalMessage({
           title: error.response.data.message,
           type: "error"

@@ -12,10 +12,8 @@ import SubInsurance from "../SubInsurance/SubInsurance";
 import NetworkPlan from "../NetworkPlan/NetworkPlan";
 import ServicePriceList from "../ServicePriceList/ServicePriceList";
 // import NetworkPlanList from "../NetworkPlanList/NetworkPlanList";
-import Stepper from "@material-ui/core/Stepper";
-import Step from "@material-ui/core/Step";
-import StepLabel from "@material-ui/core/StepLabel";
-import { withStyles } from "@material-ui/core/styles";
+
+// import { withStyles } from "@material-ui/core/styles";
 import InsuranceSetup from "../../../Models/InsuranceSetup";
 import {
   handleNext,
@@ -69,9 +67,6 @@ class InsuranceAdd extends PureComponent {
       activeStep: 0,
       screenName: "InsuranceProvider",
       buttonenable: false
-
-      // activeStep: 3,
-      // screenName: "Services"
     };
   }
 
@@ -195,24 +190,38 @@ class InsuranceAdd extends PureComponent {
                       }
                     }}
                   >
-                    <div className="stepper-set">
-                      <Stepper
-                        activeStep={activeStep}
-                        alternativeLabel
-                        style={{
-                          backgroundColor: "#DFFFFD",
-                          borderBottom: "1px solid #E6E6E6"
-                        }}
+                    <ul className="progressbar">
+                      <li className="active">Insurance Provider</li>
+                      <li
+                        className={
+                          this.state.screenName === "SubInsurance" ||
+                          this.state.screenName === "NetworkPlan" ||
+                          this.state.screenName === "Services"
+                            ? "active"
+                            : ""
+                        }
                       >
-                        {steps.map(label => {
-                          return (
-                            <Step key={label}>
-                              <StepLabel>{label}</StepLabel>
-                            </Step>
-                          );
-                        })}
-                      </Stepper>
-                    </div>
+                        Sub Insurance
+                      </li>
+                      <li
+                        className={
+                          this.state.screenName === "NetworkPlan" ||
+                          this.state.screenName === "Services"
+                            ? "active"
+                            : ""
+                        }
+                      >
+                        Network/Plan
+                      </li>
+                      <li
+                        className={
+                          this.state.screenName === "Services" ? "active" : ""
+                        }
+                      >
+                        Price List
+                      </li>
+                    </ul>
+
                     {this.state.activeStep === steps.length ? null : (
                       <div>{getStepContent(activeStep, this)}</div>
                     )}
@@ -347,13 +356,11 @@ function mapDispatchToProps(dispatch) {
   );
 }
 
-export default withStyles(styles)(
-  withRouter(
-    connect(
-      mapStateToProps,
-      mapDispatchToProps
-    )(InsuranceAdd)
-  )
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(InsuranceAdd)
 );
 
 // export default withStyles(styles)(InsuranceAdd);
