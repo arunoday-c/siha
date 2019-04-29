@@ -684,6 +684,22 @@ class UpdatePatientForm extends Component {
                           }
                         }}
                       />
+                      <AlagehFormGroup
+                        div={{ className: "col-3 form-group" }}
+                        label={{
+                          forceLabel: "Enter Employee ID",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "",
+                          value: "",
+                          events: {},
+                          option: {
+                            type: "text"
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="col-lg-4 secondary-details">

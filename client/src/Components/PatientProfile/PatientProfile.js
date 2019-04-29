@@ -313,13 +313,13 @@ class PatientProfile extends Component {
           <div className="patientName">
             <h6>{_pat_profile.full_name}</h6>
             <p>
-              {_pat_profile.gender} ,{_pat_profile.age_in_years}Y
-              {_pat_profile.age_in_months}M {_pat_profile.age_in_days}D
+              {_pat_profile.gender} - {_pat_profile.age_in_years}y,{" "}
+              {_pat_profile.age_in_months}m, {_pat_profile.age_in_days}d
             </p>
           </div>
           <div className="patientDemographic">
             <span>
-              DOB:
+              DOB:{" "}
               <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
             {/* <span>
@@ -329,7 +329,7 @@ class PatientProfile extends Component {
               Nationality: <b>{_pat_profile.nationality}</b>
             </span>
             <span>
-              Payment:
+              Payment:{" "}
               <b>
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
@@ -344,7 +344,7 @@ class PatientProfile extends Component {
               MRN: <b>{_pat_profile.patient_code}</b>
             </span>
             <span>
-              Encounter:
+              Encounter:{" "}
               <b>
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY | hh:mm a"

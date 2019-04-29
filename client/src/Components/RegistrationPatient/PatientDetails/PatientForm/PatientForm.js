@@ -702,6 +702,23 @@ class AddPatientForm extends Component {
                           }
                         }}
                       />
+                      <AlagehFormGroup
+                        div={{ className: "col-3 form-group" }}
+                        label={{
+                          forceLabel: "Enter Employee ID",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "",
+                          value: "",
+                          events: {},
+                          option: {
+                            type: "text",
+                            tabIndex: "20"
+                          }
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="col-lg-4 secondary-details">
@@ -783,7 +800,7 @@ class AddPatientForm extends Component {
                           onChange: texthandle.bind(this, this),
                           others: {
                             disabled: this.state.existingPatient,
-                            tabIndex: "20"
+                            tabIndex: "21"
                           }
                         }}
                       />
@@ -804,7 +821,7 @@ class AddPatientForm extends Component {
                           others: {
                             disabled: this.state.existingPatient,
                             onBlur: texthandle.bind(this, this),
-                            tabIndex: "21",
+                            tabIndex: "22",
                             placeholder: "Enter ID Number"
                           }
                         }}
