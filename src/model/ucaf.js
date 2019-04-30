@@ -21,8 +21,8 @@ let getPatientUCAF = (req, res, next) => {
           _input.visit_id,
           _input.visit_date,
           _input.visit_id
-        ],
-        printQuery: true
+        ]
+        // printQuery: true
       })
       .then(result => {
         const _isInsured = result[1][0]["insured"];
@@ -124,8 +124,25 @@ let getPatientUCAF = (req, res, next) => {
                 _input.visit_date,
                 _input.visit_id
               ]
+              //  printQuery: true
             })
             .then(outputResult => {
+              console.log("outputResult[4].length", outputResult[4]);
+              let errorString =
+                outputResult[4].length == 0 ? "Services not yet added \n" : "";
+              errorString +=
+                outputResult[5].length == 0
+                  ? "Medication not yet added \n"
+                  : "";
+              errorString +=
+                outputResult[6].length == 0 ? "Insurance is not added \n" : "";
+              console.log("errorString", errorString);
+              if (errorString != "") {
+                _mysql.releaseConnection();
+                next(new Error(errorString));
+                return;
+              }
+
               const _fields =
                 outputResult[0].length > 0 ? { ...outputResult[0][0] } : {};
 
@@ -246,8 +263,8 @@ let getPatientUCAF = (req, res, next) => {
                     _fields.patient_indicated_LMP,
                     _fields.patient_gender,
                     _fields.age_in_years
-                  ]
-                  // printQuery: true
+                  ],
+                  printQuery: true
                 })
                 .then(headerResult => {
                   req["hims_f_ucaf_header_id"] = headerResult["insertId"];

@@ -152,6 +152,10 @@ class OrderedList extends PureComponent {
 
   render() {
     debugger;
+    let patient_date =
+      this.props.patient_profile !== undefined
+        ? this.props.patient_profile
+        : [];
     return (
       <div className="hptl-phase1-ordering-services-form form-details margin-bottom-15">
         <div className="col-lg-12">
@@ -334,8 +338,10 @@ class OrderedList extends PureComponent {
           show={this.state.isOpenItems}
           onClose={this.CloseProcedureModel.bind(this)}
           inputsparameters={{
-            patient_code: this.props.patient_profile[0].patient_code,
-            full_name: this.props.patient_profile[0].full_name,
+            patient_code:
+              patient_date.length > 0 ? patient_date[0].patient_code : null,
+            full_name:
+              patient_date.length > 0 ? patient_date[0].full_name : null,
             procedure_name: this.state.procedure_name,
             procedure_id: this.state.hims_d_procedure_id
           }}
