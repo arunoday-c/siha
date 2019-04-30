@@ -68,12 +68,19 @@ class OrderedList extends PureComponent {
         if (response.data.success === true) {
           let data = response.data.records;
 
-          this.setState({
-            ...this.state,
-            isOpenItems: !this.state.isOpenItems,
-            procedure_name: data[0].procedure_desc,
-            hims_d_procedure_id: data[0].hims_d_procedure_id
-          });
+          if (data.length > 0) {
+            this.setState({
+              ...this.state,
+              isOpenItems: !this.state.isOpenItems,
+              procedure_name: data[0].procedure_desc,
+              hims_d_procedure_id: data[0].hims_d_procedure_id
+            });
+          } else {
+            swalMessage({
+              title: "Procedure Not defined in master. Please contact Admin",
+              type: "warning"
+            });
+          }
         }
       },
       onFailure: error => {

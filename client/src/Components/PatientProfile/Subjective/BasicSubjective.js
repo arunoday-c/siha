@@ -4,29 +4,34 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
 import "./subjective.css";
-// import Allergies from "../Allergies/Allergies";
-// import ReviewofSystems from "../ReviewofSystems/ReviewofSystems";
-// import ChiefComplaints from "../ChiefComplaints/ChiefComplaints.js";
+
 import {
   AlgaehLabel,
   AlagehFormGroup,
   AlgaehDateHandler,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehDataGrid
 } from "../../Wrapper/algaehWrapper";
-// import Vitals from "../Vitals/Vitals";
+import Vitals from "../Vitals/Vitals";
 import LabResults from "../Assessment/LabResult/LabResult";
 import RadResults from "../Assessment/RadResult/RadResult";
-
+import Enumerable from "linq";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import OrderedList from "../Assessment/OrderedList/OrderedList";
+import Plan from "../Plan/Plan";
 
-// import { assnotetexthandle } from "./SubjectiveHandler";
+import SubjectiveHandler from "./SubjectiveHandler";
+import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
 
 class BasicSubjective extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pageDisplay: "Orders"
+      pageDisplay: "Orders",
+      openMedication: false,
+      openMedicaldata: false,
+      openDiet: false,
+      openVital: false
     };
     this.getMasters();
   }
@@ -62,6 +67,19 @@ class BasicSubjective extends Component {
     }
   }
 
+  onchangegridcol(row, from) {
+    SubjectiveHandler().onchangegridcol(this, row, from);
+  }
+
+  deleteFinalDiagnosis(row) {
+    SubjectiveHandler().deleteFinalDiagnosis(this, row);
+  }
+  updateDiagnosis(row) {
+    SubjectiveHandler().updateDiagnosis(this, row);
+  }
+  IcdsSearch(diagType) {
+    SubjectiveHandler().IcdsSearch(this, diagType);
+  }
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
@@ -74,13 +92,57 @@ class BasicSubjective extends Component {
     });
   }
 
+  showMedication() {
+    debugger;
+    this.setState({
+      openMedication: !this.state.openMedication
+    });
+  }
+
+  showMedicalData() {
+    debugger;
+    this.setState({
+      openMedicaldata: !this.state.openMedicaldata
+    });
+  }
+
+  showDietPlan() {
+    this.setState({
+      openDiet: !this.state.openDiet
+    });
+  }
+
+  closeDietPlan() {
+    this.setState({
+      openDiet: !this.state.openDiet
+    });
+  }
+
+  showVitals() {
+    debugger;
+    this.setState({
+      openVital: !this.state.openVital
+    });
+  }
+
+  closeVitals() {
+    debugger;
+    this.setState({
+      openVital: !this.state.openVital
+    });
+  }
+
   render() {
+    const _diagnosis =
+      this.props.patient_diagnosis !== undefined
+        ? this.props.patient_diagnosis
+        : [];
+    const _finalDiagnosis = Enumerable.from(_diagnosis)
+      .where(w => w.final_daignosis === "Y")
+      .toArray();
     return (
       <div className="subjective">
         <div className="row margin-top-15">
-          {/* <div className="col-lg-3">
-            <Vitals />
-          </div> */}
           <div className="col-3">
             <div className="row">
               <div className="col-12">
@@ -186,11 +248,6 @@ class BasicSubjective extends Component {
               </div>
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {/* <div className="portlet-title">
-                    <div className="caption">
-                      <h3 className="caption-subject">Significant Signs</h3>
-                    </div>
-                  </div> */}
                   <div className="portlet-body">
                     <div className="row">
                       <AlagehFormGroup
@@ -215,11 +272,6 @@ class BasicSubjective extends Component {
               </div>
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {/* <div className="portlet-title">
-                    <div className="caption">
-                      <h3 className="caption-subject">Significant Signs</h3>
-                    </div>
-                  </div> */}
                   <div className="portlet-body">
                     <div className="row">
                       <AlagehFormGroup
@@ -248,12 +300,109 @@ class BasicSubjective extends Component {
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {/* <div className="portlet-title">
+                  <div className="portlet-title">
                     <div className="caption">
-                      <h3 className="caption-subject">Order Service</h3>
+                      <h3 className="caption-subject">Diagnosis</h3>
                     </div>
-                  </div> */}
-                  <div className="portlet-body">Final Diag.</div>
+                    <div className="actions">
+                      <a
+                        className="btn btn-primary btn-circle active"
+                        onClick={this.IcdsSearch.bind(this, "Final")}
+                      >
+                        <i className="fas fa-plus" />
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="portlet-body">
+                    <div
+                      id="finalDioGrid"
+                      className="row"
+                      style={{ marginTop: 10, marginBottom: 10 }}
+                    >
+                      <div className="col-lg-12">
+                        <AlgaehDataGrid
+                          id="Finalintial_icd"
+                          columns={[
+                            {
+                              fieldName: "diagnosis_type",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Type"
+                                  }}
+                                />
+                              ),
+                              displayTemplate: row => {
+                                return row.diagnosis_type === "P"
+                                  ? "Primary"
+                                  : "Secondary";
+                              },
+                              editorTemplate: row => {
+                                return (
+                                  <AlagehAutoComplete
+                                    div={{}}
+                                    selector={{
+                                      name: "diagnosis_type",
+                                      className: "select-fld",
+                                      value: row.diagnosis_type,
+                                      dataSource: {
+                                        textField: "name",
+                                        valueField: "value",
+                                        data: DIAG_TYPE
+                                      },
+                                      onChange: this.onchangegridcol.bind(
+                                        this,
+                                        row,
+                                        "Final"
+                                      )
+                                    }}
+                                  />
+                                );
+                              },
+                              others: { maxWidth: 70, align: "center" }
+                            },
+                            {
+                              fieldName: "icd_code",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "ICD Code"
+                                  }}
+                                />
+                              ),
+                              disabled: false,
+                              others: { maxWidth: 70, align: "center" }
+                            },
+                            {
+                              fieldName: "icd_description",
+                              label: (
+                                <AlgaehLabel
+                                  label={{
+                                    forceLabel: "Description"
+                                  }}
+                                />
+                              ),
+                              disabled: false
+                            }
+                          ]}
+                          keyId="code"
+                          dataSource={{
+                            // data: _finalDiagnosis
+                            data: _finalDiagnosis
+                          }}
+                          isEditable={true}
+                          paging={{ page: 0, rowsPerPage: 10 }}
+                          events={{
+                            onDelete: this.deleteFinalDiagnosis.bind(this),
+                            onEdit: row => {},
+
+                            onDone: this.updateDiagnosis.bind(this)
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="col-12">
@@ -357,39 +506,48 @@ class BasicSubjective extends Component {
           </div>
           <div className="">
             <ul className="rightActionIcon">
-              {" "}
-              <li>
+              <li onClick={this.showVitals.bind(this)}>
                 <i className="fas fa-heartbeat" />
-              </li>{" "}
-              <li>
+                <Vitals
+                  openVital={this.state.openVital}
+                  onClose={this.closeVitals.bind(this)}
+                />
+              </li>
+              {/* <li>
                 <i className="fas fa-allergies" />
-              </li>{" "}
-              <li>
+              </li> */}
+              <li onClick={this.showDietPlan.bind(this)}>
                 <i className="fas fa-utensils" />
-              </li>{" "}
+                <Plan
+                  openDiet={this.state.openDiet}
+                  onClose={this.closeDietPlan.bind(this)}
+                />
+              </li>
               <li>
-                <i className="fas fa-pills" />
-              </li>{" "}
+                <i
+                  className="fas fa-pills"
+                  onClick={this.showMedication.bind(this)}
+                />
+                <Plan
+                  openMedication={this.state.openMedication}
+                  onClose={this.showMedication.bind(this)}
+                />
+              </li>
               <li>
                 <i className="fas fa-hourglass-half" />
-              </li>{" "}
+              </li>
               <li>
-                <i className="fas fa-notes-medical" />
+                <i
+                  className="fas fa-notes-medical"
+                  onClick={this.showMedicalData.bind(this)}
+                />
+                <Plan
+                  openMedicaldata={this.state.openMedicaldata}
+                  onClose={this.showMedicalData.bind(this)}
+                />
               </li>
             </ul>
           </div>
-          {/* 
-          <div className="col-lg-9">
-            <ChiefComplaints />
-            <div className="row">
-              <div className="col-lg-6">
-                <Allergies />
-              </div>
-              <div className="col-lg-6">
-                <ReviewofSystems />
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     );
@@ -399,7 +557,8 @@ class BasicSubjective extends Component {
 function mapStateToProps(state) {
   return {
     assdeptanddoctors: state.assdeptanddoctors,
-    assservices: state.assservices
+    assservices: state.assservices,
+    patient_diagnosis: state.patient_diagnosis
   };
 }
 
