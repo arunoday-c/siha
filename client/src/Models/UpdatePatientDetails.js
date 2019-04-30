@@ -1,6 +1,3 @@
-import { getCookie } from "../utils/algaehApiCall";
-
-let prevLang = getCookie("Language");
 export default {
   inputParam: function(param) {
     var output;

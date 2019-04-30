@@ -74,6 +74,20 @@ class DNItemList extends Component {
                                   </span>
                                 );
                               },
+                              editorTemplate: row => {
+                                return (
+                                  <span>
+                                    <i
+                                      className="fas fa-barcode"
+                                      onClick={printBarcode.bind(
+                                        this,
+                                        this,
+                                        row
+                                      )}
+                                    />
+                                  </span>
+                                );
+                              },
                               disabled: true,
                               others: {
                                 maxWidth: 70,

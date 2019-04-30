@@ -114,6 +114,7 @@ const AddItems = $this => {
           unit_cost: $this.state.unit_cost,
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
+          item_code: $this.state.item_code,
           barcode:
             $this.state.item_code +
             $this.state.batchno +

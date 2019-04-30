@@ -4,7 +4,6 @@ import { getAmountFormart } from "../../../../utils/GlobalFunctions";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  Modal,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
 
