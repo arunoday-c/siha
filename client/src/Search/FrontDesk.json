@@ -12,10 +12,6 @@
     "label": "Arabic Name"
   },
   {
-    "fieldName": "gender",
-    "label": "Gender"
-  },
-  {
     "fieldName": "contact_number",
     "label": "Contact Number"
   }
