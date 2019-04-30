@@ -78,7 +78,7 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT report_query,report_input_series,data_manupulation from algaeh_d_reports where status='A' and report_name=?",
+            "SELECT report_query,report_input_series,data_manupulation from algaeh_d_reports where status='A' and report_name in (?)",
           values: [_inputParam.reportName]
         })
         .then(data => {

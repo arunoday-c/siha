@@ -95,7 +95,6 @@ app.use((req, res, next) => {
       // res.setHeader("Content-Encoding", "gzip");
       //  res.setHeader("connection", "keep-alive");
     }
-
     reqUser = jwtDecode(reqH["x-api-key"]).id;
     if (req.url != "/api/v1/apiAuth/authUser") {
       let header = req.headers["x-app-user-identity"];
@@ -105,7 +104,8 @@ app.use((req, res, next) => {
 
         req.body.created_by = header.algaeh_d_app_user_id;
         req.body.updated_by = header.algaeh_d_app_user_id;
-        req.userIdentity = header;
+        //  req.userIdentity = header;
+        req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
       } else {
         res.status(httpStatus.unAuthorized).json({
           success: false,

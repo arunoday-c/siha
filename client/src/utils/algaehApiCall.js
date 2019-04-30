@@ -128,6 +128,7 @@ export function algaehApiCall(options) {
 
     const headerToken = getToken();
     const x_app_user_identity = getCookie("keyResources");
+    const x_branch = getCookie("HospitalId");
     //console.log("identity", x_app_user_identity);
     if (settings.uri !== undefined || settings.uri !== "") {
       if (settings.isfetch) {
@@ -137,6 +138,7 @@ export function algaehApiCall(options) {
             "x-api-key": headerToken,
             "x-app-user-identity": x_app_user_identity,
             "x-client-ip": myIP,
+            "x-branch": x_branch,
             ..._contentType
           },
 
@@ -179,6 +181,7 @@ export function algaehApiCall(options) {
           "x-api-key": headerToken,
           "x-app-user-identity": x_app_user_identity,
           "x-client-ip": myIP,
+          "x-branch": x_branch,
           ..._contentType
         },
         httpAgent: new Agent({
