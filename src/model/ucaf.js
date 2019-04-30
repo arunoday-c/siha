@@ -127,7 +127,6 @@ let getPatientUCAF = (req, res, next) => {
               //  printQuery: true
             })
             .then(outputResult => {
-              console.log("outputResult[4].length", outputResult[4]);
               let errorString =
                 outputResult[4].length == 0 ? "Services not yet added \n" : "";
               errorString +=
