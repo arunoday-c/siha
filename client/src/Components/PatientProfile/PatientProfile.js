@@ -33,7 +33,6 @@ import {
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
-import DentalForm from "./DentalForm/DentalForm";
 import Eye from "./Eye/Eye";
 import _ from "lodash";
 import Allergies from "./Allergies/Allergies";
@@ -228,6 +227,7 @@ class PatientProfile extends Component {
     );
   }
   render() {
+    debugger;
     const module_plan = _.find(this.active_modules, f => {
       return f.module_id === parseInt(this.selected_module);
     });
@@ -443,15 +443,6 @@ class PatientProfile extends Component {
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
-                  algaehsoap="dental_form"
-                  className="nav-link"
-                >
-                  Dental Form
-                </span>
-              </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
                   algaehsoap="eye"
                   className="nav-link"
                 >
@@ -661,8 +652,6 @@ class PatientProfile extends Component {
               <Summary />
             ) : this.state.pageDisplay === "dental" ? (
               <Dental />
-            ) : this.state.pageDisplay === "dental_form" ? (
-              <DentalForm />
             ) : this.state.pageDisplay === "eye" ? (
               <Eye />
             ) : null

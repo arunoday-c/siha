@@ -11,7 +11,7 @@
 
 @media screen and (min-width: 481px) and (max-width: 1024px) and (orientation: landscape) {
   #subjectAccordian .accordion-btn {
-    width: 86.2%; } }
+    width: 85.2%; } }
 
 #subjectAccordian textarea {
   border-radius: 0 !important;
