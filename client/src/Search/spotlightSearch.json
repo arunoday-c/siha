@@ -14,10 +14,6 @@
         "label": "Arabic Name"
       },
       {
-        "fieldName": "gender",
-        "label": "Gender"
-      },
-      {
         "fieldName": "contact_number",
         "label": "Contact Number"
       }
@@ -485,10 +481,6 @@
       {
         "fieldName": "arabic_name",
         "label": "Arabic Name"
-      },
-      {
-        "fieldName": "sex",
-        "label": "Gender"
       },
       {
         "fieldName": "primary_contact_no",

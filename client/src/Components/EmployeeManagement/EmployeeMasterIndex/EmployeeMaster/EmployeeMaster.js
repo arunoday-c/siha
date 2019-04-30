@@ -11,7 +11,7 @@ import PayRollDetails from "./PayRollDetails/PayRollDetails";
 import OfficalDetails from "./OfficalDetails/OfficalDetails";
 import RulesDetails from "./RulesDetails/RulesDetails";
 
-import { AlgaehLabel, Modal } from "../../../Wrapper/algaehWrapper";
+import { AlgaehLabel, AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 // import MyContext from "../../../../utils/MyContext";
 import Enumerable from "linq";
@@ -235,232 +235,219 @@ class EmployeeMaster extends Component {
   render() {
     return (
       <div className="hims_employee_master">
-        <Modal open={this.props.open}>
-          <div className="algaeh-modal">
-            <div className="hims_employee_master">
-              <div className="popupHeader">
-                <div className="row">
-                  <div className="col-lg-8">
-                    <h4>{this.props.HeaderCaption}</h4>
-                  </div>
-                  <div className="col-lg-4">
-                    <button
-                      type="button"
-                      className=""
-                      onClick={e => {
-                        this.onClose(e);
-                      }}
+        <AlgaehModalPopUp
+          open={this.props.open}
+          events={{
+            onClose: this.onClose.bind(this)
+          }}
+          title={this.props.HeaderCaption}
+          openPopup={this.props.open}
+        >
+          <div className="hims_employee_master">
+            <div className="popupInner" style={{ height: "75vh" }}>
+              <div className="tab-container toggle-section">
+                {this.state.personalDetails.hims_d_employee_id !== null ? (
+                  <ul className="nav">
+                    <li
+                      algaehtabs={"PersonalDetails"}
+                      className={"nav-item tab-button active"}
+                      onClick={this.openTab.bind(this)}
                     >
-                      <i className="fas fa-times-circle" />
-                    </button>
-                  </div>
-                </div>
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "personal_details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"OfficalDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Official Details"
+                          }}
+                        />
+                      }
+                    </li>
+                    <li
+                      algaehtabs={"DeptUserDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "deptuser_details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"PayRollDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Payroll Details"
+                          }}
+                        />
+                      }
+                    </li>
+                    {this.state.personalDetails.isdoctor === "Y" ? (
+                      <li
+                        algaehtabs={"CommissionSetup"}
+                        className={"nav-item tab-button"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "commission_setup"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                    <li
+                      algaehtabs={"FamilyAndIdentification"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Family & Identification Details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"RulesDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Rules Details"
+                          }}
+                        />
+                      }
+                    </li>
+                  </ul>
+                ) : (
+                  <ul className="nav">
+                    <li
+                      algaehtabs={"PersonalDetails"}
+                      className={"nav-item tab-button active"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "personal_details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"OfficalDetails"}
+                      className={"nav-item tab-button"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Official Details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"DeptUserDetails"}
+                      className={"nav-item tab-button disableLi"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            fieldName: "deptuser_details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"PayRollDetails"}
+                      className={"nav-item tab-button disableLi"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Payroll Details"
+                          }}
+                        />
+                      }
+                    </li>
+                    {this.state.isdoctor === "Y" ? (
+                      <li
+                        algaehtabs={"CommissionSetup"}
+                        className={"nav-item tab-button disableLi"}
+                        onClick={this.openTab.bind(this)}
+                      >
+                        {
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "commission_setup"
+                            }}
+                          />
+                        }
+                      </li>
+                    ) : null}
+                    <li
+                      algaehtabs={"FamilyAndIdentification"}
+                      className={"nav-item tab-button disableLi"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Family & Identification Details"
+                          }}
+                        />
+                      }
+                    </li>
+
+                    <li
+                      algaehtabs={"RulesDetails"}
+                      className={"nav-item tab-button disableLi"}
+                      onClick={this.openTab.bind(this)}
+                    >
+                      {
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Rules Details"
+                          }}
+                        />
+                      }
+                    </li>
+                  </ul>
+                )}
               </div>
-
-              <div className="popupInner" style={{ height: "75vh" }}>
-                <div className="tab-container toggle-section">
-                  {this.state.personalDetails.hims_d_employee_id !== null ? (
-                    <ul className="nav">
-                      <li
-                        algaehtabs={"PersonalDetails"}
-                        className={"nav-item tab-button active"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "personal_details"
-                            }}
-                          />
-                        }
-                      </li>
-
-                      <li
-                        algaehtabs={"OfficalDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Official Details"
-                            }}
-                          />
-                        }
-                      </li>
-                      <li
-                        algaehtabs={"DeptUserDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "deptuser_details"
-                            }}
-                          />
-                        }
-                      </li>
-
-                      <li
-                        algaehtabs={"PayRollDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Payroll Details"
-                            }}
-                          />
-                        }
-                      </li>
-                      {this.state.personalDetails.isdoctor === "Y" ? (
-                        <li
-                          algaehtabs={"CommissionSetup"}
-                          className={"nav-item tab-button"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                fieldName: "commission_setup"
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
-                      <li
-                        algaehtabs={"FamilyAndIdentification"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Family & Identification Details"
-                            }}
-                          />
-                        }
-                      </li>
-
-                      <li
-                        algaehtabs={"RulesDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Rules Details"
-                            }}
-                          />
-                        }
-                      </li>
-                    </ul>
-                  ) : (
-                    <ul className="nav">
-                      <li
-                        algaehtabs={"PersonalDetails"}
-                        className={"nav-item tab-button active"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "personal_details"
-                            }}
-                          />
-                        }
-                      </li>
-
-                      <li
-                        algaehtabs={"OfficalDetails"}
-                        className={"nav-item tab-button"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Official Details"
-                            }}
-                          />
-                        }
-                      </li>
-
-                      <li
-                        algaehtabs={"DeptUserDetails"}
-                        className={"nav-item tab-button disableLi"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              fieldName: "deptuser_details"
-                            }}
-                          />
-                        }
-                      </li>
-
-                      <li
-                        algaehtabs={"PayRollDetails"}
-                        className={"nav-item tab-button disableLi"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Payroll Details"
-                            }}
-                          />
-                        }
-                      </li>
-                      {this.state.isdoctor === "Y" ? (
-                        <li
-                          algaehtabs={"CommissionSetup"}
-                          className={"nav-item tab-button disableLi"}
-                          onClick={this.openTab.bind(this)}
-                        >
-                          {
-                            <AlgaehLabel
-                              label={{
-                                fieldName: "commission_setup"
-                              }}
-                            />
-                          }
-                        </li>
-                      ) : null}
-                      <li
-                        algaehtabs={"FamilyAndIdentification"}
-                        className={"nav-item tab-button disableLi"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Family & Identification Details"
-                            }}
-                          />
-                        }
-                      </li>
-
-                      <li
-                        algaehtabs={"RulesDetails"}
-                        className={"nav-item tab-button disableLi"}
-                        onClick={this.openTab.bind(this)}
-                      >
-                        {
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Rules Details"
-                            }}
-                          />
-                        }
-                      </li>
-                    </ul>
-                  )}
-                </div>
-                {/* <MyContext.Provider
+              {/* <MyContext.Provider
                   value={{
                     state: this.state,
                     updateState: obj => {
@@ -468,71 +455,70 @@ class EmployeeMaster extends Component {
                     }
                   }}
                 > */}
-                <div className="employee-section">
-                  {this.state.pageDisplay === "PersonalDetails" ? (
-                    <PersonalDetails EmpMasterIOputs={this} />
-                  ) : this.state.pageDisplay === "OfficalDetails" ? (
-                    <OfficalDetails EmpMasterIOputs={this} />
-                  ) : this.state.pageDisplay === "DeptUserDetails" ? (
-                    <DeptUserDetails EmpMasterIOputs={this} />
-                  ) : this.state.pageDisplay === "PayRollDetails" ? (
-                    <PayRollDetails EmpMasterIOputs={this} />
-                  ) : this.state.pageDisplay === "CommissionSetup" ? (
-                    <CommissionSetup EmpMasterIOputs={this} />
-                  ) : this.state.pageDisplay === "FamilyAndIdentification" ? (
-                    <FamilyAndIdentification EmpMasterIOputs={this} />
-                  ) : this.state.pageDisplay === "RulesDetails" ? (
-                    <RulesDetails EmpMasterIOputs={this} />
-                  ) : null}
-                </div>
-                {/* </MyContext.Provider> */}
+              <div className="employee-section">
+                {this.state.pageDisplay === "PersonalDetails" ? (
+                  <PersonalDetails EmpMasterIOputs={this} />
+                ) : this.state.pageDisplay === "OfficalDetails" ? (
+                  <OfficalDetails EmpMasterIOputs={this} />
+                ) : this.state.pageDisplay === "DeptUserDetails" ? (
+                  <DeptUserDetails EmpMasterIOputs={this} />
+                ) : this.state.pageDisplay === "PayRollDetails" ? (
+                  <PayRollDetails EmpMasterIOputs={this} />
+                ) : this.state.pageDisplay === "CommissionSetup" ? (
+                  <CommissionSetup EmpMasterIOputs={this} />
+                ) : this.state.pageDisplay === "FamilyAndIdentification" ? (
+                  <FamilyAndIdentification EmpMasterIOputs={this} />
+                ) : this.state.pageDisplay === "RulesDetails" ? (
+                  <RulesDetails EmpMasterIOputs={this} />
+                ) : null}
               </div>
+              {/* </MyContext.Provider> */}
+            </div>
 
-              <div className="popupFooter">
-                <div className="col-lg-12">
-                  <div className="row">
-                    <div className="col-lg-4"> &nbsp;</div>
+            <div className="popupFooter">
+              <div className="col-lg-12">
+                <div className="row">
+                  <div className="col-lg-4"> &nbsp;</div>
 
-                    <div className="col-lg-8">
-                      <button
-                        // onClick={() => {}}
-                        onClick={InsertUpdateEmployee.bind(this, this)}
-                        type="button"
-                        className="btn btn-primary"
-                        disabled={
-                          this.props.employee_status === "I" ? true : false
-                        }
-                      >
-                        {this.state.personalDetails.hims_d_employee_id ===
-                        null ? (
-                          <AlgaehLabel label={{ fieldName: "btnSave" }} />
-                        ) : (
-                          <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
-                        )}
-                      </button>
-                      <button
-                        onClick={e => {
-                          this.onClose(e);
-                        }}
-                        type="button"
-                        className="btn btn-default"
-                      >
-                        <AlgaehLabel label={{ fieldName: "btnCancel" }} />
-                      </button>
-                      {/* <button
+                  <div className="col-lg-8">
+                    <button
+                      // onClick={() => {}}
+                      onClick={InsertUpdateEmployee.bind(this, this)}
+                      type="button"
+                      className="btn btn-primary"
+                      disabled={
+                        this.props.employee_status === "I" ? true : false
+                      }
+                    >
+                      {this.state.personalDetails.hims_d_employee_id ===
+                      null ? (
+                        <AlgaehLabel label={{ fieldName: "btnSave" }} />
+                      ) : (
+                        <AlgaehLabel label={{ fieldName: "btnUpdate" }} />
+                      )}
+                    </button>
+                    <button
+                      onClick={e => {
+                        this.onClose(e);
+                      }}
+                      type="button"
+                      className="btn btn-default"
+                    >
+                      <AlgaehLabel label={{ fieldName: "btnCancel" }} />
+                    </button>
+                    {/* <button
                         onClick={ClearEmployee.bind(this, this)}
                         type="button"
                         className="btn btn-other"
                       >
                         <AlgaehLabel label={{ fieldName: "btn_clear" }} />
                       </button> */}
-                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </Modal>
+        </AlgaehModalPopUp>
       </div>
     );
   }

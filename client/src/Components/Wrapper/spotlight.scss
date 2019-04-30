@@ -66,16 +66,18 @@ $black: #000;
 #spotlightResultArea {
   background-color: #f9f5f4;
   width: 100%;
-  max-height: 350px;
   overflow: auto;
 
   .ReactTable {
-    max-height: 349px !important;
+    max-height: 54vh !important;
+  }
+  .gridToolSec {
+    margin: 0 !important;
   }
 }
 
 .helpText {
-  height: 35px;
+  height: 32px;
   width: 70vw;
   margin: 0 auto;
   text-align: right;

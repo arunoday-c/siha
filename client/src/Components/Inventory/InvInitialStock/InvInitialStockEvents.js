@@ -63,7 +63,7 @@ const itemchangeText = ($this, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   getItemUom($this);
-
+  debugger;
   $this.setState({
     [name]: value,
     item_category_id: e.selected.category_id,
@@ -93,6 +93,7 @@ const AddItems = $this => {
         });
         document.querySelector("[name='unit_cost']").focus();
       } else {
+        debugger;
         let inventory_stock_detail = $this.state.inventory_stock_detail;
 
         let itemObj = {
@@ -109,6 +110,7 @@ const AddItems = $this => {
           unit_cost: $this.state.unit_cost,
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
+          item_code: $this.state.item_code,
           barcode:
             $this.state.item_code +
             $this.state.batchno +

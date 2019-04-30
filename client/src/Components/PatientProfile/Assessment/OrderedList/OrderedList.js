@@ -15,7 +15,7 @@ import {
 } from "../../../../utils/algaehApiCall";
 import Options from "../../../../Options.json";
 import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
-import _ from "lodash";
+// import _ from "lodash";
 
 class OrderedList extends PureComponent {
   constructor(props) {

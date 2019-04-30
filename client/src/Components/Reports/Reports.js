@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./reports.css";
-import { AlagehAutoComplete, AlagehFormGroup } from "../Wrapper/algaehWrapper";
+import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
 import data from "./reports_data";
 import AlgaehReport from "../Wrapper/printReports";
 class Reports extends Component {

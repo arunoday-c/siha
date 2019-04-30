@@ -43,7 +43,7 @@
           position: absolute;
           z-index: 9; }
   .patientProfile .patientInfo-Top .patientName {
-    max-width: 230px;
+    max-width: 17vw;
     margin-top: 2px;
     border-left: 1px solid #e1e1e1;
     border-right: 1px solid #e1e1e1;
@@ -90,7 +90,7 @@
       .patientProfile .patientInfo-Top .patientHospitalDetail span b {
         color: #00a796; }
   .patientProfile .patientInfo-Top .patientVital {
-    max-width: 40vw;
+    max-width: 28vw;
     line-height: 1.4rem;
     padding-left: 10px;
     padding-right: 10px;

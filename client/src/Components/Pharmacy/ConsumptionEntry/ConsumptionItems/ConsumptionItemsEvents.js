@@ -193,7 +193,6 @@ export default function ConsumptionItemsEvents() {
             quantity: 0,
             uom_id: null,
 
-            uom_id: null,
             qtyhand: 0,
             barcode: null,
             expiry_date: null,

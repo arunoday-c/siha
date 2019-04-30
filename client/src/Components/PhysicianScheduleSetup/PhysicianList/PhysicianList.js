@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import "./physician_list.css";
-import { Modal } from "@material-ui/core";
 import {
   AlagehFormGroup,
   AlgaehDateHandler,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Enumerable from "linq";
@@ -133,145 +133,146 @@ class PhysicianList extends Component {
   render() {
     return (
       <div className="physician_list">
-        <Modal open={this.state.openModal}>
-          <div className="algaeh-modal">
-            <div className="popupHeader">
-              <h4>Cancel Working Hours</h4>
-            </div>
-            <div className="popupInner">
-              <div className="col-lg-12 margin-top-15">
-                <div className="col-lg-12 card">
-                  <div className="row ">
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-3" }}
-                      label={{
-                        forceLabel: "Selected Doctor",
-                        isImp: true
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "from_time",
-                        value: this.state.from_time,
-                        events: {
-                          onChange: null
-                        },
-                        others: {
-                          disabled: true
-                        }
-                      }}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
-                      label={{ forceLabel: "Selected From Date", isImp: true }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "from_date"
-                      }}
-                      events={{
-                        onChange: selectedDate => {
-                          this.setState({ from_date: selectedDate });
-                        }
-                      }}
-                      value={this.state.from_date}
-                    />
-                    <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
-                      label={{ forceLabel: "Selected To Date", isImp: true }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "to_date"
-                      }}
-                      events={{
-                        onChange: selectedDate => {
-                          this.setState({ to_date: selectedDate });
-                        }
-                      }}
-                      value={this.state.to_date}
-                    />
-                    <div className="col-lg-1 form-group margin-top-15">
-                      <span className="fas fa-search fa-2x" />
-                    </div>
+        <AlgaehModalPopUp
+          events={{
+            onClose: this.handleClose.bind(this)
+          }}
+          title="Cancel Working Hours"
+          openPopup={this.state.openModal}
+        >
+          <div className="popupInner">
+            <div className="col-lg-12 margin-top-15">
+              <div className="col-lg-12 card">
+                <div className="row ">
+                  <AlagehFormGroup
+                    div={{ className: "col-lg-3" }}
+                    label={{
+                      forceLabel: "Selected Doctor",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "from_time",
+                      value: this.state.from_time,
+                      events: {
+                        onChange: null
+                      },
+                      others: {
+                        disabled: true
+                      }
+                    }}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col-lg-3" }}
+                    label={{ forceLabel: "Selected From Date", isImp: true }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "from_date"
+                    }}
+                    events={{
+                      onChange: selectedDate => {
+                        this.setState({ from_date: selectedDate });
+                      }
+                    }}
+                    value={this.state.from_date}
+                  />
+                  <AlgaehDateHandler
+                    div={{ className: "col-lg-3" }}
+                    label={{ forceLabel: "Selected To Date", isImp: true }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "to_date"
+                    }}
+                    events={{
+                      onChange: selectedDate => {
+                        this.setState({ to_date: selectedDate });
+                      }
+                    }}
+                    value={this.state.to_date}
+                  />
+                  <div className="col-lg-1 form-group margin-top-15">
+                    <span className="fas fa-search fa-2x" />
                   </div>
                 </div>
               </div>
             </div>
+          </div>
 
-            <div className="col portlet portlet-bordered">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Appointment Date</h3>
-                </div>
-              </div>
-
-              <div className="portlet-body">
-                <table className="table table-striped table-bordered table-hover table-sm">
-                  <thead>
-                    <tr>
-                      <th scope="col" />
-                      <th scope="col">Appointment Date</th>
-                      <th scope="col">From Work Hour</th>
-                      <th scope="col">To Work Hour</th>
-                      <th scope="col">Working Break 1</th>
-                      <th scope="col">Working Break 2</th>
-                      <th scope="col">Working Days</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">
-                        <input type="checkbox" />
-                      </th>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <input type="checkbox" />
-                      </th>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <input type="checkbox" />
-                      </th>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                      <td>---</td>
-                    </tr>
-                  </tbody>
-                </table>
+          <div className="col portlet portlet-bordered">
+            <div className="portlet-title">
+              <div className="caption">
+                <h3 className="caption-subject">Appointment Date</h3>
               </div>
             </div>
-            <div className="popupFooter">
-              <button
-                type="button"
-                className="btn btn-primary"
-                //onClick={this.handleClose}
-              >
-                Amend Timeslot
-              </button>
-              <button
-                type="button"
-                className="btn btn-default"
-                onClick={this.handleClose.bind(this)}
-              >
-                Close
-              </button>
+
+            <div className="portlet-body">
+              <table className="table table-striped table-bordered table-hover table-sm">
+                <thead>
+                  <tr>
+                    <th scope="col" />
+                    <th scope="col">Appointment Date</th>
+                    <th scope="col">From Work Hour</th>
+                    <th scope="col">To Work Hour</th>
+                    <th scope="col">Working Break 1</th>
+                    <th scope="col">Working Break 2</th>
+                    <th scope="col">Working Days</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">
+                      <input type="checkbox" />
+                    </th>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <input type="checkbox" />
+                    </th>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">
+                      <input type="checkbox" />
+                    </th>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                    <td>---</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
-        </Modal>
+          <div className="popupFooter">
+            <button
+              type="button"
+              className="btn btn-primary"
+              //onClick={this.handleClose}
+            >
+              Amend Timeslot
+            </button>
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={this.handleClose.bind(this)}
+            >
+              Close
+            </button>
+          </div>
+        </AlgaehModalPopUp>
         {/* End of Modal */}
 
         <div className="col-lg-12">
@@ -363,7 +364,8 @@ class PhysicianList extends Component {
                             forceLabel: "Select Month"
                           }}
                           selector={{
-                            sort:"off",name: "month",
+                            sort: "off",
+                            name: "month",
                             className: "select-fld",
                             value: this.state.month,
                             dataSource: {
@@ -446,8 +448,8 @@ class PhysicianList extends Component {
                               {row.from_break_hr2 !== null
                                 ? row.from_break_hr2
                                 : "---" + " to " + row.to_break_hr2 !== null
-                                  ? row.to_break_hr2
-                                  : "---"}
+                                ? row.to_break_hr2
+                                : "---"}
                             </td>
                             <td />
                             <td />

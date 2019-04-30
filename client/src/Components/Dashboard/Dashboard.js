@@ -7,11 +7,8 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
-import { getCookie } from "../../utils/algaehApiCall.js";
-import {
-  AlgaehCloseContainer,
-  getAmountFormart
-} from "../../utils/GlobalFunctions";
+// import { getCookie } from "../../utils/algaehApiCall.js";
+import { getAmountFormart } from "../../utils/GlobalFunctions";
 
 const AdmissionsReadmissionData = {
   datasets: [
@@ -97,75 +94,75 @@ const AdmissionsReadmissionDataOptions = {
   }
 };
 
-const OutpatientsInpatientsData = {
-  datasets: [
-    {
-      type: "bar",
-      label: "Inpatients",
-      data: [2712, 1334, 2465, 2232],
-      fill: false,
-      backgroundColor: "#71B37C",
-      borderColor: "#71B37C",
-      // hoverBackgroundColor: "#71B37C",
-      // hoverBorderColor: "#71B37C",
-      yAxisID: "y-axis-1"
-    },
-    {
-      type: "bar",
-      label: "Outpatients",
-      data: [1712, 1134, 1965, 1832],
-      fill: false,
-      backgroundColor: "#34b8bc",
-      borderColor: "#34b8bc",
-      // hoverBackgroundColor: "#34b8bc",
-      // hoverBorderColor: "#34b8bc",
-      yAxisID: "y-axis-1"
-    }
-  ]
-};
+// const OutpatientsInpatientsData = {
+//   datasets: [
+//     {
+//       type: "bar",
+//       label: "Inpatients",
+//       data: [2712, 1334, 2465, 2232],
+//       fill: false,
+//       backgroundColor: "#71B37C",
+//       borderColor: "#71B37C",
+//       // hoverBackgroundColor: "#71B37C",
+//       // hoverBorderColor: "#71B37C",
+//       yAxisID: "y-axis-1"
+//     },
+//     {
+//       type: "bar",
+//       label: "Outpatients",
+//       data: [1712, 1134, 1965, 1832],
+//       fill: false,
+//       backgroundColor: "#34b8bc",
+//       borderColor: "#34b8bc",
+//       // hoverBackgroundColor: "#34b8bc",
+//       // hoverBorderColor: "#34b8bc",
+//       yAxisID: "y-axis-1"
+//     }
+//   ]
+// };
 
-const OutpatientsInpatientsDataOptions = {
-  responsive: true,
-  legend: {
-    position: "bottom",
-    labels: {
-      boxWidth: 10
-    }
-  },
-  tooltips: {
-    mode: "label"
-  },
-  elements: {
-    line: {
-      fill: false
-    }
-  },
-  scales: {
-    xAxes: [
-      {
-        display: true,
-        gridLines: {
-          display: false
-        },
-        labels: ["Week 42 2018", "Week 43 2018", "Week 44 2018", "Week 45 2018"]
-      }
-    ],
-    yAxes: [
-      {
-        type: "linear",
-        display: true,
-        position: "left",
-        id: "y-axis-1",
-        gridLines: {
-          display: false
-        },
-        labels: {
-          show: true
-        }
-      }
-    ]
-  }
-};
+// const OutpatientsInpatientsDataOptions = {
+//   responsive: true,
+//   legend: {
+//     position: "bottom",
+//     labels: {
+//       boxWidth: 10
+//     }
+//   },
+//   tooltips: {
+//     mode: "label"
+//   },
+//   elements: {
+//     line: {
+//       fill: false
+//     }
+//   },
+//   scales: {
+//     xAxes: [
+//       {
+//         display: true,
+//         gridLines: {
+//           display: false
+//         },
+//         labels: ["Week 42 2018", "Week 43 2018", "Week 44 2018", "Week 45 2018"]
+//       }
+//     ],
+//     yAxes: [
+//       {
+//         type: "linear",
+//         display: true,
+//         position: "left",
+//         id: "y-axis-1",
+//         gridLines: {
+//           display: false
+//         },
+//         labels: {
+//           show: true
+//         }
+//       }
+//     ]
+//   }
+// };
 
 const AvgWaitingTimeDep = {
   labels: [
@@ -377,28 +374,28 @@ const CostPayerTypeDataOption = {
   }
 };
 
-const AreaData = {
-  labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
-  datasets: [
-    {
-      fill: true,
-      lineTension: 0.1,
-      backgroundColor: "#34b8bc",
-      borderColor: "#DCAC66",
-      borderCapStyle: "butt",
-      borderDash: [],
-      borderDashOffset: 0.0,
-      borderJoinStyle: "miter",
-      pointBorderColor: "#34b8bc",
-      pointBackgroundColor: "#34b8bc",
-      pointBorderWidth: 1,
-      pointHoverRadius: 5,
-      pointRadius: 4,
-      pointHitRadius: 50,
-      data: [10, 5, 8, 3, 5]
-    }
-  ]
-};
+// const AreaData = {
+//   labels: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"],
+//   datasets: [
+//     {
+//       fill: true,
+//       lineTension: 0.1,
+//       backgroundColor: "#34b8bc",
+//       borderColor: "#DCAC66",
+//       borderCapStyle: "butt",
+//       borderDash: [],
+//       borderDashOffset: 0.0,
+//       borderJoinStyle: "miter",
+//       pointBorderColor: "#34b8bc",
+//       pointBackgroundColor: "#34b8bc",
+//       pointBorderWidth: 1,
+//       pointHoverRadius: 5,
+//       pointRadius: 4,
+//       pointHitRadius: 50,
+//       data: [10, 5, 8, 3, 5]
+//     }
+//   ]
+// };
 
 class Dashboard extends Component {
   constructor(props) {

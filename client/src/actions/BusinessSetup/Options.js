@@ -1,6 +1,5 @@
 // Options API call
 
-"use strict";
 import { algaehApiCall } from "../../utils/algaehApiCall.js";
 
 export function getOptions() {

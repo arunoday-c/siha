@@ -192,7 +192,6 @@ export default function ConsumptionItemsEvents() {
             item_group_id: null,
             item_id: null,
             quantity: 0,
-            uom_id: null,
 
             uom_id: null,
             qtyhand: 0,

@@ -42,7 +42,7 @@ export default function ProceduresEvent() {
       });
     },
     AddToList: $this => {
-      let isError = false;
+      // let isError = false;
 
       let SelectedService = _.filter($this.state.ProcedureDetail, f => {
         return f.item_id === $this.state.item_id;

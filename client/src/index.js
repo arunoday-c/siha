@@ -2,7 +2,6 @@ import React from "react";
 import ReactDOM from "react-dom";
 //import { render } from "react-dom";
 import { Provider } from "react-redux";
-//import { MuiThemeProvider, createMuiTheme } from "@material-ui/core";
 import { AlagehReducers } from "./reducers/algaehReducers";
 import logger from "redux-logger";
 import routes from "./routes.js";

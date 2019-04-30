@@ -13,7 +13,7 @@ import {
   AlgaehDateHandler,
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
-import Vitals from "../Vitals/Vitals";
+// import Vitals from "../Vitals/Vitals";
 import LabResults from "../Assessment/LabResult/LabResult";
 import RadResults from "../Assessment/RadResult/RadResult";
 

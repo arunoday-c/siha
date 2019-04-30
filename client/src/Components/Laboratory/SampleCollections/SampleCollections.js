@@ -10,7 +10,7 @@ import { CollectSample, printBarcode } from "./SampleCollectionEvent";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  Modal
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
@@ -79,28 +79,16 @@ class SampleCollectionPatient extends PureComponent {
     return (
       <React.Fragment>
         <div>
-          <Modal open={this.props.open}>
+          <AlgaehModalPopUp
+            events={{
+              onClose: this.onClose.bind(this)
+            }}
+            title="Specimen Collections"
+            openPopup={this.props.open}
+          >
             <MyContext.Consumer>
               {context => (
-                <div className="algaeh-modal">
-                  <div className="popupHeader">
-                    <div className="row">
-                      <div className="col-lg-8">
-                        <h4>Specimen Collections</h4>
-                      </div>
-                      <div className="col-lg-4">
-                        <button
-                          type="button"
-                          className=""
-                          onClick={e => {
-                            this.onClose(e);
-                          }}
-                        >
-                          <i className="fas fa-times-circle" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                <div>
                   <div className="col-lg-12 popupInner">
                     <div className="row form-details">
                       <div className="col-lg-3">
@@ -426,7 +414,7 @@ class SampleCollectionPatient extends PureComponent {
                 </div>
               )}
             </MyContext.Consumer>
-          </Modal>
+          </AlgaehModalPopUp>
         </div>
       </React.Fragment>
     );
