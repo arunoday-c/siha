@@ -1,0 +1,8 @@
+.phy-sch-setup .physicianList {
+  max-height: 37vh; }
+  .phy-sch-setup .physicianList li {
+    margin: 0 !important;
+    padding: 0 !important; }
+    .phy-sch-setup .physicianList li input[type="checkbox"],
+    .phy-sch-setup .physicianList li input[type="radio"] {
+      margin: 5px 10px 5px 5px !important; }

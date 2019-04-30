@@ -573,19 +573,13 @@ let getNurseMyDay = (req, res, next) => {
 
     let where = whereCondition(extend(getMydayWhere, req.query));
     const inputParam = req.query;
-    let _isExists = "";
-    if (inputParam.provider_id != null) {
-      _isExists += _mysql.mysqlQueryFormat(
-        " AND provider_id",
-        inputParam.provider_id
-      );
-    }
-    if (inputParam.sub_department_id != null) {
-      _isExists += _mysql.mysqlQueryFormat(
-        " AND sub_department_id",
-        inputParam.sub_department_id
-      );
-    }
+    // let _isExists = "";
+    // if (inputParam.provider_id != null) {
+    //   _isExists += " AND provider_id = " inputParam.provider_id;
+    // }
+    // if (inputParam.sub_department_id != null) {
+    //   (_isExists += " AND sub_department_id"), inputParam.sub_department_id;
+    // }
     // _mysql.executeQuery({
     //   query:
     //     "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
