@@ -222,7 +222,15 @@ class PatientProfile extends Component {
   }
   renderUCAFReport() {
     return (
-      <AlgaehModalPopUp openPopup={this.state.openUCAF} title="UCAF 2.0">
+      <AlgaehModalPopUp
+        openPopup={this.state.openUCAF}
+        title="UCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openUCAF: false });
+          }
+        }}
+      >
         <UcafEditor dataProps={this.state.UCAFData} />
       </AlgaehModalPopUp>
     );

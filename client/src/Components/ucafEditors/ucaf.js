@@ -47,25 +47,16 @@ export default class UcafEditor extends Component {
         }
       },
       onSuccess: res => {
-        debugger;
         let reader = new FileReader();
         reader.onloadend = () => {
-          debugger;
-
-          // that.setState({ ucaf_data: reader.result }, () => {
-
-          // });
           let myWindow = window.open(
             "{{ product.metafields.google.custom_label_0 }}",
             "_blank"
           );
-
           myWindow.document.write(
             "<embed src= '" + reader.result + "' width='100%' height='100%' />"
           );
           myWindow.document.title = "Algaeh UCAF 2.0";
-          // myWindow.print();
-          // myWindow.close();
         };
 
         reader.readAsDataURL(res.data);
