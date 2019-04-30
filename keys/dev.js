@@ -34,7 +34,10 @@ exports.default = {
     connectionURI:
       "mongodb://algaeh_root:medteam2013@49.206.18.38:27017/algaeh_hims_mongo_db"
   },
-
+  running: {
+    date: "20190429",
+    counter: 0
+  },
   //Db Date format
   dbFormat: {
     date: "YYYY-MM-DD"

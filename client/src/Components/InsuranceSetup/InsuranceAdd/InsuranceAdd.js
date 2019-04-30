@@ -25,15 +25,15 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-const styles = theme => ({
-  instructions: {
-    marginTop: theme.spacing.unit,
-    marginBottom: theme.spacing.unit
-  },
-  button: {
-    marginRight: theme.spacing.unit
-  }
-});
+// const styles = theme => ({
+//   instructions: {
+//     marginTop: theme.spacing.unit,
+//     marginBottom: theme.spacing.unit
+//   },
+//   button: {
+//     marginRight: theme.spacing.unit
+//   }
+// });
 
 function getSteps() {
   return ["Insurance Provider", "Sub Insurance", "Network/Plan", "Price List"];

@@ -278,7 +278,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
                       screen_name: s.screen_name,
                       page_to_redirect: s.page_to_redirect,
                       other_language: s.other_language,
-                      module_id: s.module_id
+                      module_id: s.module_id,
+                      module_plan: s.module_plan
                     };
                   })
                   .ToArray()
@@ -301,7 +302,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
       _mysql
         .executeQuery({
           query:
-            "select  algaeh_m_module_role_privilage_mapping_id,module_id,module_code,module_name, \
+            "select  algaeh_m_module_role_privilage_mapping_id,module_id,module_code,module_name, module_plan,\
             icons,module_code,other_language, MRP.module_id from algaeh_m_module_role_privilage_mapping MRP\
             inner join algaeh_d_app_module M on MRP.module_id=M.algaeh_d_module_id\
             where MRP.record_status='A' and M.record_status=md5('A') and MRP.role_id=?  order by display_order;\
@@ -339,7 +340,8 @@ let getRoleBaseActiveModules = (req, res, next) => {
                       other_language: s.other_language,
                       algaeh_m_screen_role_privilage_mapping_id:
                         s.algaeh_m_screen_role_privilage_mapping_id,
-                      module_id: s.module_id
+                      module_id: s.module_id,
+                      module_plan: s.module_plan
                     };
                   })
                   .ToArray()

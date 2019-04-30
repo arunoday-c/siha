@@ -6,12 +6,12 @@ import "./PatientDetails.css";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
 import MyContext from "../../../utils/MyContext.js";
 
-import {
-  AlgaehDateHandler,
-  AlagehFormGroup,
-  AlgaehDataGrid,
-  AlagehAutoComplete
-} from "../../Wrapper/algaehWrapper";
+// import {
+//   AlgaehDateHandler,
+//   AlagehFormGroup,
+//   AlgaehDataGrid,
+//   AlagehAutoComplete
+// } from "../../Wrapper/algaehWrapper";
 import AlgaehSecurity from "../../Wrapper/algehSecurity";
 export default class PatientDetails extends PureComponent {
   constructor(props) {

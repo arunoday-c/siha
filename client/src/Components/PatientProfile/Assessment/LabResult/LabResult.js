@@ -8,7 +8,7 @@ import "./../../../../styles/site.css";
 
 import {
   getLabResult,
-  getAnalytes,
+  // getAnalytes,
   ShowTestAnalyte,
   CloseTestAnalyte
 } from "./LabResultEvents";

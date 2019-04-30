@@ -58,6 +58,7 @@ class PersistentDrawer extends React.Component {
       method: "GET",
       onSuccess: dataResponse => {
         if (dataResponse.data.success) {
+          debugger;
           const _module = Enumarable.from(dataResponse.data.records)
             .select(s => {
               return {
@@ -341,7 +342,8 @@ class PersistentDrawer extends React.Component {
       this.scrollLeftPanel.scrollTop = _offSet;
   }
 
-  TriggerPath(submenu, e) {
+  TriggerPath(submenu, module_id, e) {
+    debugger;
     const name = submenu.page_to_redirect.replace(/\s/g, ""); // e.currentTarget.getAttribute("name");
 
     // submenu.screen_name === "Doctor Appointment"
@@ -356,12 +358,13 @@ class PersistentDrawer extends React.Component {
 
     let screenName = submenu.page_to_redirect.replace(/\s/g, "");
 
+    debugger;
     let lang_className =
       this.state.Language === "en" ? " english_component" : " arabic_component";
     const _menuselected = e.currentTarget.getAttribute("menuselected");
     const _submenuselected = submenu.screen_code; //e.currentTarget.getAttribute("submenuselected");
     setCookie("ScreenName", name, 30);
-    setCookie("module_id", e.currentTarget.getAttribute("moduleid"), 30);
+    setCookie("module_id", module_id, 30);
     // AlgaehLoader({ show: true });
 
     this.setState({
@@ -412,7 +415,7 @@ class PersistentDrawer extends React.Component {
         // menuList_condition;
         if (submenu.length > 0) {
           menuList_condition.push({
-            algaeh_d_module_id: obj.algaeh_d_module_id,
+            module_id: obj.module_id,
             icons: obj.icons,
             module_code: obj.module_code,
             module_name: obj.module_name,
@@ -453,9 +456,12 @@ class PersistentDrawer extends React.Component {
               <ul className="tree-structure-menu">
                 {menu.ScreenList.map((submenu, indexSub) => (
                   <li
-                    onClick={this.TriggerPath.bind(this, submenu)}
+                    onClick={this.TriggerPath.bind(
+                      this,
+                      submenu,
+                      menu.module_id
+                    )}
                     menuselected={menu.module_code}
-                    moduleid={menu.module_id}
                     key={indexSub}
                     className={
                       activeNode !== undefined && activeNode !== null

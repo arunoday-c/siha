@@ -188,6 +188,8 @@ export default class LeaveYearlyProcess extends Component {
         }
 
         break;
+      default:
+        break;
     }
   }
 

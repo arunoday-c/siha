@@ -108,7 +108,6 @@ export default class ExaminationDiagram extends Component {
               <AlgaehFile
                 name={"attach_" + _unique}
                 accept="image/*"
-                noImage={true}
                 showActions={false}
                 noImage="noDiagram"
                 serviceParameters={{
@@ -144,7 +143,6 @@ export default class ExaminationDiagram extends Component {
             <AlgaehFile
               name={"attach_" + _unique}
               accept="image/*"
-              noImage={true}
               showActions={false}
               noImage="noDiagram"
               serviceParameters={{
@@ -163,12 +161,12 @@ export default class ExaminationDiagram extends Component {
   /*
   on File Upload from Canvas get image
  */
-  onFileUploadImage(imageDetails) {
-    this.setState({
-      image: imageDetails.image,
-      name: imageDetails.name
-    });
-  }
+  // onFileUploadImage(imageDetails) {
+  //   this.setState({
+  //     image: imageDetails.image,
+  //     name: imageDetails.name
+  //   });
+  // }
   onSaveImage(imageDetails) {
     const _saveAsChecked =
       this.state.existingDiagram.length === 0 ? "new" : "existing";
@@ -340,8 +338,7 @@ export default class ExaminationDiagram extends Component {
                     showSave: true,
                     showSavePopup: false,
                     remarks: undefined,
-                    diagram_desc: undefined,
-                    showSave: true
+                    diagram_desc: undefined
                   });
                 })
                 .catch(error => {

@@ -1695,24 +1695,26 @@ class EarningsDeductions extends Component {
                           );
                         },
                         editorTemplate: row => {
-                          <AlagehAutoComplete
-                            div={{ className: "col" }}
-                            selector={{
-                              name: "round_off_type",
-                              className: "select-fld",
-                              value: row.round_off_type,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.ROUND_OFF_TYPE
-                              },
-                              others: {
-                                errormessage: "Field cannot be blank",
-                                required: true
-                              },
-                              onChange: this.changeGridEditors.bind(this, row)
-                            }}
-                          />;
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                name: "round_off_type",
+                                className: "select-fld",
+                                value: row.round_off_type,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.ROUND_OFF_TYPE
+                                },
+                                others: {
+                                  errormessage: "Field cannot be blank",
+                                  required: true
+                                },
+                                onChange: this.changeGridEditors.bind(this, row)
+                              }}
+                            />
+                          );
                         }
                       },
                       {

@@ -29,7 +29,8 @@ app.use((req, res, next) => {
     let header = reqH["x-app-user-identity"];
     if (header != null && header != "" && header != "null") {
       header = utliites.AlgaehUtilities().decryption(header);
-      req.userIdentity = header;
+
+      req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
       let reqUser = utliites.AlgaehUtilities().getTokenData(_token).id;
       utliites
         .AlgaehUtilities()

@@ -47,7 +47,6 @@ class OrderProcedureItems extends Component {
       location_type: null,
       procedure_id: null,
       location_id: null,
-      location_type: null,
       patient_id: null,
       episode_id: null
     };
