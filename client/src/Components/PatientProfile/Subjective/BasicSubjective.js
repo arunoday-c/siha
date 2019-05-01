@@ -162,18 +162,22 @@ class BasicSubjective extends Component {
                     <div className="row">
                       <div className="col-12">
                         <div className="row">
-                          <AlgaehLabel
-                            label={{
-                              forceLabel: "Enter Chief Complaint"
-                            }}
-                          />
-                          <textarea
-                            value={this.state.chief_complaint}
-                            name="chief_complaint"
-                            onChange={this.textAreaEvent.bind(this)}
-                          >
-                            {this.state.chief_complaint}
-                          </textarea>
+                          <div className="col-12">
+                            {" "}
+                            <AlgaehLabel
+                              label={{
+                                forceLabel: "Enter Chief Complaint"
+                              }}
+                            />
+                            <textarea
+                              style={{ height: "17vh" }}
+                              value={this.state.chief_complaint}
+                              name="chief_complaint"
+                              onChange={this.textAreaEvent.bind(this)}
+                            >
+                              {this.state.chief_complaint}
+                            </textarea>
+                          </div>
                           {/* <AlagehFormGroup
                             div={{ className: "col form-group" }}
                             label={{
@@ -273,18 +277,21 @@ class BasicSubjective extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-body">
                     <div className="row">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Enter Significant Signs"
-                        }}
-                      />
-                      <textarea
-                        value={this.state.other_signs}
-                        name="other_signs"
-                        onChange={this.textAreaEvent.bind(this)}
-                      >
-                        {this.state.other_signs}
-                      </textarea>
+                      <div className="col-12">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Enter Significant Signs"
+                          }}
+                        />
+                        <textarea
+                          style={{ height: "17vh" }}
+                          value={this.state.other_signs}
+                          name="other_signs"
+                          onChange={this.textAreaEvent.bind(this)}
+                        >
+                          {this.state.other_signs}
+                        </textarea>
+                      </div>
 
                       {/* <AlagehFormGroup
                         div={{ className: "col form-group" }}
@@ -314,18 +321,21 @@ class BasicSubjective extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-body">
                     <div className="row">
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Other Signs"
-                        }}
-                      />
-                      <textarea
-                        value={this.state.significant_signs}
-                        name="significant_signs"
-                        onChange={this.textAreaEvent.bind(this)}
-                      >
-                        {this.state.other_signs}
-                      </textarea>
+                      <div className="col-12">
+                        <AlgaehLabel
+                          label={{
+                            forceLabel: "Other Signs"
+                          }}
+                        />
+                        <textarea
+                          style={{ height: "23vh" }}
+                          value={this.state.significant_signs}
+                          name="significant_signs"
+                          onChange={this.textAreaEvent.bind(this)}
+                        >
+                          {this.state.other_signs}
+                        </textarea>
+                      </div>
                       {/* <AlagehFormGroup
                         div={{ className: "col form-group" }}
                         label={{

@@ -383,7 +383,7 @@ class OrderMedication extends Component {
                 data: this.state.medicationitems
               }}
               // isEditable={true}
-              paging={{ page: 0, rowsPerPage: 3 }}
+              paging={{ page: 0, rowsPerPage: 10 }}
               events={{
                 onDelete: deleteItems.bind(this, this),
                 onEdit: row => {}
@@ -440,6 +440,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(Orde
-    rMedication)
+  )(OrderMedication)
 );

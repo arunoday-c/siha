@@ -17,7 +17,8 @@
     margin-bottom: -15px;
     margin-top: -10px; }
   .hptl-phase1-ordering-services-form #doctorOrder .ReactTable {
-    height: 30vh !important; }
+    height: 27vh !important;
+    margin-bottom: 15px; }
 
 #Services_Ordering .ReactTable {
   height: 54vh !important; }

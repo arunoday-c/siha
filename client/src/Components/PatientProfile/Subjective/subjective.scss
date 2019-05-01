@@ -114,6 +114,9 @@
       }
       i {
         color: lighten($color-black, 50%);
+        &:hover {
+          color: $color-white;
+        }
       }
     }
   }
