@@ -11,6 +11,7 @@ import algaehUtilities from "algaeh-utilities/utilities";
 const exec = require("child_process").exec;
 const app = exxpress();
 app.server = http.createServer(app);
+
 app.use(cors());
 const _port = process.env.PORT;
 app.use(
@@ -18,6 +19,11 @@ app.use(
     limit: "200kb"
   })
 );
+// app.use(
+//   exxpress.static(
+//     path.join(process.cwd(), "/algaeh_report_tool/templates/report_assets")
+//   )
+// );
 app.use(compression());
 if (process.env.NODE_ENV == "production") {
   app.set("view cache", true);
