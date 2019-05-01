@@ -6,7 +6,7 @@ import BasicSubjective from "./Subjective/BasicSubjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import ExamDiagramStandolone from "./ExamDiagramStandolone/ExamDiagramStandolone";
 import Assesment from "./Assessment/Assessment";
-import Plan from "./Plan/Plan";
+
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
 import AlgaehFile from "../Wrapper/algaehFileUpload";
 import {
@@ -27,7 +27,8 @@ import {
   getPatientVitals,
   getPatientDiet,
   getPatientDiagnosis,
-  getPatientAllergies
+  getPatientAllergies,
+  getPatientHistory
 } from "./PatientProfileHandlers";
 // import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
@@ -69,6 +70,7 @@ class PatientProfile extends Component {
     getPatientAllergies(this);
     getPatientDiet(this);
     getPatientDiagnosis(this);
+    getPatientHistory(this);
     this.getLocation();
     this.changeTabs = this.changeTabs.bind(this);
   }
@@ -430,15 +432,7 @@ class PatientProfile extends Component {
                   Assesment
                 </span>
               </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="plan"
-                  className="nav-link"
-                >
-                  Plan
-                </span>
-              </li>
+
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
@@ -558,12 +552,13 @@ class PatientProfile extends Component {
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
-                  algaehsoap="plan"
+                  algaehsoap="exam_diagram"
                   className="nav-link"
                 >
-                  Plan
+                  Examination Diagram
                 </span>
               </li>
+
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
@@ -664,8 +659,6 @@ class PatientProfile extends Component {
               <ExamDiagramStandolone />
             ) : this.state.pageDisplay === "assesment" ? (
               <Assesment vat_applicable={this.vatApplicable()} />
-            ) : this.state.pageDisplay === "plan" ? (
-              <Plan />
             ) : this.state.pageDisplay === "summary" ? (
               <Summary />
             ) : this.state.pageDisplay === "dental" ? (
@@ -677,8 +670,8 @@ class PatientProfile extends Component {
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (
             <BasicSubjective vat_applicable={this.vatApplicable()} />
-          ) : this.state.pageDisplay === "plan" ? (
-            <Plan />
+          ) : this.state.pageDisplay === "exam_diagram" ? (
+            <ExamDiagramStandolone />
           ) : this.state.pageDisplay === "summary" ? (
             <Summary />
           ) : null}
@@ -704,7 +697,8 @@ function mapStateToProps(state) {
     patient_vitals: state.patient_vitals,
     patient_diet: state.patient_diet,
     patient_diagnosis: state.patient_diagnosis,
-    inventorylocations: state.inventorylocations
+    inventorylocations: state.inventorylocations,
+    patient_history: state.patient_history
   };
 }
 
@@ -716,7 +710,8 @@ function mapDispatchToProps(dispatch) {
       getPatientVitals: AlgaehActions,
       getPatientDiet: AlgaehActions,
       getPatientDiagnosis: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
+      getPatientHistory: AlgaehActions
     },
     dispatch
   );

@@ -22,6 +22,7 @@ import Plan from "../Plan/Plan";
 
 import SubjectiveHandler from "./SubjectiveHandler";
 import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
+import PatientHistory from "../PatientHistory/PatientHistory";
 
 class BasicSubjective extends Component {
   constructor(props) {
@@ -103,6 +104,12 @@ class BasicSubjective extends Component {
     debugger;
     this.setState({
       openMedicaldata: !this.state.openMedicaldata
+    });
+  }
+
+  showPatientHistory() {
+    this.setState({
+      openAddModal: !this.state.openAddModal
     });
   }
 
@@ -594,7 +601,14 @@ class BasicSubjective extends Component {
                 />
               </li>
               <li>
-                <i className="fas fa-hourglass-half" />
+                <i
+                  className="fas fa-hourglass-half"
+                  onClick={this.showPatientHistory.bind(this)}
+                />
+                <PatientHistory
+                  openAddModal={this.state.openAddModal}
+                  onClose={this.showPatientHistory.bind(this)}
+                />
               </li>
               <li>
                 <i
