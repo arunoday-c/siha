@@ -94,15 +94,20 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT report_name,report_query,report_input_series,data_manupulation from algaeh_d_reports where status='A' and report_name in (?);",
-          values: [_inputParam.reportName]
+            "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
+            report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
+            select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
+O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
+O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
+where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
+          values: [_inputParam.reportName, req.userIdentity["x-branch"]]
         })
         .then(data => {
-          const _reportCount = data.length;
+          const _reportCount = data[0].length;
           if (_reportCount > 0) {
             let _reportOutput = [];
             for (let r = 0; r < _reportCount; r++) {
-              const _data = data[r];
+              const _data = data[0][r];
               const _supportingJS = path.join(
                 process.cwd(),
                 "algaeh_report_tool/templates",
@@ -157,31 +162,53 @@ module.exports = {
                         const _outPath = _path + ".pdf";
                         const browser = await puppeteer.launch();
                         const page = await browser.newPage();
+                        const _pdfTemplating = {};
+                        if (
+                          _data.report_header_file_name != null &&
+                          _data.report_header_file_name != ""
+                        ) {
+                          _pdfTemplating["headerTemplate"] = await compile(
+                            _data.report_header_file_name,
+                            {
+                              ...data[1][0],
+                              report_name_for_header:
+                                _data.report_name_for_header
+                            }
+                          );
+                          _pdfTemplating["margin"] = {
+                            top: "100px",
+                            bottom: "70px"
+                          };
+                        }
+                        if (
+                          _data.report_footer_file_name != null &&
+                          _data.report_footer_file_name != ""
+                        ) {
+                          _pdfTemplating["footerTemplate"] = await compile(
+                            _data.report_footer_file_name,
+                            {
+                              ...data[1][0],
+                              report_name_for_header:
+                                _data.report_name_for_header
+                            }
+                          );
+                          _pdfTemplating["margin"] = {
+                            top: "100px",
+                            bottom: "70px"
+                          };
+                        }
 
                         await page.setContent(
                           await compile(_data.report_name, result)
                         );
                         await page.emulateMedia("screen");
 
-                        var cssb = [];
-                        cssb.push("<style>");
-                        cssb.push("h1 { font-size:10px; margin-left:30px;}");
-                        cssb.push("</style>");
-                        var css = cssb.join("");
-
                         await page.pdf({
                           path: _outPath,
                           format: "A4",
                           printBackground: true,
                           displayHeaderFooter: true,
-                          headerTemplate:
-                            "<h1>" + "My PDF Report Header" + "</h1>",
-                          footerTemplate:
-                            '<h1>Page <span class="pageNumber"></span> of <span class="totalPages"></span></h1>',
-                          margin: {
-                            top: "50px",
-                            bottom: "50px"
-                          }
+                          ..._pdfTemplating
                         });
                         await browser.close();
                         _reportOutput.push(_outPath);

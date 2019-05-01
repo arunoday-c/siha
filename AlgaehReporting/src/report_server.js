@@ -47,7 +47,8 @@ app.use((req, res, next) => {
     let header = reqH["x-app-user-identity"];
     if (header != null && header != "" && header != "null") {
       header = utilities.decryption(header);
-      req.userIdentity = header;
+      // req.userIdentity = header;
+      req.userIdentity = { ...header, "x-branch": reqH["x-branch"] };
       let reqUser = utilities.getTokenData(_token).id;
       utilities.logger("res-tracking").log(
         "",
