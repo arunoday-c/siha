@@ -2861,11 +2861,12 @@ let getPatientEncounter = (req, res, next) => {
     if (req.db == null) {
       next(httpStatus.dataBaseNotInitilizedError());
     }
+    console.log("req.query.encounter_id", req.query.encounter_id);
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT examination_notes,assesment_notes, significant_signs FROM hims_f_patient_encounter where hims_f_patient_encounter_id=?;",
-        [req.query.hims_f_patient_encounter_id],
+        "SELECT examination_notes,assesment_notes, significant_signs FROM hims_f_patient_encounter where encounter_id=?;",
+        [req.query.encounter_id],
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {

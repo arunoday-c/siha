@@ -68,12 +68,19 @@ class OrderedList extends PureComponent {
         if (response.data.success === true) {
           let data = response.data.records;
 
-          this.setState({
-            ...this.state,
-            isOpenItems: !this.state.isOpenItems,
-            procedure_name: data[0].procedure_desc,
-            hims_d_procedure_id: data[0].hims_d_procedure_id
-          });
+          if (data.length > 0) {
+            this.setState({
+              ...this.state,
+              isOpenItems: !this.state.isOpenItems,
+              procedure_name: data[0].procedure_desc,
+              hims_d_procedure_id: data[0].hims_d_procedure_id
+            });
+          } else {
+            swalMessage({
+              title: "Procedure Not defined in master. Please contact Admin",
+              type: "warning"
+            });
+          }
         }
       },
       onFailure: error => {
@@ -157,7 +164,21 @@ class OrderedList extends PureComponent {
         ? this.props.patient_profile
         : [];
     return (
-      <div className="hptl-phase1-ordering-services-form form-details margin-bottom-15">
+      <div className="hptl-phase1-ordering-services-form">
+        <div
+          className="col-lg-12"
+          style={{
+            textAlign: "right",
+            paddingTop: 10
+          }}
+        >
+          <button
+            className="btn btn-primary"
+            onClick={this.ShowModel.bind(this)}
+          >
+            Order Investigation
+          </button>
+        </div>
         <div className="col-lg-12">
           <div className="row">
             <div className="col-md-10 col-lg-12" id="doctorOrder">
@@ -312,20 +333,6 @@ class OrderedList extends PureComponent {
               />
             </div>
           </div>
-        </div>
-        <div
-          className="col-lg-12"
-          style={{
-            textAlign: "right",
-            paddingTop: 10
-          }}
-        >
-          <button
-            className="btn btn-primary  margin-bottom-15 margin-top-15"
-            onClick={this.ShowModel.bind(this)}
-          >
-            Order Investigation
-          </button>
         </div>
         <OrderingServices
           open={this.state.isOpen}

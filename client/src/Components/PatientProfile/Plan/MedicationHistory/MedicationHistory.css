@@ -1,6 +1,5 @@
 .hptl-phase1-medication-history-form {
-  background: #ffff;
-  padding: 10px; }
+  background: #ffff; }
   .hptl-phase1-medication-history-form .form-details {
     padding: 5px;
     padding-bottom: 0px; }
@@ -17,4 +16,4 @@
     cursor: pointer;
     margin-top: 2.5vh; }
   .hptl-phase1-medication-history-form .ReactTable {
-    max-height: 25vh !important; }
+    max-height: 60vh !important; }

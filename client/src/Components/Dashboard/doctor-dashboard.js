@@ -601,7 +601,7 @@ class Dashboard extends Component {
                             </td>
                             <td>
                               {patient_data.new_visit_patient === "Y"
-                                ? "Net Visit"
+                                ? "New Visit"
                                 : "Follow Up"}
                             </td>
                           </tr>
