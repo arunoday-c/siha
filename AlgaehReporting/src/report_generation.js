@@ -4,7 +4,9 @@ import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import path from "path";
 import moment from "moment";
+import merge from "easy-pdf-merge";
 import hbs from "handlebars";
+
 const compile = async function(templateName, data) {
   const filePath = path.join(
     process.cwd(),
@@ -46,6 +48,17 @@ hbs.registerHelper("dateTime", function(value, type) {
   }
 });
 
+hbs.registerHelper("path", function(styleSheetName) {
+  const fullPath = path.join(
+    process.cwd(),
+    "algaeh_report_tool/templates/css",
+    `${styleSheetName}.css`
+  );
+
+  console.log("_ret", fullPath);
+  return require(fullPath);
+});
+
 hbs.registerHelper("groupBy", function(data, groupby, callBack) {
   data = Array.isArray(data) ? data : [];
   const groupBy = _.chain(data)
@@ -62,12 +75,15 @@ hbs.registerHelper("groupBy", function(data, groupby, callBack) {
     return groupBy;
   }
 });
-
-hbs.registerHelper("algaehCustom", function(callBack) {
-  const fun = eval(callBack);
-  return fun({ moment, _ });
+hbs.registerHelper("currentDateTime", function(type) {
+  if (type == null || type == "") {
+    return new Date().toLocaleString();
+  } else if (type == "time") {
+    return new Date().toLocaleTimeString();
+  } else {
+    return new Date().toLocaleDateString();
+  }
 });
-
 module.exports = {
   getReport: async (req, res) => {
     const input = req.query;
@@ -78,134 +94,244 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT report_query,report_input_series,data_manupulation from algaeh_d_reports where status='A' and report_name in (?);",
-          values: [_inputParam.reportName]
+            "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
+            report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
+            select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
+O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
+O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
+where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
+          values: [_inputParam.reportName, req.userIdentity["x-branch"]]
         })
         .then(data => {
-          if (data.length > 0) {
-            const _data = data[0];
-            const _inputOrders = eval(_data.report_input_series);
-            let _value = [];
-            for (var i = 0; i < _inputOrders.length; i++) {
-              const _params = _.find(
-                _inputParam.reportParams,
-                f => f.name == _inputOrders[i]
+          const _reportCount = data[0].length;
+          if (_reportCount > 0) {
+            let _reportOutput = [];
+            for (let r = 0; r < _reportCount; r++) {
+              const _data = data[0][r];
+              const _supportingJS = path.join(
+                process.cwd(),
+                "algaeh_report_tool/templates",
+                `${_data.report_name}.js`
               );
-              if (_params != undefined) {
-                _value.push(_params.value);
+              if (fs.existsSync(_supportingJS)) {
+                require(_supportingJS);
               }
-            }
 
-            _mysql
-              .executeQuery({
-                query: _data.report_query,
-                values: _value,
-                printQuery: true
-              })
-              .then(result => {
-                _mysql.releaseConnection();
-                const _path = path.join(
-                  process.cwd(),
-                  "algaeh_report_tool/templates/Output",
-                  _inputParam.reportName + moment().format("YYYYMMDDHHmmss")
+              const _inputOrders = eval(_data.report_input_series);
+              let _value = [];
+              for (var i = 0; i < _inputOrders.length; i++) {
+                const _params = _.find(
+                  _inputParam.reportParams,
+                  f => f.name == _inputOrders[i]
                 );
-                const _reportType =
-                  _inputParam.outputFileType == null
-                    ? "PDF"
-                    : _inputParam.outputFileType;
-
-                if (
-                  _data.data_manupulation != null &&
-                  _data.data_manupulation != ""
-                ) {
-                  const data_string = "`" + _data.data_manupulation + "`";
-                  const _resu = eval(data_string);
-                  result = JSON.parse(_resu);
+                if (_params != undefined) {
+                  _value.push(_params.value);
                 }
+              }
 
-                switch (_reportType) {
-                  case "PDF":
-                    const startGenerate = async () => {
-                      const _outPath = _path + ".pdf";
-                      const browser = await puppeteer.launch();
-                      const page = await browser.newPage();
+              _mysql
+                .executeQuery({
+                  query: _data.report_query,
+                  values: _value,
+                  printQuery: true
+                })
+                .then(result => {
+                  _mysql.releaseConnection();
+                  const _path = path.join(
+                    process.cwd(),
+                    "algaeh_report_tool/templates/Output",
+                    _data.report_name + moment().format("YYYYMMDDHHmmss")
+                  );
+                  const _reportType =
+                    _inputParam.outputFileType == null
+                      ? "PDF"
+                      : _inputParam.outputFileType;
 
-                      await page.setContent(
-                        await compile(_inputParam.reportName, result)
-                      );
-                      await page.emulateMedia("screen");
-                      await page.pdf({
-                        path: _outPath,
-                        format: "A4",
-                        printBackground: true
-                      });
-                      await browser.close();
-                      fs.exists(_outPath, exists => {
-                        if (exists) {
-                          res.writeHead(200, {
-                            "content-type": "application/pdf",
-                            "content-disposition":
-                              "attachment;filename=" +
-                              _inputParam.reportName +
-                              moment().format("YYYYMMDDHHmmss") +
-                              ".pdf"
-                          });
-                          const _fs = fs.createReadStream(_outPath);
-                          _fs.on("end", () => {
-                            fs.unlink(_outPath);
-                          });
-                          _fs.pipe(res);
-                        } else {
-                          res.writeHead(400, { "Content-Type": "text/plain" });
-                          res.end("ERROR File does not exist");
+                  if (
+                    _data.data_manupulation != null &&
+                    _data.data_manupulation != ""
+                  ) {
+                    const data_string = "`" + _data.data_manupulation + "`";
+                    const _resu = eval(data_string);
+                    result = JSON.parse(_resu);
+                  }
+
+                  switch (_reportType) {
+                    case "PDF":
+                      const startGenerate = async () => {
+                        const _outPath = _path + ".pdf";
+                        const browser = await puppeteer.launch();
+                        const page = await browser.newPage();
+                        const _pdfTemplating = {};
+                        if (
+                          _data.report_header_file_name != null &&
+                          _data.report_header_file_name != ""
+                        ) {
+                          _pdfTemplating["headerTemplate"] = await compile(
+                            _data.report_header_file_name,
+                            {
+                              ...data[1][0],
+                              report_name_for_header:
+                                _data.report_name_for_header
+                            }
+                          );
+                          _pdfTemplating["margin"] = {
+                            top: "100px",
+                            bottom: "70px"
+                          };
                         }
-                      });
-                    };
-                    startGenerate();
-                    break;
-                  case "EXCEL":
-                    const conversionFactory = require("html-to-xlsx");
-                    const chromeEval = require("chrome-page-eval")({
-                      puppeteer
-                    });
-                    const _outPath = _path + ".xlsx";
-                    const conversion = conversionFactory({
-                      extract: chromeEval
-                    })(async () => {
-                      const stream = await conversion(
-                        await compile(_inputParam.reportName, result)
-                      );
-                      stream.pipe(fs.createWriteStream(_outPath));
-                      fs.exists(_outPath, exists => {
-                        if (exists) {
-                          res.writeHead(200, {
-                            "content-type":
-                              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                            "content-disposition":
-                              "attachment;filename=" +
-                              _inputParam.reportName +
-                              moment().format("YYYYMMDDHHmmss") +
-                              ".xlsx"
-                          });
-                          const _fs = fs.createReadStream(_outPath);
-                          _fs.on("end", () => {
-                            fs.unlink(_outPath);
-                          });
-                          _fs.pipe(res);
-                        } else {
-                          res.writeHead(400, { "Content-Type": "text/plain" });
-                          res.end("ERROR File does not exist");
+                        if (
+                          _data.report_footer_file_name != null &&
+                          _data.report_footer_file_name != ""
+                        ) {
+                          _pdfTemplating["footerTemplate"] = await compile(
+                            _data.report_footer_file_name,
+                            {
+                              ...data[1][0],
+                              report_name_for_header:
+                                _data.report_name_for_header
+                            }
+                          );
+                          _pdfTemplating["margin"] = {
+                            top: "100px",
+                            bottom: "70px"
+                          };
                         }
+
+                        await page.setContent(
+                          await compile(_data.report_name, result)
+                        );
+                        await page.emulateMedia("screen");
+
+                        await page.pdf({
+                          path: _outPath,
+                          format: "A4",
+                          printBackground: true,
+                          displayHeaderFooter: true,
+                          ..._pdfTemplating
+                        });
+                        await browser.close();
+                        _reportOutput.push(_outPath);
+                        if (r == _reportCount - 1) {
+                          let _outfileName =
+                            "merdge_" +
+                            moment().format("YYYYMMDDHHmmss") +
+                            ".pdf";
+                          let _rOut = path.join(
+                            process.cwd(),
+                            "algaeh_report_tool/templates/Output",
+                            _outfileName
+                          );
+
+                          if (_reportOutput.length > 1) {
+                            merge(_reportOutput, _rOut, error => {
+                              if (error) {
+                                res.writeHead(400, {
+                                  "Content-Type": "text/plain"
+                                });
+                                res.end(JSON.stringify(error));
+                              } else {
+                                fs.exists(_rOut, exists => {
+                                  if (exists) {
+                                    res.writeHead(200, {
+                                      "content-type": "application/pdf",
+                                      "content-disposition":
+                                        "attachment;filename=" + _outfileName
+                                    });
+                                    const _fs = fs.createReadStream(_rOut);
+                                    _fs.on("end", () => {
+                                      fs.unlink(_rOut);
+                                      for (
+                                        let f = 0;
+                                        f < _reportOutput.length;
+                                        f++
+                                      ) {
+                                        fs.unlink(_reportOutput[f]);
+                                      }
+                                    });
+                                    _fs.pipe(res);
+                                  } else {
+                                    res.writeHead(400, {
+                                      "Content-Type": "text/plain"
+                                    });
+                                    res.end("ERROR File does not exist");
+                                  }
+                                });
+                              }
+                            });
+                          } else {
+                            fs.exists(_reportOutput[0], exists => {
+                              if (exists) {
+                                res.writeHead(200, {
+                                  "content-type": "application/pdf",
+                                  "content-disposition":
+                                    "attachment;filename=" + _outfileName
+                                });
+                                const _fs = fs.createReadStream(
+                                  _reportOutput[0]
+                                );
+                                _fs.on("end", () => {
+                                  fs.unlink(_reportOutput[0]);
+                                });
+                                _fs.pipe(res);
+                              } else {
+                                res.writeHead(400, {
+                                  "Content-Type": "text/plain"
+                                });
+                                res.end("ERROR File does not exist");
+                              }
+                            });
+                          }
+                        }
+                      };
+                      startGenerate();
+                      break;
+                    case "EXCEL":
+                      const conversionFactory = require("html-to-xlsx");
+                      const chromeEval = require("chrome-page-eval")({
+                        puppeteer
                       });
-                    });
-                    break;
-                }
-              })
-              .catch(error => {
-                _mysql.releaseConnection();
-                res.writeHead(400, { "Content-Type": "text/plain" });
-                res.end(error);
-              });
+                      const _outPath = _path + ".xlsx";
+                      const conversion = conversionFactory({
+                        extract: chromeEval
+                      })(async () => {
+                        const stream = await conversion(
+                          await compile(_inputParam.reportName, result)
+                        );
+                        stream.pipe(fs.createWriteStream(_outPath));
+                        fs.exists(_outPath, exists => {
+                          if (exists) {
+                            res.writeHead(200, {
+                              "content-type":
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                              "content-disposition":
+                                "attachment;filename=" +
+                                _inputParam.reportName +
+                                moment().format("YYYYMMDDHHmmss") +
+                                ".xlsx"
+                            });
+                            const _fs = fs.createReadStream(_outPath);
+                            _fs.on("end", () => {
+                              fs.unlink(_outPath);
+                            });
+                            _fs.pipe(res);
+                          } else {
+                            res.writeHead(400, {
+                              "Content-Type": "text/plain"
+                            });
+                            res.end("ERROR File does not exist");
+                          }
+                        });
+                      });
+                      break;
+                  }
+                })
+                .catch(error => {
+                  _mysql.releaseConnection();
+                  res.writeHead(400, { "Content-Type": "text/plain" });
+                  res.end(error);
+                });
+            }
           } else {
             res.writeHead(400, { "Content-Type": "text/plain" });
             res.end(new Error("No such report exists"));
