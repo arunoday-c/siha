@@ -132,6 +132,17 @@ class BasicSubjective extends Component {
     });
   }
 
+  textAreaEvent(e) {
+    debugger;
+    // significant_signs
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
   render() {
     const _diagnosis =
       this.props.patient_diagnosis !== undefined
@@ -151,7 +162,19 @@ class BasicSubjective extends Component {
                     <div className="row">
                       <div className="col-12">
                         <div className="row">
-                          <AlagehFormGroup
+                          <AlgaehLabel
+                            label={{
+                              forceLabel: "Enter Chief Complaint"
+                            }}
+                          />
+                          <textarea
+                            value={this.state.chief_complaint}
+                            name="chief_complaint"
+                            onChange={this.textAreaEvent.bind(this)}
+                          >
+                            {this.state.chief_complaint}
+                          </textarea>
+                          {/* <AlagehFormGroup
                             div={{ className: "col form-group" }}
                             label={{
                               forceLabel: "Enter Chief Complaint",
@@ -166,7 +189,7 @@ class BasicSubjective extends Component {
                                 type: "textarea"
                               }
                             }}
-                          />
+                          /> */}
                         </div>
                       </div>
                       <div className="col-12">
@@ -250,7 +273,20 @@ class BasicSubjective extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-body">
                     <div className="row">
-                      <AlagehFormGroup
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Enter Significant Signs"
+                        }}
+                      />
+                      <textarea
+                        value={this.state.other_signs}
+                        name="other_signs"
+                        onChange={this.textAreaEvent.bind(this)}
+                      >
+                        {this.state.other_signs}
+                      </textarea>
+
+                      {/* <AlagehFormGroup
                         div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Enter Significant Signs",
@@ -265,7 +301,7 @@ class BasicSubjective extends Component {
                             type: "text"
                           }
                         }}
-                      />
+                      /> */}
                     </div>
                   </div>
                 </div>
@@ -274,7 +310,19 @@ class BasicSubjective extends Component {
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-body">
                     <div className="row">
-                      <AlagehFormGroup
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Other Signs"
+                        }}
+                      />
+                      <textarea
+                        value={this.state.significant_signs}
+                        name="significant_signs"
+                        onChange={this.textAreaEvent.bind(this)}
+                      >
+                        {this.state.other_signs}
+                      </textarea>
+                      {/* <AlagehFormGroup
                         div={{ className: "col form-group" }}
                         label={{
                           forceLabel: "Enter Significant Signs",
@@ -289,7 +337,7 @@ class BasicSubjective extends Component {
                             type: "text"
                           }
                         }}
-                      />
+                      /> */}
                     </div>
                   </div>
                 </div>
@@ -506,8 +554,11 @@ class BasicSubjective extends Component {
           </div>
           <div className="">
             <ul className="rightActionIcon">
-              <li onClick={this.showVitals.bind(this)}>
-                <i className="fas fa-heartbeat" />
+              <li>
+                <i
+                  className="fas fa-heartbeat"
+                  onClick={this.showVitals.bind(this)}
+                />
                 <Vitals
                   openVital={this.state.openVital}
                   onClose={this.closeVitals.bind(this)}
@@ -516,8 +567,11 @@ class BasicSubjective extends Component {
               {/* <li>
                 <i className="fas fa-allergies" />
               </li> */}
-              <li onClick={this.showDietPlan.bind(this)}>
-                <i className="fas fa-utensils" />
+              <li>
+                <i
+                  className="fas fa-utensils"
+                  onClick={this.showDietPlan.bind(this)}
+                />
                 <Plan
                   openDiet={this.state.openDiet}
                   onClose={this.closeDietPlan.bind(this)}
