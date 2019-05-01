@@ -1,6 +1,5 @@
 .hptl-active-medication-form {
   background: #ffff;
-  padding: 10px;
   .form-details {
     padding: 5px;
     padding-bottom: 0px;
@@ -22,7 +21,8 @@
     cursor: pointer;
     margin-top: 2.5vh;
   }
+
   .ReactTable {
-    max-height: 25vh !important;
+    max-height: 60vh !important;
   }
 }

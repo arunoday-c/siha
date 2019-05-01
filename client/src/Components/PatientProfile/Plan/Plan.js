@@ -53,8 +53,8 @@ class Plan extends Component {
             title="Medication"
             openPopup={this.props.openMedication}
           >
-            <div className="col-lg-12 popupInner">
-              <div className="tab-container toggle-section">
+            <div className="popupInner">
+              <div className="col tab-container toggle-section toggleBorder">
                 <ul className="nav">
                   <li
                     algaehtabs={"OrderMedication"}
@@ -110,10 +110,8 @@ class Plan extends Component {
                   </li>
                 </ul>
               </div>
-              <div
-                className="portlet portlet-bordered margin-bottom-15"
-                style={{ padding: 0 }}
-              >
+
+              <div className="popRightDiv">
                 {/*  {<this.state.pageDisplay />} */}
 
                 {this.state.pageDisplay === "OrderMedication" ? (
@@ -293,34 +291,22 @@ class Plan extends Component {
           title="Diet Plan"
           openPopup={this.props.openDiet}
         >
-          <div className="col-lg-12 popupInner">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Diet Advice</h3>
-                </div>
-              </div>
-              <div className="portlet-body">
-                <DietAdvice />
-              </div>
+          <div className="popupInner">
+            <div className="popRightDiv">
+              <DietAdvice />
             </div>
-
-            <div className=" popupFooter">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={e => {
-                        this.onClose(e);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
+          </div>
+          <div className=" popupFooter">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={e => {
+                  this.onClose(e);
+                }}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </AlgaehModalPopUp>

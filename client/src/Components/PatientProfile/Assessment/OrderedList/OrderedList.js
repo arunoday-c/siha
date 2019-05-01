@@ -164,7 +164,21 @@ class OrderedList extends PureComponent {
         ? this.props.patient_profile
         : [];
     return (
-      <div className="hptl-phase1-ordering-services-form form-details margin-bottom-15">
+      <div className="hptl-phase1-ordering-services-form">
+        <div
+          className="col-lg-12"
+          style={{
+            textAlign: "right",
+            paddingTop: 10
+          }}
+        >
+          <button
+            className="btn btn-primary"
+            onClick={this.ShowModel.bind(this)}
+          >
+            Order Investigation
+          </button>
+        </div>
         <div className="col-lg-12">
           <div className="row">
             <div className="col-md-10 col-lg-12" id="doctorOrder">
@@ -319,20 +333,6 @@ class OrderedList extends PureComponent {
               />
             </div>
           </div>
-        </div>
-        <div
-          className="col-lg-12"
-          style={{
-            textAlign: "right",
-            paddingTop: 10
-          }}
-        >
-          <button
-            className="btn btn-primary  margin-bottom-15 margin-top-15"
-            onClick={this.ShowModel.bind(this)}
-          >
-            Order Investigation
-          </button>
         </div>
         <OrderingServices
           open={this.state.isOpen}

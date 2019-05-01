@@ -288,44 +288,7 @@ class Vitals extends Component {
                   <h6>Vital Charts</h6>
                 </div>
               </div>
-              <div className="row">
-                <div className="col-3 popLeftDiv">
-                  <div className="timeline">
-                    {_vitalsGroup.map((data, index) => (
-                      <div key={index} className="timelineContainer right">
-                        <div className="content">
-                          <p className="dateStamp">{data.dateTime}</p>
-                          <div className="vitalsCntr">
-                            <ul className="vitals-box">
-                              {data.list.map((vitals, ind) => (
-                                <li className="each-vitals-box" key={ind}>
-                                  <p>{vitals.vital_short_name}</p>
-                                  <span>{vitals.vital_value}</span>
-                                  <span>{vitals.formula_value}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="col-lg-9 popRightDiv">
-                  <Line
-                    options={{
-                      scales: {
-                        yAxes: _yAxes
-                      }
-                    }}
-                    data={{
-                      datasets: _plotGraph,
-                      labels: _chartLabels
-                    }}
-                  />
-                </div>
-              </div>
+              <div className="row" />
             </div>
             <div className="popupFooter">
               <div className="col-lg-12">
@@ -352,197 +315,208 @@ class Vitals extends Component {
             openPopup={this.props.openVital}
           >
             <div className="col-lg-12 popupInner">
-              <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-title">
-                  <div className="caption">
-                    <h3 className="caption-subject">Vitals</h3>
-                  </div>
+              <div className="portlet-body" id="vitals_recording">
+                <div className="row">
+                  <div className="col-4 popLeftDiv">
+                    <div className="row">
+                      {_department_viatals.map((item, index) => {
+                        const _className =
+                          item.hims_d_vitals_header_id === 1
+                            ? "col-6"
+                            : item.hims_d_vitals_header_id >= 3
+                            ? "col-6 vitalTopFld15"
+                            : item.hims_d_vitals_header_id === 5 ||
+                              item.hims_d_vitals_header_id === 6
+                            ? "col-6 vitalTopFld20"
+                            : "col-6";
+                        const _name = String(item.vitals_name)
+                          .replace(/" "/g, "_")
+                          .toLowerCase();
+                        const _disable = _name === "bmi" ? true : false;
+                        const _dependent =
+                          item.hims_d_vitals_header_id === 8 ||
+                          item.hims_d_vitals_header_id === 9
+                            ? { dependent: "bp_position" }
+                            : item.hims_d_vitals_header_id === 4
+                            ? { dependent: "temperature_from" }
+                            : {};
+                        return (
+                          <React.Fragment key={index}>
+                            {item.hims_d_vitals_header_id === 4 ? (
+                              <React.Fragment>
+                                <AlagehAutoComplete
+                                  div={{ className: "col-6" }}
+                                  label={{
+                                    forceLabel: "Temp. From"
+                                  }}
+                                  selector={{
+                                    name: "temperature_from",
+                                    className: "select-fld",
+                                    value: this.state.temperature_from,
+                                    dataSource: {
+                                      textField: "name",
+                                      valueField: "value",
+                                      data: GlobalVariables.TEMP_FROM
+                                    },
 
-                  <div className="actions">
-                    <a
-                      className="btn btn-primary btn-circle active"
-                      onClick={this.addVitals.bind(this)}
-                    >
-                      <i className="fas fa-history" />
-                    </a>
-                  </div>
-                </div>
-
-                <div className="portlet-body" id="vitals_recording">
-                  <div className="row margin-bottom-15">
-                    {_department_viatals.map((item, index) => {
-                      const _className =
-                        item.hims_d_vitals_header_id === 1
-                          ? "col-6"
-                          : item.hims_d_vitals_header_id >= 3
-                          ? "col-6 vitalTopFld15"
-                          : item.hims_d_vitals_header_id === 5 ||
-                            item.hims_d_vitals_header_id === 6
-                          ? "col-6 vitalTopFld20"
-                          : "col-6";
-                      const _name = String(item.vitals_name)
-                        .replace(/" "/g, "_")
-                        .toLowerCase();
-                      const _disable = _name === "bmi" ? true : false;
-                      const _dependent =
-                        item.hims_d_vitals_header_id === 8 ||
-                        item.hims_d_vitals_header_id === 9
-                          ? { dependent: "bp_position" }
-                          : item.hims_d_vitals_header_id === 4
-                          ? { dependent: "temperature_from" }
-                          : {};
-                      return (
-                        <React.Fragment key={index}>
-                          {item.hims_d_vitals_header_id === 4 ? (
-                            <React.Fragment>
+                                    onChange: this.dropDownHandle.bind(this)
+                                  }}
+                                />
+                              </React.Fragment>
+                            ) : item.hims_d_vitals_header_id === 8 ? (
                               <AlagehAutoComplete
                                 div={{ className: "col-6" }}
                                 label={{
-                                  forceLabel: "Temp. From"
+                                  forceLabel: "BP (mmHg)",
+                                  fieldName: "BP_type"
                                 }}
                                 selector={{
-                                  name: "temperature_from",
+                                  name: "bp_position",
                                   className: "select-fld",
-                                  value: this.state.temperature_from,
+                                  value: this.state.bp_position,
                                   dataSource: {
                                     textField: "name",
                                     valueField: "value",
-                                    data: GlobalVariables.TEMP_FROM
+                                    data: GlobalVariables.BP_POSITION
                                   },
-
                                   onChange: this.dropDownHandle.bind(this)
                                 }}
                               />
-                            </React.Fragment>
-                          ) : item.hims_d_vitals_header_id === 8 ? (
-                            <AlagehAutoComplete
-                              div={{ className: "col-6" }}
-                              label={{
-                                forceLabel: "BP (mmHg)",
-                                fieldName: "BP_type"
-                              }}
-                              selector={{
-                                name: "bp_position",
-                                className: "select-fld",
-                                value: this.state.bp_position,
-                                dataSource: {
-                                  textField: "name",
-                                  valueField: "value",
-                                  data: GlobalVariables.BP_POSITION
-                                },
-                                onChange: this.dropDownHandle.bind(this)
-                              }}
-                            />
-                          ) : null}
+                            ) : null}
 
-                          <AlagehFormGroup
-                            div={{
-                              className: _className,
-                              others: { key: index }
-                            }}
-                            label={{
-                              forceLabel:
-                                item.uom === "C"
-                                  ? "°C"
-                                  : item.uom === "F"
-                                  ? "°F"
-                                  : item.vital_short_name +
-                                    " (" +
-                                    String(item.uom).trim() +
-                                    ")",
-                              isImp: item.mandatory === 0 ? false : true
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: _name,
-                              others: {
-                                type: "number",
-                                min: 0,
-                                disabled: _disable,
-                                vitalid: item.hims_d_vitals_header_id,
-                                formula_value: String(item.uom).trim(),
-                                ..._dependent
-                              },
-                              value: this.state[_name],
-                              events: {
-                                onChange: this.texthandle.bind(this)
-                              }
-                            }}
-                          />
-
-                          {item.hims_d_vitals_header_id === 4 ? (
                             <AlagehFormGroup
-                              div={{ className: "col-6" }}
+                              div={{
+                                className: _className,
+                                others: { key: index }
+                              }}
                               label={{
-                                forceLabel: item.uom === "C" ? "°F" : "°C"
+                                forceLabel:
+                                  item.uom === "C"
+                                    ? "°C"
+                                    : item.uom === "F"
+                                    ? "°F"
+                                    : item.vital_short_name +
+                                      " (" +
+                                      String(item.uom).trim() +
+                                      ")",
+                                isImp: item.mandatory === 0 ? false : true
                               }}
                               textBox={{
                                 className: "txt-fld",
-                                disabled: true,
-                                value: temperatureConvertion(
-                                  this.state[_name],
-                                  item.uom
-                                )
+                                name: _name,
+                                others: {
+                                  type: "number",
+                                  min: 0,
+                                  disabled: _disable,
+                                  vitalid: item.hims_d_vitals_header_id,
+                                  formula_value: String(item.uom).trim(),
+                                  ..._dependent
+                                },
+                                value: this.state[_name],
+                                events: {
+                                  onChange: this.texthandle.bind(this)
+                                }
                               }}
                             />
-                          ) : null}
-                          {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
-                        </React.Fragment>
-                      );
-                    })}
 
-                    <AlgaehDateHandler
-                      div={{ className: "col-6" }}
-                      label={{ forceLabel: "Recorded Date", isImp: true }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "recorded_date"
-                      }}
-                      maxDate={new Date()}
-                      events={{
-                        onChange: selectedDate => {
-                          this.setState({ recorded_date: selectedDate });
-                        }
-                      }}
-                      value={this.state.recorded_date}
-                    />
+                            {item.hims_d_vitals_header_id === 4 ? (
+                              <AlagehFormGroup
+                                div={{ className: "col-6" }}
+                                label={{
+                                  forceLabel: item.uom === "C" ? "°F" : "°C"
+                                }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  disabled: true,
+                                  value: temperatureConvertion(
+                                    this.state[_name],
+                                    item.uom
+                                  )
+                                }}
+                              />
+                            ) : null}
+                            {/* {item.hims_d_vitals_header_id === 8 ? " / " : null} */}
+                          </React.Fragment>
+                        );
+                      })}
 
-                    <AlagehFormGroup
-                      div={{ className: "col-6" }}
-                      label={{
-                        isImp: true,
-                        forceLabel: "Recorded Time"
-                      }}
-                      textBox={{
-                        others: {
-                          type: "time"
-                        },
-                        className: "txt-fld",
-                        name: "recorded_time",
-                        value: this.state.recorded_time,
-                        events: {
-                          onChange: this.texthandle.bind(this)
-                        }
-                      }}
-                    />
+                      <AlgaehDateHandler
+                        div={{ className: "col-6" }}
+                        label={{ forceLabel: "Recorded Date", isImp: true }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "recorded_date"
+                        }}
+                        maxDate={new Date()}
+                        events={{
+                          onChange: selectedDate => {
+                            this.setState({ recorded_date: selectedDate });
+                          }
+                        }}
+                        value={this.state.recorded_date}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-6" }}
+                        label={{
+                          isImp: true,
+                          forceLabel: "Recorded Time"
+                        }}
+                        textBox={{
+                          others: {
+                            type: "time"
+                          },
+                          className: "txt-fld",
+                          name: "recorded_time",
+                          value: this.state.recorded_time,
+                          events: {
+                            onChange: this.texthandle.bind(this)
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="row">
-                    <div className="col margin-top-15 pullRight">
-                      <button
-                        onClick={this.addPatientVitals.bind(this)}
-                        type="button"
-                        className="btn btn-primary"
-                        style={{ marginleft: 10 }}
-                      >
-                        Save Vitals
-                      </button>
-                      <button
-                        onClick={this.resetVitals.bind(this)}
-                        type="button"
-                        className="btn btn-default"
-                      >
-                        Clear
-                      </button>
+                  <div className="col-8 popRightDiv">
+                    <div className="row">
+                      <div className="col-3 popLeftDiv">
+                        <div className="timeline">
+                          {_vitalsGroup.map((data, index) => (
+                            <div
+                              key={index}
+                              className="timelineContainer right"
+                            >
+                              <div className="content">
+                                <p className="dateStamp">{data.dateTime}</p>
+                                <div className="vitalsCntr">
+                                  <ul className="vitals-box">
+                                    {data.list.map((vitals, ind) => (
+                                      <li className="each-vitals-box" key={ind}>
+                                        <p>{vitals.vital_short_name}</p>
+                                        <span>{vitals.vital_value}</span>
+                                        <span>{vitals.formula_value}</span>
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="col-9">
+                        <Line
+                          options={{
+                            scales: {
+                              yAxes: _yAxes
+                            }
+                          }}
+                          data={{
+                            datasets: _plotGraph,
+                            labels: _chartLabels
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -552,6 +526,34 @@ class Vitals extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-12">
+                    {" "}
+                    <button
+                      onClick={this.addPatientVitals.bind(this)}
+                      type="button"
+                      className="btn btn-primary"
+                    >
+                      Save Vitals
+                    </button>
+                    <button
+                      onClick={this.addVitals.bind(this)}
+                      type="button"
+                      className="btn btn-other"
+                    >
+                      Vital History
+                    </button>
+                    <button
+                      onClick={this.resetVitals.bind(this)}
+                      type="button"
+                      className="btn btn-default"
+                    >
+                      Clear
+                    </button>
+                    {/* <a
+                      className="btn btn-primary btn-circle active"
+                      onClick={this.addVitals.bind(this)}
+                    >
+                      <i className="fas fa-history" />
+                    </a> */}
                     <button
                       type="button"
                       className="btn btn-default"

@@ -1,6 +1,5 @@
 .hptl-phase1-own-medication-form {
   background: #ffff;
-  padding: 10px;
   .form-details {
     padding: 5px;
     padding-bottom: 0px;
@@ -21,5 +20,8 @@
   .go-button {
     cursor: pointer;
     margin-top: 2.5vh;
+  }
+  .ReactTable {
+    max-height: 60vh !important;
   }
 }

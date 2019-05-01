@@ -141,9 +141,9 @@ class BasicSubjective extends Component {
       .where(w => w.final_daignosis === "Y")
       .toArray();
     return (
-      <div className="subjective">
+      <div className="subjective basicSubjective">
         <div className="row margin-top-15">
-          <div className="col-3">
+          <div className="algaeh-col-3">
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
@@ -253,31 +253,7 @@ class BasicSubjective extends Component {
                       <AlagehFormGroup
                         div={{ className: "col form-group" }}
                         label={{
-                          forceLabel: "Enter Significant Signs",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
-                          option: {
-                            type: "text"
-                          }
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="portlet portlet-bordered margin-bottom-15">
-                  <div className="portlet-body">
-                    <div className="row">
-                      <AlagehFormGroup
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Enter Significant Signs",
+                          forceLabel: "Other Signs",
                           isImp: false
                         }}
                         textBox={{
@@ -296,9 +272,33 @@ class BasicSubjective extends Component {
               </div>
             </div>
           </div>
-          <div className="col">
+          <div className="algaeh-col-8">
             <div className="row">
-              <div className="col-12">
+              <div className="col-4">
+                <div className="portlet portlet-bordered margin-bottom-15">
+                  <div className="portlet-body">
+                    <div className="row">
+                      <AlagehFormGroup
+                        div={{ className: "col form-group" }}
+                        label={{
+                          forceLabel: "Significant Signs",
+                          isImp: false
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "",
+                          value: "",
+                          events: {},
+                          option: {
+                            type: "text"
+                          }
+                        }}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-8">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -315,11 +315,7 @@ class BasicSubjective extends Component {
                   </div>
 
                   <div className="portlet-body">
-                    <div
-                      id="finalDioGrid"
-                      className="row"
-                      style={{ marginTop: 10, marginBottom: 10 }}
-                    >
+                    <div id="finalDioGrid" className="row">
                       <div className="col-lg-12">
                         <AlgaehDataGrid
                           id="Finalintial_icd"
@@ -392,7 +388,7 @@ class BasicSubjective extends Component {
                             data: _finalDiagnosis
                           }}
                           isEditable={true}
-                          paging={{ page: 0, rowsPerPage: 10 }}
+                          paging={{ page: 0, rowsPerPage: 5 }}
                           events={{
                             onDelete: this.deleteFinalDiagnosis.bind(this),
                             onEdit: row => {},
@@ -504,7 +500,7 @@ class BasicSubjective extends Component {
               </div>
             </div>
           </div>
-          <div className="">
+          <div className="algaeh-fixed-right-menu">
             <ul className="rightActionIcon">
               <li onClick={this.showVitals.bind(this)}>
                 <i className="fas fa-heartbeat" />
