@@ -177,29 +177,38 @@ class Plan extends Component {
           events={{
             onClose: this.onClose.bind(this)
           }}
-          title="Medication"
+          title="Other Details"
           openPopup={this.props.openMedicaldata}
         >
-          <div className="col-lg-12 popupInner">
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Follow Up</h3>
+          <div className="popupInner">
+            <div className="popRightDiv">
+              <div className="row">
+                <div className="col-6">
+                  {" "}
+                  <div className="portlet portlet-bordered margin-bottom-15">
+                    <div className="portlet-title">
+                      <div className="caption">
+                        <h3 className="caption-subject">Follow Up</h3>
+                      </div>
+                    </div>
+                    <div className="portlet-body">
+                      <FollowUp />
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="portlet-body">
-                <FollowUp />
-              </div>
-            </div>
-
-            <div className="portlet portlet-bordered margin-bottom-15">
-              <div className="portlet-title">
-                <div className="caption">
-                  <h3 className="caption-subject">Refer To</h3>
+                <div className="col-6">
+                  {" "}
+                  <div className="portlet portlet-bordered margin-bottom-15">
+                    <div className="portlet-title">
+                      <div className="caption">
+                        <h3 className="caption-subject">Refer To</h3>
+                      </div>
+                    </div>
+                    <div className="portlet-body">
+                      <Referal />
+                    </div>
+                  </div>{" "}
                 </div>
-              </div>
-              <div className="portlet-body">
-                <Referal />
               </div>
             </div>
 
@@ -261,21 +270,17 @@ class Plan extends Component {
               </div>
             </div> */}
 
-            <div className=" popupFooter">
+            <div className="popupFooter">
               <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={e => {
-                        this.onClose(e);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={e => {
+                    this.onClose(e);
+                  }}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
