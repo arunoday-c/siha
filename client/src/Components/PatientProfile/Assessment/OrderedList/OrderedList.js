@@ -64,7 +64,6 @@ class OrderedList extends PureComponent {
       module: "masterSettings",
       data: { service_id: row.services_id },
       onSuccess: response => {
-        debugger;
         if (response.data.success === true) {
           let data = response.data.records;
 
@@ -158,7 +157,6 @@ class OrderedList extends PureComponent {
   }
 
   render() {
-    debugger;
     let patient_date =
       this.props.patient_profile !== undefined
         ? this.props.patient_profile

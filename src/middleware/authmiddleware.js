@@ -19,7 +19,7 @@ let generateAccessToken = (req, res, next) => {
       },
       SECRET,
       {
-        expiresIn: "10h" //TOKENTIME
+        expiresIn: "10d" //TOKENTIME
       }
     );
     next();

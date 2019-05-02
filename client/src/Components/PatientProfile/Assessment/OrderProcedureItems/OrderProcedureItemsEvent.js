@@ -73,7 +73,6 @@ export default function OrderProcedureItemsEvent() {
         data: $this.state,
         method: "POST",
         onSuccess: response => {
-          debugger;
           if (response.data.success === true) {
             $this.state.transaction_type = "CS";
             $this.state.location_id = $this.state.inventory_location_id;
@@ -116,7 +115,6 @@ export default function OrderProcedureItemsEvent() {
     },
 
     itemSearch: $this => {
-      debugger;
       if ($this.state.existing_new === "E") {
         AlgaehSearch({
           searchGrid: {

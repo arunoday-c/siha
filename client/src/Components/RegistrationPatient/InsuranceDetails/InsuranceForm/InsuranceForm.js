@@ -19,9 +19,13 @@ import {
   datehandle,
   InsuranceDetails,
   radioChange,
-  enddatehandle
+  enddatehandle,
+  getInsuranceCardClass,
+  clearinsurancehandle
 } from "./InsuranceHandler";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
+import variableJson from "../../../../utils/GlobalVariables.json";
+
 class AddInsuranceForm extends Component {
   constructor(props) {
     super(props);
@@ -29,6 +33,7 @@ class AddInsuranceForm extends Component {
       frontSide: null,
       backSide: null
     };
+    getInsuranceCardClass(this);
   }
 
   componentWillMount() {
@@ -140,7 +145,12 @@ class AddInsuranceForm extends Component {
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
                             disabled: this.state.insuranceYes
-                          }
+                          },
+                          onClear: clearinsurancehandle.bind(
+                            this,
+                            this,
+                            context
+                          )
                         }}
                       />
 
@@ -167,7 +177,12 @@ class AddInsuranceForm extends Component {
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
                             disabled: this.state.insuranceYes
-                          }
+                          },
+                          onClear: clearinsurancehandle.bind(
+                            this,
+                            this,
+                            context
+                          )
                         }}
                       />
                       <AlagehAutoComplete
@@ -193,7 +208,12 @@ class AddInsuranceForm extends Component {
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
                             disabled: this.state.insuranceYes
-                          }
+                          },
+                          onClear: clearinsurancehandle.bind(
+                            this,
+                            this,
+                            context
+                          )
                         }}
                       />
                     </div>
@@ -221,7 +241,12 @@ class AddInsuranceForm extends Component {
                           onChange: insurancehandle.bind(this, this, context),
                           others: {
                             disabled: this.state.insuranceYes
-                          }
+                          },
+                          onClear: clearinsurancehandle.bind(
+                            this,
+                            this,
+                            context
+                          )
                         }}
                       />
 
@@ -237,6 +262,9 @@ class AddInsuranceForm extends Component {
                           value: this.state.primary_card_number,
                           events: {
                             onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.insuranceYes
                           }
                         }}
                       />
@@ -275,6 +303,96 @@ class AddInsuranceForm extends Component {
                         }}
                         value={this.state.primary_effective_end_date}
                         disabled={this.state.insuranceYes}
+                      />
+                    </div>
+                    {/* Card Holder Details */}
+                    <div className="row primary-box-container">
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "card_holder_name",
+                          isImp: this.state.insuranceYes === true ? false : true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "card_holder_name",
+                          value: this.state.card_holder_name,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.insuranceYes
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "card_holder_age",
+                          isImp: this.state.insuranceYes === true ? false : true
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "card_holder_age",
+                          value: this.state.card_holder_age,
+                          events: {
+                            onChange: texthandle.bind(this, this, context)
+                          },
+                          others: {
+                            disabled: this.state.insuranceYes
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-2 mandatory" }}
+                        label={{
+                          fieldName: "card_holder_gender",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "card_holder_gender",
+                          className: "select-fld",
+                          value: this.state.card_holder_gender,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "name"
+                                : "arabic_name",
+                            valueField: "value",
+                            data: variableJson.EMP_FORMAT_GENDER
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.insuranceYes
+                          }
+                        }}
+                      />
+
+                      <AlagehAutoComplete
+                        div={{ className: "col-lg-2 mandatory" }}
+                        label={{
+                          fieldName: "card_class",
+                          isImp: true
+                        }}
+                        selector={{
+                          name: "card_class",
+                          className: "select-fld",
+                          value: this.state.card_class,
+                          dataSource: {
+                            textField:
+                              this.state.selectedLang === "en"
+                                ? "card_class_name"
+                                : "arabic_card_class_name",
+                            valueField: "hims_d_insurance_card_class_id",
+                            data: this.props.insurancecardclass
+                          },
+                          onChange: texthandle.bind(this, this, context),
+                          others: {
+                            disabled: this.state.insuranceYes
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -344,7 +462,8 @@ class AddInsuranceForm extends Component {
 function mapStateToProps(state) {
   return {
     existinsurance: state.existinsurance,
-    primaryinsurance: state.primaryinsurance
+    primaryinsurance: state.primaryinsurance,
+    insurancecardclass: state.insurancecardclass
   };
 }
 
@@ -352,7 +471,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getPatientInsurence: AlgaehActions,
-      setSelectedInsurance: AlgaehActions
+      setSelectedInsurance: AlgaehActions,
+      getInsuranceCardClass: AlgaehActions
     },
     dispatch
   );

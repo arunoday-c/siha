@@ -568,7 +568,6 @@ export function AlgaehCloseContainer(string) {
   return crypted;
 }
 export function AlgaehOpenContainer(string) {
-  debugger;
   var decipher = crypto.createDecipher(algorithm, containerId);
   var dec = decipher.update(string, "hex", "utf8");
   dec += decipher.final("utf8");

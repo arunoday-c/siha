@@ -55,7 +55,7 @@ class Subjective extends Component {
         method: "PUT",
         data: {
           significant_signs: this.state.significant_signs,
-          hims_f_patient_encounter_id: Window.global.encounter_id
+          encounter_id: Window.global.encounter_id
         }
       });
     }

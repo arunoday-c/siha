@@ -1,110 +1,236 @@
-<div class="print-body">
-    <section>
-        <h2><span>Patient Details</span></h2>
-        <table class="tableForLabel" cell-padding="0">
-            <tr>
-                <td><label>رقم التسجيل الضريبي / TRN</label></td>
-                <td>: <span>{{tax_number}}</span></td>
-                <td><label>النوع / Type</label></td>
-                <td>: <span>ائتمان/ Credit</span></td>
-            </tr>
-            <tr>
-                <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-            </tr>
-            <tr>
-                <td><label>رقم الملف الطبي / Reg. Number</label></td>
-                <td>: <span>PAT-1872346</span></td>
-                <td><label>رقم الفاتورة / Invoice No</label></td>
-                <td>: <span>005685</span></td>
-            </tr>
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+    }
 
-            <tr>
-                <td><label>اسم المريض / Patient Name</label></td>
-                <td>: <span>NOWSHAD</span></td>
-                <td><label>اريخ الفاتورة / Invoice Date</label></td>
-                <td>: <span>04-11-2018</span></td>
-            </tr>
+    .print-body {
+        border-right: 0 !important;
+        padding: 0 15px 0 !important;
+        margin-bottom: 10px;
+    }
 
-            <tr>
-                <td><label>اسم الطبيب / Doctor</label></td>
-                <td>: <span>Dr. Samer Omar</span></td>
-                <td><label>Department / القسم</label></td>
-                <td>: <span>General Practioner(G.P)</span></td>
-            </tr>
+    .print-body section h2 span {
+        background-color: #f2f2f2;
+        padding: 5px 15px;
+        color: #000000;
+        border: 1px solid #c5c5c5;
 
-            <tr>
-                <td><label>شركة التأمين / InsuranceCompany</label></td>
-                <td>: <span>BUPA [Sub Insurer : ABBOTT SAUDI ARABIA TRADING LLC]</span></td>
-                <td colspan="2">BUPA ]شركة التأمين الفرعية : ABBOTT SAUDI ARABIA TRADING LLC[ ]رقم التسجيل الضريبي :
-                </td>
-            </tr>
+        line-height: 29px;
+        border-radius: 5px 5px 0 0;
+        margin-bottom: 0;
+    }
 
-            <tr>
-                <td><label>رقم البطاقة / رقم السياسة / Card No/ Policy No</label></td>
-                <td>: <span>123454323 / 427354001</span></td>
-                <td><label>حامل السياسة / PolicyHolder</label></td>
-                <td>: <span>ABBOTT SAUDIARABIA TRADING LLC</span></td>
-            </tr>
+    .print-body section:after {
+        content: "";
+        display: table;
+        clear: both;
+        margin-bottom: 20px;
+    }
 
-            <tr>
-                <td><label>Class / Class</label></td>
-                <td colspan="3">: <span>Gold Class</span></td>
-            </tr>
-        </table>
+    .print-body .tableForLabel {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
+    .print-body .tableForLabel tbody {
+        margin: 0;
+        padding: 0;
+    }
 
-    </section>
-    <section>
-        <h2><span>Bill Details</span></h2>
-        <table class="tableForData" cell-padding="0">
-            <thead>
+    .print-body .tableForLabel td {
+        border: 1px solid #ccc;
+        padding: 3px;
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .print-body .tableForLabel td span {
+        font-weight: bold;
+    }
+
+    .print-body .tableForData {
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid #00dac4;
+        font-weight: normal;
+    }
+
+    .print-body .tableForData thead {
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .print-body .tableForData tbody {
+        margin: 0;
+        padding: 0;
+    }
+
+    .print-body .tableForData .tableSubHdg {
+        font-weight: bold;
+        background: #f2f2f2;
+        border-bottom: 2px dashed #979797;
+        padding: 5px 3px;
+    }
+
+    .print-body .tableForData th {
+        border-bottom: 2px solid #00a796 !important;
+        vertical-align: middle !important;
+        background-color: #e8feff !important;
+        padding: 5px;
+        text-transform: uppercase;
+        text-align: center;
+        border-right: 1px solid #007468;
+        font-size: 12px;
+    }
+
+    .print-body .tableForData td {
+        border: 1px solid #ccc;
+        padding: 3px;
+        margin: 0;
+        font-size: 12px;
+    }
+
+    .print-body footer {
+        margin: 0 0 10px;
+        padding: 0 0 10px;
+        display: block;
+        width: 100%;
+    }
+
+    .print-body .hospitalSeal {
+        float: right;
+    }
+
+    .print-body .hospitalSeal img {
+        height: 75px;
+    }
+
+    .print-body .doctorName {
+        text-align: left;
+        margin: 0 auto;
+        padding: 0 1%;
+        width: 75%;
+        height: 55px;
+    }
+
+    .print-body .doctorName h6 {
+        margin: 0 0 5px;
+        padding: 0;
+    }
+
+    .print-body .doctorName p {
+        margin: 0;
+        padding: 0;
+        line-height: 15px;
+    }
+
+    .print-body .signatureDiv {
+        text-align: left;
+        float: left;
+        width: 15%;
+        height: 60px;
+    }
+</style>
+
+<body>
+    <div class="print-body">
+        {{{loadPage 'doctor_signature_footer' header}}}
+        <section>
+
+            <table class="tableForLabel" cell-padding="0">
                 <tr>
-                    <th>SERVICE DESCRIPTION</th>
-                    <th>QUANTITY</th>
-                    <th>PRICE</th>
-                    <th>DISCOUNT</th>
-                    <th>NET AMOUNT</th>
-                    <th>VAT AMOUNT</th>
-                    <th>PATIENT SHARE</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td colspan="7" class="tableSubHdg">Consultation</td>
+                    <td><label>رقم التسجيل الضريبي / TRN</label></td>
+                    <td> <span>{{header.tax_number}}</span></td>
+                    <td><label>النوع / Type</label></td>
+                    <td> <span>ائتمان/ Credit</span></td>
                 </tr>
                 <tr>
-                    <td>Norman-Consultation</td>
-                    <td>1</td>
-                    <td>300</td>
-                    <td>0</td>
-                    <td>300</td>
-                    <td>3</td>
-                    <td>60</td>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr>
                 <tr>
-                    <td colspan="7" class="tableSubHdg">Lab</td>
-                </tr>
-                <tr>
-                    <td>Norman-Consultation</td>
-                    <td>1</td>
-                    <td>300</td>
-                    <td>0</td>
-                    <td>300</td>
-                    <td>3</td>
-                    <td>60</td>
+                    <td><label>رقم الملف الطبي / Reg. Number</label></td>
+                    <td> <span>{{header.patient_code}}</span></td>
+                    <td><label>رقم الفاتورة / Invoice No</label></td>
+                    <td> <span>{{header.invoice_number}}</span></td>
                 </tr>
 
                 <tr>
-                    <td>Norman-Consultation</td>
-                    <td>1</td>
-                    <td>300</td>
-                    <td>0</td>
-                    <td>300</td>
-                    <td>3</td>
-                    <td>60</td>
+                    <td><label>اسم المريض / Patient Name</label></td>
+                    <td> <span>{{header.patient_full_name}}</span></td>
+                    <td><label>اريخ الفاتورة / Invoice Date</label></td>
+                    <td> <span>{{header.invoice_date}}</span></td>
                 </tr>
-            </tbody>
-        </table>
-    </section>
-    <footer> ${signature_footer(data)}</footer>
-</div>`
+
+                <tr>
+                    <td><label>اسم الطبيب / Doctor</label></td>
+                    <td> <span>{{header.full_name}}</span></td>
+                    <td><label>Department / القسم</label></td>
+                    <td> <span>{{header.sub_department_name}}</span></td>
+                </tr>
+
+                <tr>
+                    <td><label>شركة التأمين / Insurance Company</label></td>
+                    <td> <span>{{header.insurance_provider_name}}</span></td>
+                    <td colspan="2">
+                    </td>
+                </tr>
+
+                <tr>
+                    <td><label>رقم البطاقة / رقم السياسة / Card No/ Policy No</label></td>
+                    <td> <span>{{header.card_number}} / need to add</span></td>
+                    <td><label>حامل السياسة / Policy Holder</label></td>
+                    <td> <span>add in database</span></td>
+                </tr>
+
+                <tr>
+                    <td><label>Class / Class</label></td>
+                    <td colspan="3"> <span>add from db</span></td>
+                </tr>
+            </table>
+
+
+        </section>
+        <section>
+            <table class="tableForData" cell-padding="0">
+                <thead>
+                    <tr>
+                        <th>SERVICE DESCRIPTION</th>
+                        <th>QUANTITY</th>
+                        <th>PRICE</th>
+                        <th>VAT AMOUNT</th>
+                        <th>NET AMOUNT</th>
+                        <th>PATIENT SHARE</th>
+                        <th>COMPANY RESP.</th>
+                        <th>COMPANY TAX</th>
+                        <th>COMPANY PAYABLE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each detail}}
+                    <tr>
+                        <td colspan="9" class="tableSubHdg">{{service_type}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{service_name}}</td>
+                        <td>{{quantity}}</td>
+                        <td>{{price}}</td>
+                        <td>{{vat}}</td>
+                        <td>{{net_amount}}</td>
+                        <td>{{patient_share}}</td>
+                        <td>{{company_resp}}</td>
+                        <td>{{company_tax}}</td>
+                        <td>{{company_payable}}</td>
+                    </tr>
+                    {{/each}}
+
+
+
+                </tbody>
+            </table>
+        </section>
+
+    </div>
+</body>

@@ -446,14 +446,14 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "department_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display = [];
-                          this.props.viewsubdept === undefined
-                            ? []
-                            : (display = this.props.viewsubdept.filter(
-                                f =>
-                                  f.hims_d_sub_department_id ===
-                                  row.sub_department_id
-                              ));
+                          let display =
+                            this.props.viewsubdept === undefined
+                              ? []
+                              : (display = this.props.viewsubdept.filter(
+                                  f =>
+                                    f.hims_d_sub_department_id ===
+                                    row.sub_department_id
+                                ));
 
                           return (
                             <span>
@@ -473,12 +473,12 @@ class AddConsultationForm extends Component {
                           <AlgaehLabel label={{ fieldName: "doctor_id" }} />
                         ),
                         displayTemplate: row => {
-                          let display = [];
-                          this.props.frontproviders === undefined
-                            ? []
-                            : (display = this.props.frontproviders.filter(
-                                f => f.hims_d_employee_id === row.doctor_id
-                              ));
+                          let display =
+                            this.props.frontproviders === undefined
+                              ? []
+                              : (display = this.props.frontproviders.filter(
+                                  f => f.hims_d_employee_id === row.doctor_id
+                                ));
 
                           return (
                             <span>

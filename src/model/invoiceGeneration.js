@@ -180,16 +180,16 @@ let addInvoiceGeneration = (req, res, next) => {
           });
         }).then(result => {
           let documentCode = result[0].completeNumber;
-          debugLog("documentCode:", documentCode);
-          debugLog("input:", input);
-          let today = moment().format("YYYY-MM-DD");
-          debugLog("input:", input);
+
+          // let today = moment().format("YYYY-MM-DD");
+
           connection.query(
             "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,\
               net_amount, patient_resp,patient_tax, patient_payable, company_resp, company_tax, company_payable, \
               sec_company_resp, sec_company_tax, sec_company_payable,insurance_provider_id, sub_insurance_id, network_id, network_office_id, \
-              card_number,created_date,created_by,updated_date,updated_by) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              card_number,policy_number,card_holder_name, card_holder_age, card_holder_gender, card_class,\
+              created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               new Date(input.invoice_date),
@@ -213,6 +213,11 @@ let addInvoiceGeneration = (req, res, next) => {
               input.network_id,
               input.network_office_id,
               input.card_number,
+              input.policy_number,
+              input.card_holder_name,
+              input.card_holder_age,
+              input.card_holder_gender,
+              input.card_class,
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,

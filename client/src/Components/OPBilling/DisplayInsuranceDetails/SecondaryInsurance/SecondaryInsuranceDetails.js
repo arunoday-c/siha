@@ -118,7 +118,6 @@ export default class DisplaySecondaryInsurance extends Component {
                   <div className="col-lg-4">
                     <AlgaehLabel
                       label={{
-                        // fieldName: "Co-Insurance"
                         fieldName: "services"
                       }}
                     />
@@ -143,7 +142,6 @@ export default class DisplaySecondaryInsurance extends Component {
                   <div className="col-lg-4">
                     <AlgaehLabel
                       label={{
-                        // fieldName: "Co-Insurance"
                         fieldName: "consultation"
                       }}
                     />
@@ -186,7 +184,6 @@ export default class DisplaySecondaryInsurance extends Component {
                   <div className="col-lg-4">
                     <AlgaehLabel
                       label={{
-                        // fieldName: "Co-Insurance"
                         fieldName: "laboratory"
                       }}
                     />
@@ -229,7 +226,6 @@ export default class DisplaySecondaryInsurance extends Component {
                   <div className="col-lg-4">
                     <AlgaehLabel
                       label={{
-                        // fieldName: "Co-Insurance"
                         fieldName: "radiology"
                       }}
                     />
@@ -298,7 +294,6 @@ export default class DisplaySecondaryInsurance extends Component {
                   <div className="col-lg-4">
                     <AlgaehLabel
                       label={{
-                        // fieldName: "Co-Insurance"
                         fieldName: "medicine"
                       }}
                     />
@@ -340,7 +335,6 @@ export default class DisplaySecondaryInsurance extends Component {
                   <div className="col-lg-4">
                     <AlgaehLabel
                       label={{
-                        // fieldName: "Co-Insurance"
                         fieldName: "procedure"
                       }}
                     />
@@ -383,7 +377,6 @@ export default class DisplaySecondaryInsurance extends Component {
                   <div className="col-lg-4">
                     <AlgaehLabel
                       label={{
-                        // fieldName: "Co-Insurance"
                         fieldName: "dental"
                       }}
                     />

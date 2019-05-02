@@ -50,7 +50,7 @@ class PhysicalExamination extends Component {
         method: "PUT",
         data: {
           examination_notes: this.state.examination_notes,
-          hims_f_patient_encounter_id: Window.global.encounter_id
+          encounter_id: Window.global.encounter_id
         },
         onSuccess: response => {
           if (response.data.success) {

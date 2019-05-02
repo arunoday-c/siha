@@ -39,13 +39,17 @@ hbs.registerHelper("dateTime", function(value, type) {
   type = type || "date";
   if (value != null || value != "") {
     if (type == "date") {
-      return new Date(value).toLocaleDateString();
+      return moment(value).format("DD-MM-YYYY"); //new Date(value).toLocaleDateString();
     } else {
-      return new Date(value).toLocaleTimeString();
+      return moment(value).format("hh:mm A"); //new Date(value).toLocaleTimeString();
     }
   } else {
     return value;
   }
+});
+
+hbs.registerHelper("capitalization", function(value) {
+  return _.startCase(_.toLower(value));
 });
 
 hbs.registerHelper("path", function(styleSheetName) {
@@ -58,6 +62,18 @@ hbs.registerHelper("path", function(styleSheetName) {
   console.log("_ret", fullPath);
   return require(fullPath);
 });
+
+hbs.registerHelper("loadPage", function(filePath, data) {
+  const fullPath = path.join(
+    process.cwd(),
+    "algaeh_report_tool/templates",
+    `${filePath}.hbs`
+  );
+  const html = fs.readFileSync(fullPath, "utf-8");
+  return hbs.compile(html)(data);
+});
+
+hbs.registerHelper("imageSource", function(filePath) {});
 
 hbs.registerHelper("groupBy", function(data, groupby, callBack) {
   data = Array.isArray(data) ? data : [];
@@ -77,11 +93,11 @@ hbs.registerHelper("groupBy", function(data, groupby, callBack) {
 });
 hbs.registerHelper("currentDateTime", function(type) {
   if (type == null || type == "") {
-    return new Date().toLocaleString();
+    return moment().format("DD-MM-YYYY");
   } else if (type == "time") {
-    return new Date().toLocaleTimeString();
+    return moment().format("hh:mm A");
   } else {
-    return new Date().toLocaleDateString();
+    return moment().format("DD-MM-YYYY");
   }
 });
 module.exports = {
@@ -97,9 +113,9 @@ module.exports = {
             "SELECT report_name_for_header,report_name,report_query,report_input_series,data_manupulation,\
             report_header_file_name,report_footer_file_name from algaeh_d_reports where status='A' and report_name in (?);\
             select H.hospital_name,H.hospital_address,H.arabic_hospital_name, \
-O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
-O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
-where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
+            O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
+            O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
+            where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
           values: [_inputParam.reportName, req.userIdentity["x-branch"]]
         })
         .then(data => {
@@ -132,11 +148,9 @@ where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
               _mysql
                 .executeQuery({
                   query: _data.report_query,
-                  values: _value,
-                  printQuery: true
+                  values: _value
                 })
                 .then(result => {
-                  _mysql.releaseConnection();
                   const _path = path.join(
                     process.cwd(),
                     "algaeh_report_tool/templates/Output",
@@ -160,6 +174,7 @@ where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
                     case "PDF":
                       const startGenerate = async () => {
                         const _outPath = _path + ".pdf";
+                        _reportOutput.push(_outPath);
                         const browser = await puppeteer.launch();
                         const page = await browser.newPage();
                         const _pdfTemplating = {};
@@ -167,17 +182,18 @@ where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
                           _data.report_header_file_name != null &&
                           _data.report_header_file_name != ""
                         ) {
-                          _pdfTemplating["headerTemplate"] = await compile(
+                          const _header = await compile(
                             _data.report_header_file_name,
                             {
                               ...data[1][0],
+                              user_name: req.userIdentity["username"],
                               report_name_for_header:
                                 _data.report_name_for_header
                             }
                           );
+                          _pdfTemplating["headerTemplate"] = _header;
                           _pdfTemplating["margin"] = {
-                            top: "100px",
-                            bottom: "70px"
+                            top: "100px"
                           };
                         }
                         if (
@@ -193,13 +209,14 @@ where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
                             }
                           );
                           _pdfTemplating["margin"] = {
-                            top: "100px",
+                            ..._pdfTemplating["margin"],
                             bottom: "70px"
                           };
                         } else {
                           _pdfTemplating[
                             "footerTemplate"
-                          ] = `<style> .pdffooter { font-size: 10px; font-family: 'Raleway'; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
+                          ] = `<style> .pdffooter { font-size: 8px; 
+                            font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
                           .showreportname{float:left;padding-left:5px;font-size: 08px;}
                           .showcompay{float:right;padding-right:5px;font-size: 08px;}
                           </style>
@@ -209,9 +226,10 @@ where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
                           }</span>
                           <span>Page </span>
                           <span class="pageNumber"></span> / <span class="totalPages"></span>
-                          <span class="showcompay">powered by algaeh techonologies.</span>
+                          <span class="showcompay">Powered by Algaeh Techonologies.</span>
                         </div>`;
                           _pdfTemplating["margin"] = {
+                            ..._pdfTemplating["margin"],
                             bottom: "50px"
                           };
                         }
@@ -227,9 +245,11 @@ where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
                           printBackground: true,
                           displayHeaderFooter: true,
                           ..._pdfTemplating
+                          // headerTemplate:
+                          //   "<h1>H1 tag</h1><h2>H2 tag</h2><hr style='border-bottom: 2px solid #8c8b8b;' />"
                         });
                         await browser.close();
-                        _reportOutput.push(_outPath);
+
                         if (r == _reportCount - 1) {
                           let _outfileName =
                             "merdge_" +
@@ -242,6 +262,7 @@ where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
                           );
 
                           if (_reportOutput.length > 1) {
+                            _mysql.releaseConnection();
                             merge(_reportOutput, _rOut, error => {
                               if (error) {
                                 res.writeHead(400, {

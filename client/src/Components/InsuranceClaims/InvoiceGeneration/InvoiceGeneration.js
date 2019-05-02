@@ -656,6 +656,58 @@ class InvoiceGeneration extends Component {
                               : "---"}
                           </h6>
                         </div>
+
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "card_holder_name"
+                            }}
+                          />
+                          <h6>
+                            {this.state.card_holder_name
+                              ? this.state.card_holder_name
+                              : "---"}
+                          </h6>
+                        </div>
+
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "card_holder_age"
+                            }}
+                          />
+                          <h6>
+                            {this.state.card_holder_age
+                              ? this.state.card_holder_age
+                              : "---"}
+                          </h6>
+                        </div>
+
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "card_holder_gender"
+                            }}
+                          />
+                          <h6>
+                            {this.state.card_holder_gender
+                              ? this.state.card_holder_gender
+                              : "---"}
+                          </h6>
+                        </div>
+
+                        <div className="col-4">
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "card_class"
+                            }}
+                          />
+                          <h6>
+                            {this.state.card_class_name
+                              ? this.state.card_class_name
+                              : "---"}
+                          </h6>
+                        </div>
                       </div>
                     </div>
                     <div className="col-12">

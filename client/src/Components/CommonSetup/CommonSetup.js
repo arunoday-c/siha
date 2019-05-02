@@ -11,6 +11,7 @@ import IDType from "./IDType/IDType";
 import VisitType from "./VisitType/VisitType";
 import { AlgaehLabel } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
+import InsuranceCardClass from "./InsuranceCardClass/InsuranceCardClass";
 
 class CommonSetup extends Component {
   constructor(props) {
@@ -106,6 +107,19 @@ class CommonSetup extends Component {
                   />
                 }
               </li>
+              <li
+                algaehtabs={"InsuranceCardClass"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "insurance_card_class"
+                    }}
+                  />
+                }
+              </li>
             </ul>
           </div>
         </div>
@@ -126,6 +140,8 @@ class CommonSetup extends Component {
             <IDType />
           ) : this.state.pageDisplay === "PatientType" ? (
             <PatientType />
+          ) : this.state.pageDisplay === "InsuranceCardClass" ? (
+            <InsuranceCardClass />
           ) : null}
         </div>
       </div>

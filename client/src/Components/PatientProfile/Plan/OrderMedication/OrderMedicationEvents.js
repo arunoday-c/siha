@@ -19,19 +19,25 @@ const texthandle = ($this, ctrl, e) => {
 };
 
 const numberhandle = ($this, ctrl, e) => {
+  debugger;
   e = e || ctrl;
 
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  if (value < 0) {
+  let name = e.name;
+  let value = parseFloat(e.value);
+  if (typeof value === "number" && value < 0) {
     swalMessage({
       title: "Cannot be lessthan Zero.",
       type: "warning"
     });
   } else {
-    $this.setState({
-      [name]: value
-    });
+    $this.setState(
+      {
+        [name]: value
+      },
+      () => {
+        calcuateDispense($this);
+      }
+    );
   }
 };
 

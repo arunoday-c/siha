@@ -11,10 +11,10 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-import {
-  postPatientDetails,
-  postVisitDetails
-} from "../../actions/RegistrationPatient/Registrationactions";
+// import {
+//   postPatientDetails,
+//   postVisitDetails
+// } from "../../actions/RegistrationPatient/Registrationactions";
 
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
@@ -968,10 +968,10 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      postPatientDetails: postPatientDetails,
+      
       getPatientDetails: AlgaehActions,
       initialStatePatientData: AlgaehActions,
-      postVisitDetails: postVisitDetails,
+      
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getCountries: AlgaehActions,

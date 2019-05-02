@@ -253,7 +253,7 @@ export default class AlgaehCanvas extends Component {
           </div>
         </div>
       );
-    } else null;
+    } else return null;
   }
   render() {
     const _showSave =

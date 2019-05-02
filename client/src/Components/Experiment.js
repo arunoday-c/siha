@@ -88,19 +88,18 @@ class Experiment extends Component {
               others: { responseType: "blob" },
               data: {
                 rep: {
-                  reportName: "CustomerReport.prpt",
-                  reportParams: [{ name: "hims_d_employee_id", value: 3 }],
-                  outputFileType: "EXCEL", //"EXCEL", //"PDF",
-                  outputFileName: "CustomerReport$outputFileName",
-                  printDetails: false,
-                  reportLocation: "$reportLocation"
+                  reportName: "creditInvoice",
+                  reportParams: [
+                    { name: "patient_id", value: 245 },
+                    { name: "visit_id", value: 553 }
+                  ],
+                  outputFileType: "PDF", //"EXCEL", //"PDF",
+                  printDetails: false
                 }
               },
               onSuccess: res => {
-                debugger;
                 let reader = new FileReader();
                 reader.onloadend = () => {
-                  debugger;
                   that.setState({ report: reader.result });
                 };
 
@@ -218,25 +217,24 @@ class Experiment extends Component {
               others: { responseType: "blob" },
               data: {
                 report: {
-                  reportName: "ucaf",
+                  reportName: ["creditInvoice", "ucaf"],
                   reportParams: [
-                    { name: "hims_d_patient_id", value: 18 },
+                    { name: "hims_d_patient_id", value: 245 },
+                    {
+                      name: "visit_id",
+                      value: 553
+                    },
                     {
                       name: "visit_date",
-                      value: new Date("2018-10-31 00:00:00")
+                      value: null
                     }
                   ],
-                  outputFileType: "PDF", //"EXCEL", //"PDF",
-                  outputFileName: "CustomerReport$outputFileName",
-                  printDetails: false,
-                  reportLocation: "$reportLocation"
+                  outputFileType: "PDF" //"EXCEL", //"PDF",
                 }
               },
               onSuccess: res => {
-                debugger;
                 let reader = new FileReader();
                 reader.onloadend = () => {
-                  debugger;
                   that.setState({ report: reader.result });
                 };
 
@@ -245,7 +243,7 @@ class Experiment extends Component {
             });
           }}
         >
-          UCAF Report
+          Credit Invoice Report
         </button>
       </div>
     );

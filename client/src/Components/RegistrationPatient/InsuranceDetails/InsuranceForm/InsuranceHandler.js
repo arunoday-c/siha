@@ -24,6 +24,48 @@ const texthandle = ($this, context, e) => {
   }, 500);
 };
 
+const clearinsurancehandle = ($this, context, e) => {
+  let ProcessInsure = false;
+  if ($this.state.doctor_id === null) {
+    ProcessInsure = true;
+  } else {
+    ProcessInsure = false;
+  }
+
+  $this.setState({
+    primary_insurance_provider_id: null,
+    primary_sub_id: null,
+    primary_network_id: null,
+    primary_policy_num: null,
+    primary_network_office_id: null,
+    primary_card_number: null,
+    primary_effective_start_date: null,
+    primary_effective_end_date: null,
+    card_holder_name: null,
+    card_holder_age: null,
+    card_holder_gender: null,
+    card_class: null,
+    ProcessInsure: ProcessInsure
+  });
+
+  if (context !== null) {
+    context.updateState({
+      primary_insurance_provider_id: null,
+      primary_sub_id: null,
+      primary_network_id: null,
+      primary_policy_num: null,
+      primary_network_office_id: null,
+      primary_card_number: null,
+      primary_effective_start_date: null,
+      primary_effective_end_date: null,
+      card_holder_name: null,
+      card_holder_age: null,
+      card_holder_gender: null,
+      card_class: null,
+      ProcessInsure: ProcessInsure
+    });
+  }
+};
 const insurancehandle = ($this, context, e) => {
   let ProcessInsure = false;
   if ($this.state.doctor_id === null) {
@@ -38,6 +80,7 @@ const insurancehandle = ($this, context, e) => {
       type: "warning"
     });
   } else {
+    debugger;
     $this.setState(
       {
         primary_insurance_provider_id: e.selected.insurance_provider_id,
@@ -48,6 +91,10 @@ const insurancehandle = ($this, context, e) => {
         primary_card_number: e.selected.card_number,
         primary_effective_start_date: e.selected.effective_start_date,
         primary_effective_end_date: e.selected.effective_end_date,
+        card_holder_name: e.selected.card_holder_name,
+        card_holder_age: e.selected.card_holder_age,
+        card_holder_gender: e.selected.card_holder_gender,
+        card_class: e.selected.card_class,
         ProcessInsure: ProcessInsure
       },
       () => {
@@ -67,6 +114,10 @@ const insurancehandle = ($this, context, e) => {
         primary_effective_start_date: e.selected.effective_start_date,
         primary_effective_end_date: e.selected.effective_end_date,
         primary_network_office_id: e.selected.network_office_id,
+        card_holder_name: e.selected.card_holder_name,
+        card_holder_age: e.selected.card_holder_age,
+        card_holder_gender: e.selected.card_holder_gender,
+        card_class: e.selected.card_class,
         ProcessInsure: ProcessInsure
       });
     }
@@ -501,11 +552,25 @@ const radioChange = ($this, context, e) => {
     }
   });
 };
+
+const getInsuranceCardClass = $this => {
+  $this.props.getInsuranceCardClass({
+    uri: "/InsuranceCardClass/getInsuranceCardClass",
+    module: "masterSettings",
+    method: "GET",
+    redux: {
+      type: "INSURSNCE_CARD_CLASS_GET_DATA",
+      mappingName: "insurancecardclass"
+    }
+  });
+};
 export {
   insurancehandle,
   texthandle,
   datehandle,
   InsuranceDetails,
   radioChange,
-  enddatehandle
+  enddatehandle,
+  getInsuranceCardClass,
+  clearinsurancehandle
 };

@@ -24,14 +24,14 @@ class PatientHistory extends Component {
   }
 
   savePatientHistory() {
+    debugger;
     let his_array = [];
 
-    debugger;
     if (
-      this.state.social_history === null ||
-      this.state.surgical_history === null ||
-      this.state.medical_history === null ||
-      this.state.family_history === null ||
+      this.state.social_history === null &&
+      this.state.surgical_history === null &&
+      this.state.medical_history === null &&
+      this.state.family_history === null &&
       this.state.birth_history === null
     ) {
       swalMessage({
@@ -152,7 +152,6 @@ class PatientHistory extends Component {
     );
   };
   render() {
-    debugger;
     let _pat_socialHistory =
       this.props.patient_history !== undefined
         ? this.props.patient_history.social

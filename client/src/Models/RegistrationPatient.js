@@ -147,7 +147,12 @@ export default {
       patSecInsuranceFrontImg: undefined,
       patSecInsuranceBackImg: undefined,
       forceRefresh: undefined,
-      Rerender: false
+      Rerender: false,
+
+      card_holder_name: null,
+      card_holder_age: null,
+      card_holder_gender: null,
+      card_class: null
     };
     return output;
   }

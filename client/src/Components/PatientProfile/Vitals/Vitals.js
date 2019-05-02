@@ -526,7 +526,6 @@ class Vitals extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-12">
-                    {" "}
                     <button
                       onClick={this.addPatientVitals.bind(this)}
                       type="button"
@@ -535,25 +534,13 @@ class Vitals extends Component {
                       Save Vitals
                     </button>
                     <button
-                      onClick={this.addVitals.bind(this)}
-                      type="button"
-                      className="btn btn-other"
-                    >
-                      Vital History
-                    </button>
-                    <button
                       onClick={this.resetVitals.bind(this)}
                       type="button"
                       className="btn btn-default"
                     >
                       Clear
                     </button>
-                    {/* <a
-                      className="btn btn-primary btn-circle active"
-                      onClick={this.addVitals.bind(this)}
-                    >
-                      <i className="fas fa-history" />
-                    </a> */}
+
                     <button
                       type="button"
                       className="btn btn-default"
