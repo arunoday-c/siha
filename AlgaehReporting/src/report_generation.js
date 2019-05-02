@@ -196,6 +196,24 @@ where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=? ;",
                             top: "100px",
                             bottom: "70px"
                           };
+                        } else {
+                          _pdfTemplating[
+                            "footerTemplate"
+                          ] = `<style> .pdffooter { font-size: 10px; font-family: 'Raleway'; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
+                          .showreportname{float:left;padding-left:5px;font-size: 08px;}
+                          .showcompay{float:right;padding-right:5px;font-size: 08px;}
+                          </style>
+                          <div class="pdffooter">
+                          <span class="showreportname">${
+                            _data.report_name_for_header
+                          }</span>
+                          <span>Page </span>
+                          <span class="pageNumber"></span> / <span class="totalPages"></span>
+                          <span class="showcompay">powered by algaeh techonologies.</span>
+                        </div>`;
+                          _pdfTemplating["margin"] = {
+                            bottom: "50px"
+                          };
                         }
 
                         await page.setContent(

@@ -112,8 +112,8 @@
                                         <span>{{insurance.0.primary_tpa_insurance_company_name}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">Patient File Number: <span>{{header.patient_code}}</td>
-                                    <td colspan="2">Dept: <span>{{header.sub_department_name}}</td>
+                                    <td colspan="3">Patient File Number: <span>{{header.patient_code}}</span></td>
+                                    <td colspan="2">Dept: <span>{{header.sub_department_name}}</span></td>
                                 </tr>
                                 <tr>
                                     <td colspan="1">Single ( {{#if header.patient_marital_status "Single" }}
@@ -154,23 +154,25 @@
                                     <td colspan="3"><b>Print/Fill in clear letters or Emboss Card:</b></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">Insured Name: <span>{{header.provider_name}}</span></td>
+                                    <td colspan="3">Insured Name:
+                                        <span>{{insurance.0.primary_insurance_company_name}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="">ID.Card No.: <span>{{header.provider_name}}</span></td>
-                                    <td colspan="">Sex: <span>{{header.provider_name}}</span></td>
-                                    <td colspan="">Age: <span>{{header.provider_name}}Y}}</span></td>
+                                    <td colspan="">ID.Card No.: <span>{{insurance.0.primary_card_number}}</span></td>
+                                    <td colspan="">Sex: <span>{{insurance.0.sex}}</span></td>
+                                    <td colspan="">Age: <span>{{insurance.0.age}}Y</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2">Policy Holder: <span>{{header.provider_name}}</span></td>
-                                    <td colspan="1">Policy Number: <span>{{header.provider_name}}</span></td>
+                                    <td colspan="2">Policy Holder: <span>{{insurance.0.policyholder}}</span></td>
+                                    <td colspan="1">Policy Number: <span>{{insurance.0.primary_policy_num}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2">Expiry Date: <span>{{header.provider_name}}</span></td>
-                                    <td colspan="1">Class: <span>{{header.provider_name}}</span></td>
+                                    <td colspan="2">Expiry Date: <span>{{insurance.0.primary_effective_end_date}}</span>
+                                    </td>
+                                    <td colspan="1">Class: <span>{{insurance.0.class}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">Approval: <span>{{header.provider_name}}</span></td>
+                                    <td colspan="3">Approval: <span>{{insurance.0.approval}}</span></td>
 
                                 </tr>
                             </tbody>
