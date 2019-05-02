@@ -55,7 +55,8 @@ import {
   getFollowUp,
   getPatientEpisodeSummary,
   updatePatientEncounter,
-  getPatientEncounter
+  getPatientEncounter,
+  getPatientBasicChiefComplaints
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -881,6 +882,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientEncounter",
     getPatientEncounter,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  // created by nowshad : to  getPatientBasicChiefComplaints
+  api.get(
+    "/getPatientBasicChiefComplaints",
+    getPatientBasicChiefComplaints,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

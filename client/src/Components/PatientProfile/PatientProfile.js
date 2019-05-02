@@ -144,7 +144,6 @@ class PatientProfile extends Component {
         // visit_date: "2018-09-15"
       },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           that.setState({ openUCAF: true, UCAFData: response.data.records });
         }
@@ -237,7 +236,6 @@ class PatientProfile extends Component {
     );
   }
   render() {
-    debugger;
     const module_plan = _.find(this.active_modules, f => {
       return f.module_id === parseInt(this.selected_module);
     });
@@ -572,17 +570,7 @@ class PatientProfile extends Component {
                 <li>
                   <i className="fas fa-allergies" />
                   <section>
-                    <b className="top-nav-sec-hdg">
-                      Allergies
-                      <span
-                        className="fas fa-plus miniActionIcon"
-                        onClick={this.openAllergies.bind(this)}
-                      />
-                      <Allergies
-                        openAllergyModal={this.state.openAlergy}
-                        onClose={this.closeAllergies.bind(this)}
-                      />
-                    </b>
+                    <b className="top-nav-sec-hdg">Allergies</b>
                     <p>
                       {_patient_allergies.map((data, index) => (
                         <React.Fragment key={index}>

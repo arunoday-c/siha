@@ -100,7 +100,6 @@ class OrderProcedureItems extends Component {
   };
 
   componentDidMount() {
-    debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
@@ -121,7 +120,6 @@ class OrderProcedureItems extends Component {
   }
 
   componentWillReceiveProps() {
-    debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
@@ -160,8 +158,6 @@ class OrderProcedureItems extends Component {
     OrderProcedureItemsEvent().SaveProcedureItems(this);
   }
   render() {
-    debugger;
-
     return (
       <React.Fragment>
         <div>

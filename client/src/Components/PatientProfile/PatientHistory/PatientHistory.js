@@ -26,7 +26,6 @@ class PatientHistory extends Component {
   savePatientHistory() {
     let his_array = [];
 
-    debugger;
     if (
       this.state.social_history === null ||
       this.state.surgical_history === null ||
@@ -152,7 +151,6 @@ class PatientHistory extends Component {
     );
   };
   render() {
-    debugger;
     let _pat_socialHistory =
       this.props.patient_history !== undefined
         ? this.props.patient_history.social

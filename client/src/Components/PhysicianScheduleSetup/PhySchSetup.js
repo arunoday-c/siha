@@ -331,7 +331,6 @@ class PhySchSetup extends Component {
   }
 
   deptDropDownHandler(value) {
-    debugger;
     this.setState({ [value.name]: value.value }, () => {
       let dept = Enumerable.from(this.state.departments)
         .where(w => w.sub_dept_id === this.state.sub_department_id)
@@ -523,7 +522,6 @@ class PhySchSetup extends Component {
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
-          debugger;
           this.setState({
             departments: response.data.records.departmets
           });
