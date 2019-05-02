@@ -112,7 +112,6 @@ class LabResult extends Component {
                         <AlgaehLabel label={{ forceLabel: "Ordered By" }} />
                       ),
                       displayTemplate: row => {
-                        debugger;
                         let display =
                           this.props.assdeptanddoctors.doctors === undefined
                             ? []

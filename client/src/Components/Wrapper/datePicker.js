@@ -62,21 +62,25 @@ export default class DateHandler extends PureComponent {
 
   onDayChange = e => {
     if (this.props.singleOutput === undefined) {
-      this.props.events !== undefined &&
-      typeof this.props.events.onChange === "function"
-        ? this.props.events.onChange(
-            moment(e.target.value, config.formators.date)._d,
-            e.target.name
-          )
-        : null;
+      if (
+        this.props.events !== undefined &&
+        typeof this.props.events.onChange === "function"
+      ) {
+        this.props.events.onChange(
+          moment(e.target.value, config.formators.date)._d,
+          e.target.name
+        );
+      }
     } else {
-      this.props.events !== undefined &&
-      typeof this.props.events.onChange === "function"
-        ? this.props.events.onChange({
-            value: moment(e.target.value, config.formators.date)._d,
-            name: e.target.name
-          })
-        : null;
+      if (
+        this.props.events !== undefined &&
+        typeof this.props.events.onChange === "function"
+      ) {
+        this.props.events.onChange({
+          value: moment(e.target.value, config.formators.date)._d,
+          name: e.target.name
+        });
+      }
     }
   };
 

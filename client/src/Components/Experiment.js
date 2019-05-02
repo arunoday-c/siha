@@ -98,10 +98,8 @@ class Experiment extends Component {
                 }
               },
               onSuccess: res => {
-                debugger;
                 let reader = new FileReader();
                 reader.onloadend = () => {
-                  debugger;
                   that.setState({ report: reader.result });
                 };
 
@@ -235,10 +233,8 @@ class Experiment extends Component {
                 }
               },
               onSuccess: res => {
-                debugger;
                 let reader = new FileReader();
                 reader.onloadend = () => {
-                  debugger;
                   that.setState({ report: reader.result });
                 };
 

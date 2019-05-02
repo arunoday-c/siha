@@ -208,6 +208,7 @@ class Formula extends Component {
           <div data-validate="formulaDiv" id="algaehGrid_Cntr">
             <AlgaehDataGrid
               id="formula-grid"
+              datavalidate="id='algaehGrid_Cntr'"
               columns={[
                 {
                   fieldName: "algaeh_d_formulas_id",

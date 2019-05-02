@@ -83,7 +83,7 @@ class Assessment extends Component {
         method: "PUT",
         data: {
           assesment_notes: this.state.assesment_notes,
-          hims_f_patient_encounter_id: Window.global.encounter_id
+          encounter_id: Window.global.encounter_id
         }
       });
     }

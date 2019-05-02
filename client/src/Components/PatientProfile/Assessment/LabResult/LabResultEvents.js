@@ -29,8 +29,6 @@ const getAnalytes = ($this, row) => {
 };
 
 const ShowTestAnalyte = ($this, row) => {
-  debugger;
-
   $this.props.getTestAnalytes({
     uri: "/laboratory/getTestAnalytes",
     module: "laboratory",
@@ -55,7 +53,6 @@ const ShowTestAnalyte = ($this, row) => {
 };
 
 const CloseTestAnalyte = $this => {
-  debugger;
   $this.setState({
     ...$this.state,
     openAna: !$this.state.openAna

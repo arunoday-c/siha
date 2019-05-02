@@ -8,7 +8,7 @@ module.exports = {
         .executeQuery({
           query:
             "INSERT INTO `hims_d_visa_type` ( `visa_type_code`, `arabic_visa_type`, `visa_type`, `visa_desc`, `created_by`, \
-          `created_date`,`visa_status`) VALUES (?, ?, ?, ?, ?,?)",
+          `created_date`,`visa_status`) VALUES (?, ?, ?, ?, ?, ?, ?)",
           values: [
             inputParam.visa_type_code,
             inputParam.arabic_visa_type,

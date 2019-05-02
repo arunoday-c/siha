@@ -1241,32 +1241,59 @@ let addPatientChiefComplaints = (req, res, next) => {
 
 //created by irfan: to get patient ChiefComplaints
 let getPatientChiefComplaints = (req, res, next) => {
-  try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let inputData = extend({}, req.query);
+  const _mysql = new algaehMysql({ path: keyPath });
 
-    db.getConnection((error, connection) => {
-      connection.query(
-        "select hh.hims_d_hpi_header_id,hh.hpi_description as chief_complaint_name,PE.hims_f_patient_encounter_id,PE.patient_id,\
-        max(PE.updated_date) as Encounter_Date , ecc.hims_f_episode_chief_complaint_id,ecc.episode_id,ecc.chief_complaint_id,\
-        ecc.onset_date,ecc.`interval`,ecc.duration,ecc.severity,ecc.score,ecc.pain,ecc.`comment`,ecc.`chronic`,ecc.`complaint_inactive`,ecc.`complaint_inactive_date`\
-        from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
-        where ecc.record_status='A'and ecc.episode_id=? group by chief_complaint_id ",
-        [inputData.episode_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-          debugLog("result", result);
-          next();
-        }
-      );
-    });
+  let inputData = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select hh.hims_d_hpi_header_id,hh.hpi_description as chief_complaint_name,PE.hims_f_patient_encounter_id,PE.patient_id,\
+          max(PE.updated_date) as Encounter_Date , ecc.hims_f_episode_chief_complaint_id,ecc.episode_id,ecc.chief_complaint_id,\
+          ecc.onset_date,ecc.`interval`,ecc.duration,ecc.severity,ecc.score,ecc.pain,ecc.`comment`,ecc.`chronic`,ecc.`complaint_inactive`,ecc.`complaint_inactive_date`\
+          from ( (hims_f_episode_chief_complaint ecc inner join hims_d_hpi_header hh on hh.hims_d_hpi_header_id=ecc.chief_complaint_id )    inner join hims_f_patient_encounter PE on PE.episode_id=ecc.episode_id)\
+          where ecc.record_status='A'and ecc.episode_id=? group by chief_complaint_id ",
+        values: [inputData.episode_id],
+        printQuery: true
+      })
+      .then(result => {
+        // utilities.logger().log("result: ", result);
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to get patient ChiefComplaints
+let getPatientBasicChiefComplaints = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  let inputData = req.query;
+  try {
+    _mysql
+      .executeQuery({
+        query:
+          "select * from hims_f_episode_chief_complaint where episode_id=?",
+        values: [inputData.episode_id],
+        printQuery: true
+      })
+      .then(result => {
+        // utilities.logger().log("result: ", result);
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
     next(e);
   }
@@ -2810,49 +2837,121 @@ let getPatientEpisodeSummary = (req, res, next) => {
 
 //created by Nowshad: to Update Notes in Patient encounter
 let updatePatientEncounter = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
-    }
-    let db = req.db;
-    let inputData = extend({}, req.body);
-    let strQuery = "";
+    let inputData = req.body;
+    let strQuery = _mysql.mysqlQueryFormat(
+      "UPDATE hims_f_patient_encounter Set "
+    );
+
     if (inputData.examination_notes != null) {
-      strQuery = "examination_notes = '" + inputData.examination_notes + "'";
+      strQuery += _mysql.mysqlQueryFormat("examination_notes=?", [
+        inputData.examination_notes
+      ]);
     }
     if (inputData.assesment_notes != null) {
-      strQuery = "assesment_notes = '" + inputData.assesment_notes + "'";
+      const putComma = inputData.examination_notes != null ? "," : "";
+      strQuery += _mysql.mysqlQueryFormat(putComma + "assesment_notes =?", [
+        inputData.assesment_notes
+      ]);
     }
 
     if (inputData.significant_signs != null) {
-      strQuery = "significant_signs = '" + inputData.significant_signs + "'";
+      const putComma =
+        inputData.examination_notes != null
+          ? ","
+          : inputData.assesment_notes != null
+          ? ","
+          : "";
+      strQuery += _mysql.mysqlQueryFormat(putComma + "significant_signs = ?", [
+        inputData.significant_signs
+      ]);
     }
 
-    if (strQuery != "") {
-      db.getConnection((error, connection) => {
-        connection.query(
-          "UPDATE hims_f_patient_encounter Set " +
-            strQuery +
-            " where hims_f_patient_encounter_id=?",
-          [inputData.hims_f_patient_encounter_id],
-          (error, result) => {
-            releaseDBConnection(db, connection);
-            if (error) {
-              next(error);
-            }
-            req.records = result;
-            debugLog("result", result);
-            next();
-          }
-        );
-      });
-    } else {
-      next();
-      return;
+    if (inputData.other_signs != null) {
+      const putComma =
+        inputData.examination_notes != null
+          ? ","
+          : inputData.assesment_notes != null
+          ? ","
+          : inputData.significant_signs != null
+          ? ","
+          : "";
+      strQuery += _mysql.mysqlQueryFormat(putComma + "other_signs = ?", [
+        inputData.other_signs
+      ]);
     }
+    strQuery += " where encounter_id=?";
+
+    _mysql
+      .executeQuery({
+        query: strQuery,
+        values: [inputData.encounter_id],
+        printQuery: true
+      })
+      .then(result => {
+        // utilities.logger().log("result: ", result);
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+  //   let inputData = extend({}, req.body);
+  //   let strQuery = "";
+  //   if (inputData.examination_notes != null) {
+  //     strQuery += "examination_notes = '" + inputData.examination_notes + "'";
+  //   }
+  //   if (inputData.assesment_notes != null) {
+  //     strQuery += "assesment_notes = '" + inputData.assesment_notes + "'";
+  //   }
+
+  //   if (inputData.significant_signs != null) {
+  //     strQuery += "significant_signs = '" + inputData.significant_signs + "'";
+  //   }
+
+  //   if (inputData.other_signs != null) {
+  //     // strQuery !== "" ? " and" : "";
+  //     strQuery += " , other_signs = '" + inputData.other_signs + "'";
+  //   }
+
+  //   console.log("strQuery", strQuery);
+  //   if (strQuery != "") {
+  //     db.getConnection((error, connection) => {
+  //       connection.query(
+  //         "UPDATE hims_f_patient_encounter Set " +
+  //           strQuery +
+  //           " where encounter_id=?",
+  //         [inputData.encounter_id],
+  //         (error, result) => {
+  //           releaseDBConnection(db, connection);
+  //           if (error) {
+  //             next(error);
+  //           }
+  //           req.records = result;
+  //           debugLog("result", result);
+  //           next();
+  //         }
+  //       );
+  //     });
+  //   } else {
+  //     next();
+  //     return;
+  //   }
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 //created by Nowshad: to get
@@ -2865,7 +2964,7 @@ let getPatientEncounter = (req, res, next) => {
     let db = req.db;
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT examination_notes,assesment_notes, significant_signs FROM hims_f_patient_encounter where encounter_id=?;",
+        "SELECT examination_notes,assesment_notes, other_signs, significant_signs FROM hims_f_patient_encounter where encounter_id=?;",
         [req.query.encounter_id],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2938,5 +3037,6 @@ module.exports = {
   getPatientEpisodeSummary,
 
   updatePatientEncounter,
-  getPatientEncounter
+  getPatientEncounter,
+  getPatientBasicChiefComplaints
 };

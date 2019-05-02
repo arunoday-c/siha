@@ -19,10 +19,11 @@ import Enumerable from "linq";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import OrderedList from "../Assessment/OrderedList/OrderedList";
 import Plan from "../Plan/Plan";
-
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import SubjectiveHandler from "./SubjectiveHandler";
-import { DIAG_TYPE } from "../../../utils/GlobalVariables.json";
 import PatientHistory from "../PatientHistory/PatientHistory";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
+import Allergies from "../Allergies/Allergies";
 
 class BasicSubjective extends Component {
   constructor(props) {
@@ -32,9 +33,23 @@ class BasicSubjective extends Component {
       openMedication: false,
       openMedicaldata: false,
       openDiet: false,
-      openVital: false
+      openVital: false,
+      openAlergy: false,
+      chief_complaint: null,
+
+      duration: null,
+
+      interval: null,
+      onset_date: null,
+      pain: null,
+      severity: null,
+      chronic: null,
+      hims_f_episode_chief_complaint_id: null
     };
     this.getMasters();
+    this.getPatientEncounterDetails();
+
+    SubjectiveHandler().getPatientChiefComplaints(this);
   }
 
   getMasters() {
@@ -68,6 +83,14 @@ class BasicSubjective extends Component {
     }
   }
 
+  datehandle(e) {
+    debugger;
+    SubjectiveHandler().datehandle(this, e);
+  }
+  ChangeEventHandler(e) {
+    SubjectiveHandler().ChangeEventHandler(this, e);
+  }
+
   onchangegridcol(row, from) {
     SubjectiveHandler().onchangegridcol(this, row, from);
   }
@@ -81,6 +104,9 @@ class BasicSubjective extends Component {
   IcdsSearch(diagType) {
     SubjectiveHandler().IcdsSearch(this, diagType);
   }
+  dataLevelUpdate(e) {
+    SubjectiveHandler().dataLevelUpdate(this, e);
+  }
   openTab(e) {
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
@@ -93,15 +119,66 @@ class BasicSubjective extends Component {
     });
   }
 
+  getPatientEncounterDetails() {
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getPatientEncounter",
+      method: "GET",
+      data: {
+        encounter_id: Window.global.encounter_id
+      },
+      onSuccess: response => {
+        let data = response.data.records[0];
+        if (response.data.success) {
+          this.setState({
+            significant_signs: data.significant_signs,
+            other_signs: data.other_signs
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  componentWillUnmount() {
+    if (
+      this.state.significant_signs !== null ||
+      this.state.other_signs !== null
+    ) {
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientEncounter",
+        method: "PUT",
+        data: {
+          other_signs: this.state.other_signs,
+          significant_signs: this.state.significant_signs,
+          encounter_id: Window.global.encounter_id
+        }
+      });
+      debugger;
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+    }
+  }
+
+  showAllergies() {
+    this.setState({
+      openAlergy: !this.state.openAlergy
+    });
+  }
   showMedication() {
-    debugger;
     this.setState({
       openMedication: !this.state.openMedication
     });
   }
 
   showMedicalData() {
-    debugger;
     this.setState({
       openMedicaldata: !this.state.openMedicaldata
     });
@@ -126,21 +203,18 @@ class BasicSubjective extends Component {
   }
 
   showVitals() {
-    debugger;
     this.setState({
       openVital: !this.state.openVital
     });
   }
 
   closeVitals() {
-    debugger;
     this.setState({
       openVital: !this.state.openVital
     });
   }
 
   textAreaEvent(e) {
-    debugger;
     // significant_signs
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
@@ -151,6 +225,7 @@ class BasicSubjective extends Component {
   }
 
   render() {
+    debugger;
     const _diagnosis =
       this.props.patient_diagnosis !== undefined
         ? this.props.patient_diagnosis
@@ -185,22 +260,6 @@ class BasicSubjective extends Component {
                               {this.state.chief_complaint}
                             </textarea>
                           </div>
-                          {/* <AlagehFormGroup
-                            div={{ className: "col form-group" }}
-                            label={{
-                              forceLabel: "Enter Chief Complaint",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "",
-                              value: "",
-                              events: {},
-                              option: {
-                                type: "textarea"
-                              }
-                            }}
-                          /> */}
                         </div>
                       </div>
                       <div className="col-12">
@@ -209,12 +268,18 @@ class BasicSubjective extends Component {
                             div={{ className: "col-4 form-group" }}
                             label={{ forceLabel: "Pain Level", isImp: false }}
                             selector={{
-                              name: "",
+                              name: "pain",
                               className: "select-fld",
-                              dataSource: {},
-                              others: {}
+                              value: this.state.pain,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.PAIN_SCALE
+                              },
+                              onChange: this.ChangeEventHandler.bind(this)
                             }}
                           />
+
                           <AlagehAutoComplete
                             div={{ className: "col-4 form-group" }}
                             label={{
@@ -222,22 +287,34 @@ class BasicSubjective extends Component {
                               isImp: false
                             }}
                             selector={{
-                              name: "",
+                              name: "severity",
                               className: "select-fld",
-                              dataSource: {},
-                              others: {}
+                              value: this.state.severity,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.PAIN_SEVERITY
+                              },
+                              onChange: this.ChangeEventHandler.bind(this)
                             }}
                           />
+
                           <AlgaehDateHandler
-                            div={{ className: "col-4" }}
-                            label={{ forceLabel: "Onset Date", isImp: false }}
+                            div={{ className: "col-lg-3" }}
+                            label={{
+                              forceLabel: "Onset Date"
+                            }}
                             textBox={{
                               className: "txt-fld",
-                              name: ""
+                              name: "onset_date"
                             }}
                             maxDate={new Date()}
-                            events={{}}
+                            events={{
+                              onChange: this.dataLevelUpdate.bind(this)
+                            }}
+                            value={this.state.onset_date}
                           />
+
                           <AlagehFormGroup
                             div={{ className: "col-4 form-group" }}
                             label={{
@@ -246,32 +323,47 @@ class BasicSubjective extends Component {
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "",
-                              value: "",
-                              events: {},
-                              option: {
-                                type: "text"
+                              name: "duration",
+                              number: true,
+                              value: this.state.duration,
+                              events: {
+                                onChange: this.dataLevelUpdate.bind(this)
+                              },
+                              others: {
+                                min: 0
                               }
                             }}
                           />
+
                           <AlagehAutoComplete
                             div={{ className: "col-4 form-group" }}
                             label={{ forceLabel: "Interval", isImp: false }}
                             selector={{
-                              name: "",
+                              name: "interval",
                               className: "select-fld",
-                              dataSource: {},
-                              others: {}
+                              value: this.state.interval,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.PAIN_DURATION
+                              },
+                              onChange: this.dataLevelUpdate.bind(this)
                             }}
                           />
+
                           <AlagehAutoComplete
                             div={{ className: "col-4 form-group" }}
                             label={{ forceLabel: "Chronic", isImp: false }}
                             selector={{
-                              name: "",
+                              name: "chronic",
                               className: "select-fld",
-                              dataSource: {},
-                              others: {}
+                              value: this.state.chronic,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.FORMAT_YESNO
+                              },
+                              onChange: this.ChangeEventHandler.bind(this)
                             }}
                           />
                         </div>
@@ -292,30 +384,13 @@ class BasicSubjective extends Component {
                         />
                         <textarea
                           style={{ height: "17vh" }}
-                          value={this.state.other_signs}
-                          name="other_signs"
+                          value={this.state.significant_signs}
+                          name="significant_signs"
                           onChange={this.textAreaEvent.bind(this)}
                         >
-                          {this.state.other_signs}
+                          {this.state.significant_signs}
                         </textarea>
                       </div>
-
-                      {/* <AlagehFormGroup
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Other Signs",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
-                          option: {
-                            type: "text"
-                          }
-                        }}
-                      /> */}
                     </div>
                   </div>
                 </div>
@@ -336,29 +411,13 @@ class BasicSubjective extends Component {
                         />
                         <textarea
                           style={{ height: "23vh" }}
-                          value={this.state.significant_signs}
-                          name="significant_signs"
+                          value={this.state.other_signs}
+                          name="other_signs"
                           onChange={this.textAreaEvent.bind(this)}
                         >
                           {this.state.other_signs}
                         </textarea>
                       </div>
-                      {/* <AlagehFormGroup
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Significant Signs",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
-                          option: {
-                            type: "text"
-                          }
-                        }}
-                      /> */}
                     </div>
                   </div>
                 </div>
@@ -410,7 +469,7 @@ class BasicSubjective extends Component {
                                       dataSource: {
                                         textField: "name",
                                         valueField: "value",
-                                        data: DIAG_TYPE
+                                        data: GlobalVariables.DIAG_TYPE
                                       },
                                       onChange: this.onchangegridcol.bind(
                                         this,
@@ -577,9 +636,17 @@ class BasicSubjective extends Component {
                   onClose={this.closeVitals.bind(this)}
                 />
               </li>
-              {/* <li>
-                <i className="fas fa-allergies" />
-              </li> */}
+              <li>
+                <i
+                  className="fas fa-allergies"
+                  onClick={this.showAllergies.bind(this)}
+                />
+
+                <Allergies
+                  openAllergyModal={this.state.openAlergy}
+                  onClose={this.showAllergies.bind(this)}
+                />
+              </li>
               <li>
                 <i
                   className="fas fa-utensils"
@@ -640,7 +707,8 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
       getDepartmentsandDoctors: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getPatientDiagnosis: AlgaehActions
     },
     dispatch
   );

@@ -3,11 +3,71 @@ import Enumerable from "linq";
 import AlgaehSearch from "../../Wrapper/globalSearch";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
 import swal from "sweetalert2";
+import moment from "moment";
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 export default function SubjectiveHandler() {
   return {
-    IcdsSearch: ($this, diagType) => {
+    dataLevelUpdate: ($this, e) => {
       debugger;
+      e = e.name === undefined ? e.currentTarget : e;
+      let name = e.name || e.target.name;
+      let value = "";
+      // row[name] = value;
+      if (name === "onset_date") {
+        value = e.value || e.target.value;
+        const _durat_interval = dateDurationAndInterval(value);
+        // row["duration"] = _durat_interval.duration;
+        // row["interval"] = _durat_interval.interval;
+
+        $this.setState({
+          duration: _durat_interval.duration,
+          interval: _durat_interval.interval,
+          [name]: moment(e)._d
+        });
+      } else if (name === "duration") {
+        value = parseFloat(e.value);
+        const _duration_Date_Interval = durationToDateAndInterval(
+          value,
+          $this.state.interval
+        );
+        $this.setState({
+          onset_date: _duration_Date_Interval.onset_date,
+          interval: _duration_Date_Interval.interval,
+          [name]: value
+        });
+
+        // row["onset_date"] = _duration_Date_Interval.onset_date;
+        // row["interval"] = _duration_Date_Interval.interval;
+      } else if (name === "interval") {
+        value = e.value || e.target.value;
+        const _dur_date_inter = durationToDateAndInterval(
+          $this.state.duration,
+          value
+        );
+        // row["onset_date"] = _dur_date_inter.onset_date;
+
+        $this.setState({
+          onset_date: _dur_date_inter.onset_date,
+          [name]: value
+        });
+      }
+    },
+    ChangeEventHandler: ($this, e) => {
+      let name = e.name || e.target.name;
+      let value = e.value || e.target.value;
+
+      $this.setState({
+        [name]: value
+      });
+    },
+    datehandle: ($this, e) => {
+      debugger;
+      $this.setState({
+        [e.target.name]: moment(e)._d
+      });
+    },
+    IcdsSearch: ($this, diagType) => {
       AlgaehSearch({
         searchGrid: {
           columns: spotlightSearch.Diagnosis.IcdCodes
@@ -71,10 +131,115 @@ export default function SubjectiveHandler() {
           }
         }
       });
+    },
+
+    addChiefComplainToPatient: $this => {
+      debugger;
+      let patChiefComp = [];
+      patChiefComp.push({
+        comment: $this.state.chief_complaint,
+        duration: $this.state.duration,
+        episode_id: Window.global["episode_id"],
+        interval: $this.state.interval,
+        onset_date: $this.state.onset_date,
+        pain: $this.state.pain,
+        score: 0,
+        severity: $this.state.severity,
+        patient_id: Window.global["current_patient"],
+        recordState: "insert",
+        chronic: $this.state.chronic,
+        complaint_inactive: "N",
+        complaint_inactive_date: null
+      });
+      algaehApiCall({
+        uri: "/doctorsWorkBench/addPatientChiefComplaints",
+        data: patChiefComp,
+        onSuccess: response => {
+          if (response.data.success) {
+            getPatientChiefComplaints($this);
+            swalMessage({
+              title: "Chief Complaint Recorded",
+              type: "success"
+            });
+          }
+        }
+      });
+    },
+
+    updatePatientChiefComplaints: $this => {
+      debugger;
+      let patChiefComp = [];
+      patChiefComp.push({
+        hims_f_episode_chief_complaint_id:
+          $this.state.hims_f_episode_chief_complaint_id,
+        comment: $this.state.chief_complaint,
+        duration: $this.state.duration,
+        episode_id: Window.global["episode_id"],
+        interval: $this.state.interval,
+        onset_date: $this.state.onset_date,
+        pain: $this.state.pain,
+        severity: $this.state.severity,
+        patient_id: Window.global["current_patient"],
+
+        chronic: $this.state.chronic
+      });
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientChiefComplaints",
+        method: "PUT",
+        data: { chief_complaints: patChiefComp },
+        onSuccess: response => {
+          if (response.data.success) {
+            getPatientChiefComplaints($this);
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    },
+
+    getPatientChiefComplaints: $this => {
+      getPatientChiefComplaints($this);
     }
   };
 }
 
+function getPatientChiefComplaints($this) {
+  debugger;
+  algaehApiCall({
+    uri: "/doctorsWorkBench/getPatientBasicChiefComplaints",
+    data: {
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"]
+    },
+    method: "GET",
+    // cancelRequestId: "getPatientBasicChiefComplaints",
+    onSuccess: response => {
+      if (response.data.success) {
+        debugger;
+        if (response.data.records.length > 0) {
+          $this.setState({
+            hims_f_episode_chief_complaint_id:
+              response.data.records[0].hims_f_episode_chief_complaint_id,
+            chief_complaint: response.data.records[0].comment,
+            duration: response.data.records[0].duration,
+
+            interval: response.data.records[0].interval,
+            onset_date: response.data.records[0].onset_date,
+            pain: response.data.records[0].pain,
+
+            severity: response.data.records[0].severity,
+
+            chronic: response.data.records[0].chronic
+          });
+        }
+      }
+    }
+  });
+}
 function insertFinalICDS($this, row) {
   const finalICDS = Enumerable.from($this.props.patient_diagnosis)
     .where(w => w.final_daignosis === "Y")
@@ -161,8 +326,8 @@ function getPatientDiagnosis($this) {
     uri: "/doctorsWorkBench/getPatientDiagnosis",
     cancelRequestId: "getPatientDiagnosis",
     data: {
-      patient_id: $this.state.patient_id,
-      episode_id: $this.state.episode_id
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"]
     },
     method: "GET",
     redux: {
@@ -170,10 +335,36 @@ function getPatientDiagnosis($this) {
       mappingName: "patient_diagnosis"
     },
     afterSuccess: data => {
+      debugger;
       $this.setState({
         showInitialDiagnosisLoader: false,
         showFinalDiagnosisLoader: false
       });
     }
   });
+}
+
+function durationToDateAndInterval(duration, interval) {
+  const _interval = Enumerable.from(GlobalVariables.PAIN_DURATION)
+    .where(w => w.value === interval)
+    .firstOrDefault().name;
+  const _date = moment().add(-duration, _interval.toLowerCase());
+  return { interval, onset_date: _date._d };
+}
+
+function dateDurationAndInterval(selectedDate) {
+  let duration = 0;
+  let interval = "D";
+  if (moment().diff(selectedDate, "days") < 31) {
+    duration = moment().diff(selectedDate, "days");
+    interval = "D";
+  } else if (moment().diff(selectedDate, "months") < 12) {
+    duration = moment().diff(selectedDate, "months");
+    interval = "M";
+  } else if (moment().diff(selectedDate, "years")) {
+    duration = moment().diff(selectedDate, "years");
+    interval = "Y";
+  }
+
+  return { duration, interval };
 }
