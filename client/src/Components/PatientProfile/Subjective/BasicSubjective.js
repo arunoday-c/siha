@@ -169,7 +169,7 @@ class BasicSubjective extends Component {
 
   showAllergies() {
     this.setState({
-      openAlergy: true
+      openAlergy: !this.state.openAlergy
     });
   }
   showMedication() {

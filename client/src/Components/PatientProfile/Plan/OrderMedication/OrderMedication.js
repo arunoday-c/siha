@@ -193,7 +193,8 @@ class OrderMedication extends Component {
                 onChange: numberhandle.bind(this, this)
               },
               others: {
-                onBlur: calcuateDispense.bind(this, this),
+                type: "number",
+                // onBlur: calcuateDispense.bind(this, this),
                 onFocus: e => {
                   e.target.oldvalue = e.target.value;
                 }
@@ -215,7 +216,7 @@ class OrderMedication extends Component {
                 onChange: numberhandle.bind(this, this)
               },
               others: {
-                onBlur: calcuateDispense.bind(this, this),
+                // onBlur: calcuateDispense.bind(this, this),
                 onFocus: e => {
                   e.target.oldvalue = e.target.value;
                 }

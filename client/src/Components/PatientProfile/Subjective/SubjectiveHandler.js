@@ -12,9 +12,10 @@ export default function SubjectiveHandler() {
       debugger;
       e = e.name === undefined ? e.currentTarget : e;
       let name = e.name || e.target.name;
-      let value = e.value || e.target.value;
+      let value = "";
       // row[name] = value;
       if (name === "onset_date") {
+        value = e.value || e.target.value;
         const _durat_interval = dateDurationAndInterval(value);
         // row["duration"] = _durat_interval.duration;
         // row["interval"] = _durat_interval.interval;
@@ -25,6 +26,7 @@ export default function SubjectiveHandler() {
           [name]: moment(e)._d
         });
       } else if (name === "duration") {
+        value = parseFloat(e.value);
         const _duration_Date_Interval = durationToDateAndInterval(
           value,
           $this.state.interval
@@ -38,6 +40,7 @@ export default function SubjectiveHandler() {
         // row["onset_date"] = _duration_Date_Interval.onset_date;
         // row["interval"] = _duration_Date_Interval.interval;
       } else if (name === "interval") {
+        value = e.value || e.target.value;
         const _dur_date_inter = durationToDateAndInterval(
           $this.state.duration,
           value
