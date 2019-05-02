@@ -313,7 +313,7 @@ const getPatientEncounterDetails = $this => {
     uri: "/doctorsWorkBench/getPatientEncounter",
     method: "GET",
     data: {
-      hims_f_patient_encounter_id: Window.global.encounter_id
+      encounter_id: Window.global.encounter_id
     },
     onSuccess: response => {
       let data = response.data.records[0];

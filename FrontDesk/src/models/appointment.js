@@ -379,6 +379,7 @@ module.exports = {
   //created by irfan: to updateAppointmentClinic
   updateAppointmentClinic: (req, res, next) => {
     const _mysql = new algaehMysql();
+    let input = req.body;
 
     _mysql
       .executeQuery({

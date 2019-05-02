@@ -66,7 +66,7 @@ class ListofItems extends PureComponent {
         <div>
           <AlgaehModalPopUp
             events={{
-              onClose: this.handleClose.bind(this)
+              onClose: this.onClose.bind(this)
             }}
             title="Medication Items"
             openPopup={this.props.show}
@@ -240,7 +240,6 @@ class ListofItems extends PureComponent {
             <div className=" popupFooter">
               <div className="col-lg-12">
                 <div className="row">
-                  {" "}
                   <div className="col-lg-4" />
                   <div className="col-lg-8">
                     <button

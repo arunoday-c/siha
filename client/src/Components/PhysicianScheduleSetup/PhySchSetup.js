@@ -518,6 +518,7 @@ class PhySchSetup extends Component {
   getDoctorsAndDepts() {
     algaehApiCall({
       uri: "/department/selectDoctorsAndClinic",
+
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -885,61 +886,67 @@ class PhySchSetup extends Component {
             <div className="col-lg-12 divInner">
               <div className="row">
                 <div className="col-lg-3 divInnerLeft">
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "department_name"
-                    }}
-                    selector={{
-                      name: "sub_department_id",
-                      className: "select-fld",
-                      value: this.state.sub_department_id,
-                      dataSource: {
-                        textField: "sub_department_name",
-                        valueField: "sub_dept_id",
-                        data: this.state.departments
-                      },
-                      onChange: this.deptDropDownHandler.bind(this)
-                    }}
-                    error={this.state.department_error}
-                    helperText={this.state.department_error_text}
-                  />
-                  <label>Doctors</label>
-                  <div className="bordered-layout">
-                    <ul
-                      style={
-                        {
-                          //  pointerEvents: this.state.disable ? "none" : ""
-                        }
-                      }
-                    >
-                      {this.state.doctors.map((data, index) => {
-                        const _alreadyExists = Enumerable.from(
-                          this.state.scheduleDoctors
-                        )
-                          .where(w => w.provider_id === data.provider_id)
-                          .firstOrDefault();
-                        const _checked =
-                          _alreadyExists === undefined ? {} : { checked: true };
-                        return (
-                          <li key={index}>
-                            <input
-                              row={JSON.stringify(data)}
-                              onChange={this.checkHandle.bind(this)}
-                              type="checkbox"
-                              {..._checked}
-                            />
-                            <span
-                              style={{
-                                width: "80%"
-                              }}
-                            >
-                              {data.full_name}
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        fieldName: "department_name"
+                      }}
+                      selector={{
+                        name: "sub_department_id",
+                        className: "select-fld",
+                        value: this.state.sub_department_id,
+                        dataSource: {
+                          textField: "sub_department_name",
+                          valueField: "sub_dept_id",
+                          data: this.state.departments
+                        },
+                        onChange: this.deptDropDownHandler.bind(this)
+                      }}
+                      error={this.state.department_error}
+                      helperText={this.state.department_error_text}
+                    />
+                    <div className="col">
+                      <label>Doctors</label>
+                      <div className="bordered-layout physicianList">
+                        <ul
+                          style={
+                            {
+                              //  pointerEvents: this.state.disable ? "none" : ""
+                            }
+                          }
+                        >
+                          {this.state.doctors.map((data, index) => {
+                            const _alreadyExists = Enumerable.from(
+                              this.state.scheduleDoctors
+                            )
+                              .where(w => w.provider_id === data.provider_id)
+                              .firstOrDefault();
+                            const _checked =
+                              _alreadyExists === undefined
+                                ? {}
+                                : { checked: true };
+                            return (
+                              <li key={index}>
+                                <input
+                                  row={JSON.stringify(data)}
+                                  onChange={this.checkHandle.bind(this)}
+                                  type="checkbox"
+                                  {..._checked}
+                                />
+                                <span
+                                  style={{
+                                    width: "80%"
+                                  }}
+                                >
+                                  {data.full_name}
+                                </span>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="col-lg-9 divInnerRight">
@@ -1314,51 +1321,55 @@ class PhySchSetup extends Component {
             <div className="col-lg-12 divInner">
               <div className="row">
                 <div className="col-lg-3 divInnerLeft">
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "department_name"
-                    }}
-                    selector={{
-                      name: "sub_department_id",
-                      className: "select-fld",
-                      value: this.state.sub_department_id,
-                      dataSource: {
-                        textField: "sub_department_name",
-                        valueField: "sub_dept_id",
-                        data: this.state.departments
-                      },
-                      onChange: this.deptDropDownHandler.bind(this)
-                    }}
-                    error={this.state.department_error}
-                    helperText={this.state.department_error_text}
-                  />
-                  <label>Doctors</label>
-                  <div className="bordered-layout">
-                    <ul
-                      style={
-                        {
-                          //  pointerEvents: this.state.disable ? "none" : ""
-                        }
-                      }
-                    >
-                      {this.state.doctors.map((data, index) => (
-                        <li key={index}>
-                          <input
-                            row={JSON.stringify(data)}
-                            onChange={this.checkHandle.bind(this)}
-                            type="checkbox"
-                          />
-                          <span
-                            style={{
-                              width: "80%"
-                            }}
-                          >
-                            {data.full_name}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="row">
+                    <AlagehAutoComplete
+                      div={{ className: "col-12" }}
+                      label={{
+                        fieldName: "department_name"
+                      }}
+                      selector={{
+                        name: "sub_department_id",
+                        className: "select-fld",
+                        value: this.state.sub_department_id,
+                        dataSource: {
+                          textField: "sub_department_name",
+                          valueField: "sub_dept_id",
+                          data: this.state.departments
+                        },
+                        onChange: this.deptDropDownHandler.bind(this)
+                      }}
+                      error={this.state.department_error}
+                      helperText={this.state.department_error_text}
+                    />
+                    <div className="col-12">
+                      <label>Doctors</label>
+                      <div className="bordered-layout physicianList">
+                        <ul
+                          style={
+                            {
+                              //  pointerEvents: this.state.disable ? "none" : ""
+                            }
+                          }
+                        >
+                          {this.state.doctors.map((data, index) => (
+                            <li key={index}>
+                              <input
+                                row={JSON.stringify(data)}
+                                onChange={this.checkHandle.bind(this)}
+                                type="checkbox"
+                              />
+                              <span
+                                style={{
+                                  width: "80%"
+                                }}
+                              >
+                                {data.full_name}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="col-lg-9 divInnerRight">
@@ -1700,7 +1711,7 @@ class PhySchSetup extends Component {
               </div>
             </div>
           </div>
-          <div className="popupFooter">
+          <div className="col-12 popupFooter">
             <button
               type="button"
               className="btn btn-primary"

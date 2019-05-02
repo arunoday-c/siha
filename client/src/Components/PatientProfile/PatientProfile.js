@@ -6,7 +6,7 @@ import BasicSubjective from "./Subjective/BasicSubjective";
 import PhysicalExamination from "./PhysicalExamination/PhysicalExamination";
 import ExamDiagramStandolone from "./ExamDiagramStandolone/ExamDiagramStandolone";
 import Assesment from "./Assessment/Assessment";
-import Plan from "./Plan/Plan";
+
 import { AlgaehModalPopUp } from "../Wrapper/algaehWrapper";
 import AlgaehFile from "../Wrapper/algaehFileUpload";
 import {
@@ -27,13 +27,13 @@ import {
   getPatientVitals,
   getPatientDiet,
   getPatientDiagnosis,
-  getPatientAllergies
+  getPatientAllergies,
+  getPatientHistory
 } from "./PatientProfileHandlers";
 // import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
 import Summary from "./Summary/Summary";
 import Dental from "./Dental/Dental";
-import DentalForm from "./DentalForm/DentalForm";
 import Eye from "./Eye/Eye";
 import _ from "lodash";
 import Allergies from "./Allergies/Allergies";
@@ -70,6 +70,7 @@ class PatientProfile extends Component {
     getPatientAllergies(this);
     getPatientDiet(this);
     getPatientDiagnosis(this);
+    getPatientHistory(this);
     this.getLocation();
     this.changeTabs = this.changeTabs.bind(this);
   }
@@ -143,7 +144,6 @@ class PatientProfile extends Component {
         // visit_date: "2018-09-15"
       },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           that.setState({ openUCAF: true, UCAFData: response.data.records });
         }
@@ -222,13 +222,20 @@ class PatientProfile extends Component {
   }
   renderUCAFReport() {
     return (
-      <AlgaehModalPopUp openPopup={this.state.openUCAF} title="UCAF 2.0">
+      <AlgaehModalPopUp
+        openPopup={this.state.openUCAF}
+        title="UCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openUCAF: false });
+          }
+        }}
+      >
         <UcafEditor dataProps={this.state.UCAFData} />
       </AlgaehModalPopUp>
     );
   }
   render() {
-    debugger;
     const module_plan = _.find(this.active_modules, f => {
       return f.module_id === parseInt(this.selected_module);
     });
@@ -423,15 +430,7 @@ class PatientProfile extends Component {
                   Assesment
                 </span>
               </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="plan"
-                  className="nav-link"
-                >
-                  Plan
-                </span>
-              </li>
+
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
@@ -439,15 +438,6 @@ class PatientProfile extends Component {
                   className="nav-link"
                 >
                   Dental
-                </span>
-              </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="dental_form"
-                  className="nav-link"
-                >
-                  Dental Form
                 </span>
               </li>
               <li className="nav-item">
@@ -560,12 +550,13 @@ class PatientProfile extends Component {
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
-                  algaehsoap="plan"
+                  algaehsoap="exam_diagram"
                   className="nav-link"
                 >
-                  Plan
+                  Examination Diagram
                 </span>
               </li>
+
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
@@ -579,7 +570,7 @@ class PatientProfile extends Component {
                 <li>
                   <i className="fas fa-allergies" />
                   <section>
-                    <b className="top-nav-sec-hdg">Allergies:</b>
+                    <b className="top-nav-sec-hdg">Allergies</b>
                     <p>
                       {_patient_allergies.map((data, index) => (
                         <React.Fragment key={index}>
@@ -656,14 +647,10 @@ class PatientProfile extends Component {
               <ExamDiagramStandolone />
             ) : this.state.pageDisplay === "assesment" ? (
               <Assesment vat_applicable={this.vatApplicable()} />
-            ) : this.state.pageDisplay === "plan" ? (
-              <Plan />
             ) : this.state.pageDisplay === "summary" ? (
               <Summary />
             ) : this.state.pageDisplay === "dental" ? (
               <Dental />
-            ) : this.state.pageDisplay === "dental_form" ? (
-              <DentalForm />
             ) : this.state.pageDisplay === "eye" ? (
               <Eye />
             ) : null
@@ -671,8 +658,8 @@ class PatientProfile extends Component {
             <Overview />
           ) : this.state.pageDisplay === "subjective" ? (
             <BasicSubjective vat_applicable={this.vatApplicable()} />
-          ) : this.state.pageDisplay === "plan" ? (
-            <Plan />
+          ) : this.state.pageDisplay === "exam_diagram" ? (
+            <ExamDiagramStandolone />
           ) : this.state.pageDisplay === "summary" ? (
             <Summary />
           ) : null}
@@ -698,7 +685,8 @@ function mapStateToProps(state) {
     patient_vitals: state.patient_vitals,
     patient_diet: state.patient_diet,
     patient_diagnosis: state.patient_diagnosis,
-    inventorylocations: state.inventorylocations
+    inventorylocations: state.inventorylocations,
+    patient_history: state.patient_history
   };
 }
 
@@ -710,7 +698,8 @@ function mapDispatchToProps(dispatch) {
       getPatientVitals: AlgaehActions,
       getPatientDiet: AlgaehActions,
       getPatientDiagnosis: AlgaehActions,
-      getLocation: AlgaehActions
+      getLocation: AlgaehActions,
+      getPatientHistory: AlgaehActions
     },
     dispatch
   );

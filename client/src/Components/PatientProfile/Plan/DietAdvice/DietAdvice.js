@@ -151,7 +151,7 @@ class DietAdvice extends Component {
                 data:
                   this.props.dietList === undefined ? [] : this.props.dietList
               }}
-              paging={{ page: 0, rowsPerPage: 3 }}
+              paging={{ page: 0, rowsPerPage: 5 }}
             />
           </div>
         </div>

@@ -245,7 +245,7 @@ class AddConsultationForm extends Component {
                       />
                       <br />
 
-                      <div className="customRadio">
+                      {/* <div className="customRadio">
                         <label className="radio inline">
                           <input
                             type="radio"
@@ -274,6 +274,23 @@ class AddConsultationForm extends Component {
                           />
                           <span>No</span>
                         </label>
+                      </div> */}
+
+                      <div className="customCheckbox">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="maternity_patient_yes"
+                            value="Y"
+                            checked={
+                              this.state.maternity_patient === "Y"
+                                ? true
+                                : false
+                            }
+                            onChange={radioChange.bind(this, this, context)}
+                          />
+                          <span>Yes</span>
+                        </label>
                       </div>
                     </div>
 
@@ -284,7 +301,7 @@ class AddConsultationForm extends Component {
                             <label>Existing Plan</label>
                             <br />
 
-                            <div className="customRadio">
+                            {/* <div className="customRadio">
                               <label className="radio inline">
                                 <input
                                   type="radio"
@@ -320,6 +337,27 @@ class AddConsultationForm extends Component {
                                   )}
                                 />
                                 <span>No</span>
+                              </label>
+                            </div> */}
+
+                            <div className="customCheckbox">
+                              <label className="checkbox inline">
+                                <input
+                                  type="checkbox"
+                                  name="existing_plan"
+                                  value="Y"
+                                  checked={
+                                    this.state.existing_plan === "Y"
+                                      ? true
+                                      : false
+                                  }
+                                  onChange={radioChange.bind(
+                                    this,
+                                    this,
+                                    context
+                                  )}
+                                />
+                                <span>Yes</span>
                               </label>
                             </div>
                           </div>

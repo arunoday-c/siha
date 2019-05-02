@@ -67,7 +67,7 @@ export default () => {
       next();
     }
   );
-  api.put("updateSubDepartment", updateSubDepartment, (req, res, next) => {
+  api.put("/updateSubDepartment", updateSubDepartment, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,

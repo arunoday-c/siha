@@ -46,13 +46,10 @@ class TestAnalytes extends PureComponent {
       newProps.test_analytes === undefined ||
       newProps.test_analytes.length === 0
     ) {
-      debugger;
       this.setState({ test_analytes: newProps.inputsparameters.test_analytes });
     }
   }
   render() {
-    debugger;
-
     return (
       <div>
         <AlgaehModalPopUp

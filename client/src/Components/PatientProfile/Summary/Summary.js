@@ -235,57 +235,150 @@ class Summary extends Component {
 
             <div className="bd-callout bd-callout-theme">
               <h6>Family History</h6>
-              <ul>
+              <table
+                className="table table-sm table-bordered customTable"
+                style={{ marginTop: 10 }}
+              >
+                <thead className="table-primary">
+                  <tr>
+                    <th>History</th>
+                    <th>Recorded By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {_pat_familyHistory.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.remarks}</td>
+                      <td>{"Dr. " + data.provider_name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* <ul>
                 {_pat_familyHistory.map((data, index) => (
                   <li key={index}>{data.remarks}</li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
 
             <div className="bd-callout bd-callout-theme">
-              <h6>Social Hitory</h6>
-              <ul>
+              <h6>Social History</h6>
+              <table
+                className="table table-sm table-bordered customTable"
+                style={{ marginTop: 10 }}
+              >
+                <thead className="table-primary">
+                  <tr>
+                    <th>History</th>
+                    <th>Recorded By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {_pat_socialHistory.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.remarks}</td>
+                      <td>{"Dr. " + data.provider_name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* <ul>
+                
                 {_pat_socialHistory.map((data, index) => (
                   <li key={index}>
                     {data.remarks + " (Dr. " + data.provider_name + ")"}
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
             <div className="bd-callout bd-callout-theme">
               <h6>Medical History</h6>
-
-              <ul>
+              <table
+                className="table table-sm table-bordered customTable"
+                style={{ marginTop: 10 }}
+              >
+                <thead className="table-primary">
+                  <tr>
+                    <th>History</th>
+                    <th>Recorded By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {_pat_medicalHistory.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.remarks}</td>
+                      <td>{"Dr. " + data.provider_name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* <ul>
                 {_pat_medicalHistory.map((data, index) => (
                   <li key={index}>
                     {data.remarks + " (Dr. " + data.provider_name + ")"}
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
 
             <div className="bd-callout bd-callout-theme">
               <h6>Surgical History</h6>
-
-              <ul>
+              <table
+                className="table table-sm table-bordered customTable"
+                style={{ marginTop: 10 }}
+              >
+                <thead className="table-primary">
+                  <tr>
+                    <th>History</th>
+                    <th>Recorded By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {_pat_surgicalHistory.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.remarks}</td>
+                      <td>{"Dr " + data.provider_name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* <ul>
                 {_pat_surgicalHistory.map((data, index) => (
                   <li key={index}>
                     {data.remarks + " (Dr. " + data.provider_name + ")"}
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
 
             <div className="bd-callout bd-callout-theme">
               <h6>Birth History</h6>
-
-              <ul>
+              <table
+                className="table table-sm table-bordered customTable"
+                style={{ marginTop: 10 }}
+              >
+                <thead className="table-primary">
+                  <tr>
+                    <th>History</th>
+                    <th>Recorded By</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {_pat_birthHistory.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.remarks}</td>
+                      <td>{"Dr. " + data.provider_name}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* <ul>
                 {_pat_birthHistory.map((data, index) => (
                   <li key={index}>
                     {data.remarks + " (Dr. " + data.provider_name + ")"}
                   </li>
                 ))}
-              </ul>
+              </ul> */}
             </div>
           </div>
           <div className="col-md-3 col-lg-3">

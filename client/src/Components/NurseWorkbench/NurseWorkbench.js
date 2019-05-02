@@ -857,65 +857,61 @@ class NurseWorkbench extends Component {
               </div>
 
               <div className="row">
-                <div className="col">
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "department_name",
-                      isImp: false
-                    }}
-                    selector={{
-                      name: "sub_department_id",
-                      className: "select-fld",
-                      value: this.state.sub_department_id,
-                      dataSource: {
-                        textField: "sub_department_name",
-                        valueField: "sub_dept_id",
-                        data: this.state.departments
-                      },
-                      onChange: this.deptDropDownHandler.bind(this),
-                      onClear: () => {
-                        this.setState(
-                          {
-                            sub_department_id: null
-                          },
-                          () => {
-                            this.loadListofData();
-                          }
-                        );
-                      }
-                    }}
-                  />
-                </div>
-                <div className="col">
-                  <AlagehAutoComplete
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "doctor_name"
-                    }}
-                    selector={{
-                      name: "provider_id",
-                      className: "select-fld",
-                      value: this.state.provider_id,
-                      dataSource: {
-                        textField: "full_name",
-                        valueField: "provider_id",
-                        data: this.state.doctors
-                      },
-                      onChange: this.dropDownHandle.bind(this),
-                      onClear: () => {
-                        this.setState(
-                          {
-                            provider_id: null
-                          },
-                          () => {
-                            this.loadListofData();
-                          }
-                        );
-                      }
-                    }}
-                  />
-                </div>
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "department_name",
+                    isImp: false
+                  }}
+                  selector={{
+                    name: "sub_department_id",
+                    className: "select-fld",
+                    value: this.state.sub_department_id,
+                    dataSource: {
+                      textField: "sub_department_name",
+                      valueField: "sub_dept_id",
+                      data: this.state.departments
+                    },
+                    onChange: this.deptDropDownHandler.bind(this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          sub_department_id: null
+                        },
+                        () => {
+                          this.loadListofData();
+                        }
+                      );
+                    }
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col" }}
+                  label={{
+                    fieldName: "doctor_name"
+                  }}
+                  selector={{
+                    name: "provider_id",
+                    className: "select-fld",
+                    value: this.state.provider_id,
+                    dataSource: {
+                      textField: "full_name",
+                      valueField: "provider_id",
+                      data: this.state.doctors
+                    },
+                    onChange: this.dropDownHandle.bind(this),
+                    onClear: () => {
+                      this.setState(
+                        {
+                          provider_id: null
+                        },
+                        () => {
+                          this.loadListofData();
+                        }
+                      );
+                    }
+                  }}
+                />
               </div>
 
               <div className="portlet-body">

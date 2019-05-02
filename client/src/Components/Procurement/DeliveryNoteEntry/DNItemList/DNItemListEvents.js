@@ -288,7 +288,6 @@ const changeDateFormat = date => {
 };
 
 const printBarcode = ($this, row, e) => {
-  debugger;
   AlgaehReport({
     report: {
       fileName: "sampleBarcode",

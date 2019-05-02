@@ -1,147 +1,370 @@
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import Enumerable from "linq";
+import AlgaehSearch from "../../Wrapper/globalSearch";
+import spotlightSearch from "../../../Search/spotlightSearch.json";
+import swal from "sweetalert2";
 import moment from "moment";
-const getAllAllergies = ($this, type) => {
-  $this.props.getAllAllergies({
-    uri: "/doctorsWorkBench/getAllAllergies",
-    method: "GET",
-    data: {
-      allergy_type: type
-    },
-    redux: {
-      type: "ALL_ALLERGIES",
-      mappingName: "allallergies"
-    },
-    afterSuccess: data => {}
-  });
-};
+import GlobalVariables from "../../../utils/GlobalVariables.json";
 
-const getPatientAllergies = ($this, type) => {
-  $this.props.getPatientAllergies({
-    uri: "/doctorsWorkBench/getPatientAllergies",
-    method: "GET",
-    redux: {
-      type: "PATIENT_ALLERGIES",
-      mappingName: "patientallergies"
-    },
-    afterSuccess: data => {}
-  });
-};
+export default function SubjectiveHandler() {
+  return {
+    dataLevelUpdate: ($this, e) => {
+      debugger;
+      e = e.name === undefined ? e.currentTarget : e;
+      let name = e.name || e.target.name;
+      let value = "";
+      // row[name] = value;
+      if (name === "onset_date") {
+        value = e.value || e.target.value;
+        const _durat_interval = dateDurationAndInterval(value);
+        // row["duration"] = _durat_interval.duration;
+        // row["interval"] = _durat_interval.interval;
 
-const getReviewOfSystems = $this => {
-  $this.props.getReviewOfSystems({
-    uri: "/doctorsWorkBench/getReviewOfSystem",
-    method: "GET",
-    redux: {
-      type: "ALL_ROS",
-      mappingName: "allros"
-    },
-    afterSuccess: data => {}
-  });
-};
+        $this.setState({
+          duration: _durat_interval.duration,
+          interval: _durat_interval.interval,
+          [name]: moment(e)._d
+        });
+      } else if (name === "duration") {
+        value = parseFloat(e.value);
+        const _duration_Date_Interval = durationToDateAndInterval(
+          value,
+          $this.state.interval
+        );
+        $this.setState({
+          onset_date: _duration_Date_Interval.onset_date,
+          interval: _duration_Date_Interval.interval,
+          [name]: value
+        });
 
-const getReviewOfSystemsDetails = ($this, type) => {
-  $this.props.getReviewOfSystems({
-    uri: "/doctorsWorkBench/getReviewOfSystem",
-    method: "GET",
-    data: {
-      hims_d_review_of_system_header_id: type
+        // row["onset_date"] = _duration_Date_Interval.onset_date;
+        // row["interval"] = _duration_Date_Interval.interval;
+      } else if (name === "interval") {
+        value = e.value || e.target.value;
+        const _dur_date_inter = durationToDateAndInterval(
+          $this.state.duration,
+          value
+        );
+        // row["onset_date"] = _dur_date_inter.onset_date;
+
+        $this.setState({
+          onset_date: _dur_date_inter.onset_date,
+          [name]: value
+        });
+      }
     },
-    redux: {
-      type: "ALL_ROS_DETAILS",
-      mappingName: "allrosdetails"
+    ChangeEventHandler: ($this, e) => {
+      let name = e.name || e.target.name;
+      let value = e.value || e.target.value;
+
+      $this.setState({
+        [name]: value
+      });
+    },
+    datehandle: ($this, e) => {
+      debugger;
+      $this.setState({
+        [e.target.name]: moment(e)._d
+      });
+    },
+    IcdsSearch: ($this, diagType) => {
+      AlgaehSearch({
+        searchGrid: {
+          columns: spotlightSearch.Diagnosis.IcdCodes
+        },
+        searchName: "IcdCodes",
+        uri: "/gloabelSearch/get",
+        onContainsChange: (text, serchBy, callBack) => {
+          callBack(text);
+        },
+        onRowSelect: row => {
+          if (diagType === "Final") {
+            insertFinalICDS($this, row);
+          } else if (diagType === "Intial") {
+            // insertInitialICDS($this, row);
+          }
+        }
+      });
+    },
+    onchangegridcol: ($this, row, from, e) => {
+      if (from === "Intial" && row.final_daignosis === "Y") {
+        swalMessage({
+          title:
+            "Already selected as final diagnosis. If changes required change in final diagnosis",
+          type: "error"
+        });
+      } else {
+        let name = e.name || e.target.name;
+        let value = e.value || e.target.value;
+
+        if (from === "Intial") {
+          row[name] = value;
+          row.update();
+        } else if (from === "Final") {
+          row[name] = value;
+          row.update();
+        }
+      }
+    },
+    deleteFinalDiagnosis: ($this, row, from) => {
+      showconfirmDialog($this, row);
+    },
+
+    updateDiagnosis: ($this, row) => {
+      let data = {
+        hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
+        diagnosis_type: row.diagnosis_type,
+        final_daignosis: row.final_daignosis,
+        record_status: "A"
+      };
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientDiagnosis",
+        data: data,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
+            swalMessage({
+              title: "Record updated successfully . .",
+              type: "success"
+            });
+            getPatientDiagnosis($this);
+          }
+        }
+      });
+    },
+
+    addChiefComplainToPatient: $this => {
+      debugger;
+      let patChiefComp = [];
+      patChiefComp.push({
+        comment: $this.state.chief_complaint,
+        duration: $this.state.duration,
+        episode_id: Window.global["episode_id"],
+        interval: $this.state.interval,
+        onset_date: $this.state.onset_date,
+        pain: $this.state.pain,
+        score: 0,
+        severity: $this.state.severity,
+        patient_id: Window.global["current_patient"],
+        recordState: "insert",
+        chronic: $this.state.chronic,
+        complaint_inactive: "N",
+        complaint_inactive_date: null
+      });
+      algaehApiCall({
+        uri: "/doctorsWorkBench/addPatientChiefComplaints",
+        data: patChiefComp,
+        onSuccess: response => {
+          if (response.data.success) {
+            getPatientChiefComplaints($this);
+            swalMessage({
+              title: "Chief Complaint Recorded",
+              type: "success"
+            });
+          }
+        }
+      });
+    },
+
+    updatePatientChiefComplaints: $this => {
+      debugger;
+      let patChiefComp = [];
+      patChiefComp.push({
+        hims_f_episode_chief_complaint_id:
+          $this.state.hims_f_episode_chief_complaint_id,
+        comment: $this.state.chief_complaint,
+        duration: $this.state.duration,
+        episode_id: Window.global["episode_id"],
+        interval: $this.state.interval,
+        onset_date: $this.state.onset_date,
+        pain: $this.state.pain,
+        severity: $this.state.severity,
+        patient_id: Window.global["current_patient"],
+
+        chronic: $this.state.chronic
+      });
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientChiefComplaints",
+        method: "PUT",
+        data: { chief_complaints: patChiefComp },
+        onSuccess: response => {
+          if (response.data.success) {
+            getPatientChiefComplaints($this);
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    },
+
+    getPatientChiefComplaints: $this => {
+      getPatientChiefComplaints($this);
     }
-  });
-};
+  };
+}
 
-const getPatientROS = $this => {
-  $this.props.getReviewOfSystems({
-    uri: "/doctorsWorkBench/getPatientROS",
-    method: "GET",
+function getPatientChiefComplaints($this) {
+  debugger;
+  algaehApiCall({
+    uri: "/doctorsWorkBench/getPatientBasicChiefComplaints",
     data: {
       patient_id: Window.global["current_patient"],
       episode_id: Window.global["episode_id"]
     },
-    redux: {
-      type: "PATIENT_ROS",
-      mappingName: "patientros"
-    }
-  });
-};
-
-//Date Handaler Change
-const datehandle = ($this, data, ctrl, e) => {
-  let allAllergies = $this.state.allAllergies;
-  data[e] = moment(ctrl)._d;
-  for (let i = 0; i < allAllergies.length; i++) {
-    if (allAllergies[i].severity === data.severity) {
-      allAllergies[i] = data;
-    }
-  }
-  $this.setState({
-    allAllergies: allAllergies
-  });
-};
-
-//Text Handaler Change
-const texthandle = ($this, data, ctrl, e) => {
-  e = e || ctrl;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  let allAllergies = $this.state.allAllergies;
-  data[name] = value;
-  for (let i = 0; i < allAllergies.length; i++) {
-    if (allAllergies[i].severity === data.severity) {
-      allAllergies[i] = data;
-    }
-  }
-
-  $this.setState({
-    allAllergies: allAllergies
-  });
-};
-
-const updatePatientAllergy = ($this, row) => {
-  algaehApiCall({
-    uri: "/doctorsWorkbench/updatePatientAllergy",
-    method: "PUT",
-    data: {
-      patient_id: Window.global["current_patient"],
-      allergy_id: row.allergy_id,
-      hims_f_patient_allergy_id: row.hims_f_patient_allergy_id,
-      onset: row.allergy_onset,
-      onset_date: row.allergy_onset_date,
-      severity: row.allergy_severity,
-      comment: row.allergy_comment,
-      allergy_inactive: row.allergy_inactive
-    },
+    method: "GET",
+    // cancelRequestId: "getPatientBasicChiefComplaints",
     onSuccess: response => {
       if (response.data.success) {
+        debugger;
+        if (response.data.records.length > 0) {
+          $this.setState({
+            hims_f_episode_chief_complaint_id:
+              response.data.records[0].hims_f_episode_chief_complaint_id,
+            chief_complaint: response.data.records[0].comment,
+            duration: response.data.records[0].duration,
+
+            interval: response.data.records[0].interval,
+            onset_date: response.data.records[0].onset_date,
+            pain: response.data.records[0].pain,
+
+            severity: response.data.records[0].severity,
+
+            chronic: response.data.records[0].chronic
+          });
+        }
+      }
+    }
+  });
+}
+function insertFinalICDS($this, row) {
+  const finalICDS = Enumerable.from($this.props.patient_diagnosis)
+    .where(w => w.final_daignosis === "Y")
+    .toArray();
+  let diagnosis_type = "";
+  if (finalICDS.length > 0) {
+    diagnosis_type = "S";
+  } else {
+    diagnosis_type = "P";
+  }
+
+  let insertfinalICDS = [];
+  insertfinalICDS.push({
+    daignosis_id: row.hims_d_icd_id,
+    diagnosis_type: diagnosis_type,
+    patient_id: Window.global["current_patient"],
+    episode_id: Window.global["episode_id"],
+    visit_id: Window.global["visit_id"],
+    final_daignosis: "Y"
+  });
+
+  saveDiagnosis($this, insertfinalICDS);
+}
+
+function saveDiagnosis($this, data) {
+  algaehApiCall({
+    uri: "/doctorsWorkBench/addPatientDiagnosis",
+    data: data,
+    method: "POST",
+    onSuccess: response => {
+      if (response.data.success === true) {
+        getPatientDiagnosis($this);
+        swalMessage({
+          title: "Record Added successfully . .",
+          type: "success"
+        });
       }
     },
-    onFailure: error => {}
+    onFailure: error => {
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
   });
-};
+}
+function showconfirmDialog($this, row) {
+  swal({
+    title: "Are you sure you want to delete this Diagnosis?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes",
+    cancelButtonText: "Cancel"
+  }).then(willDelete => {
+    if (willDelete.value) {
+      let data = {
+        hims_f_patient_diagnosis_id: row.hims_f_patient_diagnosis_id,
+        diagnosis_type: row.diagnosis_type,
+        final_daignosis: row.final_daignosis,
+        record_status: "I"
+      };
+      algaehApiCall({
+        uri: "/doctorsWorkBench/updatePatientDiagnosis",
+        data: data,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
+            swalMessage({
+              title: "Record deleted successfully . .",
+              type: "success"
+            });
 
-const updatePatientROS = ($this, row) => {};
-
-const assnotetexthandle = ($this, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
-  $this.setState({
-    [name]: value
+            getPatientDiagnosis($this);
+          }
+        }
+      });
+    }
   });
-};
+}
+function getPatientDiagnosis($this) {
+  $this.props.getPatientDiagnosis({
+    uri: "/doctorsWorkBench/getPatientDiagnosis",
+    cancelRequestId: "getPatientDiagnosis",
+    data: {
+      patient_id: Window.global["current_patient"],
+      episode_id: Window.global["episode_id"]
+    },
+    method: "GET",
+    redux: {
+      type: "PATIENT_DIAGNOSIS_DATA",
+      mappingName: "patient_diagnosis"
+    },
+    afterSuccess: data => {
+      debugger;
+      $this.setState({
+        showInitialDiagnosisLoader: false,
+        showFinalDiagnosisLoader: false
+      });
+    }
+  });
+}
 
-export {
-  getAllAllergies,
-  getReviewOfSystems,
-  getPatientAllergies,
-  getReviewOfSystemsDetails,
-  getPatientROS,
-  datehandle,
-  texthandle,
-  updatePatientAllergy,
-  updatePatientROS,
-  assnotetexthandle
-};
+function durationToDateAndInterval(duration, interval) {
+  const _interval = Enumerable.from(GlobalVariables.PAIN_DURATION)
+    .where(w => w.value === interval)
+    .firstOrDefault().name;
+  const _date = moment().add(-duration, _interval.toLowerCase());
+  return { interval, onset_date: _date._d };
+}
+
+function dateDurationAndInterval(selectedDate) {
+  let duration = 0;
+  let interval = "D";
+  if (moment().diff(selectedDate, "days") < 31) {
+    duration = moment().diff(selectedDate, "days");
+    interval = "D";
+  } else if (moment().diff(selectedDate, "months") < 12) {
+    duration = moment().diff(selectedDate, "months");
+    interval = "M";
+  } else if (moment().diff(selectedDate, "years")) {
+    duration = moment().diff(selectedDate, "years");
+    interval = "Y";
+  }
+
+  return { duration, interval };
+}

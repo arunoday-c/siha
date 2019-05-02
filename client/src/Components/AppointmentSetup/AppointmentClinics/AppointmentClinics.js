@@ -202,7 +202,7 @@ class AppointmentClinics extends Component {
       onFailure: error => {
         swalMessage({
           title: error.message,
-          type: "success"
+          type: "error"
         });
       }
     });

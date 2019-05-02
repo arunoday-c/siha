@@ -29,7 +29,7 @@ class Subjective extends Component {
       uri: "/doctorsWorkBench/getPatientEncounter",
       method: "GET",
       data: {
-        hims_f_patient_encounter_id: Window.global.encounter_id
+        encounter_id: Window.global.encounter_id
       },
       onSuccess: response => {
         let data = response.data.records[0];
@@ -55,7 +55,7 @@ class Subjective extends Component {
         method: "PUT",
         data: {
           significant_signs: this.state.significant_signs,
-          hims_f_patient_encounter_id: Window.global.encounter_id
+          encounter_id: Window.global.encounter_id
         }
       });
     }
