@@ -100,6 +100,58 @@ export default class AddInsuranceForm extends Component {
                       : "---"}
                   </h6>
                 </div>
+
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "card_holder_name"
+                    }}
+                  />
+                  <h6>
+                    {this.state.card_holder_name
+                      ? this.state.card_holder_name
+                      : "---"}
+                  </h6>
+                </div>
+
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "card_holder_age"
+                    }}
+                  />
+                  <h6>
+                    {this.state.card_holder_age
+                      ? this.state.card_holder_age
+                      : "---"}
+                  </h6>
+                </div>
+
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "card_holder_gender"
+                    }}
+                  />
+                  <h6>
+                    {this.state.card_holder_gender
+                      ? this.state.card_holder_gender
+                      : "---"}
+                  </h6>
+                </div>
+
+                <div className="col-lg-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "card_class"
+                    }}
+                  />
+                  <h6>
+                    {this.state.card_class_name
+                      ? this.state.card_class_name
+                      : "---"}
+                  </h6>
+                </div>
               </div>
             </div>
             <div className="col-lg-4 primary-details">
@@ -132,7 +184,6 @@ export default class AddInsuranceForm extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "consultation"
-                      // forceLabel: "Consultation"
                     }}
                   />
                 </div>
@@ -175,7 +226,6 @@ export default class AddInsuranceForm extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "laboratory"
-                      // forceLabel: "Laboratory"
                     }}
                   />
                 </div>
@@ -218,7 +268,6 @@ export default class AddInsuranceForm extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "radiology"
-                      // forceLabel: "Radiology"
                     }}
                   />
                 </div>
@@ -262,7 +311,6 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      // fieldName: "Co-Insurance"
                       fieldName: "co_insurance"
                     }}
                   />
@@ -271,7 +319,6 @@ export default class AddInsuranceForm extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "percentage"
-                      // forceLabel: "Percentage"
                     }}
                   />
                 </div>
@@ -289,7 +336,6 @@ export default class AddInsuranceForm extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "medicine"
-                      // forceLabel: "Medicine"
                     }}
                   />
                 </div>
@@ -331,7 +377,6 @@ export default class AddInsuranceForm extends Component {
                   <AlgaehLabel
                     label={{
                       fieldName: "procedure"
-                      // forceLabel: "procedure"
                     }}
                   />
                 </div>
@@ -373,7 +418,6 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
-                      // fieldName: "Co-Insurance"
                       fieldName: "dental"
                     }}
                   />

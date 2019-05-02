@@ -46,10 +46,6 @@ const countryStatehandle = ($this, e) => {
       $this.setState({
         [name]: value
       });
-
-      // if (context !== undefined) {
-      //   context.updateState({ [name]: value, ...$this.state });
-      // }
     }
   });
 };
@@ -210,8 +206,7 @@ const generateBillDetails = ($this, context) => {
       let serviceInput = [
         {
           insured: $this.state.insured,
-          // insured:
-          //   $this.state.primary_insurance_provider_id !== null ? "Y" : "N",
+
           //TODO change middle ware to promisify function --added by Nowshad
           vat_applicable: $this.state.vat_applicable,
           hims_d_services_id: $this.state.hims_d_services_id,

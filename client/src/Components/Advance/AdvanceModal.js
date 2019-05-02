@@ -39,7 +39,6 @@ import {
   getCookie
 } from "../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../actions/algaehActions";
-// import { postAdvance } from "../../actions/RegistrationPatient/Billingactions";
 import MyContext from "../../utils/MyContext";
 
 class AddAdvanceModal extends PureComponent {

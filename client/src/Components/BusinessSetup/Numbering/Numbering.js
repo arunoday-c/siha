@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import "./numbering.css";
 import { AlagehFormGroup } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../../utils/algaehApiCall.js";
-import { getOptions } from "../../../actions/BusinessSetup/Options.js";
+
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-class Numbering extends Component {
+export default class Numbering extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -328,25 +328,3 @@ class Numbering extends Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  return {
-    //    options: state.options.options
-  };
-}
-
-function mapDispatchToProps(dispatch) {
-  return bindActionCreators(
-    {
-      getOptions: getOptions
-    },
-    dispatch
-  );
-}
-
-export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(Numbering)
-);
