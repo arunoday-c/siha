@@ -184,12 +184,13 @@ let addInvoiceGeneration = (req, res, next) => {
           debugLog("input:", input);
           let today = moment().format("YYYY-MM-DD");
           debugLog("input:", input);
+          console.log("input", input);
           connection.query(
             "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,\
               net_amount, patient_resp,patient_tax, patient_payable, company_resp, company_tax, company_payable, \
               sec_company_resp, sec_company_tax, sec_company_payable,insurance_provider_id, sub_insurance_id, network_id, network_office_id, \
-              card_number,created_date,created_by,updated_date,updated_by) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              card_number,policy_number,created_date,created_by,updated_date,updated_by) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
               new Date(input.invoice_date),
@@ -213,6 +214,7 @@ let addInvoiceGeneration = (req, res, next) => {
               input.network_id,
               input.network_office_id,
               input.card_number,
+              input.policy_number,
 
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,

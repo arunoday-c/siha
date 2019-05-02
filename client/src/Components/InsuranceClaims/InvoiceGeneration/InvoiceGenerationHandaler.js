@@ -5,6 +5,7 @@ import { swalMessage, algaehApiCall } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
 const VisitSearch = ($this, e) => {
+  debugger;
   let input =
     $this.state.select_invoice === "CH"
       ? "pv.invoice_generated='N'"
@@ -29,34 +30,37 @@ const VisitSearch = ($this, e) => {
           visit_id: row.hims_f_patient_visit_id
         },
         () => {
-          algaehApiCall({
-            uri: "/patientRegistration/getPatientInsurance",
-            module: "frontDesk",
-            method: "GET",
-            data: {
-              patient_id: $this.state.patient_id,
-              patient_visit_id: $this.state.visit_id
-            },
-            onSuccess: response => {
-              if (response.data.success) {
-                response.data.records[0].sub_insurance_id =
-                  response.data.records[0].sub_insurance_provider_id;
+          if ($this.state.select_invoice === "CD") {
+            algaehApiCall({
+              uri: "/patientRegistration/getPatientInsurance",
+              module: "frontDesk",
+              method: "GET",
+              data: {
+                patient_id: $this.state.patient_id,
+                patient_visit_id: $this.state.visit_id
+              },
+              onSuccess: response => {
+                debugger;
+                if (response.data.success) {
+                  response.data.records[0].sub_insurance_id =
+                    response.data.records[0].sub_insurance_provider_id;
 
-                response.data.records[0].network_office_id =
-                  response.data.records[0].hims_d_insurance_network_office_id;
+                  response.data.records[0].network_office_id =
+                    response.data.records[0].hims_d_insurance_network_office_id;
 
-                $this.setState({ ...response.data.records[0] });
+                  $this.setState({ ...response.data.records[0] });
+                }
+                AlgaehLoader({ show: false });
+              },
+              onFailure: error => {
+                AlgaehLoader({ show: false });
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
               }
-              AlgaehLoader({ show: false });
-            },
-            onFailure: error => {
-              AlgaehLoader({ show: false });
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
-            }
-          });
+            });
+          }
 
           getOrderServices($this);
           getVisitWiseBillDetailS($this);

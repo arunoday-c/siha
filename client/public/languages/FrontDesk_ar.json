@@ -175,5 +175,10 @@
   "StandBy": "تعليق",
   "doctorLeave": "طبيب في إجازة",
   "noDoctorAvail": "لا يوجد أطباء متاحون للمعايير المختارة",
-  "lbl_insurance": "تأمين"
+  "lbl_insurance": "تأمين",
+
+  "card_holder_name": "إسم صاحب البطاقة",
+  "card_holder_age": "حامل العمر",
+  "card_holder_gender": "حامل الجنس",
+  "card_class": "فئة البطاقة"
 }

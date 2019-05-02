@@ -3,6 +3,8 @@
   "home": "Home",
   "master_setup": "Master Setup",
   "patient_type": "Patient Type",
+  "insurance_card_class": "Insurance Card Class",
+
   "status": "Status",
   "active": "Active",
   "inactive": "Inactive",

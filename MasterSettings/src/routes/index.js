@@ -12,6 +12,7 @@ import currency from "../controllers/currency";
 import packagesetup from "../controllers/packagesetup";
 import bankmaster from "../controllers/bankmaster";
 import companyAccount from "../controllers/companyAccount";
+import InsuranceCardClass from "../controllers/InsuranceCardClass";
 
 const router = express();
 router.use("/department", department());
@@ -27,5 +28,6 @@ router.use("/currency", currency());
 router.use("/packagesetup", packagesetup());
 router.use("/bankmaster", bankmaster());
 router.use("/companyAccount", companyAccount());
+router.use("/InsuranceCardClass", InsuranceCardClass());
 
 export default router;

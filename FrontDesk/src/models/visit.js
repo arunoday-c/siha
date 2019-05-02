@@ -456,8 +456,9 @@ module.exports = {
           `primary_inc_card_path`,`primary_policy_num`,`primary_effective_start_date`,\
           `primary_effective_end_date`,`primary_card_number`,`secondary_insurance_provider_id`,`secondary_sub_id`,\
           `secondary_network_id`,`secondary_effective_start_date`,`secondary_effective_end_date`,\
-          `secondary_card_number`,`secondary_inc_card_path`,`secondary_policy_num`,`created_by`,`created_date`,`updated_by`,\
-          `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          `secondary_card_number`,`secondary_inc_card_path`,`secondary_policy_num`,\
+          `card_holder_name`, `card_holder_age`, `card_holder_gender`, `card_class`, `created_by`,`created_date`,`updated_by`,\
+          `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.patient_id,
               input.visit_id,
@@ -486,6 +487,11 @@ module.exports = {
               input.secondary_card_number,
               input.secondary_inc_card_path,
               input.secondary_policy_num,
+
+              input.card_holder_name,
+              input.card_holder_age,
+              input.card_holder_gender,
+              input.card_class,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,

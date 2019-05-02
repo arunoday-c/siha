@@ -3,6 +3,8 @@
   "home": "الصفحة الرئيسية",
   "master_setup": "الإعداد الرئيسي",
   "patient_type": "نوع المريض",
+  "insurance_card_class": "فئة بطاقة التأمين",
+
   "status": "الحالة",
   "active": "نشيط",
   "inactive": "غير نشط",
