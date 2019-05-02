@@ -191,98 +191,10 @@ class PatientHistory extends Component {
           }}
         >
           <div className="popupInner">
-            <div className="col-6">
-              <div className="popRightDiv">
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Social History"
-                  }}
-                />
-                <textarea
-                  style={{ height: "17vh" }}
-                  value={this.state.social_history}
-                  name="social_history"
-                  onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.social_history}
-                </textarea>
-
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Medical History"
-                  }}
-                />
-                <textarea
-                  style={{ height: "17vh" }}
-                  value={this.state.medical_history}
-                  name="medical_history"
-                  onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.medical_history}
-                </textarea>
-
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Surgical History"
-                  }}
-                />
-                <textarea
-                  style={{ height: "17vh" }}
-                  value={this.state.surgical_history}
-                  name="surgical_history"
-                  onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.surgical_history}
-                </textarea>
-
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Family History"
-                  }}
-                />
-                <textarea
-                  style={{ height: "17vh" }}
-                  value={this.state.family_history}
-                  name="family_history"
-                  onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.family_history}
-                </textarea>
-
-                <AlgaehLabel
-                  label={{
-                    forceLabel: "Birth History"
-                  }}
-                />
-                <textarea
-                  style={{ height: "17vh" }}
-                  value={this.state.birth_history}
-                  name="birth_history"
-                  onChange={this.textHandle.bind(this)}
-                >
-                  {this.state.birth_history}
-                </textarea>
-
-                <button
-                  onClick={this.savePatientHistory.bind(this)}
-                  className="btn btn-primary"
-                >
-                  Save
-                </button>
-              </div>
-
-              {/* View */}
-              <div id="subjectAccordian" className="col-6">
-                {/* <div className="actions">
-                  <a
-                    onClick={this.addHistory.bind(this, "SOH")}
-                    className="btn btn-primary btn-circle"
-                  >
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
-                <div className="accordion-btn">Social History</div>
-                <div className="panel">
+            <div className="row">
+              <div className="col-8">
+                <div className="popLeftDiv">
+                  <h5>Social History</h5>
                   <table
                     className="table table-sm table-bordered customTable"
                     style={{ marginTop: 10 }}
@@ -302,18 +214,7 @@ class PatientHistory extends Component {
                       ))}
                     </tbody>
                   </table>
-                </div>
-
-                {/* <div className="actions">
-                  <a
-                    onClick={this.addHistory.bind(this, "MEH")}
-                    className="btn btn-primary btn-circle"
-                  >
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
-                <div className="accordion-btn">Medical History</div>
-                <div className="panel">
+                  <h5>Medical History</h5>
                   <table
                     className="table table-sm table-bordered customTable"
                     style={{ marginTop: 10 }}
@@ -333,18 +234,7 @@ class PatientHistory extends Component {
                       ))}
                     </tbody>
                   </table>
-                </div>
-
-                {/* <div className="actions">
-                  <a
-                    onClick={this.addHistory.bind(this, "SGH")}
-                    className="btn btn-primary btn-circle"
-                  >
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
-                <div className="accordion-btn">Surgical History</div>
-                <div className="panel">
+                  <h5>Surgical History</h5>
                   <table
                     className="table table-sm table-bordered customTable"
                     style={{ marginTop: 10 }}
@@ -364,17 +254,9 @@ class PatientHistory extends Component {
                       ))}
                     </tbody>
                   </table>
-                </div>
-                {/* <div className="actions">
-                  <a
-                    onClick={this.addHistory.bind(this, "FMH")}
-                    className="btn btn-primary btn-circle"
-                  >
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
-                <div className="accordion-btn">Family History</div>
-                <div className="panel">
+
+                  <h5>Family History</h5>
+
                   <table
                     className="table table-sm table-bordered customTable"
                     style={{ marginTop: 10 }}
@@ -394,18 +276,8 @@ class PatientHistory extends Component {
                       ))}
                     </tbody>
                   </table>
-                </div>
-                {/* <div className="actions">
-                  <a
-                    onClick={this.addHistory.bind(this, "BRH")}
-                    className="btn btn-primary btn-circle"
-                  >
-                    <i className="fas fa-pen" />
-                  </a>
-                </div> */}
-                <div className="accordion-btn">Birth History</div>
 
-                <div className="panel">
+                  <h5>Birth History</h5>
                   <table
                     className="table table-sm table-bordered customTable"
                     style={{ marginTop: 10 }}
@@ -426,6 +298,100 @@ class PatientHistory extends Component {
                     </tbody>
                   </table>
                 </div>
+              </div>
+              <div className="col-4" style={{ paddingLeft: 0 }}>
+                <div className="popRightDiv" style={{ paddingLeft: 0 }}>
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Social History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.social_history}
+                    name="social_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.social_history}
+                  </textarea>
+
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Medical History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.medical_history}
+                    name="medical_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.medical_history}
+                  </textarea>
+
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Surgical History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.surgical_history}
+                    name="surgical_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.surgical_history}
+                  </textarea>
+
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Family History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.family_history}
+                    name="family_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.family_history}
+                  </textarea>
+
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Birth History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.birth_history}
+                    name="birth_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.birth_history}
+                  </textarea>
+                </div>
+              </div>
+            </div>
+
+            <div className="popupFooter">
+              <div className="col-lg-12">
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.savePatientHistory.bind(this)}
+                >
+                  Save
+                </button>{" "}
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={e => {
+                    this.onClose(e);
+                  }}
+                >
+                  Cancel
+                </button>
               </div>
             </div>
           </div>
