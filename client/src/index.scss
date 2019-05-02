@@ -1189,6 +1189,26 @@
           }
         }
       }
+
+      .tableEye {
+        tbody {
+          td {
+            text-align: center;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: lighten($primary-color, 10%);
+            border: none;
+          }
+          td:first-child {
+            color: #696969;
+            text-transform: none;
+          }
+          td:nth-child(4) {
+            color: #696969;
+            text-transform: none;
+          }
+        }
+      }
     }
     .text-danger strong {
       color: #9f181c;

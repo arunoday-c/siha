@@ -8,168 +8,245 @@ import {
   AlgaehDateHandler,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
+import EyeModal from "./EyeModal";
 export default class Eye extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      openRefraction: false,
+      openCyclo: false,
+      openAddVision: false,
+      openPMT: false,
+      openAddIOP: false,
+      openGlassPres: false
+    };
+  }
+
+  showModal(openModal) {
+    debugger;
+    if (openModal === "Refraction") {
+      this.setState({
+        openRefraction: !this.state.openRefraction
+      });
+    } else if (openModal === "Cyclo") {
+      this.setState({
+        openCyclo: !this.state.openCyclo
+      });
+    } else if (openModal === "PMT") {
+      this.setState({
+        openPMT: !this.state.openPMT
+      });
+    } else if (openModal === "AddVision") {
+      this.setState({
+        openAddVision: !this.state.openAddVision
+      });
+    } else if (openModal === "AddIOP") {
+      this.setState({
+        openAddIOP: !this.state.openAddIOP
+      });
+    } else if (openModal === "GlassPres") {
+      this.setState({
+        openGlassPres: !this.state.openGlassPres
+      });
+    }
+  }
   render() {
     return (
       <div className="EyeScreen">
         <div className="row margin-top-15">
-          <div className="col-12 margin-top-15">
+          <div className="col-12">
             <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Past Ophthalmic History</h3>
+                </div>
+              </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-6">
-                    {" "}
-                    <table className="table table-sm table-bordered customTable">
-                      <thead>
-                        <tr>
-                          {" "}
-                          <th scope="col" width="60" />
-                          <th scope="col" colSpan="4" className="text-center">
-                            Right Eye
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="col" />
-                          <th scope="col" className="text-center">
-                            Sph
-                          </th>
-                          <th scope="col" className="text-center">
-                            Cyl
-                          </th>
-                          <th scope="col" className="text-center">
-                            Axis
-                          </th>
-                          <th scope="col" className="text-center">
-                            V.A.
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">DV</th>
-                          <td />
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <th scope="row">NV ADD</th>
-                          <td />
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                      </tbody>
-                    </table>
+                  <div className="col-12" id="EnterGridIdHere_Cntr">
+                    <label>Ophthalmic History</label>
+                    <textarea className="textArea" style={{ height: 100 }} />
                   </div>
-                  <div className="col-6">
-                    <table className="table table-sm table-bordered customTable">
-                      <thead>
-                        <tr>
-                          {" "}
-                          <th scope="col" width="60" />
-                          <th scope="col" colSpan="4" className="text-center">
-                            Left Eye
-                          </th>
-                        </tr>
-                        <tr>
-                          <th scope="col" />
-                          <th scope="col" className="text-center">
-                            Sph
-                          </th>
-                          <th scope="col" className="text-center">
-                            Cyl
-                          </th>
-                          <th scope="col" className="text-center">
-                            Axis
-                          </th>
-                          <th scope="col" className="text-center">
-                            V.A.
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <th scope="row">DV</th>
-                          <td />
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                        <tr>
-                          <th scope="row">NV ADD</th>
-                          <td />
-                          <td />
-                          <td />
-                          <td />
-                        </tr>
-                      </tbody>
-                    </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-6">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Refraction</h3>
+                </div>
+                <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.showModal.bind(this, "Refraction")}
+                    />
+                    <EyeModal
+                      openRefraction={this.state.openRefraction}
+                      onClose={this.showModal.bind(this, "Refraction")}
+                      HeaderCaption="Refraction"
+                    />
+                  </a>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="EnterGridIdHere_Cntr">
+                    No Data Available
                   </div>
-                  <div className="col-12">
-                    <div className="row">
-                      <AlagehAutoComplete
-                        div={{ className: "col-2 form-group" }}
-                        label={{ forceLabel: "BVD", isImp: false }}
-                        selector={{
-                          name: "",
-                          className: "select-fld",
-                          dataSource: {},
-                          others: {}
-                        }}
-                      />
-                      <AlagehAutoComplete
-                        div={{ className: "col-2 form-group" }}
-                        label={{ forceLabel: "Type of Glasses", isImp: false }}
-                        selector={{
-                          name: "",
-                          className: "select-fld",
-                          dataSource: {},
-                          others: {}
-                        }}
-                      />
-                      <AlagehFormGroup
-                        div={{ className: "col-2 form-group" }}
-                        label={{
-                          forceLabel: "IPD",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
-                          option: {
-                            type: "text"
-                          }
-                        }}
-                      />
-                      <AlagehFormGroup
-                        div={{ className: "col form-group" }}
-                        label={{
-                          forceLabel: "Remarks",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
-                          option: {
-                            type: "text"
-                          }
-                        }}
-                      />
-                      <div className="col-2">
-                        {" "}
-                        <button
-                          className="btn btn-primary"
-                          style={{ float: "right", marginTop: 19 }}
-                        >
-                          Save
-                        </button>
-                      </div>
-                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Cyclo</h3>
+                </div>
+                <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.showModal.bind(this, "Cyclo")}
+                    />
+                    <EyeModal
+                      openCyclo={this.state.openCyclo}
+                      onClose={this.showModal.bind(this, "Cyclo")}
+                      HeaderCaption="Cyclo"
+                    />
+                  </a>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="EnterGridIdHere_Cntr">
+                    No Data Available
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">PMT</h3>
+                </div>
+                <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.showModal.bind(this, "PMT")}
+                    />
+                    <EyeModal
+                      openPMT={this.state.openPMT}
+                      onClose={this.showModal.bind(this, "PMT")}
+                      HeaderCaption="PMT"
+                    />
+                  </a>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="EnterGridIdHere_Cntr">
+                    No Data Available
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Add Vision</h3>
+                </div>
+                <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.showModal.bind(this, "AddVision")}
+                    />
+                    <EyeModal
+                      openAddVision={this.state.openAddVision}
+                      onClose={this.showModal.bind(this, "AddVision")}
+                      HeaderCaption="Add Vision"
+                    />
+                  </a>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="EnterGridIdHere_Cntr">
+                    No Data Available
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">
+                    Intraocular Pressure (IOP) mm of Hg
+                  </h3>
+                </div>
+                <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.showModal.bind(this, "AddIOP")}
+                    />
+                    <EyeModal
+                      openAddIOP={this.state.openAddIOP}
+                      onClose={this.showModal.bind(this, "AddIOP")}
+                      HeaderCaption="Intraocular Pressure (IOP)"
+                    />
+                  </a>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="EnterGridIdHere_Cntr">
+                    No Data Available
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="portlet portlet-bordered margin-bottom-15">
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Glass Prescription</h3>
+                </div>
+                <div className="actions">
+                  <a className="btn btn-primary btn-circle active">
+                    <i
+                      className="fas fa-plus"
+                      onClick={this.showModal.bind(this, "GlassPres")}
+                    />
+                    <EyeModal
+                      openGlassPres={this.state.openGlassPres}
+                      onClose={this.showModal.bind(this, "GlassPres")}
+                      HeaderCaption="Glass Prescription"
+                    />
+                  </a>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="EnterGridIdHere_Cntr">
+                    No Data Available
                   </div>
                 </div>
               </div>

@@ -91,10 +91,10 @@
         color: #fff;
         background: #00a796;
         cursor: pointer; }
-      .algaeh-fixed-right-menu .rightActionIcon li i {
-        color: gray; }
-        .algaeh-fixed-right-menu .rightActionIcon li i:hover {
-          color: #fff; }
+        .algaeh-fixed-right-menu .rightActionIcon li:hover i {
+          color: gray; }
+          .algaeh-fixed-right-menu .rightActionIcon li:hover i:hover {
+            color: #fff; }
 
 .toggleBorder {
   border-bottom: 1px solid #cccccc;

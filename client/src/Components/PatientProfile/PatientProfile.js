@@ -448,7 +448,7 @@ class PatientProfile extends Component {
                   algaehsoap="eye"
                   className="nav-link"
                 >
-                  Eye
+                  Optometry
                 </span>
               </li>
               <li className="nav-item">
@@ -558,7 +558,15 @@ class PatientProfile extends Component {
                   Examination Diagram
                 </span>
               </li>
-
+              <li className="nav-item">
+                <span
+                  onClick={this.changeTabs}
+                  algaehsoap="eye"
+                  className="nav-link"
+                >
+                  Optometry
+                </span>
+              </li>
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
@@ -568,6 +576,7 @@ class PatientProfile extends Component {
                   Summary
                 </span>
               </li>
+
               <ul className="float-right patient-quick-info">
                 <li>
                   <i className="fas fa-allergies" />
@@ -672,6 +681,8 @@ class PatientProfile extends Component {
             <BasicSubjective vat_applicable={this.vatApplicable()} />
           ) : this.state.pageDisplay === "exam_diagram" ? (
             <ExamDiagramStandolone />
+          ) : this.state.pageDisplay === "eye" ? (
+            <Eye />
           ) : this.state.pageDisplay === "summary" ? (
             <Summary />
           ) : null}
