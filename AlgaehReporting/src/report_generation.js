@@ -6,7 +6,7 @@ import path from "path";
 import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
-
+import "babel-polyfill";
 const compile = async function(templateName, data) {
   const filePath = path.join(
     process.cwd(),
