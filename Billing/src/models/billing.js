@@ -755,7 +755,7 @@ module.exports = {
         );
         next(genErr);
       }
-
+      console.log("fff:", req.userIdentity.hospital_id);
       if (
         req.userIdentity.group_type == "C" ||
         req.userIdentity.group_type == "FD"
@@ -765,7 +765,7 @@ module.exports = {
           .executeQuery({
             query:
               "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\
-              from  hims_f_cash_handover_detail where record_status='A'  and hospital_id=1 and\
+              from  hims_f_cash_handover_detail where record_status='A'  and hospital_id=? and\
               date(open_date)=CURDATE()  and casher_id=? and shift_status='O';\
               select hims_f_cash_handover_header_id from hims_f_cash_handover_header where\
             shift_id=? and date(daily_handover_date)=CURDATE() and hospital_id=? ;",

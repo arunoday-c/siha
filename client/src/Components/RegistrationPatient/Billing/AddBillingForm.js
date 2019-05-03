@@ -398,7 +398,7 @@ class AddBillingForm extends Component {
                               : "DD/MM/YYYY"}
                           </h6>
                         </div>
-                        <AlagehAutoComplete
+                        {/* <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
                           label={{
                             fieldName: "counter_id",
@@ -422,7 +422,7 @@ class AddBillingForm extends Component {
                               context
                             )
                           }}
-                        />
+                        /> */}
 
                         <AlagehAutoComplete
                           div={{ className: "col-lg-3" }}
