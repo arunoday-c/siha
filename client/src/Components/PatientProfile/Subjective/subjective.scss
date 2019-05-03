@@ -111,11 +111,11 @@
         color: $color-white;
         background: $primary-color;
         cursor: pointer;
-      }
-      i {
-        color: lighten($color-black, 50%);
-        &:hover {
-          color: $color-white;
+        i {
+          color: lighten($color-black, 50%);
+          &:hover {
+            color: $color-white;
+          }
         }
       }
     }

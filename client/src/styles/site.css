@@ -998,9 +998,9 @@ th {
       border-bottom: 1.5px solid #f2f2f2;
       margin: 0; }
       .algaeh_Arabic_Version .table-responsive .table thead tr th {
-        border-bottom: 2px solid #34b8bc !important;
+        border-bottom: 2px solid #00a796 !important;
         vertical-align: middle !important;
-        background: #e8feff !important;
+        background: #dafffb;
         text-transform: uppercase;
         text-align: center; }
         .algaeh_Arabic_Version .table-responsive .table thead tr th label.style_Label {
@@ -1402,3 +1402,6 @@ th {
     background: #007468; }
   .my-calendar .CurrentDate {
     border-top: 2px solid yellow !important; }
+
+.trHighlight {
+  background: #e6e6e6; }

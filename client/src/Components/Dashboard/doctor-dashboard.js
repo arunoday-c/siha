@@ -462,7 +462,7 @@ class Dashboard extends Component {
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Today's Appointments</p>80
+                    <p>Today's Appointments</p>4
                   </div>
                 </div>
               </div>
@@ -478,8 +478,7 @@ class Dashboard extends Component {
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>New Visit</p>
-                    44
+                    <p>New Visit</p>4
                   </div>
                 </div>
               </div>
@@ -495,8 +494,7 @@ class Dashboard extends Component {
                 </div>
                 <div className="col-8">
                   <div className="numbers">
-                    <p>Follow Up</p>
-                    36
+                    <p>Follow Up</p>0
                   </div>
                 </div>
               </div>
@@ -514,7 +512,7 @@ class Dashboard extends Component {
                   <div className="numbers">
                     <p>Total Commission</p>
 
-                    {getAmountFormart("10378.00")}
+                    {getAmountFormart("1378.00")}
                   </div>
                 </div>
               </div>

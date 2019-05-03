@@ -137,5 +137,10 @@
   "payby_card": "الدفع عن طريق البطاقة",
   "payby_check": "الدفع عن طريق شيك",
   "NotGenerated": "غير منشأ",
-  "add_new_service": "أضف خدمات جديدة"
+  "add_new_service": "أضف خدمات جديدة",
+
+  "card_holder_name": "إسم صاحب البطاقة",
+  "card_holder_age": "حامل العمر",
+  "card_holder_gender": "حامل الجنس",
+  "card_class": "فئة البطاقة"
 }

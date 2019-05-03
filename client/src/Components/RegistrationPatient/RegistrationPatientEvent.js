@@ -133,11 +133,7 @@ const ClearData = ($this, e) => {
       if (counter_id !== null) {
         IOputs.counter_id = counter_id;
       }
-      // IOputs.patientImage = "";
 
-      // IOputs.patientIdCard = "";
-      // IOputs.patInsuranceFrontImg = "";
-      // IOputs.patInsuranceBackImg = "";
       IOputs.forceRefresh = true;
       $this.setState(IOputs, () => {
         $this.props.setSelectedInsurance({

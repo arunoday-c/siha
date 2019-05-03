@@ -280,6 +280,22 @@ class OPBilling extends Component {
             }
           }
 
+          if (data.insured === "Y") {
+            debugger;
+            $this.props.getPatientInsurance({
+              uri: "/patientRegistration/getPatientInsurance",
+              module: "frontDesk",
+              method: "GET",
+              data: {
+                patient_id: data.patient_id,
+                patient_visit_id: data.visit_id
+              },
+              redux: {
+                type: "EXIT_INSURANCE_GET_DATA",
+                mappingName: "existinsurance"
+              }
+            });
+          }
           $this.setState(data);
           AlgaehLoader({ show: false });
         }
@@ -559,7 +575,8 @@ function mapDispatchToProps(dispatch) {
     {
       getPatientDetails: AlgaehActions,
       getBIllDetails: AlgaehActions,
-      getPatientType: AlgaehActions
+      getPatientType: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

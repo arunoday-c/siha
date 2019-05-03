@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { postPatientDetails } from "../../../../actions/RegistrationPatient/Registrationactions.js";
 import MyContext from "../../../../utils/MyContext.js";
 import PatRegIOputs from "../../../../Models/RegistrationPatient.js";
 import { AlagehFormGroup } from "../../../Wrapper/algaehWrapper";
@@ -160,47 +159,6 @@ class OtherInfo extends Component {
   }
 }
 
-// function AddPatientOtherHandlers(state, context) {
-//   context = context || null;
-
-//   return {
-//     handle: val => {
-//       state.setState({
-//         value: val
-//       });
-//     },
-
-//     numbertexthandle: e => {
-//       state.setState({
-//         [e.target.name]: e.target.value
-//       });
-
-//       if (context !== null) {
-//         context.updateState({ [e.target.name]: e.target.value });
-//       }
-//     },
-
-//     texthandle: e => {
-//       state.setState({
-//         [e.target.name]: e.target.value
-//       });
-
-//       if (context !== null) {
-//         context.updateState({ [e.target.name]: e.target.value });
-//       }
-//     },
-
-//     selectedHandeler: e => {
-//       state.setState({
-//         [e.name]: e.value
-//       });
-//       if (context !== null) {
-//         context.updateState({ [e.name]: e.value });
-//       }
-//     }
-//   };
-// }
-
 function mapStateToProps(state) {
   return {
     patients: state.patients
@@ -209,7 +167,9 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
-    { postPatientDetails: postPatientDetails },
+    {
+      // getTitles: AlgaehActions
+    },
     dispatch
   );
 }
