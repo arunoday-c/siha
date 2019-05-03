@@ -310,7 +310,7 @@ class BasicSubjective extends Component {
                             }}
                             maxDate={new Date()}
                             events={{
-                              onChange: this.dataLevelUpdate.bind(this)
+                              onChange: this.datehandle.bind(this)
                             }}
                             value={this.state.onset_date}
                           />

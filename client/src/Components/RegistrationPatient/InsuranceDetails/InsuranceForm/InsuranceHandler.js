@@ -87,7 +87,8 @@ const insurancehandle = ($this, context, e) => {
         primary_sub_id: e.selected.sub_insurance_provider_id,
         primary_network_id: e.selected.network_id,
         primary_policy_num: e.selected.policy_number,
-        primary_network_office_id: e.selected.network_office_id,
+        primary_network_office_id:
+          e.selected.hims_d_insurance_network_office_id,
         primary_card_number: e.selected.card_number,
         primary_effective_start_date: e.selected.effective_start_date,
         primary_effective_end_date: e.selected.effective_end_date,
@@ -113,7 +114,8 @@ const insurancehandle = ($this, context, e) => {
         primary_card_number: e.selected.card_number,
         primary_effective_start_date: e.selected.effective_start_date,
         primary_effective_end_date: e.selected.effective_end_date,
-        primary_network_office_id: e.selected.network_office_id,
+        primary_network_office_id:
+          e.selected.hims_d_insurance_network_office_id,
         card_holder_name: e.selected.card_holder_name,
         card_holder_age: e.selected.card_holder_age,
         card_holder_gender: e.selected.card_holder_gender,

@@ -14,18 +14,7 @@ export default function SubjectiveHandler() {
       let name = e.name || e.target.name;
       let value = "";
       // row[name] = value;
-      if (name === "onset_date") {
-        value = e.value || e.target.value;
-        const _durat_interval = dateDurationAndInterval(value);
-        // row["duration"] = _durat_interval.duration;
-        // row["interval"] = _durat_interval.interval;
-
-        $this.setState({
-          duration: _durat_interval.duration,
-          interval: _durat_interval.interval,
-          [name]: moment(e)._d
-        });
-      } else if (name === "duration") {
+      if (name === "duration") {
         value = parseFloat(e.value);
         const _duration_Date_Interval = durationToDateAndInterval(
           value,
@@ -61,10 +50,15 @@ export default function SubjectiveHandler() {
         [name]: value
       });
     },
-    datehandle: ($this, e) => {
+    datehandle: ($this, ctrl, e) => {
       debugger;
+
+      const _durat_interval = dateDurationAndInterval(ctrl);
+
       $this.setState({
-        [e.target.name]: moment(e)._d
+        duration: _durat_interval.duration,
+        interval: _durat_interval.interval,
+        [e]: moment(ctrl)._d
       });
     },
     IcdsSearch: ($this, diagType) => {

@@ -110,9 +110,9 @@ const chequetexthandle = ($this, ctrl, e) => {
   );
 };
 
-const datehandle = ($this, e) => {
+const datehandle = ($this, ctrl, e) => {
   $this.setState({
-    [e.target.name]: moment(e)._d
+    [e]: moment(ctrl)._d
   });
 };
 
