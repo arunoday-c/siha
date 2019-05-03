@@ -5,4 +5,41 @@
       max-height: 30vh !important;
     }
   }
+  .ulShiftList {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid #d6d6d6;
+    border-radius: 5px;
+    max-height: 23.3vh;
+    overflow: auto;
+    li {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      cursor: pointer;
+      span {
+        padding: 5px;
+        border-bottom: 1px solid #d6d6d6;
+        display: block;
+        small {
+          float: right;
+          background: #00a796;
+          color: #fff;
+          text-align: center;
+          padding: 2px;
+          width: 20px;
+          border-radius: 10px;
+        }
+        &:hover {
+          background: #ccc;
+        }
+      }
+      &:last-child {
+        span {
+          border-bottom: none;
+        }
+      }
+    }
+  }
 }
