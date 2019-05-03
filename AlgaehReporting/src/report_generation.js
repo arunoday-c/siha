@@ -52,28 +52,36 @@ hbs.registerHelper("capitalization", function(value) {
   return _.startCase(_.toLower(value));
 });
 
-hbs.registerHelper("path", function(styleSheetName) {
+hbs.registerHelper("importStyle", function(styleSheetName) {
   const fullPath = path.join(
     process.cwd(),
-    "algaeh_report_tool/templates/css",
-    `${styleSheetName}.css`
+    "algaeh_report_tool/templates",
+    `${styleSheetName}`
   );
-
-  console.log("_ret", fullPath);
-  return require(fullPath);
+  const style = fs.readFileSync(fullPath, "utf-8");
+  return "<style type='text/css'>" + style + "</style>";
 });
 
 hbs.registerHelper("loadPage", function(filePath, data) {
   const fullPath = path.join(
     process.cwd(),
     "algaeh_report_tool/templates",
-    `${filePath}.hbs`
+    `${filePath}`
   );
   const html = fs.readFileSync(fullPath, "utf-8");
   return hbs.compile(html)(data);
 });
 
-hbs.registerHelper("imageSource", function(filePath) {});
+hbs.registerHelper("imageSource", function(filePath) {
+  const fullPath = path.join(
+    process.cwd(),
+    "algaeh_report_tool/templates",
+    `${filePath}`
+  );
+  const _extention = path.extname(fullPath);
+  const img = fs.readFileSync(fullPath, "base64");
+  return "data:image/" + _extention + ";base64," + img;
+});
 
 hbs.registerHelper("groupBy", function(data, groupby, callBack) {
   data = Array.isArray(data) ? data : [];
