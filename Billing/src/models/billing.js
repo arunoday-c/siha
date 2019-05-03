@@ -765,11 +765,21 @@ module.exports = {
           .executeQuery({
             query:
               "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\
-            from  hims_f_cash_handover_detail where record_status='A' and casher_id=? and shift_status='O';",
-            values: [req.userIdentity.algaeh_d_app_user_id],
+              from  hims_f_cash_handover_detail where record_status='A'  and hospital_id=1 and\
+              date(open_date)=CURDATE()  and casher_id=? and shift_status='O';\
+              select hims_f_cash_handover_header_id from hims_f_cash_handover_header where\
+            shift_id=? and date(daily_handover_date)=CURDATE() and hospital_id=? ;",
+            values: [
+              req.userIdentity.hospital_id,
+              req.userIdentity.algaeh_d_app_user_id,
+              inputParam.shift_id,
+              req.userIdentity.hospital_id
+            ],
             printQuery: true
           })
-          .then(checkShiftStatus => {
+          .then(reslt => {
+            let checkShiftStatus = reslt[0];
+            let shift_header = reslt[1];
             if (checkShiftStatus.length > 0) {
               hims_f_cash_handover_detail_id =
                 checkShiftStatus[0].hims_f_cash_handover_detail_id;
@@ -783,33 +793,39 @@ module.exports = {
                   _mysql
                     .executeQueryWithTransaction({
                       query:
-                        "INSERT INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
-                        created_date, created_by, updated_date, updated_by)\
-                       VALUE(?,?,?,?,?,?)",
+                        "INSERT IGNORE INTO `hims_f_cash_handover_header` ( shift_id, daily_handover_date,\
+                        created_date, created_by, updated_date, updated_by,hospital_id)\
+                       VALUE(?,?,?,?,?,?,?)",
                       values: [
                         inputParam.shift_id,
                         new Date(),
                         new Date(),
                         req.userIdentity.algaeh_d_app_user_id,
                         new Date(),
-                        req.userIdentity.algaeh_d_app_user_id
+                        req.userIdentity.algaeh_d_app_user_id,
+                        req.userIdentity.hospital_id
                       ],
                       printQuery: true
                     })
                     .then(headerCashHandover => {
-                      if (
-                        headerCashHandover.insertId != null &&
-                        headerCashHandover.insertId != ""
-                      ) {
+                      let header_id = null;
+                      if (headerCashHandover.insertId > 0) {
+                        header_id = headerCashHandover.insertId;
+                      } else if (shift_header.length > 0) {
+                        header_id =
+                          shift_header[0].hims_f_cash_handover_header_id;
+                      }
+
+                      if (header_id > 0) {
                         _mysql
                           .executeQuery({
                             query:
                               "INSERT INTO `hims_f_cash_handover_detail` ( cash_handover_header_id, casher_id,\
                               shift_status,open_date,  expected_cash, expected_card,  expected_cheque, \
-                              no_of_cheques,created_date, created_by, updated_date, updated_by)\
-                              VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+                              no_of_cheques,created_date, created_by, updated_date, updated_by,hospital_id)\
+                              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?)",
                             values: [
-                              headerCashHandover.insertId,
+                              header_id,
                               req.userIdentity.algaeh_d_app_user_id,
                               "O",
                               new Date(),
@@ -820,15 +836,13 @@ module.exports = {
                               new Date(),
                               req.userIdentity.algaeh_d_app_user_id,
                               new Date(),
-                              req.userIdentity.algaeh_d_app_user_id
+                              req.userIdentity.algaeh_d_app_user_id,
+                              req.userIdentity.hospital_id
                             ],
                             printQuery: true
                           })
                           .then(CashHandoverDetails => {
-                            if (
-                              CashHandoverDetails.insertId != null &&
-                              CashHandoverDetails.insertId != ""
-                            ) {
+                            if (CashHandoverDetails.insertId > 0) {
                               hims_f_cash_handover_detail_id =
                                 CashHandoverDetails.insertId;
                             }
