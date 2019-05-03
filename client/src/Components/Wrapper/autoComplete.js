@@ -213,7 +213,10 @@ class AutoComplete extends Component {
       this.props.label !== undefined && this.props.label.isImp !== undefined
         ? { algaeh_required: "" + this.props.label.isImp }
         : {};
-
+    const _onClose =
+      this.props.selector.onClose !== undefined
+        ? { onClose: this.props.selector.onClose }
+        : {};
     return (
       <Dropdown
         disabled={isDisable}
@@ -243,6 +246,7 @@ class AutoComplete extends Component {
         onChange={this.onDropdownChangeHandler.bind(this)}
         {..._orientation}
         {..._enableMultiselect}
+        {..._onClose}
       />
     );
   };

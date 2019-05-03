@@ -192,7 +192,14 @@ export default class ExaminationDiagram extends Component {
       name: "emptyimage"
     });
   }
-
+  newDiagramLabelClickHandler(item, data) {
+    if (item.currentTarget.getAttribute("image_desc") !== "Blank") {
+      const _src = item.currentTarget.querySelector("img").src;
+      this.setState({
+        image: _src
+      });
+    }
+  }
   newDiagramHandler(item) {
     if (
       item.selected.hims_d_employee_speciality_id === undefined ||
@@ -205,10 +212,15 @@ export default class ExaminationDiagram extends Component {
         diagram_id: item.value
       });
     } else {
+      // const imgData = document.querySelector(
+      //   "div[diagram_id='" + item.value + "']"
+      // );
+      // const src = imgData.querySelector("img").getAttribute("src");
       this.setState({
         showSave: true,
         showUpload: false,
         showCam: false,
+
         diagram_id: item.value
       });
     }
@@ -737,7 +749,8 @@ export default class ExaminationDiagram extends Component {
                 },
                 onChange: this.newDiagramHandler.bind(this),
                 onClear: this.newDiagramClearHandler.bind(this),
-                value: this.state.diagram_id
+                value: this.state.diagram_id,
+                onClose: this.newDiagramLabelClickHandler.bind(this)
               }}
             />
           </div>
