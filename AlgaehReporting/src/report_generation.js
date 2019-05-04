@@ -395,7 +395,7 @@ module.exports = {
       res.end(e);
     }
   },
-  getReportMultiPrint: async (req, res) => {
+  getReportMultiPrint: async (req, res, next) => {
     const input = req.query;
     const _mysql = new algaehMysql();
     try {
@@ -413,7 +413,156 @@ module.exports = {
         })
         .then(data => {
           const templates = data[0];
-          for (let i = 0; i < templates.length; i++) {}
+          let subReportCollection = [];
+          const inputParameters = _inputParam.reportParams;
+          let promises = [];
+          for (let p = 0; p < inputParameters.length; p++) {
+            promises.push(
+              new Promise((resolve, reject) => {
+                console.log("Promise", Promise);
+                const inputData = inputParameters[p];
+                let reportSequence = _inputParam.reportName;
+                for (let i = 0; i < reportSequence.length; i++) {
+                  const resourceTemplate = _.find(
+                    templates,
+                    f => f.report_name == reportSequence[i]
+                  );
+                  const inputOrders = eval(
+                    resourceTemplate.report_input_series
+                  );
+                  let _value = [];
+                  for (var ip = 0; ip < inputOrders.length; ip++) {
+                    const _params = _.find(
+                      inputData,
+                      f => f.name == inputOrders[ip]
+                    );
+                    if (_params != undefined) {
+                      _value.push(_params.value);
+                    }
+                  }
+                  _mysql
+                    .executeQuery({
+                      query: resourceTemplate.report_query,
+                      values: _value
+                    })
+                    .then(result => {
+                      const _path = path.join(
+                        process.cwd(),
+                        "algaeh_report_tool/templates/Output",
+                        resourceTemplate.report_name +
+                          moment().format("YYYYMMDDHHmmss") +
+                          "_" +
+                          i +
+                          "_" +
+                          p
+                      );
+
+                      if (
+                        resourceTemplate.data_manupulation != null &&
+                        resourceTemplate.data_manupulation != ""
+                      ) {
+                        const data_string =
+                          "`" + resourceTemplate.data_manupulation + "`";
+                        const _resu = eval(data_string);
+                        result = JSON.parse(_resu);
+                      }
+                      const _outPath = _path + ".pdf";
+                      subReportCollection.push(_outPath);
+                      const startGenerate = async () => {
+                        const browser = await puppeteer.launch();
+                        const page = await browser.newPage();
+                        const _pdfTemplating = {};
+                        if (
+                          resourceTemplate.report_header_file_name != null &&
+                          resourceTemplate.report_header_file_name != ""
+                        ) {
+                          const _header = await compile(
+                            resourceTemplate.report_header_file_name,
+                            {
+                              ...data[1][0],
+                              user_name: req.userIdentity["username"],
+                              report_name_for_header:
+                                resourceTemplate.report_name_for_header
+                            }
+                          );
+                          _pdfTemplating["headerTemplate"] = _header;
+                          _pdfTemplating["margin"] = {
+                            top: "100px"
+                          };
+                        }
+                        if (
+                          resourceTemplate.report_footer_file_name != null &&
+                          resourceTemplate.report_footer_file_name != ""
+                        ) {
+                          _pdfTemplating["footerTemplate"] = await compile(
+                            resourceTemplate.report_footer_file_name,
+                            {
+                              ...data[1][0],
+                              report_name_for_header:
+                                resourceTemplate.report_name_for_header
+                            }
+                          );
+                          _pdfTemplating["margin"] = {
+                            ..._pdfTemplating["margin"],
+                            bottom: "70px"
+                          };
+                        } else {
+                          _pdfTemplating[
+                            "footerTemplate"
+                          ] = `<style> .pdffooter { font-size: 8px; 
+                        font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
+                      .showreportname{float:left;padding-left:5px;font-size: 08px;}
+                      .showcompay{float:right;padding-right:5px;font-size: 08px;}
+                      </style>
+                      <div class="pdffooter">
+                      <span class="showreportname">${
+                        resourceTemplate.report_name_for_header
+                      }</span>
+                      <span>Page </span>
+                      <span class="pageNumber"></span> / <span class="totalPages"></span>
+                      <span class="showcompay">Powered by Algaeh Techonologies.</span>
+                    </div>`;
+                          _pdfTemplating["margin"] = {
+                            ..._pdfTemplating["margin"],
+                            bottom: "50px"
+                          };
+                        }
+                        await page.setContent(
+                          await compile(resourceTemplate.report_name, result)
+                        );
+                        await page.emulateMedia("screen");
+
+                        await page.pdf({
+                          path: _outPath,
+                          format: "A4",
+                          printBackground: true,
+                          displayHeaderFooter: true,
+                          ..._pdfTemplating
+                        });
+                        await browser.close();
+                        resolve();
+                      };
+                      startGenerate();
+                    })
+                    .catch(error => {
+                      reject(error);
+                    });
+                }
+              })
+            );
+          }
+
+          Promise.all(promises)
+            .then(() => {
+              _mysql.releaseConnection();
+              req.records = subReportCollection;
+              next();
+            })
+            .catch(error => {
+              _mysql.releaseConnection();
+              res.writeHead(400, { "Content-Type": "text/plain" });
+              res.end(error);
+            });
         })
         .catch(error => {
           _mysql.releaseConnection();
@@ -425,5 +574,44 @@ module.exports = {
       res.writeHead(400, { "Content-Type": "text/plain" });
       res.end(e);
     }
+  },
+  merdgeTosingleReport: (req, res) => {
+    const getAllReports = req.records;
+    let _outfileName = "merdge_" + moment().format("YYYYMMDDHHmmss") + ".pdf";
+    let _rOut = path.join(
+      process.cwd(),
+      "algaeh_report_tool/templates/Output",
+      _outfileName
+    );
+    merge(getAllReports, _rOut, error => {
+      if (error) {
+        res.writeHead(400, {
+          "Content-Type": "text/plain"
+        });
+        res.end(JSON.stringify(error));
+      } else {
+        fs.exists(_rOut, exists => {
+          if (exists) {
+            res.writeHead(200, {
+              "content-type": "application/pdf",
+              "content-disposition": "attachment;filename=" + _outfileName
+            });
+            const _fs = fs.createReadStream(_rOut);
+            _fs.on("end", () => {
+              fs.unlink(_rOut);
+              for (let f = 0; f < getAllReports.length; f++) {
+                fs.unlink(getAllReports[f]);
+              }
+            });
+            _fs.pipe(res);
+          } else {
+            res.writeHead(400, {
+              "Content-Type": "text/plain"
+            });
+            res.end("ERROR File does not exist");
+          }
+        });
+      }
+    });
   }
 };
