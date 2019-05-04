@@ -95,7 +95,7 @@ export default class DcafEditor extends Component {
                           </h5>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col-6   form-group" }}
+                          div={{ className: "col-12  form-group" }}
                           label={{
                             forceLabel: "Provider Name",
                             isImp: false
@@ -111,7 +111,7 @@ export default class DcafEditor extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-6   form-group" }}
+                          div={{ className: "col-12  form-group" }}
                           label={{
                             forceLabel: "Insurance Company Name",
                             isImp: false
@@ -130,7 +130,7 @@ export default class DcafEditor extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
+                          div={{ className: "col-6 form-group" }}
                           label={{
                             forceLabel: "TPA Company Name",
                             isImp: false
@@ -149,7 +149,7 @@ export default class DcafEditor extends Component {
                           }}
                         />
                         <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
+                          div={{ className: "col-6 form-group" }}
                           label={{
                             forceLabel: "Patient File Number",
                             isImp: false
@@ -164,7 +164,6 @@ export default class DcafEditor extends Component {
                             }
                           }}
                         />
-
                         <AlgaehDateHandler
                           div={{ className: "col-4 form-group" }}
                           label={{
@@ -179,8 +178,10 @@ export default class DcafEditor extends Component {
                           maxDate={new Date()}
                           events={{}}
                         />
-
-                        <div className="col-12 customCheckbox">
+                        <div
+                          className="col-2 customRadio"
+                          style={{ paddingTop: 25 }}
+                        >
                           <label className="radio inline">
                             <input
                               type="radio"
@@ -193,7 +194,12 @@ export default class DcafEditor extends Component {
                               }
                             />
                             <span>Plan Type</span>
-                          </label>
+                          </label>{" "}
+                        </div>{" "}
+                        <div
+                          className="col-6 customCheckbox"
+                          style={{ paddingTop: 25 }}
+                        >
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
@@ -496,7 +502,7 @@ export default class DcafEditor extends Component {
                         />
 
                         <AlagehFormGroup
-                          div={{ className: "col-12 form-group" }}
+                          div={{ className: "col-6 form-group" }}
                           label={{
                             forceLabel: "Other Conditions",
                             isImp: false
@@ -524,7 +530,7 @@ export default class DcafEditor extends Component {
                           <h5>Please tick () where appropriate</h5>
                         </div>
 
-                        <div className="col-9 customCheckbox">
+                        <div className="col-12 customCheckbox">
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
@@ -573,82 +579,79 @@ export default class DcafEditor extends Component {
                             />
                             <span>Work Related</span>
                           </label>
-                          <AlagehFormGroup
-                            div={{ className: "col form-group" }}
-                            label={{
-                              forceLabel: "Others",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "",
-                              value: "",
-                              events: {},
-                              option: {
-                                type: "text"
-                              }
-                            }}
-                          />
-                          <AlagehFormGroup
-                            div={{ className: "col form-group" }}
-                            label={{
-                              forceLabel: "How",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "",
-                              value: "",
-                              events: {},
-                              option: {
-                                type: "text"
-                              }
-                            }}
-                          />
-                          <AlagehFormGroup
-                            div={{ className: "col form-group" }}
-                            label={{
-                              forceLabel: "When",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "",
-                              value: "",
-                              events: {},
-                              option: {
-                                type: "text"
-                              }
-                            }}
-                          />
-                          <AlagehFormGroup
-                            div={{ className: "col form-group" }}
-                            label={{
-                              forceLabel: "Where",
-                              isImp: false
-                            }}
-                            textBox={{
-                              className: "txt-fld",
-                              name: "",
-                              value: "",
-                              events: {},
-                              option: {
-                                type: "text"
-                              }
-                            }}
-                          />
                           {/* //Others */}
                         </div>
 
-                        <div className="col-12">
-                          <h5>
+                        <AlagehFormGroup
+                          div={{ className: "col-12 form-group" }}
+                          label={{
+                            forceLabel: "Others",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-12 form-group" }}
+                          label={{
+                            forceLabel: "How",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "When",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col-6 form-group" }}
+                          label={{
+                            forceLabel: "Where",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
+                        <div className="col-12" id="serviceGrid_Cntr">
+                          <h5 style={{ marginBottom: 0, marginTop: 10 }}>
                             Suggestive line(s) of management: Kindly, enumerate
                             the recommended investigation, and/or procedures{" "}
                             <b>For outpatient approvals only:</b>
                           </h5>
-                        </div>
-
-                        <div className="col-12" id="serviceGrid_Cntr">
                           <AlgaehDataGrid
                             id="service_grid"
                             columns={[
@@ -688,19 +691,16 @@ export default class DcafEditor extends Component {
                             dataSource={{
                               data: this.props.dataProps.hims_f_ucaf_services
                             }}
-                            paging={{ page: 0, rowsPerPage: 10 }}
+                            paging={{ page: 0, rowsPerPage: 5 }}
                           />
                         </div>
-
-                        <div className="col-12">
-                          <h5>
+                        <div className="col-12" id="medicationGrd_Cntr">
+                          {" "}
+                          <h5 style={{ marginBottom: 0, marginTop: 10 }}>
                             Providers Approval/Coding staff must review/code the
                             recommended services(s) and allocate cost and
                             complete the following:
                           </h5>
-                        </div>
-
-                        <div className="col-12" id="medicationGrd_Cntr">
                           <AlgaehDataGrid
                             id="medication_grid"
                             columns={[
@@ -734,7 +734,7 @@ export default class DcafEditor extends Component {
                             dataSource={{
                               data: this.props.dataProps.hims_f_ucaf_medication
                             }}
-                            paging={{ page: 0, rowsPerPage: 10 }}
+                            paging={{ page: 0, rowsPerPage: 5 }}
                           />
                         </div>
                       </div>
