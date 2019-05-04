@@ -18,13 +18,14 @@ export default class DcafEditor extends Component {
       class: "",
       insurance_holder: "",
       insurance_approved: "",
-      ucaf_data: undefined
+      dcaf_data: undefined
     };
   }
 
-  saveAndPrintUcaf(e) {
+  saveAndPrintDcaf(e) {
+    debugger;
     const that = this;
-    const _hims_f_ucaf_header = this.props.dataProps.hims_f_ucaf_header[0];
+    const _hims_f_dcaf_header = this.props.dataProps.hims_f_dcaf_header[0];
     algaehApiCall({
       uri: "/report",
       method: "GET",
@@ -39,9 +40,9 @@ export default class DcafEditor extends Component {
           reportParams: [
             {
               name: "hims_d_patient_id",
-              value: _hims_f_ucaf_header.patient_id
+              value: _hims_f_dcaf_header.patient_id
             },
-            { name: "visit_id", value: _hims_f_ucaf_header.visit_id },
+            { name: "visit_id", value: _hims_f_dcaf_header.visit_id },
             { name: "visit_date", value: null }
           ],
           outputFileType: "PDF" //"EXCEL", //"PDF",
@@ -57,7 +58,7 @@ export default class DcafEditor extends Component {
           myWindow.document.write(
             "<embed src= '" + reader.result + "' width='100%' height='100%' />"
           );
-          myWindow.document.title = "Algaeh UCAF 2.0";
+          myWindow.document.title = "Algaeh DCAF 2.0";
         };
 
         reader.readAsDataURL(res.data);
@@ -66,10 +67,11 @@ export default class DcafEditor extends Component {
   }
 
   render() {
+    debugger;
     const _isPrimary = "primary";
-    const _hims_f_ucaf_header = this.props.dataProps.hims_f_ucaf_header[0];
+    const _hims_f_dcaf_header = this.props.dataProps.hims_f_dcaf_header[0];
     const _insurnce = _.find(
-      this.props.dataProps.hims_f_ucaf_insurance_details,
+      this.props.dataProps.hims_f_dcaf_insurance_details,
       f =>
         f[
           _isPrimary === "primary"
@@ -103,7 +105,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: _hims_f_ucaf_header.provider_name,
+                            value: _hims_f_dcaf_header.provider_name,
                             events: {},
                             option: {
                               type: "text"
@@ -157,7 +159,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: _hims_f_ucaf_header.patient_code,
+                            value: _hims_f_dcaf_header.patient_code,
                             events: {},
                             option: {
                               type: "text"
@@ -174,7 +176,7 @@ export default class DcafEditor extends Component {
                             className: "txt-fld",
                             name: ""
                           }}
-                          value={_hims_f_ucaf_header.visit_date}
+                          value={_hims_f_dcaf_header.visit_date}
                           maxDate={new Date()}
                           events={{}}
                         />
@@ -187,7 +189,7 @@ export default class DcafEditor extends Component {
                               type="radio"
                               name="maritalType"
                               checked={
-                                _hims_f_ucaf_header.patient_marital_status ===
+                                _hims_f_dcaf_header.patient_marital_status ===
                                 "PlanType"
                                   ? true
                                   : false
@@ -204,7 +206,7 @@ export default class DcafEditor extends Component {
                             <input
                               type="checkbox"
                               checked={
-                                _hims_f_ucaf_header.new_visit_patient === "Y"
+                                _hims_f_dcaf_header.new_visit_patient === "Y"
                                   ? true
                                   : false
                               }
@@ -215,7 +217,7 @@ export default class DcafEditor extends Component {
                             <input
                               type="checkbox"
                               checked={
-                                _hims_f_ucaf_header.new_visit_patient === "N"
+                                _hims_f_dcaf_header.new_visit_patient === "N"
                                   ? true
                                   : false
                               }
@@ -241,7 +243,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: _hims_f_ucaf_header.patient_full_name,
+                            value: _hims_f_dcaf_header.patient_full_name,
                             events: {},
                             option: {
                               type: "text"
@@ -276,7 +278,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: _hims_f_ucaf_header.patient_gender,
+                            value: _hims_f_dcaf_header.patient_gender,
                             events: {},
                             option: {
                               type: "text"
@@ -292,7 +294,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: _hims_f_ucaf_header.age_in_years,
+                            value: _hims_f_dcaf_header.age_in_years,
                             events: {},
                             option: {
                               type: "text"
@@ -325,11 +327,11 @@ export default class DcafEditor extends Component {
                             className: "txt-fld",
                             name: "",
                             value:
-                              _hims_f_ucaf_header.insurance_holder === undefined
+                              _hims_f_dcaf_header.insurance_holder === undefined
                                 ? this.state.insurance_holder === ""
-                                  ? _hims_f_ucaf_header.patient_full_name
+                                  ? _hims_f_dcaf_header.patient_full_name
                                   : this.state.insurance_holder
-                                : _hims_f_ucaf_header.insurance_holder,
+                                : _hims_f_dcaf_header.insurance_holder,
                             events: {},
                             option: {
                               type: "text"
@@ -409,7 +411,7 @@ export default class DcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_duration_of_illness",
                             value:
-                              _hims_f_ucaf_header.patient_duration_of_illness,
+                              _hims_f_dcaf_header.patient_duration_of_illness,
                             events: {},
                             option: {
                               type: "text"
@@ -426,7 +428,7 @@ export default class DcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_chief_comp_main_symptoms",
                             value:
-                              _hims_f_ucaf_header.patient_chief_comp_main_symptoms,
+                              _hims_f_dcaf_header.patient_chief_comp_main_symptoms,
                             events: {},
                             option: {
                               type: "text"
@@ -443,7 +445,7 @@ export default class DcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_significant_signs",
                             value:
-                              _hims_f_ucaf_header.patient_significant_signs,
+                              _hims_f_dcaf_header.patient_significant_signs,
                             events: {},
                             option: {
                               type: "text"
@@ -460,7 +462,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_diagnosys",
-                            value: _hims_f_ucaf_header.patient_diagnosys,
+                            value: _hims_f_dcaf_header.patient_diagnosys,
                             events: {},
                             option: {
                               type: "text"
@@ -477,7 +479,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_1",
-                            value: _hims_f_ucaf_header.patient_principal_code_1,
+                            value: _hims_f_dcaf_header.patient_principal_code_1,
                             events: {},
                             option: {
                               type: "text"
@@ -493,7 +495,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_2",
-                            value: _hims_f_ucaf_header.patient_principal_code_2,
+                            value: _hims_f_dcaf_header.patient_principal_code_2,
                             events: {},
                             option: {
                               type: "text"
@@ -510,7 +512,7 @@ export default class DcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_other_conditions",
-                            value: _hims_f_ucaf_header.patient_other_conditions,
+                            value: _hims_f_dcaf_header.patient_other_conditions,
                             events: {},
                             option: {
                               type: "text"
@@ -536,7 +538,7 @@ export default class DcafEditor extends Component {
                               type="checkbox"
                               name="patient_chronic"
                               checked={
-                                _hims_f_ucaf_header.patient_chronic === "Y"
+                                _hims_f_dcaf_header.patient_chronic === "Y"
                                   ? true
                                   : false
                               }
@@ -548,7 +550,7 @@ export default class DcafEditor extends Component {
                               type="checkbox"
                               name="patient_congenetal"
                               checked={
-                                _hims_f_ucaf_header.patient_congenetal === "Y"
+                                _hims_f_dcaf_header.patient_congenetal === "Y"
                                   ? true
                                   : false
                               }
@@ -560,7 +562,7 @@ export default class DcafEditor extends Component {
                               type="checkbox"
                               name="patient_rta"
                               checked={
-                                _hims_f_ucaf_header.patient_rta === "Y"
+                                _hims_f_dcaf_header.patient_rta === "Y"
                                   ? true
                                   : false
                               }
@@ -572,7 +574,7 @@ export default class DcafEditor extends Component {
                               type="checkbox"
                               name="patient_work_related"
                               checked={
-                                _hims_f_ucaf_header.patient_work_related === "Y"
+                                _hims_f_dcaf_header.patient_work_related === "Y"
                                   ? true
                                   : false
                               }
@@ -687,9 +689,9 @@ export default class DcafEditor extends Component {
                                 )
                               }
                             ]}
-                            keyId="hims_f_ucaf_header_id"
+                            keyId="hims_f_dcaf_header_id"
                             dataSource={{
-                              data: this.props.dataProps.hims_f_ucaf_services
+                              data: this.props.dataProps.hims_f_dcaf_services
                             }}
                             paging={{ page: 0, rowsPerPage: 5 }}
                           />
@@ -730,9 +732,9 @@ export default class DcafEditor extends Component {
                                 )
                               }
                             ]}
-                            keyId="hims_f_ucaf_medication_id"
+                            keyId="hims_f_dcaf_medication_id"
                             dataSource={{
-                              data: this.props.dataProps.hims_f_ucaf_medication
+                              data: this.props.dataProps.hims_f_dcaf_medication
                             }}
                             paging={{ page: 0, rowsPerPage: 5 }}
                           />
@@ -752,7 +754,7 @@ export default class DcafEditor extends Component {
                   <button
                     type="button"
                     className="btn btn-primary"
-                    onClick={this.saveAndPrintUcaf.bind(this)}
+                    onClick={this.saveAndPrintDcaf.bind(this)}
                   >
                     Save & Print
                   </button>

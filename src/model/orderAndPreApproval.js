@@ -242,7 +242,8 @@ let insertOrderedServices = (req, res, next) => {
     "sec_company_tax",
     "sec_company_paybale",
     "sec_copay_percntage",
-    "sec_copay_amount"
+    "sec_copay_amount",
+    "teeth_number"
   ];
 
   debugFunction("add order");

@@ -122,7 +122,10 @@ class OrderingServices extends Component {
         }
       });
     }
+    this.getPatientInsurance();
+  }
 
+  getPatientInsurance() {
     this.props.getPatientInsurance({
       // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",
@@ -153,14 +156,15 @@ class OrderingServices extends Component {
       }
     });
   }
-
   componentWillReceiveProps(nextProps) {
     debugger;
+
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
     ) {
       let output = nextProps.existinginsurance[0];
+      output.insured = "Y";
       this.setState({ ...output });
     }
 

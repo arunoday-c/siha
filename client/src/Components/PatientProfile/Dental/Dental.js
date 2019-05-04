@@ -184,6 +184,7 @@ class Dental extends Component {
   }
 
   saveBill() {
+    debugger;
     let inputObj = {
       visit_id: Window.global["visit_is"],
       patient_id: Window.global["current_patient"],
@@ -197,6 +198,7 @@ class Dental extends Component {
             patient_id: Window.global["current_patient"],
             pre_approval: "N",
             doctor_id: Window.global["provider_id"]
+            // teeth_number: teeth_number
           }
         }
       ]
@@ -304,6 +306,7 @@ class Dental extends Component {
             onSuccess: res => {
               if (res.data.success) {
                 console.log("Billing Response:", res.data.records);
+                res.data.records.billdetails[0].teeth_number = row.teeth_number;
                 this.setState({
                   billDetails: res.data.records.billdetails[0]
                 });

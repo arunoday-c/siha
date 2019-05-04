@@ -164,7 +164,7 @@ class PatientProfile extends Component {
   openDCAFReport(data, e) {
     let that = this;
     algaehApiCall({
-      uri: "/ucaf/getPatientUCAF",
+      uri: "/dcaf/getPatientDCAF",
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],
@@ -172,6 +172,7 @@ class PatientProfile extends Component {
         // visit_date: "2018-09-15"
       },
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           that.setState({ openDCAF: true, DCAFData: response.data.records });
         }
@@ -248,7 +249,8 @@ class PatientProfile extends Component {
     setGlobal({ "EHR-STD": "DoctorsWorkbench" });
     document.getElementById("ehr-router").click();
   }
-  renderUCAFReport() {
+
+  renderDCAFReport() {
     return (
       <AlgaehModalPopUp
         openPopup={this.state.openDCAF}
@@ -260,6 +262,21 @@ class PatientProfile extends Component {
         }}
       >
         <DcafEditor dataProps={this.state.DCAFData} />
+      </AlgaehModalPopUp>
+    );
+  }
+  renderUCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openUCAF}
+        title="UCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openUCAF: false });
+          }
+        }}
+      >
+        <UcafEditor dataProps={this.state.UCAFData} />
       </AlgaehModalPopUp>
     );
 
@@ -442,15 +459,15 @@ class PatientProfile extends Component {
                 <span>Open MRD</span>
               </li>
 
-              <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+              {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
                 <span>UCAF Report</span>
               </li>
 
               <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
                 <span>DCAF Report</span>
-              </li>
+              </li> */}
 
-              {/* {this.state.chart_type === "D" ? (
+              {this.state.chart_type === "D" ? (
                 <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
                   <span>DCAF Report</span>
                 </li>
@@ -462,7 +479,7 @@ class PatientProfile extends Component {
                 <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
                   <span>UCAF Report</span>
                 </li>
-              )} */}
+              )}
             </ul>
           </div>
         </div>
@@ -767,6 +784,7 @@ class PatientProfile extends Component {
           ) : null}
         </div>
         {this.renderUCAFReport()}
+        {this.renderDCAFReport()}
       </div>
     );
   }

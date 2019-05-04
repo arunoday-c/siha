@@ -48,6 +48,8 @@ const serviceHandeler = ($this, e) => {
 const ProcessService = ($this, e) => {
   // orderedList
 
+  debugger;
+
   let SelectedService = Enumerable.from($this.props.orderedList)
     .where(
       w =>
@@ -62,7 +64,7 @@ const ProcessService = ($this, e) => {
       let serviceInput = [
         {
           insured: $this.state.insured,
-          vat_applicable: $this.state.vat_applicable,
+          vat_applicable: $this.props.vat_applicable,
           hims_d_services_id: $this.state.s_service,
           primary_insurance_provider_id: $this.state.insurance_provider_id,
           primary_network_office_id:
@@ -557,25 +559,6 @@ const deleteServices = ($this, row, rowId) => {
           });
         }
       });
-      // $this.props.generateBill({
-      //   uri: "/billing/getBillDetails",
-      //   module: "billing",
-      //   method: "POST",
-      //   data: preserviceInput,
-      //   redux: {
-      //     type: "BILL_GEN_GET_DATA",
-      //     mappingName: "xxx"
-      //   },
-      //   afterSuccess: data => {
-      //     $this.setState({
-      //       orderservicesdata: data.billdetails,
-      //       approval_amt: app_amt,
-      //       preserviceInput: preserviceInput,
-      //       approval_limit_yesno: "N",
-      //       saved: saved
-      //     });
-      //   }
-      // });
     } else {
       $this.setState({
         orderservicesdata: orderservicesdata,
@@ -648,7 +631,7 @@ const calculateAmount = ($this, row, ctrl, e) => {
           e.target.name === "discount_amout" ? 0 : row.discount_percentage,
 
         insured: $this.state.insured === null ? "N" : $this.state.insured,
-        vat_applicable: $this.state.vat_applicable,
+        vat_applicable: $this.props.vat_applicable,
         primary_insurance_provider_id: $this.state.insurance_provider_id,
         primary_network_office_id:
           $this.state.hims_d_insurance_network_office_id,
@@ -684,21 +667,6 @@ const calculateAmount = ($this, row, ctrl, e) => {
         });
       }
     });
-    // $this.props.billingCalculations({
-    //   uri: "/billing/getBillDetails",
-    //   module: "billing",
-    //   method: "POST",
-    //   data: inputParam,
-    //   redux: {
-    //     type: "BILL_GEN_GET_DATA",
-    //     mappingName: "xxx"
-    //   },
-    //   afterSuccess: data => {
-    //     extend(row, data.billdetails[0]);
-    //     orderservicesdata[row.rowIdx] = row;
-    //     $this.setState({ orderservicesdata: orderservicesdata });
-    //   }
-    // });
   }
 };
 
