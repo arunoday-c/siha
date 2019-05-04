@@ -16,10 +16,10 @@ export default function SubjectiveHandler() {
       // row[name] = value;
       if (name === "duration") {
         value = parseFloat(e.value);
-        const _duration_Date_Interval = durationToDateAndInterval(
-          value,
-          $this.state.interval
-        );
+        const _duration_Date_Interval =
+          $this.state.interval !== null
+            ? durationToDateAndInterval(value, $this.state.interval)
+            : { onset_date: null, interval: null };
         $this.setState({
           onset_date: _duration_Date_Interval.onset_date,
           interval: _duration_Date_Interval.interval,

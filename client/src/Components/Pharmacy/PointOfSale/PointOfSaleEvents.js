@@ -484,11 +484,14 @@ const VisitSearch = ($this, e) => {
                 },
                 afterSuccess: data => {
                   data[0].mode_of_pay = "2";
-                  $this.setState(data[0]);
+                  $this.setState(data[0], () => {
+                    getMedicationList($this);
+                  });
                 }
               });
+            } else {
+              getMedicationList($this);
             }
-            getMedicationList($this);
           }
         );
       }
@@ -523,6 +526,7 @@ const AddItems = ($this, ItemInput) => {
   if (ItemInput.length > 0) {
     let inputObj = {};
     let inputArray = [];
+    debugger;
     for (let i = 0; i < ItemInput.length; i++) {
       inputObj = {
         item_id: ItemInput[i].item_id,
@@ -565,8 +569,17 @@ const AddItems = ($this, ItemInput) => {
                 data.billdetails[i].net_extended_cost =
                   data.billdetails[i].net_amout;
                 data.billdetails[i].operation = "-";
-                data.billdetails[0].service_id =
-                  data.billdetails[0].services_id;
+                data.billdetails[i].service_id =
+                  data.billdetails[i].services_id;
+
+                data.billdetails[i].patient_responsibility =
+                  data.billdetails[i].patient_resp;
+
+                data.billdetails[i].company_responsibility =
+                  data.billdetails[i].comapany_resp;
+
+                data.billdetails[i].company_payable =
+                  data.billdetails[i].company_payble;
 
                 data.billdetails[0].grn_no = data.billdetails[0].grnno;
 

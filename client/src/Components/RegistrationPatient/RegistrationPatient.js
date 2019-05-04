@@ -11,11 +11,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-// import {
-//   postPatientDetails,
-//   postVisitDetails
-// } from "../../actions/RegistrationPatient/Registrationactions";
-
 import BreadCrumb from "../common/BreadCrumb/BreadCrumb.js";
 import MyContext from "../../utils/MyContext.js";
 import { Validations } from "./FrontdeskValidation.js";
@@ -287,15 +282,7 @@ class RegistrationPatient extends Component {
           });
         }
       });
-
-      // setGlobal({ selectedLang: prevLang });
-
-      // this.setState({ selectedLang: prevLang, Rerender: true });
     }
-    // let prevLang = getCookie("Language");
-    // setGlobal({ selectedLang: prevLang });
-
-    // this.setState({ selectedLang: prevLang, Rerender: true });
   }
 
   SavePatientDetails(e) {
@@ -968,10 +955,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      
       getPatientDetails: AlgaehActions,
       initialStatePatientData: AlgaehActions,
-      
+
       initialStateBillGen: AlgaehActions,
       getPatientInsurance: AlgaehActions,
       getCountries: AlgaehActions,

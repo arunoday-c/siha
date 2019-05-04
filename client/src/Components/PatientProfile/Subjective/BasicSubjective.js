@@ -91,8 +91,8 @@ class BasicSubjective extends Component {
     SubjectiveHandler().ChangeEventHandler(this, e);
   }
 
-  onchangegridcol(row, from) {
-    SubjectiveHandler().onchangegridcol(this, row, from);
+  onchangegridcol(row, from, e) {
+    SubjectiveHandler().onchangegridcol(this, row, from, e);
   }
 
   deleteFinalDiagnosis(row) {
@@ -491,7 +491,7 @@ class BasicSubjective extends Component {
                                   }}
                                 />
                               ),
-                              disabled: false,
+                              disabled: true,
                               others: { maxWidth: 70, align: "center" }
                             },
                             {
@@ -503,7 +503,7 @@ class BasicSubjective extends Component {
                                   }}
                                 />
                               ),
-                              disabled: false
+                              disabled: true
                             }
                           ]}
                           keyId="code"

@@ -43,6 +43,7 @@ class Plan extends Component {
   };
 
   render() {
+    debugger;
     return (
       <div className="plan">
         <div className="row">

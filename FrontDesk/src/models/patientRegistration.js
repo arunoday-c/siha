@@ -21,7 +21,7 @@ module.exports = {
           , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
           , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
           , `photo_file`, `primary_id_file`, `secondary_id_file`, `patient_type`,`vat_applicable`, `created_by`, `created_date`\
-          ,`city_id`,`state_id`,`country_id`)\
+          ,`city_id`,`state_id`,`country_id`,`employee_id`)\
            VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
           values: [
             inputparam.patient_code,
@@ -65,7 +65,8 @@ module.exports = {
             new Date(),
             inputparam.city_id,
             inputparam.state_id,
-            inputparam.country_id
+            inputparam.country_id,
+            inputparam.employee_id
           ]
         })
         .then(result => {
@@ -122,7 +123,7 @@ module.exports = {
               from (((((hims_d_insurance_provider Ins \
               INNER JOIN  hims_m_patient_insurance_mapping mIns ON mIns.primary_insurance_provider_id=Ins.hims_d_insurance_provider_id)\
               INNER JOIN  hims_d_insurance_sub sIns ON mIns.primary_sub_id= sIns.hims_d_insurance_sub_id) \
-              INNER JOIN hims_d_insurance_card_class iCClas ON mIns.card_class = iCClas.hims_d_insurance_card_class_id)\
+              LEFT JOIN hims_d_insurance_card_class iCClas ON mIns.card_class = iCClas.hims_d_insurance_card_class_id)\
               INNER JOIN hims_d_insurance_network net ON mIns.primary_network_id=net.hims_d_insurance_network_id)\
               INNER JOIN hims_d_insurance_network_office netoff ON mIns.primary_policy_num=netoff.policy_number) where mIns.patient_id=?  and mIns.patient_visit_id =?\
               GROUP BY mIns.primary_policy_num)  AS A\

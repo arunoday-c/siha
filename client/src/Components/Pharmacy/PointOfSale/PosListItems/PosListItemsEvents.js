@@ -474,6 +474,15 @@ const AddItems = ($this, context) => {
                 data.billdetails[0].discount_amount =
                   data.billdetails[0].discount_amout;
 
+                data.billdetails[0].patient_responsibility =
+                  data.billdetails[0].patient_resp;
+
+                data.billdetails[0].company_responsibility =
+                  data.billdetails[0].comapany_resp;
+
+                data.billdetails[0].company_payable =
+                  data.billdetails[0].company_payble;
+
                 existingservices.splice(0, 0, data.billdetails[0]);
               }
 

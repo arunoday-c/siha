@@ -39,6 +39,7 @@ import _ from "lodash";
 import Allergies from "./Allergies/Allergies";
 
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
+const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
 
@@ -62,7 +63,10 @@ class PatientProfile extends Component {
           : "",
       openUCAF: false,
       UCAFData: undefined,
-      openAlergy: false
+      openDCAF: false,
+      DCAFData: undefined,
+      openAlergy: false,
+      chart_type: Window.global["chart_type"]
     };
 
     getPatientProfile(this);
@@ -157,6 +161,30 @@ class PatientProfile extends Component {
     });
   }
 
+  openDCAFReport(data, e) {
+    let that = this;
+    algaehApiCall({
+      uri: "/ucaf/getPatientUCAF",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"],
+        visit_id: Window.global["visit_id"]
+        // visit_date: "2018-09-15"
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          that.setState({ openDCAF: true, DCAFData: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "warning"
+        });
+      }
+    });
+  }
+
   showAllergyAlert(_patient_allergies) {
     if (allergyPopUp && _patient_allergies.length > 0) {
       return (
@@ -223,17 +251,43 @@ class PatientProfile extends Component {
   renderUCAFReport() {
     return (
       <AlgaehModalPopUp
-        openPopup={this.state.openUCAF}
-        title="UCAF 2.0"
+        openPopup={this.state.openDCAF}
+        title="DCAF 2.0"
         events={{
           onClose: () => {
-            this.setState({ openUCAF: false });
+            this.setState({ openDCAF: false });
           }
         }}
       >
-        <UcafEditor dataProps={this.state.UCAFData} />
+        <DcafEditor dataProps={this.state.DCAFData} />
       </AlgaehModalPopUp>
     );
+
+    // return this.state.chart_type === "D" ? (
+    //   <AlgaehModalPopUp
+    //     openPopup={this.state.openDCAF}
+    //     title="DCAF 2.0"
+    //     events={{
+    //       onClose: () => {
+    //         this.setState({ openDCAF: false });
+    //       }
+    //     }}
+    //   >
+    //     <DcafEditor dataProps={this.state.DCAFData} />
+    //   </AlgaehModalPopUp>
+    // ) : this.state.chart_type === "O" ? null : (
+    //   <AlgaehModalPopUp
+    //     openPopup={this.state.openUCAF}
+    //     title="UCAF 2.0"
+    //     events={{
+    //       onClose: () => {
+    //         this.setState({ openUCAF: false });
+    //       }
+    //     }}
+    //   >
+    //     <UcafEditor dataProps={this.state.UCAFData} />
+    //   </AlgaehModalPopUp>
+    // );
   }
   render() {
     const module_plan = _.find(this.active_modules, f => {
@@ -282,6 +336,8 @@ class PatientProfile extends Component {
       this.props.patient_diagnosis === undefined
         ? []
         : this.props.patient_diagnosis;
+
+    debugger;
     const _diet =
       this.props.patient_diet === undefined ? [] : this.props.patient_diet;
 
@@ -385,9 +441,28 @@ class PatientProfile extends Component {
               <li>
                 <span>Open MRD</span>
               </li>
+
               <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
                 <span>UCAF Report</span>
               </li>
+
+              <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
+                <span>DCAF Report</span>
+              </li>
+
+              {/* {this.state.chart_type === "D" ? (
+                <li onClick={this.openDCAFReport.bind(this, _pat_profile)}>
+                  <span>DCAF Report</span>
+                </li>
+              ) : this.state.chart_type === "O" ? (
+                <li>
+                  <span>OCAF Report</span>
+                </li>
+              ) : (
+                <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
+                  <span>UCAF Report</span>
+                </li>
+              )} */}
             </ul>
           </div>
         </div>
@@ -527,7 +602,7 @@ class PatientProfile extends Component {
                     <p>
                       {_diet.map((data, index) => (
                         <span key={index} className="listofA-D-D">
-                          {data.icd_description}
+                          {data.hims_d_diet_description}
                         </span>
                       ))}
                     </p>
@@ -556,15 +631,29 @@ class PatientProfile extends Component {
                   Examination Diagram
                 </span>
               </li>
-              <li className="nav-item">
-                <span
-                  onClick={this.changeTabs}
-                  algaehsoap="eye"
-                  className="nav-link"
-                >
-                  Optometry
-                </span>
-              </li>
+
+              {this.state.chart_type === "D" ? (
+                <li className="nav-item">
+                  <span
+                    onClick={this.changeTabs}
+                    algaehsoap="dental"
+                    className="nav-link"
+                  >
+                    Dental
+                  </span>
+                </li>
+              ) : this.state.chart_type === "O" ? (
+                <li className="nav-item">
+                  <span
+                    onClick={this.changeTabs}
+                    algaehsoap="eye"
+                    className="nav-link"
+                  >
+                    Optometry
+                  </span>
+                </li>
+              ) : null}
+
               <li className="nav-item">
                 <span
                   onClick={this.changeTabs}
@@ -659,7 +748,7 @@ class PatientProfile extends Component {
             ) : this.state.pageDisplay === "summary" ? (
               <Summary />
             ) : this.state.pageDisplay === "dental" ? (
-              <Dental />
+              <Dental vat_applicable={this.vatApplicable()} />
             ) : this.state.pageDisplay === "eye" ? (
               <Eye />
             ) : null
@@ -671,6 +760,8 @@ class PatientProfile extends Component {
             <ExamDiagramStandolone />
           ) : this.state.pageDisplay === "eye" ? (
             <Eye />
+          ) : this.state.pageDisplay === "dental" ? (
+            <Dental vat_applicable={this.vatApplicable()} />
           ) : this.state.pageDisplay === "summary" ? (
             <Summary />
           ) : null}

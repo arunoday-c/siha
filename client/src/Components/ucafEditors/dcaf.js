@@ -8,7 +8,7 @@ import {
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
-export default class UcafEditor extends Component {
+export default class DcafEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,7 +35,7 @@ export default class UcafEditor extends Component {
       others: { responseType: "blob" },
       data: {
         report: {
-          reportName: "ucaf",
+          reportName: "dcaf",
           reportParams: [
             {
               name: "hims_d_patient_id",
@@ -164,22 +164,7 @@ export default class UcafEditor extends Component {
                             }
                           }}
                         />
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Department",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: _hims_f_ucaf_header.sub_department_name,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
+
                         <AlgaehDateHandler
                           div={{ className: "col-4 form-group" }}
                           label={{
@@ -194,36 +179,8 @@ export default class UcafEditor extends Component {
                           maxDate={new Date()}
                           events={{}}
                         />
-                        <div
-                          className="col-6 customRadio"
-                          style={{ paddingTop: 24, borderBottom: "none" }}
-                        >
-                          <label className="radio inline">
-                            <input
-                              type="radio"
-                              name="maritalType"
-                              checked={
-                                _hims_f_ucaf_header.patient_marital_status ===
-                                "Single"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Single</span>
-                          </label>
-                          <label className="radio inline">
-                            <input
-                              type="radio"
-                              name="maritalType"
-                              checked={
-                                _hims_f_ucaf_header.patient_marital_status ===
-                                "Married"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Married</span>
-                          </label>
+
+                        <div className="col-12 customCheckbox">
                           <label className="radio inline">
                             <input
                               type="radio"
@@ -237,8 +194,6 @@ export default class UcafEditor extends Component {
                             />
                             <span>Plan Type</span>
                           </label>
-                        </div>
-                        <div className="col-12 customCheckbox">
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
@@ -260,27 +215,6 @@ export default class UcafEditor extends Component {
                               }
                             />
                             <span>Follow Up</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              checked={this.state.refill}
-                            />
-                            <span>Refill</span>
-                          </label>{" "}
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              checked={this.state.walkin}
-                            />
-                            <span>Walk In</span>
-                          </label>{" "}
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              checked={this.state.referral}
-                            />
-                            <span>Referral</span>
                           </label>
                         </div>
                       </div>
@@ -456,187 +390,9 @@ export default class UcafEditor extends Component {
                     <div className="attendingPhysician">
                       <div className="row">
                         <div className="col-12">
-                          <h5>To be completed by the Attending Physician:</h5>
+                          <h5>To be completed by the Dentist:</h5>
                         </div>
-                        <div className="col-4 customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="caseType"
-                              checked={
-                                _hims_f_ucaf_header.case_type === "IP"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Inpatient</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="caseType"
-                              checked={
-                                _hims_f_ucaf_header.case_type === "OP"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Outpatient</span>
-                          </label>
-                        </div>
-                        <div className="col-8 customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="empergency_case"
-                              checked={
-                                _hims_f_ucaf_header.patient_emergency_case !==
-                                null
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Emergency Case</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="empergency_l1"
-                              checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
-                                "L1"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Level 1</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="empergency_l2"
-                              checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
-                                "L2"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Level 2</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="empergency_l3"
-                              checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
-                                "L2"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Level 3</span>
-                          </label>
-                        </div>
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "BP",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_bp_sys_dya",
-                            value:
-                              _hims_f_ucaf_header.patient_bp_sys +
-                              "/" +
-                              _hims_f_ucaf_header.patient_bp_dia,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Pulse (bpm)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_pulse",
-                            value: _hims_f_ucaf_header.patient_pulse,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Temp (C)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_temp",
-                            value: _hims_f_ucaf_header.patient_temp,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Weight (kg)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_weight",
-                            value: _hims_f_ucaf_header.patient_weight,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Height (cm)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_height",
-                            value: _hims_f_ucaf_header.patient_height,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "R.R",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_respiratory_rate",
-                            value: _hims_f_ucaf_header.patient_respiratory_rate,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
+
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
@@ -688,26 +444,11 @@ export default class UcafEditor extends Component {
                             }
                           }}
                         />
+
                         <AlagehFormGroup
                           div={{ className: "col-12 form-group" }}
                           label={{
-                            forceLabel: "Other Conditions",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_other_conditions",
-                            value: _hims_f_ucaf_header.patient_other_conditions,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-12 form-group" }}
-                          label={{
-                            forceLabel: "Diagnosis",
+                            forceLabel: "Diagnosis(ICD10)",
                             isImp: false
                           }}
                           textBox={{
@@ -720,10 +461,11 @@ export default class UcafEditor extends Component {
                             }
                           }}
                         />
+
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
-                            forceLabel: "Principal Code 1",
+                            forceLabel: "Primary",
                             isImp: false
                           }}
                           textBox={{
@@ -739,7 +481,7 @@ export default class UcafEditor extends Component {
                         <AlagehFormGroup
                           div={{ className: "col-3 form-group" }}
                           label={{
-                            forceLabel: "Principal Code 2",
+                            forceLabel: "Secondary",
                             isImp: false
                           }}
                           textBox={{
@@ -751,33 +493,18 @@ export default class UcafEditor extends Component {
                               type: "text"
                             }
                           }}
-                        />{" "}
+                        />
+
                         <AlagehFormGroup
-                          div={{ className: "col-3 form-group" }}
+                          div={{ className: "col-12 form-group" }}
                           label={{
-                            forceLabel: "Principal Code 3",
+                            forceLabel: "Other Conditions",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "patient_principal_code_3",
-                            value: _hims_f_ucaf_header.patient_principal_code_3,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />{" "}
-                        <AlagehFormGroup
-                          div={{ className: "col-3 form-group" }}
-                          label={{
-                            forceLabel: "Principal Code 4",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_principal_code_4",
-                            value: _hims_f_ucaf_header.patient_principal_code_4,
+                            name: "patient_other_conditions",
+                            value: _hims_f_ucaf_header.patient_other_conditions,
                             events: {},
                             option: {
                               type: "text"
@@ -808,7 +535,7 @@ export default class UcafEditor extends Component {
                                   : false
                               }
                             />
-                            <span>Chronic</span>
+                            <span>Regular Dental Treatment</span>
                           </label>
                           <label className="checkbox inline">
                             <input
@@ -820,7 +547,7 @@ export default class UcafEditor extends Component {
                                   : false
                               }
                             />
-                            <span>Congential</span>
+                            <span>Dental Cleaning</span>
                           </label>
                           <label className="checkbox inline">
                             <input
@@ -832,7 +559,7 @@ export default class UcafEditor extends Component {
                                   : false
                               }
                             />
-                            <span>RTA</span>
+                            <span>Trauma Treatment Specify: RTA</span>
                           </label>
                           <label className="checkbox inline">
                             <input
@@ -846,83 +573,72 @@ export default class UcafEditor extends Component {
                             />
                             <span>Work Related</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_vaccination"
-                              checked={
-                                _hims_f_ucaf_header.patient_vaccination === "Y"
-                                  ? true
-                                  : false
+                          <AlagehFormGroup
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "Others",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "",
+                              value: "",
+                              events: {},
+                              option: {
+                                type: "text"
                               }
-                            />
-                            <span>Vaccination</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_check_up"
-                              checked={
-                                _hims_f_ucaf_header.patient_check_up === "Y"
-                                  ? true
-                                  : false
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "How",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "",
+                              value: "",
+                              events: {},
+                              option: {
+                                type: "text"
                               }
-                            />
-                            <span>Check-Up</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_psychiatric"
-                              checked={
-                                _hims_f_ucaf_header.patient_psychiatric === "Y"
-                                  ? true
-                                  : false
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "When",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "",
+                              value: "",
+                              events: {},
+                              option: {
+                                type: "text"
                               }
-                            />
-                            <span>Psychiatric</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_infertility"
-                              checked={
-                                _hims_f_ucaf_header.patient_infertility === "Y"
-                                  ? true
-                                  : false
+                            }}
+                          />
+                          <AlagehFormGroup
+                            div={{ className: "col form-group" }}
+                            label={{
+                              forceLabel: "Where",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "",
+                              value: "",
+                              events: {},
+                              option: {
+                                type: "text"
                               }
-                            />
-                            <span>Infertility</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_pregnancy"
-                              checked={
-                                _hims_f_ucaf_header.patient_pregnancy === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Pregnancy</span>
-                          </label>
+                            }}
+                          />
+                          {/* //Others */}
                         </div>
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Indicate LMP",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: "",
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
 
                         <div className="col-12">
                           <h5>
@@ -947,22 +663,17 @@ export default class UcafEditor extends Component {
                                 label: (
                                   <AlgaehLabel
                                     label={{
-                                      forceLabel: "Description/Service"
+                                      forceLabel: "Dental Service"
                                     }}
                                   />
                                 )
                               },
-                              {
-                                fieldName: "service_type",
-                                label: (
-                                  <AlgaehLabel label={{ forceLabel: "Type" }} />
-                                )
-                              },
+
                               {
                                 fieldName: "service_quantity",
                                 label: (
                                   <AlgaehLabel
-                                    label={{ forceLabel: "Quantity" }}
+                                    label={{ forceLabel: "Tooth No." }}
                                   />
                                 )
                               },

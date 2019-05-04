@@ -931,5 +931,10 @@
   "PROCEDURE_TYPE": [
     { "name": "General", "value": "GN" },
     { "name": "Dental", "value": "DN" }
+  ],
+  "CHART_TYPE": [
+    { "name": "None", "value": "N" },
+    { "name": "Dental", "value": "D" },
+    { "name": "Optometry", "value": "O" }
   ]
 }

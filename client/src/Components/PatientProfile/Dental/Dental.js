@@ -113,16 +113,6 @@ class Dental extends Component {
       [e.target.name]: e.target.value
     });
 
-    // hims_d_services_id: 10851
-    // insured: "Y"
-    // primary_insurance_provider_id: 167
-    // primary_network_id: 2751
-    // primary_network_office_id: 59547
-    // secondary_insurance_provider_id: null
-    // secondary_network_id: null
-    // secondary_network_office_id: null
-    // vat_applicable: "Y"
-
     let inputParam = [
       {
         hims_d_services_id: bill_dtls.services_id,
@@ -130,7 +120,7 @@ class Dental extends Component {
         discount_amout: 0,
         discount_percentage: e.target.value,
         insured: this.state.ins_details !== null ? "Y" : "N",
-        vat_applicable: "Y",
+        vat_applicable: this.props.vat_applicable,
         primary_insurance_provider_id: bill_dtls.insurance_provider_id
           ? bill_dtls.insurance_provider_id
           : null,
@@ -162,11 +152,9 @@ class Dental extends Component {
       uri: "/billing/getBillDetails",
       module: "billing",
       method: "POST",
-      cancelRequestId: "getBillDetails8",
       data: inputParam,
       onSuccess: res => {
         if (res.data.success) {
-          //console.log("Billing Response for getBillDetails:", res.data.records);
           this.setState({
             billDetails: res.data.records.billdetails[0]
           });
@@ -264,6 +252,7 @@ class Dental extends Component {
   }
 
   addToBill(row) {
+    debugger;
     algaehApiCall({
       // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",
@@ -291,7 +280,7 @@ class Dental extends Component {
             data: [
               {
                 insured: res.data.records.length > 0 ? "Y" : "N",
-                vat_applicable: "Y",
+                vat_applicable: this.props.vat_applicable,
                 hims_d_services_id: row.service_id,
                 primary_insurance_provider_id:
                   ins !== null ? ins.insurance_provider_id : null,
@@ -1296,6 +1285,7 @@ class Dental extends Component {
   }
 
   loadDentalTreatment(data) {
+    debugger;
     data !== undefined
       ? this.setState(
           {

@@ -30,7 +30,8 @@ class DeptMaster extends Component {
       subDepartments: [],
       department_type: "NON-CLINICAL",
       effective_start_date: new Date(),
-      showSubDeptModal: false
+      showSubDeptModal: false,
+      chart_type: null
     };
     this.getLocation();
     this.getAllDepartments();
@@ -61,7 +62,9 @@ class DeptMaster extends Component {
   }
 
   textHandle(e) {
-    this.setState({ [e.target.name]: e.target.value });
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    this.setState({ [name]: value });
   }
 
   resetSaveState() {
@@ -73,7 +76,8 @@ class DeptMaster extends Component {
       effective_start_date: new Date(),
       sub_department_code: "",
       sub_department_name: "",
-      arabic_sub_department_name: ""
+      arabic_sub_department_name: "",
+      chart_type: null
     });
   }
 
@@ -267,6 +271,7 @@ class DeptMaster extends Component {
             sub_department_desc: data.sub_department_name,
             arabic_sub_department_name: data.arabic_sub_department_name,
             effective_start_date: data.effective_start_date,
+            chart_type: data.chart_type,
             hims_d_sub_department_id: data.hims_d_sub_department_id
           },
           module: "masterSettings",
@@ -364,6 +369,7 @@ class DeptMaster extends Component {
 
           location_description: this.state.sub_department_name,
           hospital_id: hospital.hims_d_hospital_id,
+          chart_type: this.state.chart_type,
           location_type: "SS"
         };
 
@@ -520,21 +526,21 @@ class DeptMaster extends Component {
 
                 <AlagehAutoComplete
                   div={{ className: "col" }}
-                  label={{ forceLabel: "Select Location" }}
+                  label={{ forceLabel: "Chart Type" }}
                   selector={{
-                    name: "inventory_location_id",
+                    name: "chart_type",
                     className: "select-fld",
-                    value: this.state.inventory_location_id,
+                    value: this.state.chart_type,
                     dataSource: {
-                      textField: "location_description",
-                      valueField: "hims_d_inventory_location_id",
-                      data: this.props.inventorylocations
+                      textField: "name",
+                      valueField: "value",
+                      data: GlobalVariables.CHART_TYPE
                     },
 
                     onChange: this.textHandle.bind(this),
                     onClear: () => {
                       this.setState({
-                        inventory_location_id: null
+                        chart_type: null
                       });
                     }
                   }}
@@ -675,50 +681,59 @@ class DeptMaster extends Component {
                         },
 
                         editorTemplate: row => {
+                          debugger;
+                          let display =
+                            this.props.inventorylocations === undefined
+                              ? []
+                              : this.props.inventorylocations.filter(
+                                  f =>
+                                    f.hims_d_inventory_location_id ===
+                                    row.inventory_location_id
+                                );
+
+                          return (
+                            <span>
+                              {display !== undefined && display.length !== 0
+                                ? display[0].location_description
+                                : ""}
+                            </span>
+                          );
+                        }
+                      },
+
+                      {
+                        fieldName: "chart_type",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Chart Type" }} />
+                        ),
+                        displayTemplate: row => {
+                          return row.chart_type === "N"
+                            ? "None"
+                            : row.chart_type === "D"
+                            ? "Dentel"
+                            : row.chart_type === "O"
+                            ? "Optometry"
+                            : null;
+                        },
+
+                        editorTemplate: row => {
                           return (
                             <AlagehAutoComplete
                               div={{}}
                               selector={{
-                                name: "inventory_location_id",
+                                name: "chart_type",
                                 className: "select-fld",
-                                value: row.inventory_location_id,
+                                value: row.chart_type,
                                 dataSource: {
-                                  textField: "location_description",
-                                  valueField: "hims_d_inventory_location_id",
-                                  data: this.props.inventorylocations
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GlobalVariables.CHART_TYPE
                                 },
-                                others: {
-                                  errormessage: "Location - cannot be blank",
-                                  required: true
-                                },
-                                onChange: this.changeGridEditors.bind(
-                                  this,
-                                  row
-                                ),
-                                onClear: row => {
-                                  row.inventory_location_id = null;
-                                  row.update();
-                                }
+
+                                onChange: this.changeGridEditors.bind(this, row)
                               }}
                             />
                           );
-
-                          // let display =
-                          //   this.props.inventorylocations === undefined
-                          //     ? []
-                          //     : this.props.inventorylocations.filter(
-                          //         f =>
-                          //           f.hims_d_inventory_location_id ===
-                          //           row.inventory_location_id
-                          //       );
-
-                          // return (
-                          //   <span>
-                          //     {display !== undefined && display.length !== 0
-                          //       ? display[0].location_description
-                          //       : ""}
-                          //   </span>
-                          // );
                         }
                       },
                       {
