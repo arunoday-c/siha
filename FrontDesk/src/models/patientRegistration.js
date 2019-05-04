@@ -22,7 +22,7 @@ module.exports = {
           , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
           , `photo_file`, `primary_id_file`, `secondary_id_file`, `patient_type`,`vat_applicable`, `created_by`, `created_date`\
           ,`city_id`,`state_id`,`country_id`,`employee_id`)\
-           VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?);",
+           VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
           values: [
             inputparam.patient_code,
             inputparam.registration_date != null
@@ -67,9 +67,11 @@ module.exports = {
             inputparam.state_id,
             inputparam.country_id,
             inputparam.employee_id
-          ]
+          ],
+          printQuery: true
         })
         .then(result => {
+          console.log("Clear");
           req.body.patient_id = result.insertId;
 
           if (req.connection == null) {
