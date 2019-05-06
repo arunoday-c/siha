@@ -76,7 +76,7 @@ let getPatientDCAF = (req, res, next) => {
                 on D.episode_id = V.episode_id  \
                 where V.patient_id=? and  (date(V.visit_date)= date(?) or hims_f_patient_visit_id=?) \
                 and D.record_status ='A' and D.final_daignosis='Y';\
-                select CPT.cpt_code as service_code,S.service_name,D.quantity as teeth_number,\
+                select CPT.cpt_code as service_code,S.service_name,D.teeth_number as teeth_number,\
                 D.net_amout as service_net_amout from hims_f_billing_header H inner join hims_f_billing_details D \
                 on H.hims_f_billing_header_id = D.hims_f_billing_header_id inner join hims_f_patient_visit V \
                 on V.hims_f_patient_visit_id = H.visit_id inner join hims_d_services S on \
@@ -123,8 +123,8 @@ let getPatientDCAF = (req, res, next) => {
                 _input.patient_id,
                 _input.visit_date,
                 _input.visit_id
-              ]
-              //  printQuery: true
+              ],
+              printQuery: true
             })
             .then(outputResult => {
               let errorString =
@@ -240,6 +240,7 @@ let getPatientDCAF = (req, res, next) => {
                 })
                 .then(headerResult => {
                   req["hims_f_dcaf_header_id"] = headerResult["insertId"];
+                  console.log("outputResult[4]", outputResult[4]);
                   _mysql
                     .executeQuery({
                       query: "INSERT INTO hims_f_dcaf_services (??) values ?",

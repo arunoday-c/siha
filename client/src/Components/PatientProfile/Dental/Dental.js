@@ -155,6 +155,7 @@ class Dental extends Component {
       data: inputParam,
       onSuccess: res => {
         if (res.data.success) {
+          res.data.records.billdetails[0].teeth_number = bill_dtls.teeth_number;
           this.setState({
             billDetails: res.data.records.billdetails[0]
           });

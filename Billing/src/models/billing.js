@@ -136,8 +136,8 @@ module.exports = {
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
               , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,balance_credit \
-              , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              , insurance_yesno, created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
+                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -170,6 +170,7 @@ module.exports = {
             inputParam.credit_amount,
             inputParam.receiveable_amount,
             inputParam.balance_credit,
+            inputParam.insurance_yesno,
             inputParam.created_by,
             new Date(),
             inputParam.updated_by,
@@ -257,6 +258,7 @@ module.exports = {
             "sec_company_paybale",
             "sec_copay_percntage",
             "sec_copay_amount",
+            "teeth_number",
             "created_by",
             "created_date",
             "updated_by",
@@ -296,6 +298,7 @@ module.exports = {
                 sec_company_paybale: s.sec_company_paybale,
                 sec_copay_percntage: s.sec_copay_percntage,
                 sec_copay_amount: s.sec_copay_amount,
+                teeth_number: s.teeth_number,
                 created_by: req.userIdentity.algaeh_d_app_user_id,
                 created_date: new Date(),
                 updated_by: req.userIdentity.algaeh_d_app_user_id,
@@ -1243,8 +1246,13 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             }
           })
             .then(policydtls => {
-              // utilities.logger().log("policydtls: ", policydtls);
-              covered = policydtls !== null ? policydtls.covered : "Y";
+              utilities.logger().log("policydtls: ", policydtls);
+              covered =
+                policydtls !== null
+                  ? "N"
+                  : policydtls.covered !== undefined
+                  ? policydtls.covered
+                  : "N";
               utilities.logger().log("covered: ", covered);
               if (
                 covered == "N" ||

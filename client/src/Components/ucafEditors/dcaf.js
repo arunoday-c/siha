@@ -675,7 +675,7 @@ export default class DcafEditor extends Component {
                               },
 
                               {
-                                fieldName: "service_quantity",
+                                fieldName: "teeth_number",
                                 label: (
                                   <AlgaehLabel
                                     label={{ forceLabel: "Tooth No." }}

@@ -445,7 +445,8 @@ class AddOPBillingForm extends Component {
                       <AlgaehLabel
                         label={{
                           fieldName: "add_new_service",
-                          align: "ltr"
+                          align: "ltr",
+                          returnText: true
                         }}
                       />
                     </button>
@@ -461,7 +462,8 @@ class AddOPBillingForm extends Component {
                       <AlgaehLabel
                         label={{
                           fieldName: "view_bill_details",
-                          align: "ltr"
+                          align: "ltr",
+                          returnText: true
                         }}
                       />
                     </button>

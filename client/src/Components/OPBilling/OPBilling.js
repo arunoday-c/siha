@@ -378,6 +378,8 @@ class OPBilling extends Component {
           let Inputobj = $this.state;
 
           Inputobj.patient_payable = $this.state.patient_payable_h;
+          Inputobj.company_payable = $this.state.company_payble;
+          Inputobj.insurance_yesno = $this.state.insured;
           AlgaehLoader({ show: true });
           algaehApiCall({
             uri: "/opBilling/addOpBIlling",
