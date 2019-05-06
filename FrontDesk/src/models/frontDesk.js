@@ -1,6 +1,7 @@
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import algaehUtilities from "algaeh-utilities/utilities";
+import { LINQ } from "node-linq";
 
 module.exports = {
   selectFrontDesk: (req, res, next) => {
@@ -284,7 +285,7 @@ module.exports = {
       });
     }
   },
-  getCashHandoverDetails: (req, res, next) => {
+  getCashHandoverDetailsBACKUP: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let shift_status = "";
@@ -327,6 +328,171 @@ module.exports = {
       next(e);
     }
   },
+  getCashHandoverDetails: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      //let shift_status = "";
+
+      // if (
+      //   req.query.shift_status != "null" &&
+      //   req.query.shift_status != null &&
+      //   req.query.shift_status != undefined
+      // ) {
+      //   shift_status = `and shift_status='${req.query.shift_status}'`;
+      // }
+      _mysql
+        .executeQuery({
+          query: ` select hims_f_cash_handover_header_id,shift_id ,shift_description from\
+            hims_f_cash_handover_header  H inner join  hims_d_shift S on H.shift_id=S.hims_d_shift_id\
+            where H.hospital_id=? and date(daily_handover_date)=date(?);
+            select   H.hims_f_cash_handover_header_id,H.shift_id,H.daily_handover_date,\
+            D.hims_f_cash_handover_detail_id,D.cash_handover_header_id,D.casher_id,D.shift_status,\
+            D.open_date,D.close_date,D.close_by,D.expected_cash,D.actual_cash,D.difference_cash,\
+            D.cash_status,D.expected_card,D.actual_card,D.difference_card,D.card_status,\
+            D.expected_cheque,D.actual_cheque,D.difference_cheque,D.cheque_status,D.remarks,D.no_of_cheques,\
+            E.full_name as employee_name,E.arabic_name as employee_arabic_name \
+            from hims_f_cash_handover_header H inner join hims_f_cash_handover_detail D on \
+            H.hims_f_cash_handover_header_id=D.cash_handover_header_id inner join hims_m_user_employee U on D.casher_id=U.user_id\
+            inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id \
+            where H.hospital_id=? and date(daily_handover_date)=date(?) ;\
+            select hims_f_cash_handover_header_id,shift_id ,shift_description  from \
+            hims_f_cash_handover_header  H inner join hims_f_cash_handover_detail D on \
+            H.hims_f_cash_handover_header_id=D.cash_handover_header_id \
+            inner join  hims_d_shift S on H.shift_id=S.hims_d_shift_id \
+            where H.hospital_id=? and D.shift_status='O'  group by H.hims_f_cash_handover_header_id;\
+            select H.hims_f_cash_handover_header_id,H.shift_id,H.daily_handover_date,\
+            D.hims_f_cash_handover_detail_id,D.cash_handover_header_id,D.casher_id,D.shift_status,\
+            D.open_date,D.close_date,D.close_by,D.expected_cash,D.actual_cash,D.difference_cash,\
+            D.cash_status,D.expected_card,D.actual_card,D.difference_card,D.card_status,\
+            D.expected_cheque,D.actual_cheque,D.difference_cheque,D.cheque_status,D.remarks,D.no_of_cheques,\
+            E.full_name as employee_name,E.arabic_name as employee_arabic_name \
+            from hims_f_cash_handover_header H inner join hims_f_cash_handover_detail D on \
+            H.hims_f_cash_handover_header_id=D.cash_handover_header_id inner join hims_m_user_employee U on D.casher_id=U.user_id\
+            inner join  hims_d_employee E on U.employee_id=E.hims_d_employee_id \
+            where H.hospital_id=? and D.shift_status='O';            `,
+          values: [
+            req.userIdentity.hospital_id,
+            req.query.daily_handover_date,
+            req.userIdentity.hospital_id,
+            req.query.daily_handover_date,
+            req.userIdentity.hospital_id,
+            req.userIdentity.hospital_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          let header = result[0];
+          let details = result[1];
+          let open_shift_hedr = result[2];
+          let open_shift_detail = result[3];
+
+          let cash_collection = [];
+          let previous_opend_shift = [];
+
+          for (let i = 0; i < header.length; i++) {
+            cash_collection.push({
+              ...header[i],
+
+              cashiers: new LINQ(details)
+                .Where(
+                  w =>
+                    w.hims_f_cash_handover_header_id ==
+                    header[i]["hims_f_cash_handover_header_id"]
+                )
+                .Select(S => {
+                  return {
+                    hims_f_cash_handover_header_id:
+                      S.hims_f_cash_handover_header_id,
+                    shift_id: S.shift_id,
+                    daily_handover_date: S.daily_handover_date,
+                    hims_f_cash_handover_detail_id:
+                      S.hims_f_cash_handover_detail_id,
+                    cash_handover_header_id: S.cash_handover_header_id,
+                    casher_id: S.casher_id,
+                    shift_status: S.shift_status,
+                    open_date: S.open_date,
+                    close_date: S.close_date,
+                    close_by: S.close_by,
+                    expected_cash: S.expected_cash,
+                    actual_cash: S.actual_cash,
+                    difference_cash: S.difference_cash,
+                    cash_status: S.cash_status,
+                    expected_card: S.expected_card,
+                    actual_card: S.actual_card,
+                    difference_card: S.difference_card,
+                    card_status: S.card_status,
+                    expected_cheque: S.expected_cheque,
+                    actual_cheque: S.actual_cheque,
+                    difference_cheque: S.difference_cheque,
+                    cheque_status: S.cheque_status,
+                    remarks: S.remarks,
+                    no_of_cheques: S.no_of_cheques,
+                    employee_name: S.employee_name,
+                    employee_arabic_name: S.employee_arabic_name
+                  };
+                })
+                .ToArray()
+            });
+          }
+          for (let i = 0; i < open_shift_hedr.length; i++) {
+            previous_opend_shift.push({
+              ...open_shift_hedr[i],
+
+              cashiers: new LINQ(open_shift_detail)
+                .Where(
+                  w =>
+                    w.hims_f_cash_handover_header_id ==
+                    open_shift_hedr[i]["hims_f_cash_handover_header_id"]
+                )
+                .Select(S => {
+                  return {
+                    hims_f_cash_handover_header_id:
+                      S.hims_f_cash_handover_header_id,
+                    shift_id: S.shift_id,
+                    daily_handover_date: S.daily_handover_date,
+                    hims_f_cash_handover_detail_id:
+                      S.hims_f_cash_handover_detail_id,
+                    cash_handover_header_id: S.cash_handover_header_id,
+                    casher_id: S.casher_id,
+                    shift_status: S.shift_status,
+                    open_date: S.open_date,
+                    close_date: S.close_date,
+                    close_by: S.close_by,
+                    expected_cash: S.expected_cash,
+                    actual_cash: S.actual_cash,
+                    difference_cash: S.difference_cash,
+                    cash_status: S.cash_status,
+                    expected_card: S.expected_card,
+                    actual_card: S.actual_card,
+                    difference_card: S.difference_card,
+                    card_status: S.card_status,
+                    expected_cheque: S.expected_cheque,
+                    actual_cheque: S.actual_cheque,
+                    difference_cheque: S.difference_cheque,
+                    cheque_status: S.cheque_status,
+                    remarks: S.remarks,
+                    no_of_cheques: S.no_of_cheques,
+                    employee_name: S.employee_name,
+                    employee_arabic_name: S.employee_arabic_name
+                  };
+                })
+                .ToArray()
+            });
+          }
+
+          req.records = { cash_collection, previous_opend_shift };
+          next();
+        })
+        .catch(e => {
+          _mysql.releaseConnection();
+          next(e);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
 
   updateCashHandoverDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -343,7 +509,7 @@ module.exports = {
           values: [
             input.shift_status,
             input.close_date,
-            input.close_by,
+            req.userIdentity.algaeh_d_app_user_id,
             input.actual_cash,
             input.difference_cash,
             input.cash_status,
@@ -355,7 +521,7 @@ module.exports = {
             input.cheque_status,
             input.remarks,
             new Date(),
-            input.updated_by,
+            req.userIdentity.algaeh_d_app_user_id,
             input.hims_f_cash_handover_detail_id
           ],
           printQuery: true

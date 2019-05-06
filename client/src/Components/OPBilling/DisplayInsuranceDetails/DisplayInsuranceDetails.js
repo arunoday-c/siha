@@ -11,6 +11,7 @@ export default class DisplayInsuranceDetails extends Component {
   }
 
   render() {
+    debugger;
     return (
       <div className="col-12 popRightDiv">
         <h6
@@ -24,16 +25,20 @@ export default class DisplayInsuranceDetails extends Component {
           Primary Insurance
         </h6>
         <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
-        <h6
-          style={{
-            borderBottom: " 1px solid #d0d0d0",
-            fontSize: "0.9rem",
-            paddingBottom: 5
-          }}
-        >
-          Secondary Insurance
-        </h6>
-        <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
+        {this.props.BillingIOputs.sec_insured === "Y" ? (
+          <div>
+            <h6
+              style={{
+                borderBottom: " 1px solid #d0d0d0",
+                fontSize: "0.9rem",
+                paddingBottom: 5
+              }}
+            >
+              Secondary Insurance
+            </h6>
+            <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
+          </div>
+        ) : null}
       </div>
     );
   }

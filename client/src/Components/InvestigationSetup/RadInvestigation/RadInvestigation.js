@@ -154,7 +154,7 @@ class RadInvestigation extends Component {
                       style={{ margin: "10px" }}
                       onClick={ShowTemplate.bind(this, this)}
                     >
-                      Select Template
+                      Add Template
                     </button>
                   </div>
                 </div>

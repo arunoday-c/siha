@@ -20,7 +20,6 @@
     width: 25%;
     position: relative;
     text-align: center;
-    cursor: pointer;
     z-index: 2; }
   .progressbar li:before {
     content: counter(step);

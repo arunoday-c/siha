@@ -21,7 +21,7 @@
 
   "insurance_sub_code": "Sub Insurance Code",
   "insurance_sub_name": "Sub Insurance Name",
-  "transaction_number": "Transaction Number",
+  "transaction_number": " Tax Registration Number",
   "card_format": "Card Format",
 
   "network_type": "Network Type",

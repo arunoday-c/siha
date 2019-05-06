@@ -136,8 +136,8 @@ module.exports = {
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
               , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,balance_credit \
-              , insurance_yesno, created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
+                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -170,7 +170,7 @@ module.exports = {
             inputParam.credit_amount,
             inputParam.receiveable_amount,
             inputParam.balance_credit,
-            inputParam.insurance_yesno,
+
             inputParam.created_by,
             new Date(),
             inputParam.updated_by,
@@ -761,7 +761,8 @@ module.exports = {
       console.log("fff:", req.userIdentity.hospital_id);
       if (
         req.userIdentity.group_type == "C" ||
-        req.userIdentity.group_type == "FD"
+        req.userIdentity.group_type == "FD" ||
+        req.userIdentity.user_type == "C"
       ) {
         let hims_f_cash_handover_detail_id = "";
         _mysql
