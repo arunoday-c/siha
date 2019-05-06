@@ -398,7 +398,7 @@ class StaffCashCollection extends Component {
                     }}
                     value={this.state.daily_handover_date}
                   />
-                  <AlagehAutoComplete
+                  {/* <AlagehAutoComplete
                     div={{ className: "col-12" }}
                     label={{
                       fieldName: "shift_type",
@@ -420,7 +420,7 @@ class StaffCashCollection extends Component {
                         });
                       }
                     }}
-                  />
+                  /> */}
                   <div className="col-12">
                     <button
                       onClick={this.getCashHandoverDetails.bind(this)}
@@ -451,12 +451,14 @@ class StaffCashCollection extends Component {
                             key={index}
                             onClick={this.loadDetails.bind(this, data)}
                           >
-                            <span>{data.shift_description}</span>
-                            <small>
-                              {data.cashiers.length > 0
-                                ? data.cashiers.length
-                                : 0}
-                            </small>
+                            <span>
+                              {data.shift_description}{" "}
+                              <small>
+                                {data.cashiers.length > 0
+                                  ? data.cashiers.length
+                                  : 0}
+                              </small>
+                            </span>
                           </li>
                         ))
                       ) : (
@@ -474,12 +476,6 @@ class StaffCashCollection extends Component {
                   <div className="col-12" id="">
                     <h5>All the open shift</h5>
                     <ul className="ulShiftList">
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
-
                       {this.state.previous_opend_shift.length !== 0 ? (
                         this.state.previous_opend_shift.map((data, index) => (
                           <li
@@ -488,12 +484,14 @@ class StaffCashCollection extends Component {
                             key={index}
                             onClick={this.loadDetails.bind(this, data)}
                           >
-                            <span>{data.shift_description}</span>
-                            <small>
-                              {data.cashiers.length > 0
-                                ? data.cashiers.length
-                                : 0}
-                            </small>
+                            <span>
+                              {data.shift_description}{" "}
+                              <small>
+                                {data.cashiers.length > 0
+                                  ? data.cashiers.length
+                                  : 0}
+                              </small>
+                            </span>
                           </li>
                         ))
                       ) : (
@@ -546,6 +544,20 @@ class StaffCashCollection extends Component {
                             return "greenCell";
                           }
                         },
+                        // {
+                        //   fieldName: "shift_status",
+                        //   label: (
+                        //     <AlgaehLabel
+                        //       label={{ forceLabel: "Shift Status" }}
+                        //     />
+                        //   ),
+                        //   displayTemplate: row => {
+                        //     let x = Enumerable.from(this.state.status)
+                        //       .where(w => w.hims_d_shift_id === row.shift_id)
+                        //       .firstOrDefault();
+                        //     return <span>{x.shift_description}</span>;
+                        //   }
+                        // },
                         {
                           fieldName: "shift_id",
                           label: (
