@@ -758,7 +758,8 @@ module.exports = {
 
       if (
         req.userIdentity.group_type == "C" ||
-        req.userIdentity.group_type == "FD"
+        req.userIdentity.group_type == "FD" ||
+        req.userIdentity.user_type == "C"
       ) {
         let hims_f_cash_handover_detail_id = "";
         _mysql

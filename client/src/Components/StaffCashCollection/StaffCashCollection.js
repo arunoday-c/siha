@@ -27,7 +27,10 @@ class StaffCashCollection extends Component {
       shift_close_time: "--:-- --",
       difference_cash: 0,
       difference_card: 0,
-      difference_cheque: 0
+      difference_cheque: 0,
+      cash_collection: [],
+      previous_opend_shift: [],
+      cashHandoverDetails: []
     };
     this.getShifts();
   }
@@ -57,6 +60,14 @@ class StaffCashCollection extends Component {
 
   dropDownHandler(value) {
     this.setState({ [value.name]: value.value });
+  }
+
+  loadDetails(value) {
+    debugger;
+    this.setState({
+      cashHandoverDetails: value.cashiers
+    });
+    // console.log("cashHandoverDetails:", this.state.cashHandoverDetails);
   }
 
   authAndCloseShift(status, e) {
@@ -97,6 +108,9 @@ class StaffCashCollection extends Component {
               });
 
               this.getCashHandoverDetails();
+              this.setState({
+                cashHandoverDetails: []
+              });
             }
           },
           onFailure: error => {
@@ -215,7 +229,7 @@ class StaffCashCollection extends Component {
     });
   }
 
-  getCashHandoverDetails(e) {
+  getCashHandoverDetailsBACKUp(e) {
     this.resetSaveState();
     AlgaehValidation({
       alertTypeIcon: "warning",
@@ -234,8 +248,44 @@ class StaffCashCollection extends Component {
             AlgaehLoader({ show: false });
             if (response.data.success) {
               this.setState({
-                cashHandoverDetails: response.data.records
+                cash_collection: response.data.records.cash_collection
               });
+            }
+          },
+          onFailure: error => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      }
+    });
+  }
+
+  getCashHandoverDetails(e) {
+    this.resetSaveState();
+    AlgaehValidation({
+      alertTypeIcon: "warning",
+      onSuccess: () => {
+        AlgaehLoader({ show: true });
+        algaehApiCall({
+          uri: "/frontDesk/getCashHandoverDetails",
+          module: "frontDesk",
+          method: "GET",
+          data: {
+            daily_handover_date: this.state.daily_handover_date
+          },
+          onSuccess: response => {
+            AlgaehLoader({ show: false });
+            if (response.data.success) {
+              this.setState({
+                cash_collection: response.data.records.cash_collection,
+                previous_opend_shift: response.data.records.previous_opend_shift
+              });
+
+              console.log("cash_collection:", this.state.cash_collection);
             }
           },
           onFailure: error => {
@@ -379,98 +429,39 @@ class StaffCashCollection extends Component {
                       Apply
                     </button>
                   </div>
+
                   <div className="col-12" id="">
                     <ul className="ulShiftList">
-                      <li>
+                      {/* <li>
                         <span>
                           Shift Name 1 <small>1</small>
                         </span>
                       </li>
                       <li>
                         <span>
-                          Shift Name 1 <small>1</small>
+                          Shift Name 2 <small>2</small>
                         </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
+                      </li> */}
+
+                      {this.state.cash_collection.length !== 0 ? (
+                        this.state.cash_collection.map((data, index) => (
+                          <li
+                            description={data.shift_description}
+                            shift_id={data.shift_id}
+                            key={index}
+                            onClick={this.loadDetails.bind(this, data)}
+                          >
+                            <span>{data.shift_description}</span>
+                            <small>
+                              {data.cashiers.length > 0
+                                ? data.cashiers.length
+                                : 0}
+                            </small>
+                          </li>
+                        ))
+                      ) : (
+                        <span className="noDataStyle">Select Shift Date</span>
+                      )}
                     </ul>
                   </div>
                 </div>
@@ -488,91 +479,28 @@ class StaffCashCollection extends Component {
                           Shift Name 1 <small>1</small>
                         </span>
                       </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
+
+                      {this.state.previous_opend_shift.length !== 0 ? (
+                        this.state.previous_opend_shift.map((data, index) => (
+                          <li
+                            prv_description={data.shift_description}
+                            prv_shift_id={data.shift_id}
+                            key={index}
+                            onClick={this.loadDetails.bind(this, data)}
+                          >
+                            <span>{data.shift_description}</span>
+                            <small>
+                              {data.cashiers.length > 0
+                                ? data.cashiers.length
+                                : 0}
+                            </small>
+                          </li>
+                        ))
+                      ) : (
+                        <span className="noDataStyle">
+                          No Previos Opened Shifts
                         </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>{" "}
-                      <li>
-                        <span>
-                          Shift Name 1 <small>1</small>
-                        </span>
-                      </li>
+                      )}
                     </ul>
                   </div>
                 </div>
