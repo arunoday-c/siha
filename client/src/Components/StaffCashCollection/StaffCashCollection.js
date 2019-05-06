@@ -21,6 +21,7 @@ class StaffCashCollection extends Component {
     super(props);
     this.state = {
       shifts: [],
+      daily_handover_date: moment().format("DD-MM-YYYY"),
       shift_open_date: "DD-MM-YYYY",
       shift_open_time: "--:-- --",
       shift_close_date: "DD-MM-YYYY",

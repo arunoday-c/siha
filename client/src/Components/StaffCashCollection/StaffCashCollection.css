@@ -9,6 +9,7 @@
   list-style: none;
   border: 1px solid #d6d6d6;
   border-radius: 5px;
+  min-height: 20vh;
   max-height: 23.3vh;
   overflow: auto; }
   .staffCashCollection .ulShiftList li {
