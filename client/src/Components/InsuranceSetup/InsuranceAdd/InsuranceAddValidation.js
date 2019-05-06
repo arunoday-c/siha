@@ -33,44 +33,6 @@ const Validations = ($this, e) => {
         type: "warning"
       });
       return isError;
-      // if (obj.insurance_sub_code === "") {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Sub Insurance code cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   return isError;
-      // } else if (obj.insurance_sub_name === "") {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Sub Insurance name cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   return isError;
-      // } else if (obj.effective_start_date === "") {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Active From cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   return isError;
-      // } else if (obj.effective_end_date === "") {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Valid Upto cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   return isError;
-      // }
-      // else {
-      //   obj.insurance_provider_id = $this.state.insurance_provider_id;
-      //   previous.push(obj);
-      //   $this.setState({ sub_insurance: previous });
-      // }
     } else {
       if (obj.insurance_sub_code !== "" && obj.insurance_sub_name !== "") {
         obj.insurance_provider_id = $this.state.insurance_provider_id;
@@ -96,63 +58,6 @@ const Validations = ($this, e) => {
         type: "warning"
       });
       return isError;
-      // if (obj1.network_type === null) {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Network Type cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   document.querySelector("[name='network_type']").focus();
-      //   return isError;
-      // } else if (obj1.employer === null) {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Employer/Company cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   document.querySelector("[name='employer']").focus();
-      //   return isError;
-      // } else if (obj1.policy_number === null) {
-      //   isError = true;
-
-      //   swalMessage({
-      //     title: "Policy Number cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   document.querySelector("[name='policy_number']").focus();
-      //   return isError;
-      // } else if (obj1.effective_start_date === null) {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Active From cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   return isError;
-      // } else if (obj1.effective_end_date === null) {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Valid Upto cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   return isError;
-      // } else if (obj1.price_from === null) {
-      //   isError = true;
-      //   swalMessage({
-      //     title: "Price From cannot be blank.",
-      //     type: "warning"
-      //   });
-
-      //   return isError;
-      // } else {
-      //   obj1.insurance_provider_id = $this.state.insurance_provider_id;
-      //   previous1.push(obj1);
-      //   $this.setState({ network_plan: previous1 });
-      // }
     } else {
       obj1.insurance_provider_id = $this.state.insurance_provider_id;
       obj1.invoice_max_deduct = 0;

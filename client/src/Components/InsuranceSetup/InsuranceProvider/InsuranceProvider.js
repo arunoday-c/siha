@@ -221,12 +221,12 @@ class InsuranceProvider extends PureComponent {
                       isImp: true
                     }}
                     textBox={{
-                      decimal: { allowNegative: false },
                       value: this.state.credit_period,
                       className: "txt-fld",
                       name: "credit_period",
 
                       events: {
+                        type: "number",
                         onChange: texthandle.bind(this, this, context)
                       }
                     }}

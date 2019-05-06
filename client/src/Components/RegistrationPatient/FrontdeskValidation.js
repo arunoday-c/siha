@@ -180,17 +180,17 @@ export function Validations(state) {
       return isError;
     }
 
-    if (state.state.card_date === null || state.state.card_date === "") {
-      isError = true;
+    // if (state.state.card_date === null || state.state.card_date === "") {
+    //   isError = true;
 
-      swalMessage({
-        type: "warning",
-        title: "Invalid. Card Date Cannot be blank."
-      });
+    //   swalMessage({
+    //     type: "warning",
+    //     title: "Invalid. Card Date Cannot be blank."
+    //   });
 
-      document.querySelector("[name='card_date']").focus();
-      return isError;
-    }
+    //   document.querySelector("[name='card_date']").focus();
+    //   return isError;
+    // }
   }
   if (state.state.cheque_amount > 0) {
     if (

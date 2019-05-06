@@ -65,24 +65,17 @@ class InitialStock extends Component {
     const hospital = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
-    if (
-      this.props.intitemlist === undefined ||
-      this.props.intitemlist.length === 0
-    ) {
-      this.props.getItems({
-        uri: "/pharmacy/getItemMaster",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_GET_DATA",
-          mappingName: "intitemlist"
-        }
-      });
-    }
-    // if (
-    //   this.props.intlocations === undefined ||
-    //   this.props.intlocations.length === 0
-    // ) {
+
+    this.props.getItems({
+      uri: "/pharmacy/getItemMaster",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "intitemlist"
+      }
+    });
+
     this.props.getLocation({
       uri: "/pharmacy/getPharmacyLocation",
       module: "pharmacy",
@@ -96,7 +89,7 @@ class InitialStock extends Component {
         mappingName: "intlocations"
       }
     });
-    // }
+
     if (
       this.props.intitemcategory === undefined ||
       this.props.intitemcategory.length === 0

@@ -24,23 +24,43 @@ const showconfirmDialog = ($this, row) => {
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
-            $this.props.getNetworkPlans({
+            algaehApiCall({
               uri: "/insurance/getNetworkAndNetworkOfficRecords",
               method: "GET",
-              printInput: true,
               data: {
                 insuranceProviderId: $this.state.insurance_provider_id
               },
-              redux: {
-                type: "NETWORK_PLAN_GET_DATA",
-                mappingName: "networkandplans"
+              onSuccess: response => {
+                if (response.data.success) {
+                  $this.setState({
+                    network_plan: response.data.records
+                  });
+                }
               },
-              afterSuccess: data => {
-                $this.setState({
-                  network_plan: data
+              onFailure: error => {
+                swalMessage({
+                  title: error.response.data.message,
+                  type: "error"
                 });
               }
             });
+            // $this.props.getNetworkPlans({
+            //   uri: "/insurance/getNetworkAndNetworkOfficRecords",
+            //   method: "GET",
+            //   printInput: true,
+            //   data: {
+            //     insuranceProviderId: $this.state.insurance_provider_id
+            //   },
+            //   redux: {
+            //     type: "NETWORK_PLAN_GET_DATA",
+            //     mappingName: "networkandplans"
+            //   },
+            //   afterSuccess: data => {
+            //     $this.setState({
+            //       network_plan: data
+            //     });
+            //   }
+            // });
             swalMessage({
               type: "success",
               title: "Record deleted successfully . ."

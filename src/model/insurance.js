@@ -1347,9 +1347,9 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
         netoff.copay_percent_trt,netoff.trt_max,netoff.deductible_dental,\
         netoff.copay_percent_dental,netoff.dental_max, netoff.hospital_id,netoff.deductible_medicine,netoff.copay_medicine,netoff.medicine_max,netoff.invoice_max_deduct, netoff.preapp_limit_from \
         FROM hims_d_insurance_network net,hims_d_insurance_network_office netoff\
-        where insurance_provider_id=? and netoff.network_id = net.hims_d_insurance_network_id \
+        where insurance_provider_id=? and  netoff.hospital_id=? and netoff.network_id = net.hims_d_insurance_network_id \
         and net.record_status='A' and netoff.record_status='A';",
-        [insuranceProviderId],
+        [insuranceProviderId, req.userIdentity.hospital_id],
         (error, result) => {
           releaseDBConnection(db, connection);
           if (error) {

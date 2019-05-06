@@ -144,7 +144,7 @@ class RadResultEntry extends Component {
               </div>
               <div className="patientDemographic">
                 <span>
-                  Ref by:{" "}
+                  Ref by:
                   <b>
                     {display !== null && display.length !== 0
                       ? display[0].full_name
@@ -152,7 +152,7 @@ class RadResultEntry extends Component {
                   </b>
                 </span>
                 <span>
-                  Scheduled Date:{" "}
+                  Scheduled Date:
                   <b>
                     {moment(this.state.scheduled_date_time).format(
                       Options.dateFormat
