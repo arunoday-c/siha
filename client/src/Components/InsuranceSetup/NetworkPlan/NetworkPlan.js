@@ -270,7 +270,7 @@ class NetworkPlan extends PureComponent {
                     }
                   />
 
-                  <AlagehFormGroup
+                  {/* <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
                       fieldName: "policy_number",
@@ -288,7 +288,7 @@ class NetworkPlan extends PureComponent {
                         "data-netdata": true
                       }
                     }}
-                  />
+                  /> */}
 
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}

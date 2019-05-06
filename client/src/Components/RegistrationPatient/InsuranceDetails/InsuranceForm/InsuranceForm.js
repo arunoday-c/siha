@@ -64,7 +64,7 @@ class AddInsuranceForm extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="htpl-phase1-primary-insurance-form">
-              <div className="col-lg-12">
+              <div className="col-12">
                 <div className="row">
                   <div className="col-lg-8 primary-details">
                     <div className="row primary-box-container">
@@ -110,7 +110,7 @@ class AddInsuranceForm extends Component {
                         </div>
                       </div>
                       <div
-                        className="col-lg-1"
+                        className="col-1"
                         style={{ paddingRight: 0, marginTop: 20 }}
                       >
                         <button
@@ -123,7 +123,7 @@ class AddInsuranceForm extends Component {
                         </button>
                       </div>
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "insurance_id",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -155,7 +155,7 @@ class AddInsuranceForm extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "sub_insurance_id",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -186,7 +186,7 @@ class AddInsuranceForm extends Component {
                         }}
                       />
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "plan_id",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -219,7 +219,7 @@ class AddInsuranceForm extends Component {
                     </div>
                     <div className="row primary-box-container">
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "policy_id",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -251,7 +251,7 @@ class AddInsuranceForm extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "card_number",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -270,7 +270,7 @@ class AddInsuranceForm extends Component {
                       />
 
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "effective_start_date",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -288,7 +288,7 @@ class AddInsuranceForm extends Component {
                       />
 
                       <AlgaehDateHandler
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "expiry_date",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -308,7 +308,7 @@ class AddInsuranceForm extends Component {
                     {/* Card Holder Details */}
                     <div className="row primary-box-container">
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "card_holder_name",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -327,7 +327,7 @@ class AddInsuranceForm extends Component {
                       />
 
                       <AlagehFormGroup
-                        div={{ className: "col-lg-3" }}
+                        div={{ className: "col-3" }}
                         label={{
                           fieldName: "card_holder_age",
                           isImp: this.state.insuranceYes === true ? false : true
@@ -346,7 +346,7 @@ class AddInsuranceForm extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{ className: "col-3 mandatory" }}
                         label={{
                           fieldName: "card_holder_gender",
                           isImp: true
@@ -371,7 +371,7 @@ class AddInsuranceForm extends Component {
                       />
 
                       <AlagehAutoComplete
-                        div={{ className: "col-lg-2 mandatory" }}
+                        div={{ className: "col-3 mandatory" }}
                         label={{
                           fieldName: "card_class",
                           isImp: true
