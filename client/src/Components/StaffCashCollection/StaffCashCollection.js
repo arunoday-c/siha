@@ -424,7 +424,7 @@ class StaffCashCollection extends Component {
                   <div className="col-12">
                     <button
                       onClick={this.getCashHandoverDetails.bind(this)}
-                      className="btn btn-default margin-bottom-15 margin-top-15"
+                      className="btn btn-primary margin-bottom-15 margin-top-15 float-right"
                     >
                       Apply
                     </button>
@@ -496,7 +496,7 @@ class StaffCashCollection extends Component {
                         ))
                       ) : (
                         <span className="noDataStyle">
-                          No Previos Opened Shifts
+                          Relax! No more Open Shift Available.
                         </span>
                       )}
                     </ul>
