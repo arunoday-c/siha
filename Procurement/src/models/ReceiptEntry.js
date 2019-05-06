@@ -48,8 +48,8 @@ module.exports = {
                 GD.`discount_amount`, GD.`net_extended_cost`, GD.`batchno_expiry_required`, GD.`batchno`, GD.`expiry_date`, \
                 GD.`rejected_quantity`, GD.`outstanding_quantity`, GD.`tax_inclusive`, GD.`tax_percentage`, GD.`tax_amount`, \
                 GD.`total_amount`, GD.`mrp_price`, GD.`sales_price`, GD.`landed_cost`, GD.`dn_header_id`, GD.`dn_detail_id`, \
-                GD.`quantity_recieved_todate`,IM.item_code, IM.item_description, IU.uom_description \
-                from hims_f_procurement_grn_detail GD, hims_d_item_master IM ,hims_d_inventory_uom IU \
+                GD.`quantity_recieved_todate`,IM.item_code, IM.item_description, PU.uom_description \
+                from hims_f_procurement_grn_detail GD, hims_d_item_master IM ,hims_d_pharmacy_uom PU \
                 where GD.phar_item_id = IM.hims_d_item_master_id and GD.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id\
                 and GD.grn_header_id=?",
                 [headerResult[0].hims_f_procurement_grn_header_id]

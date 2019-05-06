@@ -242,7 +242,8 @@ let insertOrderedServices = (req, res, next) => {
     "sec_company_tax",
     "sec_company_paybale",
     "sec_copay_percntage",
-    "sec_copay_amount"
+    "sec_copay_amount",
+    "teeth_number"
   ];
 
   debugFunction("add order");
@@ -449,7 +450,7 @@ let selectOrderServices = (req, res, next) => {
         S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
         S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
         S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
-        S.`vat_percent`, S.`service_status` FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
+        S.`vat_percent`, S.`service_status`, OS.teeth_number FROM `hims_f_ordered_services` OS,  `hims_d_services` S WHERE \
         OS.services_id = S.hims_d_services_id and \
         OS.`record_status`='A' AND OS.`billed`='N' AND " +
           where.condition,

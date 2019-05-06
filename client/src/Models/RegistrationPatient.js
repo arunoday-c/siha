@@ -152,7 +152,8 @@ export default {
       card_holder_name: null,
       card_holder_age: null,
       card_holder_gender: null,
-      card_class: null
+      card_class: null,
+      employee_id: null
     };
     return output;
   }

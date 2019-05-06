@@ -335,12 +335,11 @@ module.exports = {
               "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
               itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description \
                 from hims_m_item_location as itmloc inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
-                where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0",
+                where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and expirydt > CURDATE() order by expirydt",
             values: [item_ids, location_ids],
             printQuery: true
           })
           .then(result => {
-            utilities.logger().log("result: ", result);
             let _req = new LINQ(result)
               .Select(s => {
                 const ItemcatrgoryGroup = new LINQ(_reqBody)
@@ -380,7 +379,8 @@ module.exports = {
                 .Where(w => w.item_id !== _reqBody[i].item_id)
                 .FirstOrDefault();
 
-              if (_mess != null) {
+              utilities.logger().log("_mess: ", _mess);
+              if (_mess == undefined || _mess.item_id == undefined) {
                 _message =
                   "Some Items not avilable in selected location, Please check Prescription and stock enquiry for more details.";
               }
@@ -407,6 +407,9 @@ module.exports = {
 
               _result.message = _message;
 
+              utilities.logger().log("resultbilling: ", resultbilling);
+              utilities.logger().log("result: ", result);
+
               let obj = {
                 result: [
                   {
@@ -415,6 +418,8 @@ module.exports = {
                   }
                 ]
               };
+
+              utilities.logger().log("obj: ", obj);
               req.records = obj;
               _mysql.releaseConnection();
               next();

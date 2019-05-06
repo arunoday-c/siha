@@ -55,7 +55,7 @@ module.exports = {
                   DND.`quantity_outstanding`, DND.`tax_inclusive`, DND.`tax_amount`, DND.`total_amount`, DND.`mrp_price`, \
                   DND.`calculate_tax_on`, DND.`tax_percentage`, DND.`tax_discount`, DND.`item_type`, \
                   DND.`batchno_expiry_required`, DND.`batchno`, DND.`expiry_date`, DND.`purchase_order_header_id`, \
-                  DND.`purchase_order_detail_id`,IM.item_code, IM.item_description, IU.uom_description \
+                  DND.`purchase_order_detail_id`,IM.item_code, IM.item_description, PU.uom_description \
                   from hims_f_procurement_dn_detail DND, hims_d_item_master IM ,hims_d_pharmacy_uom PU \
                   where DND.phar_item_id = IM.hims_d_item_master_id and DND.pharmacy_uom_id = PU.hims_d_pharmacy_uom_id\
                   and DND.hims_f_procurement_dn_header_id=?",

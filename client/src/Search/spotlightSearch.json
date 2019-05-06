@@ -16,6 +16,10 @@
       {
         "fieldName": "contact_number",
         "label": "Contact Number"
+      },
+      {
+        "fieldName": "employee_id",
+        "label": "Employee ID"
       }
     ]
   },

@@ -6,7 +6,11 @@ import compression from "compression";
 import moment from "moment";
 import fs from "fs";
 import path from "path";
-import { getReport } from "./report_generation";
+import {
+  getReport,
+  getReportMultiPrint,
+  merdgeTosingleReport
+} from "./report_generation";
 import algaehUtilities from "algaeh-utilities/utilities";
 const exec = require("child_process").exec;
 const app = exxpress();
@@ -82,6 +86,7 @@ app.use((req, res, next) => {
   }
 });
 app.use("/api/v1/report", getReport);
+app.use("/api/v1/multireports", getReportMultiPrint, merdgeTosingleReport);
 app.use("/api/v1/pentahoreport", (req, res) => {
   let input = req.query;
 

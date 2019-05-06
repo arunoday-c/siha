@@ -101,6 +101,9 @@ const getVisitWiseBillDetailS = $this => {
             data[i].bill_detail_id = data[i].hims_f_billing_details_id;
             data[i].company_resp = data[i].comapany_resp;
             data[i].company_payable = data[i].company_payble;
+
+            data[i].discount_amount = data[i].discount_amout;
+            data[i].net_amount = data[i].net_amout;
           }
 
           $this.setState({

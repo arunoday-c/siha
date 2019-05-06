@@ -108,7 +108,7 @@ let getVisitWiseBillDetailS = (req, res, next) => {
             //   sec_copay_amount, pre_approval, commission_given from hims_f_billing_details where ='A'
 
             connection.query(
-              "select 'BIL' as trans_from, hims_f_billing_details_id, hims_f_billing_header_id, BD.service_type_id ,ST.service_type, services_id,S.service_name, S.cpt_code, quantity,\
+              "select 'OP' as trans_from, hims_f_billing_details_id, hims_f_billing_header_id, BD.service_type_id ,ST.service_type, services_id,S.service_name, S.cpt_code, quantity,\
               unit_cost, insurance_yesno, gross_amount, discount_amout, discount_percentage, net_amout, copay_percentage,\
               copay_amount, deductable_amount, deductable_percentage, tax_inclusive, patient_tax, company_tax, total_tax,\
                 patient_resp, patient_payable, comapany_resp, company_payble, sec_company, sec_deductable_percentage, \
@@ -116,31 +116,22 @@ let getVisitWiseBillDetailS = (req, res, next) => {
                 sec_copay_amount, pre_approval, commission_given from hims_f_billing_details BD,hims_d_service_type ST,hims_d_services S\
                 where BD.record_status='A' and ST.record_status='A' and S.record_status='A' and \
                 BD.service_type_id=ST.hims_d_service_type_id and BD.services_id=S.hims_d_services_id\
-                    and hims_f_billing_header_id in (?);\
-                    select 'POS' as trans_from, hims_f_pharmacy_pos_header_id,PH.pos_number,PH.pos_customer_type,PH.patient_id,PH.patient_name,\
-                    PH.mobile_number,PH.referal_doctor,PH.visit_id,PH.ip_id,PH.pos_date,PH.year,\
-                PH.period,PH.location_id,PH.location_type,PH.sub_total,PH.discount_percentage,\
-                PH.discount_amount,PH.net_total,PH.copay_amount,PH.patient_responsibility,\
-                PH.patient_tax,PH.patient_payable,PH.company_responsibility,PH.company_tax,\
-                PH.company_payable,PH.comments,PH.sec_company_responsibility,PH.sec_company_tax,\
-                PH.sec_company_payable,PH.sec_copay_amount,PH.net_tax,PH.gross_total,PH.sheet_discount_amount,\
-                PH.sheet_discount_percentage,PH.net_amount,PH.credit_amount,PH.balance_credit,\
-                PH.receiveable_amount,PH.posted,PH.card_number,PH.effective_start_date,PH.effective_end_date,\
-                PH.insurance_provider_id,PH.sub_insurance_provider_id,PH.network_id,PH.network_type,\
-                PH.network_office_id,PH.policy_number,PH.secondary_card_number,PH.secondary_effective_start_date,\
-                PH.secondary_effective_end_date,PH.secondary_insurance_provider_id,PH.secondary_network_id,\
-                PH.secondary_network_type,PH.secondary_sub_insurance_provider_id,PH.secondary_network_office_id,\
-                hims_f_pharmacy_pos_detail_id,PD.pharmacy_pos_header_id,PD.item_id,PD.item_category,PD.item_group_id,\
-                PD.service_id,PD.qtyhand,PD.grn_no,PD.barcode,PD.expiry_date,PD.batchno,PD.uom_id,PD.quantity,\
-                PD.insurance_yesno,PD.tax_inclusive,PD.unit_cost,PD.extended_cost,PD.discount_percentage,\
-                PD.discount_amount,PD.net_extended_cost,PD.copay_percent,PD.copay_amount,PD.patient_responsibility,\
-                PD.patient_tax,PD.patient_payable,PD.company_responsibility,PD.company_tax,PD.company_payable,\
-                PD.sec_copay_percent,PD.sec_copay_amount,PD.sec_company_responsibility,PD.sec_company_tax,\
-                PD.sec_company_payable,PD.return_quantity,PD.return_done,PD.return_extended_cost,PD.return_discount_amt,\
+                and hims_f_billing_header_id in (?);\
+                select 'POS' as trans_from, hims_f_pharmacy_pos_header_id,patient_id, visit_id,\
+                hims_f_pharmacy_pos_detail_id,PD.pharmacy_pos_header_id,12 as service_type_id,'Pharmacy' as service_type,\
+                PD.service_id as services_id, S.service_name, S.cpt_code, PD.quantity,\
+                PD.insurance_yesno,PD.tax_inclusive,PD.unit_cost,PD.extended_cost as gross_amount,\
+                PD.discount_amount as discount_amout,PD.net_extended_cost as net_amout,PD.copay_percent as copay_percentage,\
+                PD.copay_amount ,PD.patient_responsibility as patient_resp,\
+                PD.patient_tax ,PD.patient_payable,PD.company_responsibility as comapany_resp,PD.company_tax,\
+                PD.company_payable as company_payble,\
+                PD.sec_copay_percent as sec_copay_percntage,PD.sec_copay_amount,PD.sec_company_responsibility as sec_company_res,PD.sec_company_tax,\
+                PD.sec_company_payable as sec_company_paybale,PD.return_quantity,PD.return_done,PD.return_extended_cost,PD.return_discount_amt,\
                 PD.return_net_extended_cost,PD.return_pat_responsibility,PD.return_company_responsibility,\
                 PD.return_sec_company_responsibility from hims_f_pharmacy_pos_header PH inner join hims_f_pharmacy_pos_detail PD\
-                on PH.hims_f_pharmacy_pos_header_id=PD.pharmacy_pos_header_id and \
-                PH.visit_id=? and PH.record_status='A' and PH.record_status='A'",
+                on PH.hims_f_pharmacy_pos_header_id=PD.pharmacy_pos_header_id inner join \
+                hims_d_services S on PD.service_id=S.hims_d_services_id and \
+                PH.visit_id=? and PH.record_status='A' and PH.record_status='A';",
               [bill_header_ids, req.query.visit_id],
               (error, detailResult) => {
                 if (error) {
@@ -148,7 +139,7 @@ let getVisitWiseBillDetailS = (req, res, next) => {
                   next(error);
                 }
                 let outputArray = [];
-                outputArray.push(...detailResult[0],...detailResult[1]);
+                outputArray.push(...detailResult[0], ...detailResult[1]);
                 releaseDBConnection(db, connection);
                 req.records = outputArray;
                 next();

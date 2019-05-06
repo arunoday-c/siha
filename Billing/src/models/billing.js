@@ -136,8 +136,8 @@ module.exports = {
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
               , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,balance_credit \
-              , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              , insurance_yesno, created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
+                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -170,6 +170,7 @@ module.exports = {
             inputParam.credit_amount,
             inputParam.receiveable_amount,
             inputParam.balance_credit,
+            inputParam.insurance_yesno,
             inputParam.created_by,
             new Date(),
             inputParam.updated_by,
@@ -257,6 +258,7 @@ module.exports = {
             "sec_company_paybale",
             "sec_copay_percntage",
             "sec_copay_amount",
+            "teeth_number",
             "created_by",
             "created_date",
             "updated_by",
@@ -296,6 +298,7 @@ module.exports = {
                 sec_company_paybale: s.sec_company_paybale,
                 sec_copay_percntage: s.sec_copay_percntage,
                 sec_copay_amount: s.sec_copay_amount,
+                teeth_number: s.teeth_number,
                 created_by: req.userIdentity.algaeh_d_app_user_id,
                 created_date: new Date(),
                 updated_by: req.userIdentity.algaeh_d_app_user_id,
@@ -755,7 +758,7 @@ module.exports = {
         );
         next(genErr);
       }
-
+      console.log("fff:", req.userIdentity.hospital_id);
       if (
         req.userIdentity.group_type == "C" ||
         req.userIdentity.group_type == "FD" ||
@@ -766,7 +769,7 @@ module.exports = {
           .executeQuery({
             query:
               "select hims_f_cash_handover_detail_id, cash_handover_header_id, casher_id, shift_status,open_date\
-              from  hims_f_cash_handover_detail where record_status='A'  and hospital_id=1 and\
+              from  hims_f_cash_handover_detail where record_status='A'  and hospital_id=? and\
               date(open_date)=CURDATE()  and casher_id=? and shift_status='O';\
               select hims_f_cash_handover_header_id from hims_f_cash_handover_header where\
             shift_id=? and date(daily_handover_date)=CURDATE() and hospital_id=? ;",
@@ -1244,7 +1247,14 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
             }
           })
             .then(policydtls => {
-              // utilities.logger().log("policydtls: ", policydtls);
+              utilities.logger().log("policydtls: ", policydtls);
+              covered =
+                policydtls !== null
+                  ? "N"
+                  : policydtls.covered !== undefined
+                  ? policydtls.covered
+                  : "N";
+              utilities.logger().log("covered: ", covered);
               if (
                 covered == "N" ||
                 (pre_approval == "Y" && apprv_status == "RJ")
@@ -1260,8 +1270,6 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
                 pre_approval =
                   policydtls !== null ? policydtls.pre_approval : "N";
               }
-
-              covered = policydtls !== null ? policydtls.covered : "Y";
 
               icd_code =
                 policydtls.cpt_code !== null
@@ -1732,7 +1740,7 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
   try {
     let input = { ...body };
 
-    // const utilities = new algaehUtilities();
+    const utilities = new algaehUtilities();
 
     _mysql
       .executeQuery({
@@ -1760,6 +1768,8 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
               printQuery: true
             })
             .then(result_s => {
+              utilities.logger().log("result_s: ", result_s);
+              utilities.logger().log("resultOffic: ", resultOffic);
               let result = { ...result_s[0], ...resultOffic[0] };
               return resolve(result);
             })
@@ -1773,7 +1783,7 @@ function insuranceServiceDetails(body, next, _mysql, resolve) {
             .executeQuery({
               query:
                 "select Inp.insurance_provider_name, Inp.company_service_price_type, net.network_type, \
-            copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,\
+            copay_status,copay_amt,deductable_status,deductable_amt,pre_approval,covered,\
             net_amount,gross_amt from (( hims_d_services_insurance_network Sin\
             inner join hims_d_insurance_network net on net.hims_d_insurance_network_id=Sin.network_id) \
              inner join hims_d_insurance_provider Inp on Sin.insurance_id=Inp.hims_d_insurance_provider_id  )\

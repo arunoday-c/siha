@@ -87,7 +87,19 @@ class RadResultEntry extends Component {
     }
   }
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        template_id: null,
+        template_html: null,
+        pre_exam_status: null,
+        exam_start_date_time: null,
+        exam_end_date_time: null,
+        changesDone: false
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
 
   dateFormater({ value }) {

@@ -45,6 +45,7 @@ import salesReturn from "../Pharmacy/controller/salesReturn";
 import transferEntry from "../Pharmacy/controller/transferEntry";
 import shiftAndCounter from "../controller/shiftAndCounter";
 import ucaf from "../controller/ucaf";
+import dcaf from "../controller/dcaf";
 import workBenchSetup from "../EHR/controller/workBenchSetup";
 import invoiceGeneration from "../controller/invoiceGeneration";
 import currency from "../controller/currency";
@@ -130,6 +131,7 @@ initializedDb(db => {
   router.use("/transferEntry", transferEntry({ config, db }));
   router.use("/shiftAndCounter", shiftAndCounter({ config, db }));
   router.use("/ucaf", ucaf({ config, db }));
+  router.use("/dcaf", dcaf({ config, db }));
   router.use("/workBenchSetup", workBenchSetup({ config, db }));
   router.use("/invoiceGeneration", invoiceGeneration({ config, db }));
   router.use("/currency", currency({ config, db }));

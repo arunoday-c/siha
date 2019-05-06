@@ -137,16 +137,16 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       });
       $this.setState({ [name]: null });
     } else {
-      let requistion_type = "";
-      if (e.selected.location_type === "MS") {
-        requistion_type = "PR";
-      } else if (e.selected.location_type === "SS") {
-        requistion_type = "MR";
-      }
+      // let requistion_type = "";
+      // if (e.selected.location_type === "MS") {
+      //   requistion_type = "MR";
+      // } else if (e.selected.location_type === "SS") {
+      //   requistion_type = "MR";
+      // }
       $this.setState({
         [name]: value,
         [type]: e.selected.location_type,
-        requistion_type: requistion_type,
+        requistion_type: "MR",
         to_location_id: null,
         to_location_type: null
       });

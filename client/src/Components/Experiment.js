@@ -208,7 +208,7 @@ class Experiment extends Component {
           onClick={() => {
             let that = this;
             algaehApiCall({
-              uri: "/report",
+              uri: "/multireports", //"/report",
               method: "GET",
               module: "reports",
               headers: {
@@ -219,15 +219,28 @@ class Experiment extends Component {
                 report: {
                   reportName: ["creditInvoice", "ucaf"],
                   reportParams: [
-                    { name: "hims_d_patient_id", value: 245 },
-                    {
-                      name: "visit_id",
-                      value: 553
-                    },
-                    {
-                      name: "visit_date",
-                      value: null
-                    }
+                    [
+                      { name: "hims_d_patient_id", value: 245 },
+                      {
+                        name: "visit_id",
+                        value: 553
+                      },
+                      {
+                        name: "visit_date",
+                        value: null
+                      }
+                    ],
+                    [
+                      { name: "hims_d_patient_id", value: 267 },
+                      {
+                        name: "visit_id",
+                        value: 580
+                      },
+                      {
+                        name: "visit_date",
+                        value: null
+                      }
+                    ]
                   ],
                   outputFileType: "PDF" //"EXCEL", //"PDF",
                 }

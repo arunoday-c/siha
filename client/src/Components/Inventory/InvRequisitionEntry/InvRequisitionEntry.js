@@ -297,8 +297,8 @@ class InvRequisitionEntry extends Component {
                       data: GlobalVariables.FORMAT_POS_REQUISITION_TYPE
                     },
                     others: {
-                      disabled:
-                        this.state.from_location_type === "MS" ? false : true
+                      disabled: true
+                      // this.state.from_location_type === "MS" ? false : true
                     },
 
                     onChange: requisitionEvent.bind(this, this),

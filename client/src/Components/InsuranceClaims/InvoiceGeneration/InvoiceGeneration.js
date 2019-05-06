@@ -304,7 +304,7 @@ class InvoiceGeneration extends Component {
                 </h6>
               </div>
 
-              <AlagehAutoComplete
+              {/* <AlagehAutoComplete
                 div={{ className: "col-lg-6" }}
                 label={{
                   forceLabel: "Invoice Type",
@@ -328,7 +328,7 @@ class InvoiceGeneration extends Component {
                     tabIndex: "4"
                   }
                 }}
-              />
+              /> */}
             </div>
           </div>
         </div>
@@ -345,6 +345,17 @@ class InvoiceGeneration extends Component {
                   columns={[
                     // billed
                     {
+                      fieldName: "trans_from",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "trans_from" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.trans_from === "OP"
+                          ? "OP Billing"
+                          : "Point of Sale";
+                      }
+                    },
+                    {
                       fieldName: "billed",
                       label: <AlgaehLabel label={{ fieldName: "billed" }} />,
                       displayTemplate: row => {
@@ -357,13 +368,14 @@ class InvoiceGeneration extends Component {
                         <AlgaehLabel label={{ fieldName: "service_type_id" }} />
                       ),
                       displayTemplate: row => {
+                        debugger;
                         let display =
                           this.props.servicetype === undefined
                             ? []
                             : this.props.servicetype.filter(
                                 f =>
                                   f.hims_d_service_type_id ===
-                                  row.service_type_id
+                                  parseInt(row.service_type_id)
                               );
 
                         return (
@@ -383,7 +395,7 @@ class InvoiceGeneration extends Component {
                             : this.props.servicetype.filter(
                                 f =>
                                   f.hims_d_service_type_id ===
-                                  row.service_type_id
+                                  parseInt(row.service_type_id)
                               );
 
                         return (
@@ -441,6 +453,12 @@ class InvoiceGeneration extends Component {
                     },
 
                     {
+                      fieldName: "unit_cost",
+                      label: <AlgaehLabel label={{ fieldName: "unit_cost" }} />,
+                      disabled: true
+                    },
+
+                    {
                       fieldName: "quantity",
                       label: <AlgaehLabel label={{ fieldName: "quantity" }} />,
                       editorTemplate: row => {
@@ -469,9 +487,9 @@ class InvoiceGeneration extends Component {
                     },
 
                     {
-                      fieldName: "discount_amout",
+                      fieldName: "discount_amount",
                       label: (
-                        <AlgaehLabel label={{ fieldName: "discount_amout" }} />
+                        <AlgaehLabel label={{ fieldName: "discount_amount" }} />
                       ),
                       editorTemplate: row => {
                         return (
@@ -479,9 +497,9 @@ class InvoiceGeneration extends Component {
                             div={{}}
                             textBox={{
                               decimal: { allowNegative: false },
-                              value: row.discount_amout,
+                              value: row.discount_amount,
                               className: "txt-fld",
-                              name: "discount_amout",
+                              name: "discount_amount",
                               events: {
                                 onChange: null
                               }
@@ -492,8 +510,10 @@ class InvoiceGeneration extends Component {
                     },
 
                     {
-                      fieldName: "net_amout",
-                      label: <AlgaehLabel label={{ fieldName: "net_amout" }} />,
+                      fieldName: "net_amount",
+                      label: (
+                        <AlgaehLabel label={{ fieldName: "net_amount" }} />
+                      ),
                       disabled: true
                     },
                     {

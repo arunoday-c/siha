@@ -158,6 +158,7 @@ class OrderProcedureItems extends Component {
     OrderProcedureItemsEvent().SaveProcedureItems(this);
   }
   render() {
+    debugger;
     return (
       <React.Fragment>
         <div>

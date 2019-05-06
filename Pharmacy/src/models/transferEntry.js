@@ -257,10 +257,17 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select * from hims_f_pharmacy_material_detail p left outer join hims_m_item_location l \
-              on l.item_id =p.item_id where pharmacy_header_id=? and l.record_status='A'and l.pharmacy_location_id=? \
-              and l.expirydt > now() and l.qtyhand>0  order by l.expirydt asc limit 0,1",
+                  "SELECT LOC.*,D.* FROM hims_m_item_location LOC inner join \
+                  hims_f_pharmacy_material_detail D   on D.item_id=LOC.item_id INNER JOIN \
+                  (SELECT L.item_id, MIN(expirydt) MinDate \
+                  FROM hims_m_item_location L inner join hims_f_pharmacy_material_detail \
+                  D on D.item_id= L.item_id where date(expirydt) > curdate() and \
+                  D.pharmacy_header_id=? and L.pharmacy_location_id=? GROUP BY L.item_id \
+                  ) T ON LOC.item_id = T.item_id AND LOC.expirydt = T.MinDate  and \
+                  D.pharmacy_header_id=? and LOC.pharmacy_location_id=?",
                 values: [
+                  headerResult[0].hims_f_pharamcy_material_header_id,
+                  headerResult[0].to_location_id,
                   headerResult[0].hims_f_pharamcy_material_header_id,
                   headerResult[0].to_location_id
                 ],

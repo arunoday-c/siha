@@ -705,14 +705,14 @@ class AddPatientForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{
-                          forceLabel: "Enter Employee ID",
+                          forceLabel: "employee_id",
                           isImp: false
                         }}
                         textBox={{
                           className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
+                          name: "employee_id",
+                          value: this.state.employee_id,
+                          // events: {},
                           option: {
                             type: "text",
                             tabIndex: "20"
