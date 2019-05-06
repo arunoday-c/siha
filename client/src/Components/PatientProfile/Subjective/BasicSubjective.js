@@ -252,7 +252,7 @@ class BasicSubjective extends Component {
                               }}
                             />
                             <textarea
-                              style={{ height: "17vh" }}
+                              style={{ height: "14vh" }}
                               value={this.state.chief_complaint}
                               name="chief_complaint"
                               onChange={this.textAreaEvent.bind(this)}
@@ -265,7 +265,7 @@ class BasicSubjective extends Component {
                       <div className="col-12">
                         <div className="row">
                           <AlagehAutoComplete
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-6 form-group" }}
                             label={{ forceLabel: "Pain Level", isImp: false }}
                             selector={{
                               name: "pain",
@@ -281,7 +281,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-6 form-group" }}
                             label={{
                               forceLabel: "Severity Level",
                               isImp: false
@@ -300,7 +300,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlgaehDateHandler
-                            div={{ className: "col-lg-3" }}
+                            div={{ className: "col-6 form-group" }}
                             label={{
                               forceLabel: "Onset Date"
                             }}
@@ -316,7 +316,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehFormGroup
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-6 form-group" }}
                             label={{
                               forceLabel: "Duration",
                               isImp: false
@@ -336,7 +336,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-6 form-group" }}
                             label={{ forceLabel: "Interval", isImp: false }}
                             selector={{
                               name: "interval",
@@ -352,7 +352,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-4 form-group" }}
+                            div={{ className: "col-6 form-group" }}
                             label={{ forceLabel: "Chronic", isImp: false }}
                             selector={{
                               name: "chronic",
@@ -383,7 +383,7 @@ class BasicSubjective extends Component {
                           }}
                         />
                         <textarea
-                          style={{ height: "17vh" }}
+                          style={{ height: "14vh" }}
                           value={this.state.significant_signs}
                           name="significant_signs"
                           onChange={this.textAreaEvent.bind(this)}
