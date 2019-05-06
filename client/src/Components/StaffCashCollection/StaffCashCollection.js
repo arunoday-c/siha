@@ -229,41 +229,6 @@ class StaffCashCollection extends Component {
     });
   }
 
-  getCashHandoverDetailsBACKUp(e) {
-    this.resetSaveState();
-    AlgaehValidation({
-      alertTypeIcon: "warning",
-      onSuccess: () => {
-        AlgaehLoader({ show: true });
-        algaehApiCall({
-          uri: "/frontDesk/getCashHandoverDetails",
-          module: "frontDesk",
-          method: "GET",
-          data: {
-            shift_id: this.state.hims_d_shift_id,
-            daily_handover_date: this.state.daily_handover_date,
-            shift_status: this.state.status
-          },
-          onSuccess: response => {
-            AlgaehLoader({ show: false });
-            if (response.data.success) {
-              this.setState({
-                cash_collection: response.data.records.cash_collection
-              });
-            }
-          },
-          onFailure: error => {
-            AlgaehLoader({ show: false });
-            swalMessage({
-              title: error.message,
-              type: "error"
-            });
-          }
-        });
-      }
-    });
-  }
-
   getCashHandoverDetails(e) {
     this.resetSaveState();
     AlgaehValidation({
@@ -544,20 +509,29 @@ class StaffCashCollection extends Component {
                             return "greenCell";
                           }
                         },
-                        // {
-                        //   fieldName: "shift_status",
-                        //   label: (
-                        //     <AlgaehLabel
-                        //       label={{ forceLabel: "Shift Status" }}
-                        //     />
-                        //   ),
-                        //   displayTemplate: row => {
-                        //     let x = Enumerable.from(this.state.status)
-                        //       .where(w => w.hims_d_shift_id === row.shift_id)
-                        //       .firstOrDefault();
-                        //     return <span>{x.shift_description}</span>;
-                        //   }
-                        // },
+                        {
+                          fieldName: "shift_status",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Shift Status" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            return row.shift_status === "O" ? (
+                              <span className="badge badge-danger">Opened</span>
+                            ) : row.shift_status === "C" ? (
+                              <span className="badge badge-warning">
+                                Closed
+                              </span>
+                            ) : row.shift_status === "A" ? (
+                              <span className="badge badge-success">
+                                Authorized
+                              </span>
+                            ) : (
+                              "------"
+                            );
+                          }
+                        },
                         {
                           fieldName: "shift_id",
                           label: (
