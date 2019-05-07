@@ -10,6 +10,8 @@ import moment from "moment";
 import httpStatus from "../utils/httpStatus";
 
 import { debugFunction, debugLog } from "../utils/logging";
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
 
 //created by:irfan,to get patient insurence details by patient id
 let getPatientInsurance = (req, res, next) => {
@@ -1326,44 +1328,93 @@ let getPriceList = (req, res, next) => {
 
 let getNetworkAndNetworkOfficRecords = (req, res, next) => {
   debugFunction("getNetworkAndNetworkOfficRecords");
+
+  const _mysql = new algaehMysql({ path: keyPath });
   try {
-    if (req.db == null) {
-      next(httpStatus.dataBaseNotInitilizedError());
+    // const utilities = new algaehUtilities();
+    // utilities.logger().log("getRadOrderedServices: ");
+    let inputValues = [req.userIdentity.hospital_id];
+    let _stringData = "";
+
+    if (req.query.insuranceProviderId != null) {
+      _stringData += " and insuranceProviderId=?";
+      inputValues.push(req.query.insuranceProviderId);
     }
-    let db = req.db;
 
-    db.getConnection((error, connection) => {
-      if (error) {
-        next(error);
-      }
-      let insuranceProviderId = req.query.insuranceProviderId;
+    if (req.query.hims_d_insurance_network_office_id != null) {
+      _stringData += " and netoff.hims_d_insurance_network_office_id=?";
+      inputValues.push(req.query.hims_d_insurance_network_office_id);
+    }
 
-      debugLog("insuranceProviderId: ", insuranceProviderId);
-      connection.query(
-        "SELECT hims_d_insurance_network_id,network_type,arabic_network_type,insurance_sub_id,insurance_provider_id,\
+    // utilities.logger().log("_stringData: ", _stringData);
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT hims_d_insurance_network_id,network_type,arabic_network_type,insurance_sub_id,insurance_provider_id,\
         netoff.hospital_id, netoff.hims_d_insurance_network_office_id, netoff.employer,netoff.policy_number,effective_start_date,effective_end_date,netoff.preapp_limit,netoff.price_from,netoff.deductible,\
         netoff.copay_consultation,netoff.max_value,netoff.deductible_lab,netoff.copay_percent,\
         netoff.lab_max,netoff.deductible_rad,netoff.copay_percent_rad,netoff.rad_max,netoff.deductible_trt,\
         netoff.copay_percent_trt,netoff.trt_max,netoff.deductible_dental,\
         netoff.copay_percent_dental,netoff.dental_max, netoff.hospital_id,netoff.deductible_medicine,netoff.copay_medicine,netoff.medicine_max,netoff.invoice_max_deduct, netoff.preapp_limit_from \
         FROM hims_d_insurance_network net,hims_d_insurance_network_office netoff\
-        where insurance_provider_id=? and  netoff.hospital_id=? and netoff.network_id = net.hims_d_insurance_network_id \
-        and net.record_status='A' and netoff.record_status='A';",
-        [insuranceProviderId, req.userIdentity.hospital_id],
-        (error, result) => {
-          releaseDBConnection(db, connection);
-          if (error) {
-            next(error);
-          }
-          req.records = result;
-
-          next();
-        }
-      );
-    });
+        where netoff.hospital_id=? and netoff.network_id = net.hims_d_insurance_network_id \
+        and net.record_status='A' and netoff.record_status='A' " +
+          _stringData,
+        values: inputValues,
+        printQuery: true
+      })
+      .then(result => {
+        // utilities.logger().log("result: ", result);
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
   } catch (e) {
+    _mysql.releaseConnection();
     next(e);
   }
+  // try {
+  //   if (req.db == null) {
+  //     next(httpStatus.dataBaseNotInitilizedError());
+  //   }
+  //   let db = req.db;
+
+  //   db.getConnection((error, connection) => {
+  //     if (error) {
+  //       next(error);
+  //     }
+  //     let insuranceProviderId = req.query.insuranceProviderId;
+
+  //     debugLog("insuranceProviderId: ", insuranceProviderId);
+  //     connection.query(
+  //       "SELECT hims_d_insurance_network_id,network_type,arabic_network_type,insurance_sub_id,insurance_provider_id,\
+  //       netoff.hospital_id, netoff.hims_d_insurance_network_office_id, netoff.employer,netoff.policy_number,effective_start_date,effective_end_date,netoff.preapp_limit,netoff.price_from,netoff.deductible,\
+  //       netoff.copay_consultation,netoff.max_value,netoff.deductible_lab,netoff.copay_percent,\
+  //       netoff.lab_max,netoff.deductible_rad,netoff.copay_percent_rad,netoff.rad_max,netoff.deductible_trt,\
+  //       netoff.copay_percent_trt,netoff.trt_max,netoff.deductible_dental,\
+  //       netoff.copay_percent_dental,netoff.dental_max, netoff.hospital_id,netoff.deductible_medicine,netoff.copay_medicine,netoff.medicine_max,netoff.invoice_max_deduct, netoff.preapp_limit_from \
+  //       FROM hims_d_insurance_network net,hims_d_insurance_network_office netoff\
+  //       where insurance_provider_id=? and  netoff.hospital_id=? and netoff.network_id = net.hims_d_insurance_network_id \
+  //       and net.record_status='A' and netoff.record_status='A';",
+  //       [insuranceProviderId, req.userIdentity.hospital_id],
+  //       (error, result) => {
+  //         releaseDBConnection(db, connection);
+  //         if (error) {
+  //           next(error);
+  //         }
+  //         req.records = result;
+
+  //         next();
+  //       }
+  //     );
+  //   });
+  // } catch (e) {
+  //   next(e);
+  // }
 };
 
 let updatePriceList = (req, res, next) => {

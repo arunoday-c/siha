@@ -280,6 +280,8 @@ class OPBilling extends Component {
             }
           }
 
+          data.billDetails = false;
+
           if (data.insured === "Y") {
             debugger;
             $this.props.getPatientInsurance({
@@ -568,7 +570,8 @@ function mapStateToProps(state) {
   return {
     patients: state.patients,
     existinsurance: state.existinsurance,
-    patienttype: state.patienttype
+    patienttype: state.patienttype,
+    networkandplans: state.networkandplans
   };
 }
 
@@ -578,7 +581,8 @@ function mapDispatchToProps(dispatch) {
       getPatientDetails: AlgaehActions,
       getBIllDetails: AlgaehActions,
       getPatientType: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getPatientInsurance: AlgaehActions,
+      getNetworkPlans: AlgaehActions
     },
     dispatch
   );

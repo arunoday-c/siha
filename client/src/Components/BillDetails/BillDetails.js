@@ -433,7 +433,7 @@ class DisplayOPBilling extends PureComponent {
                   </div>
                 </div>
 
-                <div className="col-lg-6">
+                {/* <div className="col-lg-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "sec_company"
@@ -488,7 +488,7 @@ class DisplayOPBilling extends PureComponent {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
               <hr />
               {/* Payables */}
@@ -572,7 +572,7 @@ class DisplayOPBilling extends PureComponent {
 
                 {/* <div className="col-lg-1"> &nbsp; </div> */}
 
-                <div className="col-lg-4">
+                {/* <div className="col-lg-4">
                   <AlgaehLabel
                     label={{
                       fieldName: "sec_comp_lbl"
@@ -610,7 +610,7 @@ class DisplayOPBilling extends PureComponent {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="popupFooter">

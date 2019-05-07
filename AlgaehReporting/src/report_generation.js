@@ -14,6 +14,7 @@ const compile = async function(templateName, data) {
     `${templateName}.hbs`
   );
   const html = await fs.readFile(filePath, "utf-8");
+  if (templateName == "ucaf") console.log("data", data);
   return hbs.compile(html)(data);
 };
 hbs.registerHelper("sumOf", function(data, sumby, callBack) {
@@ -83,21 +84,17 @@ hbs.registerHelper("imageSource", function(filePath) {
   return "data:image/" + _extention + ";base64," + img;
 });
 
-hbs.registerHelper("groupBy", function(data, groupby, callBack) {
-  data = Array.isArray(data) ? data : [];
+hbs.registerHelper("groupBy", function(data, groupby) {
   const groupBy = _.chain(data)
     .groupBy(groupby)
     .map(function(detail, key) {
       return {
         [groupby]: key,
-        detail: detail
+        groupDetail: detail
       };
     })
     .value();
-  if (typeof callBack == "function") callBack(groupBy);
-  else {
-    return groupBy;
-  }
+  return groupBy;
 });
 hbs.registerHelper("currentDateTime", function(type) {
   if (type == null || type == "") {
@@ -108,6 +105,27 @@ hbs.registerHelper("currentDateTime", function(type) {
     return moment().format("DD-MM-YYYY");
   }
 });
+hbs.registerHelper("firstElement", function(array, index, fieldName) {
+  array = array || [];
+  index = index || 0;
+  if (array.length > 0) {
+    return array[index][fieldName];
+  } else {
+    return null;
+  }
+});
+const groupBy = (data, groupby) => {
+  const groupBy = _.chain(data)
+    .groupBy(groupby)
+    .map(function(detail, key) {
+      return {
+        [groupby]: key,
+        groupDetail: detail
+      };
+    })
+    .value();
+  return groupBy;
+};
 module.exports = {
   getReport: async (req, res) => {
     const input = req.query;
@@ -223,7 +241,7 @@ module.exports = {
                         } else {
                           _pdfTemplating[
                             "footerTemplate"
-                          ] = `<style> .pdffooter { font-size: 8px; 
+                          ] = `<style> .pdffooter { font-size: 8px;
                             font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
                           .showreportname{float:left;padding-left:5px;font-size: 08px;}
                           .showcompay{float:right;padding-right:5px;font-size: 08px;}
@@ -397,9 +415,11 @@ module.exports = {
   },
   getReportMultiPrint: async (req, res, next) => {
     const input = req.query;
+
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
+
       _mysql
         .executeQuery({
           query:
@@ -409,7 +429,8 @@ module.exports = {
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
             O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
-          values: [_inputParam.reportName, req.userIdentity["x-branch"]]
+          values: [_inputParam.reportName, req.userIdentity["x-branch"]],
+          printQuery: true
         })
         .then(data => {
           const templates = data[0];
@@ -417,12 +438,11 @@ module.exports = {
           const inputParameters = _inputParam.reportParams;
           let promises = [];
           for (let p = 0; p < inputParameters.length; p++) {
-            promises.push(
-              new Promise((resolve, reject) => {
-                console.log("Promise", Promise);
-                const inputData = inputParameters[p];
-                let reportSequence = _inputParam.reportName;
-                for (let i = 0; i < reportSequence.length; i++) {
+            const inputData = inputParameters[p];
+            let reportSequence = _inputParam.reportName;
+            for (let i = 0; i < reportSequence.length; i++) {
+              promises.push(
+                new Promise((resolve, reject) => {
                   const resourceTemplate = _.find(
                     templates,
                     f => f.report_name == reportSequence[i]
@@ -440,10 +460,14 @@ module.exports = {
                       _value.push(_params.value);
                     }
                   }
+                  const _myquery = _mysql.mysqlQueryFormat(
+                    resourceTemplate.report_query,
+                    _value
+                  );
                   _mysql
                     .executeQuery({
-                      query: resourceTemplate.report_query,
-                      values: _value
+                      query: _myquery
+                      //  printQuery: true
                     })
                     .then(result => {
                       const _path = path.join(
@@ -466,6 +490,7 @@ module.exports = {
                         const _resu = eval(data_string);
                         result = JSON.parse(_resu);
                       }
+
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
@@ -509,7 +534,7 @@ module.exports = {
                         } else {
                           _pdfTemplating[
                             "footerTemplate"
-                          ] = `<style> .pdffooter { font-size: 8px; 
+                          ] = `<style> .pdffooter { font-size: 8px;
                         font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
                       .showreportname{float:left;padding-left:5px;font-size: 08px;}
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
@@ -527,6 +552,7 @@ module.exports = {
                             bottom: "50px"
                           };
                         }
+
                         await page.setContent(
                           await compile(resourceTemplate.report_name, result)
                         );
@@ -545,11 +571,17 @@ module.exports = {
                       startGenerate();
                     })
                     .catch(error => {
+                      console.error(
+                        "Error Report Name",
+                        resourceTemplate.report_name
+                      );
+                      console.error("Error Query", _myquery);
+                      console.error();
                       reject(error);
                     });
-                }
-              })
-            );
+                })
+              );
+            }
           }
 
           Promise.all(promises)
@@ -583,8 +615,10 @@ module.exports = {
       "algaeh_report_tool/templates/Output",
       _outfileName
     );
+
     merge(getAllReports, _rOut, error => {
       if (error) {
+        console.error(error);
         res.writeHead(400, {
           "Content-Type": "text/plain"
         });

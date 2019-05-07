@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import InsuranceForm from "./InsuranceForm/InsuranceForm.js";
-import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsurance.js";
+// import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsurance.js";
 import "./InsuranceDetails.css";
 import "./../../../styles/site.css";
 import AlgaehLabel from "../../Wrapper/label.js";
@@ -30,7 +30,7 @@ export default class InsuranceDetails extends PureComponent {
 
   render() {
     let primaryInsurance = this.state.actionPrimaryDesign ? "active" : "";
-    let secondaryInsurance = this.state.actionSecondaryDesign ? "" : "active";
+    // let secondaryInsurance = this.state.actionSecondaryDesign ? "" : "active";
     return (
       <div className="hptl-phase1-insurance-details margin-top-15">
         <div className="tab-container toggle-section">
@@ -47,7 +47,7 @@ export default class InsuranceDetails extends PureComponent {
                 />
               }
             </li>
-            <li
+            {/* <li
               className={"nav-item tab-button " + secondaryInsurance}
               onClick={this.openTab.bind(this, "secondary-insurance")}
             >
@@ -58,7 +58,7 @@ export default class InsuranceDetails extends PureComponent {
                   }}
                 />
               }
-            </li>
+            </li> */}
           </ul>
         </div>
 
@@ -66,9 +66,9 @@ export default class InsuranceDetails extends PureComponent {
           {this.state.actionPrimaryDesign ? (
             <InsuranceForm PatRegIOputs={this.props.PatRegIOputs} />
           ) : null}
-          {this.state.actionSecondaryDesign ? null : (
+          {/* {this.state.actionSecondaryDesign ? null : (
             <SecondaryInsurance PatRegIOputs={this.props.PatRegIOputs} />
-          )}
+          )} */}
         </div>
         {/* <div>
           <InsuranceList />

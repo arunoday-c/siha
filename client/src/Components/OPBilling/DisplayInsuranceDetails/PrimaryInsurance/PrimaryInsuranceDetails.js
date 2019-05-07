@@ -1,14 +1,33 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { bindActionCreators } from "redux";
+
+import { AlgaehActions } from "../../../../actions/algaehActions";
 import "./PrimaryInsuranceDetails.css";
 import "./../../../../styles/site.css";
 import { AlagehFormGroup, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import Options from "../../../../Options.json";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
-export default class AddInsuranceForm extends Component {
+class AddInsuranceForm extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      copay_consultation: null,
+      max_value: null,
+      copay_percent: null,
+      lab_max: null,
+      copay_percent_rad: null,
+      rad_max: null,
+      copay_medicine: null,
+      medicine_max: null,
+      copay_percent_trt: null,
+      trt_max: null,
+      copay_percent_dental: null,
+      dental_max: null
+    };
   }
 
   componentWillMount() {
@@ -17,7 +36,54 @@ export default class AddInsuranceForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
+
     this.setState(nextProps.BillingIOputs);
+  }
+
+  componentDidMount() {
+    debugger;
+    if (this.state.hims_d_insurance_network_office_id !== null) {
+      this.getNetworkPlans();
+    }
+  }
+
+  getNetworkPlans() {
+    algaehApiCall({
+      uri: "/insurance/getNetworkAndNetworkOfficRecords",
+      method: "GET",
+      data: {
+        hims_d_insurance_network_office_id: this.state
+          .hims_d_insurance_network_office_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          debugger;
+          let data = response.data.records[0];
+          this.setState({
+            copay_consultation: data.copay_consultation,
+            max_value: data.max_value,
+            copay_percent: data.copay_percent,
+            lab_max: data.lab_max,
+            copay_percent_rad: data.copay_percent_rad,
+            rad_max: data.rad_max,
+            copay_medicine: data.copay_medicine,
+            medicine_max: data.medicine_max,
+            copay_percent_trt: data.copay_percent_trt,
+            trt_max: data.trt_max,
+            copay_percent_dental: data.copay_percent_dental,
+            dental_max: data.dental_max
+            // network_plan: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   render() {
@@ -191,7 +257,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.copay_consultation,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -207,7 +273,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.max_value,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -233,7 +299,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.copay_percent,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -249,7 +315,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.lab_max,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -275,7 +341,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.copay_percent_rad,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -291,7 +357,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.rad_max,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -343,7 +409,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.copay_medicine,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -359,7 +425,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.medicine_max,
                     className: "txt-fld",
                     name: "unbalanced_amount",
                     events: {
@@ -384,7 +450,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.copay_percent_trt,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -400,7 +466,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.trt_max,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -426,7 +492,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.copay_percent_dental,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -442,7 +508,7 @@ export default class AddInsuranceForm extends Component {
                   div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.dental_max,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -462,3 +528,25 @@ export default class AddInsuranceForm extends Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    networkandplans: state.networkandplans
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getNetworkPlans: AlgaehActions
+    },
+    dispatch
+  );
+}
+
+export default withRouter(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AddInsuranceForm)
+);

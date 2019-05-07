@@ -805,7 +805,7 @@ class AddOPBillingForm extends Component {
                             {getAmountFormart(this.state.deductable_amount)}
                           </h6>
                         </div>
-                        <div className="col-lg-6">
+                        {/* <div className="col-lg-6">
                           <AlgaehLabel
                             label={{
                               fieldName: "seco_copay_amount"
@@ -824,7 +824,7 @@ class AddOPBillingForm extends Component {
                           <h6>
                             {getAmountFormart(this.state.sec_deductable_amount)}
                           </h6>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="row">
                         <div className="col-lg-12 patientRespo">
@@ -912,7 +912,7 @@ class AddOPBillingForm extends Component {
                           </div>
                         </div>
 
-                        <div className="col-lg-12">
+                        {/* <div className="col-lg-12">
                           <AlgaehLabel
                             label={{
                               fieldName: "sec_comp_lbl"
@@ -954,7 +954,7 @@ class AddOPBillingForm extends Component {
                               </h6>
                             </div>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>

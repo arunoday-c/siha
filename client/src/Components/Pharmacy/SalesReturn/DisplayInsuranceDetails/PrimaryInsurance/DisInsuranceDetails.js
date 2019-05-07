@@ -19,6 +19,10 @@ export default class AddInsuranceForm extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
+  componentDidMount() {
+    debugger;
+  }
+
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.SALESRETURNIOputs);
   }

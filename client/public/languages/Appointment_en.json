@@ -83,7 +83,7 @@
   "tab_othinf": "Other Information",
   "tab_condtls": "Consultation Details",
   "tab_mlcpat": "MLC Patient",
-  "tab_primaryins": "Primary Insurance Details",
+  "tab_primaryins": "Insurance Details",
   "tab_secondaryins": "Secondary Insurance Details",
   "tab_billdtls": "Billing Details",
   "tab_recipts": "Recipts",
@@ -147,7 +147,7 @@
   "sec_copay_percntage": "Copay %",
   "sec_copay_amount": "Copay Amt.",
   "tax_Detsils": "Tax Details",
-  "prim-insurance": "Primary Insurance",
+  "prim-insurance": "Insurance",
   "present-bill-services": "Current Bill Services",
   "advance_amount": "Available Advance",
   "advance_caption": "Advance",
@@ -158,7 +158,7 @@
   "payable_lbl": "Payable",
 
   "patient_lbl": "Patient",
-  "company_lbl": "Primary Company",
+  "company_lbl": "Company",
   "sec_comp_lbl": "Secondary Company",
 
   "payment_number": "Payment Number",

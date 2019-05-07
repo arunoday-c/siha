@@ -74,7 +74,7 @@
   "sec_copay_percntage": "Copay %",
   "sec_copay_amount": "Copay Amt.",
   "tax_Detsils": "Tax Details",
-  "prim-insurance": "Primary Insurance",
+  "prim-insurance": "Insurance",
   "present-bill-services": "Current Bill Services",
   "advance_amount": "Available Advance",
   "advance_caption": "Advance",
@@ -103,7 +103,7 @@
   "payable_lbl": "Payable",
 
   "patient_lbl": "Patient",
-  "company_lbl": "Primary Company",
+  "company_lbl": "Company",
   "sec_comp_lbl": "Secondary Company",
 
   "insurance_company": "Insurance Company",

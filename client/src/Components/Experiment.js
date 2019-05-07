@@ -3,7 +3,6 @@ import { AlgaehErrorBoundary } from "./Wrapper/algaehWrapper";
 import "react-table/react-table.css";
 import { algaehApiCall, swalMessage } from "../utils/algaehApiCall";
 import FileViewer from "react-file-viewer";
-
 import {
   AlgaehDataGrid,
   AlgaehDateHandler,
@@ -20,7 +19,8 @@ class Experiment extends Component {
       openAuth: false,
       name: "i",
       image: undefined,
-      report: undefined
+      report: undefined,
+      progressPercentage: ""
     };
 
     // console.log("Chunk:", _.chunk(services, 1));
@@ -170,9 +170,8 @@ class Experiment extends Component {
           The Above component has a bug so this is how our wrapper handles We
           can still use the other elements apart from the crashed element
         </div>
-        {this.state.report !== undefined ? (
-          <embed src={this.state.report} width="800" height="500" />
-        ) : null}
+        <p>Percentage {this.state.progressPercentage}</p>
+        <embed src={this.state.report} width="800" height="500" />
         <div className="col">
           <button
             onClick={() => {
@@ -214,10 +213,23 @@ class Experiment extends Component {
               headers: {
                 Accept: "blob"
               },
-              others: { responseType: "blob" },
+              timeout: 120000,
+              others: {
+                responseType: "blob",
+                onDownloadProgress: progressEvent => {
+                  let percentCompleted = Math.round(
+                    (progressEvent.loaded * 100) / progressEvent.total
+                  );
+                  if (percentCompleted >= 100) {
+                    that.setState({ progressPercentage: 100 });
+                  } else {
+                    that.setState({ progressPercentage: percentCompleted });
+                  }
+                }
+              },
               data: {
                 report: {
-                  reportName: ["creditInvoice", "ucaf"],
+                  reportName: ["creditInvoice", "ucaf", "haematologyReport"],
                   reportParams: [
                     [
                       { name: "hims_d_patient_id", value: 245 },
@@ -241,17 +253,34 @@ class Experiment extends Component {
                         value: null
                       }
                     ]
+                    // [
+                    //   { name: "hims_d_patient_id", value: 101 },
+                    //   {
+                    //     name: "visit_id",
+                    //     value: 300
+                    //   },
+                    //   {
+                    //     name: "visit_date",
+                    //     value: null
+                    //   }
+                    // ]
                   ],
                   outputFileType: "PDF" //"EXCEL", //"PDF",
                 }
               },
               onSuccess: res => {
-                let reader = new FileReader();
-                reader.onloadend = () => {
-                  that.setState({ report: reader.result });
-                };
+                debugger;
 
-                reader.readAsDataURL(res.data);
+                const url = URL.createObjectURL(res.data);
+                let myWindow = window.open(
+                  "{{ product.metafields.google.custom_label_0 }}",
+                  "_blank"
+                );
+
+                myWindow.document.write(
+                  "<iframe src= '" + url + "' width='100%' height='100%' />"
+                );
+                myWindow.document.title = "Algaeh Merdge";
               }
             });
           }}
