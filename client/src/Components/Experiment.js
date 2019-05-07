@@ -252,18 +252,18 @@ class Experiment extends Component {
                         name: "visit_date",
                         value: null
                       }
-                    ],
-                    [
-                      { name: "hims_d_patient_id", value: 101 },
-                      {
-                        name: "visit_id",
-                        value: 300
-                      },
-                      {
-                        name: "visit_date",
-                        value: null
-                      }
                     ]
+                    // [
+                    //   { name: "hims_d_patient_id", value: 101 },
+                    //   {
+                    //     name: "visit_id",
+                    //     value: 300
+                    //   },
+                    //   {
+                    //     name: "visit_date",
+                    //     value: null
+                    //   }
+                    // ]
                   ],
                   outputFileType: "PDF" //"EXCEL", //"PDF",
                 }
