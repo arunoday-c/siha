@@ -207,73 +207,73 @@ module.exports = {
       req.mySQl = _mysql;
       //Visit
 
+      // _mysql
+      //   .generateRunningNumber({
+      //     modules: ["PAT_VISIT", "PAT_BILL", "RECEIPT"],
+      //     tableName: "hims_f_app_numgen",
+      //     identity: {
+      //       algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+      //       hospital_id: req.userIdentity["x-branch"]
+      //     },
+      //     others: { printQuery: true }
+      //   })
+      //   .then(generatedNumbers => {
+      //     console.log("generatedNumbers", generatedNumbers);
+      //     req.connection = {
+      //       connection: _mysql.connection,
+      //       isTransactionConnection: _mysql.isTransactionConnection,
+      //       pool: _mysql.pool
+      //     };
+
+      //     //Visit
+      //     req.body.visit_code = generatedNumbers[1];
+      //     //Bill
+      //     req.body.bill_number = generatedNumbers[0];
+      //     //Receipt
+      //     req.body.receipt_number = generatedNumbers[2];
+      //     next();
+      //   })
       _mysql
         .generateRunningNumber({
-          modules: ["PAT_VISIT", "PAT_BILL", "RECEIPT"],
-          tableName: "hims_f_app_numgen",
-          identity: {
-            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
-            hospital_id: req.userIdentity["x-branch"]
-          },
-          others: { printQuery: true }
+          modules: ["PAT_VISIT"]
         })
         .then(generatedNumbers => {
-          console.log("generatedNumbers", generatedNumbers);
           req.connection = {
             connection: _mysql.connection,
             isTransactionConnection: _mysql.isTransactionConnection,
             pool: _mysql.pool
           };
+          req.body.visit_code = generatedNumbers[0];
 
-          //Visit
-          req.body.visit_code = generatedNumbers[1];
           //Bill
-          req.body.bill_number = generatedNumbers[0];
-          //Receipt
-          req.body.receipt_number = generatedNumbers[2];
-          next();
+          _mysql
+            .generateRunningNumber({
+              modules: ["PAT_BILL"]
+            })
+            .then(generatedNumbers => {
+              req.body.bill_number = generatedNumbers[0];
+
+              //Receipt
+              _mysql
+                .generateRunningNumber({
+                  modules: ["RECEIPT"]
+                })
+                .then(generatedNumbers => {
+                  req.body.receipt_number = generatedNumbers[0];
+                  next();
+                })
+                .catch(e => {
+                  _mysql.rollBackTransaction(() => {
+                    next(e);
+                  });
+                });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
         })
-        // _mysql
-        //   .generateRunningNumber({
-        //     modules: ["PAT_VISIT"]
-        //   })
-        //   .then(generatedNumbers => {
-        //     req.connection = {
-        //       connection: _mysql.connection,
-        //       isTransactionConnection: _mysql.isTransactionConnection,
-        //       pool: _mysql.pool
-        //     };
-        //     req.body.visit_code = generatedNumbers[0];
-
-        //     //Bill
-        //     _mysql
-        //       .generateRunningNumber({
-        //         modules: ["PAT_BILL"]
-        //       })
-        //       .then(generatedNumbers => {
-        //         req.body.bill_number = generatedNumbers[0];
-
-        //         //Receipt
-        //         _mysql
-        //           .generateRunningNumber({
-        //             modules: ["RECEIPT"]
-        //           })
-        //           .then(generatedNumbers => {
-        //             req.body.receipt_number = generatedNumbers[0];
-        //             next();
-        //           })
-        //           .catch(e => {
-        //             _mysql.rollBackTransaction(() => {
-        //               next(e);
-        //             });
-        //           });
-        //       })
-        //       .catch(e => {
-        //         _mysql.rollBackTransaction(() => {
-        //           next(e);
-        //         });
-        //       });
-        //   })
         .catch(e => {
           _mysql.rollBackTransaction(() => {
             next(e);

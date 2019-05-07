@@ -730,7 +730,7 @@ class InvoiceGeneration extends Component {
                         </div>
                       </div>
                     </div>
-                    <div className="col-12">
+                    {/* <div className="col-12">
                       <h5>Secondary Insurance</h5>
                       <div className="row">
                         <div className="col-4">
@@ -813,7 +813,7 @@ class InvoiceGeneration extends Component {
                           </h6>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 {/* Values */}

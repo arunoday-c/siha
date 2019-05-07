@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PrimaryInsurance from "./PrimaryInsurance/DisInsuranceDetails.js";
-import SecondaryInsurance from "./SecondaryInsurance/DisplaySecondaryInsurance.js";
+// import SecondaryInsurance from "./SecondaryInsurance/DisplaySecondaryInsurance.js";
 import "./DisplayInsuranceDetails.css";
 import "./../../../../styles/site.css";
 import { AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
@@ -32,7 +32,7 @@ export default class DisplayInsuranceDetails extends Component {
           <div className="col-12 popRightDiv">
             <h6>Primary Insurance</h6>
             <PrimaryInsurance POSIOputs={this.props.POSIOputs} />
-            <h6
+            {/* <h6
               style={{
                 borderBottom: " 1px solid #d0d0d0",
                 fontSize: "0.9rem",
@@ -41,7 +41,7 @@ export default class DisplayInsuranceDetails extends Component {
             >
               Secondary Insurance
             </h6>
-            <SecondaryInsurance POSIOputs={this.props.POSIOputs} />
+            <SecondaryInsurance POSIOputs={this.props.POSIOputs} /> */}
           </div>
         </div>
         <div className="popupFooter">

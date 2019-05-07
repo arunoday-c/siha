@@ -310,34 +310,61 @@ const generateBillDetails = ($this, context) => {
 };
 
 const radioChange = ($this, context, e) => {
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  $this.setState(
-    {
-      maternity_patient: value
-    },
-    () => {
-      if (name === "existing_plan" && value === "Y") {
+  if (name === "maternity_patient_yes") {
+    $this.setState({
+      maternity_patient: value,
+      checked_maternity_patient: !$this.state.checked_maternity_patient
+    });
+    if (context !== null) {
+      context.updateState({
+        maternity_patient: value,
+        checked_maternity_patient: !$this.state.checked_maternity_patient
+      });
+    }
+  } else if (name === "existing_plan") {
+    $this.setState(
+      {
+        [name]: value,
+        checked_existing_plan: !$this.state.checked_existing_plan
+      },
+      () => {
         getTreatementPlans($this);
         if ($this.state.doctor_id !== null) {
           generateBillDetails($this, context);
         }
       }
-      if (
-        name === "existing_plan" &&
-        value === "N" &&
-        $this.state.doctor_id !== null
-      ) {
-        generateBillDetails($this, context);
-      }
+    );
+    if (context !== null) {
+      context.updateState({
+        [name]: value,
+        checked_existing_plan: !$this.state.checked_existing_plan
+      });
     }
-  );
-
-  if (context !== null) {
-    context.updateState({
-      maternity_patient: value
-    });
   }
+
+  // $this.setState(
+  //   {
+  //     maternity_patient: value
+  //   },
+  //   () => {
+  //     if (name === "existing_plan" && value === "Y") {
+  //       getTreatementPlans($this);
+  //       if ($this.state.doctor_id !== null) {
+  //         generateBillDetails($this, context);
+  //       }
+  //     }
+  //     if (
+  //       name === "existing_plan" &&
+  //       value === "N" &&
+  //       $this.state.doctor_id !== null
+  //     ) {
+  //       generateBillDetails($this, context);
+  //     }
+  //   }
+  // );
 };
 
 const getTreatementPlans = $this => {

@@ -665,7 +665,7 @@ class OrderingServices extends Component {
                       />
                       <h5>{getAmountFormart(this.state.company_payble)}</h5>
                     </div>
-                    <div className="col">
+                    {/* <div className="col">
                       <AlgaehLabel
                         label={{
                           fieldName: "sec_co_payable"
@@ -674,7 +674,7 @@ class OrderingServices extends Component {
                       <h5>
                         {getAmountFormart(this.state.sec_company_paybale)}
                       </h5>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>

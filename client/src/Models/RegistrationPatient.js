@@ -132,6 +132,9 @@ export default {
       secondary_card_number: null,
       secondary_network_office_id: null,
 
+      checked_existing_plan: false,
+      checked_maternity_patient: false,
+
       radioNo: true,
       radioYes: false,
       radioSecNo: true,
