@@ -170,6 +170,7 @@ export function saveImageOnServer(options) {
 
       // const formData = new FormData();
       // formData.append("file", reader);
+      return ;
     });
   }
 }

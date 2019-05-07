@@ -88,7 +88,7 @@ export default class ExaminationDiagram extends Component {
           ...item,
           content: (
             <div className="diagramDropdown">
-              <img src={addNew} />
+              <img alt={item.image_desc} src={addNew} />
               <span>Add new diagram</span>
               <span>{item.image_desc}</span>
             </div>

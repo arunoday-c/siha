@@ -26,8 +26,7 @@ import {
   discountCal,
   cashtexthCal,
   cardtexthCal,
-  chequetexthCal,
-  countertexthandle
+  chequetexthCal
 } from "./AddBillingDetails";
 
 import MyContext from "../../../utils/MyContext.js";
