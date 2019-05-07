@@ -303,7 +303,7 @@ class PersonalDetails extends Component {
                       div={{ className: "col-4 mandatory" }}
                       label={{
                         forceLabel: "Religion",
-                        isImp: false
+                        isImp: true
                       }}
                       selector={{
                         name: "religion_id",
