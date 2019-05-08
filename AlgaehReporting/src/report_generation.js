@@ -485,8 +485,8 @@ module.exports = {
                   );
                   _mysql
                     .executeQuery({
-                      query: _myquery
-                      //  printQuery: true
+                      query: _myquery,
+                      printQuery: true
                     })
                     .then(result => {
                       const _path = path.join(

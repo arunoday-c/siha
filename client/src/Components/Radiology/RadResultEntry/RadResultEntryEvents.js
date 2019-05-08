@@ -130,12 +130,12 @@ const UpdateRadOrder = ($this, value) => {
     }).then(willProceed => {
       if (willProceed.value) {
         //SaveTemplate
-        if (value === "Validate") {
-          $this.radiologyValidateTemplate.SavingImageOnServer(
-            $this.state.result_html,
-            "html"
-          );
-        }
+        // if (value === "Validate") {
+        //   $this.radiologyValidateTemplate.SavingImageOnServer(
+        //     $this.state.result_html,
+        //     "html"
+        //   );
+        // }
 
         algaehApiCall({
           uri: "/radiology/updateRadOrderedServices",

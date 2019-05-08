@@ -1248,11 +1248,13 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
           })
             .then(policydtls => {
               utilities.logger().log("policydtls: ", policydtls);
+
+              utilities.logger().log("covered: ", policydtls.covered);
               covered =
-                policydtls !== null
-                  ? "N"
-                  : policydtls.covered !== undefined
-                  ? policydtls.covered
+                policydtls != null
+                  ? policydtls.covered != null
+                    ? policydtls.covered
+                    : "N"
                   : "N";
               utilities.logger().log("covered: ", covered);
               if (

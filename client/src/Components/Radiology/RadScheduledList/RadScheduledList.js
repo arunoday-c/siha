@@ -31,6 +31,7 @@ import {
   FORMAT_PRIORITY,
   FORMAT_RAD_STATUS
 } from "../../../utils/GlobalVariables.json";
+import { algaehApiCall } from "../../../utils/algaehApiCall";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
 import moment from "moment";
@@ -66,12 +67,46 @@ class RadScheduledList extends Component {
     }
   };
 
-  // openResultEntry(e) {
-  //   this.setState({
-  //     ...this.state,
-  //     resultEntry: !this.state.resultEntry
-  //   });
-  // }
+  generateReport(row) {
+    debugger;
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "radiologyReport",
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value: row.patient_id
+            },
+            {
+              name: "visit_id",
+              value: row.visit_id
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "Radiology";
+      }
+    });
+  }
 
   ShowCollectionModel(row, e) {
     this.setState({
@@ -262,6 +297,29 @@ class RadScheduledList extends Component {
                   <AlgaehDataGrid
                     id="Scheduled_list_grid"
                     columns={[
+                      {
+                        fieldName: "actions",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Print Report" }} />
+                        ),
+                        displayTemplate: row => {
+                          return (
+                            <i
+                              style={{
+                                pointerEvents:
+                                  row.status === "RA" ? "" : "none",
+                                opacity: row.status === "RA" ? "" : "0.1"
+                              }}
+                              className="fa fa-print"
+                              onClick={this.generateReport.bind(this, row)}
+                            />
+                          );
+                        },
+                        others: {
+                          fixed: "left",
+                          maxWidth: 100
+                        }
+                      },
                       {
                         fieldName: "patient_code",
                         label: (

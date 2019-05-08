@@ -107,7 +107,7 @@ module.exports = {
     const _mysql = new algaehMysql(_options);
     try {
       const utilities = new algaehUtilities();
-      utilities.logger().log("Rad Bill: ");
+      utilities.logger().log("Rad Bill: ", req.body.incharge_or_provider);
       let inputParam = { ...req.body };
       const IncludeValues = [
         "ordered_services_id",
@@ -131,7 +131,7 @@ module.exports = {
           return {
             ordered_services_id: s.hims_f_ordered_services_id || null,
             patient_id: req.body.patient_id,
-            provider_id: req.body.provider_id,
+            provider_id: req.body.incharge_or_provider,
             visit_id: req.body.visit_id,
             service_id: s.services_id,
             billed: req.body.billed,

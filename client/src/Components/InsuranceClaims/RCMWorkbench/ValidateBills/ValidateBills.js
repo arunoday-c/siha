@@ -902,6 +902,12 @@ class ValidateBills extends PureComponent {
           <button
             onClick={this.validateInvoice.bind(this)}
             className="btn btn-primary"
+            disabled={
+              this.state.invoices.claim_validated === "V" ||
+              this.state.invoices.claim_validated === "X"
+                ? true
+                : false
+            }
           >
             VALIDATE
           </button>

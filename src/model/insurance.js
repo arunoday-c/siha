@@ -1337,7 +1337,7 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
     let _stringData = "";
 
     if (req.query.insuranceProviderId != null) {
-      _stringData += " and insuranceProviderId=?";
+      _stringData += " and insurance_provider_id=?";
       inputValues.push(req.query.insuranceProviderId);
     }
 

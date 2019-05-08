@@ -45,14 +45,14 @@
 
                 <tr>
                     <td><label>رقم البطاقة / رقم السياسة / Card No/ Policy No</label></td>
-                    <td> <span>{{header.card_number}} / need to add</span></td>
+                    <td> <span>{{header.card_number}} / {{header.card_holder_name}}</span></td>
                     <td><label>حامل السياسة / Policy Holder</label></td>
-                    <td> <span>add in database</span></td>
+                    <td> <span>{{header.policy_number}}</span></td>
                 </tr>
 
                 <tr>
                     <td><label>Class / Class</label></td>
-                    <td colspan="3"> <span>add from db</span></td>
+                    <td colspan="3"> <span>{{header.card_class_name}}</span></td>
                 </tr>
             </table>
 
