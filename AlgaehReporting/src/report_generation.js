@@ -14,7 +14,7 @@ const compile = async function(templateName, data) {
     `${templateName}.hbs`
   );
   const html = await fs.readFile(filePath, "utf-8");
-  if (templateName == "ucaf") console.log("data", data);
+
   return hbs.compile(html)(data);
 };
 hbs.registerHelper("sumOf", function(data, sumby, callBack) {
@@ -114,6 +114,14 @@ hbs.registerHelper("firstElement", function(array, index, fieldName) {
     return null;
   }
 });
+hbs.registerHelper("consoleLog", function(data) {
+  if (typeof data == "string") {
+    return data;
+  } else {
+    return JSON.stringify(data);
+  }
+});
+
 const groupBy = (data, groupby) => {
   const groupBy = _.chain(data)
     .groupBy(groupby)
@@ -125,6 +133,16 @@ const groupBy = (data, groupby) => {
     })
     .value();
   return groupBy;
+};
+const arrayFirstRowToObject = (data, index) => {
+  index = index || 0;
+  if (data == null) {
+    return {};
+  } else if (data.length > 0 && data.length <= index) {
+    return data[index];
+  } else {
+    return {};
+  }
 };
 module.exports = {
   getReport: async (req, res) => {
@@ -545,7 +563,7 @@ module.exports = {
                       }</span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
-                      <span class="showcompay">Powered by Algaeh Techonologies.</span>
+                      <span class="showcompay">Powered by Algaeh Technologies.</span>
                     </div>`;
                           _pdfTemplating["margin"] = {
                             ..._pdfTemplating["margin"],
