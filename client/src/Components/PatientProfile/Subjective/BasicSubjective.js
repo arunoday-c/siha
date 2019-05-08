@@ -352,7 +352,7 @@ class BasicSubjective extends Component {
                       <div className="col-12">
                         <div className="row">
                           <AlgaehDateHandler
-                            div={{ className: "col-4" }}
+                            div={{ className: "col-8" }}
                             label={{
                               forceLabel: "Onset Date"
                             }}
@@ -404,7 +404,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-8" }}
+                            div={{ className: "col-4" }}
                             label={{ forceLabel: "Chronic", isImp: false }}
                             selector={{
                               name: "chronic",
