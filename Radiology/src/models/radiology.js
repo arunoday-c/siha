@@ -44,12 +44,13 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, template_id, billed, service_id,SR.service_code,SR.service_name,\
-          status, cancelled, ordered_by, ordered_date, test_type, technician_id, scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,\
-          validate_date_time,attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
-          PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
-          from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
-          hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE " +
+            "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, template_id, billed, service_id,\
+            SR.service_code,SR.service_name,status, cancelled, ordered_by, ordered_date, test_type, technician_id, \
+            scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,result_html,validate_date_time,\
+            attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
+            PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
+            from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
+            hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE " +
             _stringData +
             " order by hims_f_rad_order_id desc",
           values: inputValues,
@@ -220,7 +221,7 @@ module.exports = {
             "UPDATE `hims_f_rad_order` \
           SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,\
           `validate_by`=?, `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, \
-          `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,`technician_id`=?, `template_id`=?\
+          `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,`technician_id`=?, `template_id`=?, `result_html`=?\
           WHERE `hims_f_rad_order_id`=?",
           values: [
             inputParam.status,
@@ -239,6 +240,7 @@ module.exports = {
             inputParam.report_type,
             inputParam.technician_id,
             inputParam.template_id,
+            inputParam.result_html,
             inputParam.hims_f_rad_order_id
           ],
           printQuery: true
@@ -267,9 +269,10 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "SELECT distinct TD.template_name, TD.template_html, IT.hims_d_investigation_test_id,TD.hims_d_rad_template_detail_id \
-          FROM hims_d_investigation_test IT, \
-         hims_d_rad_template_detail TD  WHERE IT.hims_d_investigation_test_id = TD.test_id AND services_id=?",
+            "SELECT distinct TD.template_name, TD.template_html, IT.hims_d_investigation_test_id,\
+            TD.hims_d_rad_template_detail_id \
+            FROM hims_d_investigation_test IT, \
+            hims_d_rad_template_detail TD  WHERE IT.hims_d_investigation_test_id = TD.test_id AND services_id=?",
           values: [req.query.services_id],
           printQuery: true
         })

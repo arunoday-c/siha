@@ -172,7 +172,6 @@ class PatientProfile extends Component {
         // visit_date: "2018-09-15"
       },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           that.setState({ openDCAF: true, DCAFData: response.data.records });
         }
@@ -354,7 +353,6 @@ class PatientProfile extends Component {
         ? []
         : this.props.patient_diagnosis;
 
-    debugger;
     const _diet =
       this.props.patient_diet === undefined ? [] : this.props.patient_diet;
 
@@ -617,11 +615,18 @@ class PatientProfile extends Component {
                   <section>
                     <b className="top-nav-sec-hdg">Diet</b>
                     <p>
-                      {_diet.map((data, index) => (
+                      {_diet.map((item, index) => {
+                        <React.Fragment key={index}>
+                          <span key={index} className="listofA-D-D">
+                            {item.hims_d_diet_note}
+                          </span>
+                        </React.Fragment>;
+                      })}
+                      {/* {_diet.map((data, index) => (
                         <span key={index} className="listofA-D-D">
                           {data.hims_d_diet_description}
                         </span>
-                      ))}
+                      ))} */}
                     </p>
                   </section>
                 </li>
@@ -738,11 +743,13 @@ class PatientProfile extends Component {
                   <section>
                     <b className="top-nav-sec-hdg">Diet:</b>
                     <p>
-                      {_diet.map((data, index) => (
-                        <span key={index} className="listofA-D-D">
-                          {data.icd_description}
-                        </span>
-                      ))}
+                      {_diet.map((item, index) => {
+                        <React.Fragment key={index}>
+                          <span key={index} className="listofA-D-D">
+                            {item.hims_d_diet_note}
+                          </span>
+                        </React.Fragment>;
+                      })}
                     </p>
                   </section>
                 </li>

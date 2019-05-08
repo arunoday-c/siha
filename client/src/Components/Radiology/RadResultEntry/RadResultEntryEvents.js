@@ -58,12 +58,12 @@ const templatehandle = ($this, e) => {
 
   $this.setState({
     [name]: value,
-    template_html: e.selected.template_html
+    result_html: e.selected.template_html
   });
 };
 
-const rtehandle = ($this, template_html) => {
-  $this.setState({ template_html });
+const rtehandle = ($this, result_html) => {
+  $this.setState({ result_html });
 };
 
 const UpdateRadOrder = ($this, value) => {
@@ -111,7 +111,8 @@ const UpdateRadOrder = ($this, value) => {
       exam_start_date_time: $this.state.exam_start_date_time,
       exam_end_date_time: $this.state.exam_end_date_time,
       exam_status: $this.state.exam_status,
-      report_type: report_type
+      report_type: report_type,
+      result_html: $this.state.result_html
     };
 
     swal({
@@ -131,7 +132,7 @@ const UpdateRadOrder = ($this, value) => {
         //SaveTemplate
         if (value === "Validate") {
           $this.radiologyValidateTemplate.SavingImageOnServer(
-            $this.state.template_html,
+            $this.state.result_html,
             "html"
           );
         }
@@ -182,7 +183,15 @@ const UpdateRadOrder = ($this, value) => {
 };
 
 const onvalidate = $this => {
-  UpdateRadOrder($this, "Validate");
+  if ($this.state.result_html === null) {
+    swalMessage({
+      title: "Please select the template for result.",
+      type: "warning"
+    });
+    return;
+  } else {
+    UpdateRadOrder($this, "Validate");
+  }
 };
 
 export { texthandle, examhandle, templatehandle, rtehandle, onvalidate };

@@ -174,7 +174,8 @@ module.exports = {
               _mysql
                 .executeQuery({
                   query: _data.report_query,
-                  values: _value
+                  values: _value,
+                  printQuery: true
                 })
                 .then(result => {
                   const _path = path.join(

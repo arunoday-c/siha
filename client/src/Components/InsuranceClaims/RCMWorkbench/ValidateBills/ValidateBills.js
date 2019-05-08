@@ -21,7 +21,8 @@ class ValidateBills extends PureComponent {
     super(props);
 
     this.state = {
-      invoice_details: []
+      invoice_details: [],
+      invoices: []
     };
   }
 
@@ -63,6 +64,56 @@ class ValidateBills extends PureComponent {
         }
       );
     }
+  }
+
+  generateReport(rpt_name, rpt_desc) {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: rpt_name,
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value:
+                this.state.invoices.length !== 0
+                  ? this.state.invoices.patient_id
+                  : null
+            },
+            {
+              name: "visit_id",
+              value:
+                this.state.invoices.length !== 0
+                  ? this.state.invoices.visit_id
+                  : null
+            },
+            {
+              name: "visit_date",
+              value: null
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = rpt_desc;
+      }
+    });
   }
 
   imageDetails(type) {
@@ -325,6 +376,7 @@ class ValidateBills extends PureComponent {
   }
 
   render() {
+    debugger;
     let invoices =
       this.state.invoices !== undefined ? [this.state.invoices] : [];
     let invoice_details =
@@ -852,6 +904,28 @@ class ValidateBills extends PureComponent {
             className="btn btn-primary"
           >
             VALIDATE
+          </button>
+
+          <button
+            onClick={this.generateReport.bind(
+              this,
+              "cashInvoice",
+              "Cash Invoice"
+            )}
+            className="btn btn-default"
+          >
+            Cash Invoice
+          </button>
+
+          <button
+            className="btn btn-default"
+            onClick={this.generateReport.bind(
+              this,
+              "creditInvoice",
+              "Credit Invoice"
+            )}
+          >
+            Credit Invoice
           </button>
         </div>
       </AlgaehModalPopUp>

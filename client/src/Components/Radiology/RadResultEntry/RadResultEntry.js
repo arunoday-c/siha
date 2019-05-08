@@ -34,7 +34,7 @@ class RadResultEntry extends Component {
     super(props);
     this.state = {
       template_id: null,
-      template_html: null,
+      result_html: null,
       pre_exam_status: null,
       exam_start_date_time: null,
       exam_end_date_time: null,
@@ -90,7 +90,7 @@ class RadResultEntry extends Component {
     this.setState(
       {
         template_id: null,
-        template_html: null,
+        result_html: null,
         pre_exam_status: null,
         exam_start_date_time: null,
         exam_end_date_time: null,
@@ -381,7 +381,7 @@ class RadResultEntry extends Component {
                   <div className="row">
                     <div className="col-lg-12 editor">
                       <RichTextEditor
-                        value={this.state.template_html}
+                        value={this.state.result_html}
                         onChange={rtehandle.bind(this, this)}
                         modules={{
                           toolbar: [
