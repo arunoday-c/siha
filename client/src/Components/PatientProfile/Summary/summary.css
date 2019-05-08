@@ -33,3 +33,7 @@
     display: inline-block;
     margin-right: 3px;
     margin-top: 6px; }
+  #patientSummary .table-primary,
+  #patientSummary .table-primary > td,
+  #patientSummary .table-primary > th {
+    background: #defffc; }

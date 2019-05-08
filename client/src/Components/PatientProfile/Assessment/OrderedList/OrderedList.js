@@ -251,15 +251,15 @@ class OrderedList extends PureComponent {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     }
                   },
-                  {
-                    fieldName: "test_type",
-                    label: <AlgaehLabel label={{ fieldName: "test_type" }} />,
-                    displayTemplate: row => {
-                      return row.test_type === "S" ? "Stat" : "Routine";
-                    },
+                  // {
+                  //   fieldName: "test_type",
+                  //   label: <AlgaehLabel label={{ fieldName: "test_type" }} />,
+                  //   displayTemplate: row => {
+                  //     return row.test_type === "S" ? "Stat" : "Routine";
+                  //   },
 
-                    disabled: true
-                  },
+                  //   disabled: true
+                  // },
                   {
                     fieldName: "service_type_id",
                     label: (
@@ -281,6 +281,10 @@ class OrderedList extends PureComponent {
                             : ""}
                         </span>
                       );
+                    },
+                    others: {
+                      minWidth: 100,
+                      maxWidth: 200
                     },
 
                     disabled: true
@@ -304,7 +308,10 @@ class OrderedList extends PureComponent {
                         </span>
                       );
                     },
-
+                    others: {
+                      minWidth: 200,
+                      maxWidth: 400
+                    },
                     disabled: true
                   },
                   {

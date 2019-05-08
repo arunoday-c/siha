@@ -234,24 +234,113 @@ class BasicSubjective extends Component {
     return (
       <div className="subjective basicSubjective">
         <div className="row margin-top-15">
-          <div className="algaeh-col-3">
+          <div className="algaeh-fixed-right-menu">
+            <ul className="rightActionIcon">
+              <li>
+                <span className="animated slideInLeft faster">Vitals</span>
+                <i
+                  className="fas fa-heartbeat"
+                  onClick={this.showVitals.bind(this)}
+                />
+                <Vitals
+                  openVital={this.state.openVital}
+                  onClose={this.closeVitals.bind(this)}
+                />
+              </li>
+              <li>
+                <span className="animated slideInLeft faster">Allergies</span>
+                <i
+                  className="fas fa-allergies"
+                  onClick={this.showAllergies.bind(this)}
+                />
+
+                <Allergies
+                  openAllergyModal={this.state.openAlergy}
+                  onClose={this.showAllergies.bind(this)}
+                />
+              </li>
+              <li>
+                <span className="animated slideInLeft faster">History</span>
+                <i
+                  className="fas fa-hourglass-half"
+                  onClick={this.showPatientHistory.bind(this)}
+                />
+                <PatientHistory
+                  openAddModal={this.state.openAddModal}
+                  onClose={this.showPatientHistory.bind(this)}
+                />
+              </li>
+              <li>
+                <span className="animated slideInLeft faster">Examination</span>
+                <i
+                  className="fas fa-clipboard"
+                  //     onClick={this.showPatientHistory.bind(this)}
+                />
+                {/* <PatientHistory
+                  openAddModal={this.state.openAddModal}
+                  onClose={this.showPatientHistory.bind(this)}
+                /> */}
+              </li>
+              <li>
+                <span className="animated slideInLeft faster">Medication</span>
+                <i
+                  className="fas fa-pills"
+                  onClick={this.showMedication.bind(this)}
+                />
+                <Plan
+                  openMedication={this.state.openMedication}
+                  onClose={this.showMedication.bind(this)}
+                />
+              </li>
+              <li>
+                <span className="animated slideInLeft faster">Diet Plan</span>
+                <i
+                  className="fas fa-utensils"
+                  onClick={this.showDietPlan.bind(this)}
+                />
+                <Plan
+                  openDiet={this.state.openDiet}
+                  onClose={this.closeDietPlan.bind(this)}
+                />
+              </li>
+              <li>
+                <span className="animated slideInLeft faster">
+                  Other Details
+                </span>
+                <i
+                  className="fas fa-notes-medical"
+                  onClick={this.showMedicalData.bind(this)}
+                />
+                <Plan
+                  openMedicaldata={this.state.openMedicaldata}
+                  onClose={this.showMedicalData.bind(this)}
+                />
+              </li>
+            </ul>
+          </div>
+          <div className="algaeh-col-4">
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
+                  {" "}
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">
+                        Chief Complaints and Main Symptoms
+                      </h3>
+                    </div>
+                  </div>
                   <div className="portlet-body">
                     <div className="row">
                       <div className="col-12">
                         <div className="row">
                           <div className="col-12">
-                            {" "}
-                            <AlgaehLabel
-                              label={{
-                                forceLabel: "Enter Chief Complaint"
-                              }}
-                            />
                             <textarea
-                              style={{ height: "14vh" }}
-                              value={this.state.chief_complaint}
+                              value={
+                                this.state === undefined
+                                  ? ""
+                                  : this.state.chief_complaint
+                              }
                               name="chief_complaint"
                               onChange={this.textAreaEvent.bind(this)}
                             >
@@ -262,43 +351,8 @@ class BasicSubjective extends Component {
                       </div>
                       <div className="col-12">
                         <div className="row">
-                          <AlagehAutoComplete
-                            div={{ className: "col-6 form-group" }}
-                            label={{ forceLabel: "Pain Level", isImp: false }}
-                            selector={{
-                              name: "pain",
-                              className: "select-fld",
-                              value: this.state.pain,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.PAIN_SCALE
-                              },
-                              onChange: this.ChangeEventHandler.bind(this)
-                            }}
-                          />
-
-                          <AlagehAutoComplete
-                            div={{ className: "col-6 form-group" }}
-                            label={{
-                              forceLabel: "Severity Level",
-                              isImp: false
-                            }}
-                            selector={{
-                              name: "severity",
-                              className: "select-fld",
-                              value: this.state.severity,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.PAIN_SEVERITY
-                              },
-                              onChange: this.ChangeEventHandler.bind(this)
-                            }}
-                          />
-
                           <AlgaehDateHandler
-                            div={{ className: "col-6 form-group" }}
+                            div={{ className: "col-8" }}
                             label={{
                               forceLabel: "Onset Date"
                             }}
@@ -314,7 +368,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehFormGroup
-                            div={{ className: "col-6 form-group" }}
+                            div={{ className: "col-4" }}
                             label={{
                               forceLabel: "Duration",
                               isImp: false
@@ -334,7 +388,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-6 form-group" }}
+                            div={{ className: "col-4" }}
                             label={{ forceLabel: "Interval", isImp: false }}
                             selector={{
                               name: "interval",
@@ -350,7 +404,7 @@ class BasicSubjective extends Component {
                           />
 
                           <AlagehAutoComplete
-                            div={{ className: "col-6 form-group" }}
+                            div={{ className: "col-4" }}
                             label={{ forceLabel: "Chronic", isImp: false }}
                             selector={{
                               name: "chronic",
@@ -364,6 +418,22 @@ class BasicSubjective extends Component {
                               onChange: this.ChangeEventHandler.bind(this)
                             }}
                           />
+                          <AlagehFormGroup
+                            div={{ className: "col-4" }}
+                            label={{
+                              forceLabel: "LMP (Days)",
+                              isImp: false
+                            }}
+                            textBox={{
+                              className: "txt-fld",
+                              name: "duration",
+                              number: true,
+                              //  value: this.state.duration,
+                              events: {
+                                //  onChange: this.dataLevelUpdate.bind(this)
+                              }
+                            }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -372,16 +442,16 @@ class BasicSubjective extends Component {
               </div>
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
+                  {" "}
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Significant Signs</h3>
+                    </div>
+                  </div>
                   <div className="portlet-body">
                     <div className="row">
                       <div className="col-12">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Enter Significant Signs"
-                          }}
-                        />
                         <textarea
-                          style={{ height: "14vh" }}
                           value={this.state.significant_signs}
                           name="significant_signs"
                           onChange={this.textAreaEvent.bind(this)}
@@ -393,22 +463,19 @@ class BasicSubjective extends Component {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="algaeh-col-8">
-            <div className="row">
-              <div className="col-4">
+
+              <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
+                  {" "}
+                  <div className="portlet-title">
+                    <div className="caption">
+                      <h3 className="caption-subject">Other Conditions</h3>
+                    </div>
+                  </div>
                   <div className="portlet-body">
                     <div className="row">
                       <div className="col-12">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Other Signs"
-                          }}
-                        />
                         <textarea
-                          style={{ height: "23vh" }}
                           value={this.state.other_signs}
                           name="other_signs"
                           onChange={this.textAreaEvent.bind(this)}
@@ -420,7 +487,11 @@ class BasicSubjective extends Component {
                   </div>
                 </div>
               </div>
-              <div className="col-8">
+            </div>
+          </div>
+          <div className="algaeh-col-7">
+            <div className="row">
+              <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
                   <div className="portlet-title">
                     <div className="caption">
@@ -566,19 +637,6 @@ class BasicSubjective extends Component {
                         />
                       }
                     </li>
-                    {/* <li
-                            algaehtabs={"AssesmentsNotes"}
-                            className={"nav-item tab-button"}
-                            onClick={this.openTab.bind(this)}
-                          >
-                            {
-                              <AlgaehLabel
-                                label={{
-                                  forceLabel: "Assesments Notes"
-                                }}
-                              />
-                            }
-                          </li> */}
                   </ul>
                 </div>
 
@@ -621,71 +679,6 @@ class BasicSubjective extends Component {
                 </div>
               </div>
             </div>
-          </div>
-          <div className="algaeh-fixed-right-menu">
-            <ul className="rightActionIcon">
-              <li>
-                <i
-                  className="fas fa-heartbeat"
-                  onClick={this.showVitals.bind(this)}
-                />
-                <Vitals
-                  openVital={this.state.openVital}
-                  onClose={this.closeVitals.bind(this)}
-                />
-              </li>
-              <li>
-                <i
-                  className="fas fa-allergies"
-                  onClick={this.showAllergies.bind(this)}
-                />
-
-                <Allergies
-                  openAllergyModal={this.state.openAlergy}
-                  onClose={this.showAllergies.bind(this)}
-                />
-              </li>
-              <li>
-                <i
-                  className="fas fa-utensils"
-                  onClick={this.showDietPlan.bind(this)}
-                />
-                <Plan
-                  openDiet={this.state.openDiet}
-                  onClose={this.closeDietPlan.bind(this)}
-                />
-              </li>
-              <li>
-                <i
-                  className="fas fa-pills"
-                  onClick={this.showMedication.bind(this)}
-                />
-                <Plan
-                  openMedication={this.state.openMedication}
-                  onClose={this.showMedication.bind(this)}
-                />
-              </li>
-              <li>
-                <i
-                  className="fas fa-hourglass-half"
-                  onClick={this.showPatientHistory.bind(this)}
-                />
-                <PatientHistory
-                  openAddModal={this.state.openAddModal}
-                  onClose={this.showPatientHistory.bind(this)}
-                />
-              </li>
-              <li>
-                <i
-                  className="fas fa-notes-medical"
-                  onClick={this.showMedicalData.bind(this)}
-                />
-                <Plan
-                  openMedicaldata={this.state.openMedicaldata}
-                  onClose={this.showMedicalData.bind(this)}
-                />
-              </li>
-            </ul>
           </div>
         </div>
       </div>
