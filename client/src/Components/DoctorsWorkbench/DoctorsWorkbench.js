@@ -392,7 +392,6 @@ class DoctorsWorkbench extends Component {
                               <span
                                 className="pat-code"
                                 onClick={() => {
-                                  debugger;
                                   setGlobal({
                                     "EHR-STD": "PatientProfile",
                                     current_patient: data.patient_id,

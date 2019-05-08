@@ -84,7 +84,6 @@ class BasicSubjective extends Component {
   }
 
   datehandle(e) {
-    debugger;
     SubjectiveHandler().datehandle(this, e);
   }
   ChangeEventHandler(e) {
@@ -158,7 +157,7 @@ class BasicSubjective extends Component {
           encounter_id: Window.global.encounter_id
         }
       });
-      debugger;
+
       if (this.state.hims_f_episode_chief_complaint_id === null) {
         SubjectiveHandler().addChiefComplainToPatient(this);
       } else {
@@ -225,7 +224,6 @@ class BasicSubjective extends Component {
   }
 
   render() {
-    debugger;
     const _diagnosis =
       this.props.patient_diagnosis !== undefined
         ? this.props.patient_diagnosis
