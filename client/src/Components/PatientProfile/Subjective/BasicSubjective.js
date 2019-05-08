@@ -421,7 +421,7 @@ class BasicSubjective extends Component {
                           <AlagehFormGroup
                             div={{ className: "col-4" }}
                             label={{
-                              forceLabel: "LMP",
+                              forceLabel: "LMP (Days)",
                               isImp: false
                             }}
                             textBox={{
