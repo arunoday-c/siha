@@ -9,7 +9,6 @@ import GlobalVariables from "../../../utils/GlobalVariables.json";
 export default function SubjectiveHandler() {
   return {
     dataLevelUpdate: ($this, e) => {
-      debugger;
       e = e.name === undefined ? e.currentTarget : e;
       let name = e.name || e.target.name;
       let value = "";
@@ -51,8 +50,6 @@ export default function SubjectiveHandler() {
       });
     },
     datehandle: ($this, ctrl, e) => {
-      debugger;
-
       const _durat_interval = dateDurationAndInterval(ctrl);
 
       $this.setState({
@@ -128,7 +125,6 @@ export default function SubjectiveHandler() {
     },
 
     addChiefComplainToPatient: $this => {
-      debugger;
       let patChiefComp = [];
       patChiefComp.push({
         comment: $this.state.chief_complaint,
@@ -161,7 +157,6 @@ export default function SubjectiveHandler() {
     },
 
     updatePatientChiefComplaints: $this => {
-      debugger;
       let patChiefComp = [];
       patChiefComp.push({
         hims_f_episode_chief_complaint_id:
@@ -202,7 +197,6 @@ export default function SubjectiveHandler() {
 }
 
 function getPatientChiefComplaints($this) {
-  debugger;
   algaehApiCall({
     uri: "/doctorsWorkBench/getPatientBasicChiefComplaints",
     data: {
@@ -213,7 +207,6 @@ function getPatientChiefComplaints($this) {
     // cancelRequestId: "getPatientBasicChiefComplaints",
     onSuccess: response => {
       if (response.data.success) {
-        debugger;
         if (response.data.records.length > 0) {
           $this.setState({
             hims_f_episode_chief_complaint_id:
@@ -329,7 +322,6 @@ function getPatientDiagnosis($this) {
       mappingName: "patient_diagnosis"
     },
     afterSuccess: data => {
-      debugger;
       $this.setState({
         showInitialDiagnosisLoader: false,
         showFinalDiagnosisLoader: false

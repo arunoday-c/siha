@@ -21,7 +21,7 @@ import OrderProcedureItemsEvent from "./OrderProcedureItemsEvent";
 
 // import AlgaehLoader from "../Wrapper/fullPageLoader";
 // import { getAmountFormart } from "../../utils/GlobalFunctions";
-import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
+// import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class OrderProcedureItems extends Component {
@@ -50,35 +50,8 @@ class OrderProcedureItems extends Component {
       patient_id: null,
       episode_id: null
     };
-    this.getDepartments();
   }
   getDepartments() {
-    algaehApiCall({
-      uri: "/department/get/subdepartment",
-
-      method: "GET",
-      module: "masterSettings",
-      onSuccess: response => {
-        if (response.data.success === true) {
-          const Departmant_Location = _.filter(response.data.records, f => {
-            return (
-              f.hims_d_sub_department_id ===
-              this.props.patient_profile[0].sub_department_id
-            );
-          });
-          this.setState({
-            inventory_location_id: Departmant_Location[0].inventory_location_id
-          });
-        }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.message,
-          type: "error"
-        });
-      }
-    });
-
     if (
       this.props.inventoryitemlist === undefined ||
       this.props.inventoryitemlist.length === 0
@@ -100,33 +73,17 @@ class OrderProcedureItems extends Component {
   };
 
   componentDidMount() {
-    let Location_name =
-      this.props.inventorylocations !== undefined &&
-      this.props.inventorylocations.length > 0
-        ? _.filter(this.props.inventorylocations, f => {
-            return (
-              f.hims_d_inventory_location_id ===
-              this.state.inventory_location_id
-            );
-          })
-        : [];
-
-    if (Location_name.length > 0) {
-      this.setState({
-        location_name: Location_name[0].location_description,
-        location_type: Location_name[0].location_type
-      });
-    }
+    this.getDepartments();
   }
 
-  componentWillReceiveProps() {
+  componentWillReceiveProps(newProps) {
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, f => {
             return (
               f.hims_d_inventory_location_id ===
-              this.state.inventory_location_id
+              newProps.inputsparameters.inventory_location_id
             );
           })
         : [];
@@ -158,7 +115,6 @@ class OrderProcedureItems extends Component {
     OrderProcedureItemsEvent().SaveProcedureItems(this);
   }
   render() {
-    debugger;
     return (
       <React.Fragment>
         <div>
