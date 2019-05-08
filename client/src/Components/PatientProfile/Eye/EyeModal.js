@@ -5,16 +5,14 @@ import { bindActionCreators } from "redux";
 
 import "./Eye.css";
 import {
-  AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete,
   AlagehFormGroup,
-  AlgaehLabel,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 
 import { AlgaehActions } from "../../../actions/algaehActions";
-import { Checkbox } from "semantic-ui-react";
+
 
 class EyeModal extends Component {
   constructor(props) {

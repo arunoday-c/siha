@@ -5,7 +5,6 @@ import "../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
@@ -14,7 +13,6 @@ import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
-import GlobalVariables from "../../utils/GlobalVariables.json";
 
 class StaffCashCollection extends Component {
   constructor(props) {
