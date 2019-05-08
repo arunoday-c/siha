@@ -7,6 +7,20 @@ import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
+const conversionFactory = require("html-to-xlsx");
+const chromeEval = require("chrome-page-eval")({
+  puppeteer
+});
+let outputFolder = path.join(
+  path.join(process.cwd(), "algaeh_report_tool/templates", "Output")
+);
+if (!fs.existsSync(outputFolder)) {
+  fs.mkdirSync(outputFolder);
+}
+const conversion = conversionFactory({
+  extract: chromeEval
+});
+
 const compile = async function(templateName, data) {
   const filePath = path.join(
     process.cwd(),
@@ -40,9 +54,9 @@ hbs.registerHelper("dateTime", function(value, type) {
   type = type || "date";
   if (value != null || value != "") {
     if (type == "date") {
-      return moment(value).format("DD-MM-YYYY"); //new Date(value).toLocaleDateString();
+      return moment(value).format("DD-MM-YYYY");
     } else {
-      return moment(value).format("hh:mm A"); //new Date(value).toLocaleTimeString();
+      return moment(value).format("hh:mm A");
     }
   } else {
     return value;
@@ -160,7 +174,8 @@ module.exports = {
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
             O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
-          values: [_inputParam.reportName, req.userIdentity["x-branch"]]
+          values: [_inputParam.reportName, req.userIdentity["x-branch"]],
+          printQuery: true
         })
         .then(data => {
           const _reportCount = data[0].length;
@@ -178,6 +193,7 @@ module.exports = {
               }
 
               const _inputOrders = eval(_data.report_input_series);
+
               let _value = [];
               for (var i = 0; i < _inputOrders.length; i++) {
                 const _params = _.find(
@@ -192,7 +208,8 @@ module.exports = {
               _mysql
                 .executeQuery({
                   query: _data.report_query,
-                  values: _value
+                  values: _value,
+                  printQuery: true
                 })
                 .then(result => {
                   const _path = path.join(
@@ -370,42 +387,46 @@ module.exports = {
                       startGenerate();
                       break;
                     case "EXCEL":
-                      const conversionFactory = require("html-to-xlsx");
-                      const chromeEval = require("chrome-page-eval")({
-                        puppeteer
-                      });
                       const _outPath = _path + ".xlsx";
-                      const conversion = conversionFactory({
-                        extract: chromeEval
-                      })(async () => {
-                        const stream = await conversion(
-                          await compile(_inputParam.reportName, result)
-                        );
-                        stream.pipe(fs.createWriteStream(_outPath));
-                        fs.exists(_outPath, exists => {
-                          if (exists) {
-                            res.writeHead(200, {
-                              "content-type":
-                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                              "content-disposition":
-                                "attachment;filename=" +
-                                _inputParam.reportName +
-                                moment().format("YYYYMMDDHHmmss") +
-                                ".xlsx"
-                            });
-                            const _fs = fs.createReadStream(_outPath);
-                            _fs.on("end", () => {
-                              fs.unlink(_outPath);
-                            });
-                            _fs.pipe(res);
-                          } else {
-                            res.writeHead(400, {
-                              "Content-Type": "text/plain"
-                            });
-                            res.end("ERROR File does not exist");
-                          }
-                        });
+                      new Promise((resolve, reject) => {
+                        const asyncExcel = async () => {
+                          const _html = await compile(
+                            _inputParam.reportName,
+                            result
+                          );
+                          resolve(_html);
+                        };
+                        asyncExcel();
+                      }).then(htmlData => {
+                        (async () => {
+                          const stream = await conversion(htmlData);
+                          stream.pipe(fs.createWriteStream(_outPath));
+                          fs.exists(_outPath, exists => {
+                            if (exists) {
+                              res.writeHead(200, {
+                                "content-type":
+                                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "content-disposition":
+                                  "attachment;filename=" +
+                                  _inputParam.reportName +
+                                  moment().format("YYYYMMDDHHmmss") +
+                                  ".xlsx"
+                              });
+                              const _fs = fs.createReadStream(_outPath);
+                              _fs.on("end", () => {
+                                fs.unlink(_outPath);
+                              });
+                              _fs.pipe(res);
+                            } else {
+                              res.writeHead(400, {
+                                "Content-Type": "text/plain"
+                              });
+                              res.end("ERROR File does not exist");
+                            }
+                          });
+                        })();
                       });
+
                       break;
                   }
                 })
