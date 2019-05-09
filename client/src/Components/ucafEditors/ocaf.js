@@ -35,7 +35,7 @@ export default class OcafEditor extends Component {
       others: { responseType: "blob" },
       data: {
         report: {
-          reportName: "ucaf",
+          reportName: "ocaf",
           reportParams: [
             {
               name: "hims_d_patient_id",

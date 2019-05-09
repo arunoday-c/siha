@@ -192,7 +192,7 @@ class PatientProfile extends Component {
   openOCAFReport(data, e) {
     let that = this;
     algaehApiCall({
-      uri: "/dcaf/getPatientDCAF",
+      uri: "/ucaf/getPatientUCAF",
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],
