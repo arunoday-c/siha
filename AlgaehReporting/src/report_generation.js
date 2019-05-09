@@ -287,7 +287,7 @@ module.exports = {
                           }</span>
                           <span>Page </span>
                           <span class="pageNumber"></span> / <span class="totalPages"></span>
-                          <span class="showcompay">Powered by Algaeh Techonologies.</span>
+                          <span class="showcompay">Powered by Algaeh Technologies.</span>
                         </div>`;
                           _pdfTemplating["margin"] = {
                             ..._pdfTemplating["margin"],

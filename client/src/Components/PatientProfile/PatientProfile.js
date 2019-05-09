@@ -297,7 +297,7 @@ class PatientProfile extends Component {
     return (
       <AlgaehModalPopUp
         openPopup={this.state.openOCAF}
-        title="DCAF 2.0"
+        title="OCAF 2.0"
         events={{
           onClose: () => {
             this.setState({ openOCAF: false });

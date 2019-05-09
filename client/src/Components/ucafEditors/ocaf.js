@@ -4,7 +4,8 @@ import {
   AlagehFormGroup,
   AlgaehDateHandler,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
+  AlagehAutoComplete
 } from "../Wrapper/algaehWrapper";
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
@@ -224,19 +225,6 @@ export default class OcafEditor extends Component {
                             />
                             <span>Married</span>
                           </label>
-                          <label className="radio inline">
-                            <input
-                              type="radio"
-                              name="maritalType"
-                              checked={
-                                _hims_f_ucaf_header.patient_marital_status ===
-                                "PlanType"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Plan Type</span>
-                          </label>
                         </div>
                         <div className="col-12 customCheckbox">
                           <label className="checkbox inline">
@@ -455,297 +443,374 @@ export default class OcafEditor extends Component {
                   <div className="col-12">
                     <div className="attendingPhysician">
                       <div className="row">
-                        <div className="col-12">
-                          <h5>To be completed by the Attending Physician:</h5>
+                        <div className="col-6 table-responsive">
+                          <table className="table table-bordered table-sm">
+                            <thead>
+                              <tr>
+                                <th />
+                                <th colSpan="5">Right Eye</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td />
+                                <td>Sphere</td>
+                                <td>Cylinder</td>
+                                <td>Axis</td>
+                                <td>Prism</td>
+                                <td>V/A</td>
+                              </tr>
+                              <tr>
+                                <td>Distance</td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>Near</td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
-                        <div className="col-4 customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="caseType"
-                              checked={
-                                _hims_f_ucaf_header.case_type === "IP"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Inpatient</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="caseType"
-                              checked={
-                                _hims_f_ucaf_header.case_type === "OP"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Outpatient</span>
-                          </label>
+                        <div className="col-6 table-responsive">
+                          <table className="table table-bordered table-sm">
+                            <thead>
+                              <tr>
+                                <th colSpan="5">Left Eye</th>
+                                <th />
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>Sphere</td>
+                                <td>Cylinder</td>
+                                <td>Axis</td>
+                                <td>Prism</td>
+                                <td>V/A</td>
+                                <td>PD</td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  {" "}
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                                <td>
+                                  <AlagehAutoComplete
+                                    div={{ className: "" }}
+                                    selector={{
+                                      name: "",
+                                      className: "select-fld",
+                                      dataSource: {},
+                                      others: {}
+                                    }}
+                                  />
+                                </td>
+
+                                <td>
+                                  {" "}
+                                  <AlagehFormGroup
+                                    div={{ className: "" }}
+                                    textBox={{
+                                      className: "txt-fld",
+                                      name: "",
+                                      value: "",
+                                      events: {},
+                                      option: {
+                                        type: "text"
+                                      }
+                                    }}
+                                  />
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
-                        <div className="col-8 customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="empergency_case"
-                              checked={
-                                _hims_f_ucaf_header.patient_emergency_case !==
-                                null
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Emergency Case</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="empergency_l1"
-                              checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
-                                "L1"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Level 1</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="empergency_l2"
-                              checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
-                                "L2"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Level 2</span>
-                          </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="empergency_l3"
-                              checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
-                                "L2"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Level 3</span>
-                          </label>
-                        </div>
                         <AlagehFormGroup
                           div={{ className: "col form-group" }}
                           label={{
-                            forceLabel: "BP",
+                            forceLabel: "Bifocal",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "patient_bp_sys_dya",
-                            value:
-                              _hims_f_ucaf_header.patient_bp_sys +
-                              "/" +
-                              _hims_f_ucaf_header.patient_bp_dia,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Pulse (bpm)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_pulse",
-                            value: _hims_f_ucaf_header.patient_pulse,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Temp (C)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_temp",
-                            value: _hims_f_ucaf_header.patient_temp,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Weight (kg)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_weight",
-                            value: _hims_f_ucaf_header.patient_weight,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "Height (cm)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_height",
-                            value: _hims_f_ucaf_header.patient_height,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col form-group" }}
-                          label={{
-                            forceLabel: "R.R",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_respiratory_rate",
-                            value: _hims_f_ucaf_header.patient_respiratory_rate,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-3 form-group" }}
-                          label={{
-                            forceLabel: "Duration of Illness (Days)",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_duration_of_illness",
-                            value:
-                              _hims_f_ucaf_header.patient_duration_of_illness,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-12 form-group" }}
-                          label={{
-                            forceLabel: "Chief Complaints and Main Symptoms",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_chief_comp_main_symptoms",
-                            value:
-                              _hims_f_ucaf_header.patient_chief_comp_main_symptoms,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-12 form-group" }}
-                          label={{
-                            forceLabel: "Significant Signs",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_significant_signs",
-                            value:
-                              _hims_f_ucaf_header.patient_significant_signs,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-12 form-group" }}
-                          label={{
-                            forceLabel: "Other Conditions",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_other_conditions",
-                            value: _hims_f_ucaf_header.patient_other_conditions,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-12 form-group" }}
-                          label={{
-                            forceLabel: "Diagnosis",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_diagnosys",
-                            value: _hims_f_ucaf_header.patient_diagnosys,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-3 form-group" }}
-                          label={{
-                            forceLabel: "Principal Code 1",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_principal_code_1",
-                            value: _hims_f_ucaf_header.patient_principal_code_1,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-3 form-group" }}
-                          label={{
-                            forceLabel: "Principal Code 2",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "patient_principal_code_2",
-                            value: _hims_f_ucaf_header.patient_principal_code_2,
+                            name: "",
+                            value: "",
                             events: {},
                             option: {
                               type: "text"
@@ -753,15 +818,15 @@ export default class OcafEditor extends Component {
                           }}
                         />{" "}
                         <AlagehFormGroup
-                          div={{ className: "col-3 form-group" }}
+                          div={{ className: "col form-group" }}
                           label={{
-                            forceLabel: "Principal Code 3",
+                            forceLabel: "Add",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "patient_principal_code_3",
-                            value: _hims_f_ucaf_header.patient_principal_code_3,
+                            name: "",
+                            value: "",
                             events: {},
                             option: {
                               type: "text"
@@ -769,15 +834,63 @@ export default class OcafEditor extends Component {
                           }}
                         />{" "}
                         <AlagehFormGroup
-                          div={{ className: "col-3 form-group" }}
+                          div={{ className: "col form-group" }}
                           label={{
-                            forceLabel: "Principal Code 4",
+                            forceLabel: "Vertex",
                             isImp: false
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "patient_principal_code_4",
-                            value: _hims_f_ucaf_header.patient_principal_code_4,
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />{" "}
+                        <AlagehFormGroup
+                          div={{ className: "col form-group" }}
+                          label={{
+                            forceLabel: "Add",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />{" "}
+                        <AlagehFormGroup
+                          div={{ className: "col form-group" }}
+                          label={{
+                            forceLabel: "Bifocal",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />{" "}
+                        <AlagehFormGroup
+                          div={{ className: "col form-group" }}
+                          label={{
+                            forceLabel: "Add",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
                             events: {},
                             option: {
                               type: "text"
@@ -793,124 +906,116 @@ export default class OcafEditor extends Component {
                   <div className="col-12">
                     <div className="attendingPhysician">
                       <div className="row">
-                        <div className="col-12">
-                          <h5>Please tick () where appropriate</h5>
+                        <div className="col-12 customRadio">
+                          <h5>Regular Lenses Type:</h5>
+                          <label className="radio inline">
+                            <input type="radio" name="lenseType" />
+                            <span>Glass</span>
+                          </label>
+                          <label className="radio inline">
+                            <input type="radio" name="lenseType" />
+                            <span>Plastic</span>
+                          </label>
+                          <label className="radio inline">
+                            <input type="radio" name="lenseType" />
+                            <span>None</span>
+                          </label>
                         </div>
-
-                        <div className="col-9 customCheckbox">
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_chronic"
-                              checked={
-                                _hims_f_ucaf_header.patient_chronic === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Chronic</span>
+                        <div className="col-4 customRadio">
+                          <h5>Lenses Specification:</h5>
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Multi-coated</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_congenetal"
-                              checked={
-                                _hims_f_ucaf_header.patient_congenetal === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Congential</span>
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Varliux</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_rta"
-                              checked={
-                                _hims_f_ucaf_header.patient_rta === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>RTA</span>
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Light</span>
+                          </label>{" "}
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Aspheric</span>
+                          </label>{" "}
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Bifocal</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_work_related"
-                              checked={
-                                _hims_f_ucaf_header.patient_work_related === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Work Related</span>
+                        </div>
+                        <div className="col-4 customRadio">
+                          <h5 />
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Medium</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_vaccination"
-                              checked={
-                                _hims_f_ucaf_header.patient_vaccination === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Vaccination</span>
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Lenticular</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_check_up"
-                              checked={
-                                _hims_f_ucaf_header.patient_check_up === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Check-Up</span>
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Single Vision</span>
+                          </label>{" "}
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Dark</span>
+                          </label>{" "}
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Safety Thickness</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_psychiatric"
-                              checked={
-                                _hims_f_ucaf_header.patient_psychiatric === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Psychiatric</span>
+                        </div>{" "}
+                        <div className="col-4 customRadio">
+                          <h5 />
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Anti-Reflection Coating</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_infertility"
-                              checked={
-                                _hims_f_ucaf_header.patient_infertility === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Infertility</span>
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Photosensitive</span>
                           </label>
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="patient_pregnancy"
-                              checked={
-                                _hims_f_ucaf_header.patient_pregnancy === "Y"
-                                  ? true
-                                  : false
-                              }
-                            />
-                            <span>Pregnancy</span>
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>High Index</span>
+                          </label>{" "}
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Colored</span>
+                          </label>{" "}
+                          <label className="radio block">
+                            <input type="radio" name="lenseSpec" />
+                            <span>Anti-Scratch</span>
+                          </label>
+                        </div>
+                        <div className="col-6 customRadio">
+                          <h5>Contact Lenses Type:</h5>
+                          <label className="radio inline">
+                            <input type="radio" name="ContactLenseType" />
+                            <span>Permanent</span>
+                          </label>
+                          <label className="radio inline">
+                            <input type="radio" name="ContactLenseType" />
+                            <span>Disposable</span>
+                          </label>
+                        </div>
+                        <div className="col-6 customRadio">
+                          <h5>Frames:</h5>
+                          <label className="radio inline">
+                            <input type="radio" name="frames" />
+                            <span>Yes</span>
+                          </label>
+                          <label className="radio inline">
+                            <input type="radio" name="frames" />
+                            <span>No</span>
                           </label>
                         </div>
                         <AlagehFormGroup
-                          div={{ className: "col form-group" }}
+                          div={{ className: "col-4 form-group" }}
                           label={{
-                            forceLabel: "Indicate LMP",
+                            forceLabel: "Please Specify No of Pairs",
                             isImp: false
                           }}
                           textBox={{
@@ -923,109 +1028,54 @@ export default class OcafEditor extends Component {
                             }
                           }}
                         />
-
-                        <div className="col-12">
-                          <h5>
-                            Suggestive line(s) of management: Kindly, enumerate
-                            the recommended investigation, and/or procedures{" "}
-                            <b>For outpatient approvals only:</b>
-                          </h5>
-                        </div>
-
-                        <div className="col-12" id="serviceGrid_Cntr">
-                          <AlgaehDataGrid
-                            id="service_grid"
-                            columns={[
-                              {
-                                fieldName: "service_code",
-                                label: (
-                                  <AlgaehLabel label={{ forceLabel: "Code" }} />
-                                )
-                              },
-                              {
-                                fieldName: "service_name",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel: "Description/Service"
-                                    }}
-                                  />
-                                )
-                              },
-                              {
-                                fieldName: "service_type",
-                                label: (
-                                  <AlgaehLabel label={{ forceLabel: "Type" }} />
-                                )
-                              },
-                              {
-                                fieldName: "service_quantity",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ forceLabel: "Quantity" }}
-                                  />
-                                )
-                              },
-                              {
-                                fieldName: "service_net_amout",
-                                label: (
-                                  <AlgaehLabel label={{ forceLabel: "Cost" }} />
-                                )
-                              }
-                            ]}
-                            keyId="hims_f_ucaf_header_id"
-                            dataSource={{
-                              data: this.props.dataProps.hims_f_ucaf_services
-                            }}
-                            paging={{ page: 0, rowsPerPage: 10 }}
-                          />
-                        </div>
-
-                        <div className="col-12">
-                          <h5>
-                            Providers Approval/Coding staff must review/code the
-                            recommended services(s) and allocate cost and
-                            complete the following:
-                          </h5>
-                        </div>
-
-                        <div className="col-12" id="medicationGrd_Cntr">
-                          <AlgaehDataGrid
-                            id="medication_grid"
-                            columns={[
-                              {
-                                fieldName: "generic_name",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{
-                                      forceLabel:
-                                        "Medication Name (Generic Name)"
-                                    }}
-                                  />
-                                )
-                              },
-                              {
-                                fieldName: "type",
-                                label: (
-                                  <AlgaehLabel label={{ forceLabel: "Type" }} />
-                                )
-                              },
-                              {
-                                fieldName: "quantity",
-                                label: (
-                                  <AlgaehLabel
-                                    label={{ forceLabel: "Quantity" }}
-                                  />
-                                )
-                              }
-                            ]}
-                            keyId="hims_f_ucaf_medication_id"
-                            dataSource={{
-                              data: this.props.dataProps.hims_f_ucaf_medication
-                            }}
-                            paging={{ page: 0, rowsPerPage: 10 }}
-                          />
-                        </div>
+                        <AlagehFormGroup
+                          div={{ className: "col form-group" }}
+                          label={{
+                            forceLabel: "Estimated Cost",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col form-group" }}
+                          label={{
+                            forceLabel: "Lenses",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
+                        <AlagehFormGroup
+                          div={{ className: "col form-group" }}
+                          label={{
+                            forceLabel: "Frames",
+                            isImp: false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "",
+                            value: "",
+                            events: {},
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
                       </div>
                     </div>
                   </div>
