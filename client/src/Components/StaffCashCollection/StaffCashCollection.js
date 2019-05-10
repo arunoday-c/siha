@@ -20,6 +20,7 @@ class StaffCashCollection extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      daily_handover_date: new Date(),
       shifts: [],
       shift_open_date: "DD-MM-YYYY",
       shift_open_time: "--:-- --",
@@ -33,6 +34,7 @@ class StaffCashCollection extends Component {
       cashHandoverDetails: []
     };
     this.getShifts();
+    this.getCashHandoverDetails();
   }
 
   resetSaveState() {
@@ -982,7 +984,8 @@ class StaffCashCollection extends Component {
                         <button
                           disabled={
                             this.state.shift_status === "C" ||
-                            this.state.shift_status === "A"
+                            this.state.shift_status === "A" ||
+                            this.state.hims_f_cash_handover_detail_id === ""
                           }
                           onClick={this.authAndCloseShift.bind(this, "C")}
                           className="btn btn-primary"
@@ -991,7 +994,10 @@ class StaffCashCollection extends Component {
                           Close Shift
                         </button>
                         <button
-                          disabled={this.state.shift_status === "A"}
+                          disabled={
+                            this.state.shift_status === "A" ||
+                            this.state.hims_f_cash_handover_detail_id === ""
+                          }
                           onClick={this.authAndCloseShift.bind(this, "A")}
                           className="btn btn-primary"
                           style={{ marginLeft: 10, float: "right" }}
