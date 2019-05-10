@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PrimaryInsurance from "./PrimaryInsurance/PrimaryInsuranceDetails.js";
-import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsuranceDetails.js";
+// import SecondaryInsurance from "./SecondaryInsurance/SecondaryInsuranceDetails.js";
 import "./DisplayInsuranceDetails.css";
 import "./../../../styles/site.css";
 
@@ -25,7 +25,7 @@ export default class DisplayInsuranceDetails extends Component {
           Primary Insurance
         </h6>
         <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
-        {this.props.BillingIOputs.sec_insured === "Y" ? (
+        {/* {this.props.BillingIOputs.sec_insured === "Y" ? (
           <div>
             <h6
               style={{
@@ -38,7 +38,7 @@ export default class DisplayInsuranceDetails extends Component {
             </h6>
             <SecondaryInsurance BillingIOputs={this.props.BillingIOputs} />
           </div>
-        ) : null}
+        ) : null} */}
       </div>
     );
   }

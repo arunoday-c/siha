@@ -262,8 +262,8 @@ class AddReciptForm extends Component {
                       number: { allowNegative: false },
                       disabled: !this.state.Cardchecked,
                       className: "txt-fld",
-                      name: "card_number",
-                      value: this.state.card_number,
+                      name: "card_check_number",
+                      value: this.state.card_check_number,
                       events: {
                         onChange: texthandle.bind(this, this, context)
                       },

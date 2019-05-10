@@ -7,16 +7,14 @@ import Options from "../../../Options.json";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel,
-  AlagehAutoComplete
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   VisitSearch,
   FinalizedAndInvoice,
   ClearData,
-  getCtrlCode,
-  texthandle
+  getCtrlCode
 } from "./InvoiceGenerationHandaler";
 import "./InvoiceGeneration.css";
 import "../../../styles/site.css";
@@ -24,7 +22,6 @@ import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import AlgaehReport from "../../Wrapper/printReports.js";
 import { getAmountFormart } from "../../../utils/GlobalFunctions";
-import GlobalVariables from "../../../utils/GlobalVariables.json";
 
 class InvoiceGeneration extends Component {
   constructor(props) {
@@ -375,7 +372,7 @@ class InvoiceGeneration extends Component {
                             : this.props.servicetype.filter(
                                 f =>
                                   f.hims_d_service_type_id ===
-                                  parseInt(row.service_type_id)
+                                  parseInt(row.service_type_id,10)
                               );
 
                         return (
@@ -395,7 +392,7 @@ class InvoiceGeneration extends Component {
                             : this.props.servicetype.filter(
                                 f =>
                                   f.hims_d_service_type_id ===
-                                  parseInt(row.service_type_id)
+                                  parseInt(row.service_type_id,10)
                               );
 
                         return (
@@ -730,7 +727,7 @@ class InvoiceGeneration extends Component {
                         </div>
                       </div>
                     </div>
-                    <div className="col-12">
+                    {/* <div className="col-12">
                       <h5>Secondary Insurance</h5>
                       <div className="row">
                         <div className="col-4">
@@ -813,7 +810,7 @@ class InvoiceGeneration extends Component {
                           </h6>
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 {/* Values */}

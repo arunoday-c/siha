@@ -7,6 +7,20 @@ import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
+const conversionFactory = require("html-to-xlsx");
+const chromeEval = require("chrome-page-eval")({
+  puppeteer
+});
+let outputFolder = path.join(
+  path.join(process.cwd(), "algaeh_report_tool/templates", "Output")
+);
+if (!fs.existsSync(outputFolder)) {
+  fs.mkdirSync(outputFolder);
+}
+const conversion = conversionFactory({
+  extract: chromeEval
+});
+
 const compile = async function(templateName, data) {
   const filePath = path.join(
     process.cwd(),
@@ -14,6 +28,7 @@ const compile = async function(templateName, data) {
     `${templateName}.hbs`
   );
   const html = await fs.readFile(filePath, "utf-8");
+
   return hbs.compile(html)(data);
 };
 hbs.registerHelper("sumOf", function(data, sumby, callBack) {
@@ -39,9 +54,9 @@ hbs.registerHelper("dateTime", function(value, type) {
   type = type || "date";
   if (value != null || value != "") {
     if (type == "date") {
-      return moment(value).format("DD-MM-YYYY"); //new Date(value).toLocaleDateString();
+      return moment(value).format("DD-MM-YYYY");
     } else {
-      return moment(value).format("hh:mm A"); //new Date(value).toLocaleTimeString();
+      return moment(value).format("hh:mm A");
     }
   } else {
     return value;
@@ -83,21 +98,17 @@ hbs.registerHelper("imageSource", function(filePath) {
   return "data:image/" + _extention + ";base64," + img;
 });
 
-hbs.registerHelper("groupBy", function(data, groupby, callBack) {
-  data = Array.isArray(data) ? data : [];
+hbs.registerHelper("groupBy", function(data, groupby) {
   const groupBy = _.chain(data)
     .groupBy(groupby)
     .map(function(detail, key) {
       return {
         [groupby]: key,
-        detail: detail
+        groupDetail: detail
       };
     })
     .value();
-  if (typeof callBack == "function") callBack(groupBy);
-  else {
-    return groupBy;
-  }
+  return groupBy;
 });
 hbs.registerHelper("currentDateTime", function(type) {
   if (type == null || type == "") {
@@ -108,6 +119,45 @@ hbs.registerHelper("currentDateTime", function(type) {
     return moment().format("DD-MM-YYYY");
   }
 });
+hbs.registerHelper("firstElement", function(array, index, fieldName) {
+  array = array || [];
+  index = index || 0;
+  if (array.length > 0) {
+    return array[index][fieldName];
+  } else {
+    return null;
+  }
+});
+hbs.registerHelper("consoleLog", function(data) {
+  if (typeof data == "string") {
+    return data;
+  } else {
+    return JSON.stringify(data);
+  }
+});
+
+const groupBy = (data, groupby) => {
+  const groupBy = _.chain(data)
+    .groupBy(groupby)
+    .map(function(detail, key) {
+      return {
+        [groupby]: key,
+        groupDetail: detail
+      };
+    })
+    .value();
+  return groupBy;
+};
+const arrayFirstRowToObject = (data, index) => {
+  index = index || 0;
+  if (data == null) {
+    return {};
+  } else if (data.length > 0 && data.length <= index) {
+    return data[index];
+  } else {
+    return {};
+  }
+};
 module.exports = {
   getReport: async (req, res) => {
     const input = req.query;
@@ -124,7 +174,8 @@ module.exports = {
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
             O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
-          values: [_inputParam.reportName, req.userIdentity["x-branch"]]
+          values: [_inputParam.reportName, req.userIdentity["x-branch"]],
+          printQuery: true
         })
         .then(data => {
           const _reportCount = data[0].length;
@@ -142,6 +193,7 @@ module.exports = {
               }
 
               const _inputOrders = eval(_data.report_input_series);
+
               let _value = [];
               for (var i = 0; i < _inputOrders.length; i++) {
                 const _params = _.find(
@@ -156,7 +208,8 @@ module.exports = {
               _mysql
                 .executeQuery({
                   query: _data.report_query,
-                  values: _value
+                  values: _value,
+                  printQuery: true
                 })
                 .then(result => {
                   const _path = path.join(
@@ -223,7 +276,7 @@ module.exports = {
                         } else {
                           _pdfTemplating[
                             "footerTemplate"
-                          ] = `<style> .pdffooter { font-size: 8px; 
+                          ] = `<style> .pdffooter { font-size: 8px;
                             font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
                           .showreportname{float:left;padding-left:5px;font-size: 08px;}
                           .showcompay{float:right;padding-right:5px;font-size: 08px;}
@@ -234,7 +287,7 @@ module.exports = {
                           }</span>
                           <span>Page </span>
                           <span class="pageNumber"></span> / <span class="totalPages"></span>
-                          <span class="showcompay">Powered by Algaeh Techonologies.</span>
+                          <span class="showcompay">Powered by Algaeh Technologies.</span>
                         </div>`;
                           _pdfTemplating["margin"] = {
                             ..._pdfTemplating["margin"],
@@ -334,42 +387,46 @@ module.exports = {
                       startGenerate();
                       break;
                     case "EXCEL":
-                      const conversionFactory = require("html-to-xlsx");
-                      const chromeEval = require("chrome-page-eval")({
-                        puppeteer
-                      });
                       const _outPath = _path + ".xlsx";
-                      const conversion = conversionFactory({
-                        extract: chromeEval
-                      })(async () => {
-                        const stream = await conversion(
-                          await compile(_inputParam.reportName, result)
-                        );
-                        stream.pipe(fs.createWriteStream(_outPath));
-                        fs.exists(_outPath, exists => {
-                          if (exists) {
-                            res.writeHead(200, {
-                              "content-type":
-                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                              "content-disposition":
-                                "attachment;filename=" +
-                                _inputParam.reportName +
-                                moment().format("YYYYMMDDHHmmss") +
-                                ".xlsx"
-                            });
-                            const _fs = fs.createReadStream(_outPath);
-                            _fs.on("end", () => {
-                              fs.unlink(_outPath);
-                            });
-                            _fs.pipe(res);
-                          } else {
-                            res.writeHead(400, {
-                              "Content-Type": "text/plain"
-                            });
-                            res.end("ERROR File does not exist");
-                          }
-                        });
+                      new Promise((resolve, reject) => {
+                        const asyncExcel = async () => {
+                          const _html = await compile(
+                            _inputParam.reportName,
+                            result
+                          );
+                          resolve(_html);
+                        };
+                        asyncExcel();
+                      }).then(htmlData => {
+                        (async () => {
+                          const stream = await conversion(htmlData);
+                          stream.pipe(fs.createWriteStream(_outPath));
+                          fs.exists(_outPath, exists => {
+                            if (exists) {
+                              res.writeHead(200, {
+                                "content-type":
+                                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "content-disposition":
+                                  "attachment;filename=" +
+                                  _inputParam.reportName +
+                                  moment().format("YYYYMMDDHHmmss") +
+                                  ".xlsx"
+                              });
+                              const _fs = fs.createReadStream(_outPath);
+                              _fs.on("end", () => {
+                                fs.unlink(_outPath);
+                              });
+                              _fs.pipe(res);
+                            } else {
+                              res.writeHead(400, {
+                                "Content-Type": "text/plain"
+                              });
+                              res.end("ERROR File does not exist");
+                            }
+                          });
+                        })();
                       });
+
                       break;
                   }
                 })
@@ -397,9 +454,11 @@ module.exports = {
   },
   getReportMultiPrint: async (req, res, next) => {
     const input = req.query;
+
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
+
       _mysql
         .executeQuery({
           query:
@@ -409,7 +468,8 @@ module.exports = {
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
             O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
-          values: [_inputParam.reportName, req.userIdentity["x-branch"]]
+          values: [_inputParam.reportName, req.userIdentity["x-branch"]],
+          printQuery: true
         })
         .then(data => {
           const templates = data[0];
@@ -417,12 +477,11 @@ module.exports = {
           const inputParameters = _inputParam.reportParams;
           let promises = [];
           for (let p = 0; p < inputParameters.length; p++) {
-            promises.push(
-              new Promise((resolve, reject) => {
-                console.log("Promise", Promise);
-                const inputData = inputParameters[p];
-                let reportSequence = _inputParam.reportName;
-                for (let i = 0; i < reportSequence.length; i++) {
+            const inputData = inputParameters[p];
+            let reportSequence = _inputParam.reportName;
+            for (let i = 0; i < reportSequence.length; i++) {
+              promises.push(
+                new Promise((resolve, reject) => {
                   const resourceTemplate = _.find(
                     templates,
                     f => f.report_name == reportSequence[i]
@@ -440,10 +499,14 @@ module.exports = {
                       _value.push(_params.value);
                     }
                   }
+                  const _myquery = _mysql.mysqlQueryFormat(
+                    resourceTemplate.report_query,
+                    _value
+                  );
                   _mysql
                     .executeQuery({
-                      query: resourceTemplate.report_query,
-                      values: _value
+                      query: _myquery,
+                      printQuery: true
                     })
                     .then(result => {
                       const _path = path.join(
@@ -466,6 +529,7 @@ module.exports = {
                         const _resu = eval(data_string);
                         result = JSON.parse(_resu);
                       }
+
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
@@ -509,7 +573,7 @@ module.exports = {
                         } else {
                           _pdfTemplating[
                             "footerTemplate"
-                          ] = `<style> .pdffooter { font-size: 8px; 
+                          ] = `<style> .pdffooter { font-size: 8px;
                         font-family: Arial, Helvetica, sans-serif; font-weight: bold; width: 100%; text-align: center; color: grey; padding-left: 10px; }
                       .showreportname{float:left;padding-left:5px;font-size: 08px;}
                       .showcompay{float:right;padding-right:5px;font-size: 08px;}
@@ -520,13 +584,14 @@ module.exports = {
                       }</span>
                       <span>Page </span>
                       <span class="pageNumber"></span> / <span class="totalPages"></span>
-                      <span class="showcompay">Powered by Algaeh Techonologies.</span>
+                      <span class="showcompay">Powered by Algaeh Technologies.</span>
                     </div>`;
                           _pdfTemplating["margin"] = {
                             ..._pdfTemplating["margin"],
                             bottom: "50px"
                           };
                         }
+
                         await page.setContent(
                           await compile(resourceTemplate.report_name, result)
                         );
@@ -545,11 +610,17 @@ module.exports = {
                       startGenerate();
                     })
                     .catch(error => {
+                      console.error(
+                        "Error Report Name",
+                        resourceTemplate.report_name
+                      );
+                      console.error("Error Query", _myquery);
+                      console.error();
                       reject(error);
                     });
-                }
-              })
-            );
+                })
+              );
+            }
           }
 
           Promise.all(promises)
@@ -583,8 +654,10 @@ module.exports = {
       "algaeh_report_tool/templates/Output",
       _outfileName
     );
+
     merge(getAllReports, _rOut, error => {
       if (error) {
+        console.error(error);
         res.writeHead(400, {
           "Content-Type": "text/plain"
         });

@@ -1,15 +1,10 @@
 import React, { Component } from "react";
 
 import "./DentalLab.css";
-import BreadCrumb from "../../common/BreadCrumb/BreadCrumb";
 import {
   AlgaehDataGrid,
-  AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
-  AlgaehDateHandler
+  AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
-import DentelForm from "./DentalForm";
 
 export default class DentalLab extends Component {
   constructor(props) {

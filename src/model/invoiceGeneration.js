@@ -199,11 +199,11 @@ let addInvoiceGeneration = (req, res, next) => {
           // let today = moment().format("YYYY-MM-DD");
 
           connection.query(
-            "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,discount_amount,\
-              net_amount, patient_resp,patient_tax, patient_payable, company_resp, company_tax, company_payable, \
-              sec_company_resp, sec_company_tax, sec_company_payable,insurance_provider_id, sub_insurance_id, network_id, network_office_id, \
-              card_number,policy_number,card_holder_name, card_holder_age, card_holder_gender, card_class,\
-              created_date,created_by,updated_date,updated_by) \
+            "INSERT INTO `hims_f_invoice_header` (invoice_number,invoice_date,patient_id,visit_id,gross_amount,\
+              discount_amount,net_amount, patient_resp,patient_tax, patient_payable, company_resp, company_tax, \
+              company_payable, sec_company_resp, sec_company_tax, sec_company_payable,insurance_provider_id, \
+              sub_insurance_id, network_id, network_office_id, card_number,policy_number,card_holder_name, \
+              card_holder_age, card_holder_gender, card_class, created_date, created_by, updated_date, updated_by) \
             VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             [
               documentCode,
@@ -254,6 +254,7 @@ let addInvoiceGeneration = (req, res, next) => {
                   "service_type_id",
                   "service_id",
                   "cpt_code",
+                  "unit_cost",
                   "quantity",
                   "gross_amount",
                   "discount_amount",

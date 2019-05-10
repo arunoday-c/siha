@@ -124,7 +124,9 @@ const openResultEntry = ($this, row) => {
         mappingName: "templatelist"
       },
       afterSuccess: data => {
+        debugger;
         let Template = row;
+        row.exam_start_date_time = new Date(row.exam_start_date_time);
         Template.Templatelist = data;
         $this.setState({
           resultEntry: !$this.state.resultEntry,

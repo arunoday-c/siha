@@ -136,8 +136,8 @@ module.exports = {
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
               , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,balance_credit \
-              , insurance_yesno, created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
+                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -170,7 +170,7 @@ module.exports = {
             inputParam.credit_amount,
             inputParam.receiveable_amount,
             inputParam.balance_credit,
-            inputParam.insurance_yesno,
+
             inputParam.created_by,
             new Date(),
             inputParam.updated_by,
@@ -1248,11 +1248,13 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
           })
             .then(policydtls => {
               utilities.logger().log("policydtls: ", policydtls);
+
+              utilities.logger().log("covered: ", policydtls.covered);
               covered =
-                policydtls !== null
-                  ? "N"
-                  : policydtls.covered !== undefined
-                  ? policydtls.covered
+                policydtls != null
+                  ? policydtls.covered != null
+                    ? policydtls.covered
+                    : "N"
                   : "N";
               utilities.logger().log("covered: ", covered);
               if (

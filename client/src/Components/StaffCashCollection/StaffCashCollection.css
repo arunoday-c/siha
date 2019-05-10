@@ -9,6 +9,7 @@
   list-style: none;
   border: 1px solid #d6d6d6;
   border-radius: 5px;
+  min-height: 20vh;
   max-height: 23.3vh;
   overflow: auto; }
   .staffCashCollection .ulShiftList li {
@@ -32,3 +33,9 @@
         background: #ccc; }
     .staffCashCollection .ulShiftList li:last-child span {
       border-bottom: none; }
+  .staffCashCollection .ulShiftList .noDataStyle {
+    padding: 20px !important;
+    display: inline-block !important;
+    text-align: center !important;
+    width: 100% !important;
+    color: lightgray !important; }

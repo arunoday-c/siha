@@ -388,7 +388,7 @@ class ItemListsReturn extends Component {
                             />
                             <h6>{getAmountFormart(this.state.copay_amount)}</h6>
                           </div>
-                          <div className="col-lg-6">
+                          {/* <div className="col-lg-6">
                             <AlgaehLabel
                               label={{
                                 forceLabel: "Sec Copay Amount"
@@ -397,7 +397,7 @@ class ItemListsReturn extends Component {
                             <h6>
                               {getAmountFormart(this.state.sec_copay_amount)}
                             </h6>
-                          </div>
+                          </div> */}
                         </div>
                         <div className="row">
                           <div className="col-lg-12 patientRespo">
@@ -490,7 +490,7 @@ class ItemListsReturn extends Component {
                             </div>
                           </div>
 
-                          <div className="col-lg-12">
+                          {/* <div className="col-lg-12">
                             <AlgaehLabel
                               label={{
                                 forceLabel: "Secondary Company"
@@ -534,7 +534,7 @@ class ItemListsReturn extends Component {
                                 </h6>
                               </div>
                             </div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
                     </div>

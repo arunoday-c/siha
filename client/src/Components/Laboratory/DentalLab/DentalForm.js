@@ -5,9 +5,6 @@ import { bindActionCreators } from "redux";
 
 import "./../../../styles/site.css";
 import {
-  AlgaehLabel,
-  AlagehFormGroup,
-  AlagehAutoComplete,
   AlgaehDateHandler,
   AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";

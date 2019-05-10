@@ -62,7 +62,7 @@ class LabResult extends Component {
       <React.Fragment>
         <div className="hptl-phase1-lab-result-form">
           <div className="container-fluid">
-            <div className="row form-details">
+            <div className="row">
               <div className="col-lg-12" id="LabTestName">
                 <AlgaehDataGrid
                   id="Lab_list_grid"

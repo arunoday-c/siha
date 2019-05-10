@@ -5,7 +5,6 @@ import "../../styles/site.css";
 import {
   AlgaehLabel,
   AlgaehDataGrid,
-  AlagehAutoComplete,
   AlagehFormGroup,
   AlgaehDateHandler
 } from "../Wrapper/algaehWrapper";
@@ -14,7 +13,6 @@ import { AlgaehValidation } from "../../utils/GlobalFunctions";
 import moment from "moment";
 import AlgaehLoader from "../Wrapper/fullPageLoader";
 import Enumerable from "linq";
-import GlobalVariables from "../../utils/GlobalVariables.json";
 
 class StaffCashCollection extends Component {
   constructor(props) {
@@ -22,6 +20,7 @@ class StaffCashCollection extends Component {
     this.state = {
       daily_handover_date: new Date(),
       shifts: [],
+      daily_handover_date: moment().format("DD-MM-YYYY"),
       shift_open_date: "DD-MM-YYYY",
       shift_open_time: "--:-- --",
       shift_close_date: "DD-MM-YYYY",
@@ -391,7 +390,7 @@ class StaffCashCollection extends Component {
                   <div className="col-12">
                     <button
                       onClick={this.getCashHandoverDetails.bind(this)}
-                      className="btn btn-default margin-bottom-15 margin-top-15"
+                      className="btn btn-primary margin-bottom-15 margin-top-15 float-right"
                     >
                       Apply
                     </button>
@@ -463,7 +462,7 @@ class StaffCashCollection extends Component {
                         ))
                       ) : (
                         <span className="noDataStyle">
-                          No Previos Opened Shifts
+                          Relax! No more Open Shift Available.
                         </span>
                       )}
                     </ul>

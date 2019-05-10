@@ -34,7 +34,7 @@ class RadResultEntry extends Component {
     super(props);
     this.state = {
       template_id: null,
-      template_html: null,
+      result_html: null,
       pre_exam_status: null,
       exam_start_date_time: null,
       exam_end_date_time: null,
@@ -72,6 +72,7 @@ class RadResultEntry extends Component {
     }
   }
   componentWillReceiveProps(newProps) {
+    debugger;
     if (
       newProps.selectedPatient !== undefined &&
       (newProps.radschlist === undefined || newProps.radschlist.length === 0)
@@ -90,7 +91,7 @@ class RadResultEntry extends Component {
     this.setState(
       {
         template_id: null,
-        template_html: null,
+        result_html: null,
         pre_exam_status: null,
         exam_start_date_time: null,
         exam_end_date_time: null,
@@ -144,7 +145,7 @@ class RadResultEntry extends Component {
               </div>
               <div className="patientDemographic">
                 <span>
-                  Ref by:{" "}
+                  Ref by:
                   <b>
                     {display !== null && display.length !== 0
                       ? display[0].full_name
@@ -152,7 +153,7 @@ class RadResultEntry extends Component {
                   </b>
                 </span>
                 <span>
-                  Scheduled Date:{" "}
+                  Scheduled Date:
                   <b>
                     {moment(this.state.scheduled_date_time).format(
                       Options.dateFormat
@@ -381,7 +382,7 @@ class RadResultEntry extends Component {
                   <div className="row">
                     <div className="col-lg-12 editor">
                       <RichTextEditor
-                        value={this.state.template_html}
+                        value={this.state.result_html}
                         onChange={rtehandle.bind(this, this)}
                         modules={{
                           toolbar: [

@@ -100,16 +100,16 @@
                     <td colspan="2" class="otherDetails">
                         <table class="innerTable">
                             <tbody>
-                                <tr>
-                                    <td colspan="7"><b> To be completed by the Dentist:</b>
-                                    </td>
-                                </tr>
+
                                 <tr>
                                     <td>
                                         <table>
                                             <tbody>
 
-
+                                                <tr>
+                                                    <td><b> To be completed by the Dentist:</b>
+                                                    </td>
+                                                </tr>
                                                 <tr>
                                                     <td>Duration Of Illness:
                                                         <span>{{header.patient_duration_of_illness}} (days)</span></td>
@@ -194,7 +194,8 @@
                                         </table>
                                     </td>
                                     <td style="width: 30%">
-                                        <img src="{{imageSource 'images/dcaf_Dental_chart.png'}}" />
+                                        <img class="dcaf_Dental_chart"
+                                            src="{{imageSource 'images/dcaf_Dental_chart.png'}}" />
                                     </td>
                                 </tr>
                             </tbody>
@@ -214,8 +215,7 @@
                                                 <tr>
                                                     <th>Code</th>
                                                     <th>Description/Service</th>
-                                                    <th>Type</th>
-                                                    <th>Quantity</th>
+                                                    <th>Teeth Number</th>
                                                     <th>Cost</th>
                                                 </tr>
                                             </thead>
@@ -224,8 +224,7 @@
                                                 <tr>
                                                     <td>{{service_code}}</td>
                                                     <td>{{service_name}}</td>
-                                                    <td>{{service_type}}</td>
-                                                    <td>{{service_quantity}}</td>
+                                                    <td>{{teeth_number}}</td>
                                                     <td>{{service_net_amout}}</td>
                                                 </tr>
                                                 {{/each}}

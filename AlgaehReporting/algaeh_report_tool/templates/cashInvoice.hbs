@@ -10,7 +10,7 @@
                     <td><label>رقم التسجيل الضريبي / TRN</label></td>
                     <td> <span>{{header.tax_number}}</span></td>
                     <td><label>النوع / Type</label></td>
-                    <td> <span>ائتمان/ Credit</span></td>
+                    <td> <span>ائتمان/ Cash</span></td>
                 </tr>
                 <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
@@ -35,25 +35,6 @@
                     <td><label>Department / القسم</label></td>
                     <td> <span>{{header.sub_department_name}}</span></td>
                 </tr>
-
-                <tr>
-                    <td><label>شركة التأمين / Insurance Company</label></td>
-                    <td> <span>{{header.insurance_provider_name}}</span></td>
-                    <td colspan="2">
-                    </td>
-                </tr>
-
-                <tr>
-                    <td><label>رقم البطاقة / رقم السياسة / Card No/ Policy No</label></td>
-                    <td> <span>{{header.card_number}} / {{header.card_holder_name}}</span></td>
-                    <td><label>حامل السياسة / Policy Holder</label></td>
-                    <td> <span>{{header.policy_number}}</span></td>
-                </tr>
-
-                <tr>
-                    <td><label>Class / Class</label></td>
-                    <td colspan="3"> <span>{{header.card_class_name}}</span></td>
-                </tr>
             </table>
 
 
@@ -63,13 +44,12 @@
                 <thead>
                     <tr>
                         <th>SERVICE DESCRIPTION</th>
-                        <th>PRICE</th>
                         <th>QUANTITY</th>
+                        <th>PRICE</th>
                         <th>NET AMOUNT</th>
-                        <th>PATIENT SHARE</th>
-                        <th>COMPANY RESP.</th>
-                        <th>COMPANY TAX</th>
-                        <th>COMPANY PAYABLE</th>
+                        <th>PATIENT RESP.</th>
+                        <th>PATIENT TAX</th>
+                        <th>PATIENT PAYABLE</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,18 +59,14 @@
                     </tr>
                     <tr>
                         <td>{{service_name}}</td>
-                        <td>{{price}}</td>
                         <td>{{quantity}}</td>
+                        <td>{{price}}</td>
                         <td>{{net_amount}}</td>
-                        <td>{{patient_share}}</td>
-                        <td>{{company_resp}}</td>
-                        <td>{{company_tax}}</td>
-                        <td>{{company_payable}}</td>
+                        <td>{{patient_resp}}</td>
+                        <td>{{patient_tax}}</td>
+                        <td>{{patient_payable}}</td>
                     </tr>
                     {{/each}}
-
-
-
                 </tbody>
             </table>
         </section>

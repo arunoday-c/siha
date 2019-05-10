@@ -116,7 +116,7 @@ class InsuranceSetup extends Component {
                 onClick={this.ShowModel.bind(this)}
               >
                 <i className="fas fa-plus" />
-              </a>{" "}
+              </a>
               <InsuranceAdd
                 HeaderCaption={
                   <AlgaehLabel

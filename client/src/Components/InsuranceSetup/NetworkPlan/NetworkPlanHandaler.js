@@ -3,8 +3,9 @@ import { Validations } from "./NetworkPlanValidation";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 
-const texthandle = ($this, ctrl, e) => {
-  e = e || ctrl;
+const texthandle = ($this, e) => {
+  debugger;
+  // e = e || ctrl;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;

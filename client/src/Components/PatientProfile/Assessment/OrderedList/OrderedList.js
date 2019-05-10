@@ -15,7 +15,7 @@ import {
 } from "../../../../utils/algaehApiCall";
 import Options from "../../../../Options.json";
 import OrderProcedureItems from "../OrderProcedureItems/OrderProcedureItems";
-// import _ from "lodash";
+import _ from "lodash";
 
 class OrderedList extends PureComponent {
   constructor(props) {
@@ -24,7 +24,8 @@ class OrderedList extends PureComponent {
     this.state = {
       isOpen: false,
       isOpenItems: false,
-      procedure_name: null
+      procedure_name: null,
+      inventory_location_id: null
     };
   }
 
@@ -68,11 +69,38 @@ class OrderedList extends PureComponent {
           let data = response.data.records;
 
           if (data.length > 0) {
-            this.setState({
-              ...this.state,
-              isOpenItems: !this.state.isOpenItems,
-              procedure_name: data[0].procedure_desc,
-              hims_d_procedure_id: data[0].hims_d_procedure_id
+            algaehApiCall({
+              uri: "/department/get/subdepartment",
+
+              method: "GET",
+              module: "masterSettings",
+              onSuccess: response => {
+                if (response.data.success === true) {
+                  const Departmant_Location = _.filter(
+                    response.data.records,
+                    f => {
+                      return (
+                        f.hims_d_sub_department_id ===
+                        this.props.patient_profile[0].sub_department_id
+                      );
+                    }
+                  );
+                  this.setState({
+                    ...this.state,
+                    isOpenItems: !this.state.isOpenItems,
+                    procedure_name: data[0].procedure_desc,
+                    hims_d_procedure_id: data[0].hims_d_procedure_id,
+                    inventory_location_id:
+                      Departmant_Location[0].inventory_location_id
+                  });
+                }
+              },
+              onFailure: error => {
+                swalMessage({
+                  title: error.message,
+                  type: "error"
+                });
+              }
             });
           } else {
             swalMessage({
@@ -157,7 +185,6 @@ class OrderedList extends PureComponent {
   }
 
   render() {
-    debugger;
     let patient_date =
       this.props.patient_profile !== undefined
         ? this.props.patient_profile
@@ -224,15 +251,15 @@ class OrderedList extends PureComponent {
                       return <span>{this.dateFormater(row.created_date)}</span>;
                     }
                   },
-                  {
-                    fieldName: "test_type",
-                    label: <AlgaehLabel label={{ fieldName: "test_type" }} />,
-                    displayTemplate: row => {
-                      return row.test_type === "S" ? "Stat" : "Routine";
-                    },
+                  // {
+                  //   fieldName: "test_type",
+                  //   label: <AlgaehLabel label={{ fieldName: "test_type" }} />,
+                  //   displayTemplate: row => {
+                  //     return row.test_type === "S" ? "Stat" : "Routine";
+                  //   },
 
-                    disabled: true
-                  },
+                  //   disabled: true
+                  // },
                   {
                     fieldName: "service_type_id",
                     label: (
@@ -254,6 +281,10 @@ class OrderedList extends PureComponent {
                             : ""}
                         </span>
                       );
+                    },
+                    others: {
+                      minWidth: 100,
+                      maxWidth: 200
                     },
 
                     disabled: true
@@ -277,7 +308,10 @@ class OrderedList extends PureComponent {
                         </span>
                       );
                     },
-
+                    others: {
+                      minWidth: 200,
+                      maxWidth: 400
+                    },
                     disabled: true
                   },
                   {
@@ -348,6 +382,7 @@ class OrderedList extends PureComponent {
               patient_date.length > 0 ? patient_date[0].patient_code : null,
             full_name:
               patient_date.length > 0 ? patient_date[0].full_name : null,
+            inventory_location_id: this.state.inventory_location_id,
             procedure_name: this.state.procedure_name,
             procedure_id: this.state.hims_d_procedure_id
           }}

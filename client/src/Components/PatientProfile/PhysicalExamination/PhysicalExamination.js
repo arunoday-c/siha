@@ -3,9 +3,7 @@ import "./physical_examination.css";
 import PatientHistory from "../PatientHistory/PatientHistory";
 import Examination from "../Examination/Examination";
 import {
-  AlagehFormGroup,
-  AlgaehDataGrid,
-  AlgaehLabel
+  AlagehFormGroup
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 // import ExaminationDiagram from "./ExaminationDiagram";

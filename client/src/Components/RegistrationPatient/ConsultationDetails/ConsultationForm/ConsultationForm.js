@@ -282,11 +282,7 @@ class AddConsultationForm extends Component {
                             type="checkbox"
                             name="maternity_patient_yes"
                             value="Y"
-                            checked={
-                              this.state.maternity_patient === "Y"
-                                ? true
-                                : false
-                            }
+                            checked={this.state.checked_maternity_patient}
                             onChange={radioChange.bind(this, this, context)}
                           />
                           <span>Yes</span>
@@ -346,11 +342,7 @@ class AddConsultationForm extends Component {
                                   type="checkbox"
                                   name="existing_plan"
                                   value="Y"
-                                  checked={
-                                    this.state.existing_plan === "Y"
-                                      ? true
-                                      : false
-                                  }
+                                  checked={this.state.checked_existing_plan}
                                   onChange={radioChange.bind(
                                     this,
                                     this,

@@ -40,6 +40,8 @@ import Allergies from "./Allergies/Allergies";
 
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
+const OcafEditor = React.lazy(() => import("../ucafEditors/ocaf"));
+
 // import ExaminationDiagram from "./PhysicalExamination/ExaminationDiagram";
 let allergyPopUp;
 
@@ -66,6 +68,8 @@ class PatientProfile extends Component {
       openDCAF: false,
       DCAFData: undefined,
       openAlergy: false,
+      openOCAF: false,
+      OCAFData: [],
       chart_type: Window.global["chart_type"]
     };
 
@@ -172,7 +176,6 @@ class PatientProfile extends Component {
         // visit_date: "2018-09-15"
       },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           that.setState({ openDCAF: true, DCAFData: response.data.records });
         }
@@ -184,6 +187,31 @@ class PatientProfile extends Component {
         });
       }
     });
+  }
+
+  openOCAFReport(data, e) {
+    let that = this;
+    algaehApiCall({
+      uri: "/ucaf/getPatientUCAF",
+      method: "GET",
+      data: {
+        patient_id: Window.global["current_patient"],
+        visit_id: Window.global["visit_id"]
+        // visit_date: "2018-09-15"
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          that.setState({ openOCAF: true, OCAFData: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "warning"
+        });
+      }
+    });
+    // this.setState({ openOCAF: true, OCAFData: [] });
   }
 
   showAllergyAlert(_patient_allergies) {
@@ -262,6 +290,21 @@ class PatientProfile extends Component {
         }}
       >
         <DcafEditor dataProps={this.state.DCAFData} />
+      </AlgaehModalPopUp>
+    );
+  }
+  renderOCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openOCAF}
+        title="OCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openOCAF: false });
+          }
+        }}
+      >
+        <OcafEditor dataProps={this.state.OCAFData} />
       </AlgaehModalPopUp>
     );
   }
@@ -354,7 +397,6 @@ class PatientProfile extends Component {
         ? []
         : this.props.patient_diagnosis;
 
-    debugger;
     const _diet =
       this.props.patient_diet === undefined ? [] : this.props.patient_diet;
 
@@ -472,7 +514,7 @@ class PatientProfile extends Component {
                   <span>DCAF Report</span>
                 </li>
               ) : this.state.chart_type === "O" ? (
-                <li>
+                <li onClick={this.openOCAFReport.bind(this, _pat_profile)}>
                   <span>OCAF Report</span>
                 </li>
               ) : (
@@ -617,11 +659,18 @@ class PatientProfile extends Component {
                   <section>
                     <b className="top-nav-sec-hdg">Diet</b>
                     <p>
-                      {_diet.map((data, index) => (
+                      {_diet.map((item, index) => {
+                        <React.Fragment key={index}>
+                          <span key={index} className="listofA-D-D">
+                            {item.hims_d_diet_note}
+                          </span>
+                        </React.Fragment>;
+                      })}
+                      {/* {_diet.map((data, index) => (
                         <span key={index} className="listofA-D-D">
                           {data.hims_d_diet_description}
                         </span>
-                      ))}
+                      ))} */}
                     </p>
                   </section>
                 </li>
@@ -738,11 +787,13 @@ class PatientProfile extends Component {
                   <section>
                     <b className="top-nav-sec-hdg">Diet:</b>
                     <p>
-                      {_diet.map((data, index) => (
-                        <span key={index} className="listofA-D-D">
-                          {data.icd_description}
-                        </span>
-                      ))}
+                      {_diet.map((item, index) => {
+                        <React.Fragment key={index}>
+                          <span key={index} className="listofA-D-D">
+                            {item.hims_d_diet_note}
+                          </span>
+                        </React.Fragment>;
+                      })}
                     </p>
                   </section>
                 </li>
@@ -785,6 +836,7 @@ class PatientProfile extends Component {
         </div>
         {this.renderUCAFReport()}
         {this.renderDCAFReport()}
+        {this.renderOCAFReport()}
       </div>
     );
   }
