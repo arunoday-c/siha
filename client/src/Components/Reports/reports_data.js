@@ -261,8 +261,9 @@ export default [
         subitem: "Daily Transaction",
         template_name: "Income/DailyTransaction",
         reportQuery: "dailyTransaction",
-        // reportUri: "/projectjobcosting/getProjectWiseJobCost",
+        //reportUri: "/projectjobcosting/getProjectWiseJobCost",
         module: "IncomeModule",
+
         reportParameters: [
           {
             type: "date",
@@ -302,7 +303,7 @@ export default [
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Select Department",
             link: {
               uri: "/department/get/subdepartment"
@@ -317,7 +318,7 @@ export default [
             type: "dropdown",
             name: "",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Select Doctor",
             link: {
               uri: "/employee/get",
@@ -409,7 +410,7 @@ export default [
             type: "dropdown",
             name: "V.sub_department_id",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Select Department",
             link: {
               uri: "/department/get/subdepartment"
@@ -424,7 +425,7 @@ export default [
             type: "dropdown",
             name: "",
             initialLoad: true,
-            isImp: true,
+            isImp: false,
             label: "Select Doctor",
             link: {
               uri: "/employee/get",
