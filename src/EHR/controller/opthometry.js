@@ -2,7 +2,9 @@ import { Router } from "express";
 import algaehUtilities from "algaeh-utilities/utilities";
 import {
   addGlassPrescription,
-  getGlassPrescription
+  getGlassPrescription,
+  updateGlassPrescription,
+  deleteGlassPrescription
 } from "../model/opthometry";
 export default () => {
   const api = Router();
@@ -24,6 +26,49 @@ export default () => {
     });
     next();
   });
+  api.put(
+    "/updateGlassPrescription",
+    updateGlassPrescription,
+    (req, res, next) => {
+      let result = req.records;
+
+      if (result.invalid_input == true) {
+        res.status(utilities.httpStatus().ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(utilities.httpStatus().ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    }
+  );
+
+  api.delete(
+    "/deleteGlassPrescription",
+    deleteGlassPrescription,
+    (req, res, next) => {
+      let result = req.records;
+
+      if (result.invalid_input == true) {
+        res.status(utilities.httpStatus().ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(utilities.httpStatus().ok).json({
+          success: true,
+          records: result
+        });
+      }
+
+      next();
+    }
+  );
 
   return api;
 };
