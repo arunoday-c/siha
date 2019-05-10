@@ -191,8 +191,81 @@ class PatientHistory extends Component {
         >
           <div className="popupInner">
             <div className="row">
-              <div className="col-8">
+              <div className="col-4">
                 <div className="popLeftDiv">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Social History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.social_history}
+                    name="social_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.social_history}
+                  </textarea>
+
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Medical History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.medical_history}
+                    name="medical_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.medical_history}
+                  </textarea>
+
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Surgical History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.surgical_history}
+                    name="surgical_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.surgical_history}
+                  </textarea>
+
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Family History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.family_history}
+                    name="family_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.family_history}
+                  </textarea>
+
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Birth History"
+                    }}
+                  />
+                  <textarea
+                    style={{ height: "17vh" }}
+                    value={this.state.birth_history}
+                    name="birth_history"
+                    onChange={this.textHandle.bind(this)}
+                  >
+                    {this.state.birth_history}
+                  </textarea>
+                </div>
+              </div>
+              <div className="col-8">
+                <div className="popRightDiv">
                   <h5>Social History</h5>
                   <table
                     className="table table-sm table-bordered customTable"
@@ -296,79 +369,6 @@ class PatientHistory extends Component {
                       ))}
                     </tbody>
                   </table>
-                </div>
-              </div>
-              <div className="col-4" style={{ paddingLeft: 0 }}>
-                <div className="popRightDiv" style={{ paddingLeft: 0 }}>
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Social History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.social_history}
-                    name="social_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.social_history}
-                  </textarea>
-
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Medical History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.medical_history}
-                    name="medical_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.medical_history}
-                  </textarea>
-
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Surgical History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.surgical_history}
-                    name="surgical_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.surgical_history}
-                  </textarea>
-
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Family History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.family_history}
-                    name="family_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.family_history}
-                  </textarea>
-
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Birth History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.birth_history}
-                    name="birth_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.birth_history}
-                  </textarea>
                 </div>
               </div>
             </div>

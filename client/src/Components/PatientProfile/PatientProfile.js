@@ -594,7 +594,7 @@ class PatientProfile extends Component {
               </li>
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className="fas fa-allergies" />
+                  <i className="fas fa-allergies AllergyActive" />
                   <section>
                     <b className="top-nav-sec-hdg">
                       Allergies

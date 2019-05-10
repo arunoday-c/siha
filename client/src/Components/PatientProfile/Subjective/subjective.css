@@ -80,12 +80,8 @@
       margin: 0 0 5px 0;
       padding: 0;
       background: #fff;
-      font-size: 1.5rem;
       border-radius: 0 7px 7px 0;
       text-align: center;
-      width: 45px;
-      line-height: 45px;
-      height: 45px;
       display: block; }
       .algaeh-fixed-right-menu .rightActionIcon li span {
         display: none;
@@ -112,7 +108,9 @@
         .algaeh-fixed-right-menu .rightActionIcon li:hover span {
           display: block; }
       .algaeh-fixed-right-menu .rightActionIcon li i {
-        color: #666666 !important; }
+        color: #666666 !important;
+        font-size: 1.5rem;
+        padding: 10px; }
 
 .toggleBorder {
   border-bottom: 1px solid #cccccc;
