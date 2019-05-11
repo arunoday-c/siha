@@ -61,30 +61,35 @@
                         <table class="innerTable">
                             <tbody>
                                 <tr>
-                                    <td colspan="3"><b>Print/Fill in clear letters or Emboss Card:</b></td>
+                                    <td><b>Print/Fill in clear letters or Emboss Card:</b></td>
                                 </tr>
-                                <tr>
-                                    <td colspan="3">Insured Name:
-                                        <span>{{insurance.0.primary_insurance_company_name}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="">ID.Card No.: <span>{{insurance.0.primary_card_number}}</span></td>
-                                    <td colspan="">Sex: <span>{{insurance.0.sex}}</span></td>
-                                    <td colspan="">Age: <span>{{insurance.0.age}}Y</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Policy Holder: <span>{{insurance.0.policyholder}}</span></td>
-                                    <td colspan="1">Policy Number: <span>{{insurance.0.primary_policy_num}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="2">Expiry Date: <span>{{insurance.0.primary_effective_end_date}}</span>
-                                    </td>
-                                    <td colspan="1">Class: <span>{{insurance.0.class}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3">Approval: <span>{{insurance.0.approval}}</span></td>
 
-                                </tr>
+                                <tr><td>
+  <!-- <table class="IDImgSection"><tr><td><img src"" alt="Insurance ID Card"></td></tr></table> -->
+                                  <table class="IDTextSection">
+                                  <tr>
+                                      <td colspan="3">Insured Name:
+                                          <span>{{insurance.0.primary_insurance_company_name}}</span></td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="">ID.Card No.: <span>{{insurance.0.primary_card_number}}</span></td>
+                                      <td colspan="">Sex: <span>{{insurance.0.sex}}</span></td>
+                                      <td colspan="">Age: <span>{{insurance.0.age}}Y</span></td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="2">Policy Holder: <span>{{insurance.0.policyholder}}</span></td>
+                                      <td colspan="1">Policy Number: <span>{{insurance.0.primary_policy_num}}</span></td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="2">Expiry Date: <span>{{insurance.0.primary_effective_end_date}}</span>
+                                      </td>
+                                      <td colspan="1">Class: <span>{{insurance.0.class}}</span></td>
+                                  </tr>
+                                  <tr>
+                                      <td colspan="3">Approval: <span>{{insurance.0.approval}}</span></td>
+
+                                  </tr>
+                                </table></td></tr>
                             </tbody>
                         </table>
                     </td>

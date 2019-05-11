@@ -79,3 +79,13 @@ table {
     height: 250px;
     width: auto;
 }
+.IDImgSection{
+  margin: 0; padding: 0; border:0;
+}
+.IDImgSection{
+  margin: 0; padding: 0; border:0;
+}
+.IDImgSection img{
+  height: 200px;
+}
+.IDTextSection tr td{padding: 5px;line-height: 30px;}
