@@ -389,7 +389,6 @@ class Allergies extends Component {
 
                 <div className="col-lg-8 popRightDiv">
                   <h6> List of Allergies</h6>
-                  <hr />
                   <div id="patient-allergy-grod-cntr">
                     <AlgaehDataGrid
                       id="patient-allergy-grid"
@@ -439,7 +438,8 @@ class Allergies extends Component {
                                 ) : null}
                               </span>
                             );
-                          }
+                          },
+                          others: { minWidth: 150 }
                         },
                         {
                           fieldName: "allergy_name",
@@ -451,7 +451,8 @@ class Allergies extends Component {
                           disabled: true,
                           editorTemplate: data => {
                             return <span>{data.allergy_name}</span>;
-                          }
+                          },
+                          others: { minWidth: 150 }
                         },
                         {
                           fieldName: "onset",
@@ -584,7 +585,8 @@ class Allergies extends Component {
                                 }}
                               />
                             );
-                          }
+                          },
+                          others: { minWidth: 400 }
                         }
                       ]}
                       keyId="hims_f_patient_allergy_id"

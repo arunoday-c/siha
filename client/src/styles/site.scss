@@ -1479,6 +1479,8 @@ th {
     .popRightDiv {
       min-height: 20vh !important;
       max-height: 25vh !important;
+      overflow-x: hidden;
+      overflow-y: auto;
       img {
         margin-left: auto;
         margin-right: auto;

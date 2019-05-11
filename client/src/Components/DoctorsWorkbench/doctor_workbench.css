@@ -396,7 +396,8 @@
       display: inline-block;
       text-align: center; }
       .doctor_workbench .opPatientList .opList li .op-sec-3 .opPatientStatus {
-        display: block; }
+        display: block;
+        line-height: 25px; }
       .doctor_workbench .opPatientList .opList li .op-sec-3 .newVisit {
         color: #ff8800; }
       .doctor_workbench .opPatientList .opList li .op-sec-3 .followUp {

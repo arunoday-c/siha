@@ -242,7 +242,7 @@ class InvoiceGeneration extends Component {
                   name="creidt_invoice"
                   onClick={this.selectData.bind(this)}
                 />
-                <span>Creidt Invoice</span>
+                <span>Credit Invoice</span>
               </label>
             </div>
           </div>
@@ -338,7 +338,7 @@ class InvoiceGeneration extends Component {
                 style={{ paddingTop: "15px" }}
               >
                 <AlgaehDataGrid
-                  id="Invoice_Generation"
+                  id=""
                   columns={[
                     // billed
                     {
@@ -594,7 +594,7 @@ class InvoiceGeneration extends Component {
                 <div className="col-7 insurance-sec">
                   <div className="row">
                     <div className="col-12">
-                      <h5>Primary Insurance</h5>
+                      <h6>Primary Insurance</h6>
                       <div className="row">
                         <div className="col-4">
                           <AlgaehLabel
@@ -728,7 +728,7 @@ class InvoiceGeneration extends Component {
                       </div>
                     </div>
                     {/* <div className="col-12">
-                      <h5>Secondary Insurance</h5>
+                      <h6>Secondary Insurance</h6>
                       <div className="row">
                         <div className="col-4">
                           <AlgaehLabel
@@ -822,7 +822,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Gross Total"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.gross_amount)}</h5>
+                      <h6>{getAmountFormart(this.state.gross_amount)}</h6>
                     </div>
                     <div className="col-4">
                       <AlgaehLabel
@@ -830,7 +830,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Discount Total"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.discount_amount)}</h5>
+                      <h6>{getAmountFormart(this.state.discount_amount)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -839,7 +839,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Net Total"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.net_amout)}</h5>
+                      <h6>{getAmountFormart(this.state.net_amout)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -848,7 +848,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Patient Resp."
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.patient_resp)}</h5>
+                      <h6>{getAmountFormart(this.state.patient_resp)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -857,7 +857,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Patient Tax"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.patient_tax)}</h5>
+                      <h6>{getAmountFormart(this.state.patient_tax)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -866,7 +866,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Patient Payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.patient_payable)}</h5>
+                      <h6>{getAmountFormart(this.state.patient_payable)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -875,7 +875,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Company Resp."
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.company_resp)}</h5>
+                      <h6>{getAmountFormart(this.state.company_resp)}</h6>
                     </div>
                     <div className="col-4">
                       <AlgaehLabel
@@ -883,7 +883,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Company Tax"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.company_tax)}</h5>
+                      <h6>{getAmountFormart(this.state.company_tax)}</h6>
                     </div>
                     <div className="col-4">
                       <AlgaehLabel
@@ -891,7 +891,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Company Payable"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.company_payble)}</h5>
+                      <h6>{getAmountFormart(this.state.company_payble)}</h6>
                     </div>
 
                     <div className="col-4">
@@ -900,7 +900,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Sec Company Resp."
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.sec_comapany_resp)}</h5>
+                      <h6>{getAmountFormart(this.state.sec_comapany_resp)}</h6>
                     </div>
                     <div className="col-4">
                       <AlgaehLabel
@@ -908,7 +908,7 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Sec Company Tax"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.sec_company_tax)}</h5>
+                      <h6>{getAmountFormart(this.state.sec_company_tax)}</h6>
                     </div>
                     <div className="col-4">
                       <AlgaehLabel
@@ -916,9 +916,9 @@ class InvoiceGeneration extends Component {
                           forceLabel: "Sec Company Payable"
                         }}
                       />
-                      <h5>
+                      <h6>
                         {getAmountFormart(this.state.sec_company_payable)}
-                      </h5>
+                      </h6>
                     </div>
                   </div>
                 </div>

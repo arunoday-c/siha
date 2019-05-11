@@ -228,7 +228,7 @@ let updatePOSBilling = (req, res, next) => {
   }
 };
 
-//Created by nowshad to get the POS which has creidt amount
+//Created by nowshad to get the POS which has Credit amount
 let getPatientPOSCriedt = (req, res, next) => {
   let whereStatement = {
     patient_id: "ALL"

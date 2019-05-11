@@ -164,13 +164,14 @@
     position: absolute;
     right: 20px; }
     .patientProfile .patientTopNav .patient-quick-info li {
-      background: #ffffff;
+      background: #fff;
       color: #00a796;
-      padding: 4px 10px 3px;
+      padding: 6px 10px 4px;
       cursor: pointer;
       margin: 0 10px;
       list-style: none;
-      display: inline-block; }
+      display: inline-block;
+      font-size: 1.1rem; }
       .patientProfile .patientTopNav .patient-quick-info li section {
         width: 30vw;
         height: auto;
@@ -203,12 +204,11 @@
           color: #fff;
           margin-right: 5px;
           margin-bottom: 3px;
-          border-radius: 20px;
-          background: #3f9c91;
+          border-radius: 5px;
+          background: #00a796;
           white-space: normal; }
         .patientProfile .patientTopNav .patient-quick-info li section p {
-          background: rgba(0, 0, 0, 0.05);
-          border-top: 1px solid #65dace;
+          border-top: 1px solid #a7fff6;
           margin: -10px;
           padding: 10px; }
     .patientProfile .patientTopNav .patient-quick-info li:hover {
@@ -227,7 +227,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border: 1px solid #e1e1e1;
+  border: 1px solid #e6e6e6;
   position: absolute;
   right: 11px;
   border-radius: 5px 0px 5px 5px;
@@ -265,3 +265,6 @@
     cursor: pointer;
     background: #fff !important;
     color: #00a796 !important; }
+
+.AllergyActive {
+  color: red; }

@@ -242,67 +242,66 @@ class BasicSubjective extends Component {
                   className="fas fa-heartbeat"
                   onClick={this.showVitals.bind(this)}
                 />
-                <Vitals
-                  openVital={this.state.openVital}
-                  onClose={this.closeVitals.bind(this)}
-                />
               </li>
+              <Vitals
+                openVital={this.state.openVital}
+                onClose={this.closeVitals.bind(this)}
+              />
               <li>
                 <span className="animated slideInLeft faster">Allergies</span>
                 <i
                   className="fas fa-allergies"
                   onClick={this.showAllergies.bind(this)}
                 />
-
-                <Allergies
-                  openAllergyModal={this.state.openAlergy}
-                  onClose={this.showAllergies.bind(this)}
-                />
               </li>
+              <Allergies
+                openAllergyModal={this.state.openAlergy}
+                onClose={this.showAllergies.bind(this)}
+              />
               <li>
                 <span className="animated slideInLeft faster">History</span>
                 <i
                   className="fas fa-hourglass-half"
                   onClick={this.showPatientHistory.bind(this)}
                 />
-                <PatientHistory
-                  openAddModal={this.state.openAddModal}
-                  onClose={this.showPatientHistory.bind(this)}
-                />
               </li>
+              <PatientHistory
+                openAddModal={this.state.openAddModal}
+                onClose={this.showPatientHistory.bind(this)}
+              />
               <li>
                 <span className="animated slideInLeft faster">Examination</span>
                 <i
                   className="fas fa-clipboard"
                   //     onClick={this.showPatientHistory.bind(this)}
                 />
-                {/* <PatientHistory
+              </li>{" "}
+              {/* <PhysicalExamination
                   openAddModal={this.state.openAddModal}
-                  onClose={this.showPatientHistory.bind(this)}
+                  onClose={this.showPhysicalExamination.bind(this)}
                 /> */}
-              </li>
               <li>
                 <span className="animated slideInLeft faster">Medication</span>
                 <i
                   className="fas fa-pills"
                   onClick={this.showMedication.bind(this)}
                 />
-                <Plan
-                  openMedication={this.state.openMedication}
-                  onClose={this.showMedication.bind(this)}
-                />
               </li>
+              <Plan
+                openMedication={this.state.openMedication}
+                onClose={this.showMedication.bind(this)}
+              />
               <li>
                 <span className="animated slideInLeft faster">Diet Plan</span>
                 <i
                   className="fas fa-utensils"
                   onClick={this.showDietPlan.bind(this)}
                 />
-                <Plan
-                  openDiet={this.state.openDiet}
-                  onClose={this.closeDietPlan.bind(this)}
-                />
               </li>
+              <Plan
+                openDiet={this.state.openDiet}
+                onClose={this.closeDietPlan.bind(this)}
+              />
               <li>
                 <span className="animated slideInLeft faster">
                   Other Details
@@ -311,11 +310,11 @@ class BasicSubjective extends Component {
                   className="fas fa-notes-medical"
                   onClick={this.showMedicalData.bind(this)}
                 />
-                <Plan
-                  openMedicaldata={this.state.openMedicaldata}
-                  onClose={this.showMedicalData.bind(this)}
-                />
               </li>
+              <Plan
+                openMedicaldata={this.state.openMedicaldata}
+                onClose={this.showMedicalData.bind(this)}
+              />
             </ul>
           </div>
           <div className="algaeh-col-4">

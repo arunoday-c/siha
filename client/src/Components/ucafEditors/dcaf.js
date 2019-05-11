@@ -18,7 +18,8 @@ export default class DcafEditor extends Component {
       class: "",
       insurance_holder: "",
       insurance_approved: "",
-      dcaf_data: undefined
+      dcaf_data: undefined,
+      showImgArea: true
     };
   }
 
@@ -234,6 +235,14 @@ export default class DcafEditor extends Component {
                         <div className="col-12">
                           <h5>Print/Fill in clear letters or Emboss Card:</h5>
                         </div>
+
+                        {this.state.showImgArea ?
+                          <div className="col-12">
+                            <div className="row">Image Comes Here</div></div>
+:(
+  <div className="col-12">
+    <div className="row">
+
                         <AlagehFormGroup
                           div={{ className: "col-6 form-group" }}
                           label={{
@@ -387,7 +396,8 @@ export default class DcafEditor extends Component {
                               type: "text"
                             }
                           }}
-                        />
+                        /></div></div>
+                      )}
                       </div>
                     </div>
                   </div>

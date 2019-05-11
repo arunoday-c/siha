@@ -20,7 +20,7 @@
   "shift_open_date": "Shift Open Date",
   "shift_open_time": "Shift Open Time",
   "shift_close_date": "Shift Close Date",
-  "shift_close_time": "Shift Open Date",
+  "shift_close_time": "Shift Close Time",
   "closed_by": "Closed By",
   "remarks": "Remarks"
 }

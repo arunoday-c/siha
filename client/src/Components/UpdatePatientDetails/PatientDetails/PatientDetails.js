@@ -687,7 +687,7 @@ class UpdatePatientForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{
-                          forceLabel: "Enter Employee ID",
+                          fieldName: "employee_id",
                           isImp: false
                         }}
                         textBox={{

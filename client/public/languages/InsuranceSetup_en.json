@@ -24,7 +24,7 @@
   "transaction_number": " Tax Registration Number",
   "card_format": "Card Format",
 
-  "network_type": "Network Type",
+  "network_type": "Policy Name",
   "insurance_sub_id": "Applicable For",
   "employer": "Employer/Company",
   "policy_number": "Policy Number",
@@ -48,7 +48,7 @@
   "con_max_limit": "Consultation Max Limit",
 
   "deductible_lab": "Lab Deductible",
-  "lab_max": "Rad Max Limit",
+  "lab_max": "Lab Max Limit",
   "copay_percent": "Lab Copay",
 
   "copay_percent_rad": "Rad Copay",

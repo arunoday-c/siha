@@ -70,6 +70,7 @@ class RCMWorkbench extends Component {
   }
 
   addClaimsArray(row, e) {
+    debugger;
     if (row.claim_validated === "P") {
       e.preventDefault();
       swalMessage({
@@ -78,10 +79,8 @@ class RCMWorkbench extends Component {
       });
     } else if (validatedClaims.includes(row)) {
       validatedClaims.pop(row);
-      //console.log("Validate Claims", validatedClaims);
     } else {
       validatedClaims.push(row);
-      //console.log("Validate Claims", validatedClaims);
     }
   }
 
@@ -156,7 +155,77 @@ class RCMWorkbench extends Component {
     });
   }
 
-  getInvoices() {}
+  generateReports() {
+    AlgaehLoader({ show: true });
+    let rpt_paramenter = [];
+    // validatedClaims
+    for (let i = 0; i < validatedClaims.length; i++) {
+      rpt_paramenter.push([
+        { name: "hims_d_patient_id", value: validatedClaims[i].patient_id },
+        {
+          name: "visit_id",
+          value: validatedClaims[i].visit_id
+        },
+        {
+          name: "visit_date",
+          value: null
+        }
+      ]);
+    }
+    debugger;
+    algaehApiCall({
+      uri: "/multireports", //"/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      timeout: 120000,
+      others: {
+        responseType: "blob",
+        onDownloadProgress: progressEvent => {
+          let percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          if (percentCompleted >= 100) {
+            this.setState({ progressPercentage: 100 });
+          } else {
+            this.setState({ progressPercentage: percentCompleted });
+          }
+        }
+      },
+      data: {
+        report: {
+          reportName: [
+            "creditInvoice",
+            "ucaf",
+            "haematologyReport",
+            "radiologyReport"
+          ],
+          reportParams: rpt_paramenter,
+          outputFileType: "PDF" //"EXCEL", //"PDF",
+        }
+      },
+      onSuccess: res => {
+        debugger;
+
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "Algaeh Merdge";
+        AlgaehLoader({ show: false });
+      },
+      onFailure: error => {
+        AlgaehLoader({ show: false });
+      }
+    });
+  }
 
   patientSearch() {
     AlgaehSearch({
@@ -395,24 +464,27 @@ class RCMWorkbench extends Component {
                           return (
                             <i
                               onClick={() => {
-                                row.claim_validated === "V" ||
-                                row.claim_validated === "X"
-                                  ? swalMessage({
-                                      title:
-                                        "Invoice Already Validated, You can now submit the invoice for claims",
-                                      type: "warning"
-                                    })
-                                  : this.setState({
-                                      openClaims: true,
-                                      sendProps: row
-                                    });
+                                // row.claim_validated === "V" ||
+                                // row.claim_validated === "X"
+                                //   ? swalMessage({
+                                //       title:
+                                //         "Invoice Already Validated, You can now submit the invoice for claims",
+                                //       type: "warning"
+                                //     })
+                                //   :
+                                this.setState({
+                                  openClaims: true,
+                                  sendProps: row
+                                });
                               }}
                               className="fas fa-eye"
                             />
                           );
                         },
+
                         others: {
-                          fixed: "left"
+                          fixed: "left",
+                          filterable: false
                         }
                       },
                       {
@@ -436,7 +508,8 @@ class RCMWorkbench extends Component {
                           );
                         },
                         others: {
-                          fixed: "left"
+                          fixed: "left",
+                          filterable: false
                         }
                       },
                       {
@@ -599,6 +672,7 @@ class RCMWorkbench extends Component {
                     dataSource={{
                       data: this.state.claims
                     }}
+                    filter={true}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     // events={{
@@ -639,6 +713,19 @@ class RCMWorkbench extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Re-Submit",
+                    returnText: true
+                  }}
+                />
+              </button>
+
+              <button
+                onClick={this.generateReports.bind(this)}
+                type="button"
+                className="btn btn-other"
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Print",
                     returnText: true
                   }}
                 />

@@ -1067,7 +1067,7 @@ let addPlanAndPolicy = (req, res, next) => {
                 if (jsonArr[i].price_from == "S" && flag == 0) {
                   flag = 1;
                   connection.query(
-                    "INSERT INTO hims_d_services_insurance(`insurance_id`,`services_id`,`service_code`,`service_type_id`,`cpt_code`,`service_name`,`insurance_service_name`,\
+                    "INSERT IGNORE INTO hims_d_services_insurance(`insurance_id`,`services_id`,`service_code`,`service_type_id`,`cpt_code`,`service_name`,`insurance_service_name`,\
                           `hospital_id`,`gross_amt`,`net_amount`,`created_by`,`updated_by`)\
                           SELECT " +
                       obj.insurance_provider_id +
@@ -1303,7 +1303,7 @@ let getPriceList = (req, res, next) => {
       let where = whereCondition(extend(priselistWhereCondition, req.query));
 
       connection.query(
-        "select * from hims_d_services_insurance where record_status='A' AND" +
+        "select * ,'comp' as price_from from hims_d_services_insurance where record_status='A' AND" +
           where.condition,
         where.values,
 
@@ -1337,7 +1337,7 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
     let _stringData = "";
 
     if (req.query.insuranceProviderId != null) {
-      _stringData += " and insuranceProviderId=?";
+      _stringData += " and insurance_provider_id=?";
       inputValues.push(req.query.insuranceProviderId);
     }
 
