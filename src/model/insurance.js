@@ -1305,9 +1305,6 @@ let getPriceList = (req, res, next) => {
       connection.query(
         "select * ,'comp' as price_from from hims_d_services_insurance where record_status='A' AND" +
           where.condition,
-        where.values +
-          "select * ,'policy' as price_from from hims_d_services_insurance_network where record_status='A' AND" +
-          where.condition,
         where.values,
 
         (error, result) => {
@@ -1315,7 +1312,7 @@ let getPriceList = (req, res, next) => {
           if (error) {
             next(error);
           }
-          req.records = { ...result[0], ...result[1] };
+          req.records = result;
 
           next();
         }
