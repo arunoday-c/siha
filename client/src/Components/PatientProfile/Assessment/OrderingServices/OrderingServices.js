@@ -393,6 +393,9 @@ class OrderingServices extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        others: {
+                          minWidth: 400
                         }
                       },
                       {
@@ -439,7 +442,10 @@ class OrderingServices extends Component {
                         label: (
                           <AlgaehLabel label={{ fieldName: "gross_amount" }} />
                         ),
-                        disabled: true
+                        disabled: true,
+                        others: {
+                          minWidth: 90
+                        }
                       },
                       {
                         fieldName: "discount_percentage",

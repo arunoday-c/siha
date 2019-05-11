@@ -73,3 +73,9 @@
   height: 30vh;
   margin-top: 15px;
   margin-bottom: 15px; }
+
+.historyH5 {
+  margin: 0;
+  padding: 5px;
+  background: #f9f9f9 !important;
+  color: #444; }

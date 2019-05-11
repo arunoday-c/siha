@@ -182,7 +182,6 @@ class Vitals extends Component {
                 list: g.getSource()
               };
             })
-            .orderByDescending()
             .toArray()
         : [];
 
@@ -317,7 +316,7 @@ class Vitals extends Component {
             <div className="col-lg-12 popupInner">
               <div className="portlet-body" id="vitals_recording">
                 <div className="row">
-                  <div className="col-4 popLeftDiv">
+                  <div className="col-3 popLeftDiv">
                     <div className="row">
                       {_department_viatals.map((item, index) => {
                         const _className =
@@ -474,11 +473,44 @@ class Vitals extends Component {
                           }
                         }}
                       />
+                      <div className="col-12 margin-top-15">
+                        <button
+                          onClick={this.addPatientVitals.bind(this)}
+                          type="button"
+                          className="btn btn-primary float-right"
+                          style={{ marginLeft: 10 }}
+                        >
+                          Add Vitals
+                        </button>
+                        <button
+                          onClick={this.resetVitals.bind(this)}
+                          type="button"
+                          className="btn btn-default float-right"
+                        >
+                          Clear
+                        </button>
+                      </div>
                     </div>
                   </div>
-                  <div className="col-8 popRightDiv">
+                  <div className="col-9 popRightDiv">
                     <div className="row">
-                      <div className="col-3 popLeftDiv">
+                      <div className="col-9 popLeftDiv">
+                        <Line
+                          options={{
+                            scales: {
+                              yAxes: _yAxes
+                            }
+                          }}
+                          data={{
+                            datasets: _plotGraph,
+                            labels: _chartLabels
+                          }}
+                        />
+                      </div>
+                      <div
+                        className="col-3 popRightDiv"
+                        style={{ maxHeight: "65vh" }}
+                      >
                         <div className="timeline">
                           {_vitalsGroup.map((data, index) => (
                             <div
@@ -492,7 +524,9 @@ class Vitals extends Component {
                                     {data.list.map((vitals, ind) => (
                                       <li className="each-vitals-box" key={ind}>
                                         <p>{vitals.vital_short_name}</p>
-                                        <span>{vitals.vital_value}</span>
+                                        <span className="vitalsText">
+                                          {vitals.vital_value}
+                                        </span>
                                         <span>{vitals.formula_value}</span>
                                       </li>
                                     ))}
@@ -503,20 +537,6 @@ class Vitals extends Component {
                           ))}
                         </div>
                       </div>
-
-                      <div className="col-9">
-                        <Line
-                          options={{
-                            scales: {
-                              yAxes: _yAxes
-                            }
-                          }}
-                          data={{
-                            datasets: _plotGraph,
-                            labels: _chartLabels
-                          }}
-                        />
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -526,21 +546,6 @@ class Vitals extends Component {
               <div className="col-lg-12">
                 <div className="row">
                   <div className="col-lg-12">
-                    <button
-                      onClick={this.addPatientVitals.bind(this)}
-                      type="button"
-                      className="btn btn-primary"
-                    >
-                      Save Vitals
-                    </button>
-                    <button
-                      onClick={this.resetVitals.bind(this)}
-                      type="button"
-                      className="btn btn-default"
-                    >
-                      Clear
-                    </button>
-
                     <button
                       type="button"
                       className="btn btn-default"

@@ -409,9 +409,7 @@ class DoctorCommission extends Component {
                         {
                           fieldName: "company_share",
                           label: (
-                            <AlgaehLabel
-                              label={{ forceLabel: "Company Share" }}
-                            />
+                            <AlgaehLabel label={{ forceLabel: "Co. Share" }} />
                           )
                         },
                         {
