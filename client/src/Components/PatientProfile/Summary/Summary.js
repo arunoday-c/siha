@@ -132,6 +132,7 @@ class Summary extends Component {
         ? this.props.patient_diagnosis
         : [];
 
+debugger
     let _pat_episode =
       Enumerable.from(this.state.patientEpisode).firstOrDefault() !== undefined
         ? Enumerable.from(this.state.patientEpisode).firstOrDefault()
@@ -152,7 +153,7 @@ class Summary extends Component {
                   <br />
                   visited <b>{_pat_episode.sub_department_name}</b> Department
                   on <b>{_pat_episode.visit_date} </b> for the Chief complaint
-                  of <b>{_pat_episode.chief_complaint}</b> from{" "}
+                  of <b>{_pat_episode.comment}</b> from
                   {_pat_episode.onset_date}.
                 </p>
               )}
@@ -283,7 +284,7 @@ class Summary extends Component {
                 </tbody>
               </table>
               {/* <ul>
-                
+
                 {_pat_socialHistory.map((data, index) => (
                   <li key={index}>
                     {data.remarks + " (Dr. " + data.provider_name + ")"}

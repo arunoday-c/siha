@@ -85,6 +85,7 @@ class RCMWorkbench extends Component {
   }
 
   getInvoicesForClaims() {
+    debugger
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
@@ -464,6 +465,7 @@ class RCMWorkbench extends Component {
                           return (
                             <i
                               onClick={() => {
+                                debugger
                                 // row.claim_validated === "V" ||
                                 // row.claim_validated === "X"
                                 //   ? swalMessage({

@@ -140,9 +140,34 @@ class ValidateBills extends PureComponent {
         },
         () => {
           this.getInvoiceICDs();
+          this.getSubDepts();
         }
       );
     }
+  }
+
+  getSubDepts() {
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      module: "masterSettings",
+      data: {
+        sub_department_status: "A"
+      },
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            sub_depts: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   generateReport(rpt_name, rpt_desc) {
@@ -996,26 +1021,29 @@ class ValidateBills extends PureComponent {
           </button>
 
 
+        {this.state.invoices.chart_type === "N"?
           <button
             onClick={this.openUCAFReport.bind(this)}
             className="btn btn-default"
           >
             UCAF
           </button>
-
-          <button
-            className="btn btn-default"
-            onClick={this.openDCAFReport.bind(this)}
-          >
-            DCAF
-          </button>
-
+          :this.state.invoices.chart_type === "O"?
           <button
             className="btn btn-default"
             onClick={this.openOCAFReport.bind(this)}
           >
             OCAF
           </button>
+          :this.state.invoices.chart_type === "D"?
+            <button
+              className="btn btn-default"
+              onClick={this.openDCAFReport.bind(this)}
+            >
+              DCAF
+            </button>
+          :null}
+
         </div>
         {this.renderUCAFReport()}
         {this.renderDCAFReport()}
