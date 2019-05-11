@@ -150,7 +150,7 @@ class NetworkPlan extends PureComponent {
                 </div>
                 <br />
                 <h6>
-                  Add NewNetwork/Plan
+                  Add New Network/ Policy
                   <hr />
                 </h6>
                 <div className="row">
@@ -651,96 +651,96 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         }
                       }}
-                    />
-
-                    <AlagehFormGroup
-                      //Lab
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.lab_max,
-                        className: "txt-fld",
-                        name: "lab_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      //Radiology
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.rad_max,
-                        className: "txt-fld",
-                        name: "rad_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      //OPD Services
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.trt_max,
-                        className: "txt-fld",
-                        name: "trt_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      //Dental
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.dental_max,
-                        className: "txt-fld",
-                        name: "dental_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      //Medicine
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.medicine_max,
-                        className: "txt-fld",
-                        name: "medicine_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
+                    // />
+                    //
+                    // <AlagehFormGroup
+                    //   //Lab
+                    //   div={{ className: "col" }}
+                    //   textBox={{
+                    //     decimal: { allowNegative: false },
+                    //     value: this.state.lab_max,
+                    //     className: "txt-fld",
+                    //     name: "lab_max",
+                    //
+                    //     events: {
+                    //       onChange: numberhandle.bind(this, this)
+                    //     },
+                    //     others: {
+                    //       "data-netdata": true
+                    //     }
+                    //   }}
+                    // />
+                    // <AlagehFormGroup
+                    //   //Radiology
+                    //   div={{ className: "col" }}
+                    //   textBox={{
+                    //     decimal: { allowNegative: false },
+                    //     value: this.state.rad_max,
+                    //     className: "txt-fld",
+                    //     name: "rad_max",
+                    //
+                    //     events: {
+                    //       onChange: numberhandle.bind(this, this)
+                    //     },
+                    //     others: {
+                    //       "data-netdata": true
+                    //     }
+                    //   }}
+                    // />
+                    //
+                    // <AlagehFormGroup
+                    //   //OPD Services
+                    //   div={{ className: "col" }}
+                    //   textBox={{
+                    //     decimal: { allowNegative: false },
+                    //     value: this.state.trt_max,
+                    //     className: "txt-fld",
+                    //     name: "trt_max",
+                    //
+                    //     events: {
+                    //       onChange: numberhandle.bind(this, this)
+                    //     },
+                    //     others: {
+                    //       "data-netdata": true
+                    //     }
+                    //   }}
+                    // />
+                    //
+                    // <AlagehFormGroup
+                    //   //Dental
+                    //   div={{ className: "col" }}
+                    //   textBox={{
+                    //     decimal: { allowNegative: false },
+                    //     value: this.state.dental_max,
+                    //     className: "txt-fld",
+                    //     name: "dental_max",
+                    //
+                    //     events: {
+                    //       onChange: numberhandle.bind(this, this)
+                    //     },
+                    //     others: {
+                    //       "data-netdata": true
+                    //     }
+                    //   }}
+                    // />
+                    //
+                    // <AlagehFormGroup
+                    //   //Medicine
+                    //   div={{ className: "col" }}
+                    //   textBox={{
+                    //     decimal: { allowNegative: false },
+                    //     value: this.state.medicine_max,
+                    //     className: "txt-fld",
+                    //     name: "medicine_max",
+                    //
+                    //     events: {
+                    //       onChange: numberhandle.bind(this, this)
+                    //     },
+                    //     others: {
+                    //       "data-netdata": true
+                    //     }
+                    //   }}
+                    // />
                   </div>
                   <div className="row hidden">
                     <AlagehFormGroup
