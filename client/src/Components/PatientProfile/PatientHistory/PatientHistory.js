@@ -178,224 +178,198 @@ class PatientHistory extends Component {
         : [];
 
     return (
-      <div
-        className="portlet portlet-bordered margin-top-15"
-        style={{ padding: "0 15px" }}
+      <AlgaehModalPopUp
+        openPopup={this.props.openAddModal}
+        title={"Patient History"}
+        events={{
+          onClose: this.onClose.bind(this)
+        }}
       >
-        <AlgaehModalPopUp
-          openPopup={this.props.openAddModal}
-          title={"Patient History"}
-          events={{
-            onClose: this.onClose.bind(this)
-          }}
-        >
-          <div className="popupInner">
-            <div className="row">
-              <div className="col-8">
-                <div className="popLeftDiv">
-                  <h5>Social History</h5>
-                  <table
-                    className="table table-sm table-bordered customTable"
-                    style={{ marginTop: 10 }}
-                  >
-                    <thead className="table-primary">
-                      <tr>
-                        <th>History</th>
-                        <th>Recorded By</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {_pat_socialHistory.map((data, index) => (
-                        <tr key={index}>
-                          <td>{data.remarks}</td>
-                          <td>{"Dr. " + data.provider_name}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <h5>Medical History</h5>
-                  <table
-                    className="table table-sm table-bordered customTable"
-                    style={{ marginTop: 10 }}
-                  >
-                    <thead className="table-primary">
-                      <tr>
-                        <th>History</th>
-                        <th>Recorded By</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {_pat_medicalHistory.map((data, index) => (
-                        <tr key={index}>
-                          <td>{data.remarks}</td>
-                          <td>{"Dr. " + data.provider_name}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <h5>Surgical History</h5>
-                  <table
-                    className="table table-sm table-bordered customTable"
-                    style={{ marginTop: 10 }}
-                  >
-                    <thead className="table-primary">
-                      <tr>
-                        <th>History</th>
-                        <th>Recorded By</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {_pat_surgicalHistory.map((data, index) => (
-                        <tr key={index}>
-                          <td>{data.remarks}</td>
-                          <td>{"Dr " + data.provider_name}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+        <div className="popupInner">
+          <div className="row">
+            <div className="col-4">
+              <div className="popLeftDiv">
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Social History"
+                  }}
+                />
+                <textarea
+                  style={{ height: "17vh" }}
+                  value={this.state.social_history}
+                  name="social_history"
+                  onChange={this.textHandle.bind(this)}
+                >
+                  {this.state.social_history}
+                </textarea>
 
-                  <h5>Family History</h5>
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Medical History"
+                  }}
+                />
+                <textarea
+                  style={{ height: "17vh" }}
+                  value={this.state.medical_history}
+                  name="medical_history"
+                  onChange={this.textHandle.bind(this)}
+                >
+                  {this.state.medical_history}
+                </textarea>
 
-                  <table
-                    className="table table-sm table-bordered customTable"
-                    style={{ marginTop: 10 }}
-                  >
-                    <thead className="table-primary">
-                      <tr>
-                        <th>History</th>
-                        <th>Recorded By</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {_pat_familyHistory.map((data, index) => (
-                        <tr key={index}>
-                          <td>{data.remarks}</td>
-                          <td>{"Dr. " + data.provider_name}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Surgical History"
+                  }}
+                />
+                <textarea
+                  style={{ height: "17vh" }}
+                  value={this.state.surgical_history}
+                  name="surgical_history"
+                  onChange={this.textHandle.bind(this)}
+                >
+                  {this.state.surgical_history}
+                </textarea>
 
-                  <h5>Birth History</h5>
-                  <table
-                    className="table table-sm table-bordered customTable"
-                    style={{ marginTop: 10 }}
-                  >
-                    <thead className="table-primary">
-                      <tr>
-                        <th>History</th>
-                        <th>Recorded By</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {_pat_birthHistory.map((data, index) => (
-                        <tr key={index}>
-                          <td>{data.remarks}</td>
-                          <td>{"Dr. " + data.provider_name}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-              <div className="col-4" style={{ paddingLeft: 0 }}>
-                <div className="popRightDiv" style={{ paddingLeft: 0 }}>
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Social History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.social_history}
-                    name="social_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.social_history}
-                  </textarea>
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Family History"
+                  }}
+                />
+                <textarea
+                  style={{ height: "17vh" }}
+                  value={this.state.family_history}
+                  name="family_history"
+                  onChange={this.textHandle.bind(this)}
+                >
+                  {this.state.family_history}
+                </textarea>
 
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Medical History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.medical_history}
-                    name="medical_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.medical_history}
-                  </textarea>
-
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Surgical History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.surgical_history}
-                    name="surgical_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.surgical_history}
-                  </textarea>
-
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Family History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.family_history}
-                    name="family_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.family_history}
-                  </textarea>
-
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Birth History"
-                    }}
-                  />
-                  <textarea
-                    style={{ height: "17vh" }}
-                    value={this.state.birth_history}
-                    name="birth_history"
-                    onChange={this.textHandle.bind(this)}
-                  >
-                    {this.state.birth_history}
-                  </textarea>
-                </div>
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Birth History"
+                  }}
+                />
+                <textarea
+                  style={{ height: "17vh" }}
+                  value={this.state.birth_history}
+                  name="birth_history"
+                  onChange={this.textHandle.bind(this)}
+                >
+                  {this.state.birth_history}
+                </textarea>
               </div>
             </div>
+            <div className="col-8">
+              <div className="popRightDiv">
+                <table className="table table-sm table-bordered customTable">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>Social History</th>
+                      <th>Recorded By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {_pat_socialHistory.map((data, index) => (
+                      <tr key={index}>
+                        <td>{data.remarks}</td>
+                        <td>{"Dr. " + data.provider_name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <table className="table table-sm table-bordered customTable">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>Medical History</th>
+                      <th>Recorded By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {_pat_medicalHistory.map((data, index) => (
+                      <tr key={index}>
+                        <td>{data.remarks}</td>
+                        <td>{"Dr. " + data.provider_name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <table className="table table-sm table-bordered customTable">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>Surgical History</th>
+                      <th>Recorded By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {_pat_surgicalHistory.map((data, index) => (
+                      <tr key={index}>
+                        <td>{data.remarks}</td>
+                        <td>{"Dr " + data.provider_name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
 
-            <div className="popupFooter">
-              <div className="col-lg-12">
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={this.savePatientHistory.bind(this)}
-                >
-                  Save
-                </button>{" "}
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={e => {
-                    this.onClose(e);
-                  }}
-                >
-                  Cancel
-                </button>
+                <table className="table table-sm table-bordered customTable">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>Family History</th>
+                      <th>Recorded By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {_pat_familyHistory.map((data, index) => (
+                      <tr key={index}>
+                        <td>{data.remarks}</td>
+                        <td>{"Dr. " + data.provider_name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <table className="table table-sm table-bordered customTable">
+                  <thead className="table-primary">
+                    <tr>
+                      <th>Birth History</th>
+                      <th>Recorded By</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {_pat_birthHistory.map((data, index) => (
+                      <tr key={index}>
+                        <td>{data.remarks}</td>
+                        <td>{"Dr. " + data.provider_name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
-        </AlgaehModalPopUp>
-      </div>
+
+          <div className="popupFooter">
+            <div className="col-lg-12">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={this.savePatientHistory.bind(this)}
+              >
+                Save
+              </button>{" "}
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={e => {
+                  this.onClose(e);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </AlgaehModalPopUp>
     );
   }
 }

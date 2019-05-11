@@ -270,7 +270,7 @@ class PreApproval extends Component {
                             return (
                               <span>
                                 <i
-                                  className="fas fa-pen"
+                                  className="fas fa-eye"
                                   onClick={this.ShowEditModel.bind(this, row)}
                                 />
                                 <i
@@ -284,12 +284,17 @@ class PreApproval extends Component {
                                     this,
                                     row
                                   )}
+                                />{" "}
+                                <i
+                                  className="fas fa-file-medical-alt"
+                                  onClick={this.ShowSubmitModel.bind(this, row)}
                                 />
                               </span>
                             );
                           },
                           others: {
-                            maxWidth: 120,
+                            minWidth: 175,
+                            filterable: false,
                             resizable: false,
                             style: { textAlign: "center" }
                           }
@@ -300,7 +305,10 @@ class PreApproval extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "patient_code" }}
                             />
-                          )
+                          ),
+                          others: {
+                            minWidth: 200
+                          }
                         },
                         {
                           fieldName: "full_name",
@@ -405,6 +413,7 @@ class PreApproval extends Component {
                       dataSource={{
                         data: this.state.pre_approval_Services
                       }}
+                      filter={true}
                       // isEditable={true}
                       paging={{ page: 0, rowsPerPage: 6 }}
                     />

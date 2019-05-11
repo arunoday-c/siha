@@ -1157,7 +1157,9 @@ th {
   max-width: 60vw !important; }
   .barcodePopup .algaeh-modal .popRightDiv {
     min-height: 20vh !important;
-    max-height: 25vh !important; }
+    max-height: 25vh !important;
+    overflow-x: hidden;
+    overflow-y: auto; }
     .barcodePopup .algaeh-modal .popRightDiv img {
       margin-left: auto;
       margin-right: auto;

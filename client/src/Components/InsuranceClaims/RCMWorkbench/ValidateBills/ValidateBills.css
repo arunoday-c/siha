@@ -1,6 +1,8 @@
-#ClaimGrid_Cntr .ReactTable,
+#ClaimGrid_Cntr .ReactTable {
+  max-height: 20vh !important; }
+
 #invoiceDetailGrid_Cntr .ReactTable {
-  max-height: 31vh !important; }
+  max-height: 41vh !important; }
 
 #icd_bill_Grid .ReactTable {
-  max-height: 18vh !important; }
+  max-height: 27vh !important; }

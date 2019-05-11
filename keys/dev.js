@@ -17,6 +17,7 @@ exports.default = {
     password: "alg_hea2018",
     //database: "algaeh_hims_db",
     database: "hims_test_db",
+    // database: "seco",
     // database: "algaeh_hrms_oman_db",
 
     //database: "medical_db",

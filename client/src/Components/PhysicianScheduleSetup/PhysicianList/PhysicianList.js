@@ -340,8 +340,8 @@ class PhysicianList extends Component {
                         }
                       }}
                       value={this.state.from_date}
-                    /> 
-                  
+                    />
+
                       <AlgaehDateHandler
                       div={{ className: "col-lg-3" }}
                       label={{ forceLabel: "Selected To Date", isImp: true }}

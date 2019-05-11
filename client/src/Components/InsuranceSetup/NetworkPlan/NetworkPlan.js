@@ -150,7 +150,7 @@ class NetworkPlan extends PureComponent {
                 </div>
                 <br />
                 <h6>
-                  Add NewNetwork/Plan
+                  Add New Network/ Policy
                   <hr />
                 </h6>
                 <div className="row">
@@ -651,7 +651,7 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         }
                       }}
-                    />
+                     />
 
                     <AlagehFormGroup
                       //Lab

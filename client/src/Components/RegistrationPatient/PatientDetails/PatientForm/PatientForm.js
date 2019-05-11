@@ -705,7 +705,7 @@ class AddPatientForm extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-3 form-group" }}
                         label={{
-                          forceLabel: "employee_id",
+                          fieldName: "employee_id",
                           isImp: false
                         }}
                         textBox={{

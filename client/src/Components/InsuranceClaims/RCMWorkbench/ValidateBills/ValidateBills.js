@@ -520,6 +520,12 @@ class ValidateBills extends PureComponent {
                       //   }
                       // },
                       {
+                        fieldName: "visit_code",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Visit Code" }} />
+                        )
+                      },
+                      {
                         fieldName: "patient_name",
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Patient Name" }} />
@@ -531,12 +537,6 @@ class ValidateBills extends PureComponent {
                           <AlgaehLabel
                             label={{ forceLabel: "Invoice Number" }}
                           />
-                        )
-                      },
-                      {
-                        fieldName: "visit_code",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Visit Code" }} />
                         )
                       },
                       {
@@ -603,7 +603,7 @@ class ValidateBills extends PureComponent {
                       data: invoices
                     }}
                     isEditable={false}
-                    paging={{ page: 0, rowsPerPage: 10 }}
+                    paging={{ page: 0, rowsPerPage: 5 }}
                     events={{
                       onDelete: row => {},
                       onEdit: row => {},
@@ -616,9 +616,23 @@ class ValidateBills extends PureComponent {
                     id="invoiceDetailGrid"
                     columns={[
                       {
-                        fieldName: "quantity",
+                        fieldName: "service_type_code",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Quantity" }} />
+                          <AlgaehLabel label={{ forceLabel: "Service Code" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "service_type",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Service Type" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "service_name",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Service Name" }} />
                         ),
                         disabled: true
                       },
@@ -664,23 +678,9 @@ class ValidateBills extends PureComponent {
                         }
                       },
                       {
-                        fieldName: "service_type_code",
+                        fieldName: "quantity",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Service Code" }} />
-                        ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "service_type",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Service Type" }} />
-                        ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "service_name",
-                        label: (
-                          <AlgaehLabel label={{ forceLabel: "Service Name" }} />
+                          <AlgaehLabel label={{ forceLabel: "Quantity" }} />
                         ),
                         disabled: true
                       },
@@ -769,52 +769,54 @@ class ValidateBills extends PureComponent {
               <div className="col-4">
                 <div className="row">
                   <div className="col-12  margin-top-15">
-                    <div className="col-lg-6 insurCrdImg">
-                      <AlgaehFileUploader
-                        ref={patInsuranceFrontImg => {
-                          this.patInsuranceFrontImg = patInsuranceFrontImg;
-                        }}
-                        noImage="insurance-card-front"
-                        name="patInsuranceFrontImg"
-                        accept="image/*"
-                        textAltMessage="Front Side"
-                        serviceParameters={{
-                          uniqueID: card_number + "_front",
-                          fileType: "Patients",
-                          processDelay: this.imageDetails.bind(
-                            this,
-                            "patInsuranceFrontImg"
-                          )
-                        }}
-                        renderPrevState={this.state.patInsuranceFrontImg}
-                        // forceRefresh={this.state.forceRefresh}
-                      />
-                    </div>
+                    <div className="row">
+                      <div className="col-lg-6 insurCrdImg">
+                        <AlgaehFileUploader
+                          ref={patInsuranceFrontImg => {
+                            this.patInsuranceFrontImg = patInsuranceFrontImg;
+                          }}
+                          noImage="insurance-card-front"
+                          name="patInsuranceFrontImg"
+                          accept="image/*"
+                          textAltMessage="Front Side"
+                          serviceParameters={{
+                            uniqueID: card_number + "_front",
+                            fileType: "Patients",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              "patInsuranceFrontImg"
+                            )
+                          }}
+                          renderPrevState={this.state.patInsuranceFrontImg}
+                          // forceRefresh={this.state.forceRefresh}
+                        />
+                      </div>
 
-                    <div className="col-lg-6 insurCrdImg">
-                      <AlgaehFileUploader
-                        ref={patInsuranceBackImg => {
-                          this.patInsuranceBackImg = patInsuranceBackImg;
-                        }}
-                        noImage="insurance-card-back"
-                        name="patInsuranceBackImg"
-                        accept="image/*"
-                        textAltMessage="Back Side"
-                        serviceParameters={{
-                          uniqueID: card_number + "_back",
-                          fileType: "Patients",
-                          processDelay: this.imageDetails.bind(
-                            this,
-                            "patInsuranceBackImg"
-                          )
-                        }}
-                        renderPrevState={this.state.patInsuranceBackImg}
-                        forceRefresh={this.state.forceRefresh}
-                      />
-                      <div />
+                      <div className="col-lg-6 insurCrdImg">
+                        <AlgaehFileUploader
+                          ref={patInsuranceBackImg => {
+                            this.patInsuranceBackImg = patInsuranceBackImg;
+                          }}
+                          noImage="insurance-card-back"
+                          name="patInsuranceBackImg"
+                          accept="image/*"
+                          textAltMessage="Back Side"
+                          serviceParameters={{
+                            uniqueID: card_number + "_back",
+                            fileType: "Patients",
+                            processDelay: this.imageDetails.bind(
+                              this,
+                              "patInsuranceBackImg"
+                            )
+                          }}
+                          renderPrevState={this.state.patInsuranceBackImg}
+                          forceRefresh={this.state.forceRefresh}
+                        />
+                        <div />
+                      </div>
                     </div>
                   </div>
-                  <div className="col-12 margin-top-15">
+                  {/* <div className="col-12 margin-top-15">
                     <div className="image-drop-area">
                       <Dropzone
                         onDrop={() => {}}
@@ -848,7 +850,7 @@ class ValidateBills extends PureComponent {
                         />
                       </Dropzone>
                     </div>
-                  </div>
+                  </div> */}
                   <AlagehFormGroup
                     div={{ className: "col  margin-top-15 " }}
                     label={{

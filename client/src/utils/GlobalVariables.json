@@ -208,7 +208,7 @@
   ],
   "FORMAT_REQMODE": [
     { "name": "Online", "value": "O" },
-    { "name": "Emial", "value": "E" },
+    { "name": "Email", "value": "E" },
     { "name": "Telephone", "value": "T" },
     { "name": "Fax", "value": "F" }
   ],
@@ -899,8 +899,8 @@
     { "name": "OP Billing", "value": "OP" },
     { "name": "POS", "value": "POS" },
     { "name": "Advance", "value": "AD" },
-    { "name": "OP Creidt", "value": "OPC" },
-    { "name": "POS Creidt", "value": "POSC" }
+    { "name": "OP Credit", "value": "OPC" },
+    { "name": "POS Credit", "value": "POSC" }
   ],
   "LOCAL_TYPE": [
     { "name": "Localite", "value": "Y" },

@@ -229,7 +229,6 @@ class PatientProfile extends Component {
         >
           <div className="popupInner">
             <div className="popRightDiv">
-              <div className="table-responsive">
                 {_patient_allergies.map((tables, index) => (
                   <table
                     key={index}
@@ -259,7 +258,6 @@ class PatientProfile extends Component {
                 ))}
               </div>
             </div>
-          </div>
         </AlgaehModalPopUp>
       );
     }
@@ -371,6 +369,7 @@ class PatientProfile extends Component {
         ? []
         : this.props.patient_diagnosis;
 
+    debugger;
     const _diet =
       this.props.patient_diet === undefined ? [] : this.props.patient_diet;
 
@@ -568,7 +567,7 @@ class PatientProfile extends Component {
               </li>
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className="fas fa-allergies" />
+                  <i className="fas fa-allergies AllergyActive" />
                   <section>
                     <b className="top-nav-sec-hdg">
                       Allergies
@@ -762,11 +761,13 @@ class PatientProfile extends Component {
                     <b className="top-nav-sec-hdg">Diet:</b>
                     <p>
                       {_diet.map((item, index) => {
-                        <React.Fragment key={index}>
-                          <span key={index} className="listofA-D-D">
-                            {item.hims_d_diet_note}
-                          </span>
-                        </React.Fragment>;
+                        return (
+                          <React.Fragment key={index}>
+                            <span key={index} className="listofA-D-D">
+                              {item.hims_d_diet_note}
+                            </span>
+                          </React.Fragment>
+                        );
                       })}
                     </p>
                   </section>

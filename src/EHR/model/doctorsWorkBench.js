@@ -992,7 +992,7 @@ case_type, vital_id,PH.vitals_name,vital_short_name,PH.uom, vital_value, vital_v
 hims_f_patient_vitals PV,hims_d_vitals_header PH where PV.record_status='A' and \
 PH.record_status='A' and PV.vital_id=PH.hims_d_vitals_header_id and " +
               where.condition +
-              " group by visit_date , vital_id order by visit_date , visit_time desc LIMIT 0," +
+              " group by visit_date , vital_id order by updated_Date  desc LIMIT 0," +
               _limit +
               ";",
             where.values,

@@ -9,7 +9,8 @@ import path from "path";
 import {
   getReport,
   getReportMultiPrint,
-  merdgeTosingleReport
+  merdgeTosingleReport,
+  getExcelReport
 } from "./report_generation";
 import algaehUtilities from "algaeh-utilities/utilities";
 const exec = require("child_process").exec;
@@ -86,6 +87,8 @@ app.use((req, res, next) => {
   }
 });
 app.use("/api/v1/report", getReport);
+app.use("/api/v1/excelReport", getExcelReport);
+
 app.use("/api/v1/multireports", getReportMultiPrint, merdgeTosingleReport);
 app.use("/api/v1/pentahoreport", (req, res) => {
   let input = req.query;
