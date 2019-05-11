@@ -30,7 +30,7 @@ export default class PreApprovalStatus extends PureComponent {
             events={{
               onClose: this.onClose.bind(this)
             }}
-            title="Cancel Working Hours"
+            title="Details for Pre Approval"
             openPopup={this.props.open}
           >
             <MyContext.Provider
