@@ -284,7 +284,7 @@ class OrderedList extends PureComponent {
                     },
                     others: {
                       minWidth: 100,
-                      maxWidth: 200
+                      maxWidth: 500
                     },
 
                     disabled: true

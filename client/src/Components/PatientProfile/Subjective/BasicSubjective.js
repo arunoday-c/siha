@@ -254,7 +254,6 @@ class BasicSubjective extends Component {
                   onClick={this.showAllergies.bind(this)}
                 />
               </li>
-
               <Allergies
                 openAllergyModal={this.state.openAlergy}
                 onClose={this.showAllergies.bind(this)}
@@ -276,11 +275,11 @@ class BasicSubjective extends Component {
                   className="fas fa-clipboard"
                   //     onClick={this.showPatientHistory.bind(this)}
                 />
-                {/* <PatientHistory
+              </li>{" "}
+              {/* <PhysicalExamination
                   openAddModal={this.state.openAddModal}
-                  onClose={this.showPatientHistory.bind(this)}
+                  onClose={this.showPhysicalExamination.bind(this)}
                 /> */}
-              </li>
               <li>
                 <span className="animated slideInLeft faster">Medication</span>
                 <i
