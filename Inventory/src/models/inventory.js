@@ -195,12 +195,14 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `hims_d_inventory_location` (`location_description`,  `location_type`, `hospital_id`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
-          VALUE(?,?,?,?,?,?,?)",
+            "INSERT INTO `hims_d_inventory_location` (`location_description`,  `location_type`, \
+              `hospital_id`, `allow_pos`, `created_date`, `created_by`, `updated_date`, `updated_by`)\
+          VALUE(?,?,?,?,?,?,?,?)",
           values: [
             input.location_description,
             input.location_type,
             input.hospital_id,
+            input.allow_pos,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -607,13 +609,15 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "UPDATE `hims_d_inventory_location` SET `location_description`=?, `location_status`=?, `location_type`=?, `hospital_id`=?,\
-          `updated_date`=?,`updated_by`=?, `record_status`=? WHERE `record_status`='A' and `hims_d_inventory_location_id`=?;",
+            "UPDATE `hims_d_inventory_location` SET `location_description`=?, `location_status`=?, \
+            `location_type`=?, `hospital_id`=?, `allow_pos`=?, `updated_date`=?,`updated_by`=?, `record_status`=? \
+            WHERE `record_status`='A' and `hims_d_inventory_location_id`=?;",
           values: [
             input.location_description,
             input.location_status,
             input.location_type,
             input.hospital_id,
+            input.allow_pos,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,

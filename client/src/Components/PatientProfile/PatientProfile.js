@@ -192,14 +192,14 @@ class PatientProfile extends Component {
   openOCAFReport(data, e) {
     let that = this;
     algaehApiCall({
-      uri: "/ucaf/getPatientUCAF",
+      uri: "/ocaf/getPatientOCAF",
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],
         visit_id: Window.global["visit_id"]
-        // visit_date: "2018-09-15"
       },
       onSuccess: response => {
+        debugger
         if (response.data.success) {
           that.setState({ openOCAF: true, OCAFData: response.data.records });
         }
@@ -322,32 +322,6 @@ class PatientProfile extends Component {
         <UcafEditor dataProps={this.state.UCAFData} />
       </AlgaehModalPopUp>
     );
-
-    // return this.state.chart_type === "D" ? (
-    //   <AlgaehModalPopUp
-    //     openPopup={this.state.openDCAF}
-    //     title="DCAF 2.0"
-    //     events={{
-    //       onClose: () => {
-    //         this.setState({ openDCAF: false });
-    //       }
-    //     }}
-    //   >
-    //     <DcafEditor dataProps={this.state.DCAFData} />
-    //   </AlgaehModalPopUp>
-    // ) : this.state.chart_type === "O" ? null : (
-    //   <AlgaehModalPopUp
-    //     openPopup={this.state.openUCAF}
-    //     title="UCAF 2.0"
-    //     events={{
-    //       onClose: () => {
-    //         this.setState({ openUCAF: false });
-    //       }
-    //     }}
-    //   >
-    //     <UcafEditor dataProps={this.state.UCAFData} />
-    //   </AlgaehModalPopUp>
-    // );
   }
   render() {
     const module_plan = _.find(this.active_modules, f => {

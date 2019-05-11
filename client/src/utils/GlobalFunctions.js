@@ -508,6 +508,7 @@ export function SetBulkState(options) {
 
   const _allControls = document.querySelectorAll(options.querySelector);
   let _objectCreation = {};
+  debugger
   for (let i = 0; i < _allControls.length; i++) {
     const _isExclude =
       _allControls[i].getAttribute("exclude") !== null
@@ -518,6 +519,7 @@ export function SetBulkState(options) {
       const _dataRole = _allControls[i].getAttribute("data_role");
 
       if (_name !== null) {
+        debugger
         const _type = _allControls[i].getAttribute("type");
 
         if (_type === "checkbox") {

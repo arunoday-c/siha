@@ -41,7 +41,7 @@ const updateLocation = ($this, data) => {
 
 const showconfirmDialog = ($this, row) => {
   swal({
-    title: "Are you sure you want to delete this Category?",
+    title: "Are you sure you want to delete this Location?",
     type: "warning",
     showCancelButton: true,
     confirmButtonText: "Yes!",
@@ -149,7 +149,7 @@ const insertLocation = ($this, e) => {
 
               getLocation($this);
               swalMessage({
-                title: "Category added successfully . .",
+                title: "Location added successfully . .",
                 type: "success"
               });
             } else {
@@ -191,11 +191,23 @@ const getLocation = $this => {
   });
 };
 
+const allowPos = ($this, e) => {
+  let allow_pos = "N";
+  if (!$this.state.allowpos === true) {
+    allow_pos = "Y";
+  }
+  $this.setState({
+    allow_pos: allow_pos,
+    allowpos: !$this.state.allowpos
+  });
+};
+
 export {
   changeTexts,
   onchangegridcol,
   insertLocation,
   updateLocation,
   deleteLocation,
-  getLocation
+  getLocation,
+  allowPos
 };
