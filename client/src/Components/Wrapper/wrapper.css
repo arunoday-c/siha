@@ -91,7 +91,9 @@
 .ReactTable .fa-eye,
 .ReactTable .fa-plus,
 .ReactTable .fa-thumbs-up,
-.ReactTable .fa-thumbs-down {
+.ReactTable .fa-thumbs-down,
+.ReactTable .fa-file-medical-alt,
+.ReactTable .fa-clipboard-check {
   cursor: pointer;
   border: 1px solid #00dac4;
   height: 28px;
@@ -122,7 +124,9 @@
 .ReactTable .fa-prescription:hover,
 .ReactTable .fa-arrow-right:hover,
 .ReactTable .fa-plus:hover,
-.ReactTable .fa-thumbs-up:hover {
+.ReactTable .fa-thumbs-up:hover,
+.ReactTable .fa-file-medical-alt:hover,
+.ReactTable .fa-clipboard-check:hover {
   background: #00a796;
   color: #fff; }
 

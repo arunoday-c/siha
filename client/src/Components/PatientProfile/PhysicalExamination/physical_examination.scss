@@ -118,6 +118,8 @@
     .popRightDiv {
       min-height: 30vh;
       max-height: 80vh;
+      overflow-x: hidden;
+      overflow-y: auto;
     }
   }
 

@@ -92,7 +92,9 @@
     max-height: 80vh; }
   .examDiagramPopup .popupInner .popRightDiv {
     min-height: 30vh;
-    max-height: 80vh; }
+    max-height: 80vh;
+    overflow-x: hidden;
+    overflow-y: auto; }
 
 .examDiagramPopup .CanvasEditorCntr {
   background: #cecece;

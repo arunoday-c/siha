@@ -95,7 +95,7 @@ export default class VerifyOrders extends PureComponent {
                             return (
                               <span>
                                 <i
-                                  className="fas fa-sync-alt"
+                                  className="fas fa-clipboard-check"
                                   onClick={UpdateOrders.bind(this, this, row)}
                                 />
                               </span>

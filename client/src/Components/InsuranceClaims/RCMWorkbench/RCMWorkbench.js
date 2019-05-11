@@ -481,8 +481,10 @@ class RCMWorkbench extends Component {
                             />
                           );
                         },
+
                         others: {
-                          fixed: "left"
+                          fixed: "left",
+                          filterable: false
                         }
                       },
                       {
@@ -506,7 +508,8 @@ class RCMWorkbench extends Component {
                           );
                         },
                         others: {
-                          fixed: "left"
+                          fixed: "left",
+                          filterable: false
                         }
                       },
                       {
@@ -669,6 +672,7 @@ class RCMWorkbench extends Component {
                     dataSource={{
                       data: this.state.claims
                     }}
+                    filter={true}
                     isEditable={false}
                     paging={{ page: 0, rowsPerPage: 10 }}
                     // events={{
