@@ -586,6 +586,7 @@ module.exports = {
             })
             .catch(error => {
               _mysql.releaseConnection();
+
               res.writeHead(400, { "Content-Type": "text/plain" });
               res.end(error);
             });

@@ -3,64 +3,79 @@
   "routersAndPorts": {
     "default": {
       "port": 3000,
-      "url": ""
+      "url": "",
+      "name": "Algaeh Core"
     },
     "frontDesk": {
       "port": 3001,
-      "url": ""
+      "url": "",
+      "name": "Front Desk"
     },
     "masterSettings": {
       "port": 3003,
-      "url": ""
+      "url": "",
+      "name": "Master Settings"
     },
     "hrManagement": {
       "port": 3004,
-      "url": ""
+      "url": "",
+      "name": "Hr Management"
     },
     "documentManagement": {
       "port": 3006,
-      "url": ""
+      "url": "",
+      "name": "Document Management"
     },
     "finance": {
       "port": 3007,
-      "url": ""
+      "url": "",
+      "name": "Finance"
     },
     "inventory": {
       "port": 3008,
-      "url": ""
+      "url": "",
+      "name": "Inventory"
     },
     "pharmacy": {
       "port": 3009,
-      "url": ""
+      "url": "",
+      "name": "Pharmacy"
     },
 
     "clicnicalDesk": {
       "port": 3011,
-      "url": ""
+      "url": "",
+      "name": "Clinical Desk"
     },
     "radiology": {
       "port": 3012,
-      "url": ""
+      "url": "",
+      "name": "Radiology"
     },
     "laboratory": {
       "port": 3013,
-      "url": ""
+      "url": "",
+      "name": "Laboratory"
     },
     "billing": {
       "port": 3014,
-      "url": ""
+      "url": "",
+      "name": "Billing"
     },
     "procurement": {
       "port": 3017,
-      "url": ""
+      "url": "",
+      "name": "Procurement"
     },
     "MRD": {
       "port": 3016,
-      "url": ""
+      "url": "",
+      "name": "MRD"
     },
     "reports": {
       "port": 3018,
-      "url": ""
+      "url": "",
+      "name": "Reports"
     }
   },
   "apiAuth": {

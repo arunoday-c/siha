@@ -199,6 +199,7 @@ export function algaehApiCall(options) {
             settings.onSuccess(response);
         })
         .catch(err => {
+          debugger;
           if (
             settings.cancelRequestId !== undefined ||
             settings.cancelRequestId !== null ||
@@ -227,93 +228,90 @@ export function algaehApiCall(options) {
             //   title: "Request taking long time to process....!",
             //   type: "info"
             // });
-          } else {
-            if (typeof settings.onFailure === "function") {
-              if (
-                err.response !== undefined &&
-                err.response.data !== undefined
-              ) {
-                if (err.response.data.message !== undefined) {
-                  err.response.data.message = clearSqlMessage(
-                    err.response.data.message
-                  );
-                } else {
-                  err = {
-                    response: {
-                      data: {
-                        message: err.response.statusText
-                      }
-                    }
-                  };
-                }
-              }
-
-              settings.onFailure(err);
-            } else {
-              if (
-                err.response !== undefined &&
-                err.response.data !== undefined
-              ) {
-                if (
-                  Object.prototype.toString.call(err.response.data) ===
-                  "[object ArrayBuffer]"
-                ) {
-                  err = JSON.parse(
-                    new Buffer(err.response.data, "binary").toString()
-                  );
-                } else {
-                  err = {
-                    message: err.response.data.message
-                  };
-                }
-                const _message = clearSqlMessage(err.response);
+          }
+          // else {
+          //   if (typeof settings.onFailure === "function") {
+          //     if (
+          //       err.response !== undefined &&
+          //       err.response.data !== undefined
+          //     ) {
+          //       if (err.response.data.message !== undefined) {
+          //         err.response.data.message = clearSqlMessage(
+          //           err.response.data.message
+          //         );
+          //       } else {
+          //         err = {
+          //           response: {
+          //             data: {
+          //               message: err.response.statusText
+          //             }
+          //           }
+          //         };
+          //       }
+          //     }
+          //
+          //     settings.onFailure(err);
+          //   }
+          else {
+            if (
+              err.response !== undefined &&
+              err.response.headers["content-type"] === "text/plain"
+            ) {
+              var reader = new FileReader();
+              reader.onload = function() {
                 swalMessage({
-                  title: _message,
+                  title: reader.result,
+                  type: "error",
+                  position: "top"
+                });
+              };
+              reader.readAsText(err.response.data);
+            } else if (
+              err.response === undefined &&
+              err.message === "Network Error"
+            ) {
+              const routers = config.routersAndPorts;
+              swalMessage({
+                title:
+                  "'" +
+                  routers[settings.module]["name"] +
+                  "' module is not yet started",
+                type: "info",
+                position: "top"
+              });
+            } else if (
+              err.response !== undefined &&
+              err.response.headers["content-type"] ===
+                "application/json; charset=utf-8"
+            ) {
+              if (
+                err.response.data !== undefined &&
+                err.response.data.success !== undefined
+              ) {
+                swalMessage({
+                  title: err.response.data.message,
                   type: "error",
                   position: "top"
                 });
               } else {
-                const _message = clearSqlMessage(err.message);
                 swalMessage({
-                  title: _message,
+                  title: err.response.statusText,
                   type: "error",
                   position: "top"
                 });
               }
             }
+            AlgaehLoader({ show: false });
           }
 
-          ReactDOM.unmountComponentAtNode(
-            document.getElementById("fullPageLoader")
-          );
+          // ReactDOM.unmountComponentAtNode(
+          //   document.getElementById("fullPageLoader")
+          // );
         });
     }
   });
 }
-function clearSqlMessage(message) {
-  return message;
-  // let mess = message.split("_");
-  // const _prev = message.split("_");
-  // const lastMessage = mess[mess.length - 1];
-  // if (lastMessage === lastMessage.toUpperCase()) {
-  //   let newString = "";
-  //   for (let i = 0; i < mess.length - 1; i++) {
-  //     if (i !== 0) {
-  //       newString += " ";
-  //     }
-  //     newString += mess[i]
-  //       .replace(/\'\S/g, chara => {
-  //         return chara.toUpperCase();
-  //       })
-  //       .replace(/^\w/, c => {
-  //         return c.toUpperCase();
-  //       });
-  //   }
-  //   const prevString = _prev.join("_");
-  //   message = message.replace(prevString, newString + "'");
-  // }
-  // return message;
-}
+
 export function swalMessage(options) {
   const settings = {
     position: "top",
