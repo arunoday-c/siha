@@ -1,6 +1,24 @@
 import React from "react";
 import _ from "lodash";
 import { retry } from "./utils/GlobalFunctions";
+import PrescriptionList from "./Components/Pharmacy/PrescriptionList/PrescriptionList";
+import StockEnquiry from "./Components/Pharmacy/StockEnquiry/StockEnquiry";
+import ItemSetup from "./Components/ItemSetup/ItemSetup";
+import Appointment from "./Components/FrontDesk/FrontDesk";
+import InitialStock from "./Components/Pharmacy/InitialStock/InitialStock";
+import ResultEntryList from "./Components/Laboratory/ResultEntryList/ResultEntryList";
+import RequisitionEntry from "./Components/Pharmacy/RequisitionEntry/RequisitionEntry";
+import TransferEntry from "./Components/Pharmacy/TransferEntry/TransferEntry";
+import ReportsList from "./Components/Reports/Reports";
+import RCMWorkbench from "./Components/InsuranceClaims/RCMWorkbench/RCMWorkbench";
+import VisitClose from "./Components/VisitClose/VisitClose";
+import AlgaehModules from "./Components/Algaeh/Algaeh";
+import PointOfSale from "./Components/Pharmacy/PointOfSale/PointOfSale";
+import MRDList from "./Components/MRD/MRD";
+import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration";
+import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
+import DoctorsWorkbench from "./Components/Workbench/Workbench";
+import NurseWorkbench from "./Components/Workbench/Workbench";
 const PageToPlot = {
   Dashboard: React.lazy(() =>
     retry(() => import("./Components/Dashboard/Dashboard"))
@@ -53,12 +71,14 @@ const PageToPlot = {
       import("./Components/Laboratory/SampleCollection/SampleCollection")
     )
   ),
-  DoctorsWorkbench: React.lazy(() =>
-    retry(() => import("./Components/Workbench/Workbench"))
-  ),
-  NurseWorkbench: React.lazy(() =>
-    retry(() => import("./Components/Workbench/Workbench"))
-  ),
+  // DoctorsWorkbench: React.lazy(() =>
+  //   retry(() => import("./Components/Workbench/Workbench"))
+  // ),
+  DoctorsWorkbench: DoctorsWorkbench,
+  NurseWorkbench: NurseWorkbench,
+  // NurseWorkbench: React.lazy(() =>
+  //   retry(() => import("./Components/Workbench/Workbench"))
+  // ),
   MedicalWorkbenchSetup: React.lazy(() =>
     retry(() =>
       import("./Components/MedicalWorkbenchSetup/MedicalWorkbenchSetup")
@@ -86,42 +106,47 @@ const PageToPlot = {
       import("./Components/Radiology/RadScheduledList/RadScheduledList")
     )
   ),
-  ResultEntryList: React.lazy(() =>
-    retry(() =>
-      import("./Components/Laboratory/ResultEntryList/ResultEntryList")
-    )
-  ),
-  InitialStock: React.lazy(() =>
-    retry(() => import("./Components/Pharmacy/InitialStock/InitialStock"))
-  ),
-  PrescriptionList: React.lazy(() =>
-    retry(() =>
-      import("./Components/Pharmacy/PrescriptionList/PrescriptionList")
-    )
-  ),
-  Appointment: React.lazy(() =>
-    retry(() => import("./Components/FrontDesk/FrontDesk"))
-  ),
-  // AppointmentAr: React.lazy(() =>
-  //   retry(() => import("./Components/AppointmentAr/AppointmentAr"))
+  // ResultEntryList: React.lazy(() =>
+  //   retry(() =>
+  //     import("./Components/Laboratory/ResultEntryList/ResultEntryList")
+  //   )
   // ),
+
+  // InitialStock: React.lazy(() =>
+  //   retry(() => import("./Components/Pharmacy/InitialStock/InitialStock"))
+  // ),
+  ResultEntryList: ResultEntryList,
+  InitialStock: InitialStock,
+  PrescriptionList: PrescriptionList,
+  // PrescriptionList: React.lazy(() =>
+  //   retry(() =>
+  //     import("./Components/Pharmacy/PrescriptionList/PrescriptionList")
+  //   )
+  // ),
+  // Appointment: React.lazy(() =>
+  //   retry(() => import("./Components/FrontDesk/FrontDesk"))
+  // ),
+  Appointment: Appointment,
   PharmacySetup: React.lazy(() =>
     retry(() => import("./Components/PharmacySetup/PharmacySetup"))
   ),
-  StockEnquiry: React.lazy(() =>
-    retry(() => import("./Components/Pharmacy/StockEnquiry/StockEnquiry"))
-  ),
-  ItemMomentEnquiry: React.lazy(() =>
-    retry(() =>
-      import("./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry")
-    )
-  ),
+  // StockEnquiry: React.lazy(() =>
+  //   retry(() => import("./Components/Pharmacy/StockEnquiry/StockEnquiry"))
+  // ),
+  StockEnquiry: StockEnquiry,
+  // ItemMomentEnquiry: React.lazy(() =>
+  //   retry(() =>
+  //     import("./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry")
+  //   )
+  // ),
+  ItemMomentEnquiry: ItemMomentEnquiry,
   AppointmentSetup: React.lazy(() =>
     retry(() => import("./Components/AppointmentSetup/AppointmentSetup"))
   ),
-  ItemSetup: React.lazy(() =>
-    retry(() => import("./Components/ItemSetup/ItemSetup"))
-  ),
+  // ItemSetup: React.lazy(() =>
+  //   retry(() => import("./Components/ItemSetup/ItemSetup"))
+  // ),
+  ItemSetup: ItemSetup,
   EmployeeMasterIndex: React.lazy(() =>
     retry(() =>
       import("./Components/EmployeeManagement/EmployeeMasterIndex/EmployeeMasterIndex")
@@ -146,27 +171,31 @@ const PageToPlot = {
       import("./Components/HospitalServiceSetup/HospitalServiceSetup")
     )
   ),
-  PointOfSale: React.lazy(() =>
-    retry(() => import("./Components/Pharmacy/PointOfSale/PointOfSale"))
-  ),
+  PointOfSale: PointOfSale,
+  // PointOfSale: React.lazy(() =>
+  //   retry(() => import("./Components/Pharmacy/PointOfSale/PointOfSale"))
+  // ),
   OPBillPendingList: React.lazy(() =>
     retry(() => import("./Components/OPBillPendingList/OPBillPendingList"))
   ),
-  MRDList: React.lazy(() => retry(() => import("./Components/MRD/MRD"))),
+  MRDList: MRDList,
+  // MRDList: React.lazy(() => retry(() => import("./Components/MRD/MRD"))),
   SalesReturn: React.lazy(() =>
     retry(() => import("./Components/Pharmacy/SalesReturn/SalesReturn"))
   ),
-  RequisitionEntry: React.lazy(() =>
-    retry(() =>
-      import("./Components/Pharmacy/RequisitionEntry/RequisitionEntry")
-    )
-  ),
+  // RequisitionEntry: React.lazy(() =>
+  //   retry(() =>
+  //     import("./Components/Pharmacy/RequisitionEntry/RequisitionEntry")
+  //   )
+  // ),
+  RequisitionEntry: RequisitionEntry,
   ProcedureSetup: React.lazy(() =>
     retry(() => import("./Components/ProcedureSetup/ProcedureSetup"))
   ),
-  TransferEntry: React.lazy(() =>
-    retry(() => import("./Components/Pharmacy/TransferEntry/TransferEntry"))
-  ),
+  // TransferEntry: React.lazy(() =>
+  //   retry(() => import("./Components/Pharmacy/TransferEntry/TransferEntry"))
+  // ),
+  TransferEntry: TransferEntry,
   RequisitionList: React.lazy(() =>
     retry(() =>
       import("./Components/Pharmacy/RequisitionList/RequisitionSwitch")
@@ -177,27 +206,30 @@ const PageToPlot = {
       import("./Components/Pharmacy/ConsumptionEntry/ConsumptionEntry")
     )
   ),
-  ReportsList: React.lazy(() =>
-    retry(() => import("./Components/Reports/Reports"))
-  ),
+  // ReportsList: React.lazy(() =>
+  //   retry(() => import("./Components/Reports/Reports"))
+  // ),
+  ReportsList: ReportsList,
   WorkListGeneration: React.lazy(() =>
     retry(() =>
       import("./Components/InsuranceClaims/WorkListGeneration/WorkListGeneration")
     )
   ),
-  RCMWorkbench: React.lazy(() =>
-    retry(() =>
-      import("./Components/InsuranceClaims/RCMWorkbench/RCMWorkbench")
-    )
-  ),
+  // RCMWorkbench: React.lazy(() =>
+  //   retry(() =>
+  //     import("./Components/InsuranceClaims/RCMWorkbench/RCMWorkbench")
+  //   )
+  // ),
+  RCMWorkbench: RCMWorkbench,
   StaffCashCollection: React.lazy(() =>
     retry(() => import("./Components/StaffCashCollection/StaffCashCollection"))
   ),
-  InvoiceGeneration: React.lazy(() =>
-    retry(() =>
-      import("./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration")
-    )
-  ),
+  // InvoiceGeneration: React.lazy(() =>
+  //   retry(() =>
+  //     import("./Components/InsuranceClaims/InvoiceGeneration/InvoiceGeneration")
+  //   )
+  // ),
+  InvoiceGeneration: InvoiceGeneration,
   InventorySetup: React.lazy(() =>
     retry(() => import("./Components/InventorySetup/InventorySetup"))
   ),
@@ -304,12 +336,14 @@ const PageToPlot = {
       import("./Components/Pharmacy/POSCreditSettlement/POSCreditSettlement")
     )
   ),
-  VisitClose: React.lazy(() =>
-    retry(() => import("./Components/VisitClose/VisitClose"))
-  ),
-  AlgaehModules: React.lazy(() =>
-    retry(() => import("./Components/Algaeh/Algaeh"))
-  ),
+  // VisitClose: React.lazy(() =>
+  //   retry(() => import("./Components/VisitClose/VisitClose"))
+  // ),
+  VisitClose: VisitClose,
+  AlgaehModules: AlgaehModules,
+  // AlgaehModules: React.lazy(() =>
+  //   retry(() => import("./Components/Algaeh/Algaeh"))
+  // ),
   SelfService: React.lazy(() =>
     retry(() =>
       import("./Components/EmployeeManagement/SelfService/SelfService")
