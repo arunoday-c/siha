@@ -141,7 +141,9 @@ const saveNetworkPlan = ($this, context) => {
           });
           if (context !== undefined) {
             context.updateState({
-              network_plan: previous
+              network_plan: previous,
+              insurance_provider_id:$this.state.insurance_provider_id,
+              insurance_provider_name:$this.state.insurance_provider_name              
             });
           }
           addNewNetwork($this);
@@ -189,6 +191,8 @@ const addNewNetwork = $this => {
     hospital_id: null,
     saveupdate: false,
     btnupdate: true
+  },()=>{
+    debugger
   });
 };
 
@@ -256,7 +260,7 @@ const UpdateNetworkPlan = ($this, context) => {
       });
     }
 
-    addNewNetwork($this);
+    // addNewNetwork($this);
   }
 };
 

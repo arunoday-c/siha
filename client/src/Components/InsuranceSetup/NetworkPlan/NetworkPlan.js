@@ -33,7 +33,7 @@ class NetworkPlan extends PureComponent {
     this.state = {
       hims_d_insurance_network_id: null,
       network_type: null,
-      insurance_provider_id: null,
+
       insurance_sub_id: null,
 
       effective_start_date: null,
@@ -76,6 +76,7 @@ class NetworkPlan extends PureComponent {
   }
 
   componentWillMount() {
+    debugger
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -139,15 +140,7 @@ class NetworkPlan extends PureComponent {
                     </h6>
                   </div>
                 </div>
-                <div className="row">
-                  <div className="col-lg-12">
-                    <NetworkPlanList
-                      insurance_provider_id={this.state.insurance_provider_id}
-                      // network_plan={this.state.network_plan}
-                      selectedLang={this.state.selectedLang}
-                    />
-                  </div>
-                </div>
+
                 <br />
                 <h6>
                   Add New Network/ Policy
@@ -823,6 +816,16 @@ class NetworkPlan extends PureComponent {
                     >
                       Clear
                     </button>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-lg-12">
+                    <NetworkPlanList
+                      insurance_provider_id={this.state.insurance_provider_id}
+                      // network_plan={this.state.network_plan}
+                      selectedLang={this.state.selectedLang}
+                    />
                   </div>
                 </div>
               </div>

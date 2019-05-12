@@ -16,7 +16,6 @@ import InsuranceSetup from "../../../Models/InsuranceSetup";
 import {
   handleNext,
   handleBack,
-  // handleReset,
   updatedata
 } from "./InsuranceAddHandaler";
 
@@ -25,15 +24,6 @@ import { setGlobal } from "../../../utils/GlobalFunctions";
 import { getCookie } from "../../../utils/algaehApiCall";
 import { AlgaehActions } from "../../../actions/algaehActions";
 
-// const styles = theme => ({
-//   instructions: {
-//     marginTop: theme.spacing.unit,
-//     marginBottom: theme.spacing.unit
-//   },
-//   button: {
-//     marginRight: theme.spacing.unit
-//   }
-// });
 
 function getSteps() {
   return ["Insurance Provider", "Sub Insurance", "Network/Plan", "Price List"];
@@ -83,6 +73,7 @@ class InsuranceAdd extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger
     if (
       nextProps.insuranceprovider !== undefined &&
       nextProps.insuranceprovider.length !== 0
@@ -145,10 +136,12 @@ class InsuranceAdd extends PureComponent {
       }
     }
 
-    this.setState({
-      activeStep: 0
+    let IOputs = InsuranceSetup.inputParam();
+    IOputs.activeStep= 0
+    IOputs.screenName= "InsuranceProvider"
+    this.setState(IOputs,()=>{
+      this.props.onClose && this.props.onClose(e);
     });
-    this.props.onClose && this.props.onClose(e);
   };
 
   render() {

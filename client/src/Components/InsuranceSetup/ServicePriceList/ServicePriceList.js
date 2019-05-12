@@ -25,7 +25,7 @@ import {
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 
-class SubInsurance extends PureComponent {
+class ServicePriceList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,11 +37,13 @@ class SubInsurance extends PureComponent {
   }
 
   componentWillMount() {
+    debugger
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
 
   componentDidMount() {
+    debugger
     if (this.state.insurance_provider_id !== null) {
       getPriceList(this, this);
     } else {
@@ -466,5 +468,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(SubInsurance)
+  )(ServicePriceList)
 );
