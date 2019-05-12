@@ -19,6 +19,7 @@ import InvoiceGeneration from "./Components/InsuranceClaims/InvoiceGeneration/In
 import ItemMomentEnquiry from "./Components/Pharmacy/ItemMomentEnquiry/ItemMomentEnquiry";
 import DoctorsWorkbench from "./Components/Workbench/Workbench";
 import NurseWorkbench from "./Components/Workbench/Workbench";
+
 const PageToPlot = {
   Dashboard: React.lazy(() =>
     retry(() => import("./Components/Dashboard/Dashboard"))
@@ -269,6 +270,11 @@ const PageToPlot = {
   InvConsumptionEntry: React.lazy(() =>
     retry(() =>
       import("./Components/Inventory/InvConsumptionEntry/InvConsumptionEntry")
+    )
+  ),
+  InvPointOfSale: React.lazy(() =>
+    retry(() =>
+      import("./Components/Inventory/InvPointOfSale/InvPointOfSale")
     )
   ),
   VendorSetup: React.lazy(() =>

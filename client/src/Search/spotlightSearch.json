@@ -583,6 +583,16 @@
         "fieldName": "sales_uom",
         "label": "UOM"
       }
+    ],
+    "Invitemmaster": [
+      {
+        "fieldName": "item_description",
+        "label": "Item Name"
+      },
+      {
+        "fieldName": "category_desc",
+        "label": "Item Category"
+      }
     ]
   }
 }

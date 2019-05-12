@@ -5,6 +5,7 @@ import inventoryGlobal from "../controllers/inventoryGlobal";
 import inventoryrequisitionEntry from "../controllers/inventoryrequisitionEntry";
 import inventorytransferEntry from "../controllers/inventorytransferEntry";
 import inventoryconsumption from "../controllers/inventoryconsumption";
+import posEntry from "../controllers/posEntry";
 
 const router = express();
 router.use("/inventory", inventory());
@@ -13,5 +14,6 @@ router.use("/inventoryGlobal", inventoryGlobal());
 router.use("/inventoryrequisitionEntry", inventoryrequisitionEntry());
 router.use("/inventorytransferEntry", inventorytransferEntry());
 router.use("/inventoryconsumption", inventoryconsumption());
+router.use("/posEntry", posEntry());
 
 export default router;

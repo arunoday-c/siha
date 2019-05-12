@@ -131,7 +131,7 @@ module.exports = {
         .executeQuery({
           query:
             "SELECT hims_m_inventory_location_permission_id,user_id, location_id,L.hims_d_inventory_location_id,L.location_description,\
-          L.location_type from hims_m_inventory_location_permission LP,hims_d_inventory_location L \
+          L.location_type,L.allow_pos from hims_m_inventory_location_permission LP,hims_d_inventory_location L \
           where LP.record_status='A' and\
            L.record_status='A' and LP.location_id=L.hims_d_inventory_location_id  and allow='Y' and user_id=?",
           values: [req.userIdentity.algaeh_d_app_user_id],
@@ -154,8 +154,8 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select  hims_d_inventory_location_id, location_description, location_status, location_type\
-                 from hims_d_inventory_location where record_status='A' " +
+                  "select  hims_d_inventory_location_id, location_description, location_status, location_type,\
+                 allow_pos from hims_d_inventory_location where record_status='A' " +
                   _strQry,
                 values: intValues,
                 printQuery: true

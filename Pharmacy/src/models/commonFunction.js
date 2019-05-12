@@ -146,40 +146,7 @@ let updateIntoItemLocation = (req, res, next) => {
         _mysql.rollBackTransaction(() => {
           next(e);
         });
-      });
-    // connection.query(
-    //   " call algaeh_proc_item_location ('" + xmlQuery + "')",
-    //   (error, result) => {
-    //     releaseDBConnection(db, connection);
-    //     if (error) {
-    //       req.options.onFailure(error);
-    //     } else {
-    //       if (Array.isArray(result)) {
-    //         if (result[0][0].Error != null) {
-    //           const error = new Error();
-    //           error.message = result[0][0].Error;
-    //           if (req.options != null) {
-    //             req.options.onFailure(error);
-    //           } else {
-    //             next(error);
-    //           }
-    //         } else {
-    //           if (req.options != null) {
-    //             req.options.onSuccess(result);
-    //           } else {
-    //             next();
-    //           }
-    //         }
-    //       } else {
-    //         if (req.options != null) {
-    //           req.options.onSuccess(result);
-    //         } else {
-    //           next();
-    //         }
-    //       }
-    //     }
-    //   }
-    // );
+      });    
   } catch (e) {
     _mysql.releaseConnection();
     next(e);

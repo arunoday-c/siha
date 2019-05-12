@@ -1,0 +1,28 @@
+.hptl-phase1-pos-recipt-form {
+  background: #e9feff;
+  border: 1px solid #44b8bd;
+  border-radius: 5px;
+  padding: 10px 0;
+  label {
+    font-weight: 400;
+    
+  }
+  mark {
+    background: none;
+    color: red;
+  }
+  .form-details {
+    padding-top: 10px;
+    padding-bottom: 0px;
+  }
+  .radio-design {
+    position: absolute;
+    top: 5px;
+    left: 36px;
+  }
+  .refactor-design {
+    min-height: 28px;
+    background-color: #fbfbfb;
+    border: 0px;
+  }
+}

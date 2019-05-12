@@ -1,0 +1,10 @@
+.hptl-phase1-item-batch-form {
+  background: #fff;
+  border-radius: 5px; }
+  .hptl-phase1-item-batch-form .colorPrimary div {
+    background-color: #dbad64; }
+    .hptl-phase1-item-batch-form .colorPrimary div h2 {
+      color: #fff; }
+  .hptl-phase1-item-batch-form th,
+  .hptl-phase1-item-batch-form td {
+    border-right: 1px solid #e6e6e6; }
