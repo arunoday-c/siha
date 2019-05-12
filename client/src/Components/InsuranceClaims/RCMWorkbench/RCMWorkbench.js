@@ -16,7 +16,7 @@ import AlgaehSearch from "../../Wrapper/globalSearch";
 import ValidateBills from "./ValidateBills/ValidateBills";
 import moment from "moment";
 import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
-
+import _ from "lodash";
 let validatedClaims = [];
 
 class RCMWorkbench extends Component {
@@ -32,6 +32,8 @@ class RCMWorkbench extends Component {
     this.getInvoicesForClaims = this.getInvoicesForClaims.bind(this);
     this.openReviewSubmit = this.openReviewSubmit.bind(this);
     this.getInsuranceProviders();
+    this.preValidateReport = this.preValidateReport.bind(this);
+    this.claimsReport = this.claimsReport.bind(this);
   }
 
   dropDownHandler(value) {
@@ -70,7 +72,6 @@ class RCMWorkbench extends Component {
   }
 
   addClaimsArray(row, e) {
-    debugger;
     if (row.claim_validated === "P") {
       e.preventDefault();
       swalMessage({
@@ -85,7 +86,6 @@ class RCMWorkbench extends Component {
   }
 
   getInvoicesForClaims() {
-    debugger
     AlgaehValidation({
       alertTypeIcon: "warning",
       onSuccess: () => {
@@ -173,7 +173,7 @@ class RCMWorkbench extends Component {
         }
       ]);
     }
-    debugger;
+
     algaehApiCall({
       uri: "/multireports", //"/report",
       method: "GET",
@@ -208,8 +208,6 @@ class RCMWorkbench extends Component {
         }
       },
       onSuccess: res => {
-        debugger;
-
         const url = URL.createObjectURL(res.data);
         let myWindow = window.open(
           "{{ product.metafields.google.custom_label_0 }}",
@@ -269,7 +267,100 @@ class RCMWorkbench extends Component {
       openSubmit: false
     });
   }
+  claimsReport(e) {
+    if (this.state.insurance_provider_id === undefined) {
+      swalMessage({
+        type: "error",
+        title: "Company Name can't blank"
+      });
+      return;
+    }
+    if (this.state.from_date === undefined) {
+      swalMessage({
+        type: "error",
+        title: "From date can't blank"
+      });
+      return;
+    }
+    if (this.state.to_date === undefined) {
+      swalMessage({
+        type: "error",
+        title: "To date can't blank"
+      });
+      return;
+    }
+    algaehApiCall({
+      uri: "/excelReport",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "ClaimsSummary-PatientSQ",
+          reportParams: [
+            {
+              name: "insurance_provider_id",
+              value: this.state.insurance_provider_id
+            },
+            {
+              name: "invoice_from_date",
+              value: new Date(this.state.from_date)
+            },
+            { name: "invoice_to_date", value: new Date(this.state.to_date) }
+          ]
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "claimSubmission.xlsx");
+        link.click();
+      }
+    });
+  }
+  preValidateReport(e) {
+    if (this.state.claims.length === 0) {
+      swalMessage({
+        type: "warning",
+        title: "There is no data to validate !"
+      });
+      return;
+    }
 
+    const inputParams = _.chain(this.state.claims)
+      .groupBy(g => g.visit_id)
+      .map((details, key) => {
+        return key;
+      })
+      .value();
+
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "prevalidation",
+          reportParams: [{ name: "visit_id", value: inputParams }]
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", "prevalidate.pdf");
+        link.click();
+      }
+    });
+  }
   render() {
     return (
       <div className="" style={{ marginBottom: "50px" }}>
@@ -465,7 +556,6 @@ class RCMWorkbench extends Component {
                           return (
                             <i
                               onClick={() => {
-                                debugger
                                 // row.claim_validated === "V" ||
                                 // row.claim_validated === "X"
                                 //   ? swalMessage({
@@ -728,6 +818,30 @@ class RCMWorkbench extends Component {
                 <AlgaehLabel
                   label={{
                     forceLabel: "Print",
+                    returnText: true
+                  }}
+                />
+              </button>
+              <button
+                onClick={this.claimsReport.bind(this)}
+                type="button"
+                className="btn btn-other"
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Claims Report",
+                    returnText: true
+                  }}
+                />
+              </button>
+              <button
+                onClick={this.preValidateReport.bind(this)}
+                type="button"
+                className="btn btn-other"
+              >
+                <AlgaehLabel
+                  label={{
+                    forceLabel: "Pre Validate Report",
                     returnText: true
                   }}
                 />

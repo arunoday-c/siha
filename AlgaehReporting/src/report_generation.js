@@ -191,14 +191,6 @@ module.exports = {
             let _reportOutput = [];
             for (let r = 0; r < _reportCount; r++) {
               const _data = data[0][r];
-              const _supportingJS = path.join(
-                process.cwd(),
-                "algaeh_report_tool/templates",
-                `${_data.report_name}.js`
-              );
-              if (fs.existsSync(_supportingJS)) {
-                require(_supportingJS);
-              }
 
               const _inputOrders = eval(_data.report_input_series);
 
@@ -229,15 +221,12 @@ module.exports = {
                     _inputParam.outputFileType == null
                       ? "PDF"
                       : _inputParam.outputFileType;
+                  const _supportingJS = path.join(
+                    process.cwd(),
+                    "algaeh_report_tool/templates",
+                    `${_data.report_name}.js`
+                  );
 
-                  if (
-                    _data.data_manupulation != null &&
-                    _data.data_manupulation != ""
-                  ) {
-                    const data_string = "`" + _data.data_manupulation + "`";
-                    const _resu = eval(data_string);
-                    result = JSON.parse(_resu);
-                  }
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
@@ -383,7 +372,34 @@ module.exports = {
                       }
                     }
                   };
-                  startGenerate();
+
+                  if (fs.existsSync(_supportingJS)) {
+                    const { executePDF } = require(_supportingJS);
+                    executePDF({
+                      mysql: _mysql,
+                      inputs: _inputOrders,
+                      loadash: _,
+                      moment: moment,
+                      result: result
+                    })
+                      .then(resultReq => {
+                        result = resultReq;
+                        startGenerate();
+                      })
+                      .catch(error => {
+                        console.log("Error", error);
+                      });
+                  } else {
+                    if (
+                      _data.data_manupulation != null &&
+                      _data.data_manupulation != ""
+                    ) {
+                      const data_string = "`" + _data.data_manupulation + "`";
+                      const _resu = eval(data_string);
+                      result = JSON.parse(_resu);
+                    }
+                    startGenerate();
+                  }
                 })
                 .catch(error => {
                   _mysql.releaseConnection();
