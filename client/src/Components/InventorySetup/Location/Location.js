@@ -19,7 +19,8 @@ import {
   insertLocation,
   updateLocation,
   deleteLocation,
-  getLocation
+  getLocation,
+  allowPos
 } from "./LocationEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
@@ -32,7 +33,8 @@ class Location extends Component {
       hims_d_inventory_location_id: "",
       location_description: "",
       location_type: null,
-      hospital_id: null
+      hospital_id: null,
+      allow_pos:"N"
     };
     this.baseState = this.state;
   }
@@ -116,6 +118,21 @@ class Location extends Component {
                 }
               }}
             />
+
+            <div
+              className="customCheckbox col-lg-2"
+              style={{ border: "none", marginTop: "28px" }}
+            >
+              <label className="checkbox" style={{ color: "#212529" }}>
+                <input
+                  type="checkbox"
+                  name="Allow POS"
+                  checked={this.state.allowpos}
+                  onChange={allowPos.bind(this, this)}
+                />
+                <span style={{ fontSize: "0.8rem" }}>Allow POS</span>
+              </label>
+            </div>
 
             <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
@@ -203,28 +220,40 @@ class Location extends Component {
                         ? "Sub Store"
                         : null;
                     }
-                    // editorTemplate: row => {
-                    //   return (
-                    //     <AlagehAutoComplete
-                    //       div={{}}
-                    //       selector={{
-                    //         name: "location_type",
-                    //         className: "select-fld",
-                    //         value: row.location_type,
-                    //         dataSource: {
-                    //           textField: "name",
-                    //           valueField: "value",
-                    //           data: GlobalVariables.FORMAT_PHARMACY_STORE
-                    //         },
-                    //         onChange: onchangegridcol.bind(this, this, row),
-                    //         others: {
-                    //           errormessage: "Location Type - cannot be blank",
-                    //           required: true
-                    //         }
-                    //       }}
-                    //     />
-                    //   );
-                    // }
+
+                  },
+                  {
+                    fieldName: "allow_pos",
+                    label: <AlgaehLabel label={{ fieldName: "allow_pos" }} />,
+                    displayTemplate: row => {
+                      return row.allow_pos === "N"
+                        ? "No"
+                        : row.allow_pos === "Y"
+                        ? "Yes"
+                        : null;
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{}}
+                          selector={{
+                            name: "allow_pos",
+                            className: "select-fld",
+                            value: row.allow_pos,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: GlobalVariables.FORMAT_YESNO
+                            },
+                            onChange: onchangegridcol.bind(this, this, row),
+                            others: {
+                              errormessage: "Allow POS - cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
                   },
                   {
                     fieldName: "hospital_id",

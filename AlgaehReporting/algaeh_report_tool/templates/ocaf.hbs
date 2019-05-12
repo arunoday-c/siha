@@ -40,29 +40,25 @@
                                     <td>Date of Visit: <span>{{header.visit_date}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3"> Single ( {{#if header.patient_marital_status "Plan Type"}}
+                                    <td colspan="3"> Single ( {{#if header.patient_marital_status "Single"}}
                                         <span>&#10004;</span>
                                         {{/if}}
-                                        ) | Married ( {{#if header.patient_marital_status "Plan Type"}}
+                                        ) | Married ( {{#if header.patient_marital_status "Married"}}
                                         <span>&#10004;</span>
                                         {{/if}}
                                         ) </td>
                                 </tr>
 
                                 <tr>
-                                    <td colspan="3">New Visit ( {{#if header.patient_marital_status "Plan Type"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        ) | Follow Up/Refill ( {{#if header.patient_marital_status "Plan Type"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        ) | Walk-in ( {{#if header.patient_marital_status "Plan Type"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        ) | Referral ( {{#if header.patient_marital_status "Plan Type"}}
-                                        <span>&#10004;</span>
-                                        {{/if}}
-                                        )
+                                  <td>New Visit ( {{#if header.new_visit_patient "Y"}}
+                                      <span>&#10004;</span>
+                                      {{/if}} )</td>
+                                  <td>Follow Up ( {{#if header.new_visit_patient "N"}}
+                                      <span>&#10004;</span>
+                                      {{/if}} )</td>
+                                  <td>Refill ( )</td>
+                                  <td>Walk In ( )</td>
+                                  <td>Referal ( )</td>
                                 </tr>
 
                             </tbody>
@@ -129,19 +125,19 @@
                                                 </tr>
                                                 <tr>
                                                     <td>Distance</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>{{header.dv_right_sch}}</td>
+                                                    <td>{{header.dv_right_cyl}}</td>
+                                                    <td>{{header.dv_right_axis}}</td>
+                                                    <td>{{header.dv_right_prism}}</td>
+                                                    <td>{{header.dv_right_vision}}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>Near</td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                    <td>{{header.nv_right_sch}}</td>
+                                                    <td>{{header.nv_right_cyl}}</td>
+                                                    <td>{{header.nv_right_axis}}</td>
+                                                    <td>{{header.nv_right_prism}}</td>
+                                                    <td>{{header.nv_right_vision}}</td>
                                                 </tr>
                                             </tb>
                                         </table>
@@ -161,20 +157,20 @@
                                                     <td>V/A</td>
                                                 </tr>
                                                 <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                  <td>{{header.dv_left_sch}}</td>
+                                                  <td>{{header.dv_left_cyl}}</td>
+                                                  <td>{{header.dv_left_axis}}</td>
+                                                  <td>{{header.dv_left_prism}}</td>
+                                                  <td>{{header.dv_left_vision}}</td>
+                                                  <td>{{header.eye_pd1}}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
-                                                    <td></td>
+                                                  <td>{{header.nv_left_sch}}</td>
+                                                  <td>{{header.nv_left_cyl}}</td>
+                                                  <td>{{header.nv_left_axis}}</td>
+                                                  <td>{{header.nv_left_prism}}</td>
+                                                  <td>{{header.nv_left_vision}}</td>
+                                                  <td>{{header.eye_pd2}}</td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -194,8 +190,8 @@
                                     <table class="servicetable">
                                         <tbody>
                                             <tr>
-                                                <td style="text-align: left">Bifocal:<span>----</span></td>
-                                                <td style="text-align: left">Add:<span>----</span></td>
+                                                <td style="text-align: left">Bifocal:</td>
+                                                <td style="text-align: left">Add:<span>{{header.right_bifocal_add}}</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -205,8 +201,8 @@
                                     <table class="servicetable">
                                         <tbody>
                                             <tr>
-                                                <td style="text-align: left">Bifocal:<span>----</span></td>
-                                                <td style="text-align: left">Add:<span>----</span></td>
+                                                <td style="text-align: left">Vertex:</td>
+                                                <td style="text-align: left">Add:<span>{{header.vertical_add}}</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -216,8 +212,8 @@
                                     <table class="servicetable">
                                         <tbody>
                                             <tr>
-                                                <td style="text-align: left">Bifocal:<span>----</span></td>
-                                                <td style="text-align: left">Add:<span>----</span></td>
+                                                <td style="text-align: left">Bifocal:</td>
+                                                <td style="text-align: left">Add:<span>{{header.left_bifocal_add}}</span></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -241,14 +237,14 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Glass ( {{#if header.patient_marital_status "Plan Type"}}
+                                <td>Glass ( {{#if header.resgular_lense_type "GL"}}
                                     <span>&#10004;</span>
                                     {{/if}}
                                     )</td>
-                                <td>Plastic ( {{#if header.new_visit_patient "Y"}}
+                                <td>Plastic ( {{#if header.resgular_lense_type "PL"}}
                                     <span>&#10004;</span>
                                     {{/if}} )</td>
-                                <td>None ( {{#if header.new_visit_patient "N"}}
+                                <td>None ( {{#if header.resgular_lense_type "N"}}
                                     <span>&#10004;</span>
                                     {{/if}} )</td>
                             </tr>
@@ -259,51 +255,51 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td>Multi-Coated ( {{#if header.patient_marital_status "Plan Type"}}
+                                <td>Multi-Coated ( {{#if header.multi_coated "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )<br>Varilux ( {{#if header.patient_marital_status "Plan Type"}}
+                                    )<br>Varilux ( {{#if header.varilux "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )<br>Light ( {{#if header.patient_marital_status "Plan Type"}}
+                                    )<br>Light ( {{#if header.light "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )<br>Aspheric ( {{#if header.patient_marital_status "Plan Type"}}
+                                    )<br>Aspheric ( {{#if header.aspheric "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )<br>Bifocal ( {{#if header.patient_marital_status "Plan Type"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    )<br></td>
-                                <td>Medium ( {{#if header.patient_marital_status "Plan Type"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    )<br>Lenticular ( {{#if header.patient_marital_status "Plan Type"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    )<br>Single Vision ( {{#if header.patient_marital_status "Plan Type"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    )<br>Dark ( {{#if header.patient_marital_status "Plan Type"}}
-                                    <span>&#10004;</span>
-                                    {{/if}}
-                                    )<br>Safety Thickness ( {{#if header.patient_marital_status "Plan Type"}}
+                                    )<br>Bifocal ( {{#if header.bifocal "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
                                     )<br></td>
-                                <td>Anti-reflecting Coating ( {{#if header.patient_marital_status "Plan Type"}}
+                                <td>Medium ( {{#if header.medium "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )<br>Photosensitive ( {{#if header.patient_marital_status "Plan Type"}}
+                                    )<br>Lenticular ( {{#if header.lenticular "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )<br>High Index ( {{#if header.patient_marital_status "Plan Type"}}
+                                    )<br>Single Vision ( {{#if header.single_vision "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )<br>Colored ( {{#if header.patient_marital_status "Plan Type"}}
+                                    )<br>Dark ( {{#if header.dark "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )<br>Anti-Scratch ( {{#if header.patient_marital_status "Plan Type"}}
+                                    )<br>Safety Thickness ( {{#if header.safety_thickness "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br></td>
+                                <td>Anti-reflecting Coating ( {{#if header.anti_reflecting_coating "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Photosensitive ( {{#if header.photosensitive "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>High Index ( {{#if header.high_index "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Colored ( {{#if header.colored "Y"}}
+                                    <span>&#10004;</span>
+                                    {{/if}}
+                                    )<br>Anti-Scratch ( {{#if header.anti_scratch "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
                                     )<br></td>
@@ -318,10 +314,10 @@
                                     <b>
                                         Contact Lenses Type:</b>
                                 </td>
-                                <td>Permanent ( {{#if header.patient_marital_status "Plan Type"}}
+                                <td>Permanent ( {{#if header.contact_lense_type "P"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    ) | Disposable ( {{#if header.patient_marital_status "Plan Type"}}
+                                    ) | Disposable ( {{#if header.contact_lense_type "D"}}
                                     <span>&#10004;</span>
                                     {{/if}}
                                     )</td>
@@ -333,10 +329,10 @@
                                     <b>
                                         Frames:</b>
                                 </td>
-                                <td>Yes ( {{#if header.patient_marital_status "Plan Type"}}
+                                <td>Yes ( {{#if header.frames "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    ) | No ( {{#if header.patient_marital_status "Plan Type"}}
+                                    ) | No ( {{#if header.frames "N"}}
                                     <span>&#10004;</span>
                                     {{/if}}
                                     )</td>
@@ -349,7 +345,7 @@
                                     <b>
                                         Please specify No. of Pairs:</b>
                                 </td>
-                                <td>---</td>
+                                <td>{{header.no_pairs}}</td>
                             </tr>
 
                         </table>
@@ -359,21 +355,21 @@
                                     <b>
                                         Estimated Cost:</b>
                                 </td>
-                                <td>---</td>
+                                <td>{{header.estimated_cost}}</td>
                             </tr>
                             <tr>
                                 <td>
                                     <b>
                                         Lenses:</b>
                                 </td>
-                                <td>---</td>
+                                <td>{{header.lense_cost}}</td>
                             </tr>
                             <tr>
                                 <td>
                                     <b>
                                         Frames:</b>
                                 </td>
-                                <td>---</td>
+                                <td>{{header.frame_cost}}</td>
                             </tr>
                         </table>
                     </td>

@@ -2,15 +2,15 @@ import { Router } from "express";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
 
-import { getPatientDCAF } from "../model/dcaf";
+import { getPatientOCAF, updateOcafDetails } from "../model/ocaf";
 
 export default ({ config, db }) => {
   let api = Router();
 
-  //created by nowshad :to  getPatientDCAF
+  //created by nowshad :to  getPatientOCAF
   api.get(
-    "/getPatientDCAF",
-    getPatientDCAF,
+    "/getPatientOCAF",
+    getPatientOCAF,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({
@@ -19,6 +19,18 @@ export default ({ config, db }) => {
       });
     }
   );
-  
+
+  api.put(
+    "/updateOcafDetails",
+    updateOcafDetails,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+  );
+
   return api;
 };

@@ -45,8 +45,8 @@ class Examination extends Component {
     }
   }
 
-  handleClose() {
-    this.setState({ openExamnModal: false });
+  handleClose(e) {
+    this.props.onClose && this.props.onClose(e);
   }
 
   texthandle(e) {
@@ -170,26 +170,22 @@ class Examination extends Component {
     });
   }
 
-  openExaminationModal() {
-    // getPhysicalExaminations(this);
-    if (
-      this.props.allexaminations === undefined ||
-      this.props.allexaminations.length === 0
-    )
-      getAllDepartmentBased({
-        that: this,
-        afterSucces: () => {
-          this.setState({
-            openExamnModal: true
-          });
-        }
-      });
-    else {
-      this.setState({
-        openExamnModal: true
-      });
-    }
-  }
+  // openExaminationModal(e) {
+  //   // getPhysicalExaminations(this);
+  //   if (
+  //     this.props.allexaminations === undefined ||
+  //     this.props.allexaminations.length === 0
+  //   )
+  //     getAllDepartmentBased({
+  //       that: this,
+  //       afterSucces: () => {
+  //       this.props.onClose && this.props.onClose(e);
+  //       }
+  //     });
+  //   else {
+  //     this.props.onClose && this.props.onClose(e);
+  //   }
+  // }
 
   headerDropDownHandle(value) {
     this.setState(
@@ -271,6 +267,7 @@ class Examination extends Component {
     });
   }
   render() {
+    debugger
     const _specility =
       this.props.allexaminations !== undefined &&
       this.props.allexaminations.length !== 0
@@ -299,7 +296,7 @@ class Examination extends Component {
             onClose: this.handleClose.bind(this)
           }}
           title="Add Examination"
-          openPopup={this.state.openExamnModal}
+          openPopup={this.props.openExamnModal}
         >
           <div className="popupInner">
             <div className="col-lg-12">
@@ -483,7 +480,7 @@ class Examination extends Component {
                   <button
                     type="button"
                     className="btn btn-default"
-                    onClick={this.handleClose}
+                    onClick={this.handleClose.bind(this)}
                   >
                     Close
                   </button>
@@ -493,7 +490,7 @@ class Examination extends Component {
           </div>
         </AlgaehModalPopUp>
 
-        {/* Examination Modal End */}
+        {/* Examination Modal End
         <div className="portlet portlet-bordered margin-top-15">
           <div className="portlet-title">
             <div className="caption">
@@ -544,7 +541,7 @@ class Examination extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </div>*/}
       </React.Fragment>
     );
   }

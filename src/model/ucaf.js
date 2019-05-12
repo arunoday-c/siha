@@ -40,7 +40,7 @@ let getPatientUCAF = (req, res, next) => {
                 E.full_name as provider_name,V.new_visit_patient,null as patient_emergency_case,\
                 V.appointment_patient,SD.sub_department_name,\
                 P.patient_code,P.marital_status as patient_marital_status,date(V.visit_date) as visit_date,\
-                P.full_name as patient_full_name,'OP' as case_type ,P.gender,V.age_in_years,\
+                P.full_name as patient_full_name,gender as patient_gender ,'OP' as case_type ,P.gender,V.age_in_years,\
                 IM.primary_policy_num,IM.primary_effective_start_date, \
                 IM.primary_effective_end_date,IM.primary_card_number \
                 from hims_f_patient_visit V inner join hims_d_employee E \

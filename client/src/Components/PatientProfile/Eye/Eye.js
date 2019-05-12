@@ -9,6 +9,9 @@ import {
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
 import EyeModal from "./EyeModal";
+import GlassPrescription from "./GlassPrescription";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+
 export default class Eye extends Component {
   constructor(props) {
     super(props);
@@ -18,8 +21,71 @@ export default class Eye extends Component {
       openAddVision: false,
       openPMT: false,
       openAddIOP: false,
-      openGlassPres: false
+      openGlassPres: false,
+      PrescriptionData:[]
     };
+    this.getGlassPrescription()
+  }
+
+  getGlassPrescription(){
+    algaehApiCall({
+      uri: "/opthometry/getGlassPrescription",
+      data: {
+        patient_id: Window.global["current_patient"],
+        encounter_id:Window.global["encounter_id"],
+        episode_id:Window.global["episode_id"]
+      },
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          debugger
+          let data = response.data.records
+          for (let i = 0; i < data.length; i++) {
+
+            data[i].multi_coated=data[i].multi_coated === "Y"?true:false
+            data[i].varilux=data[i].varilux === "Y"?true:false
+            data[i].light=data[i].light === "Y"?true:false
+            data[i].aspheric=data[i].aspheric === "Y"?true:false
+            data[i].bifocal=data[i].bifocal === "Y"?true:false
+            data[i].medium=data[i].medium === "Y"?true:false
+            data[i].lenticular=data[i].lenticular === "Y"?true:false
+            data[i].single_vision=data[i].single_vision === "Y"?true:false
+            data[i].dark=data[i].dark === "Y"?true:false
+            data[i].safety_thickness=data[i].safety_thickness === "Y"?true:false
+            data[i].anti_reflecting_coating=data[i].anti_reflecting_coating === "Y"?true:false
+            data[i].photosensitive=data[i].photosensitive === "Y"?true:false
+            data[i].high_index=data[i].high_index === "Y"?true:false
+            data[i].colored=data[i].colored === "Y"?true:false
+            data[i].anti_scratch=data[i].anti_scratch === "Y"?true:false
+            // data[i].multi_coated = data[i].multi_coated === "Y"?true:false
+            // data[i].varilux = data[i].varilux === "Y"?true:false
+            // data[i].cr_39 = data[i].cr_39 === "Y"?true:false
+            // data[i].unifocal = data[i].unifocal === "Y"?true:false
+            // data[i].d_bifocal = data[i].d_bifocal === "Y"?true:false
+            // data[i].kryptok = data[i].kryptok === "Y"?true:false
+            // data[i].progressive = data[i].progressive === "Y"?true:false
+            // data[i].office_lense = data[i].office_lense === "Y"?true:false
+            // data[i].tint = data[i].tint === "Y"?true:false
+            // data[i].photochromic = data[i].photochromic === "Y"?true:false
+            // data[i].advice_arc = data[i].advice_arc === "Y"?true:false
+            // data[i].advice_src = data[i].advice_src === "Y"?true:false
+            // data[i].polarised = data[i].polarised === "Y"?true:false
+            // data[i].advice_csl = data[i].advice_csl === "Y"?true:false
+          }
+
+          this.setState({
+            PrescriptionData:data
+          })
+        }
+      },
+      onFailure: error => {
+        // AlgaehLoader({ show: false });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   showModal(openModal) {
@@ -235,10 +301,11 @@ export default class Eye extends Component {
                       className="fas fa-plus"
                       onClick={this.showModal.bind(this, "GlassPres")}
                     />
-                    <EyeModal
+                    <GlassPrescription
                       openGlassPres={this.state.openGlassPres}
                       onClose={this.showModal.bind(this, "GlassPres")}
                       HeaderCaption="Glass Prescription"
+                      PrescriptionData={this.state.PrescriptionData}
                     />
                   </a>
                 </div>

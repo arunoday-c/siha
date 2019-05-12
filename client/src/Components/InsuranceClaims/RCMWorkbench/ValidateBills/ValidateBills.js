@@ -5,7 +5,6 @@ import {
   AlgaehDataGrid,
   AlgaehLabel,
   AlagehFormGroup
-  //AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehSearch from "../../../Wrapper/globalSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
@@ -13,8 +12,11 @@ import Dropzone from "react-dropzone";
 import noImage from "../../../../assets/images/images.webp";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import swal from "sweetalert2";
-//import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
+
+const UcafEditor = React.lazy(() => import("../../../ucafEditors/ucaf"));
+const DcafEditor = React.lazy(() => import("../../../ucafEditors/dcaf"));
+const OcafEditor = React.lazy(() => import("../../../ucafEditors/ocaf"));
 
 class ValidateBills extends PureComponent {
   constructor(props) {
@@ -22,8 +24,85 @@ class ValidateBills extends PureComponent {
 
     this.state = {
       invoice_details: [],
-      invoices: []
+      invoices: [],
+      openUCAF: false,
+      UCAFData: undefined,
+      openDCAF: false,
+      DCAFData: undefined,
+      openOCAF: false,
+      OCAFData: [],
     };
+  }
+
+
+  openUCAFReport(data, e) {
+    let that = this;
+    algaehApiCall({
+      uri: "/ucaf/getPatientUCAF",
+      method: "GET",
+      data: {
+        patient_id: this.state.invoices.patient_id,
+        visit_id: this.state.invoices.visit_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          that.setState({ openUCAF: true, UCAFData: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "warning"
+        });
+      }
+    });
+  }
+
+  openDCAFReport(data, e) {
+    let that = this;
+    algaehApiCall({
+      uri: "/dcaf/getPatientDCAF",
+      method: "GET",
+      data: {
+        patient_id: this.state.invoices.patient_id,
+        visit_id: this.state.invoices.visit_id
+
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          that.setState({ openDCAF: true, DCAFData: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "warning"
+        });
+      }
+    });
+  }
+
+  openOCAFReport(data, e) {
+    let that = this;
+    algaehApiCall({
+      uri: "/ucaf/getPatientUCAF",
+      method: "GET",
+      data: {
+        patient_id: this.state.invoices.patient_id,
+        visit_id: this.state.invoices.visit_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          that.setState({ openOCAF: true, OCAFData: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "warning"
+        });
+      }
+    });
   }
 
   validateInvoice() {
@@ -61,9 +140,34 @@ class ValidateBills extends PureComponent {
         },
         () => {
           this.getInvoiceICDs();
+          this.getSubDepts();
         }
       );
     }
+  }
+
+  getSubDepts() {
+    algaehApiCall({
+      uri: "/department/get/subdepartment",
+      module: "masterSettings",
+      data: {
+        sub_department_status: "A"
+      },
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            sub_depts: res.data.records
+          });
+        }
+      },
+      onFailure: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
   }
 
   generateReport(rpt_name, rpt_desc) {
@@ -262,6 +366,7 @@ class ValidateBills extends PureComponent {
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
+          debugger
           this.setState({
             icds: res.data.records
           });
@@ -276,72 +381,51 @@ class ValidateBills extends PureComponent {
     });
   }
 
-  // getServices(id) {
-  //   algaehApiCall({
-  //     uri: "/serviceType/getService",
-  //     module: "masterSettings",
-  //     method: "GET",
-  //     data: { service_type_id: id },
-  //     onSuccess: res => {
-  //       if (res.data.success) {
-  //         this.setState({
-  //           services: res.data.records
-  //         });
-  //       }
-  //     },
-  //     onError: error => {
-  //       swalMessage({
-  //         title: error.message,
-  //         type: "error"
-  //       });
-  //     }
-  //   });
-  // }
-
-  // getServiceType() {
-  //   algaehApiCall({
-  //     uri: "/serviceType",
-  //     module: "masterSettings",
-  //     method: "GET",
-  //     onSuccess: res => {
-  //       if (res.data.success) {
-  //         this.setState({
-  //           service_types: res.data.records
-  //         });
-  //       }
-  //     },
-  //     onError: error => {
-  //       swalMessage({
-  //         title: error.message,
-  //         type: "error"
-  //       });
-  //     }
-  //   });
-  // }
-
-  // dropDownHandler(value) {
-  //   switch (value.name) {
-  //     case "hims_d_service_type_id":
-  //       this.setState(
-  //         {
-  //           [value.name]: value.value
-  //         },
-  //         () => {
-  //           this.getServices(this.state.hims_d_service_type_id);
-  //         }
-  //       );
-  //       break;
-  //     default:
-  //       this.setState({
-  //         [value.name]: value.value
-  //       });
-  //       break;
-  //   }
-  // }
-
-  // addServiceToInvoice() {
-  //Add Service here
-  // }
+  renderDCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openDCAF}
+        title="DCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openDCAF: false });
+          }
+        }}
+      >
+        <DcafEditor dataProps={this.state.DCAFData} />
+      </AlgaehModalPopUp>
+    );
+  }
+  renderOCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openOCAF}
+        title="OCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openOCAF: false });
+          }
+        }}
+      >
+        <OcafEditor dataProps={this.state.OCAFData} />
+      </AlgaehModalPopUp>
+    );
+  }
+  renderUCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openUCAF}
+        title="UCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openUCAF: false });
+          }
+        }}
+      >
+        <UcafEditor dataProps={this.state.UCAFData} />
+      </AlgaehModalPopUp>
+    );
+  }
 
   updateInvoiceDetail(data) {
     algaehApiCall({
@@ -935,7 +1019,35 @@ class ValidateBills extends PureComponent {
           >
             Credit Invoice
           </button>
+
+
+        {this.state.invoices.chart_type === "N"?
+          <button
+            onClick={this.openUCAFReport.bind(this)}
+            className="btn btn-default"
+          >
+            UCAF
+          </button>
+          :this.state.invoices.chart_type === "O"?
+          <button
+            className="btn btn-default"
+            onClick={this.openOCAFReport.bind(this)}
+          >
+            OCAF
+          </button>
+          :this.state.invoices.chart_type === "D"?
+            <button
+              className="btn btn-default"
+              onClick={this.openDCAFReport.bind(this)}
+            >
+              DCAF
+            </button>
+          :null}
+
         </div>
+        {this.renderUCAFReport()}
+        {this.renderDCAFReport()}
+        {this.renderOCAFReport()}
       </AlgaehModalPopUp>
     );
   }

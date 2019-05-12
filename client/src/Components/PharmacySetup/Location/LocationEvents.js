@@ -144,7 +144,7 @@ const insertLocation = ($this, e) => {
 
               getLocation($this);
               swalMessage({
-                title: "Category added successfully . .",
+                title: "Location added successfully . .",
                 type: "success"
               });
             } else {

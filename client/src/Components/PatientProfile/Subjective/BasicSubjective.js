@@ -24,6 +24,7 @@ import SubjectiveHandler from "./SubjectiveHandler";
 import PatientHistory from "../PatientHistory/PatientHistory";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Allergies from "../Allergies/Allergies";
+import Examination from "../Examination/Examination";
 
 class BasicSubjective extends Component {
   constructor(props) {
@@ -35,6 +36,7 @@ class BasicSubjective extends Component {
       openDiet: false,
       openVital: false,
       openAlergy: false,
+      openExamnModal:null,
       chief_complaint: null,
 
       duration: null,
@@ -213,6 +215,12 @@ class BasicSubjective extends Component {
     });
   }
 
+  showPhysicalExamination(){
+    this.setState({
+      openExamnModal: !this.state.openExamnModal
+    });
+  }
+
   textAreaEvent(e) {
     // significant_signs
     let name = e.name || e.target.name;
@@ -273,13 +281,13 @@ class BasicSubjective extends Component {
                 <span className="animated slideInLeft faster">Examination</span>
                 <i
                   className="fas fa-clipboard"
-                  //     onClick={this.showPatientHistory.bind(this)}
+                  onClick={this.showPhysicalExamination.bind(this)}
                 />
-              </li>{" "}
-              {/* <PhysicalExamination
-                  openAddModal={this.state.openAddModal}
+              </li>
+               <Examination
+                  openExamnModal={this.state.openExamnModal}
                   onClose={this.showPhysicalExamination.bind(this)}
-                /> */}
+                />
               <li>
                 <span className="animated slideInLeft faster">Medication</span>
                 <i

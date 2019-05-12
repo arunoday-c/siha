@@ -50,12 +50,13 @@ export default function SubjectiveHandler() {
       });
     },
     datehandle: ($this, ctrl, e) => {
+      debugger
       const _durat_interval = dateDurationAndInterval(ctrl);
 
       $this.setState({
         duration: _durat_interval.duration,
         interval: _durat_interval.interval,
-        [e]: moment(ctrl)._d
+        onset_date: moment(ctrl)._d
       });
     },
     IcdsSearch: ($this, diagType) => {
