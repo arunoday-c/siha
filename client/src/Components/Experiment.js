@@ -79,7 +79,7 @@ class Experiment extends Component {
           onClick={() => {
             let that = this;
             algaehApiCall({
-              uri: "/report",
+              uri: "/excelReport", //"/report",
               method: "GET",
               module: "reports",
               headers: {
@@ -87,23 +87,26 @@ class Experiment extends Component {
               },
               others: { responseType: "blob" },
               data: {
-                rep: {
-                  reportName: "creditInvoice",
+                report: {
+                  reportName: "ClaimsSummary-PatientSQ",
                   reportParams: [
-                    { name: "patient_id", value: 245 },
-                    { name: "visit_id", value: 553 }
+                    { name: "insurance_provider_id", value: 167 },
+                    {
+                      name: "invoice_from_date",
+                      value: new Date("2018-12-01")
+                    },
+                    { name: "invoice_to_date", value: new Date("2018-12-31") }
                   ],
-                  outputFileType: "PDF", //"EXCEL", //"PDF",
-                  printDetails: false
+                  outputFileType: "EXCEL" //"EXCEL", //"PDF",
                 }
               },
               onSuccess: res => {
-                let reader = new FileReader();
-                reader.onloadend = () => {
-                  that.setState({ report: reader.result });
-                };
-
-                reader.readAsDataURL(res.data);
+                debugger;
+                const url = URL.createObjectURL(res.data);
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", "Aexcel.xlsx");
+                link.click();
               }
             });
           }}
@@ -252,18 +255,18 @@ class Experiment extends Component {
                         name: "visit_date",
                         value: null
                       }
+                    ],
+                    [
+                      { name: "hims_d_patient_id", value: 101 },
+                      {
+                        name: "visit_id",
+                        value: 300
+                      },
+                      {
+                        name: "visit_date",
+                        value: null
+                      }
                     ]
-                    // [
-                    //   { name: "hims_d_patient_id", value: 101 },
-                    //   {
-                    //     name: "visit_id",
-                    //     value: 300
-                    //   },
-                    //   {
-                    //     name: "visit_date",
-                    //     value: null
-                    //   }
-                    // ]
                   ],
                   outputFileType: "PDF" //"EXCEL", //"PDF",
                 }
