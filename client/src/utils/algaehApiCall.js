@@ -230,30 +230,18 @@ export function algaehApiCall(options) {
             // });
           }
           // else {
-          //   if (typeof settings.onFailure === "function") {
-          //     if (
-          //       err.response !== undefined &&
-          //       err.response.data !== undefined
-          //     ) {
-          //       if (err.response.data.message !== undefined) {
-          //         err.response.data.message = clearSqlMessage(
-          //           err.response.data.message
-          //         );
-          //       } else {
-          //         err = {
-          //           response: {
-          //             data: {
-          //               message: err.response.statusText
-          //             }
-          //           }
-          //         };
-          //       }
-          //     }
-          //
-          //     settings.onFailure(err);
-          //   }
           else {
-            if (
+            if (settings.module === "documentManagement") {
+              var reader = new FileReader();
+              reader.onload = function() {
+                if (settings.onFileFailure === "function") {
+                  settings.onFileFailure(reader.result);
+                } else {
+                  console.error(reader.result);
+                }
+              };
+              reader.readAsText(err.response.data);
+            } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] === "text/plain"
             ) {

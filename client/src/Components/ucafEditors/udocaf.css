@@ -15,6 +15,10 @@
   margin-bottom: 10px; }
   .ucafEditCntr .IDCardUcaf h5 {
     margin-bottom: 10px; }
+  .ucafEditCntr .IDCardUcaf .popupIDImg .image-drop-area .dropzone {
+    padding: 15px; }
+    .ucafEditCntr .IDCardUcaf .popupIDImg .image-drop-area .dropzone img {
+      height: 187px; }
 
 .ucafEditCntr .attendingPhysician {
   background: #fff;

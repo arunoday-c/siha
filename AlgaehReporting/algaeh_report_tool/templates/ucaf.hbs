@@ -25,7 +25,9 @@
                                     <td colspan="5"><b>To be completed & ID Verified by the reception/nurse:</b></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5">Provider Name: <span>{{header.provider_name}}</span></td>
+                                
+                                    <td colspan="5">Provider Name:
+                                     <span>{{header.provider_name}}</span></td>
                                 </tr>
                                 <tr>
                                     <td colspan="3">Insurance Company Name:
@@ -76,8 +78,8 @@
                                     <td><b>Print/Fill in clear letters or Emboss Card:</b></td>
                                 </tr>
                                 <tr><td>
-                                    <!-- <table class="IDImgSection"><tr><td><img src"" alt="Insurance ID Card"></td></tr></table> -->
-                                    <table class="IDTextSection">
+                                    <table class="IDImgSection"><tr><td><img src={{ imageUrl insurance 0 "primary_card_number" "_front" "Patients" reqHeader }} alt="Insurance ID Card"></td></tr></table>
+                                    <!-- <table class="IDTextSection">
                                     <tr>
                                         <td colspan="3">Insured Name:
                                             <span>{{firstElement insurance 0 "primary_insurance_company_name"}}</span></td>
@@ -100,7 +102,7 @@
                                         <td colspan="3">Approval: <span>{{firstElement insurance 0 "approval"}}</span></td>
 
                                     </tr>
-                                  </table>
+                                  </table> -->
                                 </td>
                                 </tr>
                             </tbody>
