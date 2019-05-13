@@ -453,6 +453,7 @@ class Vitals extends Component {
                           }
                         }}
                         value={this.state.recorded_date}
+                        disabled={true}
                       />
 
                       <AlagehFormGroup
@@ -470,8 +471,12 @@ class Vitals extends Component {
                           value: this.state.recorded_time,
                           events: {
                             onChange: this.texthandle.bind(this)
+                          },
+                          others: {
+                            disabled: true
                           }
                         }}
+
                       />
                       <div className="col-12 margin-top-15">
                         <button

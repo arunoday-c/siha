@@ -127,7 +127,7 @@ class NetworkPlan extends PureComponent {
               <div className="popRightDiv">
                 {/* Services Details */}
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-12">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Insurar Name"
@@ -329,7 +329,8 @@ class NetworkPlan extends PureComponent {
                 </div>
                 <div className="col-lg-12 networkPlanCntr">
                   <div className="row">
-                    <div className="col">
+
+                    <div className="col-2">
                       <label style={{ marginTop: 26 }}>Deductible</label>
                     </div>
                     <div className="col d-none">
@@ -343,7 +344,6 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Consultation" }}
                       textBox={{
-                        decimal: { allowNegative: false },
                         value: this.state.deductible,
                         className: "txt-fld",
                         name: "deductible",
@@ -352,7 +352,8 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -368,7 +369,7 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Lab" }}
                       textBox={{
-                        decimal: { allowNegative: false },
+
                         value: this.state.deductible_lab,
                         className: "txt-fld",
                         name: "deductible_lab",
@@ -377,7 +378,8 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -393,7 +395,7 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Radiology" }}
                       textBox={{
-                        decimal: { allowNegative: false },
+
                         value: this.state.deductible_rad,
                         className: "txt-fld",
                         name: "deductible_rad",
@@ -402,7 +404,8 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -418,7 +421,7 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "OPD Services" }}
                       textBox={{
-                        decimal: { allowNegative: false },
+
                         value: this.state.deductible_trt,
                         className: "txt-fld",
                         name: "deductible_trt",
@@ -427,7 +430,8 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -443,7 +447,7 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Dental" }}
                       textBox={{
-                        decimal: { allowNegative: false },
+
                         value: this.state.deductible_dental,
                         className: "txt-fld",
                         name: "deductible_dental",
@@ -452,7 +456,8 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -467,7 +472,7 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Medicine" }}
                       textBox={{
-                        decimal: { allowNegative: false },
+
                         value: this.state.deductible_medicine,
                         className: "txt-fld",
                         name: "deductible_medicine",
@@ -476,13 +481,14 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
                   </div>
                   <div className="row">
-                    <div className="col">
+                    <div className="col-2">
                       <label>Co Pay</label>
                     </div>
 
@@ -496,7 +502,7 @@ class NetworkPlan extends PureComponent {
                       //consultation
                       div={{ className: "col" }}
                       textBox={{
-                        decimal: { allowNegative: false },
+
                         value: this.state.copay_consultation,
                         className: "txt-fld",
                         name: "copay_consultation",
@@ -505,7 +511,8 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -520,13 +527,17 @@ class NetworkPlan extends PureComponent {
                       //Lab
                       div={{ className: "col" }}
                       textBox={{
-                        decimal: { allowNegative: false },
+
                         value: this.state.copay_percent,
                         className: "txt-fld",
                         name: "copay_percent",
 
                         events: {
                           onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -540,7 +551,6 @@ class NetworkPlan extends PureComponent {
                       //Radiology
                       div={{ className: "col" }}
                       textBox={{
-                        decimal: { allowNegative: false },
                         value: this.state.copay_percent_rad,
                         className: "txt-fld",
                         name: "copay_percent_rad",
@@ -548,8 +558,10 @@ class NetworkPlan extends PureComponent {
                         events: {
                           onChange: numberhandle.bind(this, this)
                         },
+
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -564,7 +576,6 @@ class NetworkPlan extends PureComponent {
                       //OPD Services
                       div={{ className: "col" }}
                       textBox={{
-                        decimal: { allowNegative: false },
                         value: this.state.copay_percent_trt,
                         className: "txt-fld",
                         name: "copay_percent_trt",
@@ -573,7 +584,8 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -588,7 +600,6 @@ class NetworkPlan extends PureComponent {
                       //Dental
                       div={{ className: "col" }}
                       textBox={{
-                        decimal: { allowNegative: false },
                         value: this.state.copay_percent_dental,
                         className: "txt-fld",
                         name: "copay_percent_dental",
@@ -597,7 +608,8 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
@@ -612,7 +624,6 @@ class NetworkPlan extends PureComponent {
                       //Medicine
                       div={{ className: "col" }}
                       textBox={{
-                        decimal: { allowNegative: false },
                         value: this.state.copay_medicine,
                         className: "txt-fld",
                         name: "copay_medicine",
@@ -621,119 +632,33 @@ class NetworkPlan extends PureComponent {
                           onChange: numberhandle.bind(this, this)
                         },
                         others: {
-                          "data-netdata": true
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                     />
                   </div>
                   <div className="row">
-                    <div className="col">
+                    <div className="col-2">
                       <label>Max-Limit</label>
                     </div>
-
                     <AlagehFormGroup
                       //consultation
                       div={{ className: "col" }}
                       textBox={{
-                        decimal: { allowNegative: false },
                         value: this.state.max_value,
                         className: "txt-fld",
                         name: "max_value",
 
                         events: {
                           onChange: numberhandle.bind(this, this)
+                        },
+                        others: {
+                          "data-netdata": true,
+                          type:"number"
                         }
                       }}
                      />
-
-                    <AlagehFormGroup
-                      //Lab
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.lab_max,
-                        className: "txt-fld",
-                        name: "lab_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-                    <AlagehFormGroup
-                      //Radiology
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.rad_max,
-                        className: "txt-fld",
-                        name: "rad_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      //OPD Services
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.trt_max,
-                        className: "txt-fld",
-                        name: "trt_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      //Dental
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.dental_max,
-                        className: "txt-fld",
-                        name: "dental_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
-
-                    <AlagehFormGroup
-                      //Medicine
-                      div={{ className: "col" }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        value: this.state.medicine_max,
-                        className: "txt-fld",
-                        name: "medicine_max",
-
-                        events: {
-                          onChange: numberhandle.bind(this, this)
-                        },
-                        others: {
-                          "data-netdata": true
-                        }
-                      }}
-                    />
                   </div>
                   <div className="row hidden">
                     <AlagehFormGroup

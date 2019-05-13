@@ -608,31 +608,6 @@ class PosListItems extends Component {
                                         />
                                       );
                                     }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         value: row.quantity,
-                                    //         className: "txt-fld",
-                                    //         name: "quantity",
-                                    //         events: {
-                                    //           onChange: qtyonchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
                                   },
 
                                   {
@@ -680,32 +655,6 @@ class PosListItems extends Component {
                                         />
                                       );
                                     }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         decimal: { allowNegative: false },
-                                    //         value: row.discount_percentage,
-                                    //         className: "txt-fld",
-                                    //         name: "discount_percentage",
-                                    //         events: {
-                                    //           onChange: onchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
                                   },
                                   {
                                     fieldName: "discount_amount",
@@ -742,33 +691,7 @@ class PosListItems extends Component {
                                           }}
                                         />
                                       );
-                                    }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         decimal: { allowNegative: false },
-                                    //         value: row.discount_amount,
-                                    //         className: "txt-fld",
-                                    //         name: "discount_amount",
-                                    //         events: {
-                                    //           onChange: onchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
+                                    }                                    
                                   },
 
                                   {

@@ -4,7 +4,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
 import ReactDOM from "react-dom";
 // import Enumerable from "linq";
-import POSIOputs from "../../../Models/POS";
+import INVPOSIOputs from "../../../Models/INVPOS";
 import {
   algaehApiCall,
   swalMessage,
@@ -84,7 +84,9 @@ const getPatientDetails = ($this, output) => {
 };
 
 const ClearData = ($this, e) => {
-  let IOputs = POSIOputs.inputParam();
+
+  debugger
+  let IOputs = INVPOSIOputs.inputParam();
 
   IOputs.patient_payable_h = 0;
   IOputs.mode_of_pa = "";

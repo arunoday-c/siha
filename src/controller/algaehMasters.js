@@ -11,6 +11,8 @@ import {
   getAlgaehModules,
   getAlgaehScreens,
   addAlgaehScreen,
+  updateAlgaehScreen,
+  deleteAlgaehScreen,
   addAlgaehComponent,
   getAlgaehComponents,
   addAlgaehScreenElement,
@@ -428,6 +430,38 @@ export default ({ config, db }) => {
   );
 
   api.put("/updateAlgaehModules", updateAlgaehModules, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  api.put("/updateAlgaehScreen", updateAlgaehScreen, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+
+  api.delete("/deleteAlgaehScreen", deleteAlgaehScreen, (req, res, next) => {
     let result = req.records;
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({

@@ -315,14 +315,7 @@ class Encounters extends Component {
                             : "----------"}
                         </h6>
                       </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Visit Type"
-                          }}
-                        />
-                        <h6>----------</h6>
-                      </div>
+
                       <div className="col">
                         <AlgaehLabel
                           label={{
@@ -344,21 +337,6 @@ class Encounters extends Component {
                         <h6>
                           {this.state.generalInfo !== undefined
                             ? this.state.generalInfo.pri_insurance_provider_name
-                            : "----------"}
-                        </h6>
-                      </div>
-                      <div className="col">
-                        <AlgaehLabel
-                          label={{
-                            forceLabel: "Sec. Insurance"
-                          }}
-                        />
-                        <h6>
-                          {" "}
-                          {this.state.generalInfo !== undefined &&
-                          this.state.generalInfo.sec_insurance_provider_name !==
-                            null
-                            ? this.state.generalInfo.sec_insurance_provider_name
                             : "----------"}
                         </h6>
                       </div>

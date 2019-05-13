@@ -21,7 +21,8 @@ import {
   bulkUpdate,
   serviceTypeHandeler,
   getPriceList,
-  Refresh
+  Refresh,
+  networkhandle
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 
@@ -31,7 +32,8 @@ class ServicePriceList extends PureComponent {
     this.state = {
       applicable: null,
       corporate_discount: 0,
-      dummy: true
+      dummy: true,
+      view_by: "C"
     };
     this.baseState = this.state;
   }
@@ -72,6 +74,39 @@ class ServicePriceList extends PureComponent {
     }
   }
 
+  changeChecks(e){
+
+    if(e.target.value === "P"){
+
+      this.props.getNetworkPlans({
+        uri: "/insurance/getNetworkAndNetworkOfficRecords",
+        method: "GET",
+        printInput: true,
+        data: {
+          insuranceProviderId: this.state.insurance_provider_id,
+          price_from:"P"
+        },
+        redux: {
+          type: "NETWORK_PLAN_GET_DATA",
+          mappingName: "pricefromplans"
+        },
+        afterSuccess:data=>{
+          debugger
+        }
+      });
+      this.setState({
+        [e.target.name]: e.target.value,
+        network_id:null
+      });
+    }else{
+      getPriceList(this, this);
+      this.setState({
+        [e.target.name]: e.target.value,
+        network_id:null
+      });
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -83,7 +118,7 @@ class ServicePriceList extends PureComponent {
               style={{ paddingBottom: 15, borderBottom: "1px solid #d3d3d3" }}
             >
               <div className="row">
-                <div className="col-lg-6">
+                <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Insurar Name"
@@ -95,8 +130,54 @@ class ServicePriceList extends PureComponent {
                       : "Insurar Name"}
                   </h6>
                 </div>
+                <div className="col">
+                  <label>View by</label>
+                  <div className="customRadio">
+                    <label className="radio block">
+                      <input
+                        type="radio"
+                        name="view_by"
+                        value="C"
+                        checked={this.state.view_by === "C"?true:false}
+                        onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>Company Price List</span>
+                    </label>
+                    <label className="radio block">
+                      <input
+                        type="radio"
+                        name="view_by"
+                        value="P"
+                        checked={this.state.view_by === "P"?true:false}
+                        onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>Policy Price List</span>
+                    </label></div></div>
+
+                    {this.state.view_by === "P"?
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Select Policy"
+                        }}
+                        selector={{
+                          name: "network_id",
+                          className: "select-fld",
+                         value: this.state.network_id,
+                          dataSource: {
+                            textField: "network_type",
+                            valueField: "hims_d_insurance_network_id",
+                            data: this.props.pricefromplans
+                          },
+                         onChange: networkhandle.bind(this, this)
+                        }}
+                      />
+                    :null}
+
+
+
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col-3" }}
                   label={{
                     fieldName: "filter_by"
                   }}
@@ -385,7 +466,7 @@ class ServicePriceList extends PureComponent {
                               className: "select-fld",
                               value: row.pre_approval,
                               dataSource: {
-                                textField: "value",
+                                textField: "name",
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_YESNO
                               },
@@ -410,7 +491,7 @@ class ServicePriceList extends PureComponent {
                               className: "select-fld",
                               value: row.covered,
                               dataSource: {
-                                textField: "value",
+                                textField: "name",
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_YESNO
                               },
@@ -449,7 +530,8 @@ class ServicePriceList extends PureComponent {
 function mapStateToProps(state) {
   return {
     pricelist: state.pricelist,
-    insservicetype: state.insservicetype
+    insservicetype: state.insservicetype,
+    pricefromplans:state.pricefromplans
   };
 }
 
@@ -458,7 +540,8 @@ function mapDispatchToProps(dispatch) {
     {
       getPriceList: AlgaehActions,
       initialPriceList: AlgaehActions,
-      getServiceTypes: AlgaehActions
+      getServiceTypes: AlgaehActions,
+      getNetworkPlans: AlgaehActions
     },
     dispatch
   );

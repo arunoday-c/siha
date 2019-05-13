@@ -148,10 +148,10 @@ export default function SubjectiveHandler() {
         onSuccess: response => {
           if (response.data.success) {
             getPatientChiefComplaints($this);
-            swalMessage({
-              title: "Chief Complaint Recorded",
-              type: "success"
-            });
+            // swalMessage({
+            //   title: "Chief Complaint Recorded",
+            //   type: "success"
+            // });
           }
         }
       });

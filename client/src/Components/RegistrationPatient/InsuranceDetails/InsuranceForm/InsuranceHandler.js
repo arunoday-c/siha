@@ -5,6 +5,7 @@ import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import swal from "sweetalert2";
 import { SetBulkState } from "../../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 
 let texthandlerInterval = null;
 const texthandle = ($this, context, e) => {
@@ -67,6 +68,7 @@ const clearinsurancehandle = ($this, context, e) => {
   }
 };
 const insurancehandle = ($this, context, e) => {
+  debugger
   let ProcessInsure = false;
   if ($this.state.doctor_id === null) {
     ProcessInsure = true;
@@ -90,12 +92,9 @@ const insurancehandle = ($this, context, e) => {
         primary_network_office_id:
           e.selected.hims_d_insurance_network_office_id,
         primary_card_number: e.selected.card_number,
-        primary_effective_start_date: e.selected.effective_start_date,
-        primary_effective_end_date: e.selected.effective_end_date,
+        primary_effective_start_date: e.selected.net_effective_start_date,
+        primary_effective_end_date: e.selected.net_effective_end_date,
         card_holder_name: e.selected.card_holder_name,
-        card_holder_age: e.selected.card_holder_age,
-        card_holder_gender: e.selected.card_holder_gender,
-        card_class: e.selected.card_class,
         ProcessInsure: ProcessInsure
       },
       () => {
@@ -112,14 +111,10 @@ const insurancehandle = ($this, context, e) => {
         primary_network_id: e.selected.network_id,
         primary_policy_num: e.selected.policy_number,
         primary_card_number: e.selected.card_number,
-        primary_effective_start_date: e.selected.effective_start_date,
-        primary_effective_end_date: e.selected.effective_end_date,
-        primary_network_office_id:
-          e.selected.hims_d_insurance_network_office_id,
+        primary_effective_start_date: e.selected.net_effective_start_date,
+        primary_effective_end_date: e.selected.net_effective_end_date,
+        primary_network_office_id: e.selected.hims_d_insurance_network_office_id,
         card_holder_name: e.selected.card_holder_name,
-        card_holder_age: e.selected.card_holder_age,
-        card_holder_gender: e.selected.card_holder_gender,
-        card_class: e.selected.card_class,
         ProcessInsure: ProcessInsure
       });
     }
@@ -192,12 +187,18 @@ const InsuranceDetails = ($this, context, e) => {
     ProcessInsure = false;
   }
 
+  const hospital = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  );
+  debugger
+
   AlgaehSearch({
     searchGrid: {
       columns: Insurance
     },
     searchName: "insurance",
     uri: "/gloabelSearch/get",
+    inputs: "netoff.hospital_id = " + hospital.hims_d_hospital_id,
     onContainsChange: (text, serchBy, callBack) => {
       callBack(text);
     },
@@ -238,7 +239,10 @@ const InsuranceDetails = ($this, context, e) => {
                 network_office_id: row.hims_d_insurance_network_office_id,
                 network_type: row.network_type,
 
-                policy_number: row.policy_number
+                policy_number: row.policy_number,
+                net_effective_start_date: row.net_effective_start_date,
+                net_effective_end_date: row.net_effective_end_date,
+                effective_end_date: row.effective_end_date,
               };
 
               let insObj = $this.props.existinsurance || [];
@@ -522,7 +526,8 @@ const radioChange = ($this, context, e) => {
           primary_network_office_id: null,
           primary_card_number: null,
           primary_effective_start_date: null,
-          primary_effective_end_date: null
+          primary_effective_end_date: null,
+          patInsuranceFrontImg:undefined
         },
         () => {
           if (value !== "Y") {
@@ -548,7 +553,8 @@ const radioChange = ($this, context, e) => {
           primary_network_office_id: null,
           primary_card_number: null,
           primary_effective_start_date: null,
-          primary_effective_end_date: null
+          primary_effective_end_date: null,
+          patInsuranceFrontImg:undefined
         });
       }
     }

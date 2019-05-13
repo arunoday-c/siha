@@ -6,6 +6,7 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 class Screens extends Component {
   constructor(props) {
@@ -113,8 +114,77 @@ class Screens extends Component {
     row.update();
   }
 
-  deleteScreens() {}
-  updateScreens() {}
+  deleteScreens(data) {
+    swal({
+      title: "Delete Screen : " + data.screen_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/algaehMasters/deleteAlgaehScreen",
+          method: "DELETE",
+          data: {
+            algaeh_app_screens_id: data.algaeh_app_screens_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success"
+              });
+
+              this.getScreens();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  updateScreens(data) {
+    algaehApiCall({
+      uri: "/algaehMasters/updateAlgaehScreen",
+      method: "PUT",
+      data: {
+        screen_name: data.screen_name,
+        page_to_redirect: data.page_to_redirect,
+        other_language: data.other_language,
+        algaeh_app_screens_id: data.algaeh_app_screens_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+
+          this.getScreens();
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   render() {
     return (
@@ -224,21 +294,82 @@ class Screens extends Component {
                 },
                 {
                   fieldName: "screen_name",
-                  label: "Screen Name"
+                  label: "Screen Name",
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "screen_name",
+                          value: row.screen_name,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Screen Name - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
                 },
                 {
                   fieldName: "page_to_redirect",
                   label: "Page to Redirect",
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "page_to_redirect",
+                          value: row.page_to_redirect,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Page to Redirect - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
+                },
+                {
+                  fieldName: "module_name",
+                  label: "Module Name",
                   disabled: true
                 },
                 {
-                  fieldName: "module_id",
-                  label: "Module"
+                  fieldName: "module_code",
+                  label: "Module Code",
+                  disabled: true
                 },
                 {
-                  fieldName: "other_languages",
+                  fieldName: "other_language",
                   label: "Other Language",
-                  disabled: true
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "other_language",
+                          value: row.other_language,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Module - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
                 }
               ]}
               keyId="algaeh_app_screens_id"
