@@ -114,7 +114,36 @@ class Screens extends Component {
   }
 
   deleteScreens() {}
-  updateScreens() {}
+
+  updateScreens(data) {
+    algaehApiCall({
+      uri: "/algaehMasters/updateAlgaehScreen",
+      method: "PUT",
+      data: {
+        screen_name: data.screen_name,
+        page_to_redirect: data.page_to_redirect,
+        module_id: data.module_id,
+        other_language: data.other_language,
+        algaeh_app_screens_id: data.algaeh_app_screens_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+
+          this.getScreens();
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
   render() {
     return (
@@ -224,12 +253,49 @@ class Screens extends Component {
                 },
                 {
                   fieldName: "screen_name",
-                  label: "Screen Name"
+                  label: "Screen Name",
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "screen_name",
+                          value: row.screen_name,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Screen Name - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
                 },
                 {
                   fieldName: "page_to_redirect",
                   label: "Page to Redirect",
-                  disabled: true
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "page_to_redirect",
+                          value: row.page_to_redirect,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Page to Redirect - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
                 },
                 {
                   fieldName: "module_id",
@@ -238,7 +304,25 @@ class Screens extends Component {
                 {
                   fieldName: "other_languages",
                   label: "Other Language",
-                  disabled: true
+                  editorTemplate: row => {
+                    return (
+                      <AlagehFormGroup
+                        div={{ className: "col" }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "other_languages",
+                          value: row.other_languages,
+                          events: {
+                            onChange: this.changeGridEditors.bind(this, row)
+                          },
+                          others: {
+                            errormessage: "Module - cannot be blank",
+                            required: true
+                          }
+                        }}
+                      />
+                    );
+                  }
                 }
               ]}
               keyId="algaeh_app_screens_id"
