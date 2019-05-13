@@ -218,10 +218,11 @@ class AddInsuranceForm extends Component {
                       />
                     </div>
                     <div className="row primary-box-container">
+
                       <AlagehAutoComplete
                         div={{ className: "col-3" }}
                         label={{
-                          fieldName: "policy_id",
+                          fieldName: "plan_id",
                           isImp: this.state.insuranceYes === true ? false : true
                         }}
                         selector={{
@@ -230,7 +231,6 @@ class AddInsuranceForm extends Component {
                           value: this.state.primary_policy_num,
                           dataSource: {
                             textField: "policy_number",
-                            // this.state.selectedLang == "en" ? "name" : "name",
                             valueField: "policy_number",
                             data:
                               this.props.existinsurance === undefined ||
@@ -311,7 +311,7 @@ class AddInsuranceForm extends Component {
                         div={{ className: "col-3" }}
                         label={{
                           fieldName: "card_holder_name",
-                          isImp: this.state.insuranceYes === true ? false : true
+                          // isImp: this.state.insuranceYes === true ? false : true
                         }}
                         textBox={{
                           className: "txt-fld",

@@ -41,7 +41,7 @@ body {
   border: 1px solid #ccc;
   padding: 3px;
   margin: 0;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .print-body .tableForLabel td span {
@@ -82,10 +82,10 @@ body {
   text-transform: uppercase;
   text-align: center;
   border-right: 1px solid #007468;
-  font-size: 11px;
+  font-size: 10px;
 }
 .print-body .tableForData th p{
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .print-body .tableForData td {
@@ -139,6 +139,7 @@ body {
   text-align: right;
   float: right;
   width:25%;
+  font-size: 12px;
 }
 .textEnLft{
   text-align: left;
@@ -149,7 +150,10 @@ body {
   margin-left: 10px;
   text-align: left;
 }
-.footerTotal{
+.footerTotalUp{
+  font-weight: bold;
+}
+.footerTotalDown{
   background: #ccc;
   font-weight: bold;
 }

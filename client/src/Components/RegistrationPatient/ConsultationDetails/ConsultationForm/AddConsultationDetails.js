@@ -27,7 +27,34 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  SetBulkState({
+  debugger
+
+  if($this.state.insured === "Y"){
+    $this.setState(
+      {
+        [e.name]: e.value,
+        visittypeselect: false,
+        consultation: e.selected.consultation
+      },
+      () => {
+        debugger
+        if (context !== null) {
+          context.updateState({
+            ...$this.state
+          });
+        }
+
+        $this.props.getDepartmentsandDoctors({
+          uri: "/department/get/get_All_Doctors_DepartmentWise",
+          method: "GET",
+          redux: {
+            type: "DEPT_DOCTOR_GET_DATA",
+            mappingName: "deptanddoctors"
+          }
+        });
+      });
+  }else{
+    SetBulkState({
     state: $this,
     callback: () => {
       AlgaehValidation({
@@ -41,6 +68,7 @@ const selectedHandeler = ($this, context, e) => {
               consultation: e.selected.consultation
             },
             () => {
+              debugger
               if (context !== null) {
                 context.updateState({
                   ...$this.state
@@ -65,10 +93,10 @@ const selectedHandeler = ($this, context, e) => {
         }
       });
     }
-  });
+  });}
 };
 
-const doctorselectedHandeler = ($this, context, e) => {  
+const doctorselectedHandeler = ($this, context, e) => {
   if ($this.state.sub_department_id !== null) {
     if (
       $this.state.insured === "Y" &&
