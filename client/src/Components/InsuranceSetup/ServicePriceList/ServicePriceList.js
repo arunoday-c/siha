@@ -83,7 +83,7 @@ class ServicePriceList extends PureComponent {
               style={{ paddingBottom: 15, borderBottom: "1px solid #d3d3d3" }}
             >
               <div className="row">
-                <div className="col-lg-6">
+                <div className="col">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Insurar Name"
@@ -95,8 +95,52 @@ class ServicePriceList extends PureComponent {
                       : "Insurar Name"}
                   </h6>
                 </div>
+                <div className="col">
+                  <label>View by</label>
+                  <div className="customRadio">
+                    <label className="radio block">
+                      <input
+                        type="radio"
+                        name="All"
+                        // checked={this.state.all}
+                        // onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>Company Price List</span>
+                    </label>
+                    <label className="radio block">
+                      <input
+                        type="radio"
+                        name="sunday"
+                        // checked={this.state.sunday}
+                        // onChange={this.changeChecks.bind(this)}
+                      />
+                      <span>Policy Price List</span>
+                    </label></div></div>
+
+                    <AlagehAutoComplete
+                      div={{ className: "col" }}
+                      label={{
+                        forceLabel: "Select Policy"
+                      }}
+                      selector={{
+                        name: "",
+                        className: "select-fld",
+                      //  value: this.state.service_type_id,
+                        dataSource: {
+                          // textField:
+                          //   this.state.selectedLang === "en"
+                          //     ? "service_type"
+                          //     : "arabic_service_type",
+                          // valueField: "hims_d_service_type_id",
+                          // data: this.props.insservicetype
+                        },
+                      //  onChange: serviceTypeHandeler.bind(this, this)
+                      }}
+                    />
+
+
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col-3" }}
                   label={{
                     fieldName: "filter_by"
                   }}

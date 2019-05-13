@@ -158,7 +158,7 @@ class InvoiceGeneration extends Component {
         <BreadCrumb
           title={
             <AlgaehLabel
-              label={{ forceLabel: "Invoice Generation", align: "ltr" }}
+              label={{ forceLabel: "Claim Generation", align: "ltr" }}
             />
           }
           breadStyle={this.props.breadStyle}
@@ -176,7 +176,7 @@ class InvoiceGeneration extends Component {
             {
               pageName: (
                 <AlgaehLabel
-                  label={{ forceLabel: "Invoice Generation", align: "ltr" }}
+                  label={{ forceLabel: "Claim Generation", align: "ltr" }}
                 />
               )
             }
