@@ -166,7 +166,7 @@ hbs.registerHelper("imageUrl", function(
         stringToappend +
         "&fileType=" +
         filetype;
-      console.log("imageLocation", imageLocation);
+
       return imageLocation;
     } else {
       return "";
@@ -426,6 +426,7 @@ module.exports = {
                       inputs: _inputOrders,
                       loadash: _,
                       moment: moment,
+                      mainData: data[1],
                       result: result
                     })
                       .then(resultReq => {
@@ -536,17 +537,6 @@ module.exports = {
                           "_" +
                           p
                       );
-
-                      if (
-                        resourceTemplate.data_manupulation != null &&
-                        resourceTemplate.data_manupulation != ""
-                      ) {
-                        const data_string =
-                          "`" + resourceTemplate.data_manupulation + "`";
-                        const _resu = eval(data_string);
-                        result = JSON.parse(_resu);
-                      }
-
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
@@ -629,7 +619,42 @@ module.exports = {
                         await browser.close();
                         resolve();
                       };
-                      startGenerate();
+
+                      const _supportingJS = path.join(
+                        process.cwd(),
+                        "algaeh_report_tool/templates",
+                        `${resourceTemplate.report_name}.js`
+                      );
+
+                      if (fs.existsSync(_supportingJS)) {
+                        const { executePDF } = require(_supportingJS);
+                        executePDF({
+                          mysql: _mysql,
+                          inputs: _inputParam,
+                          loadash: _,
+                          moment: moment,
+                          mainData: data[1],
+                          result: result
+                        })
+                          .then(resultReq => {
+                            result = resultReq;
+                            startGenerate();
+                          })
+                          .catch(error => {
+                            console.log("Error", error);
+                          });
+                      } else {
+                        if (
+                          resourceTemplate.data_manupulation != null &&
+                          resourceTemplate.data_manupulation != ""
+                        ) {
+                          const data_string =
+                            "`" + resourceTemplate.data_manupulation + "`";
+                          const _resu = eval(data_string);
+                          result = JSON.parse(_resu);
+                        }
+                        startGenerate();
+                      }
                     })
                     .catch(error => {
                       console.error(
