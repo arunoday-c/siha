@@ -1303,7 +1303,7 @@ let getPriceList = (req, res, next) => {
       let where = whereCondition(extend(priselistWhereCondition, req.query));
 
       connection.query(
-        "select * ,'comp' as price_from from hims_d_services_insurance where record_status='A' AND" +
+        "select * from hims_d_services_insurance where record_status='A' AND" +
           where.condition,
         where.values,
 
@@ -1321,6 +1321,51 @@ let getPriceList = (req, res, next) => {
   } catch (e) {
     next(e);
   }
+};
+
+let getPolicyPriceList = (req, res, next) => {
+
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+
+    let inputValues = [];
+    let _stringData = "";
+
+    if (req.query.insurance_id != null) {
+      _stringData += " and insurance_id=?";
+      inputValues.push(req.query.insurance_id);
+    }
+
+    if (req.query.network_id != null) {
+      _stringData += " and network_id=?";
+      inputValues.push(req.query.network_id);
+    }
+
+    _mysql
+      .executeQuery({
+        query:
+        "select hims_d_services_insurance_network_id,insurance_id,network_id,services_id,service_code,\
+        service_type_id,cpt_code,service_name,insurance_service_name,hospital_id,pre_approval,covered,\
+        deductable_status,deductable_amt,copay_status,copay_amt,gross_amt,corporate_discount_percent,\
+        corporate_discount_amt,net_amount from hims_d_services_insurance_network where record_status='A' " +
+          _stringData,
+        values: inputValues,
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+
 };
 
 //created by:irfan,to get list of network and its network_office records
@@ -1910,6 +1955,7 @@ module.exports = {
   NetworkOfficeMaster,
   addPlanAndPolicy,
   getPriceList,
+  getPolicyPriceList,
   getNetworkAndNetworkOfficRecords,
   updatePriceList,
   updateNetworkAndNetworkOffice,

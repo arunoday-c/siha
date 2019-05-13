@@ -6,6 +6,7 @@ import {
   AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 class Screens extends Component {
   constructor(props) {
@@ -113,7 +114,48 @@ class Screens extends Component {
     row.update();
   }
 
-  deleteScreens() {}
+  deleteScreens(data) {
+    swal({
+      title: "Delete Screen : " + data.screen_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/algaehMasters/deleteAlgaehScreen",
+          method: "DELETE",
+          data: {
+            algaeh_app_screens_id: data.algaeh_app_screens_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success"
+              });
+
+              this.getScreens();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
 
   updateScreens(data) {
     algaehApiCall({

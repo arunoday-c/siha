@@ -16,6 +16,7 @@ import {
   NetworkOfficeMaster,
   addPlanAndPolicy,
   getPriceList,
+  getPolicyPriceList,
   getNetworkAndNetworkOfficRecords,
   updatePriceList,
   updateNetworkAndNetworkOffice,
@@ -212,6 +213,20 @@ export default ({ config, db }) => {
   api.get(
     "/getPriceList",
     getPriceList,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.get(
+    "/getPolicyPriceList",
+    getPolicyPriceList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

@@ -822,6 +822,40 @@ let updateAlgaehScreen = (req, res, next) => {
     next(e);
   }
 };
+//created by irfan: to
+let deleteAlgaehScreen = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = extend({}, req.body);
+
+    if (req.userIdentity.role_type != "GN") {
+      _mysql
+        .executeQuery({
+          query:
+            "update algaeh_d_app_screens set record_status='I', updated_by=?,updated_date=? where algaeh_app_screens_id=?",
+          values: [input.updated_by, new Date(), input.algaeh_app_screens_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 
 //created by irfan: to add
 let addAlgaehComponent = (req, res, next) => {
@@ -2149,6 +2183,7 @@ module.exports = {
   addAlgaehScreen,
   getAlgaehScreens,
   updateAlgaehScreen,
+  deleteAlgaehScreen,
   addAlgaehComponent,
   getAlgaehComponents,
   addAlgaehScreenElement,

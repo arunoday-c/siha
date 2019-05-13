@@ -21,7 +21,8 @@ import {
   bulkUpdate,
   serviceTypeHandeler,
   getPriceList,
-  Refresh
+  Refresh,
+  networkhandle
 } from "./ServicePriceListHandaler";
 import GlobalVariables from "../../../utils/GlobalVariables";
 
@@ -88,14 +89,20 @@ class ServicePriceList extends PureComponent {
         redux: {
           type: "NETWORK_PLAN_GET_DATA",
           mappingName: "pricefromplans"
+        },
+        afterSuccess:data=>{
+          debugger
         }
       });
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
+        network_id:null
       });
     }else{
+      getPriceList(this, this);
       this.setState({
-        [e.target.name]: e.target.value
+        [e.target.name]: e.target.value,
+        network_id:null
       });
     }
   }
@@ -154,15 +161,15 @@ class ServicePriceList extends PureComponent {
                           forceLabel: "Select Policy"
                         }}
                         selector={{
-                          name: "",
+                          name: "network_id",
                           className: "select-fld",
-                         value: this.state.service_type_id,
+                         value: this.state.network_id,
                           dataSource: {
                             textField: "network_type",
                             valueField: "hims_d_insurance_network_id",
                             data: this.props.pricefromplans
                           },
-                         onChange: serviceTypeHandeler.bind(this, this)
+                         onChange: networkhandle.bind(this, this)
                         }}
                       />
                     :null}
@@ -459,7 +466,7 @@ class ServicePriceList extends PureComponent {
                               className: "select-fld",
                               value: row.pre_approval,
                               dataSource: {
-                                textField: "value",
+                                textField: "name",
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_YESNO
                               },
@@ -484,7 +491,7 @@ class ServicePriceList extends PureComponent {
                               className: "select-fld",
                               value: row.covered,
                               dataSource: {
-                                textField: "value",
+                                textField: "name",
                                 valueField: "value",
                                 data: GlobalVariables.FORMAT_YESNO
                               },

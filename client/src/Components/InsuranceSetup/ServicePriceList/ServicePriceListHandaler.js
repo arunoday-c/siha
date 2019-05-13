@@ -9,6 +9,31 @@ const texthandle = ($this, e) => {
   });
 };
 
+const networkhandle = ($this, e) => {
+  debugger
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  let inputObj = { insurance_id: $this.state.insurance_provider_id,
+  network_id: value};
+
+  $this.props.getPriceList({
+    uri: "/insurance/getPolicyPriceList",
+    method: "GET",
+    data: inputObj,
+    redux: {
+      type: "PRICE_LIST_GET_DATA",
+      mappingName: "pricelist"
+    },
+    afterSuccess:data=>{
+      $this.setState({
+        [name]: value
+      });
+    }
+  });
+
+};
+
 const onchangecalculation = ($this, row, e) => {
   let netamount = 0;
   // let discountAmt =
@@ -205,5 +230,6 @@ export {
   bulkUpdate,
   serviceTypeHandeler,
   getPriceList,
-  Refresh
+  Refresh,
+  networkhandle
 };
