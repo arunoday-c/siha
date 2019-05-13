@@ -20,71 +20,18 @@
             </table>
 
 
-            {{!-- <table class="tableForLabel" cell-padding="0">
-                <tr>
-                    <td><label>رقم التسجيل الضريبي / TRN</label></td>
-                    <td> <span>{{header.tax_number}}</span></td>
-                    <td><label>النوع / Type</label></td>
-                    <td> <span>ائتمان/ Credit</span></td>
-                </tr>
-                <tr>
-                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
-                </tr>
-                <tr>
-                    <td><label>رقم الملف الطبي / Reg. Number</label></td>
-                    <td> <span>{{header.patient_code}}</span></td>
-                    <td><label>رقم الفاتورة / Invoice No</label></td>
-                    <td> <span>{{header.invoice_number}}</span></td>
-                </tr>
-
-                <tr>
-                    <td><label>اسم المريض / Patient Name</label></td>
-                    <td> <span>{{header.patient_full_name}}</span></td>
-                    <td><label>اريخ الفاتورة / Invoice Date</label></td>
-                    <td> <span>{{header.invoice_date}}</span></td>
-                </tr>
-
-                <tr>
-                    <td><label>اسم الطبيب / Doctor</label></td>
-                    <td> <span>{{header.full_name}}</span></td>
-                    <td><label>Department / القسم</label></td>
-                    <td> <span>{{header.sub_department_name}}</span></td>
-                </tr>
-
-                <tr>
-                    <td><label>شركة التأمين / Insurance Company</label></td>
-                    <td> <span></span></td>
-                    <td colspan="2">
-                    </td>
-                </tr>
-
-                <tr>
-                    <td><label>رقم البطاقة / رقم السياسة / Card No/ Policy No</label></td>
-                    <td> <span></span></td>
-                    <td><label>حامل السياسة / Policy Holder</label></td>
-                    <td> <span>{{header.policy_number}}</span></td>
-                </tr>
-
-                <tr>
-                    <td><label>Class / Class</label></td>
-                    <td colspan="3"> <span></span></td>
-                </tr>
-            </table> --}}
-
-
         </section>
         <section>
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>Service Code<p>رمز الخدمة</p></th>
-                        <th>Service Desc.<p>وصف الخدمة</p></th>
+                        <th>Item Code<p>رمز الصنف</p></th>
+                        <th>Item Desc.<p>وصف السلعة</p></th>
                         <th>Qty<p>كمية</p></th>
+                        <th>Unit Price<p>المجموع الصافي</p></th>
                         <th>Gross Amount<p>المبلغ الإجمالي</p></th>
                         <th>Discount<p>خصم</p></th>
                         <th>Patient Respo.<p>حصة المريض</p></th>
-                        <th>Co. Payment<p>دفع الشركة</p></th>
-                        <th>Patient Vat Amt. <p>ضريبة المريض</p></th>
                         <th>Net Amt. <p>المبلغ الصافي</p></th>
                         <th>Vat Amt. <p>قيمة الضريبة</p></th>
                         <th>Net/Claim Amt.<p>صافي / مبلغ المطالبة</th>
@@ -92,27 +39,26 @@
                 </thead>
                 <tbody>
                     {{#each detail}}
-                    <tr>
-                        <td colspan="11" class="tableSubHdg">{{service_type}}/{{arabic_service_type}}</td>
-                    </tr>
+                    {{!-- <tr>
+                        <td colspan="10" class="tableSubHdg">{{service_type}}/{{arabic_service_type}}</td>
+                    </tr> --}}
                     <tr>
                        <td>{{service_code}}</td>
                         <td>{{service_name}}</td>
                         <td>{{quantity}}</td>
+                        <td class="numberFld">{{net_amount}}</td>
                         <td class="numberFld">{{net_amount}}</td>
                           <td class="numberFld">{{price}}</td>
                           <td class="numberFld">{{patient_resp}}</td>
                           <td class="numberFld">{{patient_tax}}</td>
                           <td class="numberFld">{{patient_payable}}</td>
                           <td class="numberFld">{{patient_payable}}</td>
-                          <td class="numberFld">{{patient_payable}}</td>
-                          <td class="numberFld">{{patient_payable}}</td>
                     </tr>
                     {{/each}}
-  <tr class="footerTotal">  <td colspan="4" class="numberFld"><span style="text-align:right">Total</span></td>
+  <tr class="footerTotal">
+      <td colspan="4" class="numberFld"><span style="text-align:right">Total</span></td>
                           <td class="numberFld">0.00</td>
                          <td class="numberFld">0.00</td>
-                          <td class="numberFld">0.00</td>
                           <td class="numberFld">0.00</td>
                           <td class="numberFld">0.00</td>
                           <td class="numberFld">0.00</td>

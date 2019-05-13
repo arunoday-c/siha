@@ -70,7 +70,7 @@ body {
 .print-body .tableForData .tableSubHdg {
   font-weight: bold;
   background: #f2f2f2;
-  border-bottom: 2px dashed #979797;
+  border-bottom: 1px dotted #979797;
   padding: 5px 3px;
 }
 
@@ -160,3 +160,17 @@ body {
 .numberFld{
   text-align: right;
 }
+
+
+ .tableForPharmacy {
+  width: 100%;
+  border-collapse: collapse;
+}
+.tableForPharmacy td{
+  border: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 13px;width: 50%;}
+  .tableForPharmacy td span{display:inline-block; margin: 0 5px; font-weight: bold;}
+
+.tableForPharmacy td:last-child{text-align: right;}
