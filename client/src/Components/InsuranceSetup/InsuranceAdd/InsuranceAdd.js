@@ -87,12 +87,12 @@ class InsuranceAdd extends PureComponent {
         this.setState(IOputs);
       }
     }
-    if (
-      nextProps.subinsuranceprovider !== undefined &&
-      nextProps.subinsuranceprovider.length !== 0
-    ) {
-      this.setState({ sub_insurance: nextProps.subinsuranceprovider });
-    }
+    // if (
+    //   nextProps.subinsuranceprovider !== undefined &&
+    //   nextProps.subinsuranceprovider.length !== 0
+    // ) {
+    //   this.setState({ sub_insurance: nextProps.subinsuranceprovider });
+    // }
 
     let insurance_provider_id = null;
     let insurance_provider_name = null;
