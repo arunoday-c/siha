@@ -125,7 +125,7 @@ module.exports = {
                   //   _mysql.commitTransaction(() => {
                   //     _mysql.releaseConnection();
                   req.records = {
-                    bill_cancel_number: bill_cancel_number,
+                    bill_number: bill_cancel_number,
                     hims_f_bill_cancel_header_id: headerResult.insertId,
                     receipt_number: req.records.receipt_number
                   };

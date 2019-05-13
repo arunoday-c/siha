@@ -393,8 +393,17 @@ let getInvoiceGeneration = (req, res, next) => {
     debugLog("where", where);
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT * from  hims_f_invoice_header\
-          where " +
+        "SELECT IH.`hims_f_invoice_header_id`, IH.`invoice_number`, IH.`invoice_date`, \
+        IH.`invoice_type`, IH.`patient_id`, IH.`visit_id`, IH.`policy_number`, IH.`insurance_provider_id`,\
+        IH.`sub_insurance_id`, IH.`network_id`, IH.`network_office_id`, IH.`card_number`, IH.`gross_amount`,\
+        IH.`discount_amount`, IH.`net_amount`, IH.`patient_resp`, IH.`patient_tax`, IH.`patient_payable`,\
+        IH.`company_resp`, IH.`company_tax`, IH.`company_payable`, IH.`sec_company_resp`, IH.`sec_company_tax`,\
+        IH.`sec_company_payable`, IH.`submission_date`, IH.`submission_ammount`, IH.`remittance_date`,\
+        IH.`remittance_ammount`, IH.`denial_ammount`, IH.`claim_validated`, IH.`card_holder_name`,\
+        IH.`card_holder_age`, IH.`card_holder_gender`, IH.`card_class`, IH.`created_by`, IH.`created_date`,\
+        IH.`updated_by`, IH.`updated_date`, IH.`hospital_id`, PV.visit_code, P.patient_code, P.full_name\
+        from  hims_f_invoice_header IH, hims_f_patient_visit PV, hims_f_patient P\
+        where IH.visit_id = PV.hims_f_patient_visit_id and IH.patient_id = P.hims_d_patient_id and " +
           where.condition,
         where.values,
         (error, headerResult) => {

@@ -22,7 +22,9 @@ import {
   onchangegridcol,
   credittexthandle,
   EditGrid,
-  CancelGrid
+  CancelGrid,
+  onquantitycol,
+  ondiscountgridcol
 } from "./AddOPBillingHandaler";
 import ReciptForm from "../ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -605,7 +607,7 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "quantity",
                                   events: {
-                                    onChange: onchangegridcol.bind(
+                                    onChange: onquantitycol.bind(
                                       this,
                                       this,
                                       row
@@ -619,7 +621,8 @@ class AddOPBillingForm extends Component {
                                     ),
                                     onFocus: e => {
                                       e.target.oldvalue = e.target.value;
-                                    }
+                                    },
+                                    type:"number"
                                   }
                                 }}
                               />
@@ -653,7 +656,7 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "discount_percentage",
                                   events: {
-                                    onChange: onchangegridcol.bind(
+                                    onChange: ondiscountgridcol.bind(
                                       this,
                                       this,
                                       row
@@ -691,7 +694,7 @@ class AddOPBillingForm extends Component {
                                   className: "txt-fld",
                                   name: "discount_amout",
                                   events: {
-                                    onChange: onchangegridcol.bind(
+                                    onChange: ondiscountgridcol.bind(
                                       this,
                                       this,
                                       row

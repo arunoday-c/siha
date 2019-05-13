@@ -17,6 +17,7 @@ import {
   getCtrlCode
 } from "./InvoiceGenerationHandaler";
 import "./InvoiceGeneration.css";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import "../../../styles/site.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { getCookie } from "../../../utils/algaehApiCall";
@@ -96,43 +97,48 @@ class InvoiceGeneration extends Component {
     }
   }
 
-  //created by Adnan
-  generateInvoice(type) {
-    type === "cash"
-      ? AlgaehReport({
-          report: {
-            fileName: "cashInvoice"
-          },
-          data: {
-            services: this.state.Invoice_Detail,
-            remarks: this.state.totalGross + " by Cash",
-            total_amount: this.state.totalGross,
-            payment_type: "cash",
-            patient_code: this.state.patient_code,
-            full_name: this.state.full_name,
-            invoice_number: this.state.invoice_number,
-            receipt_number: "PAT-00000asdfadsf",
-            receipt_date: "11-11-2018",
-            doctor_name: "Dr. Norman John"
-          }
-        })
-      : AlgaehReport({
-          report: {
-            fileName: "creditInvoice"
-          },
-          data: {
-            services: this.state.Invoice_Detail,
-            remarks: this.state.totalGross + " by Cash",
-            total_amount: this.state.totalGross,
-            payment_type: "credit",
-            patient_code: this.state.patient_code,
-            full_name: this.state.full_name,
-            invoice_number: this.state.invoice_number,
-            receipt_number: "PAT-00000asdfadsf",
-            receipt_date: "11-11-2018",
-            doctor_name: "Dr. Norman John"
-          }
-        });
+  generateInvoice(rpt_name, rpt_desc) {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: rpt_name,
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value:this.state.patient_id
+            },
+            {
+              name: "visit_id",
+              value: this.state.visit_id
+            },
+            {
+              name: "visit_date",
+              value: null
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
+
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = rpt_desc;
+      }
+    });
   }
 
   selectData(e) {
@@ -554,29 +560,6 @@ class InvoiceGeneration extends Component {
                         <AlgaehLabel label={{ fieldName: "company_payble" }} />
                       ),
                       disabled: true
-                    },
-                    {
-                      fieldName: "sec_comapany_resp",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "sec_company_res" }} />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "sec_company_tax",
-                      label: (
-                        <AlgaehLabel label={{ fieldName: "sec_company_tax" }} />
-                      ),
-                      disabled: true
-                    },
-                    {
-                      fieldName: "sec_company_payble",
-                      label: (
-                        <AlgaehLabel
-                          label={{ fieldName: "sec_company_paybale" }}
-                        />
-                      ),
-                      disabled: true
                     }
                   ]}
                   keyId="service_type_id"
@@ -894,7 +877,7 @@ class InvoiceGeneration extends Component {
                       <h6>{getAmountFormart(this.state.company_payble)}</h6>
                     </div>
 
-                    <div className="col-4">
+                    {/* <div className="col-4">
                       <AlgaehLabel
                         label={{
                           forceLabel: "Sec Company Resp."
@@ -920,6 +903,7 @@ class InvoiceGeneration extends Component {
                         {getAmountFormart(this.state.sec_company_payable)}
                       </h6>
                     </div>
+                    */}
                   </div>
                 </div>
               </div>
@@ -954,9 +938,11 @@ class InvoiceGeneration extends Component {
               <button
                 type="button"
                 className="btn btn-default"
-                //created by Adnan
-                onClick={this.generateInvoice.bind(this, "cash")}
-                //created by Adnan
+                onClick={this.generateInvoice.bind(
+                  this,
+                  "cashInvoice",
+                  "Cash Invoice"
+                )}
                 disabled={this.state.generateVoice}
               >
                 <AlgaehLabel
@@ -967,9 +953,11 @@ class InvoiceGeneration extends Component {
                 <button
                   type="button"
                   className="btn btn-default"
-                  //created by Adnan
-                  onClick={this.generateInvoice.bind(this, "credit")}
-                  //created by Adnan
+                  onClick={this.generateInvoice.bind(
+                    this,
+                    "creditInvoice",
+                    "Credit Invoice"
+                  )}
                   disabled={this.state.generateVoice}
                 >
                   <AlgaehLabel

@@ -1,4 +1,3 @@
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 
 const serviceTypeHandeler = ($this, context, e) => {
@@ -90,10 +89,9 @@ const adjustadvance = ($this, context, ctrl, e) => {
 
   if (e.target.value > 0) {
     if (e.target.value > $this.state.advance_amount) {
-      successfulMessage({
-        message: "Adjusted amount cannot be greater than Advance amount",
-        title: "Warning",
-        icon: "warning"
+      swalMessage({
+        title: "Adjusted amount cannot be greater than Advance amount",
+        type: "warning"
       });
     } else {
       $this.setState({
@@ -125,10 +123,9 @@ const discounthandle = ($this, context, ctrl, e) => {
     sheet_discount_percentage = 0;
   }
   if (sheet_discount_percentage > 100) {
-    successfulMessage({
-      message: "Discount % cannot be greater than 100.",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Discount % cannot be greater than 100.",
+      type: "warning"
     });
     $this.setState({
       sheet_discount_percentage: $this.state.sheet_discount_percentage
@@ -142,7 +139,7 @@ const discounthandle = ($this, context, ctrl, e) => {
   } else if (sheet_discount_amount > $this.state.patient_payable) {
     swalMessage({
       title: "Discount Amount cannot be greater than Patient Share.",
-      type: "Warning"
+      type: "warning"
     });
     $this.setState({
       sheet_discount_amount: $this.state.sheet_discount_amount
@@ -219,14 +216,65 @@ const onchangegridcol = ($this, row, e) => {
   row.update();
 };
 
+const ondiscountgridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let oldvalue = e.oldvalue || e.target.oldvalue;
+
+  if(name === "discount_percentage"){
+    if(parseInt(value) > 0){
+      swalMessage({
+        title: "Discount % cannot be greater than 100.",
+        type: "warning"
+      });
+      return
+    }
+    row[name] = oldvalue;
+    row.update();
+  }else if(name === "discount_amout"){
+    if(parseInt($this.state.gross_amount) > parseInt(value)){
+      swalMessage({
+        title: "Discount Amount cannot be greater than Gross Amount.",
+        type: "warning"
+      });
+      return
+    }
+    row[name] = oldvalue;
+    row.update();
+  }else{
+    row[name] = value;
+    row.update();
+  }
+
+
+};
+
+
+const onquantitycol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  let oldvalue = e.oldvalue || e.target.oldvalue;
+  if(value < 0 ){
+    swalMessage({
+      title: "Quantity cannot be less than zero.",
+      type: "warning"
+    });
+    row[name] = oldvalue;
+    row.update();
+  }else{
+    row[name] = value;
+    row.update();
+  }
+
+};
+
 const credittexthandle = ($this, context, ctrl, e) => {
   e = e || ctrl;
 
   if (e.target.value > $this.state.net_amount) {
-    successfulMessage({
-      message: "Criedt amount cannot be greater than Net amount",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Criedt amount cannot be greater than Net amount",
+      type: "warning"
     });
     $this.setState({
       [e.target.name]: $this.state.credit_amount
@@ -313,5 +361,7 @@ export {
   credittexthandle,
   credittextCal,
   EditGrid,
-  CancelGrid
+  CancelGrid,
+  onquantitycol,
+  ondiscountgridcol
 };

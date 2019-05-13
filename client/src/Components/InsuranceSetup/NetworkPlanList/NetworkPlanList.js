@@ -644,10 +644,7 @@ class NetworkPlanList extends PureComponent {
           ]}
           keyId="network_type"
           dataSource={{
-            data: this.state.network_plan
-            // this.props.networkandplans === undefined
-            //   ? []
-            //   : this.props.networkandplans
+            data: this.state.network_plan            
           }}
           isEditable={true}
           paging={{ page: 0, rowsPerPage: 10 }}
@@ -656,6 +653,7 @@ class NetworkPlanList extends PureComponent {
             onEdit: row => {},
             onDone: UpdateNetworkPlan.bind(this, this)
           }}
+          filter={true}
         />
       </div>
     );
