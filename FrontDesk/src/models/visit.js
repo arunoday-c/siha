@@ -458,7 +458,7 @@ module.exports = {
           `secondary_network_id`,`secondary_effective_start_date`,`secondary_effective_end_date`,\
           `secondary_card_number`,`secondary_inc_card_path`,`secondary_policy_num`,\
           `card_holder_name`, `created_by`,`created_date`,`updated_by`,\
-          `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+          `updated_date`)VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
             values: [
               input.patient_id,
               input.visit_id,
@@ -488,7 +488,7 @@ module.exports = {
               input.secondary_inc_card_path,
               input.secondary_policy_num,
 
-              input.card_holder_name,              
+              input.card_holder_name,
               req.userIdentity.algaeh_d_app_user_id,
               new Date(),
               req.userIdentity.algaeh_d_app_user_id,
