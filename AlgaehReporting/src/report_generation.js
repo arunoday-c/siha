@@ -7,6 +7,7 @@ import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
+
 const XlsxTemplate = require("xlsx-template");
 
 let outputFolder = path.join(
@@ -23,8 +24,9 @@ const compile = async function(templateName, data) {
     `${templateName}.hbs`
   );
   const html = await fs.readFile(filePath, "utf-8");
+  const comp = await hbs.compile(html)(data);
 
-  return hbs.compile(html)(data);
+  return comp;
 };
 
 const compileExcel = async function(templateName, data) {
@@ -143,6 +145,44 @@ hbs.registerHelper("consoleLog", function(data) {
   }
 });
 
+hbs.registerHelper("imageUrl", function(
+  filename,
+  index,
+  name,
+  stringToappend,
+  filetype,
+  reqHeader
+) {
+  const host = reqHeader["host"].split(":")[0];
+
+  if (Array.isArray(filename)) {
+    if (filename.length > 0) {
+      stringToappend = stringToappend || "";
+      const imageLocation =
+        "http://" +
+        host +
+        ":3006/api/v1/Document/get?destinationName=" +
+        filename[index][name] +
+        stringToappend +
+        "&fileType=" +
+        filetype;
+      console.log("imageLocation", imageLocation);
+      return imageLocation;
+    } else {
+      return "";
+    }
+  } else {
+    return (
+      "http://" +
+      host +
+      ":3006/api/v1/Document/get?destinationName=" +
+      filename +
+      "&fileType=" +
+      filetype
+    );
+  }
+});
+
 const groupBy = (data, groupby) => {
   const groupBy = _.chain(data)
     .groupBy(groupby)
@@ -226,6 +266,7 @@ module.exports = {
                     "algaeh_report_tool/templates",
                     `${_data.report_name}.js`
                   );
+                  const _header = req.headers;
 
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
@@ -240,6 +281,7 @@ module.exports = {
                       const _header = await compile(
                         _data.report_header_file_name,
                         {
+                          reqHeader: _header,
                           ...data[1][0],
                           user_name: req.userIdentity["username"],
                           report_name_for_header: _data.report_name_for_header
@@ -257,6 +299,7 @@ module.exports = {
                       _pdfTemplating["footerTemplate"] = await compile(
                         _data.report_footer_file_name,
                         {
+                          reqHeader: _header,
                           ...data[1][0],
                           report_name_for_header: _data.report_name_for_header
                         }
@@ -288,7 +331,10 @@ module.exports = {
                     }
 
                     await page.setContent(
-                      await compile(_data.report_name, result)
+                      await compile(_data.report_name, {
+                        ...result,
+                        reqHeader: _header
+                      })
                     );
                     await page.emulateMedia("screen");
 
@@ -476,8 +522,8 @@ module.exports = {
                   );
                   _mysql
                     .executeQuery({
-                      query: _myquery
-                      //  printQuery: true
+                      query: _myquery,
+                      printQuery: true
                     })
                     .then(result => {
                       const _path = path.join(
@@ -515,6 +561,7 @@ module.exports = {
                             resourceTemplate.report_header_file_name,
                             {
                               ...data[1][0],
+                              reqHeader: req.headers,
                               user_name: req.userIdentity["username"],
                               report_name_for_header:
                                 resourceTemplate.report_name_for_header
@@ -533,6 +580,7 @@ module.exports = {
                             resourceTemplate.report_footer_file_name,
                             {
                               ...data[1][0],
+                              reqHeader: req.headers,
                               report_name_for_header:
                                 resourceTemplate.report_name_for_header
                             }
@@ -564,7 +612,10 @@ module.exports = {
                         }
 
                         await page.setContent(
-                          await compile(resourceTemplate.report_name, result)
+                          await compile(resourceTemplate.report_name, {
+                            ...result,
+                            reqHeader: req.headers
+                          })
                         );
                         await page.emulateMedia("screen");
 

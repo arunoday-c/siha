@@ -160,12 +160,12 @@ class RCMWorkbench extends Component {
     AlgaehLoader({ show: true });
     let rpt_paramenter = [];
     // validatedClaims
-    for (let i = 0; i < validatedClaims.length; i++) {
+    for (let i = 0; i < this.state.claims.length; i++) {
       rpt_paramenter.push([
-        { name: "hims_d_patient_id", value: validatedClaims[i].patient_id },
+        { name: "hims_d_patient_id", value: this.state.claims[i].patient_id },
         {
           name: "visit_id",
-          value: validatedClaims[i].visit_id
+          value: this.state.claims[i].visit_id
         },
         {
           name: "visit_date",

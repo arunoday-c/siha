@@ -30,10 +30,9 @@ class ValidateBills extends PureComponent {
       openDCAF: false,
       DCAFData: undefined,
       openOCAF: false,
-      OCAFData: [],
+      OCAFData: []
     };
   }
-
 
   openUCAFReport(data, e) {
     let that = this;
@@ -45,6 +44,7 @@ class ValidateBills extends PureComponent {
         visit_id: this.state.invoices.visit_id
       },
       onSuccess: response => {
+        debugger;
         if (response.data.success) {
           that.setState({ openUCAF: true, UCAFData: response.data.records });
         }
@@ -66,7 +66,6 @@ class ValidateBills extends PureComponent {
       data: {
         patient_id: this.state.invoices.patient_id,
         visit_id: this.state.invoices.visit_id
-
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -366,7 +365,7 @@ class ValidateBills extends PureComponent {
       method: "GET",
       onSuccess: res => {
         if (res.data.success) {
-          debugger
+          debugger;
           this.setState({
             icds: res.data.records
           });
@@ -1020,30 +1019,28 @@ class ValidateBills extends PureComponent {
             Credit Invoice
           </button>
 
-
-        {this.state.invoices.chart_type === "N"?
-          <button
-            onClick={this.openUCAFReport.bind(this)}
-            className="btn btn-default"
-          >
-            UCAF
-          </button>
-          :this.state.invoices.chart_type === "O"?
-          <button
-            className="btn btn-default"
-            onClick={this.openOCAFReport.bind(this)}
-          >
-            OCAF
-          </button>
-          :this.state.invoices.chart_type === "D"?
+          {this.state.invoices.chart_type === "N" ? (
+            <button
+              onClick={this.openUCAFReport.bind(this)}
+              className="btn btn-default"
+            >
+              UCAF
+            </button>
+          ) : this.state.invoices.chart_type === "O" ? (
+            <button
+              className="btn btn-default"
+              onClick={this.openOCAFReport.bind(this)}
+            >
+              OCAF
+            </button>
+          ) : this.state.invoices.chart_type === "D" ? (
             <button
               className="btn btn-default"
               onClick={this.openDCAFReport.bind(this)}
             >
               DCAF
             </button>
-          :null}
-
+          ) : null}
         </div>
         {this.renderUCAFReport()}
         {this.renderDCAFReport()}

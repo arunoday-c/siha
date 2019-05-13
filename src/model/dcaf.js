@@ -127,20 +127,20 @@ let getPatientDCAF = (req, res, next) => {
               printQuery: true
             })
             .then(outputResult => {
-              let errorString =
-                outputResult[4].length == 0 ? "Services not yet added \n" : "";
-              errorString +=
-                outputResult[5].length == 0
-                  ? "Medication not yet added \n"
-                  : "";
-              errorString +=
-                outputResult[6].length == 0 ? "Insurance is not added \n" : "";
-              console.log("errorString", errorString);
-              if (errorString != "") {
-                _mysql.releaseConnection();
-                next(new Error(errorString));
-                return;
-              }
+              // let errorString =
+              //   outputResult[4].length == 0 ? "Services not yet added \n" : "";
+              // errorString +=
+              //   outputResult[5].length == 0
+              //     ? "Medication not yet added \n"
+              //     : "";
+              // errorString +=
+              //   outputResult[6].length == 0 ? "Insurance is not added \n" : "";
+              // console.log("errorString", errorString);
+              // if (errorString != "") {
+              //   _mysql.releaseConnection();
+              //   next(new Error(errorString));
+              //   return;
+              // }
 
               const _fields =
                 outputResult[0].length > 0 ? { ...outputResult[0][0] } : {};

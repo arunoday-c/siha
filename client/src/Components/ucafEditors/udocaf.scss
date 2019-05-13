@@ -19,6 +19,16 @@
     h5 {
       margin-bottom: 10px;
     }
+    .popupIDImg {
+      .image-drop-area {
+        .dropzone {
+          padding: 15px;
+          img {
+            height: 187px;
+          }
+        }
+      }
+    }
   }
   .attendingPhysician {
     background: #fff;
