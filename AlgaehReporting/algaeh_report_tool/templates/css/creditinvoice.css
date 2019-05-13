@@ -82,6 +82,9 @@ body {
   text-transform: uppercase;
   text-align: center;
   border-right: 1px solid #007468;
+  font-size: 11px;
+}
+.print-body .tableForData th p{
   font-size: 12px;
 }
 
@@ -131,4 +134,25 @@ body {
   float: left;
   width: 15%;
   height: 60px;
+}
+.textArRht{
+  text-align: right;
+  float: right;
+  width:25%;
+}
+.textEnLft{
+  text-align: left;
+  float: left;
+  width:25%;
+}
+.valueText{
+  margin-left: 10px;
+  text-align: left;
+}
+.footerTotal{
+  background: #ccc;
+  font-weight: bold;
+}
+.numberFld{
+  text-align: right;
 }

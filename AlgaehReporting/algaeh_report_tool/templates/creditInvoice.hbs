@@ -5,7 +5,22 @@
 
         <section>
 
-            <table class="tableForLabel" cell-padding="0">
+
+  <table class="tableForLabel" cell-padding="0">
+                <tr><td><label class="textEnLft">Invoice No</label>:<span class="valueText">{{header.invoice_number}}</span><label class="textArRht">رقم الفاتورة</label></td><td><label class="textEnLft">Invoice Date</label>:<span class="valueText">{{header.invoice_date}}</span><label class="textArRht">اريخ الفاتورة</label></td></tr>
+                 <tr><td><label class="textEnLft">Patient Name</label>:<span class="valueText">{{header.patient_full_name}}</span><label class="textArRht">اسم المريض</label></td><td><label class="textEnLft">Visit Date</label>:<span class="valueText">Show Visit Date here</span><label class="textArRht">تاريخ الزيارة</label></td></tr>
+                <tr><td><label class="textEnLft">MR No</label>:<span class="valueText">{{header.patient_code}}</span><label class="textArRht">رقم التسجيل</label></td><td><label class="textEnLft">Reg. Date</label>:<span class="valueText">{{header.invoice_date}}</span><label class="textArRht">تاريخ التسجيل</label></td></tr>
+                 <tr><td><label class="textEnLft">Insurance Co.</label>:<span class="valueText">{{header.insurance_provider_name}}</span><label class="textArRht">شركة التأمين</label></td><td><label class="textEnLft">Age/Gender</label>:<span class="valueText">{{header.invoice_date}}</span><label class="textArRht">العمر / الجنس</label></td></tr>
+                  <tr><td><label class="textEnLft">Policy/ Class</label>:<span class="valueText">{{header.card_number}} / {{header.card_holder_name}}</span><label class="textArRht">بوليصة/قاعة</label></td><td><label class="textEnLft">Nationality</label>:<span class="valueText">{{header.invoice_date}}</span><label class="textArRht">جنسية</label></td></tr>
+                <tr>
+                    <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
+                </tr>
+               <tr><td><label class="textEnLft">Doctor</label>:<span class="valueText">{{header.full_name}}</span><label class="textArRht">طبيب</label></td><td><label class="textEnLft">Department</label>:<span class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label></td></tr>
+               
+            </table>
+
+
+            {{!-- <table class="tableForLabel" cell-padding="0">
                 <tr>
                     <td><label>رقم التسجيل الضريبي / TRN</label></td>
                     <td> <span>{{header.tax_number}}</span></td>
@@ -38,23 +53,23 @@
 
                 <tr>
                     <td><label>شركة التأمين / Insurance Company</label></td>
-                    <td> <span>{{header.insurance_provider_name}}</span></td>
+                    <td> <span></span></td>
                     <td colspan="2">
                     </td>
                 </tr>
 
                 <tr>
                     <td><label>رقم البطاقة / رقم السياسة / Card No/ Policy No</label></td>
-                    <td> <span>{{header.card_number}} / {{header.card_holder_name}}</span></td>
+                    <td> <span></span></td>
                     <td><label>حامل السياسة / Policy Holder</label></td>
                     <td> <span>{{header.policy_number}}</span></td>
                 </tr>
 
                 <tr>
                     <td><label>Class / Class</label></td>
-                    <td colspan="3"> <span>{{header.card_class_name}}</span></td>
+                    <td colspan="3"> <span></span></td>
                 </tr>
-            </table>
+            </table> --}}
 
 
         </section>
@@ -62,38 +77,52 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>SERVICE DESCRIPTION</th>
-                        <th>PRICE</th>
-                        <th>QUANTITY</th>
-                        <th>NET AMOUNT</th>
-                        <th>PATIENT SHARE</th>
-                        <th>COMPANY RESP.</th>
-                        <th>COMPANY TAX</th>
-                        <th>COMPANY PAYABLE</th>
+                        <th>Service Code<p>رمز الخدمة</p></th>
+                        <th>Service Desc.<p>وصف الخدمة</p></th>
+                        <th>Qty<p>كمية</p></th>
+                        <th>Gross Amount<p>المبلغ الإجمالي</p></th>
+                        <th>Discount<p>خصم</p></th>
+                        <th>Patient Respo.<p>حصة المريض</p></th>
+                        <th>Co. Payment<p>دفع الشركة</p></th>
+                        <th>Patient Vat Amt. <p>ضريبة المريض</p></th>
+                        <th>Net Amt. <p>المبلغ الصافي</p></th>
+                        <th>Vat Amt. <p>قيمة الضريبة</p></th>
+                        <th>Net/Claim Amt.<p>صافي / مبلغ المطالبة
                     </tr>
                 </thead>
                 <tbody>
                     {{#each detail}}
                     <tr>
-                        <td colspan="9" class="tableSubHdg">{{service_type}}</td>
+                        <td colspan="11" class="tableSubHdg">{{service_type}}/{{arabic_service_type}}</td>
                     </tr>
                     <tr>
+                       <td>{{service_code}}</td>
                         <td>{{service_name}}</td>
-                        <td>{{price}}</td>
                         <td>{{quantity}}</td>
-                        <td>{{net_amount}}</td>
-                        <td>{{patient_share}}</td>
-                        <td>{{company_resp}}</td>
-                        <td>{{company_tax}}</td>
-                        <td>{{company_payable}}</td>
+                        <td class="numberFld">{{net_amount}}</td>
+                          <td class="numberFld">{{price}}</td>
+                          <td class="numberFld">{{patient_resp}}</td>
+                          <td class="numberFld">{{patient_tax}}</td>
+                          <td class="numberFld">{{patient_payable}}</td>
+                          <td class="numberFld">{{patient_payable}}</td>
+                          <td class="numberFld">{{patient_payable}}</td>
+                          <td class="numberFld">{{patient_payable}}</td>
                     </tr>
                     {{/each}}
-
+  <tr class="footerTotal">  <td colspan="4"><span style="text-align:right">Total</span></td>
+                          <td class="numberFld">0.00</td>
+                         <td class="numberFld">0.00</td>
+                          <td class="numberFld">0.00</td>
+                          <td class="numberFld">0.00</td>
+                          <td class="numberFld">0.00</td>
+                          <td class="numberFld">0.00</td>
+                          <td class="numberFld">0.00</td>
+                    </tr>
 
 
                 </tbody>
             </table>
         </section>
-        <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
+        {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
 </body>
