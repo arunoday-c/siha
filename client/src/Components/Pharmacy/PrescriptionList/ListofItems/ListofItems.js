@@ -225,7 +225,10 @@ class ListofItems extends PureComponent {
                 ]}
                 keyId="item_id"
                 dataSource={{
-                  data: this.props.inputsparameters.item_list
+                  data:
+                    this.props.inputsparameters !== undefined
+                      ? this.props.inputsparameters.item_list
+                      : []
                 }}
                 // isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
