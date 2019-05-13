@@ -122,7 +122,6 @@ class Screens extends Component {
       data: {
         screen_name: data.screen_name,
         page_to_redirect: data.page_to_redirect,
-        module_id: data.module_id,
         other_language: data.other_language,
         algaeh_app_screens_id: data.algaeh_app_screens_id
       },
@@ -298,11 +297,17 @@ class Screens extends Component {
                   }
                 },
                 {
-                  fieldName: "module_id",
-                  label: "Module"
+                  fieldName: "module_name",
+                  label: "Module Name",
+                  disabled: true
                 },
                 {
-                  fieldName: "other_languages",
+                  fieldName: "module_code",
+                  label: "Module Code",
+                  disabled: true
+                },
+                {
+                  fieldName: "other_language",
                   label: "Other Language",
                   editorTemplate: row => {
                     return (
@@ -310,8 +315,8 @@ class Screens extends Component {
                         div={{ className: "col" }}
                         textBox={{
                           className: "txt-fld",
-                          name: "other_languages",
-                          value: row.other_languages,
+                          name: "other_language",
+                          value: row.other_language,
                           events: {
                             onChange: this.changeGridEditors.bind(this, row)
                           },
