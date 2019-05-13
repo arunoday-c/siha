@@ -240,7 +240,22 @@ export function algaehApiCall(options) {
                   console.error(reader.result);
                 }
               };
-              reader.readAsText(err.response.data);
+              if (
+                err.response === undefined &&
+                err.message === "Network Error"
+              ) {
+                const routers = config.routersAndPorts;
+                swalMessage({
+                  title:
+                    "'" +
+                    routers[settings.module]["name"] +
+                    "' module is not yet started",
+                  type: "info",
+                  position: "top"
+                });
+              }else{
+                reader.readAsText(err.response.data);
+              }
             } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] === "text/plain"
