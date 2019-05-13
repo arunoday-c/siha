@@ -597,10 +597,10 @@ let updateAlgaehModules = (req, res, next) => {
   try {
     let input = extend({}, req.body);
 
-    //for admin login
-    if (req.userIdentity.role_type == "AD") {
-      superUser = " and access_by <> 'SU'";
-    }
+    // //for admin login
+    // if (req.userIdentity.role_type == "AD") {
+    //   superUser = " and access_by <> 'SU'";
+    // }
     if (req.userIdentity.role_type != "GN") {
       _mysql
         .executeQuery({
@@ -636,74 +636,7 @@ let updateAlgaehModules = (req, res, next) => {
     _mysql.releaseConnection();
     next(e);
   }
-
-  // try {
-  //   if (req.db == null) {
-  //     next(httpStatus.dataBaseNotInitilizedError());
-  //   }
-  //   let db = req.db;
-
-  //   db.getConnection((error, connection) => {
-  //     if (error) {
-  //       next(error);
-  //     }
-  //     let input = extend({}, req.body);
-
-  //     if (
-  //       req.userIdentity.role_type == "SU" &&
-  //       req.userIdentity.group_type == "SU"
-  //     ) {
-  //       if (
-  //         input.algaeh_d_module_id != "null" ||
-  //         input.algaeh_d_module_id != undefined
-  //       ) {
-  //         connection.query(
-  //           "update algaeh_d_app_module set  display_order=?, module_plan=?, \
-  //             updated_date=?, updated_by=? WHERE  `record_status`='A' and `algaeh_d_module_id`=?;",
-  //           [
-  //             input.display_order,
-
-  //             input.module_plan,
-
-  //             new Date(),
-  //             input.updated_by,
-  //             input.algaeh_d_module_id
-  //           ],
-  //           (error, results) => {
-  //             releaseDBConnection(db, connection);
-  //             if (error) {
-  //               next(error);
-  //             }
-
-  //             if (results.affectedRows > 0) {
-  //               req.records = results;
-  //               next();
-  //             } else {
-  //               req.records = { affectedRows: 0 };
-  //               next();
-  //             }
-  //           }
-  //         );
-  //       } else {
-  //         releaseDBConnection(db, connection);
-  //         req.records = { invalid_input: true };
-  //         next();
-  //       }
-  //     } else {
-  //       req.records = {
-  //         validUser: false,
-  //         message: "you dont have admin privilege"
-  //       };
-  //       next();
-  //     }
-  //     //----------------------
-  //   });
-  // } catch (e) {
-  //   next(e);
-  // }
 };
-
-//==========================
 
 //created by irfan: to add
 let addAlgaehScreen = (req, res, next) => {
@@ -883,6 +816,51 @@ let getAlgaehScreens = (req, res, next) => {
   // } catch (e) {
   //   next(e);
   // }
+};
+
+//created by irfan: to
+let updateAlgaehScreen = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = extend({}, req.body);
+
+    if (req.userIdentity.role_type != "GN") {
+      _mysql
+        .executeQuery({
+          query:
+            "update algaeh_d_app_screens set screen_name=? ,page_to_redirect=?,module_id=?,other_language=?,\
+            updated_by=?,updated_date=? where algaeh_app_screens_id=?",
+          values: [
+            input.screen_name,
+            input.page_to_redirect,
+            input.module_id,
+            input.other_language,
+            input.updated_by,
+            new Date(),
+            input.algaeh_app_screens_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
 };
 
 //created by irfan: to add
@@ -2210,6 +2188,7 @@ module.exports = {
   getAlgaehModules,
   addAlgaehScreen,
   getAlgaehScreens,
+  updateAlgaehScreen,
   addAlgaehComponent,
   getAlgaehComponents,
   addAlgaehScreenElement,
