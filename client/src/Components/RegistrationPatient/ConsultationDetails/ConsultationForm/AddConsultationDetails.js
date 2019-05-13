@@ -68,8 +68,7 @@ const selectedHandeler = ($this, context, e) => {
   });
 };
 
-const doctorselectedHandeler = ($this, context, e) => {
-  debugger;
+const doctorselectedHandeler = ($this, context, e) => {  
   if ($this.state.sub_department_id !== null) {
     if (
       $this.state.insured === "Y" &&

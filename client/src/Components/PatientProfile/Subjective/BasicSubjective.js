@@ -159,12 +159,11 @@ class BasicSubjective extends Component {
           encounter_id: Window.global.encounter_id
         }
       });
-
-      if (this.state.hims_f_episode_chief_complaint_id === null) {
-        SubjectiveHandler().addChiefComplainToPatient(this);
-      } else {
-        SubjectiveHandler().updatePatientChiefComplaints(this);
-      }
+    }
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
     }
   }
 

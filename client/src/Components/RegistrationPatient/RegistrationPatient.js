@@ -363,7 +363,7 @@ class RegistrationPatient extends Component {
                         );
                       }
 
-                      if (_patInsuranceFrontImg !== undefined) {
+                      if (_patInsuranceFrontImg !== undefined && this.state.insured ==="Y") {
                         _arrayImages.push(
                           new Promise((resolve, reject) => {
                             _patInsuranceFrontImg.SavingImageOnServer(
@@ -378,7 +378,7 @@ class RegistrationPatient extends Component {
                           })
                         );
                       }
-                      if (_patInsuranceBackImg !== undefined) {
+                      if (_patInsuranceBackImg !== undefined && this.state.insured ==="Y") {
                         _arrayImages.push(
                           new Promise((resolve, reject) => {
                             _patInsuranceBackImg.SavingImageOnServer(
@@ -393,37 +393,37 @@ class RegistrationPatient extends Component {
                           })
                         );
                       }
-                      if (_patSecInsuranceFrontImg !== undefined) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patSecInsuranceFrontImg.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.secondary_card_number + "_sec_front",
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-
-                      if (_patSecInsuranceBackImg !== undefined) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patSecInsuranceBackImg.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.secondary_card_number + "_sec_back",
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
+                      // if (_patSecInsuranceFrontImg !== undefined) {
+                      //   _arrayImages.push(
+                      //     new Promise((resolve, reject) => {
+                      //       _patSecInsuranceFrontImg.SavingImageOnServer(
+                      //         undefined,
+                      //         undefined,
+                      //         undefined,
+                      //         $this.state.secondary_card_number + "_sec_front",
+                      //         () => {
+                      //           resolve();
+                      //         }
+                      //       );
+                      //     })
+                      //   );
+                      // }
+                      //
+                      // if (_patSecInsuranceBackImg !== undefined) {
+                      //   _arrayImages.push(
+                      //     new Promise((resolve, reject) => {
+                      //       _patSecInsuranceBackImg.SavingImageOnServer(
+                      //         undefined,
+                      //         undefined,
+                      //         undefined,
+                      //         $this.state.secondary_card_number + "_sec_back",
+                      //         () => {
+                      //           resolve();
+                      //         }
+                      //       );
+                      //     })
+                      //   );
+                      // }
 
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
@@ -434,7 +434,8 @@ class RegistrationPatient extends Component {
                           saveEnable: true,
                           insuranceYes: true,
                           sec_insuranceYes: true,
-                          ProcessInsure: true
+                          ProcessInsure: true,
+                          existingPatient: true
                         });
 
                         swalMessage({
@@ -493,7 +494,7 @@ class RegistrationPatient extends Component {
                         );
                       }
 
-                      if (_patInsuranceFrontImg !== undefined) {
+                      if (_patInsuranceFrontImg !== undefined && this.state.insured ==="Y") {
                         _arrayImages.push(
                           new Promise((resolve, reject) => {
                             _patInsuranceFrontImg.SavingImageOnServer(
@@ -508,7 +509,7 @@ class RegistrationPatient extends Component {
                           })
                         );
                       }
-                      if (_patInsuranceBackImg !== undefined) {
+                      if (_patInsuranceBackImg !== undefined && this.state.insured ==="Y") {
                         _arrayImages.push(
                           new Promise((resolve, reject) => {
                             _patInsuranceBackImg.SavingImageOnServer(
@@ -523,37 +524,37 @@ class RegistrationPatient extends Component {
                           })
                         );
                       }
-                      if (_patSecInsuranceFrontImg !== undefined) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patSecInsuranceFrontImg.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.secondary_card_number + "_sec_front",
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
-
-                      if (_patSecInsuranceBackImg !== undefined) {
-                        _arrayImages.push(
-                          new Promise((resolve, reject) => {
-                            _patSecInsuranceBackImg.SavingImageOnServer(
-                              undefined,
-                              undefined,
-                              undefined,
-                              $this.state.secondary_card_number + "_sec_back",
-                              () => {
-                                resolve();
-                              }
-                            );
-                          })
-                        );
-                      }
+                      // if (_patSecInsuranceFrontImg !== undefined) {
+                      //   _arrayImages.push(
+                      //     new Promise((resolve, reject) => {
+                      //       _patSecInsuranceFrontImg.SavingImageOnServer(
+                      //         undefined,
+                      //         undefined,
+                      //         undefined,
+                      //         $this.state.secondary_card_number + "_sec_front",
+                      //         () => {
+                      //           resolve();
+                      //         }
+                      //       );
+                      //     })
+                      //   );
+                      // }
+                      //
+                      // if (_patSecInsuranceBackImg !== undefined) {
+                      //   _arrayImages.push(
+                      //     new Promise((resolve, reject) => {
+                      //       _patSecInsuranceBackImg.SavingImageOnServer(
+                      //         undefined,
+                      //         undefined,
+                      //         undefined,
+                      //         $this.state.secondary_card_number + "_sec_back",
+                      //         () => {
+                      //           resolve();
+                      //         }
+                      //       );
+                      //     })
+                      //   );
+                      // }
 
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
@@ -563,19 +564,15 @@ class RegistrationPatient extends Component {
                           saveEnable: true,
                           insuranceYes: true,
                           sec_insuranceYes: true,
-                          ProcessInsure: true
+                          ProcessInsure: true,
+                          existingPatient: true
                         });
 
                         swalMessage({
                           title: "Done Successfully",
                           type: "success"
                         });
-                      });
-                      // $this.setState({
-                      //   bill_number: response.data.records.bill_number,
-                      //   receipt_number: response.data.records.receipt_number,
-                      //   saveEnable: true
-                      // });
+                      });                    
                     }
                   },
                   onFailure: error => {

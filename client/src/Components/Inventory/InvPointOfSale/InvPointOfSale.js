@@ -5,10 +5,10 @@ import { bindActionCreators } from "redux";
 import {
   AlagehFormGroup,
   AlgaehLabel,
-  AlagehAutoComplete
+  AlagehAutoComplete,
+  AlgaehModalPopUp
 } from "../../Wrapper/algaehWrapper";
 import moment from "moment";
-// import BreadCrumb from "../../common/BreadCrumb/BreadCrumb.js";
 import {
   changeTexts,
   ClearData,
@@ -34,6 +34,8 @@ import {
   swalMessage,
   getCookie
 } from "../../../utils/algaehApiCall";
+// import x from "../../U\"
+const OcafEditor = React.lazy(() => import("../../ucafEditors/ocaf"));
 
 class InvPointOfSale extends Component {
   constructor(props) {
@@ -55,6 +57,46 @@ class InvPointOfSale extends Component {
       popUpGenereted: false
     };
     this.onKeyPress = this.onKeyPress.bind(this);
+  }
+
+  openOCAFReport(data, e) {
+    let that = this;
+    algaehApiCall({
+      uri: "/ocaf/getPatientOCAF",
+      method: "GET",
+      data: {
+        patient_id: this.state.patient_id,
+        visit_id: this.state.visit_id
+      },
+      onSuccess: response => {
+        debugger
+        if (response.data.success) {
+          that.setState({ openOCAF: true, OCAFData: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "warning"
+        });
+      }
+    });
+  }
+
+  renderOCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openOCAF}
+        title="OCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openOCAF: false });
+          }
+        }}
+      >
+        <OcafEditor dataProps={this.state.OCAFData} />
+      </AlgaehModalPopUp>
+    );
   }
 
   componentWillMount() {
@@ -290,6 +332,14 @@ class InvPointOfSale extends Component {
                       onChange: changeTexts.bind(this, this)
                     }}
                   />
+
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.openOCAFReport.bind(this, this)}
+                  >
+                    OCAF
+                  </button>
                 </div>
               ) : (
                 <div className="row">
@@ -435,6 +485,7 @@ class InvPointOfSale extends Component {
             </div>
           </div>
         </div>
+        {this.renderOCAFReport()}
       </React.Fragment>
     );
   }
