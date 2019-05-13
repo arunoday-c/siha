@@ -1303,7 +1303,50 @@ let getPriceList = (req, res, next) => {
       let where = whereCondition(extend(priselistWhereCondition, req.query));
 
       connection.query(
-        "select * ,'comp' as price_from from hims_d_services_insurance where record_status='A' AND" +
+        "select * from hims_d_services_insurance where record_status='A' AND" +
+          where.condition,
+        where.values,
+
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+let getPolicyPriceList = (req, res, next) => {
+  let priselistWhereCondition = {
+    insurance_id: "ALL",
+    services_id: "ALL"
+  };
+
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      // extend(insuranceWhereCondition, req.query);
+      let where = whereCondition(extend(priselistWhereCondition, req.query));
+
+      connection.query(
+        "select hims_d_services_insurance_network_id,insurance_id,network_id,services_id,service_code,\
+        service_type_id,cpt_code,service_name,insurance_service_name,hospital_id,pre_approval,covered,\
+        deductable_status,deductable_amt,copay_status,copay_amt,gross_amt,corporate_discount_percent,\
+        corporate_discount_amt,net_amount from hims_d_services_insurance where record_status='A' AND" +
           where.condition,
         where.values,
 
@@ -1905,6 +1948,7 @@ module.exports = {
   NetworkOfficeMaster,
   addPlanAndPolicy,
   getPriceList,
+  getPolicyPriceList,
   getNetworkAndNetworkOfficRecords,
   updatePriceList,
   updateNetworkAndNetworkOffice,
