@@ -1,5 +1,4 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import { successfulMessage } from "../../../utils/GlobalFunctions";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -45,10 +44,9 @@ const updatePriceList = ($this, data) => {
     method: "PUT",
     onSuccess: response => {
       if (response.data.success) {
-        successfulMessage({
-          message: "Record updated successfully . .",
-          title: "Success",
-          icon: "success"
+        swalMessage({
+          title: "Record updated successfully . .",
+          type: "success"
         });
 
         getPriceList($this);
@@ -65,7 +63,7 @@ const updatePriceList = ($this, data) => {
 
 const bulkUpdate = ($this, data) => {
   let updateobj = {};
-  
+
   if (data === "pre_approval") {
     updateobj = {
       update: data,
@@ -80,10 +78,9 @@ const bulkUpdate = ($this, data) => {
     };
   } else if (data === "corporate_discount") {
     if ($this.state.applicable === null) {
-      successfulMessage({
-        message: "Records updated successfully . .",
-        title: "Warning",
-        icon: "warning"
+      swalMessage({
+        title: "Record updated successfully . .",
+        type: "success"
       });
       return;
     } else {
@@ -125,11 +122,27 @@ const bulkUpdate = ($this, data) => {
           });
         }
 
-        getPriceList($this);
-        successfulMessage({
-          message: "Records updated successfully . .",
-          title: "Success",
-          icon: "success"
+        // getPriceList($this);
+
+        let inputObj = { insurance_id: $this.state.insurance_provider_id };
+        if ($this.state.service_type_id !== null) {
+          inputObj.service_type_id = $this.state.service_type_id;
+        }
+
+        $this.props.getPriceList({
+          uri: "/insurance/getPriceList",
+          method: "GET",
+          data: inputObj,
+          redux: {
+            type: "PRICE_LIST_GET_DATA",
+            mappingName: "pricelist"
+          },
+          afterSuccess:data=>{
+            swalMessage({
+              title: "Record updated successfully . .",
+              type: "success"
+            });
+          }
         });
       }
     },

@@ -31,7 +31,8 @@ class ServicePriceList extends PureComponent {
     this.state = {
       applicable: null,
       corporate_discount: 0,
-      dummy: true
+      dummy: true,
+      view_by: "C"
     };
     this.baseState = this.state;
   }
@@ -72,6 +73,33 @@ class ServicePriceList extends PureComponent {
     }
   }
 
+  changeChecks(e){
+
+    if(e.target.value === "P"){
+
+      this.props.getNetworkPlans({
+        uri: "/insurance/getNetworkAndNetworkOfficRecords",
+        method: "GET",
+        printInput: true,
+        data: {
+          insuranceProviderId: this.state.insurance_provider_id,
+          price_from:"P"
+        },
+        redux: {
+          type: "NETWORK_PLAN_GET_DATA",
+          mappingName: "pricefromplans"
+        }
+      });
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    }else{
+      this.setState({
+        [e.target.name]: e.target.value
+      });
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -101,42 +129,44 @@ class ServicePriceList extends PureComponent {
                     <label className="radio block">
                       <input
                         type="radio"
-                        name="All"
-                        // checked={this.state.all}
-                        // onChange={this.changeChecks.bind(this)}
+                        name="view_by"
+                        value="C"
+                        checked={this.state.view_by === "C"?true:false}
+                        onChange={this.changeChecks.bind(this)}
                       />
                       <span>Company Price List</span>
                     </label>
                     <label className="radio block">
                       <input
                         type="radio"
-                        name="sunday"
-                        // checked={this.state.sunday}
-                        // onChange={this.changeChecks.bind(this)}
+                        name="view_by"
+                        value="P"
+                        checked={this.state.view_by === "P"?true:false}
+                        onChange={this.changeChecks.bind(this)}
                       />
                       <span>Policy Price List</span>
                     </label></div></div>
 
-                    <AlagehAutoComplete
-                      div={{ className: "col" }}
-                      label={{
-                        forceLabel: "Select Policy"
-                      }}
-                      selector={{
-                        name: "",
-                        className: "select-fld",
-                      //  value: this.state.service_type_id,
-                        dataSource: {
-                          // textField:
-                          //   this.state.selectedLang === "en"
-                          //     ? "service_type"
-                          //     : "arabic_service_type",
-                          // valueField: "hims_d_service_type_id",
-                          // data: this.props.insservicetype
-                        },
-                      //  onChange: serviceTypeHandeler.bind(this, this)
-                      }}
-                    />
+                    {this.state.view_by === "P"?
+                      <AlagehAutoComplete
+                        div={{ className: "col" }}
+                        label={{
+                          forceLabel: "Select Policy"
+                        }}
+                        selector={{
+                          name: "",
+                          className: "select-fld",
+                         value: this.state.service_type_id,
+                          dataSource: {
+                            textField: "network_type",
+                            valueField: "hims_d_insurance_network_id",
+                            data: this.props.pricefromplans
+                          },
+                         onChange: serviceTypeHandeler.bind(this, this)
+                        }}
+                      />
+                    :null}
+
 
 
                 <AlagehAutoComplete
@@ -493,7 +523,8 @@ class ServicePriceList extends PureComponent {
 function mapStateToProps(state) {
   return {
     pricelist: state.pricelist,
-    insservicetype: state.insservicetype
+    insservicetype: state.insservicetype,
+    pricefromplans:state.pricefromplans
   };
 }
 
@@ -502,7 +533,8 @@ function mapDispatchToProps(dispatch) {
     {
       getPriceList: AlgaehActions,
       initialPriceList: AlgaehActions,
-      getServiceTypes: AlgaehActions
+      getServiceTypes: AlgaehActions,
+      getNetworkPlans: AlgaehActions
     },
     dispatch
   );

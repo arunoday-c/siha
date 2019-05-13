@@ -986,26 +986,33 @@ const ShowItemBatch = ($this, e) => {
   });
 };
 
+
 const CloseItemBatch = ($this, context, e) => {
+  let batchno= e !== undefined ? e.selected === true ? e.batchno :
+    $this.state.batchno : $this.state.batchno;
+  let expiry_date=
+    e !== undefined ? e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date : $this.state.expiry_date;
+
+  let grn_no= e !== undefined ? e.selected === true ? e.grnno :
+    $this.state.grn_no : $this.state.grn_no;
+  let qtyhand= e !== undefined ? e.selected === true ? e.qtyhand :
+    $this.state.qtyhand : $this.state.qtyhand;
+
   $this.setState({
     ...$this.state,
     selectBatch: !$this.state.selectBatch,
-    batchno: e.selected === true ? e.batchno : $this.state.batchno,
-    expiry_date:
-      e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date,
-
-    grn_no: e.selected === true ? e.grnno : $this.state.grn_no,
-    qtyhand: e.selected === true ? e.qtyhand : $this.state.qtyhand
+    batchno: batchno,
+    expiry_date: expiry_date,
+    grn_no: grn_no,
+    qtyhand: qtyhand
   });
 
   if (context !== null) {
     context.updateState({
-      batchno: e.selected === true ? e.batchno : $this.state.batchno,
-      expiry_date:
-        e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date,
-
-      grn_no: e.selected === true ? e.grnno : $this.state.grn_no,
-      qtyhand: e.selected === true ? e.qtyhand : $this.state.qtyhand
+      batchno: batchno,
+      expiry_date: expiry_date,
+      grn_no: grn_no,
+      qtyhand: qtyhand
     });
   }
 };

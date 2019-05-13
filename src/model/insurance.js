@@ -1346,6 +1346,11 @@ let getNetworkAndNetworkOfficRecords = (req, res, next) => {
       inputValues.push(req.query.hims_d_insurance_network_office_id);
     }
 
+    if (req.query.price_from != null) {
+      _stringData += " and netoff.price_from=?";
+      inputValues.push(req.query.price_from);
+    }
+
     // utilities.logger().log("_stringData: ", _stringData);
     _mysql
       .executeQuery({

@@ -228,6 +228,9 @@ class InsuranceProvider extends PureComponent {
                       events: {
                         type: "number",
                         onChange: texthandle.bind(this, this, context)
+                      },
+                      others:{
+                        type:"number"
                       }
                     }}
                   />
