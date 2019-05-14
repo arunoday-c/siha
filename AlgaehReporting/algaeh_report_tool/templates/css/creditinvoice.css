@@ -151,11 +151,13 @@ body {
   text-align: left;
 }
 .footerTotalUp{
-  font-weight: bold;
+  font-weight: bold!important;
+  text-align: right;
 }
 .footerTotalDown{
+  text-align: right;
   background: #ccc;
-  font-weight: bold;
+  font-weight:  bold!important;
 }
 .numberFld{
   text-align: right;

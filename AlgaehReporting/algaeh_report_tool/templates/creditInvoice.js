@@ -18,9 +18,8 @@ const executePDF = function executePDFMethod(options) {
             };
           })
           .value(),
-        total_discount_amount: _.sumBy(detail, s =>
-          parseFloat(s.discount_amount)
-        ),
+        total_gross_amount: _.sumBy(detail, s => parseFloat(s.gross_amount)),
+        total_discount_amount: _.sumBy(detail, s => parseFloat(s.discount_amount)),
         total_patient_share: _.sumBy(detail, s => parseFloat(s.patient_share)),
         // total_copay_amount: _.sumBy(detail, s => parseFloat(s.company_resp)),
         total_patient_tax: _.sumBy(detail, s => parseFloat(s.patient_tax)),
