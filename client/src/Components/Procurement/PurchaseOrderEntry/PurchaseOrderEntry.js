@@ -25,7 +25,8 @@ import {
   SavePOEnrty,
   getCtrlCode,
   AuthorizePOEntry,
-  getVendorMaster
+  getVendorMaster,
+  datehandle
 } from "./PurchaseOrderEntryEvents";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import POEntry from "../../../Models/POEntry";
@@ -345,11 +346,11 @@ class PurchaseOrderEntry extends Component {
                   label={{ forceLabel: "Expected Arrival" }}
                   textBox={{
                     className: "txt-fld",
-                    name: "expiry_date"
+                    name: "expected_date"
                   }}
                   minDate={new Date()}
                   events={{
-                    onChange: null
+                    onChange: datehandle.bind(this, this)
                   }}
                   disabled={this.state.dataExitst}
                   value={this.state.expected_date}

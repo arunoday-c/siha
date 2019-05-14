@@ -250,7 +250,42 @@ class ItemDetails extends Component {
                       }
                     }}
                   />
+
                   <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "service_id"
+                    }}
+                    selector={{
+                      name: "service_id",
+                      className: "select-fld",
+                      value: this.state.service_id,
+                      dataSource: {
+                        textField: "service_name",                        
+                        valueField: "hims_d_services_id",
+                        data: this.props.itemservices
+                      }
+                    }}
+                  />
+
+                  <AlagehFormGroup
+                    div={{ className: "col mandatory" }}
+                    label={{
+                      fieldName: "purchase_cost",
+                      isImp: true
+                    }}
+                    textBox={{
+                      className: "txt-fld",
+                      name: "purchase_cost",
+                      value: this.state.purchase_cost,
+                      others: {
+                        min: 0,
+                        type: "number"
+                      }
+                    }}
+                  />
+
+                {/*<AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{
                       fieldName: "service_id"
@@ -268,7 +303,7 @@ class ItemDetails extends Component {
                         data: this.props.itemservices
                       }
                     }}
-                  />
+                  />*/}
 
                   <div
                     className="customCheckbox col"

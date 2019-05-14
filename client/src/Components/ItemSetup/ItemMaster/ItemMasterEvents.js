@@ -66,6 +66,14 @@ const Validations = $this => {
       title: "Please Enter the Price."
     });
     return isError;
+  }else if ($this.state.purchase_cost === null ||
+    $this.state.purchase_cost === 0) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Please Enter Purchase Cost."
+    });
+    return isError;
   }
 };
 

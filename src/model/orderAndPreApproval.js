@@ -21,8 +21,8 @@ const keyPath = require("algaeh-keys/keys");
 let getPreAprovalList = (req, res, next) => {
   let preAprovalWhere = {
     service_id: "ALL",
-    doctor_id: "ALL",
-    patient_id: "ALL"
+    // doctor_id: "ALL",
+    // patient_id: "ALL"
   };
 
   try {
@@ -32,9 +32,13 @@ let getPreAprovalList = (req, res, next) => {
     let db = req.db;
 
     req.query["date(SA.created_date)"] = req.query.created_date;
+    req.query["SA.doctor_id"] = req.query.doctor_id;
+    req.query["SA.patient_id"] = req.query.patient_id;
     delete req.query.created_date;
+    delete req.query.doctor_id;
+    delete req.query.patient_id;
 
-    debugLog("req query:", req.query);
+    console.log("req query:", req.query);
 
     let where = whereCondition(extend(preAprovalWhere, req.query));
 

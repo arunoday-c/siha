@@ -19,6 +19,7 @@ class ItemPriceList extends Component {
     this.setState({ ...this.state, ...InputOutput }, () => {});
   }
 
+
   render() {
     return (
       <React.Fragment>
@@ -29,7 +30,7 @@ class ItemPriceList extends Component {
               style={{ marginTop: "10px" }}
             >
               <div className="row" style={{ padding: "10px" }}>
-                <AlagehAutoComplete
+                {/*<AlagehAutoComplete
                   div={{ className: "col-lg-3 mandatory" }}
                   label={{
                     fieldName: "decimal",
@@ -50,24 +51,6 @@ class ItemPriceList extends Component {
                 <AlagehFormGroup
                   div={{ className: "col-lg-3 mandatory" }}
                   label={{
-                    fieldName: "purchase_cost",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "purchase_cost",
-                    value: this.state.purchase_cost,
-
-                    others: {
-                      min: 0,
-                      type: "number"
-                    }
-                  }}
-                />
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3 mandatory" }}
-                  label={{
                     fieldName: "markup_percent",
                     isImp: true
                   }}
@@ -75,7 +58,9 @@ class ItemPriceList extends Component {
                     className: "txt-fld",
                     name: "markup_percent",
                     value: this.state.markup_percent,
-
+                    event:{
+                      onChange: this.texthandle.bind(this)
+                    }
                     others: {
                       min: 0,
                       type: "number"
@@ -92,6 +77,24 @@ class ItemPriceList extends Component {
                     className: "txt-fld",
                     name: "sales_price",
                     value: this.state.sales_price,
+
+                    others: {
+                      min: 0,
+                      type: "number"
+                    }
+                  }}
+                />
+                */}
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3 mandatory" }}
+                  label={{
+                    fieldName: "purchase_cost",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "purchase_cost",
+                    value: this.state.purchase_cost,
 
                     others: {
                       min: 0,

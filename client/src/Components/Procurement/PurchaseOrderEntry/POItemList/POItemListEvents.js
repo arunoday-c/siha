@@ -516,6 +516,7 @@ const deletePODetail = ($this, context, row) => {
 };
 
 const updatePODetail = ($this, context, row) => {
+  debugger
   let saveEnable = false;
   if ($this.state.hims_f_procurement_po_header_id !== null) {
     saveEnable = true;
@@ -622,11 +623,17 @@ const dateFormater = ($this, value) => {
 
 const onchangegridcol = ($this, row, e) => {
   //
+  debugger
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (value > row.total_quantity) {
+  if (parseFloat(value) > parseFloat(row.total_quantity)) {
     swalMessage({
       title: "Authorize Quantity cannot be greater than Ordered Quantity.",
+      type: "warning"
+    });
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Authorize Quantity cannot be less than Zero.",
       type: "warning"
     });
   } else {
@@ -634,20 +641,20 @@ const onchangegridcol = ($this, row, e) => {
     row["quantity_outstanding"] = value;
     row["rejected_quantity"] = row.total_quantity - value;
     row.update();
+    onchhangegriddiscount($this, row, e)
   }
 };
 
-const onchhangegriddiscount = ($this, row, ctrl, e) => {
+const onchhangegriddiscount = ($this, row, e) => {
   //
-
-  e = e || ctrl;
-
+  debugger
   let sub_discount_percentage = 0;
   let sub_discount_amount = 0;
   let extended_cost = 0;
 
   let tax_amount = 0;
 
+  let extended_price = row.extended_price;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   if (name === "sub_discount_percentage") {
@@ -655,13 +662,20 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
     sub_discount_amount =
       value === ""
         ? 0
-        : (parseFloat(row.extended_price) * sub_discount_percentage) / 100;
-  } else {
+        : (parseFloat(extended_price) * sub_discount_percentage) / 100;
+  } else if(name === "sub_discount_amount") {
     sub_discount_amount = value === "" ? "" : parseFloat(value);
     sub_discount_percentage =
       value === ""
         ? 0
-        : (sub_discount_amount / parseFloat(row.extended_price)) * 100;
+        : (sub_discount_amount / parseFloat(extended_price)) * 100;
+  }
+  else{
+    extended_price = parseFloat(row.authorize_quantity) * parseFloat(row.unit_price);
+    sub_discount_percentage=row.sub_discount_percentage;
+
+    sub_discount_amount = (parseFloat(extended_price) *
+          parseFloat(sub_discount_percentage)) / 100
   }
   if (sub_discount_percentage > 100) {
     swalMessage({
@@ -670,7 +684,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
     });
   } else {
     //
-    extended_cost = parseFloat(row.extended_price) - sub_discount_amount;
+    extended_cost = parseFloat(extended_price) - parseFloat(sub_discount_amount);
 
     tax_amount = (extended_cost * parseFloat(row.tax_percentage)) / 100;
     tax_amount = getAmountFormart(tax_amount, { appendSymbol: false });
@@ -751,6 +765,43 @@ const CancelGrid = ($this, context, cancelRow) => {
     });
   }
 };
+
+const gridNumHandler = ($this, row, e) => {
+  debugger
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  if (parseFloat(value) > parseFloat(row.total_quantity)) {
+    swalMessage({
+      title: "Authorize Quantity cannot be greater than Ordered Quantity.",
+      type: "warning"
+    });
+  }else if (value < 0) {
+    swalMessage({
+      title: "Authorize Quantity cannot be less than Zero",
+      type: "warning"
+    });
+  } else {
+    let extended_price = 0;
+    if (parseFloat(value) > 0 && parseFloat(row.unit_price) > 0) {
+      extended_price = parseFloat(value) * parseFloat(row.unit_price);
+    }
+    let unit_cost = extended_price / parseFloat(value);
+    let tax_amount =
+      (extended_price * parseFloat(row.tax_percentage)) / 100;
+    let total_amount = tax_amount + extended_price;
+    $this.setState({
+      [name]: value,
+      extended_price: extended_price,
+      extended_cost: extended_price,
+      net_extended_cost: extended_price,
+      unit_cost: unit_cost,
+      tax_amount: tax_amount,
+      total_amount: total_amount
+    });
+  }
+};
+
 export {
   texthandle,
   discounthandle,
@@ -767,5 +818,6 @@ export {
   AssignData,
   GridAssignData,
   EditGrid,
-  CancelGrid
+  CancelGrid,
+  gridNumHandler
 };
