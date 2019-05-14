@@ -293,7 +293,8 @@ class PatientDetails extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    deptanddoctors: state.deptanddoctors
+    deptanddoctors: state.deptanddoctors,
+    insurarProviders: state.insurarProviders
   };
 }
 

@@ -703,7 +703,7 @@ export default class DcafEditor extends Component {
                             dataSource={{
                               data: this.props.dataProps.hims_f_dcaf_services
                             }}
-                            paging={{ page: 0, rowsPerPage: 5 }}
+                            paging={{ page: 0, rowsPerPage: 5, showPagination: true }}
                           />
                         </div>
                         <div className="col-12" id="medicationGrd_Cntr">

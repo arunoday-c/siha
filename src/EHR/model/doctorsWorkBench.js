@@ -1210,6 +1210,7 @@ let addPatientChiefComplaints = (req, res, next) => {
         "score",
         "pain",
         "comment",
+        "complaint_type",
         "created_by",
         "updated_by"
       ];
@@ -1474,7 +1475,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
           qry += mysql.format(
             "UPDATE `hims_f_episode_chief_complaint` SET episode_id=?, chief_complaint_id=?, onset_date=?, \
             `interval`=?, duration=?,severity=?, score=?, pain=?, chronic=?, complaint_inactive=?,\
-            complaint_inactive_date=?,comment=?,\
+            complaint_inactive_date=?,comment=?,complaint_type=?,\
             updated_date=?,updated_by=? where hims_f_episode_chief_complaint_id=?;",
             [
               inputParam[i].episode_id,
@@ -1489,6 +1490,7 @@ let updatePatientChiefComplaints = (req, res, next) => {
               inputParam[i].complaint_inactive,
               _complaint_inactive_date,
               inputParam[i].comment,
+              inputParam[i].complaint_type,
               moment().format("YYYY-MM-DD HH:mm"),
               req.userIdentity.algaeh_d_app_user_id,
               inputParam[i].hims_f_episode_chief_complaint_id
@@ -1497,46 +1499,6 @@ let updatePatientChiefComplaints = (req, res, next) => {
           console.log("qry: ", qry);
         }
 
-        //         for (let i = 0; i < req.body.chief_complaints.length; i++) {
-        //           const _complaint_inactive_date =
-        //             inputParam[i].complaint_inactive_date != null
-        //               ? "'" + inputParam[i].complaint_inactive_date + "'"
-        //               : null;
-        //           qry +=
-        //             "UPDATE `hims_f_episode_chief_complaint` SET  episode_id='" +
-        //             inputParam[i].episode_id +
-        //             "', chief_complaint_id='" +
-        //             inputParam[i].chief_complaint_id +
-        //             "', onset_date='" +
-        //             inputParam[i].onset_date +
-        //             "', `interval`='" +
-        //             inputParam[i].interval +
-        //             "', duration='" +
-        //             inputParam[i].duration +
-        //             "', severity='" +
-        //             inputParam[i].severity +
-        //             "', score='" +
-        //             inputParam[i].score +
-        //             "', pain='" +
-        //             inputParam[i].pain +
-        //             "', chronic='" +
-        //             inputParam[i].chronic +
-        //             "', complaint_inactive='" +
-        //             inputParam[i].complaint_inactive +
-        //             "', complaint_inactive_date=" +
-        //             _complaint_inactive_date +
-        //             "\
-        //             , comment='" +
-        //             inputParam[i].comment +
-        //             "', updated_date='" +
-        //             new Date().toLocaleString() +
-        //             "',updated_by=\
-        // '" +
-        //             req.body.updated_by +
-        //             "' WHERE hims_f_episode_chief_complaint_id='" +
-        //             inputParam[i].hims_f_episode_chief_complaint_id +
-        //             "';";
-        //         }
 
         connection.query(qry, (error, updateResult) => {
           if (error) {

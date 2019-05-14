@@ -3,6 +3,7 @@ import FrontDesk from "../../Search/FrontDesk.json";
 import AlgaehSearch from "../Wrapper/globalSearch";
 import Options from "../../Options.json";
 import Enumerable from "linq";
+import { algaehApiCall, swalMessage } from "../../utils/algaehApiCall";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -93,7 +94,9 @@ const getPreAprovalList = $this => {
             created_date: firstRecordSet.created_date,
             doctor_id: firstRecordSet.doctor_id,
             insurance_provider_id: firstRecordSet.insurance_provider_id,
-
+            patient_id: firstRecordSet.patient_id,
+            visit_id: firstRecordSet.visit_id,
+            chart_type: firstRecordSet.chart_type,
             icd_code: firstRecordSet.icd_code,
             number_of_Services: g.getSource().length,
             apprv_status: firstRecordSet.apprv_status,
@@ -120,11 +123,39 @@ const CloseOrderModel = ($this, e) => {
   });
 };
 
+const openUCAFReport = ($this, row) =>{
+  debugger
+  if(row.chart_type === "N")
+  {
+      algaehApiCall({
+      uri: "/ucaf/getPatientUCAF",
+      method: "GET",
+      data: {
+        patient_id:row.patient_id,
+        visit_id: row.visit_id,
+        forceReplace: true
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          $this.setState({ openUCAF: true, UCAFData: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.response.data.message,
+          type: "warning"
+        });
+      }
+    });
+  }
+}
+
 export {
   texthandle,
   datehandle,
   PatientSearch,
   getPreAprovalList,
   VerifyOrderModel,
-  CloseOrderModel
+  CloseOrderModel,
+  openUCAFReport
 };

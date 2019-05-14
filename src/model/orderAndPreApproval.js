@@ -44,10 +44,18 @@ let getPreAprovalList = (req, res, next) => {
         next(error);
       }
       db.query(
-        "SELECT hims_f_service_approval_id,ordered_services_id,insurance_provider_id,network_id,insurance_network_office_id, service_id,SR.service_code, icd_code, requested_date, requested_by, requested_mode,\
-        requested_quantity, submission_type, insurance_service_name, doctor_id, patient_id, PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
-        net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason, apprv_status,SA.created_date,SA.created_by\
-        from ((hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE SA.record_status='A' AND " +
+        "SELECT hims_f_service_approval_id,ordered_services_id,insurance_provider_id,network_id,\
+        insurance_network_office_id,\
+        service_id,SR.service_code, icd_code, requested_date, requested_by, requested_mode,\
+        requested_quantity, submission_type, insurance_service_name, SA.doctor_id, SA.patient_id,visit_id,\
+        PAT.patient_code,PAT.full_name, refer_no, gross_amt,\
+        net_amount, approved_amount, approved_no, apprv_remarks, apprv_date, rejected_reason,\
+        apprv_status,SA.created_date,SA.created_by, SD.chart_type \
+        from ((hims_f_service_approval SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) \
+        inner join \
+        hims_d_services SR on SR.hims_d_services_id=SA.service_id inner join \
+        hims_f_patient_visit V on V.hims_f_patient_visit_id=SA.visit_id inner join \
+        hims_d_sub_department SD on SD.hims_d_sub_department_id=V.sub_department_id) WHERE SA.record_status='A' AND " +
           where.condition,
         where.values,
 
@@ -120,72 +128,6 @@ let updatePreApproval = (req, res, next) => {
           ]
         );
       }
-
-      //       for (let i = 0; i < req.body.length; i++) {
-      //         qry +=
-      //           " UPDATE `hims_f_service_approval` SET service_id='" +
-      //           inputParam[i].service_id +
-      //           "',insurance_provider_id='" +
-      //           inputParam[i].insurance_provider_id +
-      //           "',insurance_network_office_id=\
-      // '" +
-      //           inputParam[i].insurance_network_office_id +
-      //           "', icd_code='" +
-      //           inputParam[i].icd_code +
-      //           "',insurance_service_name=\
-      // '" +
-      //           inputParam[i].insurance_service_name +
-      //           "',doctor_id='" +
-      //           inputParam[i].doctor_id +
-      //           "',patient_id='" +
-      //           inputParam[i].patient_id +
-      //           "'\
-      // ,gross_amt='" +
-      //           inputParam[i].gross_amt +
-      //           "',net_amount='" +
-      //           inputParam[i].net_amount +
-      //           "',requested_date=\
-      //           '" +
-      //           inputParam[i].requested_date +
-      //           "',requested_by=\
-      //           '" +
-      //           req.userIdentity.algaeh_d_app_user_id +
-      //           "',requested_mode=\
-      //           '" +
-      //           inputParam[i].requested_mode +
-      //           "',requested_quantity=\
-      //           '" +
-      //           inputParam[i].requested_quantity +
-      //           "',submission_type=\
-      //           '" +
-      //           inputParam[i].submission_type +
-      //           "',refer_no=\
-      //           '" +
-      //           inputParam[i].refer_no +
-      //           "',approved_amount=\
-      //           '" +
-      //           inputParam[i].approved_amount +
-      //           "',apprv_remarks=\
-      //           '" +
-      //           inputParam[i].apprv_remarks +
-      //           "',apprv_date=\
-      //            " +
-      //           _appDate +
-      //           ",rejected_reason=\
-      //           '" +
-      //           inputParam[i].rejected_reason +
-      //           "',apprv_status=\
-      //           '" +
-      //           inputParam[i].apprv_status +
-      //           "',updated_date='" +
-      //           new Date().toLocaleString() +
-      //           "',updated_by='" +
-      //           req.userIdentity.algaeh_d_app_user_id +
-      //           "' WHERE hims_f_service_approval_id='" +
-      //           inputParam[i].hims_f_service_approval_id +
-      //           "';";
-      //       }
-
       debugLog("qry: ", qry);
       connection.query(qry, (error, result) => {
         releaseDBConnection(db, connection);
@@ -351,6 +293,7 @@ let insertOrderedServices = (req, res, next) => {
                     "insurance_service_name",
                     "doctor_id",
                     "patient_id",
+                    "visit_id",
                     "gross_amt",
                     "net_amount"
                   ];

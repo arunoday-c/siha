@@ -10,7 +10,8 @@ import {
   AlgaehDataGrid,
   AlgaehDateHandler,
   AlagehAutoComplete,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlgaehModalPopUp
 } from "../Wrapper/algaehWrapper";
 import { AlgaehActions } from "../../actions/algaehActions";
 
@@ -24,11 +25,16 @@ import {
   PatientSearch,
   VerifyOrderModel,
   CloseOrderModel,
-  getPreAprovalList
+  getPreAprovalList,
+  openUCAFReport
 } from "./PreApprovalHandaler";
 import moment from "moment";
 import Options from "../../Options.json";
 import variableJson from "../../utils/GlobalVariables.json";
+
+const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
+const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
+const OcafEditor = React.lazy(() => import("../ucafEditors/ocaf"));
 
 class PreApproval extends Component {
   constructor(props) {
@@ -44,7 +50,10 @@ class PreApproval extends Component {
       doctor_id: null,
       insurance_id: null,
       pre_approval_Services: [],
-      selected_services: null
+      selected_services: null,
+      OCAFData: false,
+      DCAFData: false,
+      UCAFData: false
     };
   }
 
@@ -64,8 +73,8 @@ class PreApproval extends Component {
     }
 
     if (
-      this.props.insProviders === undefined ||
-      this.props.insProviders.length === 0
+      this.props.insurarProviders === undefined ||
+      this.props.insurarProviders.length === 0
     ) {
       this.props.getInsuranceProviders({
         uri: "/insurance/getListOfInsuranceProvider",
@@ -115,6 +124,53 @@ class PreApproval extends Component {
       return moment(date).format(Options.dateFormat);
     }
   };
+
+  renderDCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openDCAF}
+        title="DCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openDCAF: false });
+          }
+        }}
+      >
+        <DcafEditor dataProps={this.state.DCAFData} />
+      </AlgaehModalPopUp>
+    );
+  }
+
+  renderOCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openOCAF}
+        title="OCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openOCAF: false });
+          }
+        }}
+      >
+        <OcafEditor dataProps={this.state.OCAFData} />
+      </AlgaehModalPopUp>
+    );
+  }
+  renderUCAFReport() {
+    return (
+      <AlgaehModalPopUp
+        openPopup={this.state.openUCAF}
+        title="UCAF 2.0"
+        events={{
+          onClose: () => {
+            this.setState({ openUCAF: false });
+          }
+        }}
+      >
+        <UcafEditor dataProps={this.state.UCAFData} />
+      </AlgaehModalPopUp>
+    );
+  }
 
   render() {
     return (
@@ -257,6 +313,12 @@ class PreApproval extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-12" id="preApprovalGird_Cntr">
+                    {/*
+                      <i
+                        className="fas fa-file-export"
+                        onClick={this.ShowSubmitModel.bind(this, row)}
+                      />
+                       */}
                     <AlgaehDataGrid
                       id="preApprovalGird"
                       datavalidate="preApprovalGird"
@@ -273,10 +335,7 @@ class PreApproval extends Component {
                                   className="fas fa-eye"
                                   onClick={this.ShowEditModel.bind(this, row)}
                                 />
-                                <i
-                                  className="fas fa-file-export"
-                                  onClick={this.ShowSubmitModel.bind(this, row)}
-                                />
+
                                 <i
                                   className="fas fa-check"
                                   onClick={VerifyOrderModel.bind(
@@ -284,10 +343,10 @@ class PreApproval extends Component {
                                     this,
                                     row
                                   )}
-                                />{" "}
+                                />
                                 <i
                                   className="fas fa-file-medical-alt"
-                                  onClick={this.ShowSubmitModel.bind(this, row)}
+                                  onClick={openUCAFReport.bind(this, this,row)}
                                 />
                               </span>
                             );
@@ -464,7 +523,11 @@ class PreApproval extends Component {
           onClose={CloseOrderModel.bind(this, this)}
           selected_services={this.state.selected_services}
         />
+        {this.renderUCAFReport()}
+        {this.renderDCAFReport()}
+        {this.renderOCAFReport()}
       </div>
+
     );
   }
 }
