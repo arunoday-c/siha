@@ -50,7 +50,7 @@ export default function SubjectiveHandler() {
       });
     },
     datehandle: ($this, ctrl, e) => {
-      debugger
+      debugger;
       const _durat_interval = dateDurationAndInterval(ctrl);
 
       $this.setState({

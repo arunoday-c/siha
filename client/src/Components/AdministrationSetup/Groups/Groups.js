@@ -3,9 +3,11 @@ import "./groups.css";
 import {
   AlagehFormGroup,
   AlgaehDataGrid,
-  AlgaehLabel
+  AlgaehLabel,
+  AlagehAutoComplete
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import { GROUP_TYPE } from "../../../utils/GlobalVariables.json";
 
 class Groups extends Component {
   constructor(props) {
@@ -59,6 +61,13 @@ class Groups extends Component {
 
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
+  }
+
+  dropDownHandler(value) {
+    debugger;
+    this.setState({
+      [value.name]: value.value
+    });
   }
 
   deleteGroups() {}
@@ -115,19 +124,23 @@ class Groups extends Component {
                   }
                 }}
               />
-              <AlagehFormGroup
+              <AlagehAutoComplete
                 div={{ className: "col-lg-2" }}
                 label={{
                   forceLabel: "Group Type",
                   isImp: true
                 }}
-                textBox={{
-                  className: "txt-fld",
-                  name: "app_group_type",
-                  value: this.state.app_group_type,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
+                selector={{
+                  name: "group_type",
+                  className: "select-fld",
+                  value: this.state.group_type,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: GROUP_TYPE
+                  },
+
+                  onChange: this.dropDownHandler.bind(this)
                 }}
               />
 

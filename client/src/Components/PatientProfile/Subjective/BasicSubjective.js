@@ -36,7 +36,7 @@ class BasicSubjective extends Component {
       openDiet: false,
       openVital: false,
       openAlergy: false,
-      openExamnModal:null,
+      openExamnModal: null,
       chief_complaint: null,
 
       duration: null,
@@ -46,6 +46,8 @@ class BasicSubjective extends Component {
       pain: null,
       severity: null,
       chronic: null,
+      complaint_type: null,
+      isPregnancy: true,
       hims_f_episode_chief_complaint_id: null
     };
     this.getMasters();
@@ -84,7 +86,18 @@ class BasicSubjective extends Component {
       });
     }
   }
+  dropDownHandler(value) {
+    debugger;
+    this.setState({
+      [value.name]: value.value
+    });
 
+    value.value === "PREGNANCY"
+      ? this.setState({
+          isPregnancy: false
+        })
+      : "";
+  }
   datehandle(e) {
     SubjectiveHandler().datehandle(this, e);
   }
@@ -214,7 +227,7 @@ class BasicSubjective extends Component {
     });
   }
 
-  showPhysicalExamination(){
+  showPhysicalExamination() {
     this.setState({
       openExamnModal: !this.state.openExamnModal
     });
@@ -283,10 +296,10 @@ class BasicSubjective extends Component {
                   onClick={this.showPhysicalExamination.bind(this)}
                 />
               </li>
-               <Examination
-                  openExamnModal={this.state.openExamnModal}
-                  onClose={this.showPhysicalExamination.bind(this)}
-                />
+              <Examination
+                openExamnModal={this.state.openExamnModal}
+                onClose={this.showPhysicalExamination.bind(this)}
+              />
               <li>
                 <span className="animated slideInLeft faster">Medication</span>
                 <i
@@ -409,7 +422,7 @@ class BasicSubjective extends Component {
                             }}
                           />
 
-                          <AlagehAutoComplete
+                          {/* <AlagehAutoComplete
                             div={{ className: "col-4" }}
                             label={{ forceLabel: "Chronic", isImp: false }}
                             selector={{
@@ -423,7 +436,27 @@ class BasicSubjective extends Component {
                               },
                               onChange: this.ChangeEventHandler.bind(this)
                             }}
+                          /> */}
+
+                          <AlagehAutoComplete
+                            div={{ className: "col-4" }}
+                            label={{
+                              forceLabel: "Complaint Type",
+                              isImp: false
+                            }}
+                            selector={{
+                              name: "complaint_type",
+                              className: "select-fld",
+                              value: this.state.complaint_type,
+                              dataSource: {
+                                textField: "name",
+                                valueField: "value",
+                                data: GlobalVariables.COMPLAINT_TYPE
+                              },
+                              onChange: this.dropDownHandler.bind(this)
+                            }}
                           />
+
                           <AlagehFormGroup
                             div={{ className: "col-4" }}
                             label={{
@@ -435,6 +468,7 @@ class BasicSubjective extends Component {
                               name: "duration",
                               number: true,
                               //  value: this.state.duration,
+                              disabled: this.state.isPregnancy,
                               events: {
                                 //  onChange: this.dataLevelUpdate.bind(this)
                               }

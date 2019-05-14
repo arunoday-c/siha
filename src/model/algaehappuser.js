@@ -211,10 +211,7 @@ let selectAppGroup = (req, res, next) => {
       }
 
       let algaeh_d_app_group_id = "";
-      if (
-        req.query.algaeh_d_app_group_id != undefined &&
-        req.query.algaeh_d_app_group_id != null
-      ) {
+      if (req.query.algaeh_d_app_group_id > 0) {
         algaeh_d_app_group_id = ` and algaeh_d_app_user_id=${
           req.query.algaeh_d_app_group_id
         } `;

@@ -261,7 +261,7 @@ export default () => {
     });
   });
 
-  api.get(
+  api.put(
     "/cancelPatientAppointment",
     cancelPatientAppointment,
     (req, res, next) => {
