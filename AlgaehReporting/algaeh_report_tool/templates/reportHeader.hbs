@@ -6,11 +6,14 @@
     table {
         width: 100%;
         border-bottom: 1px solid #ccc;
+        margin-top: -10px;
     }
 
     .hospitalLogo {
         color: #ccc;
         text-align: center;
+        width: 15%;
+        padding-left: 15px;
     }
 
     .hospitalLogo img {
@@ -22,7 +25,9 @@
 
     .otherInfo {
         text-align: right;
-        font-size: 10px;
+        font-size: 9px!important;
+        width: 15%;
+        padding-right: 15px;
     }
 
     .hospitalAddress {
@@ -40,7 +45,7 @@
         padding: 0;
         line-height: 15px;
         font-weight: normal;
-        font-size: 9px;
+        font-size: 8px;
     }
 </style>
 
@@ -57,7 +62,6 @@
                 <td class="hospitalAddress">
                     <h4>{{{report_name_for_header}}}</h4>
                     <p>{{hospital_address}}</p>
-
                 </td>
                 <td class="otherInfo">
                     <p>Date: {{currentDateTime 'date'}}</p>

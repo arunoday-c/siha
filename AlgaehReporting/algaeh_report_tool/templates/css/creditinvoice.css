@@ -6,6 +6,7 @@ body {
 .print-body {
   border-right: 0 !important;
   padding: 0 15px 0 !important;
+  margin-top: -5px;
   margin-bottom: 10px;
 }
 
