@@ -311,14 +311,12 @@ const onchangegridcol = ($this, context, row, e) => {
     swalMessage({
       title: "Cannot be less than Zero.",
       type: "warning"
-    });
-    // row[name] = oldvalue
-    // row.update();
+    });    
   }else {
     row[name] = value;
     row["quantity_outstanding"] = value;
 
-    inventory_stock_detail[row.rowIdx] = row;    
+    inventory_stock_detail[row.rowIdx] = row;
     $this.setState({ inventory_stock_detail: inventory_stock_detail });
 
     if (context !== undefined) {
