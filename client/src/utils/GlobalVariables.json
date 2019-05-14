@@ -1575,6 +1575,6 @@
     { "name": "Check up", "value": "CHECKUP" },
     { "name": "Psychiatric", "value": "PSYCHIATRIC" },
     { "name": "Infertility", "value": "INFERTILITY" },
-    { "name": "pregnancy", "value": "PREGNANCY" }
+    { "name": "Pregnancy", "value": "PREGNANCY" }
   ]
 }

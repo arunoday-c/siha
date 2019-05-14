@@ -96,7 +96,9 @@ class BasicSubjective extends Component {
       ? this.setState({
           isPregnancy: false
         })
-      : "";
+      : this.setState({
+          isPregnancy: true
+        });
   }
   datehandle(e) {
     SubjectiveHandler().datehandle(this, e);
