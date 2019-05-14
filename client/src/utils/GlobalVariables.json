@@ -896,6 +896,21 @@
     { "name": "Lab Technician", "value": "L" },
     { "name": "Others", "value": "O" }
   ],
+  "GROUP_TYPE": [
+    { "name": "Laboratory", "value": "L" },
+    { "name": "Radiology", "value": "R" },
+    { "name": "Nursing", "value": "N" },
+    { "name": "Providers", "value": "P" },
+    { "name": "Admin", "value": "AD" },
+    { "name": "FrontDesk", "value": "FD" },
+    { "name": "Cashier", "value": "C" },
+    { "name": "Pharmacy", "value": "PH" },
+    { "name": "Finance", "value": "F" },
+    { "name": "Inventory", "value": "I" },
+    { "name": "CEO", "value": "CEO" },
+    { "name": "Directors", "value": "D" },
+    { "name": "OTHERS", "value": "O" }
+  ],
   "RECEIPT_TYPE": [
     { "name": "OP Billing", "value": "OP" },
     { "name": "POS", "value": "POS" },
@@ -1173,7 +1188,7 @@
     { "name": "+29.75", "value": "+29.75" },
     { "name": "+30.00", "value": "+30.00" }
   ],
-  "AXIS_TYPE":[
+  "AXIS_TYPE": [
     { "name": "-", "value": "-" },
     { "name": "5", "value": "5" },
     { "name": "10", "value": "10" },
@@ -1212,7 +1227,7 @@
     { "name": "175", "value": "175" },
     { "name": "180", "value": "180" }
   ],
-  "ADD_TYPE":[
+  "ADD_TYPE": [
     { "name": "+0.25", "value": "+0.25" },
     { "name": "+0.50", "value": "+0.50" },
     { "name": "+0.75", "value": "+0.75" },
@@ -1550,5 +1565,16 @@
     { "name": "N24", "value": "N24" },
     { "name": "N36", "value": "N36" },
     { "name": "N60", "value": "N60" }
+  ],
+  "COMPLAINT_TYPE": [
+    { "name": "Chronic", "value": "CHRONIC" },
+    { "name": "Congential", "value": "CONGENTIAL" },
+    { "name": "RTA", "value": "RTA" },
+    { "name": "Work Related", "value": "WORKRELATED" },
+    { "name": "Vaccination", "value": "VACCINATION" },
+    { "name": "Check up", "value": "CHECKUP" },
+    { "name": "Psychiatric", "value": "PSYCHIATRIC" },
+    { "name": "Infertility", "value": "INFERTILITY" },
+    { "name": "pregnancy", "value": "PREGNANCY" }
   ]
 }

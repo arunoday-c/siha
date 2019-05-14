@@ -33,6 +33,7 @@ app.use(compression());
 if (process.env.NODE_ENV == "production") {
   app.set("view cache", true);
 }
+
 process.on("warning", warning => {
   console.warning("warning", warning);
 });
@@ -89,7 +90,30 @@ app.use((req, res, next) => {
 app.use("/api/v1/report", getReport);
 app.use("/api/v1/excelReport", getExcelReport);
 
-app.use("/api/v1/multireports", getReportMultiPrint, merdgeTosingleReport);
+app.use(
+  "/api/v1/multireports",
+  getReportMultiPrint,
+  (req, res, next) => {
+    const getAllReports = req.records;
+    let newArray = [];
+    for (let i = 0; i < getAllReports.length; i++) {
+      if (fs.existsSync(getAllReports[i])) {
+        newArray.push(getAllReports[i]);
+      }
+    }
+    if (newArray.length == 1) {
+      const _fs = fs.createReadStream(newArray[0]);
+      _fs.on("end", () => {
+        fs.unlink(newArray[0]);
+      });
+      _fs.pipe(res);
+    } else {
+      req.records = newArray;
+      next();
+    }
+  },
+  merdgeTosingleReport
+);
 app.use("/api/v1/pentahoreport", (req, res) => {
   let input = req.query;
 
