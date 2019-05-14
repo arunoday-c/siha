@@ -271,13 +271,20 @@ const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  let transfer_to_date = row.transfer_to_date + parseFloat(value);
-  if (transfer_to_date > row.quantity_authorized) {
+  let transfer_to_date = parseFloat(row.transfer_to_date) + parseFloat(value);
+  if (transfer_to_date > parseFloat(row.quantity_authorized)) {
     swalMessage({
       title: "Cannot be greater than Authorized Quantity.",
       type: "warning"
     });
     row[name] = $this.state.quantity_transferred;
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: " Delivery Quantity cannot be less than Zero.",
+      type: "warning"
+    });
+    // row[name] = oldvalue
+    // row.update();
   } else {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 

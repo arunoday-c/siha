@@ -443,7 +443,10 @@ class DNItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
+                                        onFocus: e => {
+                                          e.target.oldvalue = e.target.value;
+                                        }
                                       }
                                     }}
                                   />

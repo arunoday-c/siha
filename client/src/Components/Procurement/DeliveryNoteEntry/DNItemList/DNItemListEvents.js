@@ -177,13 +177,20 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   let quantity_recieved_todate =
     row.quantity_recieved_todate + parseFloat(value);
   if (value !== "") {
-    if (quantity_recieved_todate > row.po_quantity) {
+    if (quantity_recieved_todate > parseFloat(row.po_quantity)) {
       swalMessage({
         title: " DN Quantity cannot be greater than PO Quantity.",
         type: "warning"
       });
       row[name] = row[name];
       row.update();
+    }else if (parseFloat(value) < 0) {
+      swalMessage({
+        title: " Delivery Quantity cannot be less than Zero.",
+        type: "warning"
+      });
+      // row[name] = oldvalue
+      // row.update();
     } else {
       extended_price = parseFloat(row.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;

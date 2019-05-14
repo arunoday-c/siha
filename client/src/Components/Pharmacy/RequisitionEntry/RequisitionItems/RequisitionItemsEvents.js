@@ -267,12 +267,19 @@ const onchangegridcol = ($this, context, row, e) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (value > row.quantity_required) {
+  if (value > parseFloat(row.quantity_required)) {
     swalMessage({
       title: "Cannot be greater than Requested Quantity.",
       type: "warning"
     });
     row[name] = $this.state.quantity_transferred;
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Cannot be less than Zero.",
+      type: "warning"
+    });
+    // row[name] = oldvalue
+    // row.update();
   } else {
     row[name] = value;
     row["quantity_outstanding"] = value;

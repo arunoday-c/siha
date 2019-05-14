@@ -307,16 +307,18 @@ const onchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
     row[name] = $this.state.quantity_transferred;
-  } else {
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Cannot be less than Zero.",
+      type: "warning"
+    });
+    // row[name] = oldvalue
+    // row.update();
+  }else {
     row[name] = value;
     row["quantity_outstanding"] = value;
 
-    inventory_stock_detail[row.rowIdx] = row;
-    // for (let x = 0; x < inventory_stock_detail.length; x++) {
-    //   if (inventory_stock_detail[x].item_id === row.item_id) {
-    //     inventory_stock_detail[x] = row;
-    //   }
-    // }
+    inventory_stock_detail[row.rowIdx] = row;    
     $this.setState({ inventory_stock_detail: inventory_stock_detail });
 
     if (context !== undefined) {
