@@ -545,6 +545,9 @@ body {
       background-color: #007468;
       color: #fff !important;
       border-color: #00dac4; }
+  :global .hptl-phase1-footer .btn:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.4; }
 
 :global .hptl-phase1-master-footer .main {
   background-color: #fff !important;

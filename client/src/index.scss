@@ -968,6 +968,10 @@
           text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
         }
       }
+      .btn:disabled{
+        cursor: not-allowed!important;
+        opacity: 0.4;
+      }
       .btn-primary {
         color: $color-white;
         background-color: $primary-color;
@@ -983,7 +987,6 @@
         &.disabled,
         &:disabled {
           opacity: 0.3;
-
           color: $color-white;
           background-color: $primary-color;
           border-color: darken($primary-color, 10%);
@@ -1562,10 +1565,14 @@
     border-left: 1px dashed #d3d3d3;
     border-right: 0;
   }
-  .hptl-phase1-footer button {
+  .hptl-phase1-footer{ button {
     font-size: 1.2rem;
     float: left;
+  }.btn:disabled{
+    cursor: not-allowed!important;
+    opacity: 0.4;
   }
+}
   .toggle-section .nav {
     padding: 0;
     right: auto;

@@ -669,6 +669,9 @@ body {
         color: $color-white !important;
         border-color: lighten($primary-color, 10%);
       }
+    }.btn:disabled{
+      cursor: not-allowed!important;
+      opacity: 0.4;
     }
   }
 
