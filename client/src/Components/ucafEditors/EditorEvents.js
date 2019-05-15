@@ -63,6 +63,34 @@ export default function EditorEvents() {
       }
     },
 
+    ucafradioChange: ($this, e) => {
+      debugger
+      let value = e.target.value
+      switch (e.target.name) {
+
+        case "patient_complaint_type":
+          $this.setState({
+            patient_complaint_type: value
+          });
+          break;
+
+
+        case "patient_marital_status":
+          $this.setState({
+            patient_marital_status: value
+          });
+          break;
+
+        case "patient_emergency_case":
+          $this.setState({
+            patient_emergency_case: value
+          });
+          break;
+        default:
+          break;
+      }
+    },
+
     radioChange:($this, e) =>{
       switch (e.target.name) {
 

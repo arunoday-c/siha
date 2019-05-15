@@ -27,47 +27,7 @@ export default class DcafEditor extends Component {
 
   saveAndPrintDcaf(e) {
     debugger;
-    EditorEvents().saveAndPrintDcaf(this,e)
-    // const that = this;
-    // const _hims_f_dcaf_header = this.props.dataProps.hims_f_dcaf_header[0];
-    // algaehApiCall({
-    //   uri: "/report",
-    //   method: "GET",
-    //   module: "reports",
-    //   headers: {
-    //     Accept: "blob"
-    //   },
-    //   others: { responseType: "blob" },
-    //   data: {
-    //     report: {
-    //       reportName: "dcaf",
-    //       reportParams: [
-    //         {
-    //           name: "hims_d_patient_id",
-    //           value: _hims_f_dcaf_header.patient_id
-    //         },
-    //         { name: "visit_id", value: _hims_f_dcaf_header.visit_id },
-    //         { name: "visit_date", value: null }
-    //       ],
-    //       outputFileType: "PDF" //"EXCEL", //"PDF",
-    //     }
-    //   },
-    //   onSuccess: res => {
-    //     let reader = new FileReader();
-    //     reader.onloadend = () => {
-    //       let myWindow = window.open(
-    //         "{{ product.metafields.google.custom_label_0 }}",
-    //         "_blank"
-    //       );
-    //       myWindow.document.write(
-    //         "<embed src= '" + reader.result + "' width='100%' height='100%' />"
-    //       );
-    //       myWindow.document.title = "Algaeh DCAF 2.0";
-    //     };
-    //
-    //     reader.readAsDataURL(res.data);
-    //   }
-    // });
+    EditorEvents().saveAndPrintDcaf(this,e)  
   }
 
   ChangeEventHandler(e){

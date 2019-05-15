@@ -149,7 +149,7 @@ class PatientProfile extends Component {
       data: {
         patient_id: Window.global["current_patient"],
         visit_id: Window.global["visit_id"],
-        // forceReplace: true
+        forceReplace: true
         // visit_date: "2018-09-15"
       },
       onSuccess: response => {

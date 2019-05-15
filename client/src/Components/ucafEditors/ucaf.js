@@ -9,6 +9,8 @@ import {
 import { algaehApiCall } from "../../utils/algaehApiCall";
 import _ from "lodash";
 import AlgaehFileUploader from "../Wrapper/algaehFileUpload";
+import EditorEvents from "./EditorEvents"
+
 export default class UcafEditor extends Component {
   constructor(props) {
     super(props);
@@ -66,17 +68,23 @@ export default class UcafEditor extends Component {
       }
     });
   }
-  getPrimaryCardNumber() {
-    if (
-      this.props.dataProps.hims_f_ucaf_insurance_details !== undefined &&
-      this.props.dataProps.hims_f_ucaf_insurance_details.length > 0
-    ) {
-      return this.props.dataProps.hims_f_ucaf_insurance_details[0][
-        "primary_card_number"
-      ];
-    } else {
-      return "";
-    }
+  // getPrimaryCardNumber() {
+  //   if (
+  //     this.state.dataProps.hims_f_ucaf_insurance_details !== undefined &&
+  //     this.props.dataProps.hims_f_ucaf_insurance_details.length > 0
+  //   ) {
+  //     return this.state.primary_card_number
+  //   } else {
+  //     return "";
+  //   }
+  // }
+
+  ChangeEventHandler(e){
+    EditorEvents().ChangeEventHandler(this,e)
+  }
+
+  radioChange(e){
+    EditorEvents().ucafradioChange(this,e)
   }
 
   componentDidMount(){
@@ -141,14 +149,14 @@ export default class UcafEditor extends Component {
                           <label>Department</label>
                           <h6>{this.state.sub_department_name}</h6>
                         </div>
-                  
+
                         <div className="col-4">
                           <label>Date of Visit</label>
                           <h6>{this.state.visit_date}</h6>
                         </div>
-                  
-                       
-                      
+
+
+
                         <div
                           className="col-6 customRadio"
                           style={{ paddingTop: 24, borderBottom: "none" }}
@@ -156,20 +164,23 @@ export default class UcafEditor extends Component {
                           <label className="radio inline">
                             <input
                               type="radio"
-                              name="maritalType"
+                              name="patient_marital_status"
+                              value="Single"
                               checked={
                                 this.state.patient_marital_status ===
                                 "Single"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Single</span>
                           </label>
                           <label className="radio inline">
                             <input
                               type="radio"
-                              name="maritalType"
+                              name="patient_marital_status"
+                              value="Married"
                               checked={
                                 this.state.patient_marital_status ===
                                 "Married"
@@ -182,13 +193,15 @@ export default class UcafEditor extends Component {
                           <label className="radio inline">
                             <input
                               type="radio"
-                              name="maritalType"
+                              name="patient_marital_status"
+                              value="PlanType"
                               checked={
                                 this.state.patient_marital_status ===
                                 "PlanType"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Plan Type</span>
                           </label>
@@ -197,22 +210,28 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
+                              name="new_visit_patient"
+                              value="Y"
                               checked={
                                 this.state.new_visit_patient === "Y"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>New Visit</span>
                           </label>
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
+                              name="new_visit_patient"
+                              value="N"
                               checked={
                                 this.state.new_visit_patient === "N"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Follow Up</span>
                           </label>
@@ -222,14 +241,14 @@ export default class UcafEditor extends Component {
                               checked={this.state.refill}
                             />
                             <span>Refill</span>
-                          </label>{" "}
+                          </label>
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
                               checked={this.state.walkin}
                             />
                             <span>Walk In</span>
-                          </label>{" "}
+                          </label>
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
@@ -259,7 +278,7 @@ export default class UcafEditor extends Component {
                                 showActions={false}
                                 serviceParameters={{
                                   uniqueID:
-                                    this.getPrimaryCardNumber() + "_front",
+                                    this.state.primary_card_number + "_front",
                                   fileType: "Patients"
                                 }}
                               />
@@ -461,52 +480,60 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="empergency_case"
+                              name="patient_emergency_case"
+                              value="null"
                               checked={
                                 this.state.patient_emergency_case !==
                                 null
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Emergency Case</span>
                           </label>
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="empergency_l1"
+                              name="patient_emergency_case"
+                              value="L1"
                               checked={
                                 this.state.patient_emergency_case ===
                                 "L1"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Level 1</span>
                           </label>
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="empergency_l2"
+                              name="patient_emergency_case"
+                              value="L2"
                               checked={
                                 this.state.patient_emergency_case ===
                                 "L2"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Level 2</span>
                           </label>
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="empergency_l3"
+                              name="patient_emergency_case"
+                              value="L3"
                               checked={
                                 this.state.patient_emergency_case ===
-                                "L2"
+                                "L3"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Level 3</span>
                           </label>
@@ -524,7 +551,9 @@ export default class UcafEditor extends Component {
                               this.state.patient_bp_sys +
                               "/" +
                               this.state.patient_bp_dia,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -540,7 +569,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_pulse",
                             value: this.state.patient_pulse,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -556,7 +587,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_temp",
                             value: this.state.patient_temp,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -572,7 +605,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_weight",
                             value: this.state.patient_weight,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -588,7 +623,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_height",
                             value: this.state.patient_height,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -604,7 +641,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_respiratory_rate",
                             value: this.state.patient_respiratory_rate,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -621,7 +660,9 @@ export default class UcafEditor extends Component {
                             name: "patient_duration_of_illness",
                             value:
                               this.state.patient_duration_of_illness,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -638,7 +679,9 @@ export default class UcafEditor extends Component {
                             name: "patient_chief_comp_main_symptoms",
                             value:
                               this.state.patient_chief_comp_main_symptoms,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -655,7 +698,9 @@ export default class UcafEditor extends Component {
                             name: "patient_significant_signs",
                             value:
                               this.state.patient_significant_signs,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -671,7 +716,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_other_conditions",
                             value: this.state.patient_other_conditions,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -687,7 +734,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_diagnosys",
                             value: this.state.patient_diagnosys,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -703,7 +752,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_principal_code_1",
                             value: this.state.patient_principal_code_1,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -719,7 +770,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_principal_code_2",
                             value: this.state.patient_principal_code_2,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -735,7 +788,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_principal_code_3",
                             value: this.state.patient_principal_code_3,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -751,7 +806,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_principal_code_4",
                             value: this.state.patient_principal_code_4,
-                            events: {},
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
                             option: {
                               type: "text"
                             }
@@ -775,11 +832,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="CHRONIC"
                               checked={
                                 this.state.patient_complaint_type === "CHRONIC"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Chronic</span>
                           </label>
@@ -787,11 +846,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="CONGENTIAL"
                               checked={
                                 this.state.patient_complaint_type === "CONGENTIAL"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Congential</span>
                           </label>
@@ -799,11 +860,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="RTA"
                               checked={
                                 this.state.patient_complaint_type === "RTA"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>RTA</span>
                           </label>
@@ -811,11 +874,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="WORKRELATED"
                               checked={
                                 this.state.patient_complaint_type === "WORKRELATED"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Work Related</span>
                           </label>
@@ -823,11 +888,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="VACCINATION"
                               checked={
                                 this.state.patient_complaint_type === "VACCINATION"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Vaccination</span>
                           </label>
@@ -835,11 +902,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="CHECKUP"
                               checked={
                                 this.state.patient_complaint_type === "CHECKUP"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Check-Up</span>
                           </label>
@@ -847,11 +916,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="PSYCHIATRIC"
                               checked={
                                 this.state.patient_complaint_type === "PSYCHIATRIC"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Psychiatric</span>
                           </label>
@@ -859,11 +930,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="INFERTILITY"
                               checked={
                                 this.state.patient_complaint_type === "INFERTILITY"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Infertility</span>
                           </label>
@@ -871,11 +944,13 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               name="patient_complaint_type"
+                              value="PREGNANCY"
                               checked={
                                 this.state.patient_complaint_type === "PREGNANCY"
                                   ? true
                                   : false
                               }
+                              onChange={this.radioChange.bind(this)}
                             />
                             <span>Pregnancy</span>
                           </label>
@@ -890,10 +965,14 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_indicated_LMP",
                             value: this.state.patient_indicated_LMP,
-                            events: {},
-                            option: {
-                              type: "text",
-                              disabled: true
+                            events: {
+                              onChange:this.ChangeEventHandler.bind(this)
+                            },
+                            others: {
+                              type: "number",
+                              disabled:this.state.patient_complaint_type === "PREGNANCY"
+                                ? false
+                                : true
                             }
                           }}
                         />
