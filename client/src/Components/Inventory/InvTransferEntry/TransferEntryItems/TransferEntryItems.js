@@ -77,6 +77,7 @@ class TransferEntryItems extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     this.setState(nextProps.TransferIOputs);
   }
 
@@ -354,8 +355,8 @@ class TransferEntryItems extends Component {
                                       row
                                     )
                                   },
-                                  others:{
-                                    type:"number"
+                                  others: {
+                                    type: "number"
                                   }
                                 }}
                               />
@@ -389,7 +390,7 @@ class TransferEntryItems extends Component {
                       dataSource={{
                         data: this.state.inventory_stock_detail
                       }}
-                      isEditable={true}
+                      isEditable={!this.state.saveEnable}
                       byForceEvents={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
