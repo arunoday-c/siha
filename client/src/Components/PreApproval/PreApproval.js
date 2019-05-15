@@ -366,7 +366,7 @@ class PreApproval extends Component {
                             />
                           ),
                           others: {
-                            minWidth: 200
+                            minWidth: 150
                           }
                         },
                         {
@@ -375,7 +375,10 @@ class PreApproval extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "patient_name" }}
                             />
-                          )
+                          ),
+                          others: {
+                            minWidth: 250
+                          }
                         },
                         {
                           fieldName: "created_date",
