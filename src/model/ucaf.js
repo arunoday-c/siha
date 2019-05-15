@@ -69,8 +69,8 @@ let getPatientUCAF = (req, res, next) => {
                 select HPIH.hpi_description,case CC.pain when 'NH' then 'no hurts' when 'HLB' then 'hurts little bit' \
                 when 'HLM' then 'hurts little more' when 'HEM' then 'hurts even more' when 'HWL' then 'hurts whole lot' \
                 when 'HW' then 'hurts worst' end pain, case CC.severity when 'MI' then 'mild' when 'MO' then 'moderate' \
-                when 'SE' then 'severe' end  severity,  CC.score,CC.duration,CC.comment,CC.onset_date \
-                from hims_f_episode_chief_complaint CC \
+                when 'SE' then 'severe' end  severity,  CC.score,CC.duration,CC.comment,CC.onset_date, \
+                CC.complaint_type,CC.lmp_days from hims_f_episode_chief_complaint CC \
                 inner join hims_f_patient_visit PV \
                 on CC.patient_id=PV.patient_id and CC.episode_id=PV.episode_id \
                 left join hims_d_hpi_header HPIH on CC.chief_complaint_id = HPIH.hims_d_hpi_header_id \
@@ -186,9 +186,14 @@ let getPatientUCAF = (req, res, next) => {
                       "  from date " +
                       _out["onset_date"];
                   } else {
-                    console.log("_out", _out["comment"])
-                    _fields["patient_chief_comp_main_symptoms"] +=
+                    _fields["patient_chief_comp_main_symptoms"] =
                       _out["comment"];
+
+                    _fields["patient_complaint_type"] =
+                      _out["complaint_type"];
+
+                    _fields["patient_indicated_LMP"] =
+                      parseInt(_out["lmp_days"]);
                   }
                 // }
               }
@@ -205,16 +210,6 @@ let getPatientUCAF = (req, res, next) => {
                   _fields["patient_principal_code_" + i] = undefined;
                 }
               }
-              _fields["patient_chronic"] = "N";
-              _fields["patient_congenetal"] = "N";
-              _fields["patient_rta"] = "N";
-              _fields["patient_work_related"] = "N";
-              _fields["patient_vaccination"] = "N";
-              _fields["patient_check_up"] = "N";
-              _fields["patient_psychiatric"] = "N";
-              _fields["patient_infertility"] = "N";
-              _fields["patient_pregnancy"] = "N";
-              _fields["patient_indicated_LMP"] = "N";
 
               _mysql
                 .executeQueryWithTransaction({
@@ -226,11 +221,9 @@ let getPatientUCAF = (req, res, next) => {
                 `patient_height`,`patient_respiratory_rate`,`patient_duration_of_illness`,\
                 `patient_chief_comp_main_symptoms`,`patient_significant_signs`,`patient_other_conditions`,\
                 `patient_diagnosys`,`patient_principal_code_1`,`patient_principal_code_2`,\
-                `patient_principal_code_3`,`patient_principal_code_4`,`patient_chronic`,`patient_congenetal`,\
-                `patient_rta`,`patient_work_related`,`patient_vaccination`,`patient_check_up`,\
-                `patient_psychiatric`,`patient_infertility`,`patient_pregnancy`,`patient_indicated_LMP`,\
-                `patient_gender`,`age_in_years`) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
+                `patient_principal_code_3`,`patient_principal_code_4`,`patient_complaint_type`,\
+                `patient_indicated_LMP`,`patient_gender`,`age_in_years`) \
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
                 ",
                   values: [
                     _fields.patient_id,
@@ -261,15 +254,7 @@ let getPatientUCAF = (req, res, next) => {
                     _fields.patient_principal_code_2,
                     _fields.patient_principal_code_3,
                     _fields.patient_principal_code_4,
-                    _fields.patient_chronic,
-                    _fields.patient_congenetal,
-                    _fields.patient_rta,
-                    _fields.patient_work_related,
-                    _fields.patient_vaccination,
-                    _fields.patient_check_up,
-                    _fields.patient_psychiatric,
-                    _fields.patient_infertility,
-                    _fields.patient_pregnancy,
+                    _fields.patient_complaint_type,
                     _fields.patient_indicated_LMP,
                     _fields.patient_gender,
                     _fields.age_in_years

@@ -129,7 +129,7 @@ class BasicSubjective extends Component {
     } else {
       SubjectiveHandler().updatePatientChiefComplaints(this);
     }
-    
+
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
@@ -508,12 +508,12 @@ class BasicSubjective extends Component {
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "duration",
+                              name: "lmp_days",
                               number: true,
-                              //  value: this.state.duration,
+                               value: this.state.lmp_days,
                               disabled: this.state.isPregnancy,
                               events: {
-                                //  onChange: this.dataLevelUpdate.bind(this)
+                                onChange: this.ChangeEventHandler.bind(this)
                               }
                             }}
                           />

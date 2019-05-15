@@ -141,7 +141,8 @@ export default function SubjectiveHandler() {
         chronic: $this.state.chronic,
         complaint_inactive: "N",
         complaint_inactive_date: null,
-        complaint_type: $this.state.complaint_type
+        complaint_type: $this.state.complaint_type,
+        lmp_days: $this.state.lmp_days
       });
       algaehApiCall({
         uri: "/doctorsWorkBench/addPatientChiefComplaints",
@@ -171,9 +172,9 @@ export default function SubjectiveHandler() {
         pain: $this.state.pain,
         severity: $this.state.severity,
         patient_id: Window.global["current_patient"],
-
         chronic: $this.state.chronic,
-        complaint_type: $this.state.complaint_type
+        complaint_type: $this.state.complaint_type,
+        lmp_days: $this.state.lmp_days
       });
       algaehApiCall({
         uri: "/doctorsWorkBench/updatePatientChiefComplaints",
