@@ -9,6 +9,7 @@ const executePDF = function executePDFMethod(options) {
         header: { ...header[0], ...options.mainData[0] },
         detail: detail,
         total_quantity: _.sumBy(detail, s => parseFloat(s.quantity)),
+        total_price: _.sumBy(detail, s => parseFloat(s.price)),
         total_gross_amount: _.sumBy(detail, s => parseFloat(s.gross_amount)),
         total_discount_amount: _.sumBy(detail, s =>
           parseFloat(s.discount_amount)
