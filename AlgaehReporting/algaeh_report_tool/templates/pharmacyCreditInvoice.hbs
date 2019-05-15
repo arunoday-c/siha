@@ -31,8 +31,9 @@
                         <th>Unit Price<p>المجموع الصافي</p></th>
                         <th>Gross Amount<p>المبلغ الإجمالي</p></th>
                         <th>Discount<p>خصم</p></th>
-                        <th>Patient Respo.<p>حصة المريض</p></th>
                         <th>Net Amt. <p>المبلغ الصافي</p></th>
+                        <th>Patient Respo.<p>حصة المريض</p></th>
+                        <th>Company Respo.<p>حصة المريض</p></th>
                         <th>Vat Amt. <p>قيمة الضريبة</p></th>
                         <th>Net/Claim Amt.<p>صافي / مبلغ المطالبة</th>
                     </tr>
@@ -40,16 +41,18 @@
                 <tbody>
                     {{#each detail}}
                     <tr>
-                       <td>{{cpt_code}}</td>
-                        <td>{{service_name}}</td>
-                        <td>{{quantity}}</td>
-                        <td class="numberFld">{{price}}</td>
-                        <td class="numberFld">{{gross_amount}}</td>
-                          <td class="numberFld">{{discount_amount}}</td>
-                          <td class="numberFld">{{patient_share}}</td>
-                          <td class="numberFld">{{net_amount}}</td>
-                          <td class="numberFld">{{company_tax}}</td>
-                          <td class="numberFld">{{net_claim}}</td>
+                      <td>{{cpt_code}}</td>
+                      <td>{{service_name}}</td>
+
+                      <td>{{quantity}}</td>
+                      <td class="numberFld">{{price}}</td>
+                      <td class="numberFld">{{gross_amount}}</td>
+                      <td class="numberFld">{{discount_amount}}</td>
+                      <td class="numberFld">{{net_amount}}</td>
+                      <td class="numberFld">{{patient_share}}</td>
+                      <td class="numberFld">{{company_resp}}</td>
+                      <td class="numberFld">{{company_tax}}</td>
+                      <td class="numberFld">{{net_claim}}</td>
                     </tr>
                     {{/each}}
   <tr class="footerTotal">
@@ -58,8 +61,9 @@
                           <td class="numberFld">{{total_price}}</td>
                          <td class="numberFld">{{total_gross_amount}}</td>
                           <td class="numberFld">{{total_discount_amount}}</td>
-                          <td class="numberFld">{{total_patient_share}}</td>
                           <td class="numberFld">{{total_net_amount}}</td>
+                          <td class="numberFld">{{total_patient_share}}</td>
+                          <td class="numberFld">{{total_company_resp}}</td>
                           <td class="numberFld">{{total_company_tax}}</td>
                           <td class="numberFld">{{total_net_claim}}</td>
                     </tr>

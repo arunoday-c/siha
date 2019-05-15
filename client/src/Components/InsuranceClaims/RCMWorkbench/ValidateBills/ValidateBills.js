@@ -1077,6 +1077,28 @@ class ValidateBills extends PureComponent {
             Pharmacy Credit Invoice
           </button>
 
+          <button
+            onClick={this.generateReport.bind(
+              this,
+              "pharmacyCashInvoice",
+              "Pharmacy Cash Invoice"
+            )}
+            className="btn btn-default"
+          >
+            POS Cash Invoice
+          </button>
+
+          <button
+            className="btn btn-default"
+            onClick={this.generateReport.bind(
+              this,
+              "pharmacyCreditInvoice",
+              "Pharmacy Credit Invoice"              
+            )}
+          >
+            POS Credit Invoice
+          </button>
+
           {this.state.invoices.chart_type === "N" ? (
             <button
               onClick={this.openUCAFReport.bind(this)}
