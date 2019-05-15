@@ -1,8 +1,5 @@
-// import AlgaehSearch from "../../Wrapper/globalSearch";
-// import FrontDesk from "../../../Search/FrontDesk.json";
-// import spotlightSearch from "../../../Search/spotlightSearch.json";
+import _ from "lodash";
 import AlgaehLoader from "../../Wrapper/fullPageLoader";
-// import Enumerable from "linq";
 import RequisitionIOputs from "../../../Models/InventoryRequisition";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 
@@ -93,6 +90,25 @@ const SaveRequisitionEntry = $this => {
 };
 
 const AuthorizeRequisitionEntry = ($this, authorize) => {
+  debugger
+  // const auth_qty = _.filter(
+  //   $this.state.inventory_stock_detail,
+  //   f => {
+  //     return (
+  //       f.quantity_authorized === 0 ||
+  //       f.quantity_authorized === null
+  //     );
+  //   }
+  // );
+
+  // if(auth_qty.length > 0){
+  //   swalMessage({
+  //     title: "Please enter Quantity Authorized ..",
+  //     type: "warning"
+  //   });
+  //   return
+  // }
+
   let authorize1 = "";
   let authorize2 = "";
   if (authorize === "authorize1") {

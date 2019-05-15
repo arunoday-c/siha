@@ -280,7 +280,7 @@ const onchangegridcol = ($this, context, row, e) => {
     row[name] = $this.state.quantity_transferred;
   } else if (parseFloat(value) < 0) {
     swalMessage({
-      title: " Delivery Quantity cannot be less than Zero.",
+      title: "Cannot be less than Zero.",
       type: "warning"
     });
     // row[name] = oldvalue

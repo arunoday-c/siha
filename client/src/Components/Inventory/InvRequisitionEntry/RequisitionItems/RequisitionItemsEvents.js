@@ -282,18 +282,27 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
-  let inventory_stock_detail = $this.state.inventory_stock_detail;
-  for (let k = 0; k < inventory_stock_detail.length; k++) {
-    if (inventory_stock_detail[k].item_id === row.item_id) {
-      inventory_stock_detail[k] = row;
-    }
-  }
-  $this.setState({ inventory_stock_detail: inventory_stock_detail });
-
-  if (context !== undefined) {
-    context.updateState({
-      inventory_stock_detail: inventory_stock_detail
+  debugger
+  if($this.state.requisition_auth === true &&
+    (row.quantity_authorized === 0 || row.quantity_authorized === null)){
+    swalMessage({
+      title: "Please enter Quantity Authorized ..",
+      type: "warning"
     });
+  }else{
+    let inventory_stock_detail = $this.state.inventory_stock_detail;
+    for (let k = 0; k < inventory_stock_detail.length; k++) {
+      if (inventory_stock_detail[k].item_id === row.item_id) {
+        inventory_stock_detail[k] = row;
+      }
+    }
+    $this.setState({ inventory_stock_detail: inventory_stock_detail });
+
+    if (context !== undefined) {
+      context.updateState({
+        inventory_stock_detail: inventory_stock_detail
+      });
+    }
   }
 };
 
@@ -301,7 +310,7 @@ const onchangegridcol = ($this, context, row, e) => {
   let inventory_stock_detail = $this.state.inventory_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (value > row.quantity_required) {
+  if (value > parseFloat(row.quantity_required)) {
     swalMessage({
       title: "Cannot be greater than Requested Quantity.",
       type: "warning"
@@ -311,9 +320,9 @@ const onchangegridcol = ($this, context, row, e) => {
     swalMessage({
       title: "Cannot be less than Zero.",
       type: "warning"
-    });    
+    });
   }else {
-    row[name] = value;
+    row[name] = value === "" ? null : value;
     row["quantity_outstanding"] = value;
 
     inventory_stock_detail[row.rowIdx] = row;

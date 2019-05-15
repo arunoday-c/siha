@@ -493,7 +493,8 @@ class RequisitionItems extends Component {
                                         )
                                       },
                                       others: {
-                                        disabled: this.state.authorizeEnable
+                                        disabled: this.state.authorizeEnable,
+                                        type: "number"
                                       }
                                     }}
                                   />

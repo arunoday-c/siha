@@ -495,7 +495,8 @@ class RequisitionItems extends Component {
                                         )
                                       },
                                       others: {
-                                        disabled: this.state.authorizeEnable
+                                        disabled: this.state.authorizeEnable,
+                                        type: "number"
                                       }
                                     }}
                                   />
@@ -526,10 +527,7 @@ class RequisitionItems extends Component {
                             ),
                             onEdit: row => {},
                             onDone: updatePosDetail.bind(this, this, context)
-                          }}
-                          // onRowSelect={row => {
-                          //   getItemLocationStock(this, row);
-                          // }}
+                          }}                        
                         />
                       </div>
                     </div>
