@@ -4,7 +4,11 @@ import httpStatus from "../utils/httpStatus";
 
 import {
   addAlgaehGroupMAster,
+  updateAlgaehGroupMAster,
+  deleteAlgaehGroupMAster,
   addAlgaehRoleMAster,
+  updateAlgaehRoleMAster,
+  deleteAlgaehRoleMAster,
   addAlgaehModule,
   getRoleBaseActiveModules, //Done
   getRoleBaseInActiveComponents, //Done
@@ -26,6 +30,7 @@ import {
   assignScreens,
   assignComponents,
   updateAlgaehModules,
+  deleteUserLogin,
   method1
 } from "../model/algaehMasters";
 
@@ -50,6 +55,47 @@ export default ({ config, db }) => {
   });
 
   // created by irfan :to add
+  api.put(
+    "/updateAlgaehGroupMAster",
+    updateAlgaehGroupMAster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+  // created by irfan :to add
+  api.delete(
+    "/deleteAlgaehGroupMAster",
+    deleteAlgaehGroupMAster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+
+  // created by irfan :to add
   api.post("/addAlgaehRoleMAster", addAlgaehRoleMAster, (req, res, next) => {
     let result = req.records;
     if (result.validUser == false) {
@@ -66,6 +112,46 @@ export default ({ config, db }) => {
     next();
   });
 
+  // created by irfan :to add
+  api.put(
+    "/updateAlgaehRoleMAster",
+    updateAlgaehRoleMAster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
+  // created by irfan :to add
+  api.delete(
+    "/deleteAlgaehRoleMAster",
+    deleteAlgaehRoleMAster,
+    (req, res, next) => {
+      let result = req.records;
+      if (result.validUser == false) {
+        res.status(httpStatus.ok).json({
+          success: false,
+          records: result
+        });
+      } else {
+        res.status(httpStatus.ok).json({
+          success: true,
+          records: result
+        });
+      }
+      next();
+    }
+  );
   // created by irfan :to add
   api.post(
     "/addAlgaehModule",
@@ -462,6 +548,21 @@ export default ({ config, db }) => {
   });
 
   api.delete("/deleteAlgaehScreen", deleteAlgaehScreen, (req, res, next) => {
+    let result = req.records;
+    if (result.validUser == false) {
+      res.status(httpStatus.ok).json({
+        success: false,
+        records: result
+      });
+    } else {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+    }
+    next();
+  });
+  api.delete("/deleteUserLogin", deleteUserLogin, (req, res, next) => {
     let result = req.records;
     if (result.validUser == false) {
       res.status(httpStatus.ok).json({

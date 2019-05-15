@@ -6,28 +6,207 @@ import {
   AlagehAutoComplete,
   AlgaehLabel
 } from "../../Wrapper/algaehWrapper";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  ROLE_TYPE,
+  FORMAT_YESNO,
+  LEAVE_PRIVILEGE,
+  LOAN_PRIVILEGE
+} from "../../../utils/GlobalVariables.json";
+import Enumerable from "linq";
+import swal from "sweetalert2";
 
 class Roles extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      groups: []
+      groups: [],
+      roles: []
     };
+    this.getGroups();
+    this.getRoles();
   }
 
   changeTexts(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  dropDownHandle(value) {
-    this.setState({ [value.name]: value.value });
+  // dropDownHandle(value) {
+  //   debugger;
+  //   this.setState({ [value.name]: value.value });
+  // }
+
+  clearState() {
+    this.setState({
+      app_group_id: null,
+      role_code: null,
+      role_name: null,
+      role_discreption: null,
+      role_type: null,
+      loan_authorize_privilege: null,
+      leave_authorize_privilege: null,
+      edit_monthly_attendance: null
+    });
+  }
+  dropDownHandle(data) {
+    this.setState({ [data.name]: data.value });
   }
 
-  deleteRoles() {}
-  updateRoles() {}
-  addRoles() {}
+  updateRoles(data) {
+    algaehApiCall({
+      uri: "/algaehMasters/updateAlgaehRoleMAster",
+      method: "PUT",
+      data: {
+        role_name: data.role_name,
+        role_discreption: data.role_discreption,
+        role_type: data.role_type,
+        loan_authorize_privilege: data.loan_authorize_privilege,
+        leave_authorize_privilege: data.leave_authorize_privilege,
+        edit_monthly_attendance: data.edit_monthly_attendance,
+        app_d_app_roles_id: data.app_d_app_roles_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
 
+  deleteRoles(data) {
+    swal({
+      title: "Delete Role : " + data.role_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/algaehMasters/deleteAlgaehRoleMAster",
+          method: "DELETE",
+          data: {
+            app_d_app_roles_id: data.app_d_app_roles_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success"
+              });
+            }
+            this.getRoles();
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
+  addRoles() {
+    algaehApiCall({
+      uri: "/algaehMasters/addAlgaehRoleMAster",
+      method: "POST",
+      data: {
+        app_group_id: this.state.app_group_id,
+        role_code: this.state.role_code,
+        role_name: this.state.role_name,
+        role_discreption: this.state.role_discreption,
+        role_type: this.state.role_type,
+        loan_authorize_privilege: this.state.loan_authorize_privilege,
+        leave_authorize_privilege: this.state.leave_authorize_privilege,
+        edit_monthly_attendance: this.state.edit_monthly_attendance
+      },
+      onSuccess: res => {
+        if (res.data.success) {
+          swalMessage({
+            title: "Record added successfully",
+            type: "success"
+          });
+        } else {
+          swalMessage({
+            title: res.data.records.message,
+            type: "error"
+          });
+        }
+        this.getRoles();
+        this.clearState();
+      },
+      onError: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getGroups() {
+    algaehApiCall({
+      uri: "/algaehappuser/selectAppGroup",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            groups: res.data.records
+          });
+        }
+      },
+      onError: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  getRoles() {
+    algaehApiCall({
+      uri: "/algaehappuser/selectRoles",
+      method: "GET",
+      onSuccess: res => {
+        if (res.data.success) {
+          this.setState({
+            roles: res.data.records
+          });
+        }
+      },
+      onError: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
   render() {
     return (
       <div className="roles">
@@ -37,15 +216,16 @@ class Roles extends Component {
               <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
-                  forceLabel: "Group"
+                  forceLabel: "Select Group",
+                  isImp: true
                 }}
                 selector={{
                   name: "app_group_id",
                   className: "select-fld",
-                  value: this.state.app_group_id,
+                  value: this.state.algaeh_d_app_group_id,
                   dataSource: {
-                    textField: "name",
-                    valueField: "value",
+                    textField: "app_group_name",
+                    valueField: "algaeh_d_app_group_id",
                     data: this.state.groups
                   },
                   onChange: this.dropDownHandle.bind(this)
@@ -59,8 +239,8 @@ class Roles extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "screen_code",
-                  value: this.state.screen_code,
+                  name: "role_code",
+                  value: this.state.role_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
                   }
@@ -74,8 +254,8 @@ class Roles extends Component {
                 }}
                 textBox={{
                   className: "txt-fld",
-                  name: "screen_name",
-                  value: this.state.screen_name,
+                  name: "role_name",
+                  value: this.state.role_name,
                   events: {
                     onChange: this.changeTexts.bind(this)
                   }
@@ -97,19 +277,80 @@ class Roles extends Component {
                 }}
               />
 
-              <AlagehFormGroup
+              <AlagehAutoComplete
                 div={{ className: "col" }}
                 label={{
                   forceLabel: "Role Type",
                   isImp: true
                 }}
-                textBox={{
-                  className: "txt-fld",
+                selector={{
                   name: "role_type",
+                  className: "select-fld",
                   value: this.state.role_type,
-                  events: {
-                    onChange: this.changeTexts.bind(this)
-                  }
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: ROLE_TYPE
+                  },
+
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Authorize Loan",
+                  isImp: true
+                }}
+                selector={{
+                  name: "loan_authorize_privilege",
+                  className: "select-fld",
+                  value: this.state.loan_authorize_privilege,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: LOAN_PRIVILEGE
+                  },
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Authorize Leave",
+                  isImp: true
+                }}
+                selector={{
+                  name: "leave_authorize_privilege",
+                  className: "select-fld",
+                  value: this.state.leave_authorize_privilege,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: LEAVE_PRIVILEGE
+                  },
+                  onChange: this.dropDownHandle.bind(this)
+                }}
+              />
+
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "Edit Monthly Attendance",
+                  isImp: true
+                }}
+                selector={{
+                  name: "edit_monthly_attendance",
+                  className: "select-fld",
+                  value: this.state.edit_monthly_attendance,
+                  dataSource: {
+                    textField: "name",
+                    valueField: "value",
+                    data: FORMAT_YESNO
+                  },
+                  onChange: this.dropDownHandle.bind(this)
                 }}
               />
 
@@ -139,19 +380,19 @@ class Roles extends Component {
                 datavalidate="data-validate='shiftDiv'"
                 columns={[
                   {
-                    fieldName: "screen_code",
+                    fieldName: "app_group_name",
 
                     label: (
                       <AlgaehLabel
                         label={{
-                          forceLabel: "Group"
+                          forceLabel: "Group Name"
                         }}
                       />
                     ),
                     disabled: true
                   },
                   {
-                    fieldName: "screen_name",
+                    fieldName: "role_code",
 
                     label: (
                       <AlgaehLabel
@@ -159,10 +400,11 @@ class Roles extends Component {
                           forceLabel: "Role Code"
                         }}
                       />
-                    )
+                    ),
+                    disabled: true
                   },
                   {
-                    fieldName: "screen_name",
+                    fieldName: "role_name",
 
                     label: (
                       <AlgaehLabel
@@ -170,10 +412,29 @@ class Roles extends Component {
                           forceLabel: "Role Name"
                         }}
                       />
-                    )
+                    ),
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "role_name",
+                            value: row.role_name,
+                            events: {
+                              onChange: this.changeGridEditors.bind(this, row)
+                            },
+                            others: {
+                              errormessage: "Role Name- cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
                   },
                   {
-                    fieldName: "page_to_redirect",
+                    fieldName: "role_discreption",
 
                     label: (
                       <AlgaehLabel
@@ -182,10 +443,29 @@ class Roles extends Component {
                         }}
                       />
                     ),
-                    disabled: true
+
+                    editorTemplate: row => {
+                      return (
+                        <AlagehFormGroup
+                          div={{ className: "col" }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "role_discreption",
+                            value: row.role_discreption,
+                            events: {
+                              onChange: this.changeGridEditors.bind(this, row)
+                            },
+                            others: {
+                              errormessage: "Description Name- cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
                   },
                   {
-                    fieldName: "module_id",
+                    fieldName: "role_type",
 
                     label: (
                       <AlgaehLabel
@@ -193,12 +473,172 @@ class Roles extends Component {
                           forceLabel: "Role Type"
                         }}
                       />
-                    )
+                    ),
+                    displayTemplate: row => {
+                      let x = Enumerable.from(ROLE_TYPE)
+                        .where(w => w.value === row.role_type)
+                        .firstOrDefault();
+                      return (
+                        <span>{x !== undefined ? x.name : "Unknown user"}</span>
+                      );
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          selector={{
+                            className: "txt-fld",
+                            name: "role_type",
+                            value: row.role_type,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: ROLE_TYPE
+                            },
+
+                            onChange: this.changeGridEditors.bind(this, row),
+
+                            others: {
+                              errormessage: "Role type- cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "loan_authorize_privilege",
+
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Authorize Loan"
+                        }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      let x = Enumerable.from(LOAN_PRIVILEGE)
+                        .where(w => w.value === row.loan_authorize_privilege)
+                        .firstOrDefault();
+                      return <span>{x !== undefined ? x.name : "--"}</span>;
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          selector={{
+                            className: "txt-fld",
+                            name: "loan_authorize_privilege",
+                            value: row.loan_authorize_privilege,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: LOAN_PRIVILEGE
+                            },
+
+                            onChange: this.changeGridEditors.bind(this, row),
+
+                            others: {
+                              errormessage: "LOAN PRIVILEGE- cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "leave_authorize_privilege",
+
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Authorize Leave"
+                        }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      let x = Enumerable.from(LEAVE_PRIVILEGE)
+                        .where(w => w.value === row.leave_authorize_privilege)
+                        .firstOrDefault();
+                      return <span>{x !== undefined ? x.name : "--"}</span>;
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          selector={{
+                            className: "txt-fld",
+                            name: "leave_authorize_privilege",
+                            value: row.leave_authorize_privilege,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: LEAVE_PRIVILEGE
+                            },
+
+                            onChange: this.changeGridEditors.bind(this, row),
+
+                            others: {
+                              errormessage: "LEAVE PRIVILEGE- cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
+                  },
+                  {
+                    fieldName: "edit_monthly_attendance",
+
+                    label: (
+                      <AlgaehLabel
+                        label={{
+                          forceLabel: "Edit Monthly Attendance "
+                        }}
+                      />
+                    ),
+                    displayTemplate: row => {
+                      return (
+                        <span>
+                          {row.edit_monthly_attendance === "Y" ? (
+                            <span>YES </span>
+                          ) : (
+                            "NO"
+                          )}
+                        </span>
+                      );
+                    },
+                    editorTemplate: row => {
+                      return (
+                        <AlagehAutoComplete
+                          div={{ className: "col" }}
+                          selector={{
+                            className: "txt-fld",
+                            name: "edit_monthly_attendance",
+                            value: row.edit_monthly_attendance,
+                            dataSource: {
+                              textField: "name",
+                              valueField: "value",
+                              data: FORMAT_YESNO
+                            },
+
+                            onChange: this.changeGridEditors.bind(this, row),
+
+                            others: {
+                              errormessage: "LEAVE PRIVILEGE- cannot be blank",
+                              required: true
+                            }
+                          }}
+                        />
+                      );
+                    }
                   }
                 ]}
-                keyId="algaeh_app_screens_id"
+                keyId="app_d_app_roles_id"
                 dataSource={{
-                  data: this.state.screens
+                  data: this.state.roles
                 }}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}

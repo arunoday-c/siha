@@ -264,6 +264,14 @@ let algaehSearchConfig = searchName => {
                      where record_status='A' and employee_status in('R','T','E')",
         orderBy: "hims_d_employee_id desc"
       },
+      {
+        searchName: "new_employees",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS  hims_d_employee_id,employee_code,full_name,date_of_joining \
+          from hims_d_employee E left join hims_m_user_employee UM on E.hims_d_employee_id=UM.employee_id\
+          where E.record_status='A' and UM.employee_id is null",
+        orderBy: "hims_d_employee_id desc"
+      },
 
       {
         searchName: "loan_apply",
