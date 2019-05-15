@@ -77,7 +77,6 @@ class TransferEntryItems extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    debugger;
     this.setState(nextProps.TransferIOputs);
   }
 
@@ -355,8 +354,13 @@ class TransferEntryItems extends Component {
                                       row
                                     )
                                   },
-                                  others: {
-                                    type: "number"
+                                  others:{
+                                    type:"number",
+                                    algaeh_required: "true",
+                                    errormessage:
+                                      "Please enter Transferred Quantity ..",
+                                    checkvalidation:
+                                      "value ==='' || value ==='0'"
                                   }
                                 }}
                               />
@@ -390,9 +394,10 @@ class TransferEntryItems extends Component {
                       dataSource={{
                         data: this.state.inventory_stock_detail
                       }}
-                      isEditable={!this.state.saveEnable}
+                      isEditable={true}
                       byForceEvents={true}
                       paging={{ page: 0, rowsPerPage: 10 }}
+                      datavalidate="id='INVTRANS_details'"
                       events={{
                         onDelete: deleteTransEntryDetail.bind(
                           this,

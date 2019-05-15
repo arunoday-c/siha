@@ -268,6 +268,7 @@ const updateTransEntryDetail = ($this, context) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
+  debugger
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
@@ -277,14 +278,11 @@ const onchangegridcol = ($this, context, row, e) => {
       title: "Cannot be greater than Authorized Quantity.",
       type: "warning"
     });
-    row[name] = $this.state.quantity_transferred;
   } else if (parseFloat(value) < 0) {
     swalMessage({
       title: "Cannot be less than Zero.",
       type: "warning"
     });
-    // row[name] = oldvalue
-    // row.update();
   } else {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 

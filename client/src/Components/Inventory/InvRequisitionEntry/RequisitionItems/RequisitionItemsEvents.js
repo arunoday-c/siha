@@ -40,57 +40,62 @@ const itemchangeText = ($this, context, e) => {
       let value = e.value || e.target.value;
 
       $this.props.getSelectedItemDetais({
-        uri: "/inventoryGlobal/getUomLocationStock",
+        uri: "/inventory/getItemMasterAndItemUom",
         module: "inventory",
         method: "GET",
         data: {
-          location_id: $this.state.to_location_id,
-          item_id: value
+          // location_id: $this.state.to_location_id,
+          hims_d_inventory_item_master_id: value
         },
         redux: {
           type: "ITEMS_UOM_DETAILS_GET_DATA",
           mappingName: "inventoryitemdetaillist"
         },
         afterSuccess: data => {
-          getItemLocationStock($this, context, {
-            location_id: $this.state.from_location_id,
-            item_id: value,
-            set: "From"
-          });
+          debugger
+          if (data.length > 0) {          
+            getItemLocationStock($this, context, {
+              location_id: $this.state.from_location_id,
+              item_id: value,
+              set: "From"
+            });
 
-          let uom_array = _.filter(data.uomResult, f => {
-            return f.uom_id === e.selected.sales_uom_id;
-          });
-          $this.setState({
-            [name]: value,
-            item_description: e.selected.item_description,
-            item_code: e.selected.item_code,
-            item_category_id: e.selected.category_id,
-            item_uom: e.selected.sales_uom_id,
-
-            item_group_id: e.selected.group_id,
-            barcode: e.selected.barcode,
-            quantity: 1,
-            addItemButton: false,
-
-            ItemUOM: data.uomResult,
-            uom_description: uom_array[0].uom_description
-          });
-
-          if (context !== undefined) {
-            context.updateState({
+            $this.setState({
               [name]: value,
               item_description: e.selected.item_description,
               item_code: e.selected.item_code,
               item_category_id: e.selected.category_id,
               item_uom: e.selected.sales_uom_id,
-              barcode: e.selected.barcode,
 
               item_group_id: e.selected.group_id,
               quantity: 1,
+              barcode: e.selected.barcode,
               addItemButton: false,
 
-              ItemUOM: data.uomResult
+              ItemUOM: data,
+              uom_description: data[0].uom_description
+            });
+
+            if (context !== undefined) {
+              context.updateState({
+                [name]: value,
+                item_description: e.selected.item_description,
+                item_code: e.selected.item_code,
+                item_category_id: e.selected.category_id,
+                item_uom: e.selected.sales_uom_id,
+
+                item_group_id: e.selected.group_id,
+                barcode: e.selected.barcode,
+                quantity: 1,
+                addItemButton: false,
+
+                ItemUOM: data
+              });
+            }
+          } else {
+            swalMessage({
+              title: "No Stock Avaiable for selected Item.",
+              type: "warning"
             });
           }
         }
@@ -113,19 +118,20 @@ const itemchangeText = ($this, context, e) => {
       let value = e.value || e.target.value;
 
       $this.props.getSelectedItemDetais({
-        uri: "/inventoryGlobal/getUomLocationStock",
+        uri: "/inventory/getItemMasterAndItemUom",
         module: "inventory",
         method: "GET",
         data: {
-          location_id: $this.state.to_location_id,
-          item_id: value
+          // location_id: $this.state.to_location_id,
+          hims_d_inventory_item_master_id: value
         },
         redux: {
           type: "ITEMS_UOM_DETAILS_GET_DATA",
           mappingName: "inventoryitemdetaillist"
         },
         afterSuccess: data => {
-          if (data.locationResult.length > 0) {
+          debugger
+          if (data.length > 0) {
             getItemLocationStock($this, context, {
               location_id: $this.state.to_location_id,
               item_id: value,
@@ -138,9 +144,6 @@ const itemchangeText = ($this, context, e) => {
               set: "From"
             });
 
-            let uom_array = _.filter(data.uomResult, f => {
-              return f.uom_id === e.selected.sales_uom_id;
-            });
             $this.setState({
               [name]: value,
               item_description: e.selected.item_description,
@@ -153,8 +156,8 @@ const itemchangeText = ($this, context, e) => {
               barcode: e.selected.barcode,
               addItemButton: false,
 
-              ItemUOM: data.uomResult,
-              uom_description: uom_array[0].uom_description
+              ItemUOM: data,
+              uom_description: data[0].uom_description
             });
 
             if (context !== undefined) {
@@ -170,7 +173,7 @@ const itemchangeText = ($this, context, e) => {
                 quantity: 1,
                 addItemButton: false,
 
-                ItemUOM: data.uomResult
+                ItemUOM: data
               });
             }
           } else {
@@ -282,13 +285,7 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
-  // if($this.state.requisition_auth === true &&
-  //   (row.quantity_authorized === 0 || row.quantity_authorized === null)){
-  //   swalMessage({
-  //     title: "Please enter Quantity Authorized ..",
-  //     type: "warning"
-  //   });
-  // }else{
+
 
   let inventory_stock_detail = $this.state.inventory_stock_detail;
   for (let k = 0; k < inventory_stock_detail.length; k++) {
@@ -300,10 +297,10 @@ const updatePosDetail = ($this, context, row) => {
 
   if (context !== undefined) {
     context.updateState({
-      inventory_stock_detail: inventory_stock_detail
+      inventory_stock_detail: inventory_stock_detail,
+      authBtnEnable: !$this.state.authBtnEnable
     });
   }
-  //}
 };
 
 const onchangegridcol = ($this, context, row, e) => {
@@ -381,6 +378,22 @@ const getItemLocationStock = ($this, context, value) => {
   });
 };
 
+
+const EditGrid = ($this, context, cancelRow) => {
+  if ($this.state.hims_f_inventory_material_header_id !== null) {
+    if (context !== null) {
+      let _inventory_stock_detail = $this.state.inventory_stock_detail;
+      if (cancelRow !== undefined) {
+        _inventory_stock_detail[cancelRow.rowIdx] = cancelRow;
+      }
+      context.updateState({
+        authBtnEnable: !$this.state.authBtnEnable,
+        inventory_stock_detail: _inventory_stock_detail
+      });
+    }
+  }
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -389,5 +402,6 @@ export {
   datehandle,
   deleteRequisitionDetail,
   updatePosDetail,
-  onchangegridcol
+  onchangegridcol,
+  EditGrid
 };

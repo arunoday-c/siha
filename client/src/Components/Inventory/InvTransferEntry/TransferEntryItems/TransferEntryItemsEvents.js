@@ -201,16 +201,16 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
   let inventory_stock_detail = $this.state.inventory_stock_detail;
   inventory_stock_detail.splice(rowId, 1);
 
-  $this.props.PosHeaderCalculations({
-    uri: "/billing/billingCalculations",
-    module: "billing",
-    method: "POST",
-    data: { billdetails: inventory_stock_detail },
-    redux: {
-      type: "POS_HEADER_GEN_GET_DATA",
-      mappingName: "posheader"
-    }
-  });
+  // $this.props.PosHeaderCalculations({
+  //   uri: "/billing/billingCalculations",
+  //   module: "billing",
+  //   method: "POST",
+  //   data: { billdetails: inventory_stock_detail },
+  //   redux: {
+  //     type: "POS_HEADER_GEN_GET_DATA",
+  //     mappingName: "posheader"
+  //   }
+  // });
 
   if (inventory_stock_detail.length === 0) {
     if (context !== undefined) {
@@ -276,28 +276,18 @@ const updateTransEntryDetail = ($this, context, e) => {
       saveEnable: saveEnable
     });
   }
-
-  // $this.props.PosHeaderCalculations({
-  //   uri: "/billing/billingCalculations",
-  //   method: "POST",
-  //   data: { billdetails: $this.state.inventory_stock_detail },
-  //   redux: {
-  //     type: "posheader",
-  //     mappingName: "posheader"
-  //   }
-  // });
 };
 
 const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let transfer_to_date = row.transfer_to_date + parseFloat(value);
-  if (transfer_to_date > row.quantity_authorized) {
+  let transfer_to_date = parseFloat(row.transfer_to_date )+ parseFloat(value);
+  if (transfer_to_date > parseFloat(row.quantity_authorized)) {
     swalMessage({
       title: "Cannot be greater than Authorized Quantity.",
       type: "warning"
     });
-    row[name] = $this.state.quantity_transferred;
+    // row[name] = $this.state.quantity_transferred;
   } else if (parseFloat(value) < 0) {
     swalMessage({
       title: "Cannot be less than Zero.",
