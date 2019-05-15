@@ -199,7 +199,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   if (value !== "") {
     if (quantity_recieved_todate > row.dn_quantity) {
       swalMessage({
-        title: " Recived Quantity cannot be greater than DN Quantity.",
+        title: " Recived Quantity cannot be greater than Delivery Note Quantity.",
         type: "warning"
       });
       row[name] = row[name];

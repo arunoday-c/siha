@@ -106,7 +106,7 @@ const updateDNDetail = ($this, context, row) => {
 
   if (row.dn_quantity === "" || row.dn_quantity === 0) {
     swalMessage({
-      title: "DN Quantity cannot be Zero.",
+      title: "Delivery Note Quantity cannot be Zero.",
       type: "warning"
     });
   } else {
@@ -181,7 +181,7 @@ debugger
   if (value !== "") {
     if (quantity_recieved_todate > parseFloat(row.po_quantity)) {
       swalMessage({
-        title: " DN Quantity cannot be greater than PO Quantity.",
+        title: " Delivery Note Quantity cannot be greater than PO Quantity.",
         type: "warning"
       });
     }else if (parseFloat(value) < 0) {
@@ -233,7 +233,7 @@ const GridAssignData = ($this, row, e) => {
     e.preventDefault();
     row["dn_quantity"] = 0;
     swalMessage({
-      title: "DN Quantity cannot be Zero.",
+      title: "Delivery Note Quantity cannot be Zero.",
       type: "warning"
     });
     row.update();

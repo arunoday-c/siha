@@ -283,7 +283,7 @@ const SaveDNEnrty = $this => {
     }
   } else {
     swalMessage({
-      title: "Please enter DN Quantity.",
+      title: "Please enter Delivery Note Quantity.",
       type: "warning"
     });
   }

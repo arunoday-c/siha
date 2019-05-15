@@ -203,7 +203,7 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
 
     if (value > row.authorize_quantity) {
       swalMessage({
-        title: "DN Quantity cannot be greater than PO Quantity.",
+        title: "Delivery Note Quantity cannot be greater than PO Quantity.",
         type: "warning"
       });
     } else {
