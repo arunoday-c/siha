@@ -338,6 +338,7 @@ export function AlgaehValidation(options) {
     "[algaeh_required='true']"
   );
   for (let i = 0; i < _Validateerror.length; i++) {
+    try{
     let _element = _Validateerror[i];
     let _checkVal = _element.getAttribute("checkvalidation");
     if (_Validateerror[i].tagName === "DIV") {
@@ -348,7 +349,7 @@ export function AlgaehValidation(options) {
     }
     let value = "";
     if (_checkVal !== null) {
-      const _val = _element.value; //_element.value === "" ? "''" : _element.value;
+      const _val =_element.value ;//=== "" ? "''" : _element.value;
       value = _val;
       _checkVal = _checkVal.replace(/\$value/g, _val);
     }
@@ -368,8 +369,13 @@ export function AlgaehValidation(options) {
     } else {
       _evalConditions = _checkVal;
     }
-
-    if (eval(_evalConditions)) {
+let expression=false;
+try{
+  expression= eval(_evalConditions)
+}catch(e){
+  expression=false;
+}
+    if (expression) {
       let _title = _element.getAttribute("errormessage");
       if (_Validateerror[i].tagName === "DIV") {
         _title = _Validateerror[i].getAttribute("errormessage");
@@ -411,6 +417,10 @@ export function AlgaehValidation(options) {
         break;
       }
     }
+  }catch(e){
+    console.log(e);
+  }
+
   }
   if (!isError) {
     if (
