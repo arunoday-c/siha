@@ -168,7 +168,55 @@ class ValidateBills extends PureComponent {
       }
     });
   }
+  generatePharacyCreditInvoiceReport() {
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: "pharmacyCreditInvoice",
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value:
+                this.state.invoices.length !== 0
+                  ? this.state.invoices.patient_id
+                  : null
+            },
+            {
+              name: "visit_id",
+              value:
+                this.state.invoices.length !== 0
+                  ? this.state.invoices.visit_id
+                  : null
+            },
+            {
+              name: "visit_date",
+              value: null
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
 
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = "";
+      }
+    });
+  }
   generateReport(rpt_name, rpt_desc) {
     algaehApiCall({
       uri: "/report",
@@ -1017,6 +1065,16 @@ class ValidateBills extends PureComponent {
             )}
           >
             Credit Invoice
+          </button>
+          <button
+            className="btn btn-default"
+            onClick={this.generatePharacyCreditInvoiceReport.bind(
+              this,
+              "creditInvoice",
+              "Credit Invoice"
+            )}
+          >
+            Pharmacy Credit Invoice
           </button>
 
           <button
