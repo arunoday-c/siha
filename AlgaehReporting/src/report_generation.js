@@ -1,5 +1,5 @@
 import fs from "fs-extra";
-import puppeteer from "puppeteer-core";
+import puppeteer from "puppeteer";
 import algaehMysql from "algaeh-mysql";
 import _ from "lodash";
 import path from "path";
