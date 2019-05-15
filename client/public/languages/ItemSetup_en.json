@@ -10,7 +10,7 @@
 
   "group_id": "Group",
   "item_code": "Item Code",
-  "item_uom_id": "Material Requisition UOM",
+  "item_uom_id": "Material Req. UOM",
   "purchase_uom_id": "Purchase UOM",
   "sales_uom_id": "Sales UOM",
   "stocking_uom_id": "Stocking UOM",

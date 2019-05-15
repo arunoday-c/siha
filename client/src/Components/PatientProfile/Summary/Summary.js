@@ -148,13 +148,28 @@ debugger
                 <p>Not recorded</p>
               ) : (
                 <p>
-                  Patient <b>{_pat_episode.patient_name}</b>,{" "}
-                  {_pat_episode.gender}, {_pat_episode.age} Yrs,
-                  <br />
-                  visited <b>{_pat_episode.sub_department_name}</b> Department
-                  on <b>{_pat_episode.visit_date} </b> for the Chief complaint
-                  of <b>{_pat_episode.comment}</b> from
-                  {_pat_episode.onset_date}.
+                  Patient {_pat_episode.patient_name}, {_pat_episode.age} Yrs/{_pat_episode.gender},<br />
+                  visited {_pat_episode.sub_department_name} Department
+                  on {_pat_episode.visit_date} for the chief complaint
+                  of <b>{_pat_episode.comment}</b> from {_pat_episode.onset_date}.
+                </p>
+              )}
+              <br></br>
+                 <h6>Significant Signs</h6>
+              {_pat_episode.patient_name === undefined ? (
+                <p>Not recorded</p>
+              ) : (
+                <p>
+                 Show Significant Signs Comments Here
+                </p>
+              )}
+              <br></br>
+               <h6>Other Signs</h6>
+              {_pat_episode.patient_name === undefined ? (
+                <p>Not recorded</p>
+              ) : (
+                <p>
+                 Show Other Signs Comments Here
                 </p>
               )}
             </div>
@@ -212,7 +227,7 @@ debugger
                 <thead className="table-primary">
                   <tr>
                     <th>Sl. No.</th>
-                    <th>Generic Name</th>
+                    <th>Item Name</th>
                     <th>Dosage</th>
                     <th>Frequency</th>
                     <th>Duration(days)</th>
@@ -223,7 +238,7 @@ debugger
                     ? this.state.patientMedications.map((data, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{data.generic_name}</td>
+                          <td>{data.item_name}</td>
                           <td>{data.dosage}</td>
                           <td>{data.frequency_type}</td>
                           <td>{data.no_of_days}</td>

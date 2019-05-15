@@ -78,6 +78,22 @@ export default class UcafEditor extends Component {
       return "";
     }
   }
+
+  componentDidMount(){
+    debugger
+
+    if(this.props.dataProps.hims_f_ucaf_header !== undefined &&
+      this.props.dataProps.hims_f_ucaf_header.length > 0){
+        debugger;
+        let data = this.props.dataProps.hims_f_ucaf_header[0];
+        let insurance = this.props.dataProps.hims_f_ucaf_insurance_details[0]
+
+        data.ucaf_services = this.props.dataProps.hims_f_ucaf_services
+        data.ucaf_medication = this.props.dataProps.hims_f_ucaf_medication        
+        this.setState({...this.state, ...data, ...insurance})
+    }
+  }
+
   render() {
     const _isPrimary = "primary";
     const _hims_f_ucaf_header = this.props.dataProps.hims_f_ucaf_header[0];
@@ -116,7 +132,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: _hims_f_ucaf_header.provider_name,
+                            value: this.state.provider_name,
                             events: {},
                             option: {
                               type: "text"
@@ -132,10 +148,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value:
-                              _isPrimary === "primary"
-                                ? _insurnce.primary_insurance_company_name
-                                : _insurnce.secondary_insurance_company_name,
+                            value: this.state.primary_insurance_company_name,
                             events: {},
                             option: {
                               type: "text"
@@ -151,10 +164,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value:
-                              _isPrimary === "primary"
-                                ? _insurnce.primary_tpa_insurance_company_name
-                                : _insurnce.secondary_tpa_insurance_company_name,
+                            value: this.state.primary_tpa_insurance_company_name,
                             events: {},
                             option: {
                               type: "text"
@@ -170,7 +180,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: _hims_f_ucaf_header.patient_code,
+                            value: this.state.patient_code,
                             events: {},
                             option: {
                               type: "text"
@@ -186,7 +196,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "",
-                            value: _hims_f_ucaf_header.sub_department_name,
+                            value: this.state.sub_department_name,
                             events: {},
                             option: {
                               type: "text"
@@ -203,7 +213,7 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: ""
                           }}
-                          value={_hims_f_ucaf_header.visit_date}
+                          value={this.state.visit_date}
                           maxDate={new Date()}
                           events={{}}
                         />
@@ -216,7 +226,7 @@ export default class UcafEditor extends Component {
                               type="radio"
                               name="maritalType"
                               checked={
-                                _hims_f_ucaf_header.patient_marital_status ===
+                                this.state.patient_marital_status ===
                                 "Single"
                                   ? true
                                   : false
@@ -229,7 +239,7 @@ export default class UcafEditor extends Component {
                               type="radio"
                               name="maritalType"
                               checked={
-                                _hims_f_ucaf_header.patient_marital_status ===
+                                this.state.patient_marital_status ===
                                 "Married"
                                   ? true
                                   : false
@@ -242,7 +252,7 @@ export default class UcafEditor extends Component {
                               type="radio"
                               name="maritalType"
                               checked={
-                                _hims_f_ucaf_header.patient_marital_status ===
+                                this.state.patient_marital_status ===
                                 "PlanType"
                                   ? true
                                   : false
@@ -256,7 +266,7 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               checked={
-                                _hims_f_ucaf_header.new_visit_patient === "Y"
+                                this.state.new_visit_patient === "Y"
                                   ? true
                                   : false
                               }
@@ -267,7 +277,7 @@ export default class UcafEditor extends Component {
                             <input
                               type="checkbox"
                               checked={
-                                _hims_f_ucaf_header.new_visit_patient === "N"
+                                this.state.new_visit_patient === "N"
                                   ? true
                                   : false
                               }
@@ -335,7 +345,7 @@ export default class UcafEditor extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "",
-                                  value: _hims_f_ucaf_header.patient_full_name,
+                                  value: this.state.patient_full_name,
                                   events: {},
                                   option: {
                                     type: "text"
@@ -351,10 +361,7 @@ export default class UcafEditor extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "",
-                                  value:
-                                    _isPrimary === "primary"
-                                      ? _insurnce.primary_card_number
-                                      : _insurnce.secondary_card_number,
+                                  value: this.state.primary_card_number,
                                   events: {},
                                   option: {
                                     type: "text"
@@ -370,7 +377,7 @@ export default class UcafEditor extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "",
-                                  value: _hims_f_ucaf_header.patient_gender,
+                                  value: this.state.patient_gender,
                                   events: {},
                                   option: {
                                     type: "text"
@@ -386,7 +393,7 @@ export default class UcafEditor extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "",
-                                  value: _hims_f_ucaf_header.age_in_years,
+                                  value: this.state.age_in_years,
                                   events: {},
                                   option: {
                                     type: "text"
@@ -419,12 +426,12 @@ export default class UcafEditor extends Component {
                                   className: "txt-fld",
                                   name: "",
                                   value:
-                                    _hims_f_ucaf_header.insurance_holder ===
+                                    this.state.insurance_holder ===
                                     undefined
                                       ? this.state.insurance_holder === ""
-                                        ? _hims_f_ucaf_header.patient_full_name
+                                        ? this.state.patient_full_name
                                         : this.state.insurance_holder
-                                      : _hims_f_ucaf_header.insurance_holder,
+                                      : this.state.insurance_holder,
                                   events: {},
                                   option: {
                                     type: "text"
@@ -440,10 +447,7 @@ export default class UcafEditor extends Component {
                                 textBox={{
                                   className: "txt-fld",
                                   name: "",
-                                  value:
-                                    _isPrimary === "primary"
-                                      ? _insurnce.primary_policy_num
-                                      : _insurnce.secondary_policy_num,
+                                  value: this.state.primary_policy_num,
                                   events: {},
                                   option: {
                                     type: "text"
@@ -460,11 +464,7 @@ export default class UcafEditor extends Component {
                                   className: "txt-fld",
                                   name: ""
                                 }}
-                                value={
-                                  _isPrimary === "primary"
-                                    ? _insurnce.primary_effective_end_date
-                                    : _insurnce.secondary_effective_end_date
-                                }
+                                value={this.state.primary_effective_end_date}
                                 maxDate={new Date()}
                                 events={{}}
                               />
@@ -505,7 +505,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="caseType"
                               checked={
-                                _hims_f_ucaf_header.case_type === "IP"
+                                this.state.case_type === "IP"
                                   ? true
                                   : false
                               }
@@ -517,7 +517,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="caseType"
                               checked={
-                                _hims_f_ucaf_header.case_type === "OP"
+                                this.state.case_type === "OP"
                                   ? true
                                   : false
                               }
@@ -531,7 +531,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="empergency_case"
                               checked={
-                                _hims_f_ucaf_header.patient_emergency_case !==
+                                this.state.patient_emergency_case !==
                                 null
                                   ? true
                                   : false
@@ -544,7 +544,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="empergency_l1"
                               checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
+                                this.state.patient_emergency_case ===
                                 "L1"
                                   ? true
                                   : false
@@ -557,7 +557,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="empergency_l2"
                               checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
+                                this.state.patient_emergency_case ===
                                 "L2"
                                   ? true
                                   : false
@@ -570,7 +570,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="empergency_l3"
                               checked={
-                                _hims_f_ucaf_header.patient_emergency_case ===
+                                this.state.patient_emergency_case ===
                                 "L2"
                                   ? true
                                   : false
@@ -589,9 +589,9 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_bp_sys_dya",
                             value:
-                              _hims_f_ucaf_header.patient_bp_sys +
+                              this.state.patient_bp_sys +
                               "/" +
-                              _hims_f_ucaf_header.patient_bp_dia,
+                              this.state.patient_bp_dia,
                             events: {},
                             option: {
                               type: "text"
@@ -607,7 +607,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_pulse",
-                            value: _hims_f_ucaf_header.patient_pulse,
+                            value: this.state.patient_pulse,
                             events: {},
                             option: {
                               type: "text"
@@ -623,7 +623,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_temp",
-                            value: _hims_f_ucaf_header.patient_temp,
+                            value: this.state.patient_temp,
                             events: {},
                             option: {
                               type: "text"
@@ -639,7 +639,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_weight",
-                            value: _hims_f_ucaf_header.patient_weight,
+                            value: this.state.patient_weight,
                             events: {},
                             option: {
                               type: "text"
@@ -655,7 +655,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_height",
-                            value: _hims_f_ucaf_header.patient_height,
+                            value: this.state.patient_height,
                             events: {},
                             option: {
                               type: "text"
@@ -671,7 +671,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_respiratory_rate",
-                            value: _hims_f_ucaf_header.patient_respiratory_rate,
+                            value: this.state.patient_respiratory_rate,
                             events: {},
                             option: {
                               type: "text"
@@ -688,7 +688,7 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_duration_of_illness",
                             value:
-                              _hims_f_ucaf_header.patient_duration_of_illness,
+                              this.state.patient_duration_of_illness,
                             events: {},
                             option: {
                               type: "text"
@@ -705,7 +705,7 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_chief_comp_main_symptoms",
                             value:
-                              _hims_f_ucaf_header.patient_chief_comp_main_symptoms,
+                              this.state.patient_chief_comp_main_symptoms,
                             events: {},
                             option: {
                               type: "text"
@@ -722,7 +722,7 @@ export default class UcafEditor extends Component {
                             className: "txt-fld",
                             name: "patient_significant_signs",
                             value:
-                              _hims_f_ucaf_header.patient_significant_signs,
+                              this.state.patient_significant_signs,
                             events: {},
                             option: {
                               type: "text"
@@ -738,7 +738,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_other_conditions",
-                            value: _hims_f_ucaf_header.patient_other_conditions,
+                            value: this.state.patient_other_conditions,
                             events: {},
                             option: {
                               type: "text"
@@ -754,7 +754,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_diagnosys",
-                            value: _hims_f_ucaf_header.patient_diagnosys,
+                            value: this.state.patient_diagnosys,
                             events: {},
                             option: {
                               type: "text"
@@ -770,7 +770,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_1",
-                            value: _hims_f_ucaf_header.patient_principal_code_1,
+                            value: this.state.patient_principal_code_1,
                             events: {},
                             option: {
                               type: "text"
@@ -786,7 +786,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_2",
-                            value: _hims_f_ucaf_header.patient_principal_code_2,
+                            value: this.state.patient_principal_code_2,
                             events: {},
                             option: {
                               type: "text"
@@ -802,7 +802,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_3",
-                            value: _hims_f_ucaf_header.patient_principal_code_3,
+                            value: this.state.patient_principal_code_3,
                             events: {},
                             option: {
                               type: "text"
@@ -818,7 +818,7 @@ export default class UcafEditor extends Component {
                           textBox={{
                             className: "txt-fld",
                             name: "patient_principal_code_4",
-                            value: _hims_f_ucaf_header.patient_principal_code_4,
+                            value: this.state.patient_principal_code_4,
                             events: {},
                             option: {
                               type: "text"
@@ -842,9 +842,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_chronic"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_chronic === "Y"
+                                this.state.patient_complaint_type === "CHRONIC"
                                   ? true
                                   : false
                               }
@@ -854,9 +854,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_congenetal"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_congenetal === "Y"
+                                _hims_f_ucaf_header.patient_complaint_type === "CONGENTIAL"
                                   ? true
                                   : false
                               }
@@ -866,9 +866,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_rta"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_rta === "Y"
+                                _hims_f_ucaf_header.patient_complaint_type === "RTA"
                                   ? true
                                   : false
                               }
@@ -878,9 +878,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_work_related"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_work_related === "Y"
+                                _hims_f_ucaf_header.patient_complaint_type === "WORKRELATED"
                                   ? true
                                   : false
                               }
@@ -890,9 +890,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_vaccination"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_vaccination === "Y"
+                                _hims_f_ucaf_header.patient_complaint_type === "VACCINATION"
                                   ? true
                                   : false
                               }
@@ -902,9 +902,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_check_up"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_check_up === "Y"
+                                _hims_f_ucaf_header.patient_complaint_type === "CHECKUP"
                                   ? true
                                   : false
                               }
@@ -914,9 +914,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_psychiatric"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_psychiatric === "Y"
+                                _hims_f_ucaf_header.patient_complaint_type === "PSYCHIATRIC"
                                   ? true
                                   : false
                               }
@@ -926,9 +926,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_infertility"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_infertility === "Y"
+                                _hims_f_ucaf_header.patient_complaint_type === "INFERTILITY"
                                   ? true
                                   : false
                               }
@@ -938,9 +938,9 @@ export default class UcafEditor extends Component {
                           <label className="checkbox inline">
                             <input
                               type="checkbox"
-                              name="patient_pregnancy"
+                              name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_pregnancy === "Y"
+                                _hims_f_ucaf_header.patient_complaint_type === "PREGNANCY"
                                   ? true
                                   : false
                               }
@@ -956,17 +956,18 @@ export default class UcafEditor extends Component {
                           }}
                           textBox={{
                             className: "txt-fld",
-                            name: "",
-                            value: "",
+                            name: "patient_indicated_LMP",
+                            value: this.state.patient_indicated_LMP,
                             events: {},
                             option: {
-                              type: "text"
+                              type: "text",
+                              disabled: true
                             }
                           }}
                         />
 
-                        <div className="col-12">
-                          <h5>
+                        <div className="col-12 margin-top-15">
+                          <h5 style={{margin:0}}>
                             Suggestive line(s) of management: Kindly, enumerate
                             the recommended investigation, and/or procedures{" "}
                             <b>For outpatient approvals only:</b>
@@ -1016,14 +1017,14 @@ export default class UcafEditor extends Component {
                             ]}
                             keyId="hims_f_ucaf_header_id"
                             dataSource={{
-                              data: this.props.dataProps.hims_f_ucaf_services
+                              data: this.state.ucaf_services
                             }}
                             paging={{ page: 0, rowsPerPage: 10 }}
                           />
                         </div>
 
-                        <div className="col-12">
-                          <h5>
+                        <div className="col-12 margin-top-15">
+                          <h5 style={{margin:0}}>
                             Providers Approval/Coding staff must review/code the
                             recommended services(s) and allocate cost and
                             complete the following:
@@ -1062,7 +1063,7 @@ export default class UcafEditor extends Component {
                             ]}
                             keyId="hims_f_ucaf_medication_id"
                             dataSource={{
-                              data: this.props.dataProps.hims_f_ucaf_medication
+                              data: this.props.dataProps.ucaf_medication
                             }}
                             paging={{ page: 0, rowsPerPage: 10 }}
                           />

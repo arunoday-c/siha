@@ -124,6 +124,12 @@ class BasicSubjective extends Component {
     SubjectiveHandler().dataLevelUpdate(this, e);
   }
   openTab(e) {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
+
     var element = document.querySelectorAll("[algaehtabs]");
     for (var i = 0; i < element.length; i++) {
       element[i].classList.remove("active");
@@ -175,49 +181,79 @@ class BasicSubjective extends Component {
         }
       });
     }
+  }
+
+  showAllergies() {
     if (this.state.hims_f_episode_chief_complaint_id === null) {
       SubjectiveHandler().addChiefComplainToPatient(this);
     } else {
       SubjectiveHandler().updatePatientChiefComplaints(this);
     }
-  }
-
-  showAllergies() {
     this.setState({
       openAlergy: !this.state.openAlergy
     });
   }
   showMedication() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
     this.setState({
       openMedication: !this.state.openMedication
     });
   }
 
   showMedicalData() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
     this.setState({
       openMedicaldata: !this.state.openMedicaldata
     });
   }
 
   showPatientHistory() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
     this.setState({
       openAddModal: !this.state.openAddModal
     });
   }
 
   showDietPlan() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
     this.setState({
       openDiet: !this.state.openDiet
     });
   }
 
   closeDietPlan() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
     this.setState({
       openDiet: !this.state.openDiet
     });
   }
 
   showVitals() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
     this.setState({
       openVital: !this.state.openVital
     });
@@ -230,6 +266,11 @@ class BasicSubjective extends Component {
   }
 
   showPhysicalExamination() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
     this.setState({
       openExamnModal: !this.state.openExamnModal
     });
@@ -467,12 +508,12 @@ class BasicSubjective extends Component {
                             }}
                             textBox={{
                               className: "txt-fld",
-                              name: "duration",
+                              name: "lmp_days",
                               number: true,
-                              //  value: this.state.duration,
+                               value: this.state.lmp_days,
                               disabled: this.state.isPregnancy,
                               events: {
-                                //  onChange: this.dataLevelUpdate.bind(this)
+                                onChange: this.ChangeEventHandler.bind(this)
                               }
                             }}
                           />

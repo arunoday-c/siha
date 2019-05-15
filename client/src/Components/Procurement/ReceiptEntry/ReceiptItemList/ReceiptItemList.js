@@ -377,7 +377,7 @@ class ReceiptItemList extends Component {
                               fieldName: "dn_quantity",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "DN Quantity" }}
+                                  label={{ forceLabel: "Delivery Note Quantity" }}
                                 />
                               ),
                               disabled: true

@@ -298,13 +298,21 @@ const onchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
     row[name] = $this.state.quantity_transferred;
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Cannot be less than Zero.",
+      type: "warning"
+    });
   } else {
+    debugger
     let inventory_stock_detail = $this.state.inventory_stock_detail;
 
     row[name] = value;
 
     row["quantity_outstanding"] =
-      row.quantity_authorized - row.transfer_to_date - parseFloat(value);
+      parseFloat(row.quantity_authorized) -
+      parseFloat(row.transfer_to_date) -
+      value === null ? 0 : parseFloat(value);
 
     inventory_stock_detail[row.rowIdx] = row;
 

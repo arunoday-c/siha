@@ -242,24 +242,32 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
-  let authBtnEnable = true;
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  for (let k = 0; k < pharmacy_stock_detail.length; k++) {
-    if (pharmacy_stock_detail[k].item_id === row.item_id) {
-      pharmacy_stock_detail[k] = row;
-    }
-  }
-  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
-
-  if ($this.state.hims_f_pharamcy_material_header_id !== null) {
-    authBtnEnable = !$this.state.authBtnEnable;
-  }
-
-  if (context !== undefined) {
-    context.updateState({
-      authBtnEnable: authBtnEnable,
-      pharmacy_stock_detail: pharmacy_stock_detail
+  if($this.state.requisition_auth === true &&
+    (row.quantity_authorized === 0 || row.quantity_authorized === null)){
+    swalMessage({
+      title: "Cannot be less than zero.",
+      type: "warning"
     });
+  }else{
+    let authBtnEnable = true;
+    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    for (let k = 0; k < pharmacy_stock_detail.length; k++) {
+      if (pharmacy_stock_detail[k].item_id === row.item_id) {
+        pharmacy_stock_detail[k] = row;
+      }
+    }
+    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+    if ($this.state.hims_f_pharamcy_material_header_id !== null) {
+      authBtnEnable = !$this.state.authBtnEnable;
+    }
+
+    if (context !== undefined) {
+      context.updateState({
+        authBtnEnable: authBtnEnable,
+        pharmacy_stock_detail: pharmacy_stock_detail
+      });
+    }
   }
 };
 
@@ -267,22 +275,24 @@ const onchangegridcol = ($this, context, row, e) => {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (value > row.quantity_required) {
+  if (value > parseFloat(row.quantity_required)) {
     swalMessage({
       title: "Cannot be greater than Requested Quantity.",
       type: "warning"
     });
     row[name] = $this.state.quantity_transferred;
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Cannot be less than Zero.",
+      type: "warning"
+    });
+    // row[name] = oldvalue
+    // row.update();
   } else {
     row[name] = value;
     row["quantity_outstanding"] = value;
 
     pharmacy_stock_detail[row.rowIdx] = row;
-    // for (let x = 0; x < pharmacy_stock_detail.length; x++) {
-    //   if (pharmacy_stock_detail[x].item_id === row.item_id) {
-    //     pharmacy_stock_detail[x] = row;
-    //   }
-    // }
     $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
     if (context !== undefined) {

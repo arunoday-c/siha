@@ -7,7 +7,7 @@ import { AlgaehLabel, AlgaehModalPopUp } from "../../Wrapper/algaehWrapper";
 import MyContext from "../../../utils/MyContext.js";
 import ItemSetup from "../../../Models/ItemSetup";
 import { InsertUpdateItems } from "./ItemMasterEvents";
-import ItemPriceList from "./ItemPriceList/ItemPriceList";
+// import ItemPriceList from "./ItemPriceList/ItemPriceList";
 
 export default class PatientDetails extends Component {
   constructor(props) {
@@ -59,7 +59,7 @@ export default class PatientDetails extends Component {
               >
                 <ItemDetails itemPop={this.state} />
                 <UOMAdditionalInfo itemPop={this.state} />
-                <ItemPriceList itemPop={this.state} />
+                {/*<ItemPriceList itemPop={this.state} />*/}
               </MyContext.Provider>
             </div>
           </div>

@@ -686,6 +686,9 @@
           transition: all 0.2s ease-in-out; }
         :global .algaeh-modal .popupFooter .btn i {
           text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5); }
+      :global .algaeh-modal .popupFooter .btn:disabled {
+        cursor: not-allowed !important;
+        opacity: 0.4; }
       :global .algaeh-modal .popupFooter .btn-primary {
         color: #fff;
         background-color: #00a796;
@@ -1132,6 +1135,9 @@
   .arabic_component .hptl-phase1-footer button {
     font-size: 1.2rem;
     float: left; }
+  .arabic_component .hptl-phase1-footer .btn:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.4; }
   .arabic_component .toggle-section .nav {
     padding: 0;
     right: auto; }

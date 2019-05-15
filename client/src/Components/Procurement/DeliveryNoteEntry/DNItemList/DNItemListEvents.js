@@ -106,7 +106,7 @@ const updateDNDetail = ($this, context, row) => {
 
   if (row.dn_quantity === "" || row.dn_quantity === 0) {
     swalMessage({
-      title: "DN Quantity cannot be Zero.",
+      title: "Delivery Note Quantity cannot be Zero.",
       type: "warning"
     });
   } else {
@@ -163,9 +163,10 @@ const dateFormater = ($this, value) => {
   }
 };
 
-const onchhangegriddiscount = ($this, row, ctrl, e) => {
-  e = e || ctrl;
+const onchhangegriddiscount = ($this, row, e) => {
 
+
+debugger
   let discount_percentage = row.discount_percentage;
   let discount_amount = 0;
   let extended_cost = 0;
@@ -175,15 +176,19 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let quantity_recieved_todate =
+    row.quantity_recieved_todate === 0 ? 0 :
     row.quantity_recieved_todate + parseFloat(value);
   if (value !== "") {
-    if (quantity_recieved_todate > row.po_quantity) {
+    if (quantity_recieved_todate > parseFloat(row.po_quantity)) {
       swalMessage({
-        title: " DN Quantity cannot be greater than PO Quantity.",
+        title: " Delivery Note Quantity cannot be greater than PO Quantity.",
         type: "warning"
       });
-      row[name] = row[name];
-      row.update();
+    }else if (parseFloat(value) < 0) {
+      swalMessage({
+        title: " Delivery Quantity cannot be less than Zero.",
+        type: "warning"
+      });      
     } else {
       extended_price = parseFloat(row.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
@@ -228,7 +233,7 @@ const GridAssignData = ($this, row, e) => {
     e.preventDefault();
     row["dn_quantity"] = 0;
     swalMessage({
-      title: "DN Quantity cannot be Zero.",
+      title: "Delivery Note Quantity cannot be Zero.",
       type: "warning"
     });
     row.update();

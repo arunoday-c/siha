@@ -29,7 +29,7 @@ class ItemPriceList extends Component {
               style={{ marginTop: "10px" }}
             >
               <div className="row" style={{ padding: "10px" }}>
-                <AlagehAutoComplete
+                {/*<AlagehAutoComplete
                   div={{ className: "col-lg-3 mandatory" }}
                   label={{
                     fieldName: "decimal",
@@ -46,24 +46,7 @@ class ItemPriceList extends Component {
                     }
                   }}
                 />
-
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3 mandatory" }}
-                  label={{
-                    fieldName: "purchase_cost",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "purchase_cost",
-                    value: this.state.purchase_cost,
-                    others: {
-                      min: 0,
-                      type: "number"
-                    }
-                  }}
-                />
-
+                
                 <AlagehFormGroup
                   div={{ className: "col-lg-3 mandatory" }}
                   label={{
@@ -90,6 +73,24 @@ class ItemPriceList extends Component {
                     className: "txt-fld",
                     name: "sales_price",
                     value: this.state.sales_price,
+                    others: {
+                      min: 0,
+                      type: "number"
+                    }
+                  }}
+                />
+                */}
+
+                <AlagehFormGroup
+                  div={{ className: "col-lg-3 mandatory" }}
+                  label={{
+                    fieldName: "purchase_cost",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "purchase_cost",
+                    value: this.state.purchase_cost,
                     others: {
                       min: 0,
                       type: "number"

@@ -273,11 +273,13 @@ export function algaehApiCall(options) {
               err.response === undefined &&
               err.message === "Network Error"
             ) {
+              debugger;
               const routers = config.routersAndPorts;
+              const moduleName =settings.module ===undefined?"":routers[settings.module]["name"];
               swalMessage({
                 title:
                   "'" +
-                  routers[settings.module]["name"] +
+                  moduleName +
                   "' module is not yet started",
                 type: "info",
                 position: "top"

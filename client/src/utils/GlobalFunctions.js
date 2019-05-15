@@ -170,7 +170,7 @@ export function saveImageOnServer(options) {
 
       // const formData = new FormData();
       // formData.append("file", reader);
-      return ;
+      return;
     });
   }
 }
@@ -339,12 +339,17 @@ export function AlgaehValidation(options) {
   );
   for (let i = 0; i < _Validateerror.length; i++) {
     let _element = _Validateerror[i];
+    let _checkVal = _element.getAttribute("checkvalidation");
     if (_Validateerror[i].tagName === "DIV") {
       _element = _Validateerror[i].children[0];
+      if (_checkVal === null) {
+        _checkVal = _Validateerror[i].getAttribute("checkvalidation");
+      }
     }
-    let _checkVal = _element.getAttribute("checkvalidation");
+    let value = "";
     if (_checkVal !== null) {
-      const _val = _element.value === "" ? "''" : _element.value;
+      const _val = _element.value; //_element.value === "" ? "''" : _element.value;
+      value = _val;
       _checkVal = _checkVal.replace(/\$value/g, _val);
     }
     const _role = _element.getAttribute("data_role");
@@ -508,7 +513,7 @@ export function SetBulkState(options) {
 
   const _allControls = document.querySelectorAll(options.querySelector);
   let _objectCreation = {};
-  debugger
+
   for (let i = 0; i < _allControls.length; i++) {
     const _isExclude =
       _allControls[i].getAttribute("exclude") !== null
@@ -519,7 +524,6 @@ export function SetBulkState(options) {
       const _dataRole = _allControls[i].getAttribute("data_role");
 
       if (_name !== null) {
-        debugger
         const _type = _allControls[i].getAttribute("type");
 
         if (_type === "checkbox") {

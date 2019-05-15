@@ -221,6 +221,7 @@ class AddOPBillingForm extends Component {
   //Calculate Row Detail
   calculateAmount(row, ctrl, e) {
     e = e || ctrl;
+    debugger
     if (e.target.value !== e.target.oldvalue) {
       let $this = this;
       let billdetails = this.state.billdetails;

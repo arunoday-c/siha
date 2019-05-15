@@ -353,6 +353,9 @@ class TransferEntryItems extends Component {
                                       context,
                                       row
                                     )
+                                  },
+                                  others:{
+                                    type:"number"
                                   }
                                 }}
                               />

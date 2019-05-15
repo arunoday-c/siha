@@ -22,25 +22,22 @@
                         <table class="innerTable">
                             <tbody>
                                 <tr>
-                                    <td colspan="3"><b>To be completed & ID Verified by the reception/nurse:</b></td>
+                                    <td colspan="5"><b>To be completed & ID Verified by the reception/nurse:</b></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">Provider Name: <span>{{header.provider_name}}</span></td>
+                                    <td colspan="5">Provider Name: <span>{{header.provider_name}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="2">Insurance Company Name:
+                                    <td colspan="3">Insurance Company Name:
                                         <span>{{insurance.0.primary_insurance_company_name}}</span></td>
-                                    <td colspan="1">TPA Company Name:
+                                    <td colspan="2">TPA Company Name:
                                         <span>{{insurance.0.primary_tpa_insurance_company_name}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3">Patient File Number: <span>{{header.patient_code}}</span></td>
+                                    <td colspan="5">Patient File Number: <span>{{header.patient_code}}</span></td>
                                 </tr>
                                 <tr>
-                                    <td>Date of Visit: <span>{{header.visit_date}}</span></td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3"> Single ( {{#if header.patient_marital_status "Single"}}
+                                    <td colspan="2">Date of Visit: <span>{{header.visit_date}}</span></td>  <td colspan="3"> Single ( {{#if header.patient_marital_status "Single"}}
                                         <span>&#10004;</span>
                                         {{/if}}
                                         ) | Married ( {{#if header.patient_marital_status "Married"}}
@@ -48,7 +45,6 @@
                                         {{/if}}
                                         ) </td>
                                 </tr>
-
                                 <tr>
                                   <td>New Visit ( {{#if header.new_visit_patient "Y"}}
                                       <span>&#10004;</span>
@@ -248,6 +244,8 @@
                                     <span>&#10004;</span>
                                     {{/if}} )</td>
                             </tr>
+                            </table>
+                        <table class="innerTable">
                             <tr>
                                 <td colspan="3">
                                     <b>
@@ -310,67 +308,28 @@
                         <table class="innerTable">
 
                             <tr>
-                                <td>
-                                    <b>
-                                        Contact Lenses Type:</b>
-                                </td>
-                                <td>Permanent ( {{#if header.contact_lense_type "P"}}
+                                <td> Contact Lenses Type: <b>
+                                        Permanent ( {{#if header.contact_lense_type "P"}}
                                     <span>&#10004;</span>
                                     {{/if}}
                                     ) | Disposable ( {{#if header.contact_lense_type "D"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )</td>
-                            </tr>
-                        </table>
-                        <table class="innerTable">
-                            <tr>
-                                <td>
-                                    <b>
-                                        Frames:</b>
-                                </td>
-                                <td>Yes ( {{#if header.frames "Y"}}
+                                    )</b>
+                                </td> <td>/ Frames: <b>Yes ( {{#if header.frames "Y"}}
                                     <span>&#10004;</span>
                                     {{/if}}
                                     ) | No ( {{#if header.frames "N"}}
                                     <span>&#10004;</span>
                                     {{/if}}
-                                    )</td>
+                                    )</b>
+                                </td><td>/ No. of Pairs: <b>{{header.no_pairs}}</b> Nos</td>
                             </tr>
-
                         </table>
+                       
                         <table class="innerTable">
-                            <tr>
-                                <td>
-                                    <b>
-                                        Please specify No. of Pairs:</b>
-                                </td>
-                                <td>{{header.no_pairs}}</td>
-                            </tr>
-
-                        </table>
-                        <table class="innerTable">
-                            <tr>
-                                <td>
-                                    <b>
-                                        Estimated Cost:</b>
-                                </td>
-                                <td>{{header.estimated_cost}}</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>
-                                        Lenses:</b>
-                                </td>
-                                <td>{{header.lense_cost}}</td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>
-                                        Frames:</b>
-                                </td>
-                                <td>{{header.frame_cost}}</td>
-                            </tr>
+                            <tr><td>Estimated Cost: <b>{{header.estimated_cost}}</b></td><td>Lenses: <b>{{header.lense_cost}}</b> Qty</td><td>Frames: <b>{{header.frame_cost}}</b> Qty</td></tr>
+                           
                         </table>
                     </td>
                 </tr>
@@ -398,16 +357,16 @@
                                 </tr>
 
                                 <tr>
-                                    <td>{{header.provider_name}}</td>
-                                    <td>{{header.name_relation_guardian}}</td>
+                                    <td><b>{{header.provider_name}}</b></td>
+                                    <td><b>{{header.name_relation_guardian}}</b></td>
                                 </tr>
                                 <tr>
                                     <td>Signature and Stamp</td>
                                     <td>Name and Relationship(if Guardian) Signature :</td>
                                 </tr>
                                 <tr>
-                                    <td>{{header.physican_capture_date}}</td>
-                                    <td>{{header.relation_guardian_date}}</td>
+                                    <td><b>{{header.physican_capture_date}}</b></td>
+                                    <td><b>{{header.relation_guardian_date}}</b></td>
                                 </tr>
 
                         </table>

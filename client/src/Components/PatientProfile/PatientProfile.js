@@ -148,7 +148,8 @@ class PatientProfile extends Component {
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"]
+        visit_id: Window.global["visit_id"],
+        forceReplace: true
         // visit_date: "2018-09-15"
       },
       onSuccess: response => {
@@ -173,7 +174,6 @@ class PatientProfile extends Component {
       data: {
         patient_id: Window.global["current_patient"],
         visit_id: Window.global["visit_id"]
-        // visit_date: "2018-09-15"
       },
       onSuccess: response => {
         if (response.data.success) {

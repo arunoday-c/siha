@@ -1421,11 +1421,12 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
 
                 patient_payable = math.round(patient_resp + patient_tax, 2);
 
-                if (approved_amount !== 0 && approved_amount < comapany_resp) {
-                  let diff_val = comapany_resp - approved_amount;
+                console.log("approved_amount", approved_amount)
+                if (approved_amount !== 0) {
+                  let diff_val = approved_amount - comapany_resp;
                   patient_payable = math.round(patient_payable + diff_val, 2);
                   patient_resp = math.round(patient_resp + diff_val, 2);
-                  comapany_resp = approved_amount;
+                  comapany_resp = comapany_resp - diff_val;
                 }
 
                 company_payble = net_amout - patient_resp;

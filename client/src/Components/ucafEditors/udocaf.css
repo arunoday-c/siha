@@ -28,3 +28,9 @@
   margin-bottom: 10px; }
   .ucafEditCntr .attendingPhysician h5 {
     margin-bottom: 10px; }
+
+.ucafEditCntr #serviceGrid_Cntr .ReactTable {
+  max-height: 25vh !important; }
+
+.ucafEditCntr #medicationGrd_Cntr .ReactTable {
+  max-height: 30vh !important; }

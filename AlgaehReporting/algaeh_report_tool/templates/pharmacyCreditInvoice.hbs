@@ -16,7 +16,7 @@
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
                 </tr>
                <tr><td><label class="textEnLft">Doctor</label>:<span class="valueText">{{header.full_name}}</span><label class="textArRht">طبيب</label></td><td><label class="textEnLft">Department</label>:<span class="valueText">{{header.sub_department_name}}</span><label class="textArRht">قسم</label></td></tr>
-               
+
             </table>
 
 
@@ -39,30 +39,29 @@
                 </thead>
                 <tbody>
                     {{#each detail}}
-                    {{!-- <tr>
-                        <td colspan="10" class="tableSubHdg">{{service_type}}/{{arabic_service_type}}</td>
-                    </tr> --}}
+
                     <tr>
-                       <td>{{service_code}}</td>
+                       <td>{{cpt_code}}</td>
                         <td>{{service_name}}</td>
                         <td>{{quantity}}</td>
-                        <td class="numberFld">{{net_amount}}</td>
-                        <td class="numberFld">{{net_amount}}</td>
-                          <td class="numberFld">{{price}}</td>
-                          <td class="numberFld">{{patient_resp}}</td>
-                          <td class="numberFld">{{patient_tax}}</td>
-                          <td class="numberFld">{{patient_payable}}</td>
-                          <td class="numberFld">{{patient_payable}}</td>
+                        <td class="numberFld">{{price}}</td>
+                        <td class="numberFld">{{gross_amount}}</td>
+                          <td class="numberFld">{{discount_amount}}</td>
+                          <td class="numberFld">{{patient_share}}</td>
+                          <td class="numberFld">{{net_amount}}</td>
+                          <td class="numberFld">{{company_tax}}</td>
+                          <td class="numberFld">{{net_claim}}</td>
                     </tr>
                     {{/each}}
   <tr class="footerTotal">
       <td colspan="4" class="numberFld"><span style="text-align:right">Total</span></td>
-                          <td class="numberFld">0.00</td>
-                         <td class="numberFld">0.00</td>
-                          <td class="numberFld">0.00</td>
-                          <td class="numberFld">0.00</td>
-                          <td class="numberFld">0.00</td>
-                          <td class="numberFld">0.00</td>
+                          <td class="numberFld">{{total_quantity}}</td>
+                         <td class="numberFld">{{total_gross_amount}}</td>
+                          <td class="numberFld">{{total_discount_amount}}</td>
+                          <td class="numberFld">{{total_patient_share}}</td>
+                          <td class="numberFld">{{total_net_amount}}</td>
+                          <td class="numberFld">{{total_company_tax}}</td>
+                          <td class="numberFld">{{total_net_claim}}</td>
                     </tr>
 
 

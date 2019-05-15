@@ -32,7 +32,18 @@ let getPatientDCAF = (req, res, next) => {
           return;
         }
 
+        console.log("result[0][0]", result[0][0]);
+        let hims_f_dcaf_header_id =
+          result[0][0] == undefined ? null : result[0][0].hims_f_dcaf_header_id;
+
+        console.log("forceReplace", _input.forceReplace);
+        if (_input.forceReplace == "true") {
+          result[0] = [];
+        }
+
+        console.log("result[0]", result[0]);
         if (result[0].length == 0) {
+          console.log("forceReplace", _input.forceReplace);
           _mysql
             .executeQuery({
               query:
@@ -100,7 +111,11 @@ let getPatientDCAF = (req, res, next) => {
                 on IP.hims_d_insurance_provider_id = IM.primary_insurance_provider_id inner join hims_d_insurance_sub SI \
                 on SI.hims_d_insurance_sub_id = IM.primary_sub_id inner join hims_f_patient_visit V \
                 on V.hims_f_patient_visit_id = IM.patient_visit_id where IM.record_status='A' and IM.patient_id=? \
-                and (date(V.visit_date)=date(?) or V.hims_f_patient_visit_id =? );",
+                and (date(V.visit_date)=date(?) or V.hims_f_patient_visit_id =? );\
+                DELETE from hims_f_dcaf_insurance_details where hims_f_dcaf_header_id=?;\
+                DELETE from hims_f_dcaf_medication where hims_f_dcaf_header_id=?;\
+                DELETE from hims_f_dcaf_services where hims_f_dcaf_header_id=?;\
+                DELETE from hims_f_dcaf_header where hims_f_dcaf_header_id=?;",
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -122,7 +137,11 @@ let getPatientDCAF = (req, res, next) => {
                 _input.visit_id,
                 _input.patient_id,
                 _input.visit_date,
-                _input.visit_id
+                _input.visit_id,
+                hims_f_dcaf_header_id,
+                hims_f_dcaf_header_id,
+                hims_f_dcaf_header_id,
+                hims_f_dcaf_header_id
               ],
               printQuery: true
             })

@@ -74,7 +74,7 @@ componentWillReceiveProps(newProps){
           openPopup={this.props.openGlassPres}
         >
           <div className="popupInner">
-            <div className="popRightDiv table-responsive">
+            <div className="popRightDiv table-responsive" style={{overflow:"auto"}}>
               <table className="table table-bordered table-sm">
                 <thead>
 

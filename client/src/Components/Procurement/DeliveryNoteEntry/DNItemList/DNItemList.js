@@ -415,7 +415,7 @@ class DNItemList extends Component {
                               fieldName: "dn_quantity",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "DN Quantity" }}
+                                  label={{ forceLabel: "Delivery Note Quantity" }}
                                 />
                               ),
                               editorTemplate: row => {
@@ -443,7 +443,10 @@ class DNItemList extends Component {
                                           this,
                                           this,
                                           row
-                                        )
+                                        ),
+                                        onFocus: e => {
+                                          e.target.oldvalue = e.target.value;
+                                        }
                                       }
                                     }}
                                   />

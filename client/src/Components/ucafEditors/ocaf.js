@@ -143,7 +143,11 @@ export default class OcafEditor extends Component {
                             reception/nurse:
                           </h5>
                         </div>
-                        <AlagehFormGroup
+                        <div className="col-6">
+                          <label>Provider Name</label>
+                          <h6>{this.state.provider_name}</h6>
+                        </div>
+                        {/* <AlagehFormGroup
                           div={{ className: "col-6   form-group" }}
                           label={{
                             forceLabel: "Provider Name",
@@ -159,8 +163,12 @@ export default class OcafEditor extends Component {
                               disabled:true
                             }
                           }}
-                        />
-                        <AlagehFormGroup
+                        /> */}
+                          <div className="col-6">
+                          <label>Insurance Company Name</label>
+                          <h6>{this.state.primary_insurance_company_name}</h6>
+                        </div>
+                        {/* <AlagehFormGroup
                           div={{ className: "col-6   form-group" }}
                           label={{
                             forceLabel: "Insurance Company Name",
@@ -176,8 +184,12 @@ export default class OcafEditor extends Component {
                               disabled:true
                             }
                           }}
-                        />
-                        <AlagehFormGroup
+                        /> */}
+                          <div className="col-6">
+                          <label>TPA Company Name</label>
+                          <h6>{this.state.primary_tpa_insurance_company_name}</h6>
+                        </div>
+                        {/* <AlagehFormGroup
                           div={{ className: "col-4 form-group" }}
                           label={{
                             forceLabel: "TPA Company Name",
@@ -193,8 +205,12 @@ export default class OcafEditor extends Component {
                               disabled:true
                             }
                           }}
-                        />
-                        <AlagehFormGroup
+                        /> */}
+                          <div className="col-6">
+                          <label>Patient File Number</label>
+                          <h6>{this.state.patient_code}</h6>
+                        </div>
+                        {/* <AlagehFormGroup
                           div={{ className: "col-4 form-group" }}
                           label={{
                             forceLabel: "Patient File Number",
@@ -209,8 +225,12 @@ export default class OcafEditor extends Component {
                               type: "text"
                             }
                           }}
-                        />
-                        <AlagehFormGroup
+                        /> */}
+                          <div className="col-6">
+                          <label>Department</label>
+                          <h6>{this.state.sub_department_name}</h6>
+                        </div>
+                        {/* <AlagehFormGroup
                           div={{ className: "col-4 form-group" }}
                           label={{
                             forceLabel: "Department",
@@ -225,7 +245,12 @@ export default class OcafEditor extends Component {
                               type: "text"
                             }
                           }}
-                        />
+                        /> */}
+                          <div className="col-6">
+                          <label>Date of Visit</label>
+                          <h6>{this.state.visit_date}</h6>
+                        </div>
+{/*                         
                         <AlgaehDateHandler
                           div={{ className: "col-4 form-group" }}
                           label={{
@@ -239,7 +264,7 @@ export default class OcafEditor extends Component {
                           value={this.state.visit_date}
                           maxDate={new Date()}
                           events={{}}
-                        />
+                        /> */}
                         <div
                           className="col-6 customRadio"
                           style={{ paddingTop: 24, borderBottom: "none" }}
@@ -482,7 +507,7 @@ export default class OcafEditor extends Component {
                   <div className="col-12">
                     <div className="attendingPhysician">
                       <div className="row">
-                        <div className="col-6 table-responsive">
+                        <div className="col-6 table-responsive" style={{padding:0}}>
                           <table className="table table-bordered table-sm">
                             <thead>
                               <tr>
@@ -502,7 +527,8 @@ export default class OcafEditor extends Component {
                               <tr>
                                 <td>Distance</td>
                                 <td>
-                                  <AlagehAutoComplete
+                                  <h6>{this.state.dv_right_sch}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -516,10 +542,11 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
                                 <td>
-                                  <AlagehAutoComplete
+                                  <h6>{this.state.dv_right_cyl}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -533,11 +560,13 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehAutoComplete
+
+                                <h6>{this.state.dv_right_axis}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -551,11 +580,12 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehFormGroup
+                                <h6>{this.state.dv_right_prism}</h6>
+                                  {/* <AlagehFormGroup
                                     div={{ className: "" }}
                                     textBox={{
                                       className: "txt-fld",
@@ -566,11 +596,12 @@ export default class OcafEditor extends Component {
                                         type: "text"
                                       }
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.dv_right_vision}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -584,13 +615,14 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
                               </tr>
                               <tr>
                                 <td>Near</td>
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.nv_right_sch}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -604,10 +636,11 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.nv_right_cyl}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -621,11 +654,12 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.nv_right_axis}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -639,11 +673,12 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehFormGroup
+                                <h6>{this.state.nv_right_prism}</h6>
+                                  {/* <AlagehFormGroup
                                     div={{ className: "" }}
                                     div={{ className: "" }}
                                     textBox={{
@@ -655,11 +690,12 @@ export default class OcafEditor extends Component {
                                         type: "text"
                                       }
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.nv_right_vision}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -673,14 +709,14 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                               </tr>
                             </tbody>
                           </table>
                         </div>
-                        <div className="col-6 table-responsive">
+                        <div className="col-6 table-responsive" style={{padding:0}}>
                           <table className="table table-bordered table-sm">
                             <thead>
                               <tr>
@@ -700,7 +736,8 @@ export default class OcafEditor extends Component {
                               <tr>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.dv_left_sch}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -714,10 +751,11 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.dv_left_cyl}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -731,11 +769,12 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.dv_left_axis}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -749,11 +788,12 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehFormGroup
+                                <h6>{this.state.dv_left_prism}</h6>
+                                  {/* <AlagehFormGroup
                                     div={{ className: "" }}
                                     textBox={{
                                       className: "txt-fld",
@@ -766,11 +806,12 @@ export default class OcafEditor extends Component {
                                         type: "text"
                                       }
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.dv_left_vision}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -784,10 +825,11 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
-
-                                <AlagehFormGroup
+<td>
+                                <h6>{this.state.eye_pd1}</h6>
+                                {/* <AlagehFormGroup
                                   div={{ className: "" }}
                                   textBox={{
                                     className: "txt-fld",
@@ -800,12 +842,14 @@ export default class OcafEditor extends Component {
                                       type: "number"
                                     }
                                   }}
-                                />
+                                /> */}
+                                </td>
                               </tr>
                               <tr>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.nv_left_sch}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -819,10 +863,11 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.nv_left_cyl}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -836,11 +881,12 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.nv_left_axis}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -854,11 +900,12 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehFormGroup
+                                <h6>{this.state.nv_left_prism}</h6>
+                                  {/* <AlagehFormGroup
                                     div={{ className: "" }}
                                     textBox={{
                                       className: "txt-fld",
@@ -871,11 +918,12 @@ export default class OcafEditor extends Component {
                                         type: "text"
                                       }
                                     }}
-                                  />
+                                  /> */}
                                 </td>
 
                                 <td>
-                                  <AlagehAutoComplete
+                                <h6>{this.state.nv_left_vision}</h6>
+                                  {/* <AlagehAutoComplete
                                     div={{ className: "" }}
                                     selector={{
                                       sort: "off",
@@ -889,10 +937,11 @@ export default class OcafEditor extends Component {
                                       },
                                       onChange:this.ChangeEventHandler.bind(this)
                                     }}
-                                  />
+                                  /> */}
                                 </td>
-
-                                <AlagehFormGroup
+<td>
+                                <h6>{this.state.eye_pd2}</h6>
+                                {/* <AlagehFormGroup
                                   div={{ className: "" }}
                                   textBox={{
                                     className: "txt-fld",
@@ -905,7 +954,9 @@ export default class OcafEditor extends Component {
                                       type: "number"
                                     }
                                   }}
-                                />
+                                /> */}
+                                </td>
+
                               </tr>
                             </tbody>
                           </table>

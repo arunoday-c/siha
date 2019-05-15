@@ -78,7 +78,8 @@ class PatientDetails extends PureComponent {
                         label: (
                           <AlgaehLabel label={{ fieldName: "service_name" }} />
                         ),
-                        disabled: true
+                        disabled: true,
+                        others: { minWidth: 250 }
                       },
                       {
                         fieldName: "requested_quantity",
@@ -205,22 +206,7 @@ class PatientDetails extends PureComponent {
                           );
                         }
 
-                        // editorTemplate: row => {
-                        //   return (
-                        //     <AlgaehDateHandler
-                        //       div={{ className: "" }}
-                        //       textBox={{
-                        //         className: "txt-fld hidden",
-                        //         name: "apprv_date"
-                        //       }}
-                        //       minDate={new Date()}
-                        //       events={{
-                        //         onChange: datehandle.bind(this, this, row)
-                        //       }}
-                        //       value={row.apprv_date}
-                        //     />
-                        //   );
-                        // }
+                     
                       },
                       {
                         fieldName: "valid_upto",
@@ -247,7 +233,8 @@ class PatientDetails extends PureComponent {
                               value={row.valid_upto}
                             />
                           );
-                        }
+                        },
+                        others: { minWidth: 135 }
                       },
                       {
                         fieldName: "apprv_remarks",
@@ -293,7 +280,8 @@ class PatientDetails extends PureComponent {
 
 function mapStateToProps(state) {
   return {
-    deptanddoctors: state.deptanddoctors
+    deptanddoctors: state.deptanddoctors,
+    insurarProviders: state.insurarProviders
   };
 }
 

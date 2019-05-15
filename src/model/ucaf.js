@@ -31,7 +31,12 @@ let getPatientUCAF = (req, res, next) => {
           next(new Error("Patient don't have any insurance"));
           return;
         }
-        if (_input.forceReplace == true) {
+
+        console.log("result[0]", result[0][0]);
+        let hims_f_ucaf_header_id =
+          result[0][0] == undefined ? null : result[0][0].hims_f_ucaf_header_id;
+
+        if (_input.forceReplace == "true") {
           result[0] = [];
         }
         if (result[0].length == 0) {
@@ -66,11 +71,11 @@ let getPatientUCAF = (req, res, next) => {
                 select HPIH.hpi_description,case CC.pain when 'NH' then 'no hurts' when 'HLB' then 'hurts little bit' \
                 when 'HLM' then 'hurts little more' when 'HEM' then 'hurts even more' when 'HWL' then 'hurts whole lot' \
                 when 'HW' then 'hurts worst' end pain, case CC.severity when 'MI' then 'mild' when 'MO' then 'moderate' \
-                when 'SE' then 'severe' end  severity,  CC.score,CC.duration,CC.comment,CC.onset_date \
-                from hims_f_episode_chief_complaint CC \
+                when 'SE' then 'severe' end  severity,  CC.score,CC.duration,CC.comment,CC.onset_date, \
+                CC.complaint_type,CC.lmp_days from hims_f_episode_chief_complaint CC \
                 inner join hims_f_patient_visit PV \
                 on CC.patient_id=PV.patient_id and CC.episode_id=PV.episode_id \
-                inner join hims_d_hpi_header HPIH on CC.chief_complaint_id = HPIH.hims_d_hpi_header_id \
+                left join hims_d_hpi_header HPIH on CC.chief_complaint_id = HPIH.hims_d_hpi_header_id \
                 and HPIH.sub_department_id = PV.sub_department_id where PV.patient_id=? \
                 and (date(PV.visit_date)=date(?) or PV.hims_f_patient_visit_id=?) and CC.record_status='A'; \
                 select  ICD.long_icd_description,icd_code from hims_f_patient_diagnosis D inner join hims_d_icd ICD \
@@ -102,7 +107,13 @@ let getPatientUCAF = (req, res, next) => {
                 on IP.hims_d_insurance_provider_id = IM.primary_insurance_provider_id inner join hims_d_insurance_sub SI \
                 on SI.hims_d_insurance_sub_id = IM.primary_sub_id inner join hims_f_patient_visit V \
                 on V.hims_f_patient_visit_id = IM.patient_visit_id where IM.record_status='A' and IM.patient_id=? \
-                and (date(V.visit_date)=date(?) or V.hims_f_patient_visit_id =? );",
+                and (date(V.visit_date)=date(?) or V.hims_f_patient_visit_id =? );\
+                select significant_signs,other_signs from hims_f_patient_encounter where \
+                patient_id = ? and visit_id = ?;\
+                DELETE from hims_f_ucaf_insurance_details where hims_f_ucaf_header_id=?;\
+                DELETE from hims_f_ucaf_medication where hims_f_ucaf_header_id=?;\
+                DELETE from hims_f_ucaf_services where hims_f_ucaf_header_id=?;\
+                DELETE from hims_f_ucaf_header where hims_f_ucaf_header_id=?;",
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -124,9 +135,15 @@ let getPatientUCAF = (req, res, next) => {
                 _input.visit_id,
                 _input.patient_id,
                 _input.visit_date,
-                _input.visit_id
-              ]
-              //  printQuery: true
+                _input.visit_id,
+                _input.patient_id,
+                _input.visit_id,
+                hims_f_ucaf_header_id,
+                hims_f_ucaf_header_id,
+                hims_f_ucaf_header_id,
+                hims_f_ucaf_header_id
+              ],
+              printQuery: true
             })
             .then(outputResult => {
               // let errorString =
@@ -163,10 +180,13 @@ let getPatientUCAF = (req, res, next) => {
               }
               _fields["patient_chief_comp_main_symptoms"] = "";
               for (var i = 0; i < outputResult[2].length; i++) {
+                console.log("outputResult2", outputResult[2].length);
                 const _out = outputResult[2][i];
-                if (_fields["patient_duration_of_illness"] == null) {
+
+                // if (_fields["patient_duration_of_illness"] == null) {
+                //   _fields["patient_duration_of_illness"] = _out["duration"];
+                // } else {
                   _fields["patient_duration_of_illness"] = _out["duration"];
-                } else {
                   if (_out["comment"] == "") {
                     _fields["patient_chief_comp_main_symptoms"] +=
                       _out["hpi_description"] +
@@ -178,10 +198,16 @@ let getPatientUCAF = (req, res, next) => {
                       "  from date " +
                       _out["onset_date"];
                   } else {
-                    _fields["patient_chief_comp_main_symptoms"] +=
+                    _fields["patient_chief_comp_main_symptoms"] =
                       _out["comment"];
+
+                    _fields["patient_complaint_type"] =
+                      _out["complaint_type"];
+
+                    _fields["patient_indicated_LMP"] =
+                      parseInt(_out["lmp_days"]);
                   }
-                }
+                // }
               }
               _fields["patient_diagnosys"] = "";
               for (var i = 0; i < outputResult[3].length; i++) {
@@ -196,17 +222,12 @@ let getPatientUCAF = (req, res, next) => {
                   _fields["patient_principal_code_" + i] = undefined;
                 }
               }
-              _fields["patient_chronic"] = "N";
-              _fields["patient_congenetal"] = "N";
-              _fields["patient_rta"] = "N";
-              _fields["patient_work_related"] = "N";
-              _fields["patient_vaccination"] = "N";
-              _fields["patient_check_up"] = "N";
-              _fields["patient_psychiatric"] = "N";
-              _fields["patient_infertility"] = "N";
-              _fields["patient_pregnancy"] = "N";
-              _fields["patient_indicated_LMP"] = "N";
 
+              _fields["patient_significant_signs"] =
+                outputResult[7][0]["significant_signs"]
+                
+              _fields["patient_other_conditions"] =
+                outputResult[7][0]["other_signs"]
               _mysql
                 .executeQueryWithTransaction({
                   query:
@@ -217,11 +238,9 @@ let getPatientUCAF = (req, res, next) => {
                 `patient_height`,`patient_respiratory_rate`,`patient_duration_of_illness`,\
                 `patient_chief_comp_main_symptoms`,`patient_significant_signs`,`patient_other_conditions`,\
                 `patient_diagnosys`,`patient_principal_code_1`,`patient_principal_code_2`,\
-                `patient_principal_code_3`,`patient_principal_code_4`,`patient_chronic`,`patient_congenetal`,\
-                `patient_rta`,`patient_work_related`,`patient_vaccination`,`patient_check_up`,\
-                `patient_psychiatric`,`patient_infertility`,`patient_pregnancy`,`patient_indicated_LMP`,\
-                `patient_gender`,`age_in_years`) \
-                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
+                `patient_principal_code_3`,`patient_principal_code_4`,`patient_complaint_type`,\
+                `patient_indicated_LMP`,`patient_gender`,`age_in_years`) \
+                values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);\
                 ",
                   values: [
                     _fields.patient_id,
@@ -252,15 +271,7 @@ let getPatientUCAF = (req, res, next) => {
                     _fields.patient_principal_code_2,
                     _fields.patient_principal_code_3,
                     _fields.patient_principal_code_4,
-                    _fields.patient_chronic,
-                    _fields.patient_congenetal,
-                    _fields.patient_rta,
-                    _fields.patient_work_related,
-                    _fields.patient_vaccination,
-                    _fields.patient_check_up,
-                    _fields.patient_psychiatric,
-                    _fields.patient_infertility,
-                    _fields.patient_pregnancy,
+                    _fields.patient_complaint_type,
                     _fields.patient_indicated_LMP,
                     _fields.patient_gender,
                     _fields.age_in_years
