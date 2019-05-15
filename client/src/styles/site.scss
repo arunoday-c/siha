@@ -48,7 +48,7 @@ body {
       font-size: 1em;
     }
     .style_Label + h4 {
-      font-size: 1.5em;
+      font-size: 1.24em;
       color: #fff;
     }
   }
@@ -709,7 +709,7 @@ body {
     right: 0;
   }
   .style_Label + h4 {
-    font-size: 1.5em;
+    font-size: 1.24em;
     margin-top: 3px;
     margin-bottom: 7px;
   }
@@ -921,7 +921,53 @@ input.autoselect-input:disabled {
   border-radius: 4px;
 
   .table {
-    width: 100%;
+   
+    border-bottom: 1.5px solid #f2f2f2;
+    margin: 0;
+    thead {
+      tr {
+        th {
+          border-bottom: 2px solid #34b8bc !important;
+          vertical-align: middle !important;
+          background: #e8feff !important;
+
+          text-transform: uppercase;
+          text-align: center;
+          label.style_Label {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    tbody {
+      height: 200px;
+      overflow: auto;
+      width: 100%;
+      tr {
+        cursor: pointer;
+      }
+      td {
+        vertical-align: middle;
+        white-space: nowrap;
+
+        text-align: center;
+      }
+    }
+    div {
+      div {
+        height: auto !important;
+        min-height: auto !important;
+      }
+    }
+  }
+}
+
+.table-nonResponsive {
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+
+  .table {
+    width: auto;
     border-bottom: 1.5px solid #f2f2f2;
     margin: 0;
     thead {
@@ -1297,6 +1343,52 @@ th {
       }
     }
   }
+
+.table-nonResponsive {
+  border: 1px solid #e2e2e2;
+  border-radius: 4px;
+
+  .table {
+    
+    border-bottom: 1.5px solid #f2f2f2;
+    margin: 0;
+    thead {
+      tr {
+        th {
+          border-bottom: 2px solid #34b8bc !important;
+          vertical-align: middle !important;
+          background: #e8feff !important;
+
+          text-transform: uppercase;
+          text-align: center;
+          label.style_Label {
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    tbody {
+      height: 200px;
+      overflow: auto;
+      width: 100%;
+      tr {
+        cursor: pointer;
+      }
+      td {
+        vertical-align: middle;
+        white-space: nowrap;
+
+        text-align: center;
+      }
+    }
+    div {
+      div {
+        height: auto !important;
+        min-height: auto !important;
+      }
+    }
+  }
+}
   // .table-scroll {
   //   position: absolute;
   //   display: inline-block;

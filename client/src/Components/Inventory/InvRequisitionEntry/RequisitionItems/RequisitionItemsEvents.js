@@ -282,28 +282,28 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
-  debugger
-  if($this.state.requisition_auth === true &&
-    (row.quantity_authorized === 0 || row.quantity_authorized === null)){
-    swalMessage({
-      title: "Please enter Quantity Authorized ..",
-      type: "warning"
-    });
-  }else{
-    let inventory_stock_detail = $this.state.inventory_stock_detail;
-    for (let k = 0; k < inventory_stock_detail.length; k++) {
-      if (inventory_stock_detail[k].item_id === row.item_id) {
-        inventory_stock_detail[k] = row;
-      }
-    }
-    $this.setState({ inventory_stock_detail: inventory_stock_detail });
+  // if($this.state.requisition_auth === true &&
+  //   (row.quantity_authorized === 0 || row.quantity_authorized === null)){
+  //   swalMessage({
+  //     title: "Please enter Quantity Authorized ..",
+  //     type: "warning"
+  //   });
+  // }else{
 
-    if (context !== undefined) {
-      context.updateState({
-        inventory_stock_detail: inventory_stock_detail
-      });
+  let inventory_stock_detail = $this.state.inventory_stock_detail;
+  for (let k = 0; k < inventory_stock_detail.length; k++) {
+    if (inventory_stock_detail[k].item_id === row.item_id) {
+      inventory_stock_detail[k] = row;
     }
   }
+  $this.setState({ inventory_stock_detail: inventory_stock_detail });
+
+  if (context !== undefined) {
+    context.updateState({
+      inventory_stock_detail: inventory_stock_detail
+    });
+  }
+  //}
 };
 
 const onchangegridcol = ($this, context, row, e) => {
@@ -321,7 +321,7 @@ const onchangegridcol = ($this, context, row, e) => {
       title: "Cannot be less than Zero.",
       type: "warning"
     });
-  }else {
+  } else {
     row[name] = value === "" ? null : value;
     row["quantity_outstanding"] = value;
 

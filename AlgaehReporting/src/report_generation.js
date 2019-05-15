@@ -25,8 +25,9 @@ const compile = async function(templateName, data) {
   );
   const html = await fs.readFile(filePath, "utf-8");
   const comp = await hbs.compile(html)(data);
-
+  //
   return comp;
+  // return "رقم الفاتورة";
 };
 
 const compileExcel = async function(templateName, data) {
@@ -36,7 +37,6 @@ const compileExcel = async function(templateName, data) {
     `${templateName}.hbs`
   );
   const html = await fs.readFile(filePath, "utf-8");
-
   return hbs.compile(html)(data);
 };
 
@@ -271,7 +271,13 @@ module.exports = {
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
-                    const browser = await puppeteer.launch();
+                    const browser = await puppeteer.launch({
+                      ignoreHTTPSErrors: false,
+                      devtools: true,
+                      headless: true,
+                      executablePath:
+                        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+                    });
                     const page = await browser.newPage();
                     const _pdfTemplating = {};
                     if (
@@ -405,7 +411,7 @@ module.exports = {
                             });
                             const _fs = fs.createReadStream(_reportOutput[0]);
                             _fs.on("end", () => {
-                              fs.unlink(_reportOutput[0]);
+                              //  fs.unlink(_reportOutput[0]);
                             });
                             _fs.pipe(res);
                           } else {

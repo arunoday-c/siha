@@ -56,7 +56,7 @@ export function printReport(data) {
               <th>Unit</th>
               <th>PO Quantity</th>
               <th>Unit Price</th>
-              <th>DN Quantity</th>
+              <th>Delivery Note Quantity</th>
               <th>Quantity Outstanding</th>
               <th>Quantity Recived Todate</th>              
               <th>Discount</th>

@@ -43,7 +43,7 @@ body {
   :global .btn .style_Label {
     font-size: 1em; }
   :global .btn .style_Label + h4 {
-    font-size: 1.5em;
+    font-size: 1.24em;
     color: #fff; }
 
 :global .btn:hover {
@@ -580,7 +580,7 @@ body {
   right: 0; }
 
 :global .style_Label + h4 {
-  font-size: 1.5em;
+  font-size: 1.24em;
   margin-top: 3px;
   margin-bottom: 7px; }
 
@@ -759,7 +759,6 @@ input.autoselect-input:disabled {
   border: 1px solid #e2e2e2;
   border-radius: 4px; }
   .table-responsive .table {
-    width: 100%;
     border-bottom: 1.5px solid #f2f2f2;
     margin: 0; }
     .table-responsive .table thead tr th {
@@ -781,6 +780,35 @@ input.autoselect-input:disabled {
         white-space: nowrap;
         text-align: center; }
     .table-responsive .table div div {
+      height: auto !important;
+      min-height: auto !important; }
+
+.table-nonResponsive {
+  border: 1px solid #e2e2e2;
+  border-radius: 4px; }
+  .table-nonResponsive .table {
+    width: auto;
+    border-bottom: 1.5px solid #f2f2f2;
+    margin: 0; }
+    .table-nonResponsive .table thead tr th {
+      border-bottom: 2px solid #34b8bc !important;
+      vertical-align: middle !important;
+      background: #e8feff !important;
+      text-transform: uppercase;
+      text-align: center; }
+      .table-nonResponsive .table thead tr th label.style_Label {
+        font-weight: bold; }
+    .table-nonResponsive .table tbody {
+      height: 200px;
+      overflow: auto;
+      width: 100%; }
+      .table-nonResponsive .table tbody tr {
+        cursor: pointer; }
+      .table-nonResponsive .table tbody td {
+        vertical-align: middle;
+        white-space: nowrap;
+        text-align: center; }
+    .table-nonResponsive .table div div {
       height: auto !important;
       min-height: auto !important; }
 
@@ -1019,6 +1047,33 @@ th {
           white-space: nowrap;
           text-align: center; }
       .algaeh_Arabic_Version .table-responsive .table div div {
+        height: auto !important;
+        min-height: auto !important; }
+  .algaeh_Arabic_Version .table-nonResponsive {
+    border: 1px solid #e2e2e2;
+    border-radius: 4px; }
+    .algaeh_Arabic_Version .table-nonResponsive .table {
+      border-bottom: 1.5px solid #f2f2f2;
+      margin: 0; }
+      .algaeh_Arabic_Version .table-nonResponsive .table thead tr th {
+        border-bottom: 2px solid #34b8bc !important;
+        vertical-align: middle !important;
+        background: #e8feff !important;
+        text-transform: uppercase;
+        text-align: center; }
+        .algaeh_Arabic_Version .table-nonResponsive .table thead tr th label.style_Label {
+          font-weight: bold; }
+      .algaeh_Arabic_Version .table-nonResponsive .table tbody {
+        height: 200px;
+        overflow: auto;
+        width: 100%; }
+        .algaeh_Arabic_Version .table-nonResponsive .table tbody tr {
+          cursor: pointer; }
+        .algaeh_Arabic_Version .table-nonResponsive .table tbody td {
+          vertical-align: middle;
+          white-space: nowrap;
+          text-align: center; }
+      .algaeh_Arabic_Version .table-nonResponsive .table div div {
         height: auto !important;
         min-height: auto !important; }
   .algaeh_Arabic_Version .scrolling table {
