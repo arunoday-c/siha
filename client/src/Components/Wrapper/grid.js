@@ -457,60 +457,61 @@ class DataGrid extends Component {
             : true;
 
         if (
-          this.props.isEditable !== undefined &&
-          this.props.isEditable === true
+          this.props.isEditable !== undefined
+          // &&
+          // this.props.isEditable === true
         ) {
-          if (_allowEditButton || _allowDeleteButton) {
-            _columns.splice(0, 0, {
-              Header: <label className="style_Label ">ACTIONS</label>,
-              headerClassName: "sticky",
-              fixed: "left",
-              width: 100,
-              filterable: false,
-              Cell: ({ index }) => {
-                const edit =
-                  this.state.editableRows[index] === undefined
-                    ? false
-                    : this.state.editableRows[index];
-                return (
-                  <React.Fragment>
-                    {_allowEditButton ? (
-                      edit ? (
-                        <i
-                          title="Save Edited"
-                          className="fas fa-save"
-                          onClick={() => this.toggleRowSave(index)}
-                        />
-                      ) : (
-                        <i
-                          title="Edit Row"
-                          className="fas fa-pen"
-                          onClick={() => this.toggleRowEditable(index)}
-                        />
-                      )
-                    ) : null}
-                    {_allowDeleteButton ? (
-                      edit ? (
-                        <i
-                          title="Cancel Edit"
-                          className="fas fa-times"
-                          onClick={() => this.toggleRowCancel(index)}
-                        />
-                      ) : (
-                        <i
-                          title="Delete Row"
-                          className="fas fa-trash-alt"
-                          onClick={() => this.toggleRowDelete(index)}
-                        />
-                      )
-                    ) : null}
-                  </React.Fragment>
-                );
-              },
-              style: { textAlign: "center" },
-              show: this.props.isEditable
-            });
-          }
+          //  if (_allowEditButton || _allowDeleteButton) {
+          _columns.splice(0, 0, {
+            Header: <label className="style_Label ">ACTIONS</label>,
+            headerClassName: "sticky",
+            fixed: "left",
+            width: 100,
+            filterable: false,
+            Cell: ({ index }) => {
+              const edit =
+                this.state.editableRows[index] === undefined
+                  ? false
+                  : this.state.editableRows[index];
+              return (
+                <React.Fragment>
+                  {_allowEditButton ? (
+                    edit ? (
+                      <i
+                        title="Save Edited"
+                        className="fas fa-save"
+                        onClick={() => this.toggleRowSave(index)}
+                      />
+                    ) : (
+                      <i
+                        title="Edit Row"
+                        className="fas fa-pen"
+                        onClick={() => this.toggleRowEditable(index)}
+                      />
+                    )
+                  ) : null}
+                  {_allowDeleteButton ? (
+                    edit ? (
+                      <i
+                        title="Cancel Edit"
+                        className="fas fa-times"
+                        onClick={() => this.toggleRowCancel(index)}
+                      />
+                    ) : (
+                      <i
+                        title="Delete Row"
+                        className="fas fa-trash-alt"
+                        onClick={() => this.toggleRowDelete(index)}
+                      />
+                    )
+                  ) : null}
+                </React.Fragment>
+              );
+            },
+            style: { textAlign: "center" },
+            show: this.props.isEditable
+          });
+          //}
         }
         if (this.props.dataSource.uri !== undefined) {
           this.setState({
@@ -711,6 +712,12 @@ class DataGrid extends Component {
         props.dataSource.inputParam
       );
     } else {
+      if (this.props.isEditable !== props.isEditable) {
+        this.state.columns[0] = {
+          ...this.state.columns[0],
+          show: props.isEditable
+        };
+      }
       const _total = Math.ceil(
         props.dataSource !== undefined
           ? props.dataSource.data !== undefined
