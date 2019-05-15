@@ -79,7 +79,7 @@ let getPatientDCAF = (req, res, next) => {
                 from hims_f_episode_chief_complaint CC \
                 inner join hims_f_patient_visit PV \
                 on CC.patient_id=PV.patient_id and CC.episode_id=PV.episode_id \
-                inner join hims_d_hpi_header HPIH on CC.chief_complaint_id = HPIH.hims_d_hpi_header_id \
+                left join hims_d_hpi_header HPIH on CC.chief_complaint_id = HPIH.hims_d_hpi_header_id \
                 and HPIH.sub_department_id = PV.sub_department_id where PV.patient_id=? \
                 and (date(PV.visit_date)=date(?) or PV.hims_f_patient_visit_id=?) and CC.record_status='A'; \
                 select  ICD.long_icd_description,icd_code from hims_f_patient_diagnosis D inner join hims_d_icd ICD \
@@ -112,6 +112,8 @@ let getPatientDCAF = (req, res, next) => {
                 on SI.hims_d_insurance_sub_id = IM.primary_sub_id inner join hims_f_patient_visit V \
                 on V.hims_f_patient_visit_id = IM.patient_visit_id where IM.record_status='A' and IM.patient_id=? \
                 and (date(V.visit_date)=date(?) or V.hims_f_patient_visit_id =? );\
+                select significant_signs,other_signs from hims_f_patient_encounter where \
+                patient_id = ? and visit_id = ?;\
                 DELETE from hims_f_dcaf_insurance_details where hims_f_dcaf_header_id=?;\
                 DELETE from hims_f_dcaf_medication where hims_f_dcaf_header_id=?;\
                 DELETE from hims_f_dcaf_services where hims_f_dcaf_header_id=?;\
@@ -138,6 +140,8 @@ let getPatientDCAF = (req, res, next) => {
                 _input.patient_id,
                 _input.visit_date,
                 _input.visit_id,
+                _input.patient_id,
+                _input.visit_id,
                 hims_f_dcaf_header_id,
                 hims_f_dcaf_header_id,
                 hims_f_dcaf_header_id,
@@ -146,20 +150,6 @@ let getPatientDCAF = (req, res, next) => {
               printQuery: true
             })
             .then(outputResult => {
-              // let errorString =
-              //   outputResult[4].length == 0 ? "Services not yet added \n" : "";
-              // errorString +=
-              //   outputResult[5].length == 0
-              //     ? "Medication not yet added \n"
-              //     : "";
-              // errorString +=
-              //   outputResult[6].length == 0 ? "Insurance is not added \n" : "";
-              // console.log("errorString", errorString);
-              // if (errorString != "") {
-              //   _mysql.releaseConnection();
-              //   next(new Error(errorString));
-              //   return;
-              // }
 
               const _fields =
                 outputResult[0].length > 0 ? { ...outputResult[0][0] } : {};
@@ -181,30 +171,32 @@ let getPatientDCAF = (req, res, next) => {
               _fields["patient_chief_comp_main_symptoms"] = "";
               for (var i = 0; i < outputResult[2].length; i++) {
                 const _out = outputResult[2][i];
-                if (_fields["patient_duration_of_illness"] == null) {
-                  _fields["patient_duration_of_illness"] = _out["duration"];
+                // if (_fields["patient_duration_of_illness"] == null) {
+                //   _fields["patient_duration_of_illness"] = _out["duration"];
+                // } else {
+
+                _fields["patient_duration_of_illness"] = _out["duration"];
+                if (_out["comment"] == "") {
+                  _fields["patient_chief_comp_main_symptoms"] +=
+                    _out["hpi_description"] +
+                    " has pain as " +
+                    _out["pain"] +
+                    " ";
+                  "sverity as " +
+                    _out["severity"] +
+                    "  from date " +
+                    _out["onset_date"];
                 } else {
-                  if (_out["comment"] == "") {
-                    _fields["patient_chief_comp_main_symptoms"] +=
-                      _out["hpi_description"] +
-                      " has pain as " +
-                      _out["pain"] +
-                      " ";
-                    "sverity as " +
-                      _out["severity"] +
-                      "  from date " +
-                      _out["onset_date"];
-                  } else {
-                    _fields["patient_chief_comp_main_symptoms"] +=
-                      _out["comment"];
-                  }
+                  _fields["patient_chief_comp_main_symptoms"] +=
+                    _out["comment"];
                 }
+                // }
               }
               _fields["patient_diagnosys"] = "";
               for (var i = 0; i < outputResult[3].length; i++) {
                 const _out = outputResult[3][i];
-                _fields["patient_diagnosys"] +=
-                  _out["long_icd_description"] + ",";
+                _fields["patient_diagnosys"] =
+                  _out["long_icd_description"] + "/" +_out["icd_code"];
                 _fields["patient_principal_code_" + (i + 1)] = _out["icd_code"];
               }
 
@@ -217,6 +209,12 @@ let getPatientDCAF = (req, res, next) => {
               _fields["dental_cleaning"] = "N";
               _fields["patient_rta"] = "N";
               _fields["patient_work_related"] = "N";
+
+              _fields["patient_significant_signs"] =
+                outputResult[7][0]["significant_signs"]
+
+              _fields["patient_other_conditions"] =
+                outputResult[7][0]["other_signs"]
 
               _mysql
                 .executeQueryWithTransaction({
@@ -396,6 +394,62 @@ const _getDcafDetails = (_mysql, req) => {
   });
 };
 
+
+const updateDcafDetails = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    const input = req.body;
+    console.log("input:", input);
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_f_dcaf_header set `patient_marital_status`=?,\
+          `patient_duration_of_illness`=?,`patient_chief_comp_main_symptoms`=?,\
+          `patient_significant_signs`=?,`patient_diagnosys`=?,\
+          `primary`=?,`secondary`=?,`patient_other_conditions`=?,`regular_dental_trt`=?,\
+          `dental_cleaning`=?,`RTA`=?,`work_related`=?,`others`=?,\
+          `how`=?,`when`=?,`where`=?,`updated_date`=?,`updated_by`=?\
+            WHERE `hims_f_dcaf_header_id`=?;",
+        values: [
+          input.patient_marital_status,
+          input.patient_duration_of_illness,
+          input.patient_chief_comp_main_symptoms,
+          input.patient_significant_signs,
+          input.patient_diagnosys,
+          input.primary,
+          input.secondary,
+          input.patient_other_conditions,
+          input.regular_dental_trt,
+          input.dental_cleaning,
+          input.RTA,
+          input.work_related,
+          input.others,
+          input.how,
+          input.when,
+          input.where,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_f_dcaf_header_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 module.exports = {
-  getPatientDCAF
+  getPatientDCAF,
+  updateDcafDetails
 };

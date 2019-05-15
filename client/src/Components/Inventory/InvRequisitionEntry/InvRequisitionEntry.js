@@ -404,8 +404,10 @@ class InvRequisitionEntry extends Component {
                       type="button"
                       className="btn btn-other"
                       disabled={
-                        this.state.authorize1 === "Y" &&
-                        this.state.authorie2 === "Y"
+                        this.state.authBtnEnable === true
+                          ? true
+                          : this.state.authorize1 === "Y" &&
+                            this.state.authorie2 === "Y"
                           ? true
                           : false
                       }

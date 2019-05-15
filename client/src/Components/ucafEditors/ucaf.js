@@ -89,7 +89,7 @@ export default class UcafEditor extends Component {
         let insurance = this.props.dataProps.hims_f_ucaf_insurance_details[0]
 
         data.ucaf_services = this.props.dataProps.hims_f_ucaf_services
-        data.ucaf_medication = this.props.dataProps.hims_f_ucaf_medication        
+        data.ucaf_medication = this.props.dataProps.hims_f_ucaf_medication
         this.setState({...this.state, ...data, ...insurance})
     }
   }
@@ -856,7 +856,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_complaint_type === "CONGENTIAL"
+                                this.state.patient_complaint_type === "CONGENTIAL"
                                   ? true
                                   : false
                               }
@@ -868,7 +868,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_complaint_type === "RTA"
+                                this.state.patient_complaint_type === "RTA"
                                   ? true
                                   : false
                               }
@@ -880,7 +880,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_complaint_type === "WORKRELATED"
+                                this.state.patient_complaint_type === "WORKRELATED"
                                   ? true
                                   : false
                               }
@@ -892,7 +892,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_complaint_type === "VACCINATION"
+                                this.state.patient_complaint_type === "VACCINATION"
                                   ? true
                                   : false
                               }
@@ -904,7 +904,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_complaint_type === "CHECKUP"
+                                this.state.patient_complaint_type === "CHECKUP"
                                   ? true
                                   : false
                               }
@@ -916,7 +916,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_complaint_type === "PSYCHIATRIC"
+                                this.state.patient_complaint_type === "PSYCHIATRIC"
                                   ? true
                                   : false
                               }
@@ -928,7 +928,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_complaint_type === "INFERTILITY"
+                                this.state.patient_complaint_type === "INFERTILITY"
                                   ? true
                                   : false
                               }
@@ -940,7 +940,7 @@ export default class UcafEditor extends Component {
                               type="checkbox"
                               name="patient_complaint_type"
                               checked={
-                                _hims_f_ucaf_header.patient_complaint_type === "PREGNANCY"
+                                this.state.patient_complaint_type === "PREGNANCY"
                                   ? true
                                   : false
                               }

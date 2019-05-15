@@ -38,7 +38,7 @@ const itemchangeText = ($this, context, e) => {
       let value = e.value || e.target.value;
 
       $this.props.getSelectedItemDetais({
-        uri: "/pharmacyGlobal/getUomLocationStock",
+        uri: "/pharmacy/getItemMasterAndItemUom",
         module: "pharmacy",
         method: "GET",
         data: {
@@ -50,25 +50,14 @@ const itemchangeText = ($this, context, e) => {
           mappingName: "itemdetaillist"
         },
         afterSuccess: data => {
-          getItemLocationStock($this, context, {
-            location_id: $this.state.from_location_id,
-            item_id: value,
-            set: "From"
-          });
-          $this.setState({
-            [name]: value,
-            item_category_id: e.selected.category_id,
-            item_uom: e.selected.sales_uom_id,
 
-            item_group_id: e.selected.group_id,
-            quantity: 1,
-            addItemButton: false,
-
-            ItemUOM: data.uomResult
-          });
-
-          if (context !== undefined) {
-            context.updateState({
+          if (data.length > 0) {
+            getItemLocationStock($this, context, {
+              location_id: $this.state.from_location_id,
+              item_id: value,
+              set: "From"
+            });
+            $this.setState({
               [name]: value,
               item_category_id: e.selected.category_id,
               item_uom: e.selected.sales_uom_id,
@@ -77,8 +66,22 @@ const itemchangeText = ($this, context, e) => {
               quantity: 1,
               addItemButton: false,
 
-              ItemUOM: data.uomResult
+              ItemUOM: data
             });
+
+            if (context !== undefined) {
+              context.updateState({
+                [name]: value,
+                item_category_id: e.selected.category_id,
+                item_uom: e.selected.sales_uom_id,
+
+                item_group_id: e.selected.group_id,
+                quantity: 1,
+                addItemButton: false,
+
+                ItemUOM: data
+              });
+            }
           }
         }
       });
@@ -88,7 +91,7 @@ const itemchangeText = ($this, context, e) => {
       let value = e.value || e.target.value;
 
       $this.props.getSelectedItemDetais({
-        uri: "/pharmacyGlobal/getUomLocationStock",
+        uri: "/pharmacy/getItemMasterAndItemUom",
         module: "pharmacy",
         method: "GET",
         data: {
@@ -100,7 +103,7 @@ const itemchangeText = ($this, context, e) => {
           mappingName: "itemdetaillist"
         },
         afterSuccess: data => {
-          if (data.locationResult.length > 0) {
+          if (data.length > 0) {
             getItemLocationStock($this, context, {
               location_id: $this.state.to_location_id,
               item_id: value,
@@ -121,7 +124,7 @@ const itemchangeText = ($this, context, e) => {
               quantity: 1,
               addItemButton: false,
 
-              ItemUOM: data.uomResult
+              ItemUOM: data
             });
 
             if (context !== undefined) {
@@ -134,7 +137,7 @@ const itemchangeText = ($this, context, e) => {
                 quantity: 1,
                 addItemButton: false,
 
-                ItemUOM: data.uomResult
+                ItemUOM: data
               });
             }
           } else {
@@ -170,6 +173,11 @@ const AddItems = ($this, context) => {
   } else if ($this.state.quantity_required === 0) {
     swalMessage({
       title: "Please enter Quantity Required .",
+      type: "warning"
+    });
+  }else if ($this.state.item_uom === 0) {
+    swalMessage({
+      title: "UOM is mandatory .",
       type: "warning"
     });
   } else {
@@ -242,33 +250,27 @@ const deleteRequisitionDetail = ($this, context, row) => {
 };
 
 const updatePosDetail = ($this, context, row) => {
-  if($this.state.requisition_auth === true &&
-    (row.quantity_authorized === 0 || row.quantity_authorized === null)){
-    swalMessage({
-      title: "Cannot be less than zero.",
-      type: "warning"
-    });
-  }else{
-    let authBtnEnable = true;
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-    for (let k = 0; k < pharmacy_stock_detail.length; k++) {
-      if (pharmacy_stock_detail[k].item_id === row.item_id) {
-        pharmacy_stock_detail[k] = row;
-      }
-    }
-    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
-    if ($this.state.hims_f_pharamcy_material_header_id !== null) {
-      authBtnEnable = !$this.state.authBtnEnable;
-    }
-
-    if (context !== undefined) {
-      context.updateState({
-        authBtnEnable: authBtnEnable,
-        pharmacy_stock_detail: pharmacy_stock_detail
-      });
+  let authBtnEnable = true;
+  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+  for (let k = 0; k < pharmacy_stock_detail.length; k++) {
+    if (pharmacy_stock_detail[k].item_id === row.item_id) {
+      pharmacy_stock_detail[k] = row;
     }
   }
+  $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+
+  if ($this.state.hims_f_pharamcy_material_header_id !== null) {
+    authBtnEnable = !$this.state.authBtnEnable;
+  }
+
+  if (context !== undefined) {
+    context.updateState({
+      authBtnEnable: authBtnEnable,
+      pharmacy_stock_detail: pharmacy_stock_detail
+    });
+  }
+
 };
 
 const onchangegridcol = ($this, context, row, e) => {

@@ -299,6 +299,14 @@ module.exports = {
 
   getItemMasterAndItemUom: (req, res, next) => {
     const _mysql = new algaehMysql();
+
+    let _strQry = "";
+    let intValues = [];
+    if (req.query.hims_d_inventory_item_master_id != null) {
+      _strQry = "where IM.hims_d_inventory_item_master_id=?";
+      intValues.push(req.query.hims_d_inventory_item_master_id);
+    }
+
     try {
       _mysql
         .executeQuery({
@@ -308,7 +316,8 @@ module.exports = {
           IM.category_id,IM.group_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, \
           IM.item_status, IM.service_id from  hims_d_inventory_item_master IM left join \
           hims_m_inventory_item_uom MIU on IM.hims_d_inventory_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
-          left join hims_d_inventory_uom PH  on  MIU.uom_id=PH.hims_d_inventory_uom_id;",
+          left join hims_d_inventory_uom PH  on  MIU.uom_id=PH.hims_d_inventory_uom_id "+ _strQry,
+          values: intValues,
           printQuery: true
         })
         .then(result => {

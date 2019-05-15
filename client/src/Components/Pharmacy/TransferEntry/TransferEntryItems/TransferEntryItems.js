@@ -350,7 +350,12 @@ class TransferEntryItems extends Component {
                                     )
                                   },
                                   others:{
-                                    type:"number"
+                                    type:"number",
+                                    algaeh_required: "true",
+                                    errormessage:
+                                      "Please enter Transferred Quantity ..",
+                                    checkvalidation:
+                                      "value ==='' || value ==='0'"
                                   }
                                 }}
                               />
@@ -386,6 +391,7 @@ class TransferEntryItems extends Component {
                       }}
                       isEditable={true}
                       byForceEvents={true}
+                      datavalidate="id='TRANS_details'"
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteTransEntryDetail.bind(
