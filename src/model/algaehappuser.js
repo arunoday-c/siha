@@ -57,12 +57,12 @@ let getLoginUserMaster = (req, res, next) => {
 
     let where = whereCondition(extend(selectWhere, req.query));
 
-    // SELECT algaeh_m_group_user_mappings_id, app_group_id,app_group_name, user_id, username,\
-    // user_display_name, effective_start_date, role_id,role_name\
-    // from algaeh_m_group_user_mappings GUM ,algaeh_d_app_user U,algaeh_d_app_group G,algaeh_d_app_roles R\
-    // where GUM.user_id=U.algaeh_d_app_user_id and GUM.app_group_id=G.algaeh_d_app_group_id\
-    // and GUM.role_id=R.app_d_app_roles_id and  GUM.record_status='A' and U.record_status='A' \
-    // and G.record_status='A' and R.record_status='A'
+    //   SELECT algaeh_m_role_user_mappings_id, user_id,username, user_display_name,\
+    //   effective_start_date, role_id, role_code, role_name, role_discreption,  \
+    //  app_group_id, app_group_code, app_group_name, app_group_desc\
+    //  from algaeh_m_role_user_mappings RU ,algaeh_d_app_user U,algaeh_d_app_group G,\
+    //  algaeh_d_app_roles R WHERE  RU.role_id=R.app_d_app_roles_id \
+    //  AND R.app_group_id=G.algaeh_d_app_group_id AND RU.user_id=U.algaeh_d_app_user_id
 
     let adminUSer = "";
     if (req.userIdentity.role_type == "AD") {
@@ -71,12 +71,13 @@ let getLoginUserMaster = (req, res, next) => {
 
     db.getConnection((error, connection) => {
       connection.query(
-        "SELECT algaeh_m_role_user_mappings_id, user_id,username, user_display_name,\
-        effective_start_date, role_id, role_code, role_name, role_discreption,  \
-       app_group_id, app_group_code, app_group_name, app_group_desc\
-       from algaeh_m_role_user_mappings RU ,algaeh_d_app_user U,algaeh_d_app_group G,\
-       algaeh_d_app_roles R WHERE  RU.role_id=R.app_d_app_roles_id \
-       AND R.app_group_id=G.algaeh_d_app_group_id AND RU.user_id=U.algaeh_d_app_user_id " +
+        "select  algaeh_d_app_user_id,username,user_display_name,user_type,hims_d_employee_id,\
+        employee_code,full_name,role_name,app_group_name,algaeh_m_role_user_mappings_id,\
+        hims_m_user_employee_id from  hims_m_user_employee UM inner join hims_d_employee E \
+        on UM.employee_id=E.hims_d_employee_id inner join algaeh_d_app_user U on UM.user_id=U.algaeh_d_app_user_id\
+        inner join algaeh_m_role_user_mappings RU  on  UM.user_id=RU.user_id inner join algaeh_d_app_roles R on  \
+        RU.role_id=R.app_d_app_roles_id inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
+        where E.record_status='A' and U.record_status='A' " +
           adminUSer +
           "and " +
           where.condition +
@@ -207,7 +208,7 @@ let selectAppGroup = (req, res, next) => {
     if (req.userIdentity.role_type != "GN") {
       let adminUSer = "";
       if (req.userIdentity.role_type == "AD") {
-        adminUSer = " and   group_type <> 'AD'  and group_type <>'SU' ";
+        adminUSer = " and   group_type <> 'AD' ";
       }
 
       let algaeh_d_app_group_id = "";
@@ -221,7 +222,7 @@ let selectAppGroup = (req, res, next) => {
         .executeQuery({
           query:
             "select algaeh_d_app_group_id, app_group_code, app_group_name, app_group_desc,\
-          group_type, app_group_status  from algaeh_d_app_group where record_status='A'" +
+          group_type, app_group_status  from algaeh_d_app_group where record_status='A'  and group_type <>'SU'  " +
             adminUSer +
             algaeh_d_app_group_id +
             " order by algaeh_d_app_group_id desc",
@@ -308,17 +309,22 @@ let selectRoles = (req, res, next) => {
     let adminUSer = "";
 
     if (req.userIdentity.role_type == "AD") {
-      adminUSer = " and   role_type <> 'AD' and  role_type <>'SU' ";
+      adminUSer = " and   role_type <> 'AD' ";
     }
-    debugLog("dd:", req.userIdentity);
+
+    let group_id = "";
+    if (req.query.algaeh_d_app_group_id > 0) {
+      group_id = ` and  app_group_id=${req.query.algaeh_d_app_group_id} `;
+    }
+
     db.getConnection((error, connection) => {
       if (req.userIdentity.role_type != "GN") {
         connection.query(
-          "select app_d_app_roles_id,app_group_id, role_code, role_name, role_discreption, role_type\
-        from algaeh_d_app_roles where record_status='A'  and app_group_id=? " +
-            adminUSer +
-            " order by app_d_app_roles_id desc",
-          [req.query.algaeh_d_app_group_id],
+          `select app_d_app_roles_id,G.app_group_name,role_code,role_name,role_discreption,role_type\
+          , loan_authorize_privilege, leave_authorize_privilege, edit_monthly_attendance from algaeh_d_app_roles R inner join algaeh_d_app_group G on R.app_group_id=G.algaeh_d_app_group_id\
+           where R.record_status='A'   and  role_type <>'SU' ${group_id}            ${adminUSer} \
+             order by app_d_app_roles_id desc`,
+
           (error, result) => {
             releaseDBConnection(db, connection);
             if (error) {
@@ -357,7 +363,17 @@ let createUserLogin = (req, res, next) => {
       if (error) {
         next(error);
       }
-      if (input.user_type != "SU" && input.user_type != "AD") {
+
+      if (
+        req.userIdentity.algaeh_d_app_user_id == "AD" &&
+        input.user_type != "AD"
+      ) {
+        req.records = {
+          validUser: false,
+          message: "You don't have rights to add this user"
+        };
+        next();
+      } else {
         if (req.userIdentity.role_type != "GN") {
           connection.beginTransaction(error => {
             if (error) {
@@ -515,12 +531,6 @@ let createUserLogin = (req, res, next) => {
           };
           next();
         }
-      } else {
-        req.records = {
-          validUser: false,
-          message: "You don't have rights to add this user"
-        };
-        next();
       }
     });
   } catch (e) {

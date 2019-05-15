@@ -8,6 +8,8 @@ import {
 } from "../../Wrapper/algaehWrapper";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { GROUP_TYPE } from "../../../utils/GlobalVariables.json";
+import Enumerable from "linq";
+import swal from "sweetalert2";
 
 class Groups extends Component {
   constructor(props) {
@@ -29,18 +31,31 @@ class Groups extends Component {
           });
         }
       },
-      onError: err => {}
+      onError: err => {
+        swalMessage({
+          title: err.message,
+          type: "error"
+        });
+      }
     });
   }
-
+  clearState() {
+    this.setState({
+      app_group_code: null,
+      app_group_name: null,
+      app_group_desc: null,
+      group_type: null
+    });
+  }
   addGroups() {
     algaehApiCall({
-      uri: "",
+      uri: "/algaehMasters/addAlgaehGroupMAster",
       method: "POST",
       data: {
         app_group_code: this.state.app_group_code,
         app_group_name: this.state.app_group_name,
-        app_group_desc: this.state.app_group_desc
+        app_group_desc: this.state.app_group_desc,
+        group_type: this.state.group_type
       },
       onSuccess: res => {
         if (res.data.success) {
@@ -49,10 +64,47 @@ class Groups extends Component {
             type: "success"
           });
         }
+        this.getGroups();
+        this.clearState();
       },
       onError: err => {
         swalMessage({
           title: err.message,
+          type: "error"
+        });
+      }
+    });
+  }
+  changeGridEditors(row, e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row.update();
+  }
+
+  updateGroups(data) {
+    algaehApiCall({
+      uri: "/algaehMasters/updateAlgaehGroupMAster",
+      method: "PUT",
+      data: {
+        app_group_name: data.app_group_name,
+        app_group_desc: data.app_group_desc,
+        group_type: data.group_type,
+        algaeh_d_app_group_id: data.algaeh_d_app_group_id
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          swalMessage({
+            title: "Record updated successfully",
+            type: "success"
+          });
+
+          this.getGroups();
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
           type: "error"
         });
       }
@@ -70,9 +122,48 @@ class Groups extends Component {
     });
   }
 
-  deleteGroups() {}
-  updateGroups() {}
+  deleteGroups(data) {
+    swal({
+      title: "Delete Group : " + data.app_group_name + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/algaehMasters/deleteAlgaehGroupMAster",
+          method: "DELETE",
+          data: {
+            algaeh_d_app_group_id: data.algaeh_d_app_group_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success"
+              });
 
+              this.getGroups();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
   render() {
     return (
       <div className="groups">
@@ -192,7 +283,30 @@ class Groups extends Component {
                               forceLabel: "Group Name"
                             }}
                           />
-                        )
+                        ),
+
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "app_group_name",
+                                value: row.app_group_name,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage: "Group Name- cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
                       },
                       {
                         fieldName: "app_group_desc",
@@ -204,11 +318,32 @@ class Groups extends Component {
                             }}
                           />
                         ),
-                        disabled: true
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{ className: "col" }}
+                              textBox={{
+                                className: "txt-fld",
+                                name: "app_group_desc",
+                                value: row.app_group_desc,
+                                events: {
+                                  onChange: this.changeGridEditors.bind(
+                                    this,
+                                    row
+                                  )
+                                },
+                                others: {
+                                  errormessage:
+                                    "Group Description- cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
                       },
                       {
-                        fieldName: "app_group_type",
-
+                        fieldName: "group_type",
                         label: (
                           <AlgaehLabel
                             label={{
@@ -216,10 +351,44 @@ class Groups extends Component {
                             }}
                           />
                         ),
-                        disabled: true
+
+                        displayTemplate: row => {
+                          let x = Enumerable.from(GROUP_TYPE)
+                            .where(w => w.value === row.group_type)
+                            .firstOrDefault();
+                          return <span>{x !== undefined ? x.name : ""}</span>;
+                        },
+
+                        editorTemplate: row => {
+                          return (
+                            <AlagehAutoComplete
+                              div={{ className: "col" }}
+                              selector={{
+                                className: "txt-fld",
+                                name: "group_type",
+                                value: row.group_type,
+                                dataSource: {
+                                  textField: "name",
+                                  valueField: "value",
+                                  data: GROUP_TYPE
+                                },
+
+                                onChange: this.changeGridEditors.bind(
+                                  this,
+                                  row
+                                ),
+
+                                others: {
+                                  errormessage: "Group type- cannot be blank",
+                                  required: true
+                                }
+                              }}
+                            />
+                          );
+                        }
                       }
                     ]}
-                    keyId="algaeh_d_module_id"
+                    keyId="algaeh_d_app_group_id"
                     dataSource={{
                       data: this.state.groups
                     }}

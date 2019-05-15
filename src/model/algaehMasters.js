@@ -17,12 +17,13 @@ let addAlgaehGroupMAster = (req, res, next) => {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `algaeh_d_app_group` (app_group_code, app_group_name, app_group_desc, created_date, created_by, updated_date, updated_by)\
-              VALUE(?,?,?,?,?,?,?)",
+            "INSERT INTO `algaeh_d_app_group` (app_group_code, app_group_name, app_group_desc,group_type, created_date, created_by, updated_date, updated_by)\
+              VALUE(?,?,?,?,?,?,?,?)",
           values: [
             input.app_group_code,
             input.app_group_name,
             input.app_group_desc,
+            input.group_type,
             new Date(),
             input.created_by,
             new Date(),
@@ -52,30 +53,259 @@ let addAlgaehGroupMAster = (req, res, next) => {
   }
 };
 
+//created by irfan: to
+let updateAlgaehGroupMAster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = extend({}, req.body);
+
+    if (req.userIdentity.role_type != "GN") {
+      _mysql
+        .executeQuery({
+          query:
+            "update algaeh_d_app_group set app_group_name=?,app_group_desc=?,group_type=?,\
+            updated_by=?,updated_date=? where algaeh_d_app_group_id=?",
+          values: [
+            input.app_group_name,
+            input.app_group_desc,
+            input.group_type,
+            input.updated_by,
+            new Date(),
+            input.algaeh_d_app_group_id
+          ],
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+//created by irfan: to
+let deleteAlgaehGroupMAster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = extend({}, req.body);
+
+    if (req.userIdentity.role_type != "GN") {
+      _mysql
+        .executeQuery({
+          query:
+            "update algaeh_d_app_group set record_status='I', updated_by=?,updated_date=? where algaeh_d_app_group_id=?",
+          values: [input.updated_by, new Date(), input.algaeh_d_app_group_id]
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
 //created by irfan: to add addAlgaehRoleMAster
 let addAlgaehRoleMAster = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
     let input = req.body;
     if (req.userIdentity.role_type != "GN") {
+      if (req.userIdentity.role_type == "AD" && input.role_type == "AD") {
+        req.records = {
+          validUser: false,
+          message: "You cant add another Admin"
+        };
+        next();
+      } else {
+        _mysql
+          .executeQuery({
+            query:
+              "INSERT INTO `algaeh_d_app_roles` (app_group_id, role_code, role_name, role_discreption,\
+              role_type, loan_authorize_privilege, leave_authorize_privilege, edit_monthly_attendance,created_date, created_by, updated_date, updated_by)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
+            values: [
+              input.app_group_id,
+              input.role_code,
+              input.role_name,
+              input.role_discreption,
+              input.role_type,
+              input.loan_authorize_privilege,
+              input.leave_authorize_privilege,
+              input.edit_monthly_attendance,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              req.userIdentity.algaeh_d_app_user_id
+            ]
+            // printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      }
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+//created by irfan: to add updateAlgaehRoleMAster
+let updateAlgaehRoleMAster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+    if (req.userIdentity.role_type != "GN") {
+      if (req.userIdentity.role_type == "AD" && input.role_type == "AD") {
+        req.records = {
+          validUser: false,
+          message: "You cant add another Admin"
+        };
+        next();
+      } else {
+        _mysql
+          .executeQuery({
+            query:
+              "update algaeh_d_app_roles set role_name=?,role_discreption=?,role_type=?,\
+              loan_authorize_privilege=?, leave_authorize_privilege=?, edit_monthly_attendance=?,updated_by=?, updated_date=?\
+              where app_d_app_roles_id=?",
+            values: [
+              input.role_name,
+              input.role_discreption,
+              input.role_type,
+              input.loan_authorize_privilege,
+              input.leave_authorize_privilege,
+              input.edit_monthly_attendance,
+              req.userIdentity.algaeh_d_app_user_id,
+              new Date(),
+              input.app_d_app_roles_id
+            ]
+            // printQuery: true
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+            req.records = result;
+            next();
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      }
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+//created by irfan: to
+let deleteAlgaehRoleMAster = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = extend({}, req.body);
+
+    if (req.userIdentity.role_type != "GN") {
       _mysql
         .executeQuery({
           query:
-            "INSERT INTO `algaeh_d_app_group` (app_group_id, role_code, role_name, role_discreption,\
-            ,created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?)",
+            "update algaeh_d_app_roles set record_status='I', updated_by=?,updated_date=? where app_d_app_roles_id=?",
           values: [
-            input.app_group_id,
-            input.role_code,
-            input.role_name,
-            input.role_discreption,
-
+            req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            input.created_by,
-            new Date(),
-            input.updated_by
+            input.app_d_app_roles_id
           ]
-          // printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } else {
+      req.records = {
+        validUser: false,
+        message: "you dont have admin privilege"
+      };
+      next();
+    }
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+//created by irfan: to
+let deleteUserLogin = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = extend({}, req.body);
+
+    if (req.userIdentity.role_type != "GN") {
+      _mysql
+        .executeQuery({
+          query:
+            "delete from hims_m_user_employee where  user_id=?;\
+            delete from algaeh_m_role_user_mappings where  user_id=?;\
+            delete from algaeh_d_app_password where  userid=?;\
+            update algaeh_d_app_user set username= concat('DEL-',username),\
+            user_display_name=concat(user_display_name,': empId-',?), record_status='I' ,updated_by=?,updated_date=?\
+            where  algaeh_d_app_user_id=?",
+          values: [
+            input.user_id,
+            input.user_id,
+            input.user_id,
+            input.employee_id,
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            input.user_id
+          ]
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -245,9 +475,7 @@ let getRoleBaseActiveModules = (req, res, next) => {
       (req.userIdentity.role_type == "SU" &&
         req.userIdentity.user_type == "SU" &&
         from_assignment == "N") ||
-      (req.userIdentity.role_type == "AD" &&
-        req.userIdentity.user_type == "AD" &&
-        from_assignment == "N")
+      (req.userIdentity.role_type == "AD" && from_assignment == "N")
     ) {
       _mysql
         .executeQuery({
@@ -2175,7 +2403,12 @@ let method1 = (req, res, next) => {
 };
 module.exports = {
   addAlgaehGroupMAster,
+  updateAlgaehGroupMAster,
+  deleteAlgaehGroupMAster,
   addAlgaehRoleMAster,
+  updateAlgaehRoleMAster,
+  deleteAlgaehRoleMAster,
+
   addAlgaehModule,
   getRoleBaseActiveModules,
   getRoleBaseInActiveComponents,
@@ -2197,5 +2430,6 @@ module.exports = {
   assignScreens,
   assignComponents,
   updateAlgaehModules,
+  deleteUserLogin,
   method1
 };

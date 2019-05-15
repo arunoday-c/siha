@@ -12,7 +12,8 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { USER_TYPE } from "../../../utils/GlobalVariables.json";
 import spotlightSearch from "../../../Search/spotlightSearch.json";
-
+import Enumerable from "linq";
+import swal from "sweetalert2";
 class LoginUsers extends Component {
   constructor(props) {
     super(props);
@@ -136,6 +137,50 @@ class LoginUsers extends Component {
   deleteLoginUser() {}
   updateLoginUser() {}
 
+  deleteLoginUser(data) {
+    swal({
+      title: "Delete user : " + data.username + "?",
+      type: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes!",
+      confirmButtonColor: "#44b8bd",
+      cancelButtonColor: "#d33",
+      cancelButtonText: "No"
+    }).then(willDelete => {
+      if (willDelete.value) {
+        algaehApiCall({
+          uri: "/algaehMasters/deleteUserLogin",
+          method: "DELETE",
+          data: {
+            user_id: data.algaeh_d_app_user_id,
+            employee_id: data.hims_d_employee_id
+          },
+          onSuccess: response => {
+            if (response.data.success) {
+              swalMessage({
+                title: "Record updated successfully",
+                type: "success"
+              });
+
+              this.getLoginUsers();
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Delete request cancelled",
+          type: "error"
+        });
+      }
+    });
+  }
+
   addLoginUser() {
     AlgaehValidation({
       alertTypeIcon: "warning",
@@ -216,11 +261,11 @@ class LoginUsers extends Component {
                     </section>
                   );
                 }}
-                name="employee_id"
+                name="hims_d_employee_id"
                 columns={spotlightSearch.Employee_details.employee}
                 displayField="full_name"
                 value={this.state.full_name}
-                searchName="employee"
+                searchName="new_employees"
                 onClick={this.searchSelect.bind(this)}
               />
 
@@ -410,7 +455,31 @@ class LoginUsers extends Component {
                           fieldName: "username",
                           label: (
                             <AlgaehLabel label={{ fieldName: "username" }} />
-                          )
+                          ),
+                          disabled: true,
+                          editorTemplate: row => {
+                            return (
+                              <AlagehFormGroup
+                                div={{ className: "col" }}
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "algaeh_d_app_user_id",
+                                  value: row.algaeh_d_app_user_id,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
+                                  },
+                                  others: {
+                                    errormessage:
+                                      " Description- cannot be blank",
+                                    required: true
+                                  }
+                                }}
+                              />
+                            );
+                          }
                         },
                         {
                           fieldName: "user_display_name",
@@ -418,69 +487,78 @@ class LoginUsers extends Component {
                             <AlgaehLabel
                               label={{ fieldName: "display_name" }}
                             />
-                          )
+                          ),
+                          disabled: true
                         },
                         {
                           fieldName: "app_group_name",
                           label: <AlgaehLabel label={{ fieldName: "group" }} />,
+                          disabled: true
+                        },
+                        {
+                          fieldName: "role_name",
+                          label: <AlgaehLabel label={{ fieldName: "role" }} />,
+                          disabled: true
+                        },
+
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "full_name" }} />
+                          ),
+                          disabled: true,
                           editorTemplate: row => {
                             return (
-                              <AlagehAutoComplete
+                              <AlagehFormGroup
                                 div={{ className: "col" }}
-                                selector={{
-                                  name: "app_group_id",
-                                  className: "select-fld",
-                                  value: row.app_group_id,
-                                  dataSource: {
-                                    textField: "app_group_name",
-                                    valueField: "algaeh_d_app_group_id",
-                                    data: this.state.groups
+                                textBox={{
+                                  className: "txt-fld",
+                                  name: "hims_d_employee_id",
+                                  value: row.hims_d_employee_id,
+                                  events: {
+                                    onChange: this.changeGridEditors.bind(
+                                      this,
+                                      row
+                                    )
                                   },
                                   others: {
-                                    errormessage: "Groups cannot be blank",
+                                    errormessage:
+                                      " Description- cannot be blank",
                                     required: true
-                                  },
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
+                                  }
                                 }}
                               />
                             );
                           }
                         },
                         {
-                          fieldName: "role_name",
-                          label: <AlgaehLabel label={{ fieldName: "role" }} />,
-
-                          editorTemplate: row => {
+                          fieldName: "employee_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ forceLabel: "Employee code" }}
+                            />
+                          ),
+                          disabled: true
+                        },
+                        {
+                          fieldName: "user_type",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "User Type" }} />
+                          ),
+                          disabled: true,
+                          displayTemplate: row => {
+                            let x = Enumerable.from(USER_TYPE)
+                              .where(w => w.value === row.user_type)
+                              .firstOrDefault();
                             return (
-                              <AlagehAutoComplete
-                                div={{ className: "col" }}
-                                selector={{
-                                  name: "role_id",
-                                  className: "select-fld",
-                                  value: row.role_id,
-                                  dataSource: {
-                                    textField: "role_name",
-                                    valueField: "app_d_app_roles_id",
-                                    data: this.state.roles
-                                  },
-                                  others: {
-                                    errormessage: "Role cannot be blank",
-                                    required: true
-                                  },
-                                  onChange: this.changeGridEditors.bind(
-                                    this,
-                                    row
-                                  )
-                                }}
-                              />
+                              <span>
+                                {x !== undefined ? x.name : "Unknown user"}
+                              </span>
                             );
                           }
                         }
                       ]}
-                      keyId="hims_d_login_user_id"
+                      keyId="hims_m_user_employee_id"
                       dataSource={{
                         data: this.state.login_users
                       }}
