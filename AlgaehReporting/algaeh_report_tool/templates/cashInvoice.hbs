@@ -4,9 +4,9 @@
     <div class="print-body">
 
         <section>
-           
+
   <table class="tableForLabel" cell-padding="0">
-      
+
       <tr><td><label class="textEnLft">TRN No</label>:<span class="valueText">{{header.tax_number}}</span><label class="textArRht">رقم التسجيل الضريبي</label></td></tr>
         <tr>
                     <td colspan="4" style="background:#f2f2f2;height:0px;"></td>
@@ -47,17 +47,17 @@
                         <td>{{capitalization service_name}}</td>
                         <td class="numberFld">{{gross_amount}}</td>
                           <td class="numberFld">{{discount_amount}}</td>
-                          <td class="numberFld">{{company_resp}}</td>
-                          <td class="numberFld">{{company_tax}}</td>
-                          <td class="numberFld">{{net_claim}}</td>
+                          <td class="numberFld">{{patient_share}}</td>
+                          <td class="numberFld">{{patient_tax}}</td>
+                          <td class="numberFld">{{patient_payable}}</td>
                     </tr>
                     {{/each}}
                     {{/each}}
   <tr class="footerTotalUp">  <td colspan="2"><span style="text-align:right">Total</span></td>
                           <td class="numberFld">{{total_gross_amount}}</td>
                           <td class="numberFld">{{total_discount_amount}}</td>
-                          <td class="numberFld">{{total_company_resp}}</td>
-                          <td class="numberFld">{{total_company_tax}}</td>
+                          <td class="numberFld">{{total_patient_share}}</td>
+                          <td class="numberFld">{{total_patient_tax}}</td>
                           <td class="numberFld">{{total_net_claim}}</td>
                     </tr>
 

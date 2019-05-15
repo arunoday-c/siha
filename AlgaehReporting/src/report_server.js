@@ -33,7 +33,7 @@ app.use(compression());
 if (process.env.NODE_ENV == "production") {
   app.set("view cache", true);
 }
-
+process.setMaxListeners(0);
 process.on("warning", warning => {
   console.warning("warning", warning);
 });
