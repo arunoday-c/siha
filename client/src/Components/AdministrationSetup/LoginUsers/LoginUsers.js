@@ -139,7 +139,7 @@ class LoginUsers extends Component {
 
   deleteLoginUser(data) {
     swal({
-      title: "Delete user : " + data.username + "?",
+      title: "Do you want to delete user: "+data.username+"?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
@@ -504,7 +504,7 @@ class LoginUsers extends Component {
                         {
                           fieldName: "full_name",
                           label: (
-                            <AlgaehLabel label={{ forceLabel: "full_name" }} />
+                            <AlgaehLabel label={{ forceLabel: "Full Name" }} />
                           ),
                           disabled: true,
                           editorTemplate: row => {

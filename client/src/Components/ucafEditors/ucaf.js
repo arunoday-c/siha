@@ -122,101 +122,33 @@ export default class UcafEditor extends Component {
                             To be completed & ID verified by the
                             reception/nurse:
                           </h5>
+                        </div>  <div className="col-6">
+                          <label>Provider Name</label>
+                          <h6>{this.state.provider_name}</h6>
                         </div>
-                        <AlagehFormGroup
-                          div={{ className: "col-6   form-group" }}
-                          label={{
-                            forceLabel: "Provider Name",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.provider_name,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-6   form-group" }}
-                          label={{
-                            forceLabel: "Insurance Company Name",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.primary_insurance_company_name,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "TPA Company Name",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.primary_tpa_insurance_company_name,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Patient File Number",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.patient_code,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlagehFormGroup
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Department",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "",
-                            value: this.state.sub_department_name,
-                            events: {},
-                            option: {
-                              type: "text"
-                            }
-                          }}
-                        />
-                        <AlgaehDateHandler
-                          div={{ className: "col-4 form-group" }}
-                          label={{
-                            forceLabel: "Date of Visit",
-                            isImp: false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: ""
-                          }}
-                          value={this.state.visit_date}
-                          maxDate={new Date()}
-                          events={{}}
-                        />
+                        <div className="col-6">
+                          <label>Insurance Company Name</label>
+                          <h6>{this.state.primary_insurance_company_name}</h6>
+                        </div>
+                        <div className="col-4">
+                          <label>TPA Company Name</label>
+                          <h6>{this.state.primary_tpa_insurance_company_name}</h6>
+                        </div> <div className="col-4">
+                          <label>Patient File Number</label>
+                          <h6>{this.state.patient_code}</h6>
+                        </div>
+                        <div className="col-4">
+                          <label>Department</label>
+                          <h6>{this.state.sub_department_name}</h6>
+                        </div>
+                  
+                        <div className="col-4">
+                          <label>Date of Visit</label>
+                          <h6>{this.state.visit_date}</h6>
+                        </div>
+                  
+                       
+                      
                         <div
                           className="col-6 customRadio"
                           style={{ paddingTop: 24, borderBottom: "none" }}
