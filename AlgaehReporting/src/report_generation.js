@@ -24,10 +24,10 @@ const compile = async function(templateName, data) {
     `${templateName}.hbs`
   );
   const html = await fs.readFile(filePath, "utf-8");
-  // const comp = await hbs.compile(html)(data);
+  const comp = await hbs.compile(html)(data);
   //
-  // return comp;
-  return "رقم الفاتورة";
+  return comp;
+  // return "رقم الفاتورة";
 };
 
 const compileExcel = async function(templateName, data) {
