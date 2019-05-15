@@ -966,8 +966,8 @@ export default class UcafEditor extends Component {
                           }}
                         />
 
-                        <div className="col-12">
-                          <h5>
+                        <div className="col-12 margin-top-15">
+                          <h5 style={{margin:0}}>
                             Suggestive line(s) of management: Kindly, enumerate
                             the recommended investigation, and/or procedures{" "}
                             <b>For outpatient approvals only:</b>
@@ -1023,8 +1023,8 @@ export default class UcafEditor extends Component {
                           />
                         </div>
 
-                        <div className="col-12">
-                          <h5>
+                        <div className="col-12 margin-top-15">
+                          <h5 style={{margin:0}}>
                             Providers Approval/Coding staff must review/code the
                             recommended services(s) and allocate cost and
                             complete the following:
