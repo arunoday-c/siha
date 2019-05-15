@@ -31,9 +31,11 @@ let getPatientUCAF = (req, res, next) => {
           next(new Error("Patient don't have any insurance"));
           return;
         }
-        let hims_f_ucaf_header_id = result[0].hims_f_ucaf_header_id
 
-        console.log("forceReplace", _input.forceReplace)
+        console.log("result[0]", result[0][0]);
+        let hims_f_ucaf_header_id =
+          result[0][0] == undefined ? null : result[0][0].hims_f_ucaf_header_id;
+
         if (_input.forceReplace == "true") {
           result[0] = [];
         }
@@ -106,7 +108,10 @@ let getPatientUCAF = (req, res, next) => {
                 on SI.hims_d_insurance_sub_id = IM.primary_sub_id inner join hims_f_patient_visit V \
                 on V.hims_f_patient_visit_id = IM.patient_visit_id where IM.record_status='A' and IM.patient_id=? \
                 and (date(V.visit_date)=date(?) or V.hims_f_patient_visit_id =? );\
-                DELETE from hims_f_ucaf_header where hims_f_ucaf_header_id=?",
+                DELETE from hims_f_ucaf_insurance_details where hims_f_ucaf_header_id=?;\
+                DELETE from hims_f_ucaf_medication where hims_f_ucaf_header_id=?;\
+                DELETE from hims_f_ucaf_services where hims_f_ucaf_header_id=?;\
+                DELETE from hims_f_ucaf_header where hims_f_ucaf_header_id=?;",
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -129,9 +134,12 @@ let getPatientUCAF = (req, res, next) => {
                 _input.patient_id,
                 _input.visit_date,
                 _input.visit_id,
+                hims_f_ucaf_header_id,
+                hims_f_ucaf_header_id,
+                hims_f_ucaf_header_id,
                 hims_f_ucaf_header_id
               ],
-               printQuery: true
+              printQuery: true
             })
             .then(outputResult => {
               // let errorString =
@@ -168,28 +176,28 @@ let getPatientUCAF = (req, res, next) => {
               }
               _fields["patient_chief_comp_main_symptoms"] = "";
               for (var i = 0; i < outputResult[2].length; i++) {
-                console.log("outputResult2", outputResult[2].length)
+                console.log("outputResult2", outputResult[2].length);
                 const _out = outputResult[2][i];
 
                 // if (_fields["patient_duration_of_illness"] == null) {
                 //   _fields["patient_duration_of_illness"] = _out["duration"];
                 // } else {
-                  _fields["patient_duration_of_illness"] = _out["duration"];
-                  if (_out["comment"] == "") {
-                    _fields["patient_chief_comp_main_symptoms"] +=
-                      _out["hpi_description"] +
-                      " has pain as " +
-                      _out["pain"] +
-                      " ";
-                    "sverity as " +
-                      _out["severity"] +
-                      "  from date " +
-                      _out["onset_date"];
-                  } else {
-                    console.log("_out", _out["comment"])
-                    _fields["patient_chief_comp_main_symptoms"] +=
-                      _out["comment"];
-                  }
+                _fields["patient_duration_of_illness"] = _out["duration"];
+                if (_out["comment"] == "") {
+                  _fields["patient_chief_comp_main_symptoms"] +=
+                    _out["hpi_description"] +
+                    " has pain as " +
+                    _out["pain"] +
+                    " ";
+                  "sverity as " +
+                    _out["severity"] +
+                    "  from date " +
+                    _out["onset_date"];
+                } else {
+                  console.log("_out", _out["comment"]);
+                  _fields["patient_chief_comp_main_symptoms"] +=
+                    _out["comment"];
+                }
                 // }
               }
               _fields["patient_diagnosys"] = "";

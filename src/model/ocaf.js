@@ -16,11 +16,7 @@ let getPatientOCAF = (req, res, next) => {
       .executeQuery({
         query:
           "SELECT * FROM `hims_f_ocaf_header` where patient_id=? and visit_id =?;select insured from hims_f_patient_visit where hims_f_patient_visit_id=?; ",
-        values: [
-          _input.patient_id,
-          _input.visit_id,
-          _input.visit_id
-        ],
+        values: [_input.patient_id, _input.visit_id, _input.visit_id],
         printQuery: true
       })
       .then(result => {
@@ -29,6 +25,13 @@ let getPatientOCAF = (req, res, next) => {
           _mysql.releaseConnection();
           next(new Error("Patient don't have any insurance"));
           return;
+        }
+
+        let hims_f_ocaf_header_id =
+          result[0][0] == undefined ? null : result[0][0].hims_f_ocaf_header_id;
+
+        if (_input.forceReplace == "true") {
+          result[0] = [];
         }
 
         if (result[0].length == 0) {
@@ -71,7 +74,9 @@ let getPatientOCAF = (req, res, next) => {
                 `bcva_nv_left_vision`,`cl_type`,\
                 multi_coated,varilux,light,aspheric,bifocal,medium,lenticular,single_vision,dark,\
                 safety_thickness,anti_reflecting_coating,photosensitive,high_index,colored,anti_scratch\
-                from hims_f_glass_prescription where patient_id=? and visit_id=?",
+                from hims_f_glass_prescription where patient_id=? and visit_id=?;\
+                DELETE from hims_f_ocaf_insurance_details where hims_f_ocaf_header_id=?;\
+                DELETE from hims_f_ocaf_header where hims_f_ocaf_header_id=?;",
               values: [
                 _input.patient_id,
                 _input.visit_date,
@@ -80,7 +85,9 @@ let getPatientOCAF = (req, res, next) => {
                 _input.visit_date,
                 _input.visit_id,
                 _input.patient_id,
-                _input.visit_id
+                _input.visit_id,
+                hims_f_ocaf_header_id,
+                hims_f_ocaf_header_id
               ],
               printQuery: true
             })
@@ -103,54 +110,54 @@ let getPatientOCAF = (req, res, next) => {
               const _fields =
                 outputResult[0].length > 0 ? { ...outputResult[0][0] } : {};
 
-                for (var i = 0; i < outputResult[2].length; i++) {
-                  const _out = outputResult[2][i];
-                  _fields["dv_right_sch"] = _out["bcva_dv_right_sch"];
-                  _fields["dv_right_cyl"] = _out["bcva_dv_right_cyl"];
-                  _fields["dv_right_axis"] = _out["bcva_dv_right_axis"];
-                  _fields["dv_right_prism"] = _out["bcva_dv_right_prism"];
-                  _fields["dv_right_vision"] = _out["bcva_dv_right_vision"];
+              for (var i = 0; i < outputResult[2].length; i++) {
+                const _out = outputResult[2][i];
+                _fields["dv_right_sch"] = _out["bcva_dv_right_sch"];
+                _fields["dv_right_cyl"] = _out["bcva_dv_right_cyl"];
+                _fields["dv_right_axis"] = _out["bcva_dv_right_axis"];
+                _fields["dv_right_prism"] = _out["bcva_dv_right_prism"];
+                _fields["dv_right_vision"] = _out["bcva_dv_right_vision"];
 
-                  _fields["nv_right_sch"] = _out["bcva_nv_right_sch"];
-                  _fields["nv_right_cyl"] = _out["bcva_nv_right_cyl"];
-                  _fields["nv_right_axis"] = _out["bcva_nv_right_axis"];
-                  _fields["nv_right_prism"] = _out["bcva_nv_right_prism"];
-                  _fields["nv_right_vision"] = _out["bcva_nv_right_vision"];
+                _fields["nv_right_sch"] = _out["bcva_nv_right_sch"];
+                _fields["nv_right_cyl"] = _out["bcva_nv_right_cyl"];
+                _fields["nv_right_axis"] = _out["bcva_nv_right_axis"];
+                _fields["nv_right_prism"] = _out["bcva_nv_right_prism"];
+                _fields["nv_right_vision"] = _out["bcva_nv_right_vision"];
 
-                  _fields["dv_left_sch"] = _out["bcva_dv_left_sch"];
-                  _fields["dv_left_cyl"] = _out["bcva_dv_left_cyl"];
-                  _fields["dv_left_axis"] = _out["bcva_dv_left_axis"];
-                  _fields["dv_left_prism"] = _out["bcva_dv_left_prism"];
-                  _fields["dv_left_vision"] = _out["bcva_dv_left_vision"];
+                _fields["dv_left_sch"] = _out["bcva_dv_left_sch"];
+                _fields["dv_left_cyl"] = _out["bcva_dv_left_cyl"];
+                _fields["dv_left_axis"] = _out["bcva_dv_left_axis"];
+                _fields["dv_left_prism"] = _out["bcva_dv_left_prism"];
+                _fields["dv_left_vision"] = _out["bcva_dv_left_vision"];
 
-                  _fields["nv_left_sch"] = _out["bcva_nv_left_sch"];
-                  _fields["nv_left_cyl"] = _out["bcva_nv_left_cyl"];
-                  _fields["nv_left_axis"] = _out["bcva_nv_left_axis"];
-                  _fields["nv_left_prism"] = _out["bcva_nv_left_prism"];
-                  _fields["nv_left_vision"] = _out["bcva_nv_left_vision"];
+                _fields["nv_left_sch"] = _out["bcva_nv_left_sch"];
+                _fields["nv_left_cyl"] = _out["bcva_nv_left_cyl"];
+                _fields["nv_left_axis"] = _out["bcva_nv_left_axis"];
+                _fields["nv_left_prism"] = _out["bcva_nv_left_prism"];
+                _fields["nv_left_vision"] = _out["bcva_nv_left_vision"];
 
-                  _fields["contact_lense_type"] = _out["cl_type"];
+                _fields["contact_lense_type"] = _out["cl_type"];
 
+                _fields["multi_coated"] = _out["multi_coated"];
+                _fields["varilux"] = _out["varilux"];
+                _fields["light"] = _out["light"];
+                _fields["aspheric"] = _out["aspheric"];
+                _fields["bifocal"] = _out["bifocal"];
+                _fields["medium"] = _out["medium"];
+                _fields["lenticular"] = _out["lenticular"];
+                _fields["single_vision"] = _out["single_vision"];
+                _fields["dark"] = _out["dark"];
+                _fields["safety_thickness"] = _out["safety_thickness"];
+                _fields["anti_reflecting_coating"] =
+                  _out["anti_reflecting_coating"];
+                _fields["photosensitive"] = _out["photosensitive"];
 
-                  _fields["multi_coated"] = _out["multi_coated"];
-                  _fields["varilux"] = _out["varilux"];
-                  _fields["light"] = _out["light"];
-                  _fields["aspheric"] = _out["aspheric"];
-                  _fields["bifocal"] = _out["bifocal"];
-                  _fields["medium"] = _out["medium"];
-                  _fields["lenticular"] = _out["lenticular"];
-                  _fields["single_vision"] = _out["single_vision"];
-                  _fields["dark"] = _out["dark"];
-                  _fields["safety_thickness"] = _out["safety_thickness"];
-                  _fields["anti_reflecting_coating"] = _out["anti_reflecting_coating"];
-                  _fields["photosensitive"] = _out["photosensitive"];
+                _fields["high_index"] = _out["high_index"];
+                _fields["colored"] = _out["colored"];
+                _fields["anti_scratch"] = _out["anti_scratch"];
+              }
 
-                  _fields["high_index"] = _out["high_index"];
-                  _fields["colored"] = _out["colored"];
-                  _fields["anti_scratch"] = _out["anti_scratch"];
-                }
-
-              console.log("patient_gender", _fields)
+              console.log("patient_gender", _fields);
               _mysql
                 .executeQueryWithTransaction({
                   query:
@@ -206,7 +213,6 @@ let getPatientOCAF = (req, res, next) => {
 
                     _fields.patient_gender,
                     _fields.age_in_years,
-
 
                     _fields.multi_coated,
                     _fields.varilux,
@@ -269,7 +275,6 @@ let getPatientOCAF = (req, res, next) => {
                         next(error);
                       });
                     });
-
                 })
                 .catch(error => {
                   _mysql.rollBackTransaction(() => {
@@ -313,10 +318,7 @@ const _getocafDetails = (_mysql, req) => {
         query:
           "select * from hims_f_ocaf_header where hims_f_ocaf_header_id=?; \
           select * from hims_f_ocaf_insurance_details where hims_f_ocaf_header_id=?;",
-        values: [
-          req.hims_f_ocaf_header_id,
-          req.hims_f_ocaf_header_id,
-        ],
+        values: [req.hims_f_ocaf_header_id, req.hims_f_ocaf_header_id],
         printQuery: true
       })
       .then(result => {
@@ -334,10 +336,9 @@ const _getocafDetails = (_mysql, req) => {
 const updateOcafDetails = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
 
-
   try {
     const input = req.body;
-    console.log("input:",input)
+    console.log("input:", input);
     _mysql
       .executeQuery({
         query:
@@ -404,7 +405,7 @@ const updateOcafDetails = (req, res, next) => {
           req.userIdentity.algaeh_d_app_user_id,
           input.hims_f_ocaf_header_id
         ],
-        printQuery:true
+        printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
