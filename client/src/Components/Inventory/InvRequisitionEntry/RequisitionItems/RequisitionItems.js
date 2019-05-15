@@ -496,7 +496,12 @@ class RequisitionItems extends Component {
                                       },
                                       others: {
                                         disabled: this.state.authorizeEnable,
-                                        type: "number"
+                                        type: "number",
+                                        algaeh_required: "true",
+                                        errormessage:
+                                          "Please enter Quantity Authorized ..",
+                                        checkvalidation:
+                                          "value ==='' || value ==='0'"
                                       }
                                     }}
                                   />
@@ -518,6 +523,7 @@ class RequisitionItems extends Component {
                             data: this.state.inventory_stock_detail
                           }}
                           isEditable={true}
+                          datavalidate="id='REQ_details'"
                           paging={{ page: 0, rowsPerPage: 10 }}
                           events={{
                             onDelete: deleteRequisitionDetail.bind(
@@ -527,7 +533,7 @@ class RequisitionItems extends Component {
                             ),
                             onEdit: row => {},
                             onDone: updatePosDetail.bind(this, this, context)
-                          }}                        
+                          }}
                         />
                       </div>
                     </div>
