@@ -50,7 +50,7 @@ export default ({ config, db }) => {
             success: true,
             records: {
               username: rowDetails["username"],
-              user_displayname: rowDetails["user_displayname"],
+              user_display_name: rowDetails["user_display_name"],
               keyResources: keyData,
               secureModels: req.secureModels,
               hospitalDetails: hospitalDetails,

@@ -17,9 +17,8 @@ const executePDF = function executePDFMethod(options) {
         total_patient_share: _.sumBy(detail, s => parseFloat(s.patient_share)),
 
         total_net_amount: _.sumBy(detail, s => parseFloat(s.net_amount)),
-        total_company_resp: _.sumBy(detail, s => parseFloat(s.company_resp)),
-        total_company_tax: _.sumBy(detail, s => parseFloat(s.company_tax)),
-        total_net_claim: _.sumBy(detail, s => parseFloat(s.net_claim))
+        total_patient_tax: _.sumBy(detail, s => parseFloat(s.patient_tax)),
+        total_patient_payable: _.sumBy(detail, s => parseFloat(s.patient_payable))
       };
 
       resolve(result);

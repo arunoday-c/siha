@@ -113,7 +113,7 @@ class RequisitionItems extends Component {
                       />
                       <AlagehAutoComplete
                         div={{ className: "col-1" }}
-                        label={{ forceLabel: "UOM", isImp: true }}
+                        label={{ forceLabel: "UOM" }}
                         selector={{
                           name: "item_uom",
                           className: "select-fld",
@@ -259,6 +259,34 @@ class RequisitionItems extends Component {
                         <AlgaehDataGrid
                           id="REQ_details"
                           columns={[
+                            {
+                              fieldName: "action",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "action" }} />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      aria-hidden="true"
+                                      onClick={deleteRequisitionDetail.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )}
+                                    />
+                                  </span>
+                                );
+                              },
+                              others: {
+                                minWidth: this.state.requisition_auth === true ? 0 : 50,
+                                style:{
+                                  padding: this.state.requisition_auth === true ? 0 : 5
+                                }
+                              }
+                            },
                             {
                               fieldName: "item_id",
                               label: (
@@ -494,7 +522,12 @@ class RequisitionItems extends Component {
                                       },
                                       others: {
                                         disabled: this.state.authorizeEnable,
-                                        type: "number"
+                                        type: "number",
+                                        algaeh_required: "true",
+                                        errormessage:
+                                          "Please enter Authorized Quantity ..",
+                                        checkvalidation:
+                                          "value ==='' || value ==='0'"
                                       }
                                     }}
                                   />
@@ -515,8 +548,9 @@ class RequisitionItems extends Component {
                           dataSource={{
                             data: this.state.pharmacy_stock_detail
                           }}
-                          isEditable={true}
+                          isEditable={this.state.requisition_auth}
                           paging={{ page: 0, rowsPerPage: 10 }}
+                          datavalidate="id='PHRREQ_details'"
                           byForceEvents={true}
                           events={{
                             onDelete: deleteRequisitionDetail.bind(
@@ -528,9 +562,6 @@ class RequisitionItems extends Component {
                             onCancel: EditGrid.bind(this, this, context),
                             onDone: updatePosDetail.bind(this, this, context)
                           }}
-                          // onRowSelect={row => {
-                          //   getItemLocationStock(this, row);
-                          // }}
                         />
                       </div>
                     </div>

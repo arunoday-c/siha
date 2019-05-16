@@ -379,6 +379,51 @@ const SavePosEnrty = $this => {
               title: "Saved successfully ..."
             });
             AlgaehLoader({ show: false });
+            //Fot printing
+            if ($this.state.visit_code !== "") {
+              algaehApiCall({
+                uri: "/report",
+                method: "GET",
+                module: "reports",
+                headers: {
+                  Accept: "blob"
+                },
+                others: { responseType: "blob" },
+                data: {
+                  report: {
+                    reportName: "prescription",
+                    reportParams: [
+                      {
+                        name: "hims_d_patient_id",
+                        value: $this.state.patient_id
+                      },
+                      {
+                        name: "visit_id",
+                        value: $this.state.visit_id
+                      },
+                      {
+                        name: "visit_code",
+                        value: $this.state.visit_code
+                      }
+                    ],
+                    outputFileType: "PDF"
+                  }
+                },
+                onSuccess: res => {
+                  const url = URL.createObjectURL(res.data);
+                  let myWindow = window.open(
+                    "{{ product.metafields.google.custom_label_0 }}",
+                    "_blank"
+                  );
+
+                  myWindow.document.write(
+                    "<iframe src= '" + url + "' width='100%' height='100%' />"
+                  );
+                  myWindow.document.title = "Prescription";
+                }
+              });
+            }
+            //Done Printing
           } else {
             AlgaehLoader({ show: false });
             swalMessage({

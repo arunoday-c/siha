@@ -32,7 +32,7 @@ let getPatientUCAF = (req, res, next) => {
           return;
         }
 
-        console.log("result[0]", result[0][0]);
+        // console.log("result[0]", result[0][0]);
         let hims_f_ucaf_header_id =
           result[0][0] == undefined ? null : result[0][0].hims_f_ucaf_header_id;
 
@@ -225,7 +225,7 @@ let getPatientUCAF = (req, res, next) => {
 
               _fields["patient_significant_signs"] =
                 outputResult[7][0]["significant_signs"]
-                
+
               _fields["patient_other_conditions"] =
                 outputResult[7][0]["other_signs"]
               _mysql

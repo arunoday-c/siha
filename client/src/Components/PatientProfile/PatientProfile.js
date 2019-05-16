@@ -173,7 +173,8 @@ class PatientProfile extends Component {
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"]
+        visit_id: Window.global["visit_id"],
+        // forceReplace: true
       },
       onSuccess: response => {
         if (response.data.success) {
@@ -215,53 +216,15 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(_patient_allergies) {
+    debugger
     if (allergyPopUp && _patient_allergies.length > 0) {
-      return (
-        <AlgaehModalPopUp
-          openPopup={true}
-          events={{
-            onClose: (that = this) => {
-              allergyPopUp = false;
-              // that.handleClose.bind(this);
-            }
-          }}
-          title="Alert"
-        >
-          <div className="popupInner">
-            <div className="popRightDiv">
-                {_patient_allergies.map((tables, index) => (
-                  <table
-                    key={index}
-                    className="table table-sm table-bordered customTable"
-                  >
-                    <thead className="table-primary">
-                      <tr>
-                        <th> {tables.allergy_type_desc} </th>
-                        <th>Onset</th>
-                        <th>Comment</th>
-                        <th>Inactive</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tables.allergyList.map((rows, rIndex) => (
-                        <tr key={rIndex}>
-                          <td> {rows.allergy_name} </td>
-                          <td>{this.decissionAllergyOnSet(rows)}</td>
-                          <td>{rows.comment}</td>
-                          <td>
-                            {rows.allergy_inactive === "Y" ? "Yes" : "No"}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ))}
-              </div>
-            </div>
-        </AlgaehModalPopUp>
-      );
+      allergyPopUp = false;
+      swalMessage({
+        title: "Alergy Exists...",
+        type: "warning"
+      });
     }
-    return null;
+
   }
   decissionAllergyOnSet(row) {
     const _onSet = Enumerable.from(GlobalVariables.ALLERGY_ONSET)

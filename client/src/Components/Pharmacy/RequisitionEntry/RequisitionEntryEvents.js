@@ -67,6 +67,7 @@ const ClearData = ($this, e) => {
 };
 
 const SaveRequisitionEntry = $this => {
+  debugger
   algaehApiCall({
     uri: "/requisitionEntry/addrequisitionEntry",
     module: "pharmacy",
@@ -137,12 +138,7 @@ const LocationchangeTexts = ($this, location, ctrl, e) => {
       });
       $this.setState({ [name]: null });
     } else {
-      // let requistion_type = "";
-      // if (e.selected.location_type === "MS") {
-      //   requistion_type = "MR";
-      // } else if (e.selected.location_type === "SS") {
-      //   requistion_type = "MR";
-      // }
+
       $this.setState({
         [name]: value,
         [type]: e.selected.location_type,

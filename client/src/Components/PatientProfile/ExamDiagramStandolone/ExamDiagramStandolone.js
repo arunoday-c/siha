@@ -193,12 +193,16 @@ export default class ExaminationDiagram extends Component {
     });
   }
   newDiagramLabelClickHandler(item, data) {
-    if (item.currentTarget.getAttribute("image_desc") !== "Blank") {
-      const _src = item.currentTarget.querySelector("img").src;
-      this.setState({
-        image: _src
-      });
+    
+    if(item !==undefined){
+      if (item.currentTarget.getAttribute("image_desc") !== "Blank") {
+        const _src = item.currentTarget.querySelector("img").src;
+        this.setState({
+          image: _src
+        });
+      }
     }
+    
   }
   newDiagramHandler(item) {
     if (

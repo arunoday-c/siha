@@ -16,6 +16,81 @@ export default function EditorEvents() {
       });
     },
 
+    dcafradioChange: ($this, e) => {
+      debugger
+      let value = e.target.value
+      switch (e.target.name) {
+
+        case "regular_dental_trt":
+          value = $this.state.regular_dental_trt ==="Y" ? "N" : "Y"
+          $this.setState({
+            regular_dental_trt: value
+          });
+          break;
+        case "dental_cleaning":
+          value = $this.state.dental_cleaning ==="Y" ? "N" : "Y"
+          $this.setState({
+            dental_cleaning: value
+          });
+          break;
+        case "RTA":
+          value = $this.state.RTA ==="Y" ? "N" : "Y"
+          $this.setState({
+            RTA: value
+          });
+          break;
+
+        case "work_related":
+          value = $this.state.work_related ==="Y" ? "N" : "Y"
+          $this.setState({
+            work_related: value
+          });
+          break;
+
+        case "patient_marital_status":
+          $this.setState({
+            patient_marital_status: value
+          });
+          break;
+
+        case "new_visit_patient":
+          $this.setState({
+            new_visit_patient: value
+          });
+          break;
+        default:
+          break;
+      }
+    },
+
+    ucafradioChange: ($this, e) => {
+      debugger
+      let value = e.target.value
+      switch (e.target.name) {
+
+        case "patient_complaint_type":
+          $this.setState({
+            patient_complaint_type: value
+          });
+          break;
+
+
+        case "patient_marital_status":
+          $this.setState({
+            patient_marital_status: value
+          });
+          break;
+
+        case "patient_emergency_case":
+          $this.setState({
+            patient_emergency_case: value
+          });
+          break;
+        default:
+          break;
+      }
+    },
+
     radioChange:($this, e) =>{
       switch (e.target.name) {
 
@@ -224,6 +299,64 @@ export default function EditorEvents() {
                     "<embed src= '" + reader.result + "' width='100%' height='100%' />"
                   );
                   myWindow.document.title = "Algaeh OCAF 2.0";
+                };
+
+                reader.readAsDataURL(res.data);
+              }
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    },
+
+
+    saveAndPrintDcaf:($this, e) => {
+      debugger
+      algaehApiCall({
+        uri: "/dcaf/updateDcafDetails",
+        data: $this.state,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
+            algaehApiCall({
+              uri: "/report",
+              method: "GET",
+              module: "reports",
+              headers: {
+                Accept: "blob"
+              },
+              others: { responseType: "blob" },
+              data: {
+                report: {
+                  reportName: "dcaf",
+                  reportParams: [
+                    {
+                      name: "hims_d_patient_id",
+                      value: $this.state.patient_id
+                    },
+                    { name: "visit_id", value: $this.state.visit_id },
+                    { name: "visit_date", value: null }
+                  ],
+                  outputFileType: "PDF" //"EXCEL", //"PDF",
+                }
+              },
+              onSuccess: res => {
+                let reader = new FileReader();
+                reader.onloadend = () => {
+                  let myWindow = window.open(
+                    "{{ product.metafields.google.custom_label_0 }}",
+                    "_blank"
+                  );
+                  myWindow.document.write(
+                    "<embed src= '" + reader.result + "' width='100%' height='100%' />"
+                  );
+                  myWindow.document.title = "Algaeh DCAF 2.0";
                 };
 
                 reader.readAsDataURL(res.data);

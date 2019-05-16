@@ -350,7 +350,12 @@ class TransferEntryItems extends Component {
                                     )
                                   },
                                   others:{
-                                    type:"number"
+                                    type:"number",
+                                    algaeh_required: "true",
+                                    errormessage:
+                                      "Please enter Transferred Quantity ..",
+                                    checkvalidation:
+                                      "value ==='' || value ==='0'"
                                   }
                                 }}
                               />
@@ -384,8 +389,9 @@ class TransferEntryItems extends Component {
                       dataSource={{
                         data: this.state.pharmacy_stock_detail
                       }}
-                      isEditable={true}
+                      isEditable={!this.state.dataExitst}
                       byForceEvents={true}
+                      datavalidate="id='TRANS_details'"
                       paging={{ page: 0, rowsPerPage: 10 }}
                       events={{
                         onDelete: deleteTransEntryDetail.bind(
