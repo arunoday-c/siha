@@ -42,8 +42,8 @@ const itemchangeText = ($this, context, e) => {
         module: "pharmacy",
         method: "GET",
         data: {
-          location_id: $this.state.from_location_id,
-          item_id: value
+          // location_id: $this.state.from_location_id,
+          hims_d_item_master_id: value
         },
         redux: {
           type: "ITEMS_UOM_DETAILS_GET_DATA",
@@ -87,6 +87,7 @@ const itemchangeText = ($this, context, e) => {
       });
     }
   } else {
+    debugger
     if ($this.state.to_location_id !== null) {
       let value = e.value || e.target.value;
 
@@ -95,8 +96,8 @@ const itemchangeText = ($this, context, e) => {
         module: "pharmacy",
         method: "GET",
         data: {
-          location_id: $this.state.to_location_id,
-          item_id: value
+          // location_id: $this.state.to_location_id,
+          hims_d_item_master_id: value
         },
         redux: {
           type: "ITEMS_UOM_DETAILS_GET_DATA",

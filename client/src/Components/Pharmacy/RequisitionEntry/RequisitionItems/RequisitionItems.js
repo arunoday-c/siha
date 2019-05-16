@@ -260,6 +260,34 @@ class RequisitionItems extends Component {
                           id="REQ_details"
                           columns={[
                             {
+                              fieldName: "action",
+                              label: (
+                                <AlgaehLabel label={{ forceLabel: "action" }} />
+                              ),
+                              displayTemplate: row => {
+                                return (
+                                  <span>
+                                    <i
+                                      className="fas fa-trash-alt"
+                                      aria-hidden="true"
+                                      onClick={deleteRequisitionDetail.bind(
+                                        this,
+                                        this,
+                                        context,
+                                        row
+                                      )}
+                                    />
+                                  </span>
+                                );
+                              },
+                              others: {
+                                minWidth: this.state.requisition_auth === true ? 0 : 50,
+                                style:{
+                                  padding: this.state.requisition_auth === true ? 0 : 5
+                                }
+                              }
+                            },
+                            {
                               fieldName: "item_id",
                               label: (
                                 <AlgaehLabel
