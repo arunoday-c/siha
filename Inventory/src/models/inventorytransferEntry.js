@@ -1,7 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
-
+import { LINQ } from "node-linq";
+import _ from "lodash";
 module.exports = {
   gettransferEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -320,7 +321,7 @@ module.exports = {
             "SELECT * from  hims_f_inventory_material_header \
           where material_requisition_number=?",
           values: [inputParam.material_requisition_number],
-          printQuery: true
+          printQuery: false
         })
         .then(headerResult => {
           if (headerResult.length != 0) {
@@ -329,20 +330,90 @@ module.exports = {
                 query:
                   "select D.*,LOC.* from hims_f_inventory_material_detail D \
                   inner join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
-                  where  D.inventory_header_id=? and LOC.inventory_location_id=? and  LOC.expirydt > CURDATE() \
+                  where   LOC.inventory_location_id=? and  D.inventory_header_id=? and  LOC.expirydt > CURDATE() \
                    and LOC.qtyhand>0  order by  LOC.expirydt ",
                 values: [
-                  headerResult[0].hims_f_inventory_material_header_id,
-                  headerResult[0].to_location_id
+                  headerResult[0].to_location_id,
+                  headerResult[0].hims_f_inventory_material_header_id
                 ],
-                printQuery: true
+                printQuery: false
               })
               .then(inventory_stock_detail => {
                 _mysql.releaseConnection();
+
+                var item_grp = _(inventory_stock_detail)
+                  .groupBy("item_id")
+                  .map((row, item_id) => item_id)
+                  .value();
+
+                let outputArray = [];
+
+                for (let i = 0; i < item_grp.length; i++) {
+                  let item = new LINQ(inventory_stock_detail)
+                    .Where(w => w.item_id == item_grp[i])
+                    .Select(s => {
+                      return {
+                        hims_f_inventory_material_detail_id:
+                          s.hims_f_inventory_material_detail_id,
+                        inventory_header_id: s.inventory_header_id,
+                        completed: s.completed,
+                        item_category_id: s.item_category_id,
+                        item_group_id: s.item_group_id,
+                        item_id: s.item_id,
+                        from_qtyhand: s.from_qtyhand,
+                        to_qtyhand: s.to_qtyhand,
+                        quantity_required: s.quantity_required,
+                        quantity_authorized: s.quantity_authorized,
+                        item_uom: s.item_uom,
+                        quantity_recieved: s.quantity_recieved,
+                        quantity_outstanding: s.quantity_outstanding,
+                        po_created_date: s.po_created_date,
+                        po_created: s.po_created,
+                        po_created_quantity: s.po_created_quantity,
+                        po_outstanding_quantity: s.po_outstanding_quantity,
+                        po_completed: s.po_completed
+                      };
+                    })
+                    .FirstOrDefault();
+
+                  let batches = new LINQ(inventory_stock_detail)
+                    .Where(w => w.item_id == item_grp[i])
+                    .Select(s => {
+                      return {
+                        hims_m_inventory_item_location_id:
+                          s.hims_m_inventory_item_location_id,
+                        item_id: s.item_id,
+                        inventory_location_id: s.inventory_location_id,
+                        item_location_status: s.item_location_status,
+                        batchno: s.batchno,
+                        expirydt: s.expirydt,
+                        barcode: s.barcode,
+                        qtyhand: s.qtyhand,
+                        qtypo: s.qtypo,
+                        cost_uom: s.cost_uom,
+                        avgcost: s.avgcost,
+                        last_purchase_cost: s.last_purchase_cost,
+                        item_type: s.item_type,
+                        grn_id: s.grn_id,
+                        grnno: s.grnno,
+                        sale_price: s.sale_price,
+                        mrp_price: s.mrp_price,
+                        sales_uom: s.sales_uom
+                      };
+                    })
+                    .ToArray();
+
+                  outputArray.push({ ...item, batches });
+                }
+
                 req.records = {
                   ...headerResult[0],
-                  ...{ inventory_stock_detail }
+                  ...{ inventory_stock_detail: outputArray }
                 };
+                // req.records = {
+                //   ...headerResult[0],
+                //   ...{ inventory_stock_detail }
+                // };
                 next();
               })
               .catch(error => {
