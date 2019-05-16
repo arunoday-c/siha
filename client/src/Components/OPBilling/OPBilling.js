@@ -397,7 +397,8 @@ class OPBilling extends Component {
                   saveEnable: true
                 });
                 this.setState({
-                  addNewService: true
+                  addNewService: true,
+                  Billexists: true
                 });
                 successfulMessage({
                   message: "Done Successfully",

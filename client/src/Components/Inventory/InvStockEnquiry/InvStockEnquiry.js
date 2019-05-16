@@ -75,7 +75,7 @@ class InvStockEnquiry extends Component {
   render() {
     // inventoryitemBatch
 
-    let total_quantity = Enumerable.from(this.props.inventoryitemBatch)
+    let total_quantity = Enumerable.from(this.state.ListItems)
       .select(w => parseFloat(w.qtyhand))
       .sum();
 
@@ -164,7 +164,8 @@ class InvStockEnquiry extends Component {
                       forceLabel: "Total Quantity"
                     }}
                   />
-                  <h6>{total_quantity ? total_quantity + " nos" : "0 nos"}</h6>
+                  <h6>{this.state.item_id === null ? 0 :
+                      total_quantity ? total_quantity + " nos" : "0 nos"}</h6>
                 </div>
               </div>
             </div>

@@ -300,14 +300,14 @@ module.exports = {
   getItemMasterAndItemUom: (req, res, next) => {
     const _mysql = new algaehMysql();
 
-    let _strQry = "";
-    let intValues = [];
-    if (req.query.hims_d_inventory_item_master_id != null) {
-      _strQry = "where IM.hims_d_inventory_item_master_id=?";
-      intValues.push(req.query.hims_d_inventory_item_master_id);
-    }
-
     try {
+      let _strQry = "";
+      let intValues = [];
+      if (req.query.hims_d_inventory_item_master_id != null) {
+        _strQry = "where IM.hims_d_inventory_item_master_id=?";
+        intValues.push(req.query.hims_d_inventory_item_master_id);
+      }
+
       _mysql
         .executeQuery({
           query:
