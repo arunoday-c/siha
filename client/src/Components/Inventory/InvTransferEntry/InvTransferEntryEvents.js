@@ -161,7 +161,7 @@ const RequisitionSearch = ($this, e) => {
               data.from_location_type = data.to_location_type;
               data.to_location_type = from_location_type;
 
-              data.dataExitst = true;
+              // data.dataExitst = true;
 
               for (let i = 0; i < data.inventory_stock_detail.length; i++) {
                 data.inventory_stock_detail[i].material_requisition_header_id =

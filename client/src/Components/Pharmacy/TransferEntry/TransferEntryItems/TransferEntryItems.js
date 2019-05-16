@@ -389,7 +389,7 @@ class TransferEntryItems extends Component {
                       dataSource={{
                         data: this.state.pharmacy_stock_detail
                       }}
-                      isEditable={!this.state.saveEnable}
+                      isEditable={!this.state.dataExitst}
                       byForceEvents={true}
                       datavalidate="id='TRANS_details'"
                       paging={{ page: 0, rowsPerPage: 10 }}
