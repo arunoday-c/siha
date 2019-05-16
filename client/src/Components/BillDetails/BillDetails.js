@@ -433,7 +433,7 @@ class DisplayOPBilling extends PureComponent {
                   </div>
                 </div>
 
-                  <div className="col-4">
+                  <div className="col-4" style={{borderLeft:"1px solid #ccc",borderRight:"1px solid #ccc"}}>
                     <AlgaehLabel
                       label={{
                         fieldName: "patient_lbl"
