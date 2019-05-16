@@ -182,21 +182,21 @@ const RequisitionSearch = ($this, e) => {
                   data.inventory_stock_detail[i].quantity_outstanding;
                 data.inventory_stock_detail[i].quantity_outstanding = 0;
 
-                data.inventory_stock_detail[i].expiry_date =
-                  data.inventory_stock_detail[i].expirydt;
+                // data.inventory_stock_detail[i].expiry_date =
+                //   data.inventory_stock_detail[i].expirydt;
 
                 data.inventory_stock_detail[i].quantity_requested =
                   data.inventory_stock_detail[i].quantity_required;
-                data.inventory_stock_detail[i].from_qtyhand =
-                  data.inventory_stock_detail[i].qtyhand;
+                // data.inventory_stock_detail[i].from_qtyhand =
+                //   data.inventory_stock_detail[i].qtyhand;
 
                 data.inventory_stock_detail[i].uom_requested_id =
                   data.inventory_stock_detail[i].item_uom;
                 data.inventory_stock_detail[i].uom_transferred_id =
                   data.inventory_stock_detail[i].item_uom;
 
-                data.inventory_stock_detail[i].unit_cost =
-                  data.inventory_stock_detail[i].avgcost;
+                // data.inventory_stock_detail[i].unit_cost =
+                //   data.inventory_stock_detail[i].avgcost;
               }
               $this.setState(data);
               AlgaehLoader({ show: false });

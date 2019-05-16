@@ -8,7 +8,8 @@ import "./../../../../styles/site.css";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -79,6 +80,47 @@ class TransferEntryItems extends Component {
     this.setState(nextProps.TransferIOputs);
   }
 
+  changeGridEditors(row, e) {
+    debugger
+    let pharmacy_stock_detail = this.state.pharmacy_stock_detail
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row["expiry_date"] = e.selected.expirydt;
+    row["from_qtyhand"] = e.selected.qtyhand;
+    row["unit_cost"] =  e.selected.avgcost;
+    row["grnno"] = e.selected.grnno;
+
+    for (let k = 0; k < pharmacy_stock_detail.length; k++) {
+      if (pharmacy_stock_detail[k].item_id === row.item_id) {
+        pharmacy_stock_detail[k] = row;
+      }
+    }
+
+    this.setState({
+      pharmacy_stock_detail:pharmacy_stock_detail
+    })
+  }
+
+  clearGridEditors(row, e) {
+    debugger
+    let pharmacy_stock_detail = this.state.pharmacy_stock_detail
+
+    row["batchno"] = null;
+    row["expiry_date"] = null;
+    row["from_qtyhand"] = null;
+    row["unit_cost"] =  null;
+
+    for (let k = 0; k < pharmacy_stock_detail.length; k++) {
+      if (pharmacy_stock_detail[k].item_id === row.item_id) {
+        pharmacy_stock_detail[k] = row;
+      }
+    }
+    this.setState({
+      pharmacy_stock_detail:pharmacy_stock_detail
+    })
+  }
+
   render() {
     return (
       <React.Fragment>
@@ -91,6 +133,32 @@ class TransferEntryItems extends Component {
                     <AlgaehDataGrid
                       id="REQ_details"
                       columns={[
+                        {
+                          fieldName: "action",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "action" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                <i
+                                  className="fas fa-trash-alt"
+                                  aria-hidden="true"
+                                  onClick={deleteTransEntryDetail.bind(
+                                    this,
+                                    this,
+                                    context,
+                                    row
+                                  )}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            minWidth: 50,
+
+                          }
+                        },
                         {
                           fieldName: "item_id",
                           label: (
@@ -261,7 +329,28 @@ class TransferEntryItems extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                           ),
-                          disabled: true
+                          displayTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "batchno",
+                                  className: "select-fld",
+                                  value: row.batchno,
+                                  dataSource: {
+                                    textField: "batchno",
+                                    valueField: "batchno",
+                                    data: row.batches
+                                  },
+                                  onChange: this.changeGridEditors.bind(this, row),
+                                  onClear: this.clearGridEditors.bind(this, row),
+                                }}
+                              />
+                            );
+                          },
+                          others: {
+                            minWidth: 150,
+                          }
                         },
                         {
                           fieldName: "uom_requested_id",
@@ -333,7 +422,7 @@ class TransferEntryItems extends Component {
                               }}
                             />
                           ),
-                          editorTemplate: row => {
+                          displayTemplate: row => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -389,7 +478,7 @@ class TransferEntryItems extends Component {
                       dataSource={{
                         data: this.state.pharmacy_stock_detail
                       }}
-                      isEditable={!this.state.dataExitst}
+                      isEditable={false}
                       byForceEvents={true}
                       datavalidate="id='TRANS_details'"
                       paging={{ page: 0, rowsPerPage: 10 }}

@@ -89,7 +89,8 @@ class TransferEntryItems extends Component {
     row[name] = value;
     row["expiry_date"] = e.selected.expirydt;
     row["from_qtyhand"] = e.selected.qtyhand;
-    row["unit_cost"] =  e.selected.avgcost
+    row["unit_cost"] =  e.selected.avgcost;
+    row["grnno"] = e.selected.grnno;
 
     for (let k = 0; k < inventory_stock_detail.length; k++) {
       if (inventory_stock_detail[k].item_id === row.item_id) {
@@ -317,7 +318,7 @@ class TransferEntryItems extends Component {
                                   dataSource: {
                                     textField: "batchno",
                                     valueField: "batchno",
-                                    data: this.state.Batch_Items
+                                    data: row.batches
                                   },
                                   onChange: this.changeGridEditors.bind(this, row),
                                   onClear: this.clearGridEditors.bind(this, row),

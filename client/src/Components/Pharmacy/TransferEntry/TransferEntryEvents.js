@@ -139,6 +139,7 @@ const RequisitionSearch = ($this, e) => {
         callBack(text);
       },
       onRowSelect: row => {
+        AlgaehLoader({ show: true });
         algaehApiCall({
           uri: "/transferEntry/getrequisitionEntryTransfer",
           module: "pharmacy",
@@ -149,9 +150,10 @@ const RequisitionSearch = ($this, e) => {
           },
 
           onSuccess: response => {
+            debugger
             if (response.data.success === true) {
               let data = response.data.records;
-              AlgaehLoader({ show: true });
+
               let from_location_id = data.from_location_id;
               let from_location_type = data.from_location_type;
               data.saveEnable = false;
@@ -182,21 +184,21 @@ const RequisitionSearch = ($this, e) => {
                   data.pharmacy_stock_detail[i].quantity_outstanding;
 
                 data.pharmacy_stock_detail[i].quantity_outstanding = 0;
-                data.pharmacy_stock_detail[i].expiry_date =
-                  data.pharmacy_stock_detail[i].expirydt;
+                // data.pharmacy_stock_detail[i].expiry_date =
+                //   data.pharmacy_stock_detail[i].expirydt;
 
                 data.pharmacy_stock_detail[i].quantity_requested =
                   data.pharmacy_stock_detail[i].quantity_required;
-                data.pharmacy_stock_detail[i].from_qtyhand =
-                  data.pharmacy_stock_detail[i].qtyhand;
+                // data.pharmacy_stock_detail[i].from_qtyhand =
+                //   data.pharmacy_stock_detail[i].qtyhand;
 
                 data.pharmacy_stock_detail[i].uom_requested_id =
                   data.pharmacy_stock_detail[i].item_uom;
                 data.pharmacy_stock_detail[i].uom_transferred_id =
                   data.pharmacy_stock_detail[i].item_uom;
 
-                data.pharmacy_stock_detail[i].unit_cost =
-                  data.pharmacy_stock_detail[i].avgcost;
+                // data.pharmacy_stock_detail[i].unit_cost =
+                //   data.pharmacy_stock_detail[i].avgcost;
               }
               $this.setState(data);
               AlgaehLoader({ show: false });
@@ -209,72 +211,7 @@ const RequisitionSearch = ($this, e) => {
               type: "error"
             });
           }
-        });
-        // $this.props.getRequisitionEntry({
-        //   uri: "/transferEntry/getrequisitionEntryTransfer",
-        //   module: "pharmacy",
-        //   method: "GET",
-        //   printInput: true,
-        //   data: {
-        //     material_requisition_number: row.material_requisition_number,
-        //     from_location_id: $this.state.from_location_id
-        //   },
-        //   redux: {
-        //     type: "POS_ENTRY_GET_DATA",
-        //     mappingName: "requisitionentry"
-        //   },
-        //   afterSuccess: data => {
-        //     AlgaehLoader({ show: true });
-        //     let from_location_id = data.from_location_id;
-        //     let from_location_type = data.from_location_type;
-        //     data.saveEnable = false;
-
-        //     data.from_location_id = data.to_location_id;
-        //     data.to_location_id = from_location_id;
-        //     data.from_location_type = data.to_location_type;
-        //     data.to_location_type = from_location_type;
-
-        //     data.dataExitst = true;
-
-        //     for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-        //       data.pharmacy_stock_detail[i].material_requisition_header_id =
-        //         data.hims_f_pharamcy_material_header_id;
-
-        //       data.pharmacy_stock_detail[i].material_requisition_detail_id =
-        //         data.pharmacy_stock_detail[
-        //           i
-        //         ].hims_f_pharmacy_material_detail_id;
-
-        //       // grnno
-
-        //       data.pharmacy_stock_detail[i].quantity_transferred =
-        //         data.pharmacy_stock_detail[i].quantity_outstanding;
-
-        //       data.pharmacy_stock_detail[i].transfer_to_date =
-        //         data.pharmacy_stock_detail[i].quantity_authorized -
-        //         data.pharmacy_stock_detail[i].quantity_outstanding;
-
-        //       data.pharmacy_stock_detail[i].quantity_outstanding = 0;
-        //       data.pharmacy_stock_detail[i].expiry_date =
-        //         data.pharmacy_stock_detail[i].expirydt;
-
-        //       data.pharmacy_stock_detail[i].quantity_requested =
-        //         data.pharmacy_stock_detail[i].quantity_required;
-        //       data.pharmacy_stock_detail[i].from_qtyhand =
-        //         data.pharmacy_stock_detail[i].qtyhand;
-
-        //       data.pharmacy_stock_detail[i].uom_requested_id =
-        //         data.pharmacy_stock_detail[i].item_uom;
-        //       data.pharmacy_stock_detail[i].uom_transferred_id =
-        //         data.pharmacy_stock_detail[i].item_uom;
-
-        //       data.pharmacy_stock_detail[i].unit_cost =
-        //         data.pharmacy_stock_detail[i].avgcost;
-        //     }
-        //     $this.setState(data);
-        //     AlgaehLoader({ show: false });
-        //   }
-        // });
+        });      
       }
     });
   } else {

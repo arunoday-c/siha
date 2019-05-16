@@ -1,6 +1,8 @@
 import algaehMysql from "algaeh-mysql";
 import moment from "moment";
 import algaehUtilities from "algaeh-utilities/utilities";
+import _ from "lodash";
+import { LINQ } from "node-linq";
 
 module.exports = {
   gettransferEntry: (req, res, next) => {
@@ -239,7 +241,7 @@ module.exports = {
     }
   },
 
-  getrequisitionEntryTransfer: (req, res, next) => {
+  getrequisitionEntryTransferBACKUP: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let inputParam = req.query;
@@ -299,5 +301,133 @@ module.exports = {
       _mysql.releaseConnection();
       next(e);
     }
+  },
+
+  getrequisitionEntryTransfer: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = req.query;
+
+      const utilities = new algaehUtilities();
+      utilities.logger().log("getrequisitionEntryTransfer: ");
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * from  hims_f_pharamcy_material_header \
+          where material_requisition_number=?",
+          values: [inputParam.material_requisition_number],
+          printQuery: true
+        })
+        .then(headerResult => {
+          utilities.logger().log("headerResult: ", headerResult);
+          if (headerResult.length != 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select D.*,LOC.* from hims_f_pharmacy_material_detail D \
+                  inner join `hims_m_item_location` LOC  on D.item_id=LOC.item_id \
+                  where   LOC.pharmacy_location_id=? and  D.pharmacy_header_id=? and  LOC.expirydt > CURDATE() \
+                   and LOC.qtyhand>0  order by  LOC.expirydt ",
+                values: [
+                  headerResult[0].to_location_id,
+                  headerResult[0].hims_f_pharamcy_material_header_id
+                ],
+                printQuery: true
+              })
+              .then(pharmacy_stock_detail => {
+                _mysql.releaseConnection();
+
+                utilities.logger().log("pharmacy_stock_detail: ", pharmacy_stock_detail);
+
+                var item_grp = _(pharmacy_stock_detail)
+                  .groupBy("item_id")
+                  .map((row, item_id) => item_id)
+                  .value();
+
+                let outputArray = [];
+                utilities.logger().log("item_grp: ", item_grp);
+
+                for (let i = 0; i < item_grp.length; i++) {
+                  let item = new LINQ(pharmacy_stock_detail)
+                    .Where(w => w.item_id == item_grp[i])
+                    .Select(s => {
+                      return {
+                        hims_f_pharmacy_material_detail_id:
+                          s.hims_f_pharmacy_material_detail_id,
+                        pharmacy_header_id: s.pharmacy_header_id,
+                        completed: s.completed,
+                        item_category_id: s.item_category_id,
+                        item_group_id: s.item_group_id,
+                        item_id: s.item_id,
+                        from_qtyhand: s.from_qtyhand,
+                        to_qtyhand: s.to_qtyhand,
+                        quantity_required: s.quantity_required,
+                        quantity_authorized: s.quantity_authorized,
+                        item_uom: s.item_uom,
+                        quantity_recieved: s.quantity_recieved,
+                        quantity_outstanding: s.quantity_outstanding,
+                        po_created_date: s.po_created_date,
+                        po_created: s.po_created,
+                        po_created_quantity: s.po_created_quantity,
+                        po_outstanding_quantity: s.po_outstanding_quantity,
+                        po_completed: s.po_completed
+                      };
+                    })
+                    .FirstOrDefault();
+
+                  let batches = new LINQ(pharmacy_stock_detail)
+                    .Where(w => w.item_id == item_grp[i])
+                    .Select(s => {
+                      return {
+                        hims_m_item_location_id:s.hims_m_item_location_id,
+                        item_id: s.item_id,
+                        pharmacy_location_id: s.pharmacy_location_id,
+                        item_location_status: s.item_location_status,
+                        batchno: s.batchno,
+                        expirydt: s.expirydt,
+                        barcode: s.barcode,
+                        qtyhand: s.qtyhand,
+                        qtypo: s.qtypo,
+                        cost_uom: s.cost_uom,
+                        avgcost: s.avgcost,
+                        last_purchase_cost: s.last_purchase_cost,
+                        item_type: s.item_type,
+                        grn_id: s.grn_id,
+                        grnno: s.grnno,
+                        sale_price: s.sale_price,
+                        mrp_price: s.mrp_price,
+                        sales_uom: s.sales_uom
+                      };
+                    })
+                    .ToArray();
+
+                  outputArray.push({ ...item, batches });
+                }
+
+                req.records = {
+                  ...headerResult[0],
+                  ...{ pharmacy_stock_detail: outputArray }
+                };
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = headerResult;
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
   }
+
 };
