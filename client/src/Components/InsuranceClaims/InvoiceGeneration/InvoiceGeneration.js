@@ -951,7 +951,7 @@ class InvoiceGeneration extends Component {
               </button>
 
               <button
-                onClick={this.generateReport.bind(
+                onClick={this.generateInvoice.bind(
                   this,
                   "pharmacyCashInvoice",
                   "Pharmacy Cash Invoice"
@@ -983,7 +983,7 @@ class InvoiceGeneration extends Component {
 
                   <button
                     className="btn btn-default"
-                    onClick={this.generateReport.bind(
+                    onClick={this.generateInvoice.bind(
                       this,
                       "pharmacyCreditInvoice",
                       "Pharmacy Credit Invoice"

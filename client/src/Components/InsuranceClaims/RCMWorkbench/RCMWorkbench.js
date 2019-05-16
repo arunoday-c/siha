@@ -25,10 +25,11 @@ class RCMWorkbench extends Component {
     this.state = {
       selectedLang: "en",
       claims: [],
-      openClaims: false
+      openClaims: false,
+      generateReport:true
     };
     this.validatedClaims=[]
-    this.select = false
+    this.select = true
     this.dropDownHandler = this.dropDownHandler.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.getInvoicesForClaims = this.getInvoicesForClaims.bind(this);
@@ -75,22 +76,32 @@ class RCMWorkbench extends Component {
 
   addClaimsArray(row, e) {
     debugger
+    let generateReport = true
     if (row.claim_validated === "P") {
       e.preventDefault();
       swalMessage({
         title: "Please Validate the bill first",
         type: "warning"
       });
-      // row["chkselect"] = 0
-      // row.update();
+
+      generateReport = this.validatedClaims.length > 0 ? false : true
+      this.setState({
+        generateReport: generateReport
+      })
     } else if (this.validatedClaims.includes(row)) {
       this.validatedClaims.pop(row);
-      // row["chkselect"] = 0
-      // row.update();
+
+      generateReport = this.validatedClaims.length > 0 ? false : true
+      this.setState({
+        generateReport: generateReport
+      })
     } else {
       this.validatedClaims.push(row);
-      // row["chkselect"] = 1
-      // row.update();
+
+      generateReport = this.validatedClaims.length > 0 ? false : true
+      this.setState({
+        generateReport: generateReport
+      })
     }
   }
 
@@ -826,6 +837,7 @@ class RCMWorkbench extends Component {
                 onClick={this.generateReports.bind(this)}
                 type="button"
                 className="btn btn-other"
+                disabled={this.state.generateReport}
               >
                 <AlgaehLabel
                   label={{
