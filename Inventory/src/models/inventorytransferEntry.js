@@ -247,7 +247,7 @@ module.exports = {
     }
   },
 
-  getrequisitionEntryTransfer: (req, res, next) => {
+  getrequisitionEntryTransferbackup: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let inputParam = req.query;
@@ -276,6 +276,62 @@ module.exports = {
                 values: [
                   headerResult[0].hims_f_inventory_material_header_id,
                   headerResult[0].to_location_id,
+                  headerResult[0].hims_f_inventory_material_header_id,
+                  headerResult[0].to_location_id
+                ],
+                printQuery: true
+              })
+              .then(inventory_stock_detail => {
+                _mysql.releaseConnection();
+                req.records = {
+                  ...headerResult[0],
+                  ...{ inventory_stock_detail }
+                };
+                next();
+              })
+              .catch(error => {
+                _mysql.releaseConnection();
+                next(error);
+              });
+          } else {
+            _mysql.releaseConnection();
+            req.records = headerResult;
+            next();
+          }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getrequisitionEntryTransfer: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let inputParam = req.query;
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT * from  hims_f_inventory_material_header \
+          where material_requisition_number=?",
+          values: [inputParam.material_requisition_number],
+          printQuery: true
+        })
+        .then(headerResult => {
+          if (headerResult.length != 0) {
+            _mysql
+              .executeQuery({
+                query:
+                  "select D.*,LOC.* from hims_f_inventory_material_detail D \
+                  inner join hims_m_inventory_item_location LOC  on D.item_id=LOC.item_id \
+                  where  D.inventory_header_id=? and LOC.inventory_location_id=? and  LOC.expirydt > CURDATE() \
+                   and LOC.qtyhand>0  order by  LOC.expirydt ",
+                values: [
                   headerResult[0].hims_f_inventory_material_header_id,
                   headerResult[0].to_location_id
                 ],
