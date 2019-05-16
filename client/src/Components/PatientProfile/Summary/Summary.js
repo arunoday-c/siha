@@ -238,7 +238,7 @@ debugger
                     ? this.state.patientMedications.map((data, index) => (
                         <tr key={index}>
                           <td>{index + 1}</td>
-                          <td>{data.item_name}</td>
+                          <td>{data.item_description}</td>
                           <td>{data.dosage}</td>
                           <td>{data.frequency_type}</td>
                           <td>{data.no_of_days}</td>

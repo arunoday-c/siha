@@ -25,6 +25,7 @@ import {
   deleteItems,
   datehandle,
   SaveMedication,
+  printPrescription,
   dateFormater,
   numberhandle,
   calcuateDispense
@@ -410,6 +411,13 @@ class OrderMedication extends Component {
               disabled={this.state.saveMedicationEnable}
             >
               Save Medication
+            </button>
+            <button
+              className="btn btn-primary btn-sm"
+              type="button"
+              onClick={printPrescription.bind(this, this)}
+            >
+              Print Prescription
             </button>
           </div>
         </div>
