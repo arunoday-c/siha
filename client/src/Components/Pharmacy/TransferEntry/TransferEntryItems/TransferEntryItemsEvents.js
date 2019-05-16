@@ -1,6 +1,6 @@
 import moment from "moment";
 import { swalMessage } from "../../../../utils/algaehApiCall.js";
-
+import swal from "sweetalert2";
 import Options from "../../../../Options.json";
 
 let texthandlerInterval = null;
@@ -194,69 +194,79 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deleteTransEntryDetail = ($this, context, e, rowId) => {
-  let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-  pharmacy_stock_detail.splice(rowId, 1);
+  debugger
 
-  // $this.props.PosHeaderCalculations({
-  //   uri: "/billing/billingCalculations",
-  //   method: "POST",
-  //   data: { billdetails: pharmacy_stock_detail },
-  //   redux: {
-  //     type: "POS_HEADER_GEN_GET_DATA",
-  //     mappingName: "posheader"
-  //   }
-  // });
+  let display = $this.props.itemlist === undefined ? []
+        : $this.props.itemlist.filter(
+          f => f.hims_d_item_master_id === e.item_id
+        );
 
-  if (pharmacy_stock_detail.length === 0) {
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail,
-        advance_amount: 0,
-        discount_amount: 0,
-        sub_total: 0,
-        total_tax: 0,
-        net_total: 0,
-        copay_amount: 0,
-        sec_copay_amount: 0,
-        deductable_amount: 0,
-        sec_deductable_amount: 0,
-        gross_total: 0,
-        sheet_discount_amount: 0,
-        sheet_discount_percentage: 0,
-        net_amount: 0,
-        patient_res: 0,
-        company_res: 0,
-        sec_company_res: 0,
-        patient_payable: 0,
-        patient_payable_h: 0,
-        company_payable: 0,
-        sec_company_payable: 0,
-        patient_tax: 0,
-        company_tax: 0,
-        sec_company_tax: 0,
-        net_tax: 0,
-        credit_amount: 0,
-        receiveable_amount: 0,
+  swal({
+    title: "Are you sure want to delete ?" + display[0].item_description + "?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willDelete => {
+    if (willDelete.value) {
+      let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+      pharmacy_stock_detail.splice(rowId, 1);
 
-        cash_amount: 0,
-        card_number: "",
-        card_date: null,
-        card_amount: 0,
-        cheque_number: "",
-        cheque_date: null,
-        cheque_amount: 0,
-        total_amount: 0,
-        saveEnable: true,
-        unbalanced_amount: 0
-      });
+
+      if (pharmacy_stock_detail.length === 0) {
+        if (context !== undefined) {
+          context.updateState({
+            pharmacy_stock_detail: pharmacy_stock_detail,
+            advance_amount: 0,
+            discount_amount: 0,
+            sub_total: 0,
+            total_tax: 0,
+            net_total: 0,
+            copay_amount: 0,
+            sec_copay_amount: 0,
+            deductable_amount: 0,
+            sec_deductable_amount: 0,
+            gross_total: 0,
+            sheet_discount_amount: 0,
+            sheet_discount_percentage: 0,
+            net_amount: 0,
+            patient_res: 0,
+            company_res: 0,
+            sec_company_res: 0,
+            patient_payable: 0,
+            patient_payable_h: 0,
+            company_payable: 0,
+            sec_company_payable: 0,
+            patient_tax: 0,
+            company_tax: 0,
+            sec_company_tax: 0,
+            net_tax: 0,
+            credit_amount: 0,
+            receiveable_amount: 0,
+
+            cash_amount: 0,
+            card_number: "",
+            card_date: null,
+            card_amount: 0,
+            cheque_number: "",
+            cheque_date: null,
+            cheque_amount: 0,
+            total_amount: 0,
+            saveEnable: true,
+            unbalanced_amount: 0
+          });
+        }
+      } else {
+        if (context !== undefined) {
+          context.updateState({
+            pharmacy_stock_detail: pharmacy_stock_detail
+          });
+        }
+      }
     }
-  } else {
-    if (context !== undefined) {
-      context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
-      });
-    }
-  }
+  });
 };
 
 const updateTransEntryDetail = ($this, context) => {

@@ -520,7 +520,7 @@ class PersistentDrawer extends React.Component {
           </h5>
           <div className="navTopBarRight">
             <div className="loginProfileInfo">
-              <span>{getCookie("userName")},</span>
+              <span>{getCookie("userName")}</span>
               <span>
                 {getCookie("HospitalName") !== undefined
                   ? getCookie("HospitalName")
@@ -580,14 +580,14 @@ class PersistentDrawer extends React.Component {
         >
           <div className="row">
             <h4>Change Password</h4>
-            <div className="col-12">
+            {/* <div className="col-12">
               <AlgaehLabel
                 label={{
                   forceLabel: "User Name"
                 }}
               />
               <h6>Username</h6>
-            </div>
+            </div> */}
             <AlagehFormGroup
               div={{ className: "col-12 form-group" }}
               label={{

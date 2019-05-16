@@ -47,7 +47,8 @@ export default {
       grn_no: null,
       item_group_id: null,
       item_category: null,
-      barcode: null
+      barcode: null,
+      dataExitst: false
     };
     return output;
   }
