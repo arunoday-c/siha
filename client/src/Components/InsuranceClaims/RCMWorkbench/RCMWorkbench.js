@@ -17,7 +17,7 @@ import ValidateBills from "./ValidateBills/ValidateBills";
 import moment from "moment";
 import ClaimSubmission from "./ClaimSubmission/ClaimSubmission";
 import _ from "lodash";
-let validatedClaims = [];
+// let validatedClaims = [];
 
 class RCMWorkbench extends Component {
   constructor(props) {
@@ -27,6 +27,8 @@ class RCMWorkbench extends Component {
       claims: [],
       openClaims: false
     };
+    this.validatedClaims=[]
+    this.select = false
     this.dropDownHandler = this.dropDownHandler.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.getInvoicesForClaims = this.getInvoicesForClaims.bind(this);
@@ -72,16 +74,23 @@ class RCMWorkbench extends Component {
   }
 
   addClaimsArray(row, e) {
+    debugger
     if (row.claim_validated === "P") {
       e.preventDefault();
       swalMessage({
         title: "Please Validate the bill first",
         type: "warning"
       });
-    } else if (validatedClaims.includes(row)) {
-      validatedClaims.pop(row);
+      // row["chkselect"] = 0
+      // row.update();
+    } else if (this.validatedClaims.includes(row)) {
+      this.validatedClaims.pop(row);
+      // row["chkselect"] = 0
+      // row.update();
     } else {
-      validatedClaims.push(row);
+      this.validatedClaims.push(row);
+      // row["chkselect"] = 1
+      // row.update();
     }
   }
 
@@ -159,8 +168,9 @@ class RCMWorkbench extends Component {
   generateReports() {
     AlgaehLoader({ show: true });
     let rpt_paramenter = [];
+    debugger
     // validatedClaims
-    for (let i = 0; i < this.state.claims.length; i++) {
+    for (let i = 0; i < this.validatedClaims.length; i++) {
       rpt_paramenter.push([
         { name: "hims_d_patient_id", value: this.state.claims[i].patient_id },
         {
@@ -199,6 +209,7 @@ class RCMWorkbench extends Component {
         report: {
           reportName: [
             "creditInvoice",
+            "pharmacyCreditInvoice",
             "ucaf",
             "haematologyReport",
             "radiologyReport"
@@ -246,7 +257,7 @@ class RCMWorkbench extends Component {
   }
 
   openReviewSubmit() {
-    validatedClaims.length === 0
+    this.validatedClaims.length === 0
       ? swalMessage({
           title: "please select atleast one invoice to submit",
           type: "warning"
@@ -379,7 +390,7 @@ class RCMWorkbench extends Component {
           openPopup={this.state.openClaims}
         />
         <ClaimSubmission
-          data={validatedClaims}
+          data={this.validatedClaims}
           claimSubmission={this.state.openSubmit}
           closeSubmissionModal={this.handleSubmitClose.bind(this)}
         />
@@ -580,12 +591,13 @@ class RCMWorkbench extends Component {
                         }
                       },
                       {
-                        fieldName: "select",
+                        fieldName: "chkselect",
                         label: <AlgaehLabel label={{ forceLabel: "Select" }} />,
                         displayTemplate: row => {
                           return (
                             <input
                               type="checkbox"
+                              // checked = {row.chkselect === 0 ? true : false}
                               onChange={this.addClaimsArray.bind(this, row)}
                             />
                           );
@@ -594,7 +606,7 @@ class RCMWorkbench extends Component {
                           return (
                             <input
                               type="checkbox"
-                              //checked={}
+                              // checked = {row.chkselect === 0 ? true : false}
                               onChange={this.addClaimsArray.bind(this, row)}
                             />
                           );

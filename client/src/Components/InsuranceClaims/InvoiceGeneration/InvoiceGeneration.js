@@ -949,21 +949,50 @@ class InvoiceGeneration extends Component {
                   label={{ fieldName: "btn_cash", returnText: true }}
                 />
               </button>
+
+              <button
+                onClick={this.generateReport.bind(
+                  this,
+                  "pharmacyCashInvoice",
+                  "Pharmacy Cash Invoice"
+                )}
+                className="btn btn-default"
+                disabled={this.state.generateVoice}
+              >
+                POS Cash Invoice
+              </button>
+
+
+
               {this.state.select_invoice === "CD" ? (
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={this.generateInvoice.bind(
-                    this,
-                    "creditInvoice",
-                    "Credit Invoice"
-                  )}
-                  disabled={this.state.generateVoice}
-                >
-                  <AlgaehLabel
-                    label={{ fieldName: "btn_creidt", returnText: true }}
-                  />
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    className="btn btn-default"
+                    onClick={this.generateInvoice.bind(
+                      this,
+                      "creditInvoice",
+                      "Credit Invoice"
+                    )}
+                    disabled={this.state.generateVoice}
+                  >
+                    <AlgaehLabel
+                      label={{ fieldName: "btn_creidt", returnText: true }}
+                    />
+                  </button>
+
+                  <button
+                    className="btn btn-default"
+                    onClick={this.generateReport.bind(
+                      this,
+                      "pharmacyCreditInvoice",
+                      "Pharmacy Credit Invoice"
+                    )}
+                    disabled={this.state.generateVoice}
+                  >
+                    POS Credit Invoice
+                  </button>
+                </div>
               ) : null}
             </div>
           </div>

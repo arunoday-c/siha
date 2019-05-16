@@ -61,7 +61,11 @@ hbs.registerHelper("if", function(value1, value2, options) {
 
 hbs.registerHelper("dateTime", function(value, type) {
   type = type || "date";
-  if (value != null || value != "") {
+
+  if (value == null) {
+    return "";
+  }
+  if (value != "") {
     if (type == "date") {
       return moment(value).format("DD-MM-YYYY");
     } else {
@@ -411,7 +415,7 @@ module.exports = {
                             });
                             const _fs = fs.createReadStream(_reportOutput[0]);
                             _fs.on("end", () => {
-                              //  fs.unlink(_reportOutput[0]);
+                              fs.unlink(_reportOutput[0]);
                             });
                             _fs.pipe(res);
                           } else {
