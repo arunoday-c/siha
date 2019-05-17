@@ -59,16 +59,16 @@
 
 
                 </tbody>
-            </table>   </table>  <table class="tableTotal">
-                <tr><td>Total Amount before VAT</td><td>{{total_gross_amount}}</td><td>المبلغ الإجمالي قبل ضريبة القيمة المضافة</td></tr>
-                 <tr><td>Discount</td><td>{{total_discount_amount}}</td><td>خصم</td></tr>
-                  <tr><td>VAT Amount 5%</td><td>Patient + Company</td><td>ضريبة القيمة المضافة ٪5</td></tr>
-                   <tr><td>Client VAT Amount</td><td>{{total_patient_tax}}</td><td>المبلغ الإجمالي قبل ضريبة القيمة المضافة</td></tr>
-                    <tr><td>Company VAT amount</td><td>{{total_company_tax}}</td><td>ضريبة القيمة المضافة للعملاء</td></tr>
-                     <tr><td>Net Total Including VAT</td><td>{{total_net_claim}}</td><td>المبلغ الإجمالي قبل ضريبة القيمة المضافة</td></tr>
-                      <tr><td>Co Payment</td><td>{{total_patient_share}}</td><td>المبلغ الإجمالي قبل ضريبة القيمة المضافة</td></tr>
+            </table>   </table>   <table class="tableTotal">
+                <tr><td>Total Amount before VAT</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
+                 <tr><td>Discount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
+                  <tr><td>VAT Amount 5%</td><td>Patient + Company</td><td>قيمة الضريبة المضافة %5</td></tr>
+                   <tr><td>Client VAT Amount</td><td>{{total_patient_tax}}</td><td>الضريبة المضافة على العميل</td></tr>
+                    <tr><td>Company VAT amount</td><td>{{total_company_tax}}</td><td>الضريبة المضافة على الشركة</td></tr>
+                     <tr><td>Net Total Including VAT</td><td>{{total_net_claim}}</td><td>الإجمالي بعد الضريبة المضافة</td></tr>
+                      <tr><td>Co Payment</td><td>{{total_patient_share}}</td><td>نسبة التحمل</td></tr>
                        <tr><td>Paid Amount</td><td>0.00</td><td>المبلغ المدفوع</td></tr>
-                        <tr><td>Due Amount</td><td>Net Amount - Paid Amount</td><td>مبلغ مستحق</td></tr>
+                        <tr><td>Due Amount</td><td>Net Amount - Paid Amount</td><td>المبلغ المتبقي</td></tr>
             </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}

@@ -142,7 +142,7 @@ body {
   text-align: right;
   float: right;
   width:25%;
-  font-size: 12px;
+  font-size: 12px;font-family: 'Calibri', sans-serif; 
 }
 .textEnLft{
   text-align: left;

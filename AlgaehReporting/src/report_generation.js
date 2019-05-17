@@ -7,6 +7,8 @@ import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
+import chrome from "algaeh-keys";
+const chromePath =chrome.default.chromePuppeteer !=null ?chrome.default.chromePuppeteer :{};
 
 const XlsxTemplate = require("xlsx-template");
 
@@ -275,7 +277,7 @@ module.exports = {
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
-                    const browser = await puppeteer.launch();
+                    const browser = await puppeteer.launch(chromePath);
                     const page = await browser.newPage();
                     const _pdfTemplating = {};
                     if (
@@ -544,7 +546,7 @@ module.exports = {
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
-                        const browser = await puppeteer.launch();
+                        const browser = await puppeteer.launch(chromePath);
                         const page = await browser.newPage();
                         const _pdfTemplating = {};
                         if (
