@@ -2,6 +2,8 @@ import moment from "moment";
 import { swalMessage } from "../../../../utils/algaehApiCall.js";
 import swal from "sweetalert2";
 import Options from "../../../../Options.json";
+import _ from "lodash";
+import extend from "extend";
 
 let texthandlerInterval = null;
 
@@ -194,12 +196,12 @@ const datehandle = ($this, ctrl, e) => {
 };
 
 const deleteTransEntryDetail = ($this, context, e, rowId) => {
-  debugger
+  debugger;
 
-  let display = $this.props.itemlist === undefined ? []
-        : $this.props.itemlist.filter(
-          f => f.hims_d_item_master_id === e.item_id
-        );
+  let display =
+    $this.props.itemlist === undefined
+      ? []
+      : $this.props.itemlist.filter(f => f.hims_d_item_master_id === e.item_id);
 
   swal({
     title: "Are you sure want to delete ?" + display[0].item_description + "?",
@@ -213,7 +215,6 @@ const deleteTransEntryDetail = ($this, context, e, rowId) => {
     if (willDelete.value) {
       let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
       pharmacy_stock_detail.splice(rowId, 1);
-
 
       if (pharmacy_stock_detail.length === 0) {
         if (context !== undefined) {
@@ -278,14 +279,13 @@ const updateTransEntryDetail = ($this, context) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
-  debugger
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  let transfer_to_date = parseFloat(row.transfer_to_date) + parseFloat(value);
-  if (transfer_to_date > parseFloat(row.quantity_authorized)) {
+  if (parseFloat(value) > parseFloat(row.qtyhand)) {
     swalMessage({
-      title: "Cannot be greater than Authorized Quantity.",
+      title: "Cannot be greater than Quantity in Hand.",
       type: "warning"
     });
   } else if (parseFloat(value) < 0) {
@@ -294,19 +294,35 @@ const onchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
   } else {
-    let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+    let item_details = $this.state.item_details;
 
     row[name] = value;
     row["quantity_outstanding"] =
       row.quantity_authorized - row.transfer_to_date - value;
+    let quantity_transferred = _.sumBy(item_details.batches, s =>
+      parseFloat(s.quantity_transfer)
+    );
 
-    pharmacy_stock_detail[row.rowIdx] = row;
+    const _index = item_details.batches.indexOf(row);
+    item_details.batches[_index] = row;
 
-    $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
+    item_details.quantity_outstanding = row["quantity_outstanding"];
+    item_details.quantity_transferred = quantity_transferred;
+
+    item_details.quantity_outstanding =
+      item_details.quantity_authorized -
+      item_details.transfer_to_date -
+      quantity_transferred;
+
+    $this.setState({
+      item_details: item_details,
+      quantity_transferred: quantity_transferred
+    });
 
     if (context !== undefined) {
       context.updateState({
-        pharmacy_stock_detail: pharmacy_stock_detail
+        item_details: item_details,
+        quantity_transferred: quantity_transferred
       });
     }
   }
@@ -359,6 +375,64 @@ const EditGrid = ($this, context, cancelRow) => {
   }
 };
 
+const AddSelectedBatches = ($this, context) => {
+  debugger;
+  if (
+    parseFloat($this.state.item_details.quantity_transferred) >
+    parseFloat($this.state.item_details.quantity_authorized)
+  ) {
+    swalMessage({
+      title: "Transfer Qty cannot be greater than Request Qty.",
+      type: "warning"
+    });
+  } else {
+    if (context !== null) {
+      let saveEnable = true;
+      let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+      let _stock_detail = $this.state.stock_detail;
+      let details = extend({}, $this.state.item_details);
+      let batches = _.filter($this.state.item_details.batches, f => {
+        return parseFloat(f.quantity_transfer) !== 0;
+      });
+
+      const _index = _stock_detail.indexOf($this.state.item_details);
+      _stock_detail[_index] = $this.state.item_details;
+
+      delete details.batches;
+
+      _stock_detail[_index].pharmacy_stock_detail = batches.map(
+        (item, index) => {
+          return { ...item, ...details };
+        }
+      );
+
+      let remove_item = _.filter(_pharmacy_stock_detail, f => {
+        return f.item_id === details.item_id;
+      });
+
+      for (let i = 0; i < remove_item.length; i++) {
+        if (remove_item[i].item_id === details.item_id) {
+          _pharmacy_stock_detail.splice(remove_item[i], 1);
+        }
+      }
+
+      _pharmacy_stock_detail.push(
+        ...batches.map((item, index) => {
+          return { ...item, ...details };
+        })
+      );
+      saveEnable = _pharmacy_stock_detail.length > 0 ? false : true;
+      context.updateState({
+        stock_detail: _stock_detail,
+        pharmacy_stock_detail: _pharmacy_stock_detail,
+        batch_detail_view: false,
+        saveEnable: saveEnable,
+        quantity_transferred: 0
+      });
+    }
+  }
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -370,5 +444,6 @@ export {
   onchangegridcol,
   dateFormater,
   getItemLocationStock,
-  EditGrid
+  EditGrid,
+  AddSelectedBatches
 };

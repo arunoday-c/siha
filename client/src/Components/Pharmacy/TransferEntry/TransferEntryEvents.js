@@ -46,10 +46,19 @@ const ClearData = ($this, e) => {
 };
 
 const SaveTransferEntry = $this => {
+  debugger;
+  let inputObj = $this.state;
+
+  delete inputObj.item_details;
+  delete inputObj.pharmacy_stock_detail;
+  for (let i = 0; i < inputObj.stock_detail.length; i++) {
+    delete inputObj.stock_detail[i].batches;
+  }
+
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
-    data: $this.state,
+    data: inputObj,
     onSuccess: response => {
       if (response.data.success === true) {
         $this.setState({
@@ -150,55 +159,41 @@ const RequisitionSearch = ($this, e) => {
           },
 
           onSuccess: response => {
-            debugger
+            debugger;
             if (response.data.success === true) {
               let data = response.data.records;
 
               let from_location_id = data.from_location_id;
               let from_location_type = data.from_location_type;
-              data.saveEnable = false;
+              // data.saveEnable = false;
 
               data.from_location_id = data.to_location_id;
               data.to_location_id = from_location_id;
               data.from_location_type = data.to_location_type;
               data.to_location_type = from_location_type;
 
-              // data.dataExitst = true;
-
-              for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-                data.pharmacy_stock_detail[i].material_requisition_header_id =
+              for (let i = 0; i < data.stock_detail.length; i++) {
+                data.stock_detail[i].material_requisition_header_id =
                   data.hims_f_pharamcy_material_header_id;
 
-                data.pharmacy_stock_detail[i].material_requisition_detail_id =
-                  data.pharmacy_stock_detail[
-                    i
-                  ].hims_f_pharmacy_material_detail_id;
+                data.stock_detail[i].material_requisition_detail_id =
+                  data.stock_detail[i].hims_f_pharmacy_material_detail_id;
 
-                // grnno
+                data.stock_detail[i].quantity_transferred = 0;
 
-                data.pharmacy_stock_detail[i].quantity_transferred =
-                  data.pharmacy_stock_detail[i].quantity_outstanding;
+                data.stock_detail[i].transfer_to_date =
+                  data.stock_detail[i].quantity_authorized -
+                  data.stock_detail[i].quantity_outstanding;
 
-                data.pharmacy_stock_detail[i].transfer_to_date =
-                  data.pharmacy_stock_detail[i].quantity_authorized -
-                  data.pharmacy_stock_detail[i].quantity_outstanding;
+                data.stock_detail[i].quantity_outstanding = 0;
 
-                data.pharmacy_stock_detail[i].quantity_outstanding = 0;
-                // data.pharmacy_stock_detail[i].expiry_date =
-                //   data.pharmacy_stock_detail[i].expirydt;
+                data.stock_detail[i].quantity_requested =
+                  data.stock_detail[i].quantity_required;
 
-                data.pharmacy_stock_detail[i].quantity_requested =
-                  data.pharmacy_stock_detail[i].quantity_required;
-                // data.pharmacy_stock_detail[i].from_qtyhand =
-                //   data.pharmacy_stock_detail[i].qtyhand;
-
-                data.pharmacy_stock_detail[i].uom_requested_id =
-                  data.pharmacy_stock_detail[i].item_uom;
-                data.pharmacy_stock_detail[i].uom_transferred_id =
-                  data.pharmacy_stock_detail[i].item_uom;
-
-                // data.pharmacy_stock_detail[i].unit_cost =
-                //   data.pharmacy_stock_detail[i].avgcost;
+                data.stock_detail[i].uom_requested_id =
+                  data.stock_detail[i].item_uom;
+                data.stock_detail[i].uom_transferred_id =
+                  data.stock_detail[i].item_uom;
               }
               $this.setState(data);
               AlgaehLoader({ show: false });
@@ -211,7 +206,7 @@ const RequisitionSearch = ($this, e) => {
               type: "error"
             });
           }
-        });      
+        });
       }
     });
   } else {

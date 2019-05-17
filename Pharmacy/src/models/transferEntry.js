@@ -324,8 +324,10 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select D.*,LOC.* from hims_f_pharmacy_material_detail D \
+                  "select D.*,LOC.*,IM.item_description, PU.uom_description from hims_f_pharmacy_material_detail D \
                   inner join `hims_m_item_location` LOC  on D.item_id=LOC.item_id \
+                  inner join `hims_d_item_master` IM  on IM.hims_d_item_master_id=D.item_id \
+                  inner join `hims_d_pharmacy_uom` PU  on PU.hims_d_pharmacy_uom_id=D.item_uom \
                   where   LOC.pharmacy_location_id=? and  D.pharmacy_header_id=? and  LOC.expirydt > CURDATE() \
                    and LOC.qtyhand>0  order by  LOC.expirydt ",
                 values: [
@@ -337,7 +339,9 @@ module.exports = {
               .then(pharmacy_stock_detail => {
                 _mysql.releaseConnection();
 
-                utilities.logger().log("pharmacy_stock_detail: ", pharmacy_stock_detail);
+                utilities
+                  .logger()
+                  .log("pharmacy_stock_detail: ", pharmacy_stock_detail);
 
                 var item_grp = _(pharmacy_stock_detail)
                   .groupBy("item_id")
@@ -370,7 +374,9 @@ module.exports = {
                         po_created: s.po_created,
                         po_created_quantity: s.po_created_quantity,
                         po_outstanding_quantity: s.po_outstanding_quantity,
-                        po_completed: s.po_completed
+                        po_completed: s.po_completed,
+                        item_description: s.item_description,
+                        uom_description: s.uom_description
                       };
                     })
                     .FirstOrDefault();
@@ -379,12 +385,12 @@ module.exports = {
                     .Where(w => w.item_id == item_grp[i])
                     .Select(s => {
                       return {
-                        hims_m_item_location_id:s.hims_m_item_location_id,
+                        hims_m_item_location_id: s.hims_m_item_location_id,
                         item_id: s.item_id,
                         pharmacy_location_id: s.pharmacy_location_id,
                         item_location_status: s.item_location_status,
                         batchno: s.batchno,
-                        expirydt: s.expirydt,
+                        expiry_date: s.expirydt,
                         barcode: s.barcode,
                         qtyhand: s.qtyhand,
                         qtypo: s.qtypo,
@@ -396,7 +402,8 @@ module.exports = {
                         grnno: s.grnno,
                         sale_price: s.sale_price,
                         mrp_price: s.mrp_price,
-                        sales_uom: s.sales_uom
+                        sales_uom: s.sales_uom,
+                        quantity_transfer: 0
                       };
                     })
                     .ToArray();
@@ -406,7 +413,7 @@ module.exports = {
 
                 req.records = {
                   ...headerResult[0],
-                  ...{ pharmacy_stock_detail: outputArray }
+                  ...{ stock_detail: outputArray }
                 };
                 next();
               })
@@ -429,5 +436,4 @@ module.exports = {
       next(e);
     }
   }
-
 };

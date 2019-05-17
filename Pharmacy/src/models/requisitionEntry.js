@@ -347,7 +347,7 @@ module.exports = {
 
       let complete = "Y";
 
-      const partial_recived = new LINQ(inputParam.pharmacy_stock_detail)
+      const partial_recived = new LINQ(inputParam.stock_detail)
         .Where(w => w.quantity_outstanding != 0)
         .ToArray();
 
@@ -369,7 +369,7 @@ module.exports = {
         })
         .then(headerResult => {
           if (headerResult != null) {
-            let details = inputParam.pharmacy_stock_detail;
+            let details = inputParam.stock_detail;
 
             let qry = "";
 
