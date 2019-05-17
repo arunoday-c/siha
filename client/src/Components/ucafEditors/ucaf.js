@@ -27,47 +27,10 @@ export default class UcafEditor extends Component {
   }
 
   saveAndPrintUcaf(e) {
-    const that = this;
-    const _hims_f_ucaf_header = this.props.dataProps.hims_f_ucaf_header[0];
-    algaehApiCall({
-      uri: "/report",
-      method: "GET",
-      module: "reports",
-      headers: {
-        Accept: "blob"
-      },
-      others: { responseType: "blob" },
-      data: {
-        report: {
-          reportName: "ucaf",
-          reportParams: [
-            {
-              name: "hims_d_patient_id",
-              value: _hims_f_ucaf_header.patient_id
-            },
-            { name: "visit_id", value: _hims_f_ucaf_header.visit_id },
-            { name: "visit_date", value: null }
-          ],
-          outputFileType: "PDF" //"EXCEL", //"PDF",
-        }
-      },
-      onSuccess: res => {
-        let reader = new FileReader();
-        reader.onloadend = () => {
-          let myWindow = window.open(
-            "{{ product.metafields.google.custom_label_0 }}",
-            "_blank"
-          );
-          myWindow.document.write(
-            "<embed src= '" + reader.result + "' width='100%' height='100%' />"
-          );
-          myWindow.document.title = "Algaeh UCAF 2.0";
-        };
-
-        reader.readAsDataURL(res.data);
-      }
-    });
+    debugger;
+    EditorEvents().saveAndPrintUcaf(this,e)  
   }
+
   // getPrimaryCardNumber() {
   //   if (
   //     this.state.dataProps.hims_f_ucaf_insurance_details !== undefined &&
@@ -103,17 +66,6 @@ export default class UcafEditor extends Component {
   }
 
   render() {
-    const _isPrimary = "primary";
-    const _hims_f_ucaf_header = this.props.dataProps.hims_f_ucaf_header[0];
-    const _insurnce = _.find(
-      this.props.dataProps.hims_f_ucaf_insurance_details,
-      f =>
-        f[
-          _isPrimary === "primary"
-            ? "primary_insurance_company_name"
-            : "secondary_insurance_company_name"
-        ] !== undefined
-    );
 
     return (
       <div className="">

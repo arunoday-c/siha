@@ -371,6 +371,63 @@ export default function EditorEvents() {
           });
         }
       });
+    },
+
+    saveAndPrintUcaf:($this, e) => {
+      debugger
+      algaehApiCall({
+        uri: "/ucaf/updateUcafDetails",
+        data: $this.state,
+        method: "PUT",
+        onSuccess: response => {
+          if (response.data.success) {
+            algaehApiCall({
+              uri: "/report",
+              method: "GET",
+              module: "reports",
+              headers: {
+                Accept: "blob"
+              },
+              others: { responseType: "blob" },
+              data: {
+                report: {
+                  reportName: "ucaf",
+                  reportParams: [
+                    {
+                      name: "hims_d_patient_id",
+                      value: $this.state.patient_id
+                    },
+                    { name: "visit_id", value: $this.state.visit_id },
+                    { name: "visit_date", value: null }
+                  ],
+                  outputFileType: "PDF" //"EXCEL", //"PDF",
+                }
+              },
+              onSuccess: res => {
+                let reader = new FileReader();
+                reader.onloadend = () => {
+                  let myWindow = window.open(
+                    "{{ product.metafields.google.custom_label_0 }}",
+                    "_blank"
+                  );
+                  myWindow.document.write(
+                    "<embed src= '" + reader.result + "' width='100%' height='100%' />"
+                  );
+                  myWindow.document.title = "Algaeh UCAF 2.0";
+                };
+
+                reader.readAsDataURL(res.data);
+              }
+            });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
     }
 
   };

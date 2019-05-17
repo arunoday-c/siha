@@ -426,6 +426,67 @@ const _getUcafDetails = (_mysql, req) => {
   });
 };
 
+
+const updateUcafDetails = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+
+  try {
+    const input = req.body;
+    console.log("input:", input);
+    _mysql
+      .executeQuery({
+        query:
+          "update hims_f_ucaf_header set `patient_marital_status`=?,`patient_emergency_case`=?,\
+          `patient_bp_sys`=?,`patient_bp_dia`=?,`patient_pulse`=?,`patient_temp`=?,`patient_weight`=?,\
+          `patient_height`=?,`patient_respiratory_rate`=?,`patient_duration_of_illness`=?,\
+          `patient_chief_comp_main_symptoms`=?,`patient_significant_signs`=?,`patient_other_conditions`=?,\
+          `patient_diagnosys`=?,`patient_principal_code_1`=?,`patient_principal_code_2`=?,\
+          `patient_principal_code_3`=?,`patient_principal_code_4`=?,`patient_complaint_type`=?,\
+          `patient_indicated_LMP`=?,`updated_date`=?,`updated_by`=?\
+          WHERE  `hims_f_ucaf_header_id`=?;",
+        values: [
+          input.patient_marital_status,
+          input.patient_emergency_case,
+          input.patient_bp_sys,
+          input.patient_bp_dia,
+          input.patient_pulse,
+          input.patient_temp,
+          input.patient_weight,
+          input.patient_height,
+          input.patient_respiratory_rate,
+          input.patient_duration_of_illness,
+          input.patient_chief_comp_main_symptoms,
+          input.patient_significant_signs,
+          input.patient_other_conditions,
+          input.patient_diagnosys,
+          input.patient_principal_code_1,
+          input.patient_principal_code_2,
+          input.patient_principal_code_3,
+          input.patient_principal_code_4,
+          input.patient_complaint_type,
+          input.patient_indicated_LMP,
+          new Date(),
+          req.userIdentity.algaeh_d_app_user_id,
+          input.hims_f_ucaf_header_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
 module.exports = {
-  getPatientUCAF
+  getPatientUCAF,
+  updateUcafDetails
 };
