@@ -275,13 +275,7 @@ module.exports = {
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
-                    const browser = await puppeteer.launch({
-                      ignoreHTTPSErrors: false,
-                      devtools: true,
-                      headless: true,
-                      executablePath:
-                        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-                    });
+                    const browser = await puppeteer.launch();
                     const page = await browser.newPage();
                     const _pdfTemplating = {};
                     if (
