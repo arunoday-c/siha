@@ -127,8 +127,86 @@ class TransferEntryItems extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="row">
-              <div className="col-lg-12">
-                <div className="portlet portlet-bordered margin-bottom-15">
+             <div className="col-4">
+             <h4 style={{marginBottom:4}}>Requested Items</h4>
+                <ul className="reqTransList">
+                
+                <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+                
+                </ul>
+             </div>
+             <div className="col-8" style={{paddingLeft:0}}>
+             <div className="portlet portlet-bordered margin-bottom-15" >
                   <div className="portlet-body" id="REQ_details_Cntr">
                     <AlgaehDataGrid
                       id="REQ_details"
@@ -498,7 +576,65 @@ class TransferEntryItems extends Component {
                     />
                   </div>
                 </div>
+             </div>
+             <div className="col-8" style={{paddingLeft:0}}>
+             
+             <div className="portlet portlet-bordered margin-bottom-15">
+             {/* <div className="portlet-title">
+             <div className="caption">
+              <h3 className="caption-subject">Enter Grid Name Here</h3>
               </div>
+             <div className="actions">
+             <a className="btn btn-primary btn-circle active">
+             <i className="fas fa-pen" />
+             </a>
+             </div>
+             </div> */}
+             <div className="portlet-body">
+             <div className="row">
+             <div className="col-12" id="itemTransferMapGrid_Cntr">
+             <AlgaehDataGrid
+             id="itemTransferMapGrid"
+             datavalidate="itemTransferMapGrid"
+             columns={[
+              {
+             fieldName: "batch_no",
+              label: (
+             <AlgaehLabel label={{ forceLabel: "Batch No" }} />
+             )
+              },
+              {
+             fieldName: "Auth_qty",
+              label: (
+             <AlgaehLabel label={{ forceLabel: "Auth Qty" }} />
+             )
+              },
+              {
+             fieldName: "exp_date",
+              label: (
+             <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+             )
+              },
+              {
+             fieldName: "Trans_qty",
+              label: (
+             <AlgaehLabel label={{ forceLabel: "Transfering Qty" }} />
+             )
+              }
+             ]}
+             keyId=""
+             dataSource={{data:[]}} 
+             isEditable={false}
+             paging={{ page: 0, rowsPerPage: 10 }}
+             events={{}}
+             others={{}}
+             />
+             </div>
+             </div>
+             </div>
+             </div>
+             </div>
+                      
             </div>
           )}
         </MyContext.Consumer>

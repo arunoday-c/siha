@@ -59,3 +59,50 @@
     }
   }
 }
+.reqTransList{ 
+  margin: 0;
+  padding: 1px 0;
+  list-style: none;
+  background: #fff;
+  border: 1px solid #d6d6d6;
+  border-radius: 5px;
+  max-height: 59vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  li{
+    margin: 0;
+    padding: 10px 15px;
+    border-bottom: 1px solid #d6d6d6;
+    list-style: none;
+    .itemReq{
+      display: inline-block;
+      width: 75%;
+  h6{
+    font-size: 1.2rem;
+  }
+  p{
+    margin: 0; padding: 0;
+    span{
+      font-weight: bold;
+    }
+  }}
+  .itemAction{    float: right;
+    span{
+      i{
+    border: 1px solid #a8a8a8;
+    color: #a8a8a8;
+    padding: 7px;
+    border-radius: 50%;
+    margin-top: 17px;
+    cursor: pointer;
+    &:hover{
+
+    border: 1px solid #000;
+    color: #000;
+    }
+      }
+    }
+  }
+  
+  }
+}
