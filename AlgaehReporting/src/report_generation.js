@@ -106,7 +106,7 @@ hbs.registerHelper("imageSource", function(filePath) {
     "algaeh_report_tool/templates",
     `${filePath}`
   );
-  const _extention = path.extname(fullPath);
+  const _extention = path.extname(fullPath).replace(".","");
   const img = fs.readFileSync(fullPath, "base64");
   return "data:image/" + _extention + ";base64," + img;
 });
@@ -299,7 +299,7 @@ module.exports = {
                       );
                       _pdfTemplating["headerTemplate"] = _header;
                       _pdfTemplating["margin"] = {
-                        top: "100px"
+                        top: "150px"
                       };
                     }
                     if (

@@ -1,5 +1,5 @@
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   font-size: 12px;
 }
 
@@ -28,7 +28,7 @@ body {
   margin-bottom: 20px;
 }
 
-.print-body .tableForLabel {
+.print-body .tableForLabel,.tableTotal{
   width: 100%;
   border-collapse: collapse;
 }
@@ -87,6 +87,8 @@ body {
 }
 .print-body .tableForData th p{
   font-size: 11px;
+  padding: 0; margin: 3px 0 0;
+  font-family:'Calibri', sans-serif;
 }
 
 .print-body .tableForData td {
@@ -176,4 +178,24 @@ body {
   font-size: 13px;width: 50%;}
   .tableForPharmacy td span{display:inline-block; margin: 0 5px; font-weight: bold;}
 
+
+.tableTotal{
+  width: 50%;
+  border-top: 1px solid #ccc;
+  margin-top:20px;
+}
 .tableForPharmacy td:last-child{text-align: right;}
+.tableTotal td{
+  border-bottom: 1px solid #ccc;
+  padding: 3px;
+  margin: 0;
+  font-size: 11px;
+  text-align: center;
+}
+.tableTotal td:first-child{text-align: left;
+  font-family: 'Segoe UI', sans-serif;}
+
+.tableTotal td:last-child{text-align: right;
+  font-family: 'Calibri', sans-serif; }
+
+.tableTotal tr:last-child td{font-weight: bold;}
