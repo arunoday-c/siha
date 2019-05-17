@@ -56,7 +56,7 @@ table {
 }
 
 .innerTable tbody tr td span {
-  border-bottom: 1px dotted #000;
+  /* border-bottom: 1px dotted #000; */
 }
 
 .servicetable {
