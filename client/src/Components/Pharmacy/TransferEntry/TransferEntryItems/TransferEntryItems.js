@@ -8,7 +8,8 @@ import "./../../../../styles/site.css";
 import {
   AlgaehDataGrid,
   AlgaehLabel,
-  AlagehFormGroup
+  AlagehFormGroup,
+  AlagehAutoComplete
 } from "../../../Wrapper/algaehWrapper";
 
 import {
@@ -79,18 +80,163 @@ class TransferEntryItems extends Component {
     this.setState(nextProps.TransferIOputs);
   }
 
+  changeGridEditors(row, e) {
+    debugger
+    let pharmacy_stock_detail = this.state.pharmacy_stock_detail
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+    row[name] = value;
+    row["expiry_date"] = e.selected.expirydt;
+    row["from_qtyhand"] = e.selected.qtyhand;
+    row["unit_cost"] =  e.selected.avgcost;
+    row["grnno"] = e.selected.grnno;
+
+    for (let k = 0; k < pharmacy_stock_detail.length; k++) {
+      if (pharmacy_stock_detail[k].item_id === row.item_id) {
+        pharmacy_stock_detail[k] = row;
+      }
+    }
+
+    this.setState({
+      pharmacy_stock_detail:pharmacy_stock_detail
+    })
+  }
+
+  clearGridEditors(row, e) {
+    debugger
+    let pharmacy_stock_detail = this.state.pharmacy_stock_detail
+
+    row["batchno"] = null;
+    row["expiry_date"] = null;
+    row["from_qtyhand"] = null;
+    row["unit_cost"] =  null;
+
+    for (let k = 0; k < pharmacy_stock_detail.length; k++) {
+      if (pharmacy_stock_detail[k].item_id === row.item_id) {
+        pharmacy_stock_detail[k] = row;
+      }
+    }
+    this.setState({
+      pharmacy_stock_detail:pharmacy_stock_detail
+    })
+  }
+
   render() {
     return (
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
             <div className="row">
-              <div className="col-lg-12">
-                <div className="portlet portlet-bordered margin-bottom-15">
+             <div className="col-4">
+             <h4 style={{marginBottom:4}}>Requested Items</h4>
+                <ul className="reqTransList">
+                
+                <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+
+                  <li>
+                   <div className="itemReq"> <h6>Vozet</h6>
+                    <p>UOM: <span>Bottle</span></p>
+                    <p>Auth Qty: <span>20</span></p></div>
+                    <div className="itemAction">
+                      <span><i className="fas fa-pen"></i></span>
+                    </div>
+                  </li>
+                
+                </ul>
+             </div>
+             <div className="col-8" style={{paddingLeft:0}}>
+             <div className="portlet portlet-bordered margin-bottom-15" >
                   <div className="portlet-body" id="REQ_details_Cntr">
                     <AlgaehDataGrid
                       id="REQ_details"
                       columns={[
+                        {
+                          fieldName: "action",
+                          label: (
+                            <AlgaehLabel label={{ forceLabel: "action" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                <i
+                                  className="fas fa-trash-alt"
+                                  aria-hidden="true"
+                                  onClick={deleteTransEntryDetail.bind(
+                                    this,
+                                    this,
+                                    context,
+                                    row
+                                  )}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            minWidth: 50,
+
+                          }
+                        },
                         {
                           fieldName: "item_id",
                           label: (
@@ -261,7 +407,28 @@ class TransferEntryItems extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                           ),
-                          disabled: true
+                          displayTemplate: row => {
+                            return (
+                              <AlagehAutoComplete
+                                div={{ className: "col" }}
+                                selector={{
+                                  name: "batchno",
+                                  className: "select-fld",
+                                  value: row.batchno,
+                                  dataSource: {
+                                    textField: "batchno",
+                                    valueField: "batchno",
+                                    data: row.batches
+                                  },
+                                  onChange: this.changeGridEditors.bind(this, row),
+                                  onClear: this.clearGridEditors.bind(this, row),
+                                }}
+                              />
+                            );
+                          },
+                          others: {
+                            minWidth: 150,
+                          }
                         },
                         {
                           fieldName: "uom_requested_id",
@@ -333,7 +500,7 @@ class TransferEntryItems extends Component {
                               }}
                             />
                           ),
-                          editorTemplate: row => {
+                          displayTemplate: row => {
                             return (
                               <AlagehFormGroup
                                 div={{}}
@@ -389,7 +556,7 @@ class TransferEntryItems extends Component {
                       dataSource={{
                         data: this.state.pharmacy_stock_detail
                       }}
-                      isEditable={!this.state.dataExitst}
+                      isEditable={false}
                       byForceEvents={true}
                       datavalidate="id='TRANS_details'"
                       paging={{ page: 0, rowsPerPage: 10 }}
@@ -409,7 +576,65 @@ class TransferEntryItems extends Component {
                     />
                   </div>
                 </div>
+             </div>
+             <div className="col-8" style={{paddingLeft:0}}>
+             
+             <div className="portlet portlet-bordered margin-bottom-15">
+             {/* <div className="portlet-title">
+             <div className="caption">
+              <h3 className="caption-subject">Enter Grid Name Here</h3>
               </div>
+             <div className="actions">
+             <a className="btn btn-primary btn-circle active">
+             <i className="fas fa-pen" />
+             </a>
+             </div>
+             </div> */}
+             <div className="portlet-body">
+             <div className="row">
+             <div className="col-12" id="itemTransferMapGrid_Cntr">
+             <AlgaehDataGrid
+             id="itemTransferMapGrid"
+             datavalidate="itemTransferMapGrid"
+             columns={[
+              {
+             fieldName: "batch_no",
+              label: (
+             <AlgaehLabel label={{ forceLabel: "Batch No" }} />
+             )
+              },
+              {
+             fieldName: "Auth_qty",
+              label: (
+             <AlgaehLabel label={{ forceLabel: "Auth Qty" }} />
+             )
+              },
+              {
+             fieldName: "exp_date",
+              label: (
+             <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
+             )
+              },
+              {
+             fieldName: "Trans_qty",
+              label: (
+             <AlgaehLabel label={{ forceLabel: "Transfering Qty" }} />
+             )
+              }
+             ]}
+             keyId=""
+             dataSource={{data:[]}} 
+             isEditable={false}
+             paging={{ page: 0, rowsPerPage: 10 }}
+             events={{}}
+             others={{}}
+             />
+             </div>
+             </div>
+             </div>
+             </div>
+             </div>
+                      
             </div>
           )}
         </MyContext.Consumer>

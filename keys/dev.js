@@ -43,5 +43,11 @@ exports.default = {
   dbFormat: {
     date: "YYYY-MM-DD"
   },
-  useSSL: false
+  useSSL: false,
+  chromePuppeteer:{
+    headless: true,
+      executablePath:
+        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+    
+  }
 };

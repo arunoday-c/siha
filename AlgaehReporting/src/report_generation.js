@@ -7,6 +7,8 @@ import moment from "moment";
 import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
+import chrome from "algaeh-keys";
+const chromePath =chrome.default.chromePuppeteer !=null ?chrome.default.chromePuppeteer :{};
 
 const XlsxTemplate = require("xlsx-template");
 
@@ -106,7 +108,7 @@ hbs.registerHelper("imageSource", function(filePath) {
     "algaeh_report_tool/templates",
     `${filePath}`
   );
-  const _extention = path.extname(fullPath);
+  const _extention = path.extname(fullPath).replace(".","");
   const img = fs.readFileSync(fullPath, "base64");
   return "data:image/" + _extention + ";base64," + img;
 });
@@ -275,13 +277,7 @@ module.exports = {
                   const startGenerate = async () => {
                     const _outPath = _path + ".pdf";
                     _reportOutput.push(_outPath);
-                    const browser = await puppeteer.launch({
-                      ignoreHTTPSErrors: false,
-                      devtools: true,
-                      headless: true,
-                      executablePath:
-                        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-                    });
+                    const browser = await puppeteer.launch(chromePath);
                     const page = await browser.newPage();
                     const _pdfTemplating = {};
                     if (
@@ -299,7 +295,7 @@ module.exports = {
                       );
                       _pdfTemplating["headerTemplate"] = _header;
                       _pdfTemplating["margin"] = {
-                        top: "100px"
+                        top: "150px"
                       };
                     }
                     if (
@@ -550,7 +546,7 @@ module.exports = {
                       const _outPath = _path + ".pdf";
                       subReportCollection.push(_outPath);
                       const startGenerate = async () => {
-                        const browser = await puppeteer.launch();
+                        const browser = await puppeteer.launch(chromePath);
                         const page = await browser.newPage();
                         const _pdfTemplating = {};
                         if (

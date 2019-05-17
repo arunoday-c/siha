@@ -1066,7 +1066,7 @@ class ValidateBills extends PureComponent {
           >
             Credit Invoice
           </button>
-          <button
+          {/* <button
             className="btn btn-default"
             onClick={this.generatePharacyCreditInvoiceReport.bind(
               this,
@@ -1075,7 +1075,7 @@ class ValidateBills extends PureComponent {
             )}
           >
             Pharmacy Credit Invoice
-          </button>
+          </button> */}
 
           <button
             onClick={this.generateReport.bind(
