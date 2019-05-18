@@ -280,8 +280,8 @@ const updateTransEntryDetail = ($this, context) => {
 
 const onchangegridcol = ($this, context, row, e) => {
   debugger;
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
+  let name = e.target.name;
+  let value = e.target.value === "" ? null : e.target.value;
 
   if (parseFloat(value) > parseFloat(row.qtyhand)) {
     swalMessage({
@@ -297,16 +297,17 @@ const onchangegridcol = ($this, context, row, e) => {
     let item_details = $this.state.item_details;
 
     row[name] = value;
-    row["quantity_outstanding"] =
-      row.quantity_authorized - row.transfer_to_date - value;
-    let quantity_transferred = _.sumBy(item_details.batches, s =>
-      parseFloat(s.quantity_transfer)
-    );
+    // row["quantity_outstanding"] =
+    //   row.quantity_authorized - row.transfer_to_date - value;
+    let quantity_transferred = _.sumBy(item_details.batches, s => {
+      return s.quantity_transfer !== null ? parseFloat(s.quantity_transfer) : 0;
+    });
 
     const _index = item_details.batches.indexOf(row);
     item_details.batches[_index] = row;
 
-    item_details.quantity_transferred = quantity_transferred;
+    item_details.quantity_transferred =
+      quantity_transferred === NaN ? 0 : quantity_transferred;
 
     item_details.quantity_outstanding =
       item_details.quantity_authorized -
