@@ -243,8 +243,8 @@ module.exports = {
                 input.to_location_id,
                 input.to_location_type,
                 input.description,
-                input.completed,
-                input.completed_date,
+                "Y",
+                new Date(),
                 input.completed_lines,
                 input.transfer_quantity,
                 input.requested_quantity,
@@ -353,17 +353,17 @@ module.exports = {
                       })
                       .then(subResult => {
                         if (i == input.stock_detail.length - 1) {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = {
-                              transfer_number: transfer_number,
-                              hims_f_pharmacy_transfer_header_id:
-                                headerResult.insertId,
-                              year: year,
-                              period: period
-                            };
-                            next();
-                          });
+                          // _mysql.commitTransaction(() => {
+                          //   _mysql.releaseConnection();
+                          req.records = {
+                            transfer_number: transfer_number,
+                            hims_f_pharmacy_transfer_header_id:
+                              headerResult.insertId,
+                            year: year,
+                            period: period
+                          };
+                          next();
+                          // });
                         }
                       });
                   })

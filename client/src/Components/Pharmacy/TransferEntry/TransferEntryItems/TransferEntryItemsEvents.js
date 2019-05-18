@@ -306,7 +306,6 @@ const onchangegridcol = ($this, context, row, e) => {
     const _index = item_details.batches.indexOf(row);
     item_details.batches[_index] = row;
 
-    item_details.quantity_outstanding = row["quantity_outstanding"];
     item_details.quantity_transferred = quantity_transferred;
 
     item_details.quantity_outstanding =
@@ -314,6 +313,14 @@ const onchangegridcol = ($this, context, row, e) => {
       item_details.transfer_to_date -
       quantity_transferred;
 
+    if (item_details.quantity_outstanding < 0) {
+      swalMessage({
+        title: "Quantity cannot be greater than requested quntity.",
+        type: "warning"
+      });
+      row[name] = 0;
+      quantity_transferred = 0;
+    }
     $this.setState({
       item_details: item_details,
       quantity_transferred: quantity_transferred
