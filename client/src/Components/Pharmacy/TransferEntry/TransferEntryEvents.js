@@ -56,43 +56,14 @@ const ClearData = ($this, e) => {
 const SaveTransferEntry = $this => {
   debugger;
   AlgaehLoader({ show: true });
-
-  $this.state.completed = "Y";
-  $this.state.transaction_type = "ST";
-  $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
-  $this.state.transaction_date = $this.state.transfer_date;
-  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-    $this.state.pharmacy_stock_detail[i].location_id =
-      $this.state.from_location_id;
-    $this.state.pharmacy_stock_detail[i].location_type =
-      $this.state.from_location_type;
-    $this.state.pharmacy_stock_detail[i].operation = "-";
-
-    $this.state.pharmacy_stock_detail[i].uom_id =
-      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
-
-    $this.state.pharmacy_stock_detail[i].quantity =
-      $this.state.pharmacy_stock_detail[i].quantity_transfer;
-
-    $this.state.pharmacy_stock_detail[i].grn_number =
-      $this.state.pharmacy_stock_detail[i].grnno;
-
-    $this.state.pharmacy_stock_detail[i].net_total =
-      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
-      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
-
-    $this.state.pharmacy_stock_detail[i].extended_cost =
-      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
-      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
-  }
-
   let inputObj = extend({}, $this.state);
 
   delete inputObj.item_details;
-
+  delete inputObj.pharmacy_stock_detail;
   for (let i = 0; i < inputObj.stock_detail.length; i++) {
     delete inputObj.stock_detail[i].batches;
   }
+
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
@@ -128,6 +99,34 @@ const SaveTransferEntry = $this => {
 
 const PostTransferEntry = $this => {
   AlgaehLoader({ show: true });
+  $this.state.completed = "Y";
+  $this.state.transaction_type = "ST";
+  $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
+  $this.state.transaction_date = $this.state.transfer_date;
+  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+    $this.state.pharmacy_stock_detail[i].location_id =
+      $this.state.from_location_id;
+    $this.state.pharmacy_stock_detail[i].location_type =
+      $this.state.from_location_type;
+    $this.state.pharmacy_stock_detail[i].operation = "-";
+
+    $this.state.pharmacy_stock_detail[i].uom_id =
+      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
+
+    $this.state.pharmacy_stock_detail[i].quantity =
+      $this.state.pharmacy_stock_detail[i].quantity_transfer;
+
+    $this.state.pharmacy_stock_detail[i].grn_number =
+      $this.state.pharmacy_stock_detail[i].grnno;
+
+    $this.state.pharmacy_stock_detail[i].net_total =
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
+
+    $this.state.pharmacy_stock_detail[i].extended_cost =
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
+  }
 
   algaehApiCall({
     uri: "/transferEntry/updatetransferEntry",
