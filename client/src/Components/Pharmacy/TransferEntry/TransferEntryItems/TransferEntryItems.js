@@ -22,6 +22,7 @@ import {
   AddSelectedBatches
 } from "./TransferEntryItemsEvents";
 import { AlgaehActions } from "../../../../actions/algaehActions";
+import _ from "lodash";
 
 class TransferEntryItems extends Component {
   constructor(props) {
@@ -81,47 +82,6 @@ class TransferEntryItems extends Component {
     this.setState(nextProps.TransferIOputs);
   }
 
-  changeGridEditors(row, e) {
-    debugger;
-    let pharmacy_stock_detail = this.state.pharmacy_stock_detail;
-    let name = e.name || e.target.name;
-    let value = e.value || e.target.value;
-    row[name] = value;
-    row["expiry_date"] = e.selected.expirydt;
-    row["from_qtyhand"] = e.selected.qtyhand;
-    row["unit_cost"] = e.selected.avgcost;
-    row["grnno"] = e.selected.grnno;
-
-    for (let k = 0; k < pharmacy_stock_detail.length; k++) {
-      if (pharmacy_stock_detail[k].item_id === row.item_id) {
-        pharmacy_stock_detail[k] = row;
-      }
-    }
-
-    this.setState({
-      pharmacy_stock_detail: pharmacy_stock_detail
-    });
-  }
-
-  clearGridEditors(row, e) {
-    debugger;
-    let pharmacy_stock_detail = this.state.pharmacy_stock_detail;
-
-    row["batchno"] = null;
-    row["expiry_date"] = null;
-    row["from_qtyhand"] = null;
-    row["unit_cost"] = null;
-
-    for (let k = 0; k < pharmacy_stock_detail.length; k++) {
-      if (pharmacy_stock_detail[k].item_id === row.item_id) {
-        pharmacy_stock_detail[k] = row;
-      }
-    }
-    this.setState({
-      pharmacy_stock_detail: pharmacy_stock_detail
-    });
-  }
-
   CloseOrent(context) {
     debugger;
     this.setState({
@@ -141,13 +101,18 @@ class TransferEntryItems extends Component {
 
   ChangesOrent(context, item) {
     debugger;
+    let quantity_transferred = _.sumBy(item.batches, s =>
+      parseFloat(s.quantity_transfer)
+    );
     this.setState({
+      quantity_transferred: quantity_transferred,
       item_details: item,
       batch_detail_view: true
     });
 
     if (context !== undefined) {
       context.updateState({
+        quantity_transferred: quantity_transferred,
         item_details: item,
         batch_detail_view: true
       });

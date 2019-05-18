@@ -319,7 +319,9 @@ const onchangegridcol = ($this, context, row, e) => {
         type: "warning"
       });
       row[name] = 0;
-      quantity_transferred = 0;
+      quantity_transferred = _.sumBy(item_details.batches, s =>
+        parseFloat(s.quantity_transfer)
+      );
     }
     $this.setState({
       item_details: item_details,
