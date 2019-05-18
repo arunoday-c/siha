@@ -140,25 +140,25 @@ class TransferEntryItems extends Component {
                       <li>
                         <div className="itemReq">
                           <h6>{item.item_description}</h6>
-                          <p>
+                          <span>
                             UOM: <span>{item.uom_description}</span>
-                          </p>
-                          <p>
+                          </span>
+                          <span>
                             Req. Qty: <span>{item.quantity_authorized}</span>
-                          </p>
+                          </span>
 
-                          <p>
-                            Trans Qty: <span>{item.quantity_transferred}</span>
-                          </p>
-                          <p>
-                            OutStanding Qty:
+                          <span>
+                            Trans. Qty: <span>{item.quantity_transferred}</span>
+                          </span>
+                          <span>
+                            Out Std. Qty:
                             <span>{item.quantity_outstanding}</span>
-                          </p>
+                          </span>
 
-                          <p>
-                            Transfer Till Dt:
+                          <span>
+                            Trans. Till Date:
                             <span>{item.transfer_to_date}</span>
-                          </p>
+                          </span>
                         </div>
                         <div className="itemAction">
                           <span>
@@ -462,7 +462,7 @@ class TransferEntryItems extends Component {
               ) : (
                 <div className="col-8" style={{ paddingLeft: 0 }}>
                   <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="col">
+                    <div className="row"><div className="col">
                       <AlgaehLabel label={{ forceLabel: "Item Name" }} />
                       <h6>{item_name ? item_name : "----------"}</h6>
                     </div>
@@ -470,7 +470,7 @@ class TransferEntryItems extends Component {
                     <div className="col">
                       <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
                       <h6>{qty_auth ? qty_auth : "----------"}</h6>
-                    </div>
+                    </div></div>
                     {qty_auth < this.state.quantity_transferred
                       ? "Greater than required qty"
                       : null}
@@ -564,7 +564,7 @@ class TransferEntryItems extends Component {
                         </div>
                       </div>
                     </div>
-
+<div className="row">
                     <div className="col">
                       <AlgaehLabel label={{ forceLabel: "Transfer Qty" }} />
                       <h6>
@@ -573,21 +573,29 @@ class TransferEntryItems extends Component {
                           : "----------"}
                       </h6>
                     </div>
-                    <button
+                    
+                          <div  className="col">
+
+                          <button
                       type="button"
                       className="btn btn-primary"
                       onClick={AddSelectedBatches.bind(this, this, context)}
+                      style={{marginTop:8,float:"right",marginLeft:10}}
                     >
                       Save
                     </button>
-
                     <button
                       type="button"
                       className="btn btn-default"
                       onClick={this.CloseOrent.bind(this, context)}
+                      style={{marginTop:8,float:"right"}}
                     >
                       Close
                     </button>
+                         
+                          </div>
+                    </div>
+                   
                   </div>
                 </div>
               )}
