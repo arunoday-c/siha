@@ -244,7 +244,7 @@ module.exports = {
                 input.to_location_type,
                 input.description,
                 input.completed,
-                input.completed_date,
+                new Date(),
                 input.completed_lines,
                 input.transfer_quantity,
                 input.requested_quantity,
@@ -258,13 +258,12 @@ module.exports = {
               printQuery: false
             })
             .then(headerResult => {
+              req.body.transaction_id = headerResult.insertId;
+              req.body.year = year;
+              req.body.period = period;
               console.log("headerResult: ", headerResult.insertId);
 
               for (let i = 0; i < input.stock_detail.length; i++) {
-                // utilities
-                //   .logger()
-                //   .log("pharmacy_stock_detail: ", input.pharmacy_stock_detail);
-
                 _mysql
                   .executeQuery({
                     query:
@@ -301,18 +300,6 @@ module.exports = {
                     printQuery: false
                   })
                   .then(detailResult => {
-                    // utilities.logger().log("detailResult: ", detailResult);
-                    // _mysql.commitTransaction(() => {
-                    //   _mysql.releaseConnection();
-                    //   req.records = {
-                    //     transfer_number: transfer_number,
-                    //     hims_f_pharmacy_transfer_header_id: headerResult.insertId,
-                    //     year: year,
-                    //     period: period
-                    //   };
-                    //   next();
-                    // });
-
                     let IncludeSubValues = [
                       "transfer_detail_id",
                       "item_category_id",
@@ -332,13 +319,6 @@ module.exports = {
                       "sales_uom"
                     ];
 
-                    // utilities
-                    //   .logger()
-                    //   .log(
-                    //     "pharmacy_stock_detail: ",
-                    //     input.pharmacy_stock_detail
-                    //   );
-
                     _mysql
                       .executeQuery({
                         query:
@@ -353,17 +333,25 @@ module.exports = {
                       })
                       .then(subResult => {
                         if (i == input.stock_detail.length - 1) {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = {
-                              transfer_number: transfer_number,
-                              hims_f_pharmacy_transfer_header_id:
-                                headerResult.insertId,
-                              year: year,
-                              period: period
-                            };
-                            next();
-                          });
+                          req.connection = {
+                            connection: _mysql.connection,
+                            isTransactionConnection:
+                              _mysql.isTransactionConnection,
+                            pool: _mysql.pool
+                          };
+                          req.flag = 1;
+
+                          // _mysql.commitTransaction(() => {
+                          //   _mysql.releaseConnection();
+                          req.records = {
+                            transfer_number: transfer_number,
+                            hims_f_pharmacy_transfer_header_id:
+                              headerResult.insertId,
+                            year: year,
+                            period: period
+                          };
+                          next();
+                          // });
                         }
                       });
                   })

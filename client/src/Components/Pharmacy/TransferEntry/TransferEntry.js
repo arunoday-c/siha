@@ -321,7 +321,7 @@ class TransferEntry extends Component {
                     />
                   </button>
 
-                  <button
+                  {/*<button
                     type="button"
                     className="btn btn-other"
                     onClick={PostTransferEntry.bind(this, this)}
@@ -333,7 +333,7 @@ class TransferEntry extends Component {
                         returnText: true
                       }}
                     />
-                  </button>
+                  </button>*/}
                 </div>
               </div>
             </div>

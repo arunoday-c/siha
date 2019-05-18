@@ -395,7 +395,7 @@ module.exports = {
                 printQuery: true
               })
               .then(detailResult => {
-                req.records = detailResult;
+                // req.records = detailResult;
                 next();
               })
               .catch(e => {
@@ -405,7 +405,7 @@ module.exports = {
               });
           } else {
             _mysql.rollBackTransaction(() => {
-              req.records = {};
+              // req.records = {};
               next();
             });
           }
