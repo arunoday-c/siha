@@ -185,11 +185,26 @@ class TransferEntryItems extends Component {
                           <p>
                             Trans Qty: <span>{item.quantity_transferred}</span>
                           </p>
+                          <p>
+                            OutStanding Qty:
+                            <span>{item.quantity_outstanding}</span>
+                          </p>
+
+                          <p>
+                            Transfer Till Dt:
+                            <span>{item.transfer_to_date}</span>
+                          </p>
                         </div>
                         <div className="itemAction">
                           <span>
                             <i
                               className="fas fa-pen"
+                              style={{
+                                pointerEvents:
+                                  this.state.cannotEdit === true ? "none" : "",
+                                opacity:
+                                  this.state.cannotEdit === true ? "0.1" : ""
+                              }}
                               onClick={this.ChangesOrent.bind(
                                 this,
                                 context,

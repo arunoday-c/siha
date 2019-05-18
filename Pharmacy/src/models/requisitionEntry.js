@@ -342,6 +342,9 @@ module.exports = {
   updaterequisitionEntryOnceTranfer: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
+
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updaterequisitionEntryOnceTranfer: ");
     try {
       let inputParam = { ...req.body };
 
@@ -368,6 +371,7 @@ module.exports = {
           printQuery: true
         })
         .then(headerResult => {
+          utilities.logger().log("headerResult: ", headerResult);
           if (headerResult != null) {
             let details = inputParam.stock_detail;
 
@@ -383,17 +387,16 @@ module.exports = {
                 ]
               );
             }
+
+            utilities.logger().log("qry: ", qry);
             _mysql
               .executeQueryWithTransaction({
                 query: qry,
                 printQuery: true
               })
               .then(detailResult => {
-                // _mysql.commitTransaction(() => {
-                //   _mysql.releaseConnection();
                 req.records = detailResult;
                 next();
-                // });
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {

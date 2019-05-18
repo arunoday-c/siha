@@ -4,6 +4,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/TransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import extend from "extend";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -33,6 +34,8 @@ const getCtrlCode = ($this, docNumber) => {
         data.postEnable = false;
       }
 
+      data.cannotEdit = true;
+
       data.dataExitst = true;
       $this.setState(data);
       AlgaehLoader({ show: false });
@@ -47,7 +50,8 @@ const ClearData = ($this, e) => {
 
 const SaveTransferEntry = $this => {
   debugger;
-  let inputObj = $this.state;
+  AlgaehLoader({ show: true });
+  let inputObj = extend({}, $this.state);
 
   delete inputObj.item_details;
   delete inputObj.pharmacy_stock_detail;
@@ -68,18 +72,28 @@ const SaveTransferEntry = $this => {
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
-          postEnable: false
+          postEnable: false,
+          cannotEdit: true
         });
         swalMessage({
           title: "Saved successfully . .",
           type: "success"
         });
+        AlgaehLoader({ show: false });
       }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
 
 const PostTransferEntry = $this => {
+  AlgaehLoader({ show: true });
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
@@ -95,18 +109,18 @@ const PostTransferEntry = $this => {
       $this.state.pharmacy_stock_detail[i].uom_transferred_id;
 
     $this.state.pharmacy_stock_detail[i].quantity =
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+      $this.state.pharmacy_stock_detail[i].quantity_transfer;
 
     $this.state.pharmacy_stock_detail[i].grn_number =
       $this.state.pharmacy_stock_detail[i].grnno;
 
     $this.state.pharmacy_stock_detail[i].net_total =
-      $this.state.pharmacy_stock_detail[i].unit_cost *
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
 
     $this.state.pharmacy_stock_detail[i].extended_cost =
-      $this.state.pharmacy_stock_detail[i].unit_cost *
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
   }
 
   algaehApiCall({
@@ -123,6 +137,7 @@ const PostTransferEntry = $this => {
           title: "Posted successfully . .",
           type: "success"
         });
+        AlgaehLoader({ show: false });
       }
     },
     onFailure: error => {

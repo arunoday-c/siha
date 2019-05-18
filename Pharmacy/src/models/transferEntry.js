@@ -61,7 +61,7 @@ module.exports = {
     }
   },
 
-  addtransferEntry: (req, res, next) => {
+  addtransferEntryBACKUP: (req, res, next) => {
     const _mysql = new algaehMysql();
 
     try {
@@ -179,6 +179,200 @@ module.exports = {
                     next(error);
                   });
                 });
+            })
+            .catch(e => {
+              _mysql.rollBackTransaction(() => {
+                next(e);
+              });
+            });
+        })
+        .catch(e => {
+          _mysql.rollBackTransaction(() => {
+            next(e);
+          });
+        });
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
+  addtransferEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+
+    try {
+      let input = { ...req.body };
+      let transfer_number = "";
+
+      const utilities = new algaehUtilities();
+      utilities.logger().log("addtransferEntry: ");
+
+      _mysql
+        .generateRunningNumber({
+          modules: ["TRAN_NUM"]
+        })
+        .then(generatedNumbers => {
+          transfer_number = generatedNumbers[0];
+
+          let year = moment().format("YYYY");
+
+          let today = moment().format("YYYY-MM-DD");
+
+          let month = moment().format("MM");
+
+          let period = month;
+          _mysql
+            .executeQueryWithTransaction({
+              query:
+                "INSERT INTO `hims_f_pharmacy_transfer_header` (transfer_number,transfer_date,`year`,period,\
+                    hims_f_pharamcy_material_header_id,from_location_type,from_location_id, material_requisition_number, to_location_id, \
+                    to_location_type, description, completed, completed_date, completed_lines, \
+                    transfer_quantity,requested_quantity,recieved_quantity,outstanding_quantity, \
+                    cancelled, cancelled_by,cancelled_date,hospital_id) \
+                    VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              values: [
+                transfer_number,
+                today,
+                year,
+                period,
+                input.hims_f_pharamcy_material_header_id,
+                input.from_location_type,
+                input.from_location_id,
+                input.material_requisition_number,
+                input.to_location_id,
+                input.to_location_type,
+                input.description,
+                input.completed,
+                input.completed_date,
+                input.completed_lines,
+                input.transfer_quantity,
+                input.requested_quantity,
+                input.recieved_quantity,
+                input.outstanding_quantity,
+                input.cancelled,
+                input.cancelled_by,
+                input.cancelled_date,
+                req.userIdentity.hospital_id
+              ],
+              printQuery: false
+            })
+            .then(headerResult => {
+              console.log("headerResult: ", headerResult.insertId);
+
+              for (let i = 0; i < input.stock_detail.length; i++) {
+                // utilities
+                //   .logger()
+                //   .log("pharmacy_stock_detail: ", input.pharmacy_stock_detail);
+
+                _mysql
+                  .executeQuery({
+                    query:
+                      "INSERT INTO hims_f_pharmacy_transfer_detail ( item_id,item_category_id,item_group_id,\
+                        batchno,expiry_date,to_qtyhand,from_qtyhand,quantity_requested,quantity_authorized,\
+                        uom_requested_id,quantity_transferred,uom_transferred_id,quantity_recieved,uom_recieved_id,\
+                        quantity_outstanding,transfer_to_date,grnno,unit_cost,sales_uom,\
+                        material_requisition_header_id,material_requisition_detail_id,transfer_header_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    values: [
+                      input.stock_detail[i]["item_id"],
+                      input.stock_detail[i]["item_category_id"],
+                      input.stock_detail[i]["item_group_id"],
+                      input.stock_detail[i]["batchno"],
+                      input.stock_detail[i]["expiry_date"],
+                      input.stock_detail[i]["to_qtyhand"],
+                      input.stock_detail[i]["from_qtyhand"],
+                      input.stock_detail[i]["quantity_requested"],
+                      input.stock_detail[i]["quantity_authorized"],
+                      input.stock_detail[i]["uom_requested_id"],
+                      input.stock_detail[i]["quantity_transferred"],
+                      input.stock_detail[i]["uom_transferred_id"],
+                      input.stock_detail[i]["quantity_recieved"],
+                      input.stock_detail[i]["uom_recieved_id"],
+                      input.stock_detail[i]["quantity_outstanding"],
+                      input.stock_detail[i]["transfer_to_date"],
+                      input.stock_detail[i]["grnno"],
+                      input.stock_detail[i]["unit_cost"],
+                      input.stock_detail[i]["sales_uom"],
+                      input.stock_detail[i]["material_requisition_header_id"],
+                      input.stock_detail[i]["material_requisition_detail_id"],
+                      headerResult.insertId
+                    ],
+
+                    printQuery: false
+                  })
+                  .then(detailResult => {
+                    // utilities.logger().log("detailResult: ", detailResult);
+                    // _mysql.commitTransaction(() => {
+                    //   _mysql.releaseConnection();
+                    //   req.records = {
+                    //     transfer_number: transfer_number,
+                    //     hims_f_pharmacy_transfer_header_id: headerResult.insertId,
+                    //     year: year,
+                    //     period: period
+                    //   };
+                    //   next();
+                    // });
+
+                    let IncludeSubValues = [
+                      "transfer_detail_id",
+                      "item_category_id",
+                      "item_group_id",
+                      "item_id",
+                      "batchno",
+                      "grnno",
+                      "expiry_date",
+                      "quantity_requested",
+                      "quantity_authorized",
+                      "uom_requested_id",
+                      "quantity_transfer",
+                      "uom_transferred_id",
+                      "quantity_recieved",
+                      "uom_recieved_id",
+                      "unit_cost",
+                      "sales_uom"
+                    ];
+
+                    // utilities
+                    //   .logger()
+                    //   .log(
+                    //     "pharmacy_stock_detail: ",
+                    //     input.pharmacy_stock_detail
+                    //   );
+
+                    _mysql
+                      .executeQuery({
+                        query:
+                          "INSERT INTO hims_f_pharmacy_transfer_batches(??) VALUES ?",
+                        values: input.stock_detail[i]["pharmacy_stock_detail"],
+                        includeValues: IncludeSubValues,
+                        extraValues: {
+                          transfer_detail_id: detailResult.insertId
+                        },
+                        bulkInsertOrUpdate: true,
+                        printQuery: false
+                      })
+                      .then(subResult => {
+                        if (i == input.stock_detail.length - 1) {
+                          _mysql.commitTransaction(() => {
+                            _mysql.releaseConnection();
+                            req.records = {
+                              transfer_number: transfer_number,
+                              hims_f_pharmacy_transfer_header_id:
+                                headerResult.insertId,
+                              year: year,
+                              period: period
+                            };
+                            next();
+                          });
+                        }
+                      });
+                  })
+                  .catch(error => {
+                    _mysql.rollBackTransaction(() => {
+                      next(error);
+                    });
+                  });
+              }
             })
             .catch(e => {
               _mysql.rollBackTransaction(() => {
@@ -329,7 +523,7 @@ module.exports = {
                   inner join `hims_d_item_master` IM  on IM.hims_d_item_master_id=D.item_id \
                   inner join `hims_d_pharmacy_uom` PU  on PU.hims_d_pharmacy_uom_id=D.item_uom \
                   where   LOC.pharmacy_location_id=? and  D.pharmacy_header_id=? and  LOC.expirydt > CURDATE() \
-                   and LOC.qtyhand>0  order by  LOC.expirydt ",
+                  and LOC.qtyhand>0 and D.quantity_outstanding<>0  order by  LOC.expirydt ",
                 values: [
                   headerResult[0].to_location_id,
                   headerResult[0].hims_f_pharamcy_material_header_id
@@ -395,7 +589,7 @@ module.exports = {
                         qtyhand: s.qtyhand,
                         qtypo: s.qtypo,
                         cost_uom: s.cost_uom,
-                        avgcost: s.avgcost,
+                        unit_cost: s.avgcost,
                         last_purchase_cost: s.last_purchase_cost,
                         item_type: s.item_type,
                         grn_id: s.grn_id,

@@ -50,7 +50,8 @@ export default {
       dataExitst: false,
       batch_detail_view: false,
       item_details: null,
-      quantity_transferred: 0
+      quantity_transferred: 0,
+      cannotEdit: false
     };
     return output;
   }
