@@ -335,6 +335,7 @@ const SavePosEnrty = $this => {
   if (!err) {
     AlgaehLoader({ show: true });
     GenerateReciept($this, that => {
+      debugger;
       $this.state.posted = "Y";
       $this.state.transaction_type = "POS";
       $this.state.transaction_date = $this.state.pos_date;
@@ -554,7 +555,7 @@ const getMedicationList = $this => {
 
   $this.props.getMedicationList({
     uri: "/pharmacyGlobal/getVisitPrescriptionDetails",
-    // moduel: "pharmacy",
+    module: "pharmacy",
     method: "GET",
     data: inputobj,
     redux: {
@@ -579,22 +580,29 @@ const AddItems = ($this, ItemInput) => {
         item_group_id: ItemInput[i].item_group_id,
         pharmacy_location_id: $this.state.location_id,
 
-        insured: $this.state.insured,
-        vat_applicable: "Y",
-        hims_d_services_id: ItemInput[i].service_id,
-        quantity: ItemInput[i].dispense,
-        primary_insurance_provider_id: $this.state.insurance_provider_id,
-        primary_network_office_id:
-          $this.state.hims_d_insurance_network_office_id,
-        primary_network_id: $this.state.network_id,
-        sec_insured: $this.state.sec_insured,
-        secondary_insurance_provider_id:
-          $this.state.secondary_insurance_provider_id,
-        secondary_network_id: $this.state.secondary_network_id,
-        secondary_network_office_id: $this.state.secondary_network_office_id
+        insured: ItemInput[i].insured,
+        pre_approval: ItemInput[i].pre_approval
       };
       inputArray.push(inputObj);
     }
+
+    {
+      /*
+      hims_d_services_id: ItemInput[i].service_id,
+    quantity: ItemInput[i].dispense,
+    primary_insurance_provider_id: $this.state.insurance_provider_id,
+    primary_network_office_id:
+      $this.state.hims_d_insurance_network_office_id,
+    primary_network_id: $this.state.network_id,
+    sec_insured: $this.state.sec_insured,
+    secondary_insurance_provider_id:
+      $this.state.secondary_insurance_provider_id,
+    secondary_network_id: $this.state.secondary_network_id,
+    secondary_network_office_id: $this.state.secondary_network_office_id
+    */
+    }
+
+    debugger;
 
     algaehApiCall({
       uri: "/posEntry/getPrescriptionPOS",
@@ -603,97 +611,102 @@ const AddItems = ($this, ItemInput) => {
       data: inputArray,
       onSuccess: response => {
         if (response.data.success) {
-          if (response.data.records.result.length > 0) {
-            let data = response.data.records.result[0];
-            let existingservices = [];
-
-            if (data.billdetails.length !== 0) {
-              for (let i = 0; i < data.billdetails.length; i++) {
-                data.billdetails[i].extended_cost =
-                  data.billdetails[i].gross_amount;
-                data.billdetails[i].net_extended_cost =
-                  data.billdetails[i].net_amout;
-                data.billdetails[i].operation = "-";
-                data.billdetails[i].service_id =
-                  data.billdetails[i].services_id;
-
-                data.billdetails[i].patient_responsibility =
-                  data.billdetails[i].patient_resp;
-
-                data.billdetails[i].company_responsibility =
-                  data.billdetails[i].comapany_resp;
-
-                data.billdetails[i].company_payable =
-                  data.billdetails[i].company_payble;
-
-                data.billdetails[0].grn_no = data.billdetails[0].grnno;
-
-                existingservices.splice(0, 0, data.billdetails[i]);
-              }
-
-              $this.setState({
-                pharmacy_stock_detail: existingservices
-              });
-
-              if (data.message !== "") {
-                swalMessage({
-                  title: data.message,
-                  type: "warning"
-                });
-              }
-            }
-
-            algaehApiCall({
-              uri: "/billing/billingCalculations",
-              module: "billing",
-              method: "POST",
-              data: { billdetails: existingservices },
-              onSuccess: response => {
-                if (response.data.success) {
-                  let data = response.data.records;
-
-                  data.patient_payable_h =
-                    data.patient_payable || $this.state.patient_payable;
-                  data.sub_total =
-                    data.sub_total_amount || $this.state.sub_total;
-                  data.patient_responsibility =
-                    data.patient_res || $this.state.patient_responsibility;
-                  data.company_responsibility =
-                    data.company_res || $this.state.company_responsibility;
-
-                  data.company_payable =
-                    data.company_payble || $this.state.company_payable;
-                  data.sec_company_responsibility =
-                    data.sec_company_res ||
-                    $this.state.sec_company_responsibility;
-                  data.sec_company_payable =
-                    data.sec_company_paybale || $this.state.sec_company_payable;
-
-                  data.copay_amount =
-                    data.copay_amount || $this.state.copay_amount;
-                  data.sec_copay_amount =
-                    data.sec_copay_amount || $this.state.sec_copay_amount;
-                  data.addItemButton = false;
-                  data.saveEnable = false;
-
-                  $this.setState({ ...data });
-                }
-                AlgaehLoader({ show: false });
-              },
-              onFailure: error => {
-                AlgaehLoader({ show: false });
-                swalMessage({
-                  title: error.message,
-                  type: "error"
-                });
-              }
-            });
-          } else {
-            swalMessage({
-              title: response.data.records.message,
-              type: "warning"
-            });
-          }
+          debugger;
+          let data = response.data.records;
+          $this.setState({
+            pharmacy_stock_detail: data
+          });
+          // if (response.data.records.result.length > 0) {
+          //   let data = response.data.records.result[0];
+          //   let existingservices = [];
+          //
+          //   if (data.billdetails.length !== 0) {
+          //     for (let i = 0; i < data.billdetails.length; i++) {
+          //       data.billdetails[i].extended_cost =
+          //         data.billdetails[i].gross_amount;
+          //       data.billdetails[i].net_extended_cost =
+          //         data.billdetails[i].net_amout;
+          //       data.billdetails[i].operation = "-";
+          //       data.billdetails[i].service_id =
+          //         data.billdetails[i].services_id;
+          //
+          //       data.billdetails[i].patient_responsibility =
+          //         data.billdetails[i].patient_resp;
+          //
+          //       data.billdetails[i].company_responsibility =
+          //         data.billdetails[i].comapany_resp;
+          //
+          //       data.billdetails[i].company_payable =
+          //         data.billdetails[i].company_payble;
+          //
+          //       data.billdetails[0].grn_no = data.billdetails[0].grnno;
+          //
+          //       existingservices.splice(0, 0, data.billdetails[i]);
+          //     }
+          //
+          //     $this.setState({
+          //       pharmacy_stock_detail: existingservices
+          //     });
+          //
+          //     if (data.message !== "") {
+          //       swalMessage({
+          //         title: data.message,
+          //         type: "warning"
+          //       });
+          //     }
+          //   }
+          //
+          //   algaehApiCall({
+          //     uri: "/billing/billingCalculations",
+          //     module: "billing",
+          //     method: "POST",
+          //     data: { billdetails: existingservices },
+          //     onSuccess: response => {
+          //       if (response.data.success) {
+          //         let data = response.data.records;
+          //
+          //         data.patient_payable_h =
+          //           data.patient_payable || $this.state.patient_payable;
+          //         data.sub_total =
+          //           data.sub_total_amount || $this.state.sub_total;
+          //         data.patient_responsibility =
+          //           data.patient_res || $this.state.patient_responsibility;
+          //         data.company_responsibility =
+          //           data.company_res || $this.state.company_responsibility;
+          //
+          //         data.company_payable =
+          //           data.company_payble || $this.state.company_payable;
+          //         data.sec_company_responsibility =
+          //           data.sec_company_res ||
+          //           $this.state.sec_company_responsibility;
+          //         data.sec_company_payable =
+          //           data.sec_company_paybale || $this.state.sec_company_payable;
+          //
+          //         data.copay_amount =
+          //           data.copay_amount || $this.state.copay_amount;
+          //         data.sec_copay_amount =
+          //           data.sec_copay_amount || $this.state.sec_copay_amount;
+          //         data.addItemButton = false;
+          //         data.saveEnable = false;
+          //
+          //         $this.setState({ ...data });
+          //       }
+          //       AlgaehLoader({ show: false });
+          //     },
+          //     onFailure: error => {
+          //       AlgaehLoader({ show: false });
+          //       swalMessage({
+          //         title: error.message,
+          //         type: "error"
+          //       });
+          //     }
+          //   });
+          // } else {
+          //   swalMessage({
+          //     title: response.data.records.message,
+          //     type: "warning"
+          //   });
+          // }
         }
         AlgaehLoader({ show: false });
       },

@@ -95,19 +95,6 @@ class Plan extends Component {
                       />
                     }
                   </li>
-                  <li
-                    algaehtabs={"OwnMedication"}
-                    className={"nav-item tab-button"}
-                    onClick={this.openTab.bind(this)}
-                  >
-                    {
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Own Medication"
-                        }}
-                      />
-                    }
-                  </li>
                 </ul>
               </div>
 
@@ -115,13 +102,11 @@ class Plan extends Component {
                 {/*  {<this.state.pageDisplay />} */}
 
                 {this.state.pageDisplay === "OrderMedication" ? (
-                  <OrderMedication />
+                  <OrderMedication vat_applicable={this.props.vat_applicable} />
                 ) : this.state.pageDisplay === "ActiveMedication" ? (
                   <ActiveMedication />
                 ) : this.state.pageDisplay === "MedicationHistory" ? (
                   <MedicationHistory />
-                ) : this.state.pageDisplay === "OwnMedication" ? (
-                  <OwnMedication />
                 ) : null}
               </div>
             </div>
@@ -369,7 +354,7 @@ class Plan extends Component {
                       </label>
                     </div>
                     <div className="row">
-                    
+
                     </div>
                   </div>
                   <div className="row">

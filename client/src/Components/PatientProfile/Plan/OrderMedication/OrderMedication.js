@@ -42,9 +42,12 @@ class OrderMedication extends Component {
     this.state = {
       patient_id: Window.global["current_patient"],
       encounter_id: Window.global["encounter_id"],
+      visit_id: Window.global["visit_id"],
 
       provider_id: Window.global["provider_id"],
       episode_id: Window.global["episode_id"],
+
+      vat_applicable: this.props.vat_applicable,
 
       itemlist: [],
       medicationitems: [],
@@ -94,6 +97,52 @@ class OrderMedication extends Component {
         mappingName: "genericlist"
       }
     });
+    this.getPatientInsurance();
+  }
+
+  getPatientInsurance() {
+    debugger;
+    this.props.getPatientInsurance({
+      uri: "/patientRegistration/getPatientInsurance",
+      module: "frontDesk",
+      method: "GET",
+      data: {
+        patient_id: this.state.patient_id,
+        patient_visit_id: this.state.visit_id
+      },
+      redux: {
+        type: "EXIT_INSURANCE_GET_DATA",
+        mappingName: "existinginsurance"
+      },
+      afterSuccess: data => {
+        if (data.length > 0) {
+          this.setState({
+            insured: "Y",
+            primary_insurance_provider_id: data.insurance_provider_id,
+            primary_network_office_id: data.hims_d_insurance_network_office_id,
+            primary_network_id: data.network_id,
+            sec_insured: data.sec_insured,
+            secondary_insurance_provider_id:
+              data.secondary_insurance_provider_id,
+            secondary_network_id: data.secondary_network_id,
+            secondary_network_office_id: data.secondary_network_office_id
+          });
+        }
+      }
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    debugger;
+
+    if (
+      nextProps.existinginsurance !== undefined &&
+      nextProps.existinginsurance.length !== 0
+    ) {
+      let output = nextProps.existinginsurance[0];
+      output.insured = "Y";
+      this.setState({ ...output });
+    }
   }
 
   render() {
@@ -225,7 +274,7 @@ class OrderMedication extends Component {
             }}
           />
 
-          <AlagehFormGroup
+          {/*<AlagehFormGroup
             div={{ className: "col" }}
             label={{
               forceLabel: "Total Qty."
@@ -239,7 +288,7 @@ class OrderMedication extends Component {
                 onChange: numberhandle.bind(this, this)
               }
             }}
-          />
+          />*/}
 
           <AlgaehDateHandler
             div={{ className: "col" }}
@@ -430,7 +479,8 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     genericlist: state.genericlist,
-    itemStock: state.itemStock
+    itemStock: state.itemStock,
+    existinginsurance: state.existinginsurance
   };
 }
 
@@ -439,7 +489,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getGenerics: AlgaehActions,
-      getItemStock: AlgaehActions
+      getItemStock: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

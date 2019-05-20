@@ -43,11 +43,12 @@ module.exports = {
         .executeQuery({
           query:
             "SELECT H.hims_f_prescription_id,H.patient_id, H.encounter_id, H.provider_id, H.episode_id, \
-            H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, D.prescription_id, \
-            D.item_id, D.generic_id, D.dosage, D.frequency, D.no_of_days,D.dispense, D.frequency_type, D.frequency_time,\
-            D.start_date, D.item_status, D.service_id, D.uom_id,D.item_category_id, D.item_group_id\
-            from hims_f_prescription H,hims_f_prescription_detail D  WHERE H.hims_f_prescription_id = D.prescription_id \
-            and episode_id=?",
+            H.prescription_date,H.prescription_status,H.cancelled,D.hims_f_prescription_detail_id, \
+            D.prescription_id, D.item_id, D.generic_id, D.dosage, D.frequency, D.no_of_days,\
+            D.dispense, D.frequency_type, D.frequency_time,D.start_date, D.item_status, \
+            D.service_id, D.uom_id,D.item_category_id, D.item_group_id, D.pre_approval, D.insured\
+            from hims_f_prescription H,hims_f_prescription_detail D  \
+            WHERE H.hims_f_prescription_id = D.prescription_id and episode_id=?",
           values: [req.query.episode_id],
           printQuery: true
         })
