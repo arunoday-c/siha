@@ -98,7 +98,9 @@ class OrderMedication extends Component {
 
   render() {
     return (
-      <div className="hptl-phase1-order-medication-form">
+      <div>
+      <div className="popupInner">
+      <div className="popRightDiv">
         <div className="row paddin-bottom-5" style={{ marginTop: 5 }}>
           <AlagehAutoComplete
             div={{ className: "col-lg-3" }}
@@ -395,17 +397,19 @@ class OrderMedication extends Component {
           </div>
         </div>
         <div className="row" style={{ marginTop: 5, marginBottom: 5 }}>
-          <div className="col-lg-9">
-            Instructions: {this.state.followup_comments}
+          <div className="col">
+            <p>
+            Instructions: {this.state.followup_comments}</p>
+            <p>
+            Pharmacy Stock: {this.state.total_quantity}</p>
           </div>
 
-          <div className="col-lg-9">
-            Pharmacy Stock: {this.state.total_quantity}
-          </div>
-
-          <div className="col-lg-2">
-            <button
-              className="btn btn-primary btn-sm"
+        </div>
+</div>
+      </div>
+        <div className="popupFooter">
+              <div className="col-lg-12"><button
+              className="btn btn-primary"
               type="button"
               onClick={SaveMedication.bind(this, this)}
               disabled={this.state.saveMedicationEnable}
@@ -413,15 +417,25 @@ class OrderMedication extends Component {
               Save Medication
             </button>
             <button
-              className="btn btn-primary btn-sm"
+              className="btn btn-default"
               type="button"
               onClick={printPrescription.bind(this, this)}
+              disabled={this.state.saveMedicationEnable}
             >
               Print Prescription
             </button>
-          </div>
-        </div>
-      </div>
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={e => {
+                        this.props.onclosePopup && this.props.onclosePopup(e);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                </div>
+            </div>
+            </div>
     );
   }
 }

@@ -231,7 +231,7 @@ class InsuranceAdd extends PureComponent {
                         disabled={activeStep === 0}
                         onClick={handleBack.bind(this, this)}
                         type="button"
-                        className="btn btn-default button-left"
+                        className="btn btn-default btn-left"
                       >
                         Previous
                       </button>

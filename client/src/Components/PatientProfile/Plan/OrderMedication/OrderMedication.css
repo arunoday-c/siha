@@ -15,5 +15,6 @@
   .hptl-phase1-order-medication-form .go-button {
     cursor: pointer;
     margin-top: 2.5vh; }
-  .hptl-phase1-order-medication-form .ReactTable {
-    max-height: 36vh !important; }
+
+#Order_Medication .ReactTable {
+  max-height: 36vh !important; }

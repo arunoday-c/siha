@@ -214,10 +214,10 @@ class InvPointOfSale extends Component {
 
           <div className="row  inner-top-search" style={{ paddingBottom: 10 }}>
             {/* Patient code */}
-            <div className="col-lg-4">
+            <div className="col-lg-3">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Location" }}
                   selector={{
                     name: "location_id",
@@ -237,7 +237,7 @@ class InvPointOfSale extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
+                  div={{ className: "col-lg-5" }}
                   label={{ forceLabel: "Case Type" }}
                   selector={{
                     name: "pos_customer_type",
@@ -257,7 +257,7 @@ class InvPointOfSale extends Component {
                 />
               </div>
             </div>
-            <div className="col-lg-8">
+            <div className="col-lg-9">
               {this.state.pos_customer_type === "OP" ? (
                 <div className="row">
                   <AlagehFormGroup
@@ -279,7 +279,7 @@ class InvPointOfSale extends Component {
                   />
 
                   <div
-                    className="col-lg-2 print_actions"
+                    className="col-1 print_actions"
                     style={{ marginTop: "auto" }}
                   >
                     <span
@@ -289,7 +289,7 @@ class InvPointOfSale extends Component {
                     />
                   </div>
 
-                  <div className="col-lg-2">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Patient Name"
@@ -302,7 +302,7 @@ class InvPointOfSale extends Component {
                     </h6>
                   </div>
 
-                  <div className="col-lg-2">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Patient Code"
@@ -314,37 +314,23 @@ class InvPointOfSale extends Component {
                         : "-----------"}
                     </h6>
                   </div>
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
-                    label={{ forceLabel: "Mode of Payment" }}
-                    selector={{
-                      name: "mode_of_pay",
-                      className: "select-fld",
-                      value: this.state.mode_of_pay,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.MODE_OF_PAY
-                      },
-                      others: {
-                        disabled: true
-                      },
-                      onChange: changeTexts.bind(this, this)
-                    }}
-                  />
-
-                  <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={this.openOCAFReport.bind(this, this)}
-                  >
-                    OCAF
-                  </button>
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Mode of Payment"
+                      }}
+                    />
+                    <h6>
+                    {console.log(typeof this.state.mode_of_pay)}
+                    {this.state.mode_of_pay === "1"? "Self" : this.state.mode_of_pay ==="2"? "Insurance" : "-----------"}
+                    </h6>
+                  </div>
+                
                 </div>
               ) : (
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       forceLabel: "Patient Name"
                     }}
@@ -359,7 +345,7 @@ class InvPointOfSale extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       forceLabel: "Prescribed Doctor"
                     }}
@@ -374,7 +360,7 @@ class InvPointOfSale extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       forceLabel: "Mobile Number"
                     }}
@@ -430,6 +416,16 @@ class InvPointOfSale extends Component {
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Clear", returnText: true }}
+                  />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn btn-default"
+                  onClick={this.openOCAFReport.bind(this, this)}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "OCAF", returnText: true }}
                   />
                 </button>
               </div>

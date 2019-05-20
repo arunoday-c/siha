@@ -53,69 +53,67 @@ class Plan extends Component {
             title="Medication"
             openPopup={this.props.openMedication}
           >
-            <div className="popupInner">
-              <div className="col tab-container toggle-section toggleBorder">
-                <ul className="nav">
-                  <li
-                    algaehtabs={"OrderMedication"}
-                    className={"nav-item tab-button active"}
-                    onClick={this.openTab.bind(this)}
-                  >
-                    {
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Order Medication"
-                        }}
-                      />
-                    }
-                  </li>
-                  <li
-                    algaehtabs={"ActiveMedication"}
-                    className={"nav-item tab-button"}
-                    onClick={this.openTab.bind(this)}
-                  >
-                    {
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Active Medication"
-                        }}
-                      />
-                    }
-                  </li>
-                  <li
-                    algaehtabs={"MedicationHistory"}
-                    className={"nav-item tab-button"}
-                    onClick={this.openTab.bind(this)}
-                  >
-                    {
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Medication History"
-                        }}
-                      />
-                    }
-                  </li>
-                  <li
-                    algaehtabs={"OwnMedication"}
-                    className={"nav-item tab-button"}
-                    onClick={this.openTab.bind(this)}
-                  >
-                    {
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Own Medication"
-                        }}
-                      />
-                    }
-                  </li>
-                </ul>
-              </div>
+          <div className="col tab-container toggle-section toggleBorder">
+            <ul className="nav">
+              <li
+                algaehtabs={"OrderMedication"}
+                className={"nav-item tab-button active"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Order Medication"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"ActiveMedication"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Active Medication"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"MedicationHistory"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Medication History"
+                    }}
+                  />
+                }
+              </li>
+              <li
+                algaehtabs={"OwnMedication"}
+                className={"nav-item tab-button"}
+                onClick={this.openTab.bind(this)}
+              >
+                {
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Own Medication"
+                    }}
+                  />
+                }
+              </li>
+            </ul>
+          </div>
 
-              <div className="popRightDiv">
                 {/*  {<this.state.pageDisplay />} */}
 
                 {this.state.pageDisplay === "OrderMedication" ? (
-                  <OrderMedication />
+                  <OrderMedication onclosePopup={this.props.onClose} />
                 ) : this.state.pageDisplay === "ActiveMedication" ? (
                   <ActiveMedication />
                 ) : this.state.pageDisplay === "MedicationHistory" ? (
@@ -123,25 +121,6 @@ class Plan extends Component {
                 ) : this.state.pageDisplay === "OwnMedication" ? (
                   <OwnMedication />
                 ) : null}
-              </div>
-            </div>
-            <div className=" popupFooter">
-              <div className="col-lg-12">
-                <div className="row">
-                  <div className="col-lg-12">
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={e => {
-                        this.onClose(e);
-                      }}
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
           </AlgaehModalPopUp>
           <div className="col-lg-6">
             {/* BEGIN Portlet PORTLET */}

@@ -171,7 +171,7 @@ class Location extends Component {
             </div>
           </div>
 <div className="row">
-<div className="col-12" id="inventory_locationGrid_Cntr">
+<div className="col-12" id="inventory_locationGrid_Cntr"  data-validate="pharLocDiv">
 <AlgaehDataGrid
                 datavalidate="data-validate='pharLocDiv'"
                 id="inventory_locationGrid"
