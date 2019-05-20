@@ -25,7 +25,7 @@ export default class AddInsuranceForm extends Component {
 
   render() {
     return (
-      <div className="htpl-primary-display-insurance-pos-form">
+      <div className="htpl-primary-display-insurance-pos-form POSInsurancePopup">
         <div className="row">
             <div className="col-6 primary-details">
               <div className="row">
