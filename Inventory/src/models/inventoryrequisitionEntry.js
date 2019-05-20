@@ -97,7 +97,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["INV_REQ_NUM"]
+          modules: ["INV_REQ_NUM"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           material_requisition_number = generatedNumbers[0];

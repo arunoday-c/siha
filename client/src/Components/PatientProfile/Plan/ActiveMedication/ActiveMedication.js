@@ -3,12 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-// import {
-//   PRESCRIPTION_FREQ_PERIOD,
-//   PRESCRIPTION_FREQ_TIME,
-//   PRESCRIPTION_FREQ_DURATION
-// } from "../../../../utils/GlobalVariables.json";
-
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 
 import "./ActiveMedication.css";

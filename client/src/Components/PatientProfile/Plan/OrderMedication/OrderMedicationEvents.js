@@ -8,14 +8,14 @@ const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  $this.setState(
-    {
-      [name]: value
-    },
-    () => {
-      calcuateDispense($this, e);
-    }
-  );
+  $this.setState({
+    [name]: value
+  });
+
+  // ,
+  // () => {
+  //   calcuateDispense($this, e);
+  // }
 };
 
 const numberhandle = ($this, ctrl, e) => {
@@ -30,15 +30,14 @@ const numberhandle = ($this, ctrl, e) => {
       type: "warning"
     });
   } else {
-    $this.setState(
-      {
-        [name]: value
-      },
-      () => {
-        calcuateDispense($this);
-      }
-    );
+    $this.setState({
+      [name]: value
+    });
   }
+  // ,
+  // () => {
+  //   calcuateDispense($this);
+  // }
 };
 
 //Save Order
@@ -189,7 +188,6 @@ const AddItems = $this => {
     $this.state.dosage !== null &&
     $this.state.frequency !== null &&
     $this.state.no_of_days !== null &&
-    $this.state.dispense !== null &&
     $this.state.frequency_type !== null &&
     $this.state.frequency_time !== null &&
     $this.state.uom_id !== null &&
@@ -197,6 +195,7 @@ const AddItems = $this => {
     $this.state.item_category_id !== null &&
     $this.state.item_group_id !== null
   ) {
+    debugger;
     let medicationitems = $this.state.medicationitems;
     let medicationobj = {
       item_id: $this.state.item_id,
@@ -204,7 +203,6 @@ const AddItems = $this => {
       dosage: $this.state.dosage,
       frequency: $this.state.frequency,
       no_of_days: $this.state.no_of_days,
-      dispense: $this.state.dispense,
       frequency_type: $this.state.frequency_type,
       frequency_time: $this.state.frequency_time,
       start_date: $this.state.start_date,
@@ -212,25 +210,68 @@ const AddItems = $this => {
       service_id: $this.state.service_id,
       item_category_id: $this.state.item_category_id,
       item_group_id: $this.state.item_group_id,
+      insured: $this.state.insured,
       item_status: "A"
     };
-    medicationitems.push(medicationobj);
-    $this.setState({
-      medicationitems: medicationitems,
-      saveMedicationEnable: false,
-      addItemEnable: true,
-      item_id: null,
-      generic_id: null,
-      dosage: null,
-      frequency: null,
-      no_of_days: null,
-      dispense: null,
-      frequency_type: null,
-      frequency_time: null,
-      uom_id: null,
-      service_id: null,
-      item_category_id: null,
-      item_group_id: null
+
+    let serviceInput = [
+      {
+        insured: $this.state.insured,
+        vat_applicable: $this.state.vat_applicable,
+        hims_d_services_id: $this.state.service_id,
+        primary_insurance_provider_id: $this.state.insurance_provider_id,
+        primary_network_office_id:
+          $this.state.hims_d_insurance_network_office_id,
+        primary_network_id: $this.state.network_id,
+        sec_insured: $this.state.sec_insured,
+        secondary_insurance_provider_id:
+          $this.state.secondary_insurance_provider_id,
+        secondary_network_id: $this.state.secondary_network_id,
+        secondary_network_office_id: $this.state.secondary_network_office_id
+      }
+    ];
+
+    algaehApiCall({
+      uri: "/billing/getBillDetails",
+      module: "billing",
+      method: "POST",
+      data: serviceInput,
+      onSuccess: response => {
+        if (response.data.success) {
+          let data = response.data.records;
+
+          medicationobj.pre_approval =
+            data.billdetails[0].pre_approval === undefined
+              ? "N"
+              : data.billdetails[0].pre_approval;
+          medicationobj.insured = data.billdetails[0].insurance_yesno;
+          medicationitems.push(medicationobj);
+          $this.setState({
+            medicationitems: medicationitems,
+            saveMedicationEnable: false,
+            addItemEnable: true,
+            item_id: null,
+            generic_id: null,
+            dosage: 1,
+            frequency: null,
+            no_of_days: null,
+            dispense: null,
+            frequency_type: null,
+            frequency_time: null,
+            uom_id: null,
+            service_id: null,
+            item_category_id: null,
+            item_group_id: null,
+            pre_approval: null
+          });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
     });
   } else {
     swalMessage({

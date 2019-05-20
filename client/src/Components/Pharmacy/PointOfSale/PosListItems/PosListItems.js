@@ -31,7 +31,8 @@ import {
   ViewInsurance,
   qtyonchangegridcol,
   EditGrid,
-  credittexthandle
+  credittexthandle,
+  SelectBatchDetails
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -446,53 +447,6 @@ class PosListItems extends Component {
                                       );
                                     }
                                   },
-
-                                  {
-                                    fieldName: "item_category",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{ forceLabel: "Item Category" }}
-                                      />
-                                    ),
-                                    displayTemplate: row => {
-                                      let display =
-                                        this.props.itemcategory === undefined
-                                          ? []
-                                          : this.props.itemcategory.filter(
-                                              f =>
-                                                f.hims_d_item_category_id ===
-                                                row.item_category
-                                            );
-
-                                      return (
-                                        <span>
-                                          {display !== null &&
-                                          display.length !== 0
-                                            ? display[0].category_desc
-                                            : ""}
-                                        </span>
-                                      );
-                                    },
-                                    editorTemplate: row => {
-                                      let display =
-                                        this.props.itemcategory === undefined
-                                          ? []
-                                          : this.props.itemcategory.filter(
-                                              f =>
-                                                f.hims_d_item_category_id ===
-                                                row.item_category
-                                            );
-
-                                      return (
-                                        <span>
-                                          {display !== null &&
-                                          display.length !== 0
-                                            ? display[0].category_desc
-                                            : ""}
-                                        </span>
-                                      );
-                                    }
-                                  },
                                   {
                                     fieldName: "qtyhand",
                                     label: (
@@ -533,6 +487,63 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Batch No." }}
                                       />
                                     ),
+                                    displayTemplate: row => {
+                                      return (
+                                        <AlagehAutoComplete
+                                          div={{ className: "" }}
+                                          selector={{
+                                            name: "batchno",
+                                            className: "select-fld",
+                                            value: row.batchno,
+                                            dataSource: {
+                                              textField: "batchno",
+                                              valueField: "batchno",
+                                              data: row.batches
+                                            },
+                                            onChange: SelectBatchDetails.bind(
+                                              this,
+                                              this,
+                                              row,
+                                              context
+                                            )
+                                          }}
+                                        />
+                                      );
+                                    },
+                                    disabled: true
+                                  },
+                                  {
+                                    fieldName: "insurance_yesno",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "Insured" }}
+                                      />
+                                    ),
+                                    displayTemplate: row => {
+                                      return (
+                                        <span>
+                                          {row.insured === "N"
+                                            ? "Not Covered"
+                                            : "Covered"}
+                                        </span>
+                                      );
+                                    },
+                                    disabled: true
+                                  },
+                                  {
+                                    fieldName: "pre_approval",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "PreApproval" }}
+                                      />
+                                    ),
+                                    displayTemplate: row => {
+                                      return row.pre_approval === "N" ? (
+                                        <a>Not Required</a>
+                                      ) : (
+                                        <a>Required </a>
+                                      );
+                                    },
                                     disabled: true
                                   },
                                   {
@@ -627,31 +638,6 @@ class PosListItems extends Component {
                                         />
                                       );
                                     }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         value: row.quantity,
-                                    //         className: "txt-fld",
-                                    //         name: "quantity",
-                                    //         events: {
-                                    //           onChange: qtyonchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
                                   },
 
                                   {
@@ -699,32 +685,6 @@ class PosListItems extends Component {
                                         />
                                       );
                                     }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         decimal: { allowNegative: false },
-                                    //         value: row.discount_percentage,
-                                    //         className: "txt-fld",
-                                    //         name: "discount_percentage",
-                                    //         events: {
-                                    //           onChange: onchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
                                   },
                                   {
                                     fieldName: "discount_amount",
@@ -762,32 +722,6 @@ class PosListItems extends Component {
                                         />
                                       );
                                     }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         decimal: { allowNegative: false },
-                                    //         value: row.discount_amount,
-                                    //         className: "txt-fld",
-                                    //         name: "discount_amount",
-                                    //         events: {
-                                    //           onChange: onchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
                                   },
 
                                   {
@@ -1270,3 +1204,53 @@ export default withRouter(
     mapDispatchToProps
   )(PosListItems)
 );
+
+{
+  /*
+{
+  fieldName: "item_category",
+  label: (
+    <AlgaehLabel
+      label={{ forceLabel: "Item Category" }}
+    />
+  ),
+  displayTemplate: row => {
+    let display =
+      this.props.itemcategory === undefined
+        ? []
+        : this.props.itemcategory.filter(
+            f =>
+              f.hims_d_item_category_id ===
+              row.item_category
+          );
+
+    return (
+      <span>
+        {display !== null &&
+        display.length !== 0
+          ? display[0].category_desc
+          : ""}
+      </span>
+    );
+  },
+  editorTemplate: row => {
+    let display =
+      this.props.itemcategory === undefined
+        ? []
+        : this.props.itemcategory.filter(
+            f =>
+              f.hims_d_item_category_id ===
+              row.item_category
+          );
+
+    return (
+      <span>
+        {display !== null &&
+        display.length !== 0
+          ? display[0].category_desc
+          : ""}
+      </span>
+    );
+  }
+},*/
+}

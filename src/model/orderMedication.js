@@ -2,7 +2,6 @@
 import extend from "extend";
 import {
   whereCondition,
-  
   releaseDBConnection,
   jsonArrayToObject
 } from "../utils";
@@ -72,9 +71,10 @@ let addPatientPrescription = (req, res, next) => {
                 "item_group_id",
                 "frequency",
                 "no_of_days",
-                "dispense",
                 "frequency_type",
-                "frequency_time"
+                "frequency_time",
+                "insured",
+                "pre_approval"
               ];
 
               connection.query(
