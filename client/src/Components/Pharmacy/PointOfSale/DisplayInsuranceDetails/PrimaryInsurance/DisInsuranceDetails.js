@@ -27,12 +27,12 @@ export default class AddInsuranceForm extends Component {
     return (
       <div className="htpl-primary-display-insurance-pos-form POSInsurancePopup">
         <div className="row">
-            <div className="col-6 primary-details">
+        <div className="col-6 primary-details">
               <div className="row">
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      fieldName: "insurance_company"
+                      forceLabel: "Insurance Co."
                     }}
                   />
                   <h6>
@@ -45,7 +45,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      fieldName: "sub_insurance_company"
+                      forceLabel: "SUB INSURANCE CO."
                     }}
                   />
                   <h6>
@@ -57,7 +57,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      fieldName: "plan_desc"
+                      forceLabel: "Plan"
                     }}
                   />
                   <h6>
@@ -68,7 +68,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      fieldName: "policy_no"
+                      forceLabel: "Policy Number"
                     }}
                   />
                   <h6>
@@ -80,7 +80,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      fieldName: "card_no"
+                      forceLabel: "Card Number"
                     }}
                   />
                   <h6>
@@ -91,7 +91,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      fieldName: "ins_expiry_date"
+                      forceLabel: "Expiry Date"
                     }}
                   />
                   <h6>
@@ -106,7 +106,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      fieldName: "card_holder_name"
+                      forceLabel: "Card Holder Name"
                     }}
                   />
                   <h6>
@@ -119,7 +119,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      fieldName: "card_class"
+                      forceLabel: "Card Class"
                     }}
                   />
                   <h6>
