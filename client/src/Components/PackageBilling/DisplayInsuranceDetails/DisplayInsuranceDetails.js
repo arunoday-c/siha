@@ -13,16 +13,7 @@ export default class DisplayInsuranceDetails extends Component {
   render() {
     return (
       <div className="col-12 popRightDiv">
-        <h6
-          style={{
-            borderBottom: " 1px solid #d0d0d0",
-            fontSize: "0.9rem",
-            paddingBottom: 5,
-            paddingTop: "10px"
-          }}
-        >
-          Primary Insurance
-        </h6>
+       
         <PrimaryInsurance BillingIOputs={this.props.BillingIOputs} />
         {/* <h6
           style={{
