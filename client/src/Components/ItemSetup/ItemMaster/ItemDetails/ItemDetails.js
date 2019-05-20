@@ -87,7 +87,7 @@ class ItemDetails extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "generic_id",
                       isImp: true
@@ -104,7 +104,7 @@ class ItemDetails extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-2" }}
                     label={{
                       fieldName: "category_id",
                       isImp: true
@@ -117,6 +117,24 @@ class ItemDetails extends Component {
                         textField: "category_desc",
                         valueField: "hims_d_item_category_id",
                         data: this.props.itemcategory
+                      }
+                    }}
+                  />
+
+                  <AlagehAutoComplete
+                    div={{ className: "col-lg-2" }}
+                    label={{
+                      forceLabel: "Select SFDA",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "sfda_id",
+                      className: "select-fld",
+                      value: this.state.sfda_id,
+                      dataSource: {
+                        textField: "item_name",
+                        valueField: "hims_d_sfda_id",
+                        data: this.props.sfda
                       }
                     }}
                   />
@@ -261,7 +279,7 @@ class ItemDetails extends Component {
                       className: "select-fld",
                       value: this.state.service_id,
                       dataSource: {
-                        textField: "service_name",                        
+                        textField: "service_name",
                         valueField: "hims_d_services_id",
                         data: this.props.itemservices
                       }
@@ -285,7 +303,7 @@ class ItemDetails extends Component {
                     }}
                   />
 
-                {/*<AlagehAutoComplete
+                  {/*<AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{
                       fieldName: "service_id"
@@ -464,7 +482,8 @@ function mapStateToProps(state) {
     itemform: state.itemform,
     itemuom: state.itemuom,
     itemstorage: state.itemstorage,
-    itemservices: state.itemservices
+    itemservices: state.itemservices,
+    sfda: state.sfda
   };
 }
 

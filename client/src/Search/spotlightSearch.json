@@ -205,6 +205,18 @@
       {
         "fieldName": "transfer_number",
         "label": "Transfer Number"
+      },
+      {
+        "fieldName": "transfer_date",
+        "label": "Transfer Number"
+      },
+      {
+        "fieldName": "from_location",
+        "label": "From Location"
+      },
+      {
+        "fieldName": "to_location",
+        "label": "To Location"
       }
     ]
   },

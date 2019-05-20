@@ -27,6 +27,75 @@ const Patientchange = ($this, ctrl, e) => {
   });
 };
 
+const POSSearch = $this => {
+  AlgaehSearch({
+    searchGrid: {
+      columns: spotlightSearch.pointofsaleEntry.POSEntry
+    },
+    searchName: "POSEntry",
+    uri: "/gloabelSearch/get",
+    onContainsChange: (text, serchBy, callBack) => {
+      callBack(text);
+    },
+    onRowSelect: row => {
+      // $this.setState({ pos_number: row.pos_number });
+      AlgaehLoader({ show: true });
+      debugger;
+      algaehApiCall({
+        uri: "/posEntry/getPosEntry",
+        module: "pharmacy",
+        method: "GET",
+        data: { pos_number: row.pos_number },
+        onSuccess: response => {
+          if (response.data.success === true) {
+            let data = response.data.records;
+            data.saveEnable = true;
+            data.patient_payable_h = data.patient_payable;
+            data.pos_customer_type = "OT";
+            if (data.posted === "Y") {
+              data.postEnable = true;
+            } else {
+              data.postEnable = false;
+            }
+            if (data.visit_id !== null) {
+              data.pos_customer_type = "OP";
+            }
+            data.dataExitst = true;
+
+            if (data.receiptdetails.length !== 0) {
+              for (let i = 0; i < data.receiptdetails.length; i++) {
+                if (data.receiptdetails[i].pay_type === "CA") {
+                  data.Cashchecked = true;
+                  data.cash_amount = data.receiptdetails[i].amount;
+                }
+
+                if (data.receiptdetails[i].pay_type === "CD") {
+                  data.Cardchecked = true;
+                  data.card_amount = data.receiptdetails[i].amount;
+                }
+
+                if (data.receiptdetails[i].pay_type === "CH") {
+                  data.Checkchecked = true;
+                  data.cheque_amount = data.receiptdetails[i].amount;
+                }
+              }
+            }
+            $this.setState(data);
+            AlgaehLoader({ show: false });
+          }
+        },
+        onFailure: error => {
+          AlgaehLoader({ show: false });
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    }
+  });
+};
+
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
   $this.props.getPosEntry({
@@ -768,5 +837,6 @@ export {
   PostPosEntry,
   VisitSearch,
   LocationchangeTexts,
-  closePopup
+  closePopup,
+  POSSearch
 };

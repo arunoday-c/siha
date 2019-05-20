@@ -15,37 +15,57 @@ const changeTexts = ($this, ctrl, e) => {
 
 const getCtrlCode = ($this, docNumber) => {
   AlgaehLoader({ show: true });
-  $this.props.getTransferEntry({
-    uri: "/transferEntry/gettransferEntry",
+
+  algaehApiCall({
+    uri: "/transferEntry/addtransferEntry",
     module: "pharmacy",
-    method: "GET",
-    printInput: true,
-    data: { transfer_number: docNumber },
-    redux: {
-      type: "TRNS_ENTRY_GET_DATA",
-      mappingName: "tranferEntry"
-    },
-    afterSuccess: data => {
-      data.saveEnable = true;
+    data: $this.state,
+    onSuccess: response => {
+      if (response.data.success === true) {
+        debugger;
+        let data = response.data.records;
+        data.saveEnable = true;
 
-      if (data.completed === "Y") {
-        data.postEnable = true;
-      } else {
-        data.postEnable = false;
+        if (data.completed === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
+
+        data.cannotEdit = true;
+
+        data.dataExitst = true;
+
+        data.quantity_transferred = 0;
+        data.item_details = null;
+        data.batch_detail_view = false;
+
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+
+        AlgaehLoader({ show: false });
       }
-
-      data.cannotEdit = true;
-
-      data.dataExitst = true;
-
-      data.quantity_transferred = 0;
-      data.item_details = null;
-      data.batch_detail_view = false;
-
-      $this.setState(data);
+    },
+    onFailure: error => {
       AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+  // $this.props.getTransferEntry({
+  //   uri: "/transferEntry/gettransferEntry",
+  //   module: "pharmacy",
+  //   method: "GET",
+  //   printInput: true,
+  //   data: { transfer_number: docNumber },
+  //   redux: {
+  //     type: "TRNS_ENTRY_GET_DATA",
+  //     mappingName: "tranferEntry"
+  //   },
+  //   afterSuccess: data => {}
+  // });
 };
 
 const ClearData = ($this, e) => {

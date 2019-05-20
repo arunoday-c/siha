@@ -394,7 +394,7 @@ module.exports = {
               .then(detailResult => {
                 // _mysql.commitTransaction(() => {
                 //   _mysql.releaseConnection();
-                req.records = detailResult;
+                // req.records = detailResult;
                 next();
                 // });
               })
@@ -405,7 +405,7 @@ module.exports = {
               });
           } else {
             _mysql.rollBackTransaction(() => {
-              req.records = {};
+              // req.records = {};
               next();
             });
           }

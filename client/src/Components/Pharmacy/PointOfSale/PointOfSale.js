@@ -16,7 +16,8 @@ import {
   SavePosEnrty,
   VisitSearch,
   LocationchangeTexts,
-  closePopup
+  closePopup,
+  POSSearch
 } from "./PointOfSaleEvents";
 // getCtrlCode,
 import "./PointOfSale.css";
@@ -140,39 +141,50 @@ class PointOfSale extends Component {
     });
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   let posHeaderOut = {};
+  generateReport(rpt_name, rpt_desc) {
+    debugger;
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: rpt_name,
+          reportParams: [
+            {
+              name: "hims_d_patient_id",
+              value: this.state.patient_id
+            },
+            {
+              name: "visit_id",
+              value: this.state.visit_id
+            },
+            {
+              name: "visit_date",
+              value: null
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
 
-  //   if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
-  //     nextProps.posheader.patient_payable_h =
-  //       nextProps.posheader.patient_payable || this.state.patient_payable;
-  //     nextProps.posheader.sub_total =
-  //       nextProps.posheader.sub_total_amount || this.state.sub_total;
-  //     nextProps.posheader.patient_responsibility =
-  //       nextProps.posheader.patient_res || this.state.patient_responsibility;
-  //     nextProps.posheader.company_responsibility =
-  //       nextProps.posheader.company_res || this.state.company_responsibility;
-
-  //     nextProps.posheader.company_payable =
-  //       nextProps.posheader.company_payble || this.state.company_payable;
-  //     nextProps.posheader.sec_company_responsibility =
-  //       nextProps.posheader.sec_company_res ||
-  //       this.state.sec_company_responsibility;
-  //     nextProps.posheader.sec_company_payable =
-  //       nextProps.posheader.sec_company_paybale ||
-  //       this.state.sec_company_payable;
-
-  //     nextProps.posheader.copay_amount =
-  //       nextProps.posheader.copay_amount || this.state.copay_amount;
-  //     nextProps.posheader.sec_copay_amount =
-  //       nextProps.posheader.sec_copay_amount || this.state.sec_copay_amount;
-  //     nextProps.posheader.addItemButton = false;
-  //     nextProps.posheader.saveEnable = false;
-  //     posHeaderOut = nextProps.posheader;
-  //   }
-
-  //   this.setState({ ...this.state, ...posHeaderOut });
-  // }
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = rpt_desc;
+      }
+    });
+  }
 
   onKeyPress(e) {
     if (e.ctrlKey && e.keyCode === 9) {
@@ -202,8 +214,6 @@ class PointOfSale extends Component {
     return (
       <React.Fragment>
         <div onKeyPress={this.onKeyPress}>
-         
-
           <div className="row  inner-top-search" style={{ paddingBottom: 10 }}>
             {/* Patient code */}
             <div className="col-3">
@@ -271,7 +281,7 @@ class PointOfSale extends Component {
 
                   <div
                     className="col-1 print_actions"
-                    style={{ marginTop: "auto",padding:0 }}
+                    style={{ marginTop: "auto", padding: 0 }}
                   >
                     <span
                       style={{ cursor: "pointer" }}
@@ -312,12 +322,14 @@ class PointOfSale extends Component {
                       }}
                     />
                     <h6>
-                    {console.log(typeof this.state.mode_of_pay)}
-                    {this.state.mode_of_pay === "1"? "Self" : this.state.mode_of_pay ==="2"? "Insurance" : "-----------"}
+                      {console.log(typeof this.state.mode_of_pay)}
+                      {this.state.mode_of_pay === "1"
+                        ? "Self"
+                        : this.state.mode_of_pay === "2"
+                        ? "Insurance"
+                        : "-----------"}
                     </h6>
                   </div>
-                 
-                  
                 </div>
               ) : (
                 <div className="row">
@@ -411,38 +423,42 @@ class PointOfSale extends Component {
                   />
                 </button>
 
-
                 <button
                   type="button"
                   className="btn btn-other"
-                 // onClick={ClearData.bind(this, this)}
-                 style={{float:"left"}}
+                  onClick={POSSearch.bind(this, this)}
+                  style={{ float: "left" }}
                 >
                   <AlgaehLabel
                     label={{ forceLabel: "Past POS Bill", returnText: true }}
                   />
                 </button>
+                {this.state.dataExitst === true ? (
+                  <div>
+                    <button
+                      onClick={this.generateReport.bind(
+                        this,
+                        "pharmacyCashInvoice",
+                        "Pharmacy Cash Invoice"
+                      )}
+                      className="btn btn-default"
+                    >
+                      POS Cash Invoice
+                    </button>
 
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  style={{float:"left"}}
-                 // onClick={ClearData.bind(this, this)}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "POS Credit Invoice", returnText: true }}
-                  />
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                 // onClick={ClearData.bind(this, this)}
-                 style={{float:"left"}}
-                >
-                  <AlgaehLabel
-                    label={{ forceLabel: "POS Cash Invoice", returnText: true }}
-                  />
-                </button>
+                    <button
+                      className="btn btn-default"
+                      onClick={this.generateReport.bind(
+                        this,
+                        "pharmacyCreditInvoice",
+                        "Pharmacy Credit Invoice"
+                      )}
+                    >
+                      POS Credit Invoice
+                    </button>
+                  </div>
+                ) : null}
+
                 {/* <button
                     type="button"
                     className="btn btn-other"
@@ -508,25 +524,26 @@ class PointOfSale extends Component {
                   Close
                 </button>
                 <button
-                  type="button"
+                  onClick={this.generateReport.bind(
+                    this,
+                    "pharmacyCashInvoice",
+                    "Pharmacy Cash Invoice"
+                  )}
                   className="btn btn-default"
-                 // onClick={ClearData.bind(this, this)}
                 >
-                  <AlgaehLabel
-                    label={{ forceLabel: "POS Cash Invoice", returnText: true }}
-                  />
+                  POS Cash Invoice
                 </button>
+
                 <button
-                  type="button"
                   className="btn btn-default"
-                 // onClick={ClearData.bind(this, this)}
+                  onClick={this.generateReport.bind(
+                    this,
+                    "pharmacyCreditInvoice",
+                    "Pharmacy Credit Invoice"
+                  )}
                 >
-                  <AlgaehLabel
-                    label={{ forceLabel: "POS Credit Invoice", returnText: true }}
-                  />
+                  POS Credit Invoice
                 </button>
-
-
               </div>
             </div>
           </div>

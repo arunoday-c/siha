@@ -119,6 +119,18 @@ class ItemSetup extends Component {
       });
     }
 
+    if (this.props.sfda === undefined || this.props.sfda.length === 0) {
+      this.props.getSFDA({
+        uri: "/sfda/getSFDA",
+        module: "masterSettings",
+        method: "GET",
+        redux: {
+          type: "SFDA_GET_DATA",
+          mappingName: "sfda"
+        }
+      });
+    }
+
     if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
       ItemSetupEvent().getItems(this, this);
     }
@@ -422,7 +434,8 @@ function mapStateToProps(state) {
     itemgeneric: state.itemgeneric,
     itemform: state.itemform,
     itemstorage: state.itemstorage,
-    itemservices: state.itemservices
+    itemservices: state.itemservices,
+    sfda: state.sfda
   };
 }
 
@@ -436,7 +449,8 @@ function mapDispatchToProps(dispatch) {
       getItemGeneric: AlgaehActions,
       getItemForm: AlgaehActions,
       getItemStorage: AlgaehActions,
-      getServices: AlgaehActions
+      getServices: AlgaehActions,
+      getSFDA: AlgaehActions
     },
     dispatch
   );

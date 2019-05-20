@@ -13,6 +13,7 @@ import packagesetup from "../controllers/packagesetup";
 import bankmaster from "../controllers/bankmaster";
 import companyAccount from "../controllers/companyAccount";
 import InsuranceCardClass from "../controllers/InsuranceCardClass";
+import sfda from "../controllers/sfda";
 
 const router = express();
 router.use("/department", department());
@@ -29,5 +30,6 @@ router.use("/packagesetup", packagesetup());
 router.use("/bankmaster", bankmaster());
 router.use("/companyAccount", companyAccount());
 router.use("/InsuranceCardClass", InsuranceCardClass());
+router.use("/sfda", sfda());
 
 export default router;

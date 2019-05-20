@@ -99,7 +99,11 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "TransferEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_transfer_header",
+          "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description as from_location, \
+          TPL.location_description as to_location \
+          from hims_f_pharmacy_transfer_header TH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
+          where FPL.hims_d_pharmacy_location_id = TH.from_location_id and  \
+          TH.to_location_id = TPL.hims_d_pharmacy_location_id ",
         orderBy: "hims_f_pharmacy_transfer_header_id desc"
       },
       {
@@ -138,7 +142,11 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "InvTransferEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_transfer_header",
+          "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description as from_location,   \
+          TPL.location_description as to_location from hims_f_inventory_transfer_header TH, \
+          hims_d_inventory_location FPL, hims_d_inventory_location TPL          \
+          where FPL.hims_d_inventory_location_id = TH.from_location_id and           \
+          TH.to_location_id = TPL.hims_d_inventory_location_id",
         orderBy: "hims_f_inventory_transfer_header_id desc"
       },
       {

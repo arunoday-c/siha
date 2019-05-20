@@ -488,7 +488,8 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return (
+                                      // {this.state.dataExitst === false}
+                                      return this.state.dataExitst === false ? (
                                         <AlagehAutoComplete
                                           div={{ className: "" }}
                                           selector={{
@@ -508,6 +509,8 @@ class PosListItems extends Component {
                                             )
                                           }}
                                         />
+                                      ) : (
+                                        row.batchno
                                       );
                                     },
                                     disabled: true
@@ -609,7 +612,7 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return (
+                                      return this.state.dataExitst === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -636,6 +639,8 @@ class PosListItems extends Component {
                                             }
                                           }}
                                         />
+                                      ) : (
+                                        row.quantity
                                       );
                                     }
                                   },
@@ -659,7 +664,7 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return (
+                                      return this.state.dataExitst === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -683,6 +688,8 @@ class PosListItems extends Component {
                                             }
                                           }}
                                         />
+                                      ) : (
+                                        row.discount_percentage
                                       );
                                     }
                                   },
@@ -696,7 +703,7 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return (
+                                      return this.state.dataExitst === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -720,6 +727,8 @@ class PosListItems extends Component {
                                             }
                                           }}
                                         />
+                                      ) : (
+                                        row.discount_amount
                                       );
                                     }
                                   },

@@ -51,7 +51,10 @@ module.exports = {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ pharmacy_stock_detail }
+                  ...{ pharmacy_stock_detail },
+                  ...{
+                    hims_f_receipt_header_id: headerResult[0].receipt_header_id
+                  }
                 };
                 next();
               })

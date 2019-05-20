@@ -75,11 +75,11 @@ module.exports = {
           .executeQuery({
             query: `SELECT * from  hims_f_pharmacy_transfer_header \
           where hospital_id=? and from_location_id=? and to_location_id=? ${strQty};
-          select D.* from  hims_f_pharmacy_transfer_header H inner join  hims_f_pharmacy_transfer_detail D 
+          select D.* from  hims_f_pharmacy_transfer_header H inner join  hims_f_pharmacy_transfer_detail D
           on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id where hospital_id=?
           and H.from_location_id=? and H.to_location_id=? ${strQty};
           select S.* from  hims_f_pharmacy_transfer_header H
-          inner join  hims_f_pharmacy_transfer_detail D on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id 
+          inner join  hims_f_pharmacy_transfer_detail D on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id
           inner join hims_f_pharmacy_transfer_batches S on D.hims_f_pharmacy_transfer_detail_id=S.transfer_detail_id
           where hospital_id=? and H.from_location_id=? and H.to_location_id=? ${strQty};
            `,
@@ -94,7 +94,7 @@ module.exports = {
               input.from_location_id,
               input.to_location_id
             ],
-            printQuery: false
+            printQuery: true
           })
           .then(result => {
             _mysql.releaseConnection();
