@@ -425,6 +425,9 @@ class PosListItems extends Component {
                                             : ""}
                                         </span>
                                       );
+                                    },
+                                    others:{
+                                      minWidth:200
                                     }
                                   },
 
@@ -479,7 +482,7 @@ class PosListItems extends Component {
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Quantity In Hand"
+                                          forceLabel: "Qty In Hand"
                                         }}
                                       />
                                     ),
@@ -614,7 +617,7 @@ class PosListItems extends Component {
                                     fieldName: "extended_cost",
                                     label: (
                                       <AlgaehLabel
-                                        label={{ forceLabel: "Extended Cost" }}
+                                        label={{ forceLabel: "Ext. Cost" }}
                                       />
                                     ),
                                     disabled: true
@@ -661,7 +664,7 @@ class PosListItems extends Component {
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "discount Amount"
+                                          forceLabel: "discount Amt."
                                         }}
                                       />
                                     ),
@@ -699,7 +702,7 @@ class PosListItems extends Component {
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Net Extended Cost"
+                                          forceLabel: "Net Ext. Cost"
                                         }}
                                       />
                                     ),
