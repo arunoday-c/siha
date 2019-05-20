@@ -210,7 +210,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["TRAN_NUM"]
+          modules: ["TRAN_NUM"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           transfer_number = generatedNumbers[0];

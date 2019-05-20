@@ -283,7 +283,7 @@ class TransferEntryItems extends Component {
                             fieldName: "item_group_id",
                             label: (
                               <AlgaehLabel
-                                label={{ forceLabel: "Item Category" }}
+                                label={{ forceLabel: "Item Group" }}
                               />
                             ),
                             displayTemplate: row => {
@@ -462,15 +462,17 @@ class TransferEntryItems extends Component {
               ) : (
                 <div className="col-8" style={{ paddingLeft: 0 }}>
                   <div className="portlet portlet-bordered margin-bottom-15">
-                    <div className="row"><div className="col">
-                      <AlgaehLabel label={{ forceLabel: "Item Name" }} />
-                      <h6>{item_name ? item_name : "----------"}</h6>
-                    </div>
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Item Name" }} />
+                        <h6>{item_name ? item_name : "----------"}</h6>
+                      </div>
 
-                    <div className="col">
-                      <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
-                      <h6>{qty_auth ? qty_auth : "----------"}</h6>
-                    </div></div>
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Required Qty" }} />
+                        <h6>{qty_auth ? qty_auth : "----------"}</h6>
+                      </div>
+                    </div>
                     {qty_auth < this.state.quantity_transferred
                       ? "Greater than required qty"
                       : null}
@@ -564,38 +566,39 @@ class TransferEntryItems extends Component {
                         </div>
                       </div>
                     </div>
-<div className="row">
-                    <div className="col">
-                      <AlgaehLabel label={{ forceLabel: "Transfer Qty" }} />
-                      <h6>
-                        {this.state.quantity_transferred
-                          ? this.state.quantity_transferred
-                          : "----------"}
-                      </h6>
-                    </div>
-                    
-                          <div  className="col">
+                    <div className="row">
+                      <div className="col">
+                        <AlgaehLabel label={{ forceLabel: "Transfer Qty" }} />
+                        <h6>
+                          {this.state.quantity_transferred
+                            ? this.state.quantity_transferred
+                            : "----------"}
+                        </h6>
+                      </div>
 
-                          <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={AddSelectedBatches.bind(this, this, context)}
-                      style={{marginTop:8,float:"right",marginLeft:10}}
-                    >
-                      Save
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={this.CloseOrent.bind(this, context)}
-                      style={{marginTop:8,float:"right"}}
-                    >
-                      Close
-                    </button>
-                         
-                          </div>
+                      <div className="col">
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          onClick={AddSelectedBatches.bind(this, this, context)}
+                          style={{
+                            marginTop: 8,
+                            float: "right",
+                            marginLeft: 10
+                          }}
+                        >
+                          Save
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-default"
+                          onClick={this.CloseOrent.bind(this, context)}
+                          style={{ marginTop: 8, float: "right" }}
+                        >
+                          Close
+                        </button>
+                      </div>
                     </div>
-                   
                   </div>
                 </div>
               )}

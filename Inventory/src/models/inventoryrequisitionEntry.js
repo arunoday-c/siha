@@ -354,7 +354,7 @@ module.exports = {
       }
 
       _mysql
-        .executeQueryWithTransaction({
+        .executeQuery({
           query:
             "UPDATE `hims_f_inventory_material_header` SET `is_completed`=?, `completed_date`=? \
           WHERE `hims_f_inventory_material_header_id`=?",

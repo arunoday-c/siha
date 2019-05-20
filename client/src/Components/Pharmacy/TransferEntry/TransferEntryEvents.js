@@ -4,7 +4,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/TransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
-import extend from "extend";
+import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -85,13 +85,21 @@ const SaveTransferEntry = $this => {
       parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
   }
 
-  // let inputObj = extend({}, $this.state);
-
   delete $this.state.item_details;
 
-  for (let i = 0; i < $this.state.stock_detail.length; i++) {
-    delete $this.state.stock_detail[i].batches;
+  for (let j = 0; j < $this.state.stock_detail.length; j++) {
+    if ($this.state.stock_detail[j].inventory_stock_detail === undefined) {
+      $this.state.stock_detail[j].removed = "Y";
+    } else {
+      delete $this.state.stock_detail[j].batches;
+    }
   }
+
+  let stock_detail = _.filter($this.state.stock_detail, f => {
+    return f.removed === "N";
+  });
+
+  $this.state.stock_detail = stock_detail;
 
   algaehApiCall({
     uri: "/transferEntry/addtransferEntry",
@@ -243,6 +251,8 @@ const RequisitionSearch = ($this, e) => {
                   data.stock_detail[i].item_uom;
                 data.stock_detail[i].uom_transferred_id =
                   data.stock_detail[i].item_uom;
+
+                data.stock_detail[i].removed = "N";
               }
               data.quantity_transferred = 0;
               data.item_details = null;

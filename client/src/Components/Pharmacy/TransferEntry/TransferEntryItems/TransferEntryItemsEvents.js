@@ -306,8 +306,7 @@ const onchangegridcol = ($this, context, row, e) => {
     const _index = item_details.batches.indexOf(row);
     item_details.batches[_index] = row;
 
-    item_details.quantity_transferred =
-      quantity_transferred === NaN ? 0 : quantity_transferred;
+    item_details.quantity_transferred = quantity_transferred;
 
     item_details.quantity_outstanding =
       item_details.quantity_authorized -
@@ -323,6 +322,12 @@ const onchangegridcol = ($this, context, row, e) => {
       quantity_transferred = _.sumBy(item_details.batches, s =>
         parseFloat(s.quantity_transfer)
       );
+      item_details.quantity_transferred = quantity_transferred;
+
+      item_details.quantity_outstanding =
+        item_details.quantity_authorized -
+        item_details.transfer_to_date -
+        quantity_transferred;
     }
     $this.setState({
       item_details: item_details,
