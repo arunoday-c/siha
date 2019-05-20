@@ -5,7 +5,7 @@ import _ from "lodash";
 import { LINQ } from "node-linq";
 
 module.exports = {
-  gettransferEntry: (req, res, next) => {
+  gettransferEntryBACKUP: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       let intValue = [];
@@ -55,6 +55,109 @@ module.exports = {
           _mysql.releaseConnection();
           next(error);
         });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+  //created by :irfan
+  gettransferEntry: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      let input = req.query;
+      if (input.from_location_id > 0 && input.to_location_id > 0) {
+        let strQty = "";
+        if (req.query.transfer_number != null) {
+          strQty = ` and transfer_number= '${req.query.transfer_number}'`;
+        }
+
+        _mysql
+          .executeQuery({
+            query: `SELECT * from  hims_f_pharmacy_transfer_header \
+          where hospital_id=? and from_location_id=? and to_location_id=? ${strQty};
+          select D.* from  hims_f_pharmacy_transfer_header H inner join  hims_f_pharmacy_transfer_detail D 
+          on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id where hospital_id=?
+          and H.from_location_id=? and H.to_location_id=? ${strQty};
+          select S.* from  hims_f_pharmacy_transfer_header H
+          inner join  hims_f_pharmacy_transfer_detail D on H.hims_f_pharmacy_transfer_header_id=D.transfer_header_id 
+          inner join hims_f_pharmacy_transfer_batches S on D.hims_f_pharmacy_transfer_detail_id=S.transfer_detail_id
+          where hospital_id=? and H.from_location_id=? and H.to_location_id=? ${strQty};
+           `,
+            values: [
+              req.userIdentity.hospital_id,
+              input.from_location_id,
+              input.to_location_id,
+              req.userIdentity.hospital_id,
+              input.from_location_id,
+              input.to_location_id,
+              req.userIdentity.hospital_id,
+              input.from_location_id,
+              input.to_location_id
+            ],
+            printQuery: false
+          })
+          .then(result => {
+            _mysql.releaseConnection();
+
+            if (result[0].length > 0) {
+              let header = result[0];
+              let detail = result[1];
+              let subDetail = result[2];
+
+              let outputArray = [];
+
+              for (let i = 0; i < header.length; i++) {
+                let t_details = new LINQ(detail)
+                  .Where(
+                    w =>
+                      w.transfer_header_id ==
+                      header[i]["hims_f_pharmacy_transfer_header_id"]
+                  )
+                  .Select(s => s)
+                  .ToArray();
+
+                let temp = [];
+                for (let m = 0; m < t_details.length; m++) {
+                  let sub_details = new LINQ(subDetail)
+                    .Where(
+                      w =>
+                        w.transfer_detail_id ==
+                        t_details[m]["hims_f_pharmacy_transfer_detail_id"]
+                    )
+                    .Select(s => s)
+                    .ToArray();
+
+                  temp.push({
+                    ...t_details[m],
+                    pharmacy_stock_detail: sub_details
+                  });
+                }
+
+                outputArray.push({
+                  ...header[i],
+                  stock_detail: temp
+                });
+              }
+
+              //console.log("details:", t_details);
+              req.records = outputArray;
+              next();
+            } else {
+              req.records = result[0];
+              next();
+            }
+          })
+          .catch(error => {
+            _mysql.releaseConnection();
+            next(error);
+          });
+      } else {
+        req.records = {
+          invalid_input: true,
+          message: "Please provide valid from_location and to_location id"
+        };
+        next();
+      }
     } catch (e) {
       _mysql.releaseConnection();
       next(e);
@@ -197,7 +300,7 @@ module.exports = {
       });
     }
   },
-
+  //created by :irfan
   addtransferEntry: (req, res, next) => {
     const _mysql = new algaehMysql();
 
@@ -531,7 +634,9 @@ module.exports = {
               .then(pharmacy_stock_detail => {
                 _mysql.releaseConnection();
 
-                utilities.logger().log("pharmacy_stock_detail: ", pharmacy_stock_detail);
+                utilities
+                  .logger()
+                  .log("pharmacy_stock_detail: ", pharmacy_stock_detail);
 
                 var item_grp = _(pharmacy_stock_detail)
                   .groupBy("item_id")
@@ -573,7 +678,7 @@ module.exports = {
                     .Where(w => w.item_id == item_grp[i])
                     .Select(s => {
                       return {
-                        hims_m_item_location_id:s.hims_m_item_location_id,
+                        hims_m_item_location_id: s.hims_m_item_location_id,
                         item_id: s.item_id,
                         pharmacy_location_id: s.pharmacy_location_id,
                         item_location_status: s.item_location_status,
@@ -623,5 +728,4 @@ module.exports = {
       next(e);
     }
   }
-
 };
