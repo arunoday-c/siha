@@ -94,7 +94,7 @@ class Plan extends Component {
                   />
                 }
               </li>
-              <li
+              {/* <li
                 algaehtabs={"OwnMedication"}
                 className={"nav-item tab-button"}
                 onClick={this.openTab.bind(this)}
@@ -106,22 +106,35 @@ class Plan extends Component {
                     }}
                   />
                 }
-              </li>
+              </li> */}
             </ul>
           </div>
 
                 {/*  {<this.state.pageDisplay />} */}
+              
 
                 {this.state.pageDisplay === "OrderMedication" ? (
-<<<<<<< HEAD
-                  <OrderMedication onclosePopup={this.props.onClose} />
-=======
-                  <OrderMedication vat_applicable={this.props.vat_applicable} />
->>>>>>> 08b94e50721421dcff13b99e61a6d96c908bc82f
+                  <OrderMedication vat_applicable={this.props.vat_applicable} 
+                  onclosePopup={(e)=>{
+                    this.setState({ pageDisplay: "OrderMedication" }, () => {
+                      this.props.onClose && this.props.onClose(e);
+                    });
+                    
+                  }} />
                 ) : this.state.pageDisplay === "ActiveMedication" ? (
-                  <ActiveMedication />
+                  <ActiveMedication onclosePopup={(e)=>{
+                    this.setState({ pageDisplay: "OrderMedication" }, () => {
+                      this.props.onClose && this.props.onClose(e);
+                    });
+                    
+                  }}/>
                 ) : this.state.pageDisplay === "MedicationHistory" ? (
-                  <MedicationHistory />
+                  <MedicationHistory onclosePopup={(e)=>{
+                    this.setState({ pageDisplay: "OrderMedication" }, () => {
+                      this.props.onClose && this.props.onClose(e);
+                    });
+                    
+                  }}/>
                 ) : null}
           </AlgaehModalPopUp>
           <div className="col-lg-6">
