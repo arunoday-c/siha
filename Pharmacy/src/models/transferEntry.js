@@ -313,7 +313,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["TRAN_NUM"]
+          modules: ["TRAN_NUM"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           transfer_number = generatedNumbers[0];
@@ -347,7 +352,7 @@ module.exports = {
                 input.to_location_type,
                 input.description,
                 input.completed,
-                input.completed_date,
+                new Date(),
                 input.completed_lines,
                 input.transfer_quantity,
                 input.requested_quantity,
@@ -361,13 +366,12 @@ module.exports = {
               printQuery: false
             })
             .then(headerResult => {
+              req.body.transaction_id = headerResult.insertId;
+              req.body.year = year;
+              req.body.period = period;
               console.log("headerResult: ", headerResult.insertId);
 
               for (let i = 0; i < input.stock_detail.length; i++) {
-                // utilities
-                //   .logger()
-                //   .log("pharmacy_stock_detail: ", input.pharmacy_stock_detail);
-
                 _mysql
                   .executeQuery({
                     query:
@@ -404,18 +408,6 @@ module.exports = {
                     printQuery: false
                   })
                   .then(detailResult => {
-                    // utilities.logger().log("detailResult: ", detailResult);
-                    // _mysql.commitTransaction(() => {
-                    //   _mysql.releaseConnection();
-                    //   req.records = {
-                    //     transfer_number: transfer_number,
-                    //     hims_f_pharmacy_transfer_header_id: headerResult.insertId,
-                    //     year: year,
-                    //     period: period
-                    //   };
-                    //   next();
-                    // });
-
                     let IncludeSubValues = [
                       "transfer_detail_id",
                       "item_category_id",
@@ -435,13 +427,6 @@ module.exports = {
                       "sales_uom"
                     ];
 
-                    // utilities
-                    //   .logger()
-                    //   .log(
-                    //     "pharmacy_stock_detail: ",
-                    //     input.pharmacy_stock_detail
-                    //   );
-
                     _mysql
                       .executeQuery({
                         query:
@@ -456,17 +441,25 @@ module.exports = {
                       })
                       .then(subResult => {
                         if (i == input.stock_detail.length - 1) {
-                          _mysql.commitTransaction(() => {
-                            _mysql.releaseConnection();
-                            req.records = {
-                              transfer_number: transfer_number,
-                              hims_f_pharmacy_transfer_header_id:
-                                headerResult.insertId,
-                              year: year,
-                              period: period
-                            };
-                            next();
-                          });
+                          req.connection = {
+                            connection: _mysql.connection,
+                            isTransactionConnection:
+                              _mysql.isTransactionConnection,
+                            pool: _mysql.pool
+                          };
+                          req.flag = 1;
+
+                          // _mysql.commitTransaction(() => {
+                          //   _mysql.releaseConnection();
+                          req.records = {
+                            transfer_number: transfer_number,
+                            hims_f_pharmacy_transfer_header_id:
+                              headerResult.insertId,
+                            year: year,
+                            period: period
+                          };
+                          next();
+                          // });
                         }
                       });
                   })
@@ -621,10 +614,12 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "select D.*,LOC.* from hims_f_pharmacy_material_detail D \
+                  "select D.*,LOC.*,IM.item_description, PU.uom_description from hims_f_pharmacy_material_detail D \
                   inner join `hims_m_item_location` LOC  on D.item_id=LOC.item_id \
+                  inner join `hims_d_item_master` IM  on IM.hims_d_item_master_id=D.item_id \
+                  inner join `hims_d_pharmacy_uom` PU  on PU.hims_d_pharmacy_uom_id=D.item_uom \
                   where   LOC.pharmacy_location_id=? and  D.pharmacy_header_id=? and  LOC.expirydt > CURDATE() \
-                   and LOC.qtyhand>0  order by  LOC.expirydt ",
+                  and LOC.qtyhand>0 and D.quantity_outstanding<>0  order by  LOC.expirydt ",
                 values: [
                   headerResult[0].to_location_id,
                   headerResult[0].hims_f_pharamcy_material_header_id
@@ -669,7 +664,9 @@ module.exports = {
                         po_created: s.po_created,
                         po_created_quantity: s.po_created_quantity,
                         po_outstanding_quantity: s.po_outstanding_quantity,
-                        po_completed: s.po_completed
+                        po_completed: s.po_completed,
+                        item_description: s.item_description,
+                        uom_description: s.uom_description
                       };
                     })
                     .FirstOrDefault();
@@ -683,19 +680,20 @@ module.exports = {
                         pharmacy_location_id: s.pharmacy_location_id,
                         item_location_status: s.item_location_status,
                         batchno: s.batchno,
-                        expirydt: s.expirydt,
+                        expiry_date: s.expirydt,
                         barcode: s.barcode,
                         qtyhand: s.qtyhand,
                         qtypo: s.qtypo,
                         cost_uom: s.cost_uom,
-                        avgcost: s.avgcost,
+                        unit_cost: s.avgcost,
                         last_purchase_cost: s.last_purchase_cost,
                         item_type: s.item_type,
                         grn_id: s.grn_id,
                         grnno: s.grnno,
                         sale_price: s.sale_price,
                         mrp_price: s.mrp_price,
-                        sales_uom: s.sales_uom
+                        sales_uom: s.sales_uom,
+                        quantity_transfer: 0
                       };
                     })
                     .ToArray();
@@ -705,7 +703,7 @@ module.exports = {
 
                 req.records = {
                   ...headerResult[0],
-                  ...{ pharmacy_stock_detail: outputArray }
+                  ...{ stock_detail: outputArray }
                 };
                 next();
               })

@@ -342,12 +342,15 @@ module.exports = {
   updaterequisitionEntryOnceTranfer: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
+
+    const utilities = new algaehUtilities();
+    utilities.logger().log("updaterequisitionEntryOnceTranfer: ");
     try {
       let inputParam = { ...req.body };
 
       let complete = "Y";
 
-      const partial_recived = new LINQ(inputParam.pharmacy_stock_detail)
+      const partial_recived = new LINQ(inputParam.stock_detail)
         .Where(w => w.quantity_outstanding != 0)
         .ToArray();
 
@@ -368,8 +371,9 @@ module.exports = {
           printQuery: true
         })
         .then(headerResult => {
+          utilities.logger().log("headerResult: ", headerResult);
           if (headerResult != null) {
-            let details = inputParam.pharmacy_stock_detail;
+            let details = inputParam.stock_detail;
 
             let qry = "";
 
@@ -383,17 +387,16 @@ module.exports = {
                 ]
               );
             }
+
+            utilities.logger().log("qry: ", qry);
             _mysql
               .executeQueryWithTransaction({
                 query: qry,
                 printQuery: true
               })
               .then(detailResult => {
-                // _mysql.commitTransaction(() => {
-                //   _mysql.releaseConnection();
-                req.records = detailResult;
+                // req.records = detailResult;
                 next();
-                // });
               })
               .catch(e => {
                 _mysql.rollBackTransaction(() => {
@@ -402,7 +405,7 @@ module.exports = {
               });
           } else {
             _mysql.rollBackTransaction(() => {
-              req.records = {};
+              // req.records = {};
               next();
             });
           }

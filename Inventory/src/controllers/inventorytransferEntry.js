@@ -18,12 +18,19 @@ export default () => {
     });
   });
 
-  api.post("/addtransferEntry", addtransferEntry, (req, res, next) => {
-    res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-      success: true,
-      records: req.records
-    });
-  });
+  api.post(
+    "/addtransferEntry",
+    addtransferEntry,
+    updateinvreqEntryOnceTranfer,
+    updateIntoInvItemLocation,
+    updateIntoInvItemLocation,
+    (req, res, next) => {
+      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
+        success: true,
+        records: req.records
+      });
+    }
+  );
 
   api.put(
     "/updatetransferEntry",

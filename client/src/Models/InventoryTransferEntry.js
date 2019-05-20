@@ -28,6 +28,7 @@ export default {
       cancelled: "N",
       cancelled_by: null,
       cancelled_date: null,
+      stock_detail: [],
       inventory_stock_detail: [],
       addedItem: false,
 
@@ -48,7 +49,12 @@ export default {
       item_group_id: null,
       item_category: null,
       barcode: null,
-      dataExitst: false
+      dataExitst: false,
+
+      batch_detail_view: false,
+      item_details: null,
+      quantity_transferred: 0,
+      cannotEdit: false
     };
     return output;
   }

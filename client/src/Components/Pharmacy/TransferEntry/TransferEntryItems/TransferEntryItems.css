@@ -48,7 +48,8 @@
   border-radius: 5px;
   max-height: 59vh;
   overflow-x: hidden;
-  overflow-y: auto; }
+  overflow-y: auto;
+  min-height: 59vh; }
   .reqTransList li {
     margin: 0;
     padding: 10px 15px;
@@ -56,14 +57,25 @@
     list-style: none; }
     .reqTransList li .itemReq {
       display: inline-block;
-      width: 75%; }
+      width: 85%; }
       .reqTransList li .itemReq h6 {
         font-size: 1.2rem; }
-      .reqTransList li .itemReq p {
+      .reqTransList li .itemReq span {
+        display: inline-block;
+        width: 50%;
         margin: 0;
-        padding: 0; }
-        .reqTransList li .itemReq p span {
-          font-weight: bold; }
+        padding: 0;
+        /* border: 1px solid #000; */
+        /* margin-right: 10px; */
+        /* height: 30px; */
+        line-height: 19px;
+        /* padding-left: 4px; */
+        font-size: 0.9rem;
+        text-align: left; }
+        .reqTransList li .itemReq span span {
+          font-weight: bold;
+          border: none;
+          display: inline; }
     .reqTransList li .itemAction {
       float: right; }
       .reqTransList li .itemAction span i {
@@ -76,3 +88,6 @@
         .reqTransList li .itemAction span i:hover {
           border: 1px solid #000;
           color: #000; }
+
+#itemTransferMapGrid .ReactTable {
+  max-height: 43vh !important; }

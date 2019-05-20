@@ -28,6 +28,7 @@ export default {
       cancelled: "N",
       cancelled_by: null,
       cancelled_date: null,
+      stock_detail: [],
       pharmacy_stock_detail: [],
       addedItem: false,
 
@@ -41,13 +42,16 @@ export default {
       expiry_date: null,
       quantity_required: 0,
       unit_cost: 0,
-      Batch_Items: [],
       service_id: null,
       conversion_factor: 1,
       grn_no: null,
       item_group_id: null,
       item_category: null,
-      dataExitst: false
+      dataExitst: false,
+      batch_detail_view: false,
+      item_details: null,
+      quantity_transferred: 0,
+      cannotEdit: false
     };
     return output;
   }

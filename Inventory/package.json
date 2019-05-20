@@ -13,7 +13,7 @@
     "start": "cross-env PORT=3008 NODE_ENV=production pm2 start  -i 1 inventory_server.js"
   },
   "dependencies": {
-    "algaeh-mysql": "^1.2.5",
+    "algaeh-mysql": "^1.2.8",
     "body-parser": "^1.18.2",
     "compression": "^1.7.3",
     "concurrently": "^3.5.1",

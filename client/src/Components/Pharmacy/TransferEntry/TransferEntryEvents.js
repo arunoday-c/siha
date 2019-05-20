@@ -4,6 +4,7 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/TransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -33,7 +34,14 @@ const getCtrlCode = ($this, docNumber) => {
         data.postEnable = false;
       }
 
+      data.cannotEdit = true;
+
       data.dataExitst = true;
+
+      data.quantity_transferred = 0;
+      data.item_details = null;
+      data.batch_detail_view = false;
+
       $this.setState(data);
       AlgaehLoader({ show: false });
     }
@@ -46,31 +54,8 @@ const ClearData = ($this, e) => {
 };
 
 const SaveTransferEntry = $this => {
-  algaehApiCall({
-    uri: "/transferEntry/addtransferEntry",
-    module: "pharmacy",
-    data: $this.state,
-    onSuccess: response => {
-      if (response.data.success === true) {
-        $this.setState({
-          transfer_number: response.data.records.transfer_number,
-          hims_f_pharmacy_transfer_header_id:
-            response.data.records.hims_f_pharmacy_transfer_header_id,
-          year: response.data.records.year,
-          period: response.data.records.period,
-          saveEnable: true,
-          postEnable: false
-        });
-        swalMessage({
-          title: "Saved successfully . .",
-          type: "success"
-        });
-      }
-    }
-  });
-};
-
-const PostTransferEntry = $this => {
+  debugger;
+  AlgaehLoader({ show: true });
   $this.state.completed = "Y";
   $this.state.transaction_type = "ST";
   $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
@@ -86,18 +71,98 @@ const PostTransferEntry = $this => {
       $this.state.pharmacy_stock_detail[i].uom_transferred_id;
 
     $this.state.pharmacy_stock_detail[i].quantity =
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+      $this.state.pharmacy_stock_detail[i].quantity_transfer;
 
     $this.state.pharmacy_stock_detail[i].grn_number =
       $this.state.pharmacy_stock_detail[i].grnno;
 
     $this.state.pharmacy_stock_detail[i].net_total =
-      $this.state.pharmacy_stock_detail[i].unit_cost *
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
 
     $this.state.pharmacy_stock_detail[i].extended_cost =
-      $this.state.pharmacy_stock_detail[i].unit_cost *
-      $this.state.pharmacy_stock_detail[i].quantity_transferred;
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
+  }
+
+  delete $this.state.item_details;
+
+  for (let j = 0; j < $this.state.stock_detail.length; j++) {
+    if ($this.state.stock_detail[j].inventory_stock_detail === undefined) {
+      $this.state.stock_detail[j].removed = "Y";
+    } else {
+      delete $this.state.stock_detail[j].batches;
+    }
+  }
+
+  let stock_detail = _.filter($this.state.stock_detail, f => {
+    return f.removed === "N";
+  });
+
+  $this.state.stock_detail = stock_detail;
+
+  algaehApiCall({
+    uri: "/transferEntry/addtransferEntry",
+    module: "pharmacy",
+    data: $this.state,
+    onSuccess: response => {
+      if (response.data.success === true) {
+        $this.setState({
+          transfer_number: response.data.records.transfer_number,
+          hims_f_pharmacy_transfer_header_id:
+            response.data.records.hims_f_pharmacy_transfer_header_id,
+          year: response.data.records.year,
+          period: response.data.records.period,
+          saveEnable: true,
+          postEnable: false,
+          cannotEdit: true
+        });
+        swalMessage({
+          title: "Saved successfully . .",
+          type: "success"
+        });
+        AlgaehLoader({ show: false });
+      }
+    },
+    onFailure: error => {
+      AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
+    }
+  });
+};
+
+const PostTransferEntry = $this => {
+  AlgaehLoader({ show: true });
+  $this.state.completed = "Y";
+  $this.state.transaction_type = "ST";
+  $this.state.transaction_id = $this.state.hims_f_pharmacy_transfer_header_id;
+  $this.state.transaction_date = $this.state.transfer_date;
+  for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
+    $this.state.pharmacy_stock_detail[i].location_id =
+      $this.state.from_location_id;
+    $this.state.pharmacy_stock_detail[i].location_type =
+      $this.state.from_location_type;
+    $this.state.pharmacy_stock_detail[i].operation = "-";
+
+    $this.state.pharmacy_stock_detail[i].uom_id =
+      $this.state.pharmacy_stock_detail[i].uom_transferred_id;
+
+    $this.state.pharmacy_stock_detail[i].quantity =
+      $this.state.pharmacy_stock_detail[i].quantity_transfer;
+
+    $this.state.pharmacy_stock_detail[i].grn_number =
+      $this.state.pharmacy_stock_detail[i].grnno;
+
+    $this.state.pharmacy_stock_detail[i].net_total =
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
+
+    $this.state.pharmacy_stock_detail[i].extended_cost =
+      parseFloat($this.state.pharmacy_stock_detail[i].unit_cost) *
+      parseFloat($this.state.pharmacy_stock_detail[i].quantity_transfer);
   }
 
   algaehApiCall({
@@ -114,6 +179,7 @@ const PostTransferEntry = $this => {
           title: "Posted successfully . .",
           type: "success"
         });
+        AlgaehLoader({ show: false });
       }
     },
     onFailure: error => {
@@ -150,56 +216,47 @@ const RequisitionSearch = ($this, e) => {
           },
 
           onSuccess: response => {
-            debugger
+            debugger;
             if (response.data.success === true) {
               let data = response.data.records;
 
               let from_location_id = data.from_location_id;
               let from_location_type = data.from_location_type;
-              data.saveEnable = false;
+              // data.saveEnable = false;
 
               data.from_location_id = data.to_location_id;
               data.to_location_id = from_location_id;
               data.from_location_type = data.to_location_type;
               data.to_location_type = from_location_type;
 
-              // data.dataExitst = true;
-
-              for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
-                data.pharmacy_stock_detail[i].material_requisition_header_id =
+              for (let i = 0; i < data.stock_detail.length; i++) {
+                data.stock_detail[i].material_requisition_header_id =
                   data.hims_f_pharamcy_material_header_id;
 
-                data.pharmacy_stock_detail[i].material_requisition_detail_id =
-                  data.pharmacy_stock_detail[
-                    i
-                  ].hims_f_pharmacy_material_detail_id;
+                data.stock_detail[i].material_requisition_detail_id =
+                  data.stock_detail[i].hims_f_pharmacy_material_detail_id;
 
-                // grnno
+                data.stock_detail[i].quantity_transferred = 0;
 
-                data.pharmacy_stock_detail[i].quantity_transferred =
-                  data.pharmacy_stock_detail[i].quantity_outstanding;
+                data.stock_detail[i].transfer_to_date =
+                  data.stock_detail[i].quantity_authorized -
+                  data.stock_detail[i].quantity_outstanding;
 
-                data.pharmacy_stock_detail[i].transfer_to_date =
-                  data.pharmacy_stock_detail[i].quantity_authorized -
-                  data.pharmacy_stock_detail[i].quantity_outstanding;
+                data.stock_detail[i].quantity_outstanding = 0;
 
-                data.pharmacy_stock_detail[i].quantity_outstanding = 0;
-                // data.pharmacy_stock_detail[i].expiry_date =
-                //   data.pharmacy_stock_detail[i].expirydt;
+                data.stock_detail[i].quantity_requested =
+                  data.stock_detail[i].quantity_required;
 
-                data.pharmacy_stock_detail[i].quantity_requested =
-                  data.pharmacy_stock_detail[i].quantity_required;
-                // data.pharmacy_stock_detail[i].from_qtyhand =
-                //   data.pharmacy_stock_detail[i].qtyhand;
+                data.stock_detail[i].uom_requested_id =
+                  data.stock_detail[i].item_uom;
+                data.stock_detail[i].uom_transferred_id =
+                  data.stock_detail[i].item_uom;
 
-                data.pharmacy_stock_detail[i].uom_requested_id =
-                  data.pharmacy_stock_detail[i].item_uom;
-                data.pharmacy_stock_detail[i].uom_transferred_id =
-                  data.pharmacy_stock_detail[i].item_uom;
-
-                // data.pharmacy_stock_detail[i].unit_cost =
-                //   data.pharmacy_stock_detail[i].avgcost;
+                data.stock_detail[i].removed = "N";
               }
+              data.quantity_transferred = 0;
+              data.item_details = null;
+              data.batch_detail_view = false;
               $this.setState(data);
               AlgaehLoader({ show: false });
             }
@@ -211,7 +268,7 @@ const RequisitionSearch = ($this, e) => {
               type: "error"
             });
           }
-        });      
+        });
       }
     });
   } else {

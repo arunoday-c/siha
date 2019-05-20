@@ -30,7 +30,6 @@ export default class DisplayInsuranceDetails extends Component {
       >
         <div className="popupInner">
           <div className="col-12 popRightDiv">
-            <h6>Primary Insurance</h6>
             <PrimaryInsurance POSIOputs={this.props.POSIOputs} />
             {/* <h6
               style={{

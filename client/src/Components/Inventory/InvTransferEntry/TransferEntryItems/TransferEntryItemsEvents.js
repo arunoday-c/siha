@@ -1,7 +1,8 @@
 import moment from "moment";
 import { swalMessage } from "../../../../utils/algaehApiCall.js";
-
+import extend from "extend";
 import Options from "../../../../Options.json";
+import _ from "lodash";
 
 let texthandlerInterval = null;
 
@@ -279,9 +280,73 @@ const updateTransEntryDetail = ($this, context, e) => {
 };
 
 const onchangegridcol = ($this, context, row, e) => {
+  debugger;
+  let name = e.target.name;
+  let value = e.target.value === "" ? null : e.target.value;
+
+  if (parseFloat(value) > parseFloat(row.qtyhand)) {
+    swalMessage({
+      title: "Cannot be greater than Quantity in Hand.",
+      type: "warning"
+    });
+  } else if (parseFloat(value) < 0) {
+    swalMessage({
+      title: "Cannot be less than Zero.",
+      type: "warning"
+    });
+  } else {
+    let item_details = $this.state.item_details;
+
+    row[name] = value;
+
+    let quantity_transferred = _.sumBy(item_details.batches, s => {
+      return s.quantity_transfer !== null ? parseFloat(s.quantity_transfer) : 0;
+    });
+
+    const _index = item_details.batches.indexOf(row);
+    item_details.batches[_index] = row;
+
+    item_details.quantity_transferred = quantity_transferred;
+
+    item_details.quantity_outstanding =
+      item_details.quantity_authorized -
+      item_details.transfer_to_date -
+      quantity_transferred;
+
+    if (item_details.quantity_outstanding < 0) {
+      swalMessage({
+        title: "Quantity cannot be greater than requested quntity.",
+        type: "warning"
+      });
+      row[name] = 0;
+      quantity_transferred = _.sumBy(item_details.batches, s =>
+        parseFloat(s.quantity_transfer)
+      );
+      item_details.quantity_transferred = quantity_transferred;
+
+      item_details.quantity_outstanding =
+        item_details.quantity_authorized -
+        item_details.transfer_to_date -
+        quantity_transferred;
+    }
+    $this.setState({
+      item_details: item_details,
+      quantity_transferred: quantity_transferred
+    });
+
+    if (context !== undefined) {
+      context.updateState({
+        item_details: item_details,
+        quantity_transferred: quantity_transferred
+      });
+    }
+  }
+};
+{
+  /* const onchangegridcol = ($this, context, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  let transfer_to_date = parseFloat(row.transfer_to_date )+ parseFloat(value);
+  let transfer_to_date = parseFloat(row.transfer_to_date) + parseFloat(value);
   if (transfer_to_date > parseFloat(row.quantity_authorized)) {
     swalMessage({
       title: "Cannot be greater than Authorized Quantity.",
@@ -294,15 +359,18 @@ const onchangegridcol = ($this, context, row, e) => {
       type: "warning"
     });
   } else {
-    debugger
+    debugger;
     let inventory_stock_detail = $this.state.inventory_stock_detail;
 
     row[name] = value;
 
     row["quantity_outstanding"] =
       parseFloat(row.quantity_authorized) -
-      parseFloat(row.transfer_to_date) -
-      value === null ? 0 : parseFloat(value);
+        parseFloat(row.transfer_to_date) -
+        value ===
+      null
+        ? 0
+        : parseFloat(value);
 
     inventory_stock_detail[row.rowIdx] = row;
 
@@ -314,7 +382,8 @@ const onchangegridcol = ($this, context, row, e) => {
       });
     }
   }
-};
+};*/
+}
 
 const dateFormater = ($this, value) => {
   if (value !== null) {
@@ -378,6 +447,64 @@ const CancelGrid = ($this, context, cancelRow) => {
   }
 };
 
+const AddSelectedBatches = ($this, context) => {
+  debugger;
+  if (
+    parseFloat($this.state.item_details.quantity_transferred) >
+    parseFloat($this.state.item_details.quantity_authorized)
+  ) {
+    swalMessage({
+      title: "Transfer Qty cannot be greater than Request Qty.",
+      type: "warning"
+    });
+  } else {
+    if (context !== null) {
+      let saveEnable = true;
+      let _inventory_stock_detail = $this.state.inventory_stock_detail;
+      let _stock_detail = $this.state.stock_detail;
+      let details = extend({}, $this.state.item_details);
+      let batches = _.filter($this.state.item_details.batches, f => {
+        return parseFloat(f.quantity_transfer) !== 0;
+      });
+
+      const _index = _stock_detail.indexOf($this.state.item_details);
+      _stock_detail[_index] = $this.state.item_details;
+
+      delete details.batches;
+
+      _stock_detail[_index].inventory_stock_detail = batches.map(
+        (item, index) => {
+          return { ...item, ...details };
+        }
+      );
+
+      let remove_item = _.filter(_inventory_stock_detail, f => {
+        return f.item_id === details.item_id;
+      });
+
+      for (let i = 0; i < remove_item.length; i++) {
+        if (remove_item[i].item_id === details.item_id) {
+          _inventory_stock_detail.splice(remove_item[i], 1);
+        }
+      }
+
+      _inventory_stock_detail.push(
+        ...batches.map((item, index) => {
+          return { ...item, ...details };
+        })
+      );
+      saveEnable = _inventory_stock_detail.length > 0 ? false : true;
+      context.updateState({
+        stock_detail: _stock_detail,
+        inventory_stock_detail: _inventory_stock_detail,
+        batch_detail_view: false,
+        saveEnable: saveEnable,
+        quantity_transferred: 0
+      });
+    }
+  }
+};
+
 export {
   UomchangeTexts,
   itemchangeText,
@@ -390,5 +517,6 @@ export {
   dateFormater,
   getItemLocationStock,
   EditGrid,
-  CancelGrid
+  CancelGrid,
+  AddSelectedBatches
 };

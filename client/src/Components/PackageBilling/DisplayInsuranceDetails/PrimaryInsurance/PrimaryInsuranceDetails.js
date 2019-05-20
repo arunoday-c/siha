@@ -23,11 +23,11 @@ export default class AddInsuranceForm extends Component {
   render() {
     return (
       <div className="htpl-primary-display-insurance-form">
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-lg-4 primary-details">
-              <div className="row primary-box-container">
-                <div className="col-lg-6">
+       
+       <div className="row">
+            <div className="col-6 primary-details">
+              <div className="row">
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "insurance_company"
@@ -40,7 +40,7 @@ export default class AddInsuranceForm extends Component {
                   </h6>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "sub_insurance_company"
@@ -52,7 +52,7 @@ export default class AddInsuranceForm extends Component {
                       : "---"}
                   </h6>
                 </div>
-                <div className="col-lg-6">
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "plan_desc"
@@ -63,7 +63,7 @@ export default class AddInsuranceForm extends Component {
                   </h6>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "policy_no"
@@ -75,7 +75,7 @@ export default class AddInsuranceForm extends Component {
                       : "---"}
                   </h6>
                 </div>
-                <div className="col-lg-6">
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "card_no"
@@ -86,7 +86,7 @@ export default class AddInsuranceForm extends Component {
                   </h6>
                 </div>
 
-                <div className="col-lg-6">
+                <div className="col-6">
                   <AlgaehLabel
                     label={{
                       fieldName: "ins_expiry_date"
@@ -100,47 +100,147 @@ export default class AddInsuranceForm extends Component {
                       : "---"}
                   </h6>
                 </div>
+
+                <div className="col-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "card_holder_name"
+                    }}
+                  />
+                  <h6>
+                    {this.state.card_holder_name
+                      ? this.state.card_holder_name
+                      : "---"}
+                  </h6>
+                </div>
+
+                <div className="col-6">
+                  <AlgaehLabel
+                    label={{
+                      fieldName: "card_class"
+                    }}
+                  />
+                  <h6>
+                    {this.state.card_class_name
+                      ? this.state.card_class_name
+                      : "---"}
+                  </h6>
+                </div>
               </div>
             </div>
-            <div className="col-lg-4 primary-details">
-              <div className="row primary-box-container">
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "services"
-                    }}
-                  />
-                </div>
-                <div className="col-lg-4 centerAlign">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "percentage"
-                    }}
-                  />
-                </div>
-                <div className="col-lg-4 centerAlign">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "max_limit"
-                    }}
-                  />
-                </div>
-              </div>
+            <div className="col-6 secondary-details">
+             
 
-              <div className="row primary-box-container">
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "consultation"
-                      // forceLabel: "Consultation"
-                    }}
-                  />
-                </div>
+              <div className="row">
+             
                 <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col-4 form-group" }}    label={{
+                    forceLabel: "Consultation %"
+                  }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.copay_consultation,
+                    className: "txt-fld",
+                    name: "unbalanced_amount",
+
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      disabled: true
+                    }
+                  }}
+                />
+             
+             
+                <AlagehFormGroup
+                  div={{ className: "col-4 form-group" }}
+                  label={{
+                    forceLabel: "Laboratory %"
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    value: this.state.copay_percent,
+                    className: "txt-fld",
+                    name: "unbalanced_amount",
+
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      disabled: true
+                    }
+                  }}
+                />
+            
+            
+                <AlagehFormGroup
+                  div={{ className: "col-4 form-group" }}
+                  label={{
+                    forceLabel: "Radiology %"
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    value: this.state.copay_percent_rad,
+                    className: "txt-fld",
+                    name: "unbalanced_amount",
+
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      disabled: true
+                    }
+                  }}
+                />
+             
+               
+                <AlagehFormGroup
+                  div={{ className: "col-4 form-group" }}label={{
+                    forceLabel: "Medcine %"
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    value: this.state.copay_medicine,
+                    className: "txt-fld",
+                    name: "unbalanced_amount",
+
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      disabled: true
+                    }
+                  }}
+                />
+               
+                <AlagehFormGroup
+                  div={{ className: "col-4 form-group" }}label={{
+                    forceLabel: "Procedure %"
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    value: this.state.copay_percent_trt,
+                    className: "txt-fld",
+                    name: "unbalanced_amount",
+
+                    events: {
+                      onChange: null
+                    },
+                    others: {
+                      disabled: true
+                    }
+                  }}
+                />
+              
+              
+                <AlagehFormGroup
+                  div={{ className: "col-4 form-group" }}label={{
+                    forceLabel: "Dental %"
+                  }}
+                  textBox={{
+                    decimal: { allowNegative: false },
+                    value: this.state.copay_percent_dental,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -153,252 +253,13 @@ export default class AddInsuranceForm extends Component {
                   }}
                 />
                 <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
+                  div={{ className: "col-12 form-group" }}
+                  label={{
+                    forceLabel: "Max Limit Amt. for All Service"
                   }}
-                />
-              </div>
-
-              <div className="row primary-box-container">
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "laboratory"
-                      // forceLabel: "Laboratory"
-                    }}
-                  />
-                </div>
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
                   textBox={{
                     decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="row primary-box-container">
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "radiology"
-                      // forceLabel: "Radiology"
-                    }}
-                  />
-                </div>
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="col-lg-4 secondary-details">
-              <div className="row secondary-box-container">
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      // fieldName: "Co-Insurance"
-                      fieldName: "services"
-                    }}
-                  />
-                </div>
-                <div className="col-lg-4 centerAlign">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "percentage"
-                      // forceLabel: "Percentage"
-                    }}
-                  />
-                </div>
-                <div className="col-lg-4 centerAlign">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "max_limit"
-                    }}
-                  />
-                </div>
-              </div>
-
-              <div className="row secondary-box-container">
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "medicine"
-                      // forceLabel: "Medicine"
-                    }}
-                  />
-                </div>
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="row secondary-box-container">
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "procedure"
-                      // forceLabel: "procedure"
-                    }}
-                  />
-                </div>
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="row secondary-box-container">
-                <div className="col-lg-4">
-                  <AlgaehLabel
-                    label={{
-                      // fieldName: "Co-Insurance"
-                      fieldName: "dental"
-                    }}
-                  />
-                </div>
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
-                    className: "txt-fld",
-                    name: "unbalanced_amount",
-
-                    events: {
-                      onChange: null
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <AlagehFormGroup
-                  div={{ className: "col-lg-4" }}
-                  textBox={{
-                    decimal: { allowNegative: false },
-                    value: this.state.unbalanced_amount,
+                    value: this.state.dental_max,
                     className: "txt-fld",
                     name: "unbalanced_amount",
 
@@ -413,7 +274,6 @@ export default class AddInsuranceForm extends Component {
               </div>
             </div>
           </div>
-        </div>
       </div>
     );
   }

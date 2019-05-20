@@ -4,6 +4,8 @@ import AlgaehLoader from "../../Wrapper/fullPageLoader";
 // import Enumerable from "linq";
 import TransferIOputs from "../../../Models/InventoryTransferEntry";
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import extend from "extend";
+import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
   e = ctrl || e;
@@ -32,6 +34,7 @@ const getCtrlCode = ($this, docNumber) => {
       } else {
         data.postEnable = false;
       }
+      data.cannotEdit = true;
 
       data.dataExitst = true;
       $this.setState(data);
@@ -46,6 +49,52 @@ const ClearData = ($this, e) => {
 };
 
 const SaveTransferEntry = $this => {
+  debugger;
+  $this.state.completed = "Y";
+  $this.state.transaction_type = "ST";
+  $this.state.transaction_id = $this.state.hims_f_inventory_transfer_header_id;
+  $this.state.transaction_date = $this.state.transfer_date;
+  for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
+    $this.state.inventory_stock_detail[i].location_id =
+      $this.state.from_location_id;
+    $this.state.inventory_stock_detail[i].location_type =
+      $this.state.from_location_type;
+    $this.state.inventory_stock_detail[i].operation = "-";
+
+    $this.state.inventory_stock_detail[i].uom_id =
+      $this.state.inventory_stock_detail[i].uom_transferred_id;
+
+    $this.state.inventory_stock_detail[i].quantity =
+      $this.state.inventory_stock_detail[i].quantity_transferred;
+
+    $this.state.inventory_stock_detail[i].grn_number =
+      $this.state.inventory_stock_detail[i].grnno;
+
+    $this.state.inventory_stock_detail[i].net_total =
+      $this.state.inventory_stock_detail[i].unit_cost *
+      $this.state.inventory_stock_detail[i].quantity_transferred;
+
+    $this.state.inventory_stock_detail[i].extended_cost =
+      $this.state.inventory_stock_detail[i].unit_cost *
+      $this.state.inventory_stock_detail[i].quantity_transferred;
+  }
+
+  delete $this.state.item_details;
+
+  for (let j = 0; j < $this.state.stock_detail.length; j++) {
+    if ($this.state.stock_detail[j].inventory_stock_detail === undefined) {
+      $this.state.stock_detail[j].removed = "Y";
+    } else {
+      delete $this.state.stock_detail[j].batches;
+    }
+  }
+
+  let stock_detail = _.filter($this.state.stock_detail, f => {
+    return f.removed === "N";
+  });
+
+  $this.state.stock_detail = stock_detail;
+
   algaehApiCall({
     uri: "/inventorytransferEntry/addtransferEntry",
     module: "inventory",
@@ -59,7 +108,8 @@ const SaveTransferEntry = $this => {
           year: response.data.records.year,
           period: response.data.records.period,
           saveEnable: true,
-          postEnable: false
+          postEnable: false,
+          cannotEdit: true
         });
         swalMessage({
           title: "Saved successfully . .",
@@ -150,12 +200,12 @@ const RequisitionSearch = ($this, e) => {
 
           onSuccess: response => {
             if (response.data.success === true) {
-              debugger
+              debugger;
               let data = response.data.records;
               AlgaehLoader({ show: true });
               let from_location_id = data.from_location_id;
               let from_location_type = data.from_location_type;
-              data.saveEnable = false;
+              // data.saveEnable = false;
 
               data.from_location_id = data.to_location_id;
               data.to_location_id = from_location_id;
@@ -164,39 +214,29 @@ const RequisitionSearch = ($this, e) => {
 
               data.dataExitst = true;
 
-              for (let i = 0; i < data.inventory_stock_detail.length; i++) {
-                data.inventory_stock_detail[i].material_requisition_header_id =
+              for (let i = 0; i < data.stock_detail.length; i++) {
+                data.stock_detail[i].material_requisition_header_id =
                   data.hims_f_inventory_material_header_id;
 
-                data.inventory_stock_detail[i].material_requisition_detail_id =
-                  data.inventory_stock_detail[
-                    i
-                  ].hims_f_inventory_material_detail_id;
+                data.stock_detail[i].material_requisition_detail_id =
+                  data.stock_detail[i].hims_f_inventory_material_detail_id;
 
-                // grnno
-                data.inventory_stock_detail[i].quantity_transferred =
-                  data.inventory_stock_detail[i].quantity_outstanding;
+                data.stock_detail[i].quantity_transferred = 0;
 
-                data.inventory_stock_detail[i].transfer_to_date =
-                  data.inventory_stock_detail[i].quantity_authorized -
-                  data.inventory_stock_detail[i].quantity_outstanding;
-                data.inventory_stock_detail[i].quantity_outstanding = 0;
+                data.stock_detail[i].transfer_to_date =
+                  data.stock_detail[i].quantity_authorized -
+                  data.stock_detail[i].quantity_outstanding;
+                data.stock_detail[i].quantity_outstanding = 0;
 
-                // data.inventory_stock_detail[i].expiry_date =
-                //   data.inventory_stock_detail[i].expirydt;
+                data.stock_detail[i].quantity_requested =
+                  data.stock_detail[i].quantity_required;
 
-                data.inventory_stock_detail[i].quantity_requested =
-                  data.inventory_stock_detail[i].quantity_required;
-                // data.inventory_stock_detail[i].from_qtyhand =
-                //   data.inventory_stock_detail[i].qtyhand;
+                data.stock_detail[i].uom_requested_id =
+                  data.stock_detail[i].item_uom;
+                data.stock_detail[i].uom_transferred_id =
+                  data.stock_detail[i].item_uom;
 
-                data.inventory_stock_detail[i].uom_requested_id =
-                  data.inventory_stock_detail[i].item_uom;
-                data.inventory_stock_detail[i].uom_transferred_id =
-                  data.inventory_stock_detail[i].item_uom;
-
-                // data.inventory_stock_detail[i].unit_cost =
-                //   data.inventory_stock_detail[i].avgcost;
+                data.stock_detail[i].removed = "N";
               }
               $this.setState(data);
               AlgaehLoader({ show: false });
