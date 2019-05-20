@@ -314,7 +314,7 @@ class UOMAdditionalInfo extends Component {
                       <AlagehFormGroup
                         div={{ className: "col-lg-12 form-details" }}
                         label={{
-                          forceLabel: "Aditional Information",
+                          forceLabel: "Additional Information",
                           isImp: true
                         }}
                         textBox={{

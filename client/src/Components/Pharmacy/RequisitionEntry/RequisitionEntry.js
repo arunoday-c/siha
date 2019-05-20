@@ -180,8 +180,8 @@ class RequisitionEntry extends Component {
             <div className="col-lg-8">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
-                  label={{ forceLabel: "Location" }}
+                  div={{ className: "col-4" }}
+                  label={{ forceLabel: "Requesting From" }}
                   selector={{
                     name: "from_location_id",
                     className: "select-fld",
@@ -204,10 +204,10 @@ class RequisitionEntry extends Component {
                   }}
                 />
 
-                <div className="col-lg-4">
+                <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "From Location Type"
+                      forceLabel: "Location Type"
                     }}
                   />
                   <h6>
@@ -215,12 +215,12 @@ class RequisitionEntry extends Component {
                       ? this.state.from_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
-                      : "From Location Type"}
+                      : "----------"}
                   </h6>
                 </div>
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-4" }}
+                  div={{ className: "col-3" }}
                   label={{ forceLabel: "Requisition Type" }}
                   selector={{
                     name: "requistion_type",
@@ -246,11 +246,11 @@ class RequisitionEntry extends Component {
                 />
               </div>
             </div>
-            <div className="col-lg-4">
+            <div className="col-4">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
-                  label={{ forceLabel: "Request To Location" }}
+                  div={{ className: "col-6" }}
+                  label={{ forceLabel: "Requesting To" }}
                   selector={{
                     name: "to_location_id",
                     className: "select-fld",
@@ -276,10 +276,10 @@ class RequisitionEntry extends Component {
                   }}
                 />
 
-                <div className="col-lg-6">
+                <div className="col">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "To Location Type"
+                      forceLabel: "Location Type"
                     }}
                   />
                   <h6>
@@ -287,7 +287,7 @@ class RequisitionEntry extends Component {
                       ? this.state.to_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
-                      : "To Location Type"}
+                        : "----------"}
                   </h6>
                 </div>
               </div>

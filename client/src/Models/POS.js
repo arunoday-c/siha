@@ -23,13 +23,13 @@ export default {
       net_total: 0,
       copay_amount: 0,
       patient_responsibility: 0,
-      pos_customer_type: "OT",
+      pos_customer_type: "OP",
 
       patient_name: null,
       referal_doctor: null,
       mobile_number: null,
 
-      mode_of_pay: "1",
+      mode_of_pay: "",
       patient_tax: 0,
       patient_payable: 0,
       company_responsibility: 0,
