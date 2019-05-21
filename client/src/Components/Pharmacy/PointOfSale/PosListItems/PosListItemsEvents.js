@@ -384,6 +384,7 @@ const AddItems = ($this, context) => {
         method: "POST",
         data: ItemInput,
         onSuccess: response => {
+          debugger;
           if (response.data.success) {
             let data = response.data.records;
             if (data.billdetails[0].pre_approval === "Y") {
@@ -396,6 +397,13 @@ const AddItems = ($this, context) => {
               let existingservices = $this.state.pharmacy_stock_detail;
 
               if (data.billdetails.length !== 0) {
+                data.billdetails[0].pre_approval =
+                  data.billdetails[0].pre_approval === undefined
+                    ? "N"
+                    : data.billdetails[0].pre_approval;
+
+                data.billdetails[0].insured =
+                  data.billdetails[0].insurance_yesno;
                 data.billdetails[0].extended_cost =
                   data.billdetails[0].gross_amount;
                 data.billdetails[0].net_extended_cost =
@@ -415,6 +423,16 @@ const AddItems = ($this, context) => {
                   data.billdetails[0].services_id;
                 data.billdetails[0].discount_amount =
                   data.billdetails[0].discount_amout;
+
+                data.billdetails[0].batches = [
+                  {
+                    batchno: $this.state.batchno,
+                    expiry_date: $this.state.expiry_date,
+                    grn_no: $this.state.grn_no,
+                    barcode: $this.state.barcode,
+                    qtyhand: $this.state.qtyhand
+                  }
+                ];
 
                 data.billdetails[0].patient_responsibility =
                   data.billdetails[0].patient_resp;
@@ -1089,8 +1107,6 @@ const SelectBatchDetails = ($this, row, context, e) => {
 
   if (context !== null) {
     context.updateState({
-      saveEnable: !$this.state.saveEnable,
-      addItemButton: !$this.state.addItemButton,
       pharmacy_stock_detail: _pharmacy_stock_detail
     });
   }

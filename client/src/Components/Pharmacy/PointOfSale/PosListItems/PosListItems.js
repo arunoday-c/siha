@@ -446,8 +446,8 @@ class PosListItems extends Component {
                                         </span>
                                       );
                                     },
-                                    others:{
-                                      minWidth:200
+                                    others: {
+                                      minWidth: 200
                                     }
                                   },
                                   {
@@ -498,7 +498,10 @@ class PosListItems extends Component {
                                               this,
                                               row,
                                               context
-                                            )
+                                            ),
+                                            onClear: () => {
+                                              row["batchno"] = null;
+                                            }
                                           }}
                                         />
                                       ) : (

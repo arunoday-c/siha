@@ -27,7 +27,7 @@ const SearchDetails = ($this, context, e) => {
 
       $this.setState({ value: row[selectValue] }, () => {
         if ($this.props.soptlightSearch.events !== undefined) {
-          $this.props.soptlightSearch.events.onChange(row[selectValue]);
+          $this.props.soptlightSearch.events.onChange(row[selectValue], row);
         }
       });
     }

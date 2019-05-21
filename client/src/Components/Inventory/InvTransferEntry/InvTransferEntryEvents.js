@@ -14,33 +14,91 @@ const changeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
-const getCtrlCode = ($this, docNumber) => {
+const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-  $this.props.getTransferEntry({
+  debugger;
+
+  algaehApiCall({
     uri: "/inventorytransferEntry/gettransferEntry",
     module: "inventory",
     method: "GET",
-    printInput: true,
-    data: { transfer_number: docNumber },
-    redux: {
-      type: "TRNS_ENTRY_GET_DATA",
-      mappingName: "tranferEntry"
+    data: {
+      transfer_number: docNumber,
+      from_location_id: row.from_location_id,
+      to_location_id: row.to_location_id
     },
-    afterSuccess: data => {
-      data.saveEnable = true;
+    onSuccess: response => {
+      if (response.data.success === true) {
+        debugger;
+        let inventory_stock_detail = [];
+        let data = response.data.records[0];
+        for (let i = 0; i < data.stock_detail.length; i++) {
+          data.inventory_stock_detail = inventory_stock_detail.concat(
+            data.stock_detail[i].inventory_stock_detail
+          );
+        }
 
-      if (data.completed === "Y") {
-        data.postEnable = true;
-      } else {
-        data.postEnable = false;
+        for (let j = 0; j < data.inventory_stock_detail.length; j++) {
+          data.inventory_stock_detail[j].quantity_transferred =
+            data.inventory_stock_detail[j].quantity_transfer;
+        }
+
+        data.saveEnable = true;
+
+        if (data.completed === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
+
+        data.cannotEdit = true;
+
+        data.dataExitst = true;
+
+        data.quantity_transferred = 0;
+        data.item_details = null;
+        data.batch_detail_view = false;
+
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+
+        AlgaehLoader({ show: false });
       }
-      data.cannotEdit = true;
-
-      data.dataExitst = true;
-      $this.setState(data);
+    },
+    onFailure: error => {
       AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
+  // AlgaehLoader({ show: true });
+  // $this.props.getTransferEntry({
+  //   uri: "/inventorytransferEntry/gettransferEntry",
+  //   module: "inventory",
+  //   method: "GET",
+  //   printInput: true,
+  //   data: { transfer_number: docNumber },
+  //   redux: {
+  //     type: "TRNS_ENTRY_GET_DATA",
+  //     mappingName: "tranferEntry"
+  //   },
+  //   afterSuccess: data => {
+  //     data.saveEnable = true;
+  //
+  //     if (data.completed === "Y") {
+  //       data.postEnable = true;
+  //     } else {
+  //       data.postEnable = false;
+  //     }
+  //     data.cannotEdit = true;
+  //
+  //     data.dataExitst = true;
+  //     $this.setState(data);
+  //     AlgaehLoader({ show: false });
+  //   }
+  // });
 };
 
 const ClearData = ($this, e) => {

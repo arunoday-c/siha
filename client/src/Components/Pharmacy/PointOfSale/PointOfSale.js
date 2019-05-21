@@ -439,11 +439,11 @@ class PointOfSale extends Component {
                       onClick={this.generateReport.bind(
                         this,
                         "pharmacyCashInvoice",
-                        "Pharmacy Cash Invoice"
+                        "Cash Invoice"
                       )}
                       className="btn btn-default"
                     >
-                      POS Cash Invoice
+                      Cash Invoice
                     </button>
 
                     <button
@@ -451,10 +451,10 @@ class PointOfSale extends Component {
                       onClick={this.generateReport.bind(
                         this,
                         "pharmacyCreditInvoice",
-                        "Pharmacy Credit Invoice"
+                        "Credit Invoice"
                       )}
                     >
-                      POS Credit Invoice
+                      Credit Invoice
                     </button>
                   </div>
                 ) : null}
@@ -527,11 +527,11 @@ class PointOfSale extends Component {
                   onClick={this.generateReport.bind(
                     this,
                     "pharmacyCashInvoice",
-                    "Pharmacy Cash Invoice"
+                    "Cash Invoice"
                   )}
                   className="btn btn-default"
                 >
-                  POS Cash Invoice
+                  Cash Invoice
                 </button>
 
                 <button
@@ -539,10 +539,10 @@ class PointOfSale extends Component {
                   onClick={this.generateReport.bind(
                     this,
                     "pharmacyCreditInvoice",
-                    "Pharmacy Credit Invoice"
+                    "Credit Invoice"
                   )}
                 >
-                  POS Credit Invoice
+                  Credit Invoice
                 </button>
               </div>
             </div>
