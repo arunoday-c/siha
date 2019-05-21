@@ -156,16 +156,8 @@ class PointOfSale extends Component {
           reportName: rpt_name,
           reportParams: [
             {
-              name: "hims_d_patient_id",
-              value: this.state.patient_id
-            },
-            {
-              name: "visit_id",
-              value: this.state.visit_id
-            },
-            {
-              name: "visit_date",
-              value: null
+              name: "hims_f_pharmacy_pos_header_id",
+              value: this.state.hims_f_pharmacy_pos_header_id
             }
           ],
           outputFileType: "PDF"
@@ -438,7 +430,7 @@ class PointOfSale extends Component {
                     <button
                       onClick={this.generateReport.bind(
                         this,
-                        "pharmacyCashInvoice",
+                        "posCashInvoice",
                         "Cash Invoice"
                       )}
                       className="btn btn-default"
@@ -446,16 +438,18 @@ class PointOfSale extends Component {
                       Cash Invoice
                     </button>
 
-                    <button
-                      className="btn btn-default"
-                      onClick={this.generateReport.bind(
-                        this,
-                        "pharmacyCreditInvoice",
-                        "Credit Invoice"
-                      )}
-                    >
-                      Credit Invoice
-                    </button>
+                    {this.state.insured === "Y" ? (
+                      <button
+                        className="btn btn-default"
+                        onClick={this.generateReport.bind(
+                          this,
+                          "posCreditInvoice",
+                          "Credit Invoice"
+                        )}
+                      >
+                        Credit Invoice
+                      </button>
+                    ) : null}
                   </div>
                 ) : null}
 
@@ -526,7 +520,7 @@ class PointOfSale extends Component {
                 <button
                   onClick={this.generateReport.bind(
                     this,
-                    "pharmacyCashInvoice",
+                    "posCashInvoice",
                     "Cash Invoice"
                   )}
                   className="btn btn-default"
@@ -534,16 +528,18 @@ class PointOfSale extends Component {
                   Cash Invoice
                 </button>
 
-                <button
-                  className="btn btn-default"
-                  onClick={this.generateReport.bind(
-                    this,
-                    "pharmacyCreditInvoice",
-                    "Credit Invoice"
-                  )}
-                >
-                  Credit Invoice
-                </button>
+                {this.state.insured === "Y" ? (
+                  <button
+                    className="btn btn-default"
+                    onClick={this.generateReport.bind(
+                      this,
+                      "posCreditInvoice",
+                      "Credit Invoice"
+                    )}
+                  >
+                    Credit Invoice
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>
