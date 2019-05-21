@@ -373,7 +373,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getLocation: AlgaehActions,
-      getPOSEntry: AlgaehActions
+      getPOSEntry: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

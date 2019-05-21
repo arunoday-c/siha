@@ -7,6 +7,7 @@ import {
 } from "../../../../Wrapper/algaehWrapper";
 import moment from "moment";
 import Options from "../../../../../Options.json";
+import { swalMessage, algaehApiCall } from "../../../../../utils/algaehApiCall";
 
 export default class AddInsuranceForm extends Component {
   constructor(props) {
@@ -19,10 +20,6 @@ export default class AddInsuranceForm extends Component {
     this.setState({ ...this.state, ...InputOutput });
   }
 
-  componentDidMount() {
-    debugger;
-  }
-
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.SALESRETURNIOputs);
   }
@@ -30,14 +27,14 @@ export default class AddInsuranceForm extends Component {
   render() {
     return (
       <div className="htpl-primary-display-insurance-pos-form">
-       <div className="col">
-       <div className="row">
-        <div className="col-6 primary-details">
+        <div className="col">
+          <div className="row">
+            <div className="col-6 primary-details">
               <div className="row">
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Insurance Co."
+                      forceLabel: "INSURANCE CO."
                     }}
                   />
                   <h6>
@@ -62,7 +59,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Plan"
+                      forceLabel: "PLAN"
                     }}
                   />
                   <h6>
@@ -73,7 +70,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Policy Number"
+                      forceLabel: "POLICY NUMBER"
                     }}
                   />
                   <h6>
@@ -85,7 +82,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Card Number"
+                      forceLabel: "CARD NUMBER"
                     }}
                   />
                   <h6>
@@ -96,7 +93,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Expiry Date"
+                      forceLabel: "EXPIRY DATE"
                     }}
                   />
                   <h6>
@@ -111,7 +108,7 @@ export default class AddInsuranceForm extends Component {
                 <div className="col-6">
                   <AlgaehLabel
                     label={{
-                      forceLabel: "Card Holder Name"
+                      forceLabel: "CARD HOLDER NAME"
                     }}
                   />
                   <h6>
@@ -120,28 +117,13 @@ export default class AddInsuranceForm extends Component {
                       : "---"}
                   </h6>
                 </div>
-
-                <div className="col-6">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Card Class"
-                    }}
-                  />
-                  <h6>
-                    {this.state.card_class_name
-                      ? this.state.card_class_name
-                      : "---"}
-                  </h6>
-                </div>
               </div>
             </div>
             <div className="col-6 secondary-details">
-             
-
               <div className="row">
-             
                 <AlagehFormGroup
-                  div={{ className: "col-4 form-group" }}    label={{
+                  div={{ className: "col-4 form-group" }}
+                  label={{
                     forceLabel: "Consultation %"
                   }}
                   textBox={{
@@ -158,8 +140,7 @@ export default class AddInsuranceForm extends Component {
                     }
                   }}
                 />
-             
-             
+
                 <AlagehFormGroup
                   div={{ className: "col-4 form-group" }}
                   label={{
@@ -179,8 +160,7 @@ export default class AddInsuranceForm extends Component {
                     }
                   }}
                 />
-            
-            
+
                 <AlagehFormGroup
                   div={{ className: "col-4 form-group" }}
                   label={{
@@ -200,10 +180,10 @@ export default class AddInsuranceForm extends Component {
                     }
                   }}
                 />
-             
-               
+
                 <AlagehFormGroup
-                  div={{ className: "col-4 form-group" }}label={{
+                  div={{ className: "col-4 form-group" }}
+                  label={{
                     forceLabel: "Medcine %"
                   }}
                   textBox={{
@@ -220,9 +200,10 @@ export default class AddInsuranceForm extends Component {
                     }
                   }}
                 />
-               
+
                 <AlagehFormGroup
-                  div={{ className: "col-4 form-group" }}label={{
+                  div={{ className: "col-4 form-group" }}
+                  label={{
                     forceLabel: "Procedure %"
                   }}
                   textBox={{
@@ -239,10 +220,10 @@ export default class AddInsuranceForm extends Component {
                     }
                   }}
                 />
-              
-              
+
                 <AlagehFormGroup
-                  div={{ className: "col-4 form-group" }}label={{
+                  div={{ className: "col-4 form-group" }}
+                  label={{
                     forceLabel: "Dental %"
                   }}
                   textBox={{
@@ -281,8 +262,7 @@ export default class AddInsuranceForm extends Component {
               </div>
             </div>
           </div>
-
-       </div>
+        </div>
       </div>
     );
   }

@@ -426,7 +426,7 @@ class TransferEntryItems extends Component {
                             disabled: true
                           },
                           {
-                            fieldName: "quantity_transferred",
+                            fieldName: "quantity_transfer",
                             label: (
                               <AlgaehLabel
                                 label={{
