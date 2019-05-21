@@ -287,7 +287,7 @@ class Disposal extends Component {
                         fieldName: "qtyhand",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Quantity In Hand" }}
+                            label={{ forceLabel: "Qty In Hand" }}
                           />
                         ),
                         disabled: true
@@ -327,7 +327,7 @@ class Disposal extends Component {
                         fieldName: "extended_cost",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Extended Cost" }}
+                            label={{ forceLabel: "Ext. Cost" }}
                           />
                         ),
                         disabled: true
@@ -346,7 +346,7 @@ class Disposal extends Component {
                         fieldName: "discount_amout",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "discount Amount" }}
+                            label={{ forceLabel: "discount Amt" }}
                           />
                         )
                       },
@@ -355,7 +355,7 @@ class Disposal extends Component {
                         fieldName: "net_extended_cost",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Net Extended Cost" }}
+                            label={{ forceLabel: "Net Ext. Cost" }}
                           />
                         ),
                         disabled: true

@@ -451,17 +451,6 @@ class PosListItems extends Component {
                                     }
                                   },
                                   {
-                                    fieldName: "qtyhand",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{
-                                          forceLabel: "Qty In Hand"
-                                        }}
-                                      />
-                                    ),
-                                    disabled: true
-                                  },
-                                  {
                                     fieldName: "expiry_date",
                                     label: (
                                       <AlgaehLabel
@@ -519,6 +508,57 @@ class PosListItems extends Component {
                                     disabled: true
                                   },
                                   {
+                                    fieldName: "qtyhand",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{
+                                          forceLabel: "Qty In Hand"
+                                        }}
+                                      />
+                                    ),
+                                    disabled: true
+                                  },
+                                  {
+                                    fieldName: "quantity",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "Qty Req." }}
+                                      />
+                                    ),
+                                    displayTemplate: row => {
+                                      return this.state.dataExitst === false ? (
+                                        <AlagehFormGroup
+                                          div={{}}
+                                          textBox={{
+                                            number: {
+                                              allowNegative: false,
+                                              thousandSeparator: ","
+                                            },
+                                            value: row.quantity,
+                                            className: "txt-fld",
+                                            name: "quantity",
+                                            events: {
+                                              onChange: qtyonchangegridcol.bind(
+                                                this,
+                                                this,
+                                                context,
+                                                row
+                                              )
+                                            },
+                                            others: {
+                                              onFocus: e => {
+                                                e.target.oldvalue =
+                                                  e.target.value;
+                                              }
+                                            }
+                                          }}
+                                        />
+                                      ) : (
+                                        row.quantity
+                                      );
+                                    }
+                                  },
+                                  {
                                     fieldName: "insurance_yesno",
                                     label: (
                                       <AlgaehLabel
@@ -540,7 +580,7 @@ class PosListItems extends Component {
                                     fieldName: "pre_approval",
                                     label: (
                                       <AlgaehLabel
-                                        label={{ forceLabel: "PreApproval" }}
+                                        label={{ forceLabel: "Pre Approval" }}
                                       />
                                     ),
                                     displayTemplate: row => {
@@ -606,46 +646,6 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     disabled: true
-                                  },
-                                  {
-                                    fieldName: "quantity",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{ forceLabel: "Quantity" }}
-                                      />
-                                    ),
-                                    displayTemplate: row => {
-                                      return this.state.dataExitst === false ? (
-                                        <AlagehFormGroup
-                                          div={{}}
-                                          textBox={{
-                                            number: {
-                                              allowNegative: false,
-                                              thousandSeparator: ","
-                                            },
-                                            value: row.quantity,
-                                            className: "txt-fld",
-                                            name: "quantity",
-                                            events: {
-                                              onChange: qtyonchangegridcol.bind(
-                                                this,
-                                                this,
-                                                context,
-                                                row
-                                              )
-                                            },
-                                            others: {
-                                              onFocus: e => {
-                                                e.target.oldvalue =
-                                                  e.target.value;
-                                              }
-                                            }
-                                          }}
-                                        />
-                                      ) : (
-                                        row.quantity
-                                      );
-                                    }
                                   },
 
                                   {
