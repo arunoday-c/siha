@@ -207,6 +207,7 @@ class InitialStock extends Component {
             <div
               className="portlet portlet-bordered margin-bottom-15"
               style={{ marginTop: 90 }}
+              data-validate="InvIntialStock"
             >
               {/* <div className="portlet-title">
             <div className="caption">

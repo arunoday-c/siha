@@ -92,6 +92,12 @@ const AddItems = $this => {
           type: "warning"
         });
         document.querySelector("[name='unit_cost']").focus();
+      } else if ($this.state.expiry_date === null) {
+        swalMessage({
+          title: "Select Expiry Date.",
+          type: "warning"
+        });
+        document.querySelector("[name='unit_cost']").focus();
       } else {
         debugger;
         let inventory_stock_detail = $this.state.inventory_stock_detail;
@@ -111,10 +117,7 @@ const AddItems = $this => {
           extended_cost: $this.state.extended_cost,
           conversion_factor: $this.state.conversion_factor,
           item_code: $this.state.item_code,
-          barcode:
-            $this.state.item_code +
-            $this.state.batchno +
-            moment($this.state.expiry_date).format("YYYYMMDD"),
+          barcode: $this.state.item_code + "-" + $this.state.batchno,
           grn_number: $this.state.grn_number,
           noorecords: inventory_stock_detail.length + 1,
           required_batchno: $this.state.required_batchno,
@@ -146,9 +149,16 @@ const AddItems = $this => {
 };
 
 const datehandle = ($this, ctrl, e) => {
-  $this.setState({
-    [e]: moment(ctrl)._d
-  });
+  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+    swalMessage({
+      title: "Expiry date cannot be past Date.",
+      type: "warning"
+    });
+  } else {
+    $this.setState({
+      [e]: moment(ctrl)._d
+    });
+  }
 };
 
 const dateFormater = value => {
@@ -262,10 +272,8 @@ const PostInitialStock = $this => {
       $this.state.inventory_stock_detail[i].extended_cost;
     $this.state.inventory_stock_detail[i].barcode =
       $this.state.inventory_stock_detail[i].item_code +
-      $this.state.inventory_stock_detail[i].batchno +
-      moment($this.state.inventory_stock_detail[i].expiry_date).format(
-        "YYYYMMDD"
-      );
+      "-" +
+      $this.state.inventory_stock_detail[i].batchno;
     $this.state.inventory_stock_detail[i].operation = "+";
   }
   algaehApiCall({

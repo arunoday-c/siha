@@ -282,8 +282,15 @@ const CancelGrid = ($this, context, cancelRow) => {
 };
 
 const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
-  row[e] = moment(ctrl)._d;
-  $this.setState({ append: !$this.state.append });
+  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+    swalMessage({
+      title: "Expiry date cannot be past Date.",
+      type: "warning"
+    });
+  } else {
+    row[e] = moment(ctrl)._d;
+    $this.setState({ append: !$this.state.append });
+  }
 };
 
 const changeDateFormat = date => {
@@ -307,8 +314,7 @@ const printBarcode = ($this, row, e) => {
       }
     },
     data: {
-      bar_code:
-        row.item_code + row.batchno + moment(row.expiry_date).format("YYYYMMDD")
+      bar_code: row.item_code + "-" + row.batchno
     }
   });
 };

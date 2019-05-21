@@ -433,101 +433,6 @@ const getData = $this => {
   }
 };
 
-// const PostDnEntry = $this => {
-//   // $this.state.posted = "Y";
-//   $this.state.transaction_type = "REC";
-//   $this.state.transaction_id = $this.state.hims_f_procurement_grn_header_id;
-//   $this.state.transaction_date = $this.state.grn_date;
-
-//   if ($this.state.dn_for === "PHR") {
-//     $this.state.pharmacy_stock_detail = $this.state.dn_entry_detail;
-
-//     for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
-//       $this.state.pharmacy_stock_detail[i].location_id =
-//         $this.state.pharmcy_location_id;
-//       $this.state.pharmacy_stock_detail[i].location_type =
-//         $this.state.location_type;
-
-//       $this.state.pharmacy_stock_detail[i].quantity =
-//         $this.state.pharmacy_stock_detail[i].recieved_quantity;
-
-//       $this.state.pharmacy_stock_detail[i].uom_id =
-//         $this.state.pharmacy_stock_detail[i].pharmacy_uom_id;
-
-//       $this.state.pharmacy_stock_detail[i].sales_uom =
-//         $this.state.pharmacy_stock_detail[i].pharmacy_uom_id;
-//       $this.state.pharmacy_stock_detail[i].item_id =
-//         $this.state.pharmacy_stock_detail[i].phar_item_id;
-//       $this.state.pharmacy_stock_detail[i].item_code_id =
-//         $this.state.pharmacy_stock_detail[i].phar_item_id;
-//       $this.state.pharmacy_stock_detail[i].grn_number = $this.state.grn_number;
-//       $this.state.pharmacy_stock_detail[i].item_category_id =
-//         $this.state.pharmacy_stock_detail[i].phar_item_category;
-//       $this.state.pharmacy_stock_detail[i].item_group_id =
-//         $this.state.pharmacy_stock_detail[i].phar_item_group;
-
-//       $this.state.pharmacy_stock_detail[i].net_total =
-//         $this.state.pharmacy_stock_detail[i].net_extended_cost;
-//       $this.state.pharmacy_stock_detail[i].operation = "+";
-//     }
-//   } else if ($this.state.dn_for === "INV") {
-//     $this.state.inventory_stock_detail = $this.state.dn_entry_detail;
-
-//     for (let i = 0; i < $this.state.inventory_stock_detail.length; i++) {
-//       $this.state.inventory_stock_detail[i].location_id =
-//         $this.state.inventory_location_id;
-//       $this.state.inventory_stock_detail[i].location_type =
-//         $this.state.location_type;
-
-//       $this.state.inventory_stock_detail[i].quantity =
-//         $this.state.inventory_stock_detail[i].recieved_quantity;
-
-//       $this.state.inventory_stock_detail[i].uom_id =
-//         $this.state.inventory_stock_detail[i].inventory_uom_id;
-//       $this.state.inventory_stock_detail[i].sales_uom =
-//         $this.state.inventory_stock_detail[i].inventory_uom_id;
-//       $this.state.inventory_stock_detail[i].item_id =
-//         $this.state.inventory_stock_detail[i].inv_item_id;
-//       $this.state.inventory_stock_detail[i].item_code_id =
-//         $this.state.inventory_stock_detail[i].inv_item_id;
-//       $this.state.inventory_stock_detail[i].grn_number = $this.state.grn_number;
-//       $this.state.inventory_stock_detail[i].item_category_id =
-//         $this.state.inventory_stock_detail[i].inv_item_category_id;
-//       $this.state.inventory_stock_detail[i].item_group_id =
-//         $this.state.inventory_stock_detail[i].inv_item_group_id;
-
-//       $this.state.inventory_stock_detail[i].net_total =
-//         $this.state.inventory_stock_detail[i].net_extended_cost;
-//       $this.state.inventory_stock_detail[i].operation = "+";
-//     }
-//   }
-
-//   algaehApiCall({
-//     uri: "/DeliveryNoteEntry/updateDeliveryNoteEntry",
-//     module: "procurement",
-//     data: $this.state,
-//     method: "PUT",
-//     onSuccess: response => {
-//       if (response.data.success === true) {
-//         $this.setState({
-//           postEnable: true
-//         });
-//         swalMessage({
-//           title: "Posted successfully . .",
-//           type: "success"
-//         });
-//       }
-//     },
-//     onFailure: error => {
-//       AlgaehLoader({ show: false });
-//       swalMessage({
-//         title: error.message,
-//         type: "error"
-//       });
-//     }
-//   });
-// };
-
 export {
   texthandle,
   poforhandle,
@@ -540,5 +445,4 @@ export {
   SaveDNEnrty,
   getCtrlCode,
   loctexthandle
-  // PostDnEntry
 };
