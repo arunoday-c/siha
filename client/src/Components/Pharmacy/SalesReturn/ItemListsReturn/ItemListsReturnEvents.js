@@ -302,17 +302,18 @@ const updateSalesReturnDetail = ($this, context) => {
 };
 
 //Calculate Row Detail
-const calculateAmount = ($this, row, context, ctrl, e) => {
-  e = e || ctrl;
+const calculateAmount = ($this, row, context, e) => {
+  // e = e || ctrl;
+  debugger;
 
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-  if (value < 0) {
+  let name = e.target.name;
+  let value = e.target.value === "" ? 0 : e.target.value;
+  if (parseFloat(value) < 0) {
     swalMessage({
       title: "Return Qty cannot be less than or equal to Zero",
       type: "warning"
     });
-  } else if (value > row.quantity) {
+  } else if (parseFloat(value) > parseFloat(row.quantity)) {
     swalMessage({
       title: "Return Qty cannot be greater than Sold Qty",
       type: "warning"
@@ -320,7 +321,7 @@ const calculateAmount = ($this, row, context, ctrl, e) => {
   } else {
     let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
 
-    row[name] = value === undefined || value === "" ? 0 : parseFloat(value);
+    row[name] = parseFloat(value);
     let inputParam = [
       {
         hims_d_services_id: row.service_id,

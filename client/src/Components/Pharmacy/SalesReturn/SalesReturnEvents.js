@@ -235,6 +235,39 @@ const POSSearch = ($this, e) => {
   });
 };
 
+const getNetworkPlans = $this => {
+  algaehApiCall({
+    uri: "/insurance/getNetworkAndNetworkOfficRecords",
+    method: "GET",
+    data: {
+      hims_d_insurance_network_office_id:
+        $this.state.hims_d_insurance_network_office_id
+    },
+    onSuccess: response => {
+      debugger;
+      if (response.data.success) {
+        debugger;
+        let data = response.data.records[0];
+        $this.setState({
+          copay_consultation: data.copay_consultation,
+          max_value: data.max_value,
+          copay_percent: data.copay_percent,
+          copay_percent_rad: data.copay_percent_rad,
+          copay_medicine: data.copay_medicine,
+          copay_percent_trt: data.copay_percent_trt,
+          copay_percent_dental: data.copay_percent_dental
+        });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.response.data.message,
+        type: "error"
+      });
+    }
+  });
+};
+
 const getPOSEntry = $this => {
   algaehApiCall({
     uri: "/posEntry/getPosEntry",
@@ -243,6 +276,7 @@ const getPOSEntry = $this => {
     data: { pos_number: $this.state.pos_number },
     onSuccess: response => {
       if (response.data.success) {
+        debugger;
         let data = response.data.records;
         data.patient_payable_h = data.patient_payable;
 
@@ -255,6 +289,8 @@ const getPOSEntry = $this => {
         data.counter_id = $this.state.counter_id || null;
         data.shift_id = $this.state.shift_id || null;
 
+        data.insured = data.insurance_provider_id !== null ? "Y" : "N";
+
         for (let i = 0; i < data.pharmacy_stock_detail.length; i++) {
           if (data.pharmacy_stock_detail[i].return_done === "Y") {
             data.pharmacy_stock_detail[i].quantity =
@@ -264,7 +300,29 @@ const getPOSEntry = $this => {
           data.pharmacy_stock_detail[i].return_quantity =
             data.pharmacy_stock_detail[i].quantity;
         }
-        $this.setState(data);
+        $this.setState(data, () => {
+          if ($this.state.insured === "Y") {
+            $this.props.getPatientInsurance({
+              // uri: "/insurance/getPatientInsurance",
+              uri: "/patientRegistration/getPatientInsurance",
+              module: "frontDesk",
+              method: "GET",
+              data: {
+                patient_id: $this.state.patient_id,
+                patient_visit_id: $this.state.visit_id
+              },
+              redux: {
+                type: "EXIT_INSURANCE_GET_DATA",
+                mappingName: "existinsurance"
+              },
+              afterSuccess: insurance => {
+                $this.setState(insurance[0], () => {
+                  getNetworkPlans($this);
+                });
+              }
+            });
+          }
+        });
       }
       AlgaehLoader({ show: false });
     },
@@ -276,18 +334,6 @@ const getPOSEntry = $this => {
       });
     }
   });
-
-  // $this.props.getPOSEntry({
-  //   uri: "",
-  //   method: "GET",
-  //   printInput: true,
-  //   data: { pos_number: $this.state.pos_number },
-  //   redux: {
-  //     type: "POS_ENTRY_GET_DATA",
-  //     mappingName: "posentry"
-  //   },
-  //   afterSuccess: data => {}
-  // });
 };
 
 export {
@@ -295,7 +341,6 @@ export {
   getCtrlCode,
   ClearData,
   SaveSalesReturn,
-  // PostSalesReturn,
   POSSearch,
   getPOSEntry
 };

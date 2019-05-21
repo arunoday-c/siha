@@ -208,7 +208,7 @@
       },
       {
         "fieldName": "transfer_date",
-        "label": "Transfer Number"
+        "label": "Transfer Date"
       },
       {
         "fieldName": "from_location",

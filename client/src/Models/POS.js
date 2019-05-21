@@ -112,7 +112,8 @@ export default {
       conversion_factor: 1,
       grn_no: null,
       item_group_id: null,
-      item_category: null
+      item_category: null,
+      dataExitst: false
     };
     return output;
   }
