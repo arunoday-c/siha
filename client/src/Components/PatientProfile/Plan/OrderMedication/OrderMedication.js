@@ -163,7 +163,8 @@ class OrderMedication extends Component {
                 valueField: "hims_d_item_generic_id",
                 data: this.props.genericlist
               },
-              onChange: genericnamehandle.bind(this, this)
+              onChange: genericnamehandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
 
@@ -180,7 +181,8 @@ class OrderMedication extends Component {
                 data: this.state.itemlist
               },
               onChange: itemhandle.bind(this, this),
-              onClear: itemhandle.bind(this, this)
+              onClear: itemhandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
 
@@ -196,7 +198,8 @@ class OrderMedication extends Component {
                 valueField: "value",
                 data: PRESCRIPTION_FREQ_PERIOD
               },
-              onChange: texthandle.bind(this, this)
+              onChange: texthandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
           <AlagehAutoComplete
@@ -211,7 +214,8 @@ class OrderMedication extends Component {
                 valueField: "value",
                 data: PRESCRIPTION_FREQ_TIME
               },
-              onChange: texthandle.bind(this, this)
+              onChange: texthandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
           <AlagehAutoComplete
@@ -226,7 +230,8 @@ class OrderMedication extends Component {
                 valueField: "value",
                 data: PRESCRIPTION_FREQ_DURATION
               },
-              onChange: texthandle.bind(this, this)
+              onChange: texthandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
         </div>
@@ -245,7 +250,6 @@ class OrderMedication extends Component {
                 onChange: numberhandle.bind(this, this)
               },
               others: {
-                type: "number",
                 // onBlur: calcuateDispense.bind(this, this),
                 onFocus: e => {
                   e.target.oldvalue = e.target.value;

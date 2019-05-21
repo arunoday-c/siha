@@ -245,6 +245,7 @@ class OrderingServices extends Component {
                       valueField: "hims_d_service_type_id",
                       data: this.props.servicetype
                     },
+                    autoComplete: "off",
                     onChange: serviceTypeHandeler.bind(this, this)
                   }}
                 />
@@ -266,6 +267,7 @@ class OrderingServices extends Component {
                       valueField: "hims_d_services_id",
                       data: this.props.services
                     },
+                    autoComplete: "off",
                     onChange: serviceHandeler.bind(this, this)
                   }}
                 />
@@ -284,7 +286,8 @@ class OrderingServices extends Component {
                       valueField: "value",
                       data: GlobalVariables.FORMAT_PRIORITY
                     },
-                    onChange: texthandle.bind(this, this)
+                    onChange: texthandle.bind(this, this),
+                    autoComplete: "off"
                   }}
                 />
 

@@ -287,7 +287,8 @@ class Allergies extends Component {
                           valueField: "value",
                           data: GlobalVariables.ALLERGY_TYPES
                         },
-                        onChange: this.allergyDropdownHandler.bind(this)
+                        onChange: this.allergyDropdownHandler.bind(this),
+                        autoComplete: "off"
                       }}
                     />
 
@@ -306,7 +307,8 @@ class Allergies extends Component {
                           valueField: "hims_d_allergy_id",
                           data: this.state.allSpecificAllergies
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        onChange: this.dropDownHandle.bind(this),
+                        autoComplete: "off"
                       }}
                     />
 
@@ -324,7 +326,8 @@ class Allergies extends Component {
                           valueField: "value",
                           data: GlobalVariables.ALLERGY_ONSET
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        onChange: this.dropDownHandle.bind(this),
+                        autoComplete: "off"
                       }}
                     />
 
@@ -361,7 +364,8 @@ class Allergies extends Component {
                           valueField: "value",
                           data: GlobalVariables.PAIN_SEVERITY
                         },
-                        onChange: this.dropDownHandle.bind(this)
+                        onChange: this.dropDownHandle.bind(this),
+                        autoComplete: "off"
                       }}
                     />
 

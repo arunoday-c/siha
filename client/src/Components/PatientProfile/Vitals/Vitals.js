@@ -358,7 +358,8 @@ class Vitals extends Component {
                                       data: GlobalVariables.TEMP_FROM
                                     },
 
-                                    onChange: this.dropDownHandle.bind(this)
+                                    onChange: this.dropDownHandle.bind(this),
+                                    autoComplete: "off"
                                   }}
                                 />
                               </React.Fragment>
@@ -378,7 +379,8 @@ class Vitals extends Component {
                                     valueField: "value",
                                     data: GlobalVariables.BP_POSITION
                                   },
-                                  onChange: this.dropDownHandle.bind(this)
+                                  onChange: this.dropDownHandle.bind(this),
+                                  autoComplete: "off"
                                 }}
                               />
                             ) : null}
