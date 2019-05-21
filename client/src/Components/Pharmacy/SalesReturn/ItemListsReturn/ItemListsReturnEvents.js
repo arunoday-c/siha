@@ -310,12 +310,12 @@ const calculateAmount = ($this, row, context, e) => {
   let value = e.target.value === "" ? 0 : e.target.value;
   if (parseFloat(value) < 0) {
     swalMessage({
-      title: "Retuen Quantity cannot be less than or equal to Zero",
+      title: "Return Qty cannot be less than or equal to Zero",
       type: "warning"
     });
   } else if (parseFloat(value) > parseFloat(row.quantity)) {
     swalMessage({
-      title: "Retuen Quantity cannot be greater than SOld Quantity",
+      title: "Return Qty cannot be greater than Sold Qty",
       type: "warning"
     });
   } else {
