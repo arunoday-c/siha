@@ -505,7 +505,10 @@ class PosListItems extends Component {
                                         row.batchno
                                       );
                                     },
-                                    disabled: true
+                                    disabled: true,
+                                    others:{
+                                      minWidth:150
+                                    }
                                   },
                                   {
                                     fieldName: "qtyhand",
@@ -516,7 +519,10 @@ class PosListItems extends Component {
                                         }}
                                       />
                                     ),
-                                    disabled: true
+                                    disabled: true,
+                                    others:{
+                                      minWidth:90
+                                    }
                                   },
                                   {
                                     fieldName: "quantity",
@@ -556,6 +562,9 @@ class PosListItems extends Component {
                                       ) : (
                                         row.quantity
                                       );
+                                    },
+                                    others:{
+                                      minWidth:80
                                     }
                                   },
                                   {
@@ -585,9 +594,9 @@ class PosListItems extends Component {
                                     ),
                                     displayTemplate: row => {
                                       return row.pre_approval === "N" ? (
-                                        <a>Not Required</a>
+                                        <span>Not Required</span>
                                       ) : (
-                                        <a>Required </a>
+                                        <span className="a-link">Required </span>
                                       );
                                     },
                                     disabled: true
@@ -636,6 +645,9 @@ class PosListItems extends Component {
                                             : ""}
                                         </span>
                                       );
+                                    },
+                                    others:{
+                                      minWidth:80
                                     }
                                   },
                                   {
@@ -645,7 +657,10 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Unit Cost" }}
                                       />
                                     ),
-                                    disabled: true
+                                    disabled: true,
+                                    others:{
+                                      minWidth:80
+                                    }
                                   },
 
                                   {
@@ -655,7 +670,10 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Ext. Cost" }}
                                       />
                                     ),
-                                    disabled: true
+                                    disabled: true,
+                                    others:{
+                                      minWidth:80
+                                    }
                                   },
                                   {
                                     fieldName: "discount_percentage",
