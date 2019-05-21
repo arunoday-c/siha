@@ -316,6 +316,7 @@ const getPOSEntry = $this => {
                 mappingName: "existinsurance"
               },
               afterSuccess: insurance => {
+                insurance[0].mode_of_pay = "2";
                 $this.setState(insurance[0], () => {
                   getNetworkPlans($this);
                 });
@@ -336,11 +337,19 @@ const getPOSEntry = $this => {
   });
 };
 
+const ViewInsurance = ($this, e) => {
+  $this.setState({
+    ...$this.state,
+    viewInsurance: !$this.state.viewInsurance
+  });
+};
+
 export {
   changeTexts,
   getCtrlCode,
   ClearData,
   SaveSalesReturn,
   POSSearch,
-  getPOSEntry
+  getPOSEntry,
+  ViewInsurance
 };

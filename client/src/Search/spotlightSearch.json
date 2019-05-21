@@ -147,15 +147,15 @@
         "label": "POS Number"
       },
       {
-        "fieldName": "visit_id",
-        "label": "Visit Id"
+        "fieldName": "visit_code",
+        "label": "Visit Code"
       },
       {
-        "fieldName": "patient_id",
-        "label": "Patient Id"
+        "fieldName": "patient_code",
+        "label": "Patient Code"
       },
       {
-        "fieldName": "pos_date",
+        "fieldName": "posdate",
         "label": "Pos Date"
       },
       {
@@ -197,6 +197,10 @@
       {
         "fieldName": "sales_return_number",
         "label": "Sales Return Number"
+      },
+      {
+        "fieldName": "return_date",
+        "label": "Sales Return Date"
       }
     ]
   },

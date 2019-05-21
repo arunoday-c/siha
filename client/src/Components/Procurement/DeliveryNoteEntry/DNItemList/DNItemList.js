@@ -415,7 +415,7 @@ class DNItemList extends Component {
                               fieldName: "dn_quantity",
                               label: (
                                 <AlgaehLabel
-                                  label={{ forceLabel: "Delivery Note Quantity" }}
+                                  label={{ forceLabel: "Delivery Quantity" }}
                                 />
                               ),
                               editorTemplate: row => {

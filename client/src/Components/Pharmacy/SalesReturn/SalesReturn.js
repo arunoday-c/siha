@@ -9,8 +9,8 @@ import {
   getCtrlCode,
   ClearData,
   SaveSalesReturn,
-  // PostSalesReturn,
-  POSSearch
+  POSSearch,
+  ViewInsurance
 } from "./SalesReturnEvents";
 import "./SalesReturn.css";
 import "../../../styles/site.css";
@@ -38,7 +38,8 @@ class SalesReturn extends Component {
       cheque_number: "",
       cheque_date: null,
       cheque_amount: 0,
-      advance: 0
+      advance: 0,
+      viewInsurance: false
     };
   }
 
@@ -295,7 +296,11 @@ class SalesReturn extends Component {
             </div>
           </div>
 
-          <DisplayInsuranceDetails SALESRETURNIOputs={this.state} />
+          <DisplayInsuranceDetails
+            show={this.state.viewInsurance}
+            SALESRETURNIOputs={this.state}
+            onClose={ViewInsurance.bind(this, this)}
+          />
 
           <div className="hptl-phase1-sales-form">
             <MyContext.Provider
@@ -336,19 +341,15 @@ class SalesReturn extends Component {
                     />
                   </button>
 
-                  {/* <button
+                  {this.state.mode_of_pay === "2" ? (
+                    <button
                       type="button"
                       className="btn btn-other"
-                      onClick={PostSalesReturn.bind(this, this)}
-                      disabled={this.state.postEnable}
+                      onClick={ViewInsurance.bind(this, this)}
                     >
-                      <AlgaehLabel
-                        label={{
-                          forceLabel: "Post",
-                          returnText: true
-                        }}
-                      />
-                    </button> */}
+                      View Insurance
+                    </button>
+                  ) : null}
                 </div>
               </div>
             </div>

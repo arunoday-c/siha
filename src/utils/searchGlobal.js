@@ -66,15 +66,21 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "POSEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_pos_header\
-          where record_status ='A'",
+          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as posdate, V.visit_code, P.patient_code, P.full_name \
+          from hims_f_pharmacy_pos_header PH \
+          left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
+          left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
+          where PH.record_status ='A'",
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },
       {
         searchName: "POSNOReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_pos_header\
-          where record_status ='A' and posted='Y'",
+          "select SQL_CALC_FOUND_ROWS PH.*,date(PH.pos_date) as posdate, V.visit_code, P.patient_code, P.full_name \
+          from hims_f_pharmacy_pos_header PH \
+          left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
+          left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
+          where PH.record_status ='A' and PH.posted='Y'",
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },
       {
@@ -93,7 +99,7 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "SalesReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmcy_sales_return_header",
+          "select SQL_CALC_FOUND_ROWS *,date(sales_return_date) as return_date from hims_f_pharmcy_sales_return_header",
         orderBy: "hims_f_pharmcy_sales_return_header_id desc"
       },
       {

@@ -164,9 +164,7 @@ const dateFormater = ($this, value) => {
 };
 
 const onchhangegriddiscount = ($this, row, e) => {
-
-
-debugger
+  debugger;
   let discount_percentage = row.discount_percentage;
   let discount_amount = 0;
   let extended_cost = 0;
@@ -175,8 +173,10 @@ debugger
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
+
+  row.quantity_recieved_todate =
+    row.quantity_recieved_todate === 0 ? 0 : row.quantity_recieved_todate;
   let quantity_recieved_todate =
-    row.quantity_recieved_todate === 0 ? 0 :
     row.quantity_recieved_todate + parseFloat(value);
   if (value !== "") {
     if (quantity_recieved_todate > parseFloat(row.po_quantity)) {
@@ -184,11 +184,11 @@ debugger
         title: " Delivery Note Quantity cannot be greater than PO Quantity.",
         type: "warning"
       });
-    }else if (parseFloat(value) < 0) {
+    } else if (parseFloat(value) < 0) {
       swalMessage({
         title: " Delivery Quantity cannot be less than Zero.",
         type: "warning"
-      });      
+      });
     } else {
       extended_price = parseFloat(row.unit_price) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;

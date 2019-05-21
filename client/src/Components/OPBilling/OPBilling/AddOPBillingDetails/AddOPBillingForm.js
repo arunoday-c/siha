@@ -615,37 +615,7 @@ class AddOPBillingForm extends Component {
                           fieldName: "quantity",
                           label: (
                             <AlgaehLabel label={{ fieldName: "quantity" }} />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  value: row.quantity,
-                                  className: "txt-fld",
-                                  name: "quantity",
-                                  events: {
-                                    onChange: onquantitycol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    placeholder: "0.00",
-                                    onBlur: this.calculateAmount.bind(
-                                      this,
-                                      row
-                                    ),
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    },
-                                    type: "number"
-                                  }
-                                }}
-                              />
-                            );
-                          }
+                          )
                         },
 
                         {
@@ -1200,3 +1170,34 @@ export default withRouter(
     mapDispatchToProps
   )(AddOPBillingForm)
 );
+
+// editorTemplate: row => {
+//   return (
+//     <AlagehFormGroup
+//       div={{}}
+//       textBox={{
+//         value: row.quantity,
+//         className: "txt-fld",
+//         name: "quantity",
+//         events: {
+//           onChange: onquantitycol.bind(
+//             this,
+//             this,
+//             row
+//           )
+//         },
+//         others: {
+//           placeholder: "0.00",
+//           onBlur: this.calculateAmount.bind(
+//             this,
+//             row
+//           ),
+//           onFocus: e => {
+//             e.target.oldvalue = e.target.value;
+//           },
+//           type: "number"
+//         }
+//       }}
+//     />
+//   );
+// }

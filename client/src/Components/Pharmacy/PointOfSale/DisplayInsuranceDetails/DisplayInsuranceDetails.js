@@ -7,10 +7,7 @@ import { AlgaehModalPopUp } from "../../../Wrapper/algaehWrapper";
 export default class DisplayInsuranceDetails extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      actionPrimaryDesign: true,
-      actionSecondaryDesign: true
-    };
+    this.state = {};
   }
 
   componentDidMount() {}
