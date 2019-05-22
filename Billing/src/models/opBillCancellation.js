@@ -27,8 +27,8 @@ module.exports = {
                     , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
                     , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
                     , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, payable_amount \
-                    , created_by, created_date, updated_by, updated_date, copay_amount, sec_copay_amount ,deductable_amount, sec_deductable_amount) \
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    , created_by, created_date, updated_by, updated_date, copay_amount, sec_copay_amount ,deductable_amount, sec_deductable_amount,hospital_id) \
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 bill_cancel_number,
                 inputParam.patient_id,
@@ -69,7 +69,8 @@ module.exports = {
                 inputParam.copay_amount,
                 inputParam.sec_copay_amount,
                 inputParam.deductable_amount,
-                inputParam.sec_deductable_amount
+                inputParam.sec_deductable_amount,
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })

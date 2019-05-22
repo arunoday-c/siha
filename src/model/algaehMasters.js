@@ -287,21 +287,22 @@ let deleteUserLogin = (req, res, next) => {
   try {
     let input = extend({}, req.body);
 
+
+    // "delete from hims_m_user_employee where  user_id=?;\
+    // delete from algaeh_m_role_user_mappings where  user_id=?;\
+    // delete from algaeh_d_app_password where  userid=?;\
+    // update algaeh_d_app_user set username= concat('DEL-',username),\
+    // user_display_name=concat(user_display_name,': empId-',?), record_status='I' ,updated_by=?,updated_date=?\
+    // where  algaeh_d_app_user_id=?",
+
     if (req.userIdentity.role_type != "GN") {
       _mysql
         .executeQuery({
           query:
-            "delete from hims_m_user_employee where  user_id=?;\
-            delete from algaeh_m_role_user_mappings where  user_id=?;\
-            delete from algaeh_d_app_password where  userid=?;\
-            update algaeh_d_app_user set username= concat('DEL-',username),\
-            user_display_name=concat(user_display_name,': empId-',?), record_status='I' ,updated_by=?,updated_date=?\
+            "update algaeh_d_app_user set record_status='I' ,updated_by=?,updated_date=?\
             where  algaeh_d_app_user_id=?",
           values: [
-            input.user_id,
-            input.user_id,
-            input.user_id,
-            input.employee_id,
+          
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             input.user_id

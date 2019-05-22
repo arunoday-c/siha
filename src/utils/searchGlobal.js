@@ -1,5 +1,6 @@
 import { LINQ } from "node-linq";
-let algaehSearchConfig = searchName => {
+let algaehSearchConfig = (searchName, req) => {
+  const hospitalId = req.userIdentity.hospital_id;
   let queries = {
     algaehSeach: [
       {
@@ -11,7 +12,8 @@ let algaehSearchConfig = searchName => {
          email, emergency_contact_name, emergency_contact_number, relationship_with_patient, visa_type_id, city_id, \
          state_id, country_id, nationality_id, postal_code, primary_identity_id, primary_id_no, secondary_identity_id, \
          secondary_id_no, photo_file, primary_id_file, secondary_id_file, advance_amount,employee_id from hims_f_patient \
-         where record_status ='A'",
+         where record_status ='A' and hospital_id=" +
+          hospitalId,
         orderBy: "hims_d_patient_id desc"
       },
       {
@@ -24,7 +26,8 @@ let algaehSearchConfig = searchName => {
           patient_payable, company_payable, sec_company_payable, patient_tax, company_tax, sec_company_tax, net_tax, \
           credit_amount, receiveable_amount, BH.created_by, BH.created_date, BH.updated_by, BH.updated_date, BH.record_status, \
           cancel_remarks,cancel_by, bill_comments, PAT.patient_code, PAT.full_name, PAT.contact_number,PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
-          BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A'",
+          BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id where BH.record_status ='A' and BH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_billing_header_id desc"
       },
       {
@@ -44,23 +47,27 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "visit",
         searchQuery:
-          "SELECT full_name, patient_code, pv.visit_code, pv.visit_date, pv.patient_id, pv.hims_f_patient_visit_id, \
+          "select SQL_CALC_FOUND_ROWS  full_name, patient_code, pv.visit_code, pv.visit_date, pv.patient_id,\
+           pv.hims_f_patient_visit_id, \
           pv.insured, pv.sec_insured,pv.episode_id FROM hims_f_patient,hims_f_patient_visit pv where  \
-          pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A'",
+          pv.patient_id=hims_f_patient.hims_d_patient_id and pv.record_status='A' and pv.hospital_id=" +
+          hospitalId,
         orderBy: "pv.hims_f_patient_visit_id desc"
       },
 
       {
         searchName: "DoctorCommission",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_doctor_comission_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_doctor_comission_header hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_doctor_comission_header_id desc"
       },
       {
         searchName: "initialstock",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_stock_header\
-          where record_status ='A'",
+          where record_status ='A' and  hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_pharmacy_stock_header_id desc"
       },
       {
@@ -70,7 +77,8 @@ let algaehSearchConfig = searchName => {
           from hims_f_pharmacy_pos_header PH \
           left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
           left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
-          where PH.record_status ='A'",
+          where PH.record_status ='A' and PH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },
       {
@@ -80,20 +88,23 @@ let algaehSearchConfig = searchName => {
           from hims_f_pharmacy_pos_header PH \
           left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
           left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
-          where PH.record_status ='A' and PH.posted='Y'",
+          where PH.record_status ='A' and PH.posted='Y' and PH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },
       {
         searchName: "REQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header and hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
       {
         searchName: "REQTransEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
-          and is_completed = 'N' and requistion_type='MR'",
+          and is_completed = 'N' and requistion_type='MR' and hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
       {
@@ -130,19 +141,22 @@ let algaehSearchConfig = searchName => {
           "select hims_f_invoice_header_id, invoice_number, invoice_date, pat.patient_code, pat.full_name,\
           pv.visit_code from hims_f_invoice_header , hims_f_patient pat,  hims_f_patient_visit pv where \
           hims_f_invoice_header.patient_id = pat.hims_d_patient_id and pv.hims_f_patient_visit_id = hims_f_invoice_header.visit_id \
-          and pv.patient_id= pat.hims_d_patient_id",
+          and pv.patient_id= pat.hims_d_patient_id and hims_f_invoice_header.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_invoice_header_id desc"
       },
       {
         searchName: "invinitialstock",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_stock_header where record_status ='A'",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_stock_header where record_status ='A'and hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_inventory_stock_header_id desc"
       },
       {
         searchName: "InvREQEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header where hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_inventory_material_header_id desc"
       },
       {
@@ -152,58 +166,68 @@ let algaehSearchConfig = searchName => {
           TPL.location_description as to_location from hims_f_inventory_transfer_header TH, \
           hims_d_inventory_location FPL, hims_d_inventory_location TPL          \
           where FPL.hims_d_inventory_location_id = TH.from_location_id and           \
-          TH.to_location_id = TPL.hims_d_inventory_location_id",
+          TH.to_location_id = TPL.hims_d_inventory_location_id and  TH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_inventory_transfer_header_id desc"
       },
       {
         searchName: "InvREQTransEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
-          and is_completed = 'N' and requistion_type='MR'",
+          and is_completed = 'N' and requistion_type='MR' and  hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_inventory_material_header_id desc"
       },
       {
         searchName: "InvPOEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
-          and is_completed = 'N' and requistion_type='PR'",
+          and is_completed = 'N' and requistion_type='PR' and hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_inventory_material_header_id desc"
       },
       {
         searchName: "PhrPOEntry",
         searchQuery:
           "select SQL_CALC_FOUND_ROWS * from hims_f_pharamcy_material_header where authorize1 = 'Y' and authorie2 = 'Y'\
-          and is_completed = 'N' and requistion_type='PR'",
+          and is_completed = 'N' and requistion_type='PR' and hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_pharamcy_material_header_id desc"
       },
       {
         searchName: "POEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc"
       },
       {
         searchName: "POEntryGetDN",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y' and cancelled='N' and is_completed='N'",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_po_header where authorize1 = 'Y'\
+           and cancelled='N' and is_completed='N' and  hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_procurement_po_header_id desc"
       },
       {
         searchName: "DNEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_procurement_dn_header_id desc"
       },
       {
         searchName: "DNEntryInReceipt",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where cancelled='N'  and is_completed='N'",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_dn_header where cancelled='N'  and is_completed='N' and  hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_procurement_dn_header_id desc"
       },
       {
         searchName: "ReceiptEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_grn_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_procurement_grn_header where hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_procurement_grn_header_id desc"
       },
       {
@@ -212,7 +236,8 @@ let algaehSearchConfig = searchName => {
           "select SQL_CALC_FOUND_ROWS hims_f_billing_header_id, bill_number, bill_date, PAT.patient_code, PAT.full_name, PAT.contact_number,\
           PATV.visit_code from hims_f_billing_header BH inner join hims_f_patient as PAT on  \
           BH.patient_id = PAT.hims_d_patient_id inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id\
-          where BH.record_status ='A' and cancelled='N'",
+          where BH.record_status ='A' and cancelled='N' and BH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_billing_header_id desc"
       },
       {
@@ -223,7 +248,8 @@ let algaehSearchConfig = searchName => {
            from hims_f_bill_cancel_header BH inner join hims_f_patient as PAT on  BH.patient_id = PAT.hims_d_patient_id \
            inner join hims_f_patient_visit as PATV on BH.visit_id = PATV.hims_f_patient_visit_id\
           inner join hims_f_billing_header as BILLING on BH.from_bill_id = BILLING.hims_f_billing_header_id \
-          where BH.record_status ='A'",
+          where BH.record_status ='A' and BH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_bill_cancel_header_id desc"
       },
       {
@@ -231,7 +257,8 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_f_credit_header_id, credit_number, credit_date, \
           PAT.patient_code from hims_f_credit_header BH inner join hims_f_patient as PAT on  \
-          BH.patient_id = PAT.hims_d_patient_id",
+          BH.patient_id = PAT.hims_d_patient_id and BH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_credit_header_id desc"
       },
       {
@@ -239,7 +266,8 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_f_pos_credit_header_id, pos_credit_number, pos_credit_date, \
           PAT.patient_code from hims_f_pos_credit_header BH inner join hims_f_patient as PAT on  \
-          BH.patient_id = PAT.hims_d_patient_id",
+          BH.patient_id = PAT.hims_d_patient_id and BH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_pos_credit_header_id desc"
       },
       {
@@ -257,7 +285,8 @@ let algaehSearchConfig = searchName => {
                    contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
                     hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
                      net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
-                     where record_status='A' ",
+                     where record_status='A'  and hospital_id=" +
+          hospitalId,
         orderBy: "hims_d_employee_id desc"
       },
       {
@@ -275,7 +304,8 @@ let algaehSearchConfig = searchName => {
                    contract_type, employee_group_id, weekoff_from, overtime_group_id, reporting_to_id, sub_department_id,\
                     hospital_id, gross_salary, yearly_gross_salary, total_earnings, total_deductions, total_contributions,\
                      net_salary, cost_to_company, effective_start_date, effective_end_date, created_date, created_by, updated_date, updated_by from hims_d_employee\
-                     where record_status='A' and employee_status in('R','T','E')",
+                     where record_status='A' and employee_status in('R','T','E') and BH.hospital_id=" +
+          hospitalId,
         orderBy: "hims_d_employee_id desc"
       },
       {
@@ -283,7 +313,8 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS  hims_d_employee_id,employee_code,full_name,date_of_joining \
           from hims_d_employee E left join hims_m_user_employee UM on E.hims_d_employee_id=UM.employee_id\
-          where E.record_status='A' and UM.employee_id is null",
+          where E.record_status='A' and UM.employee_id is null and E.hospital_id=" +
+          hospitalId,
         orderBy: "hims_d_employee_id desc"
       },
 
@@ -292,7 +323,8 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select  hims_f_loan_application_id,loan_application_number,employee_id, loan_application_date,approved_amount, \
           start_month, start_year, emp.employee_code, emp.full_name from hims_f_loan_application, hims_d_employee emp \
-          where hims_f_loan_application.employee_id = emp.hims_d_employee_id",
+          where hims_f_loan_application.employee_id = emp.hims_d_employee_id and hims_f_loan_application.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_loan_application_id desc"
       },
       {
@@ -300,7 +332,8 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select  hims_f_employee_advance_id,advance_number,employee_id,advance_amount, \
           emp.employee_code, emp.full_name from hims_f_employee_advance, hims_d_employee emp \
-          where hims_f_employee_advance.employee_id = emp.hims_d_employee_id",
+          where hims_f_employee_advance.employee_id = emp.hims_d_employee_id and hims_f_employee_advance.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_employee_advance_id desc"
       },
       {
@@ -308,7 +341,8 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select  hims_f_leave_encash_header_id,encashment_number,employee_id, encashment_date,total_amount, \
           emp.employee_code, emp.full_name from hims_f_leave_encash_header, hims_d_employee emp \
-          where hims_f_leave_encash_header.employee_id = emp.hims_d_employee_id",
+          where hims_f_leave_encash_header.employee_id = emp.hims_d_employee_id and  hims_f_leave_encash_header.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_leave_encash_header_id desc"
       },
       {
@@ -316,7 +350,8 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select  hims_f_end_of_service_id,end_of_service_number,employee_id, transaction_date,payable_amount, \
           emp.employee_code, emp.full_name from hims_f_end_of_service, hims_d_employee emp \
-          where hims_f_end_of_service.employee_id = emp.hims_d_employee_id",
+          where hims_f_end_of_service.employee_id = emp.hims_d_employee_id and  hims_f_end_of_service.hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_end_of_service_id desc"
       },
       {
@@ -324,7 +359,9 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select  hims_f_final_settlement_header_id,final_settlement_number,employee_id, settled_date,total_amount, \
           emp.employee_code, emp.full_name from hims_f_final_settlement_header, hims_d_employee emp \
-          where hims_f_final_settlement_header.employee_id = emp.hims_d_employee_id",
+          where hims_f_final_settlement_header.employee_id = emp.hims_d_employee_id and  hims_f_final_settlement_header.hospital_id=" +
+          hospitalId,
+
         orderBy: "hims_f_final_settlement_header_id desc"
       },
       {
@@ -332,7 +369,9 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select  hims_f_leave_salary_header_id,leave_salary_number,employee_id, hims_f_leave_salary_header.created_date,\
           total_amount, emp.employee_code, emp.full_name from hims_f_leave_salary_header, hims_d_employee emp \
-          where hims_f_leave_salary_header.employee_id = emp.hims_d_employee_id",
+          where hims_f_leave_salary_header.employee_id = emp.hims_d_employee_id and hims_f_leave_salary_header.hospital_id=" +
+          hospitalId,
+
         orderBy: "hims_f_leave_salary_header_id desc"
       },
       {
@@ -340,7 +379,8 @@ let algaehSearchConfig = searchName => {
         searchQuery:
           "select algaeh_d_app_user_id,E.full_name as full_name ,employee_code,arabic_name,E.sub_department_id,primary_contact_no,sex\
           from algaeh_d_app_user U inner join  hims_m_user_employee UM on U.algaeh_d_app_user_id=UM.user_id\
-          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id",
+          inner join hims_d_employee E on UM.employee_id=E.hims_d_employee_id and UM.hospital_id=" +
+          hospitalId,
         orderBy: "algaeh_d_app_user_id desc"
       },
       {
@@ -359,13 +399,15 @@ let algaehSearchConfig = searchName => {
       {
         searchName: "PharConsEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_consumption_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_consumption_header where hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_pharmacy_consumption_header_id desc"
       },
       {
         searchName: "InvConsEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_consumption_header",
+          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_consumption_header where hospital_id=" +
+          hospitalId,
         orderBy: "hims_f_inventory_consumption_header_id desc"
       },
       {

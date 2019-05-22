@@ -301,8 +301,8 @@ module.exports = {
                 "INSERT INTO `hims_f_employee_payments` (payment_application_code,employee_id,employee_advance_id,\
             employee_loan_id,employee_leave_encash_id,employee_end_of_service_id,employee_final_settlement_id,\
             employee_leave_settlement_id,payment_type,payment_date,remarks,earnings_id,deduction_month,year,payment_amount,\
-            payment_mode,cheque_number,bank_id,created_date,created_by,updated_date,updated_by)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            payment_mode,cheque_number,bank_id,created_date,created_by,updated_date,updated_by,hospital_id)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 generatedNumbers[0],
                 inputParam.employee_id,
@@ -325,7 +325,8 @@ module.exports = {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                req.userIdentity.algaeh_d_app_user_id
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.hospital_id
               ]
             })
             .then(result => {

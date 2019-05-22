@@ -306,8 +306,9 @@ let addHpiElement = (req, res, next) => {
 
             if (input.patient_id != null && results.insertId != null) {
               connection.query(
-                "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,created_date,created_by,updated_date,updated_by) \
-    values(?,?,?,?,?,?,?,?)",
+                "insert into hims_f_episode_hpi(patient_id,episode_id, hpi_header_id, hpi_detail_id,\
+                  created_date,created_by,updated_date,updated_by,hospital_id) \
+                 values(?,?,?,?,?,?,?,?,?)",
                 [
                   input.patient_id,
                   input.episode_id,
@@ -316,7 +317,8 @@ let addHpiElement = (req, res, next) => {
                   new Date(),
                   input.created_by,
                   new Date(),
-                  input.updated_by
+                  input.updated_by,
+                  req.userIdentity.hospital_id
                 ],
                 (error, resultPatientEP) => {
                   if (error) {
@@ -427,7 +429,7 @@ let addPatientHpi = (req, res, next) => {
       connection.query(
         "INSERT INTO hims_f_episode_hpi(" +
           insurtColumns.join(",") +
-          ",patient_id,episode_id, hpi_header_id,created_date,updated_date) VALUES ?",
+          ",patient_id,episode_id, hpi_header_id,created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -437,7 +439,8 @@ let addPatientHpi = (req, res, next) => {
               input.episode_id,
               input.hpi_header_id,
               new Date(),
-              new Date()
+              new Date(),
+              req.userIdentity.hospital_id
             ],
             req: req
           })

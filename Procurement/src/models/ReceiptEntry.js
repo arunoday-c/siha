@@ -122,8 +122,8 @@ module.exports = {
               inventory_location_id,location_type,vendor_id, po_id, dn_id, payment_terms, comment, description, sub_total, \
               detail_discount, extended_total,sheet_level_discount_percent, sheet_level_discount_amount,\
               net_total,total_tax, net_payable, additional_cost,reciept_total, created_by,created_date, \
-              updated_by,updated_date) \
-            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              updated_by,updated_date,hospital_id) \
+            VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 grn_number,
                 today,
@@ -155,7 +155,8 @@ module.exports = {
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
-                new Date()
+                new Date(),
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })

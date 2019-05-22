@@ -21,8 +21,8 @@ module.exports = {
           , `relationship_with_patient`, `visa_type_id`, `nationality_id`, `postal_code`\
           , `primary_identity_id`, `primary_id_no`, `secondary_identity_id`, `secondary_id_no`\
           , `photo_file`, `primary_id_file`, `secondary_id_file`, `patient_type`,`vat_applicable`, `created_by`, `created_date`\
-          ,`city_id`,`state_id`,`country_id`,`employee_id`)\
-           VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?);",
+          ,`city_id`,`state_id`,`country_id`,`employee_id`,hospital_id)\
+           VALUES (?,?,?,?, ?, ?, ?, ?, ?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?);",
           values: [
             inputparam.patient_code,
             inputparam.registration_date != null
@@ -66,7 +66,8 @@ module.exports = {
             inputparam.city_id,
             inputparam.state_id,
             inputparam.country_id,
-            inputparam.employee_id
+            inputparam.employee_id,
+            req.userIdentity.hospital_id
           ],
           printQuery: true
         })
@@ -95,6 +96,7 @@ module.exports = {
       });
     }
   },
+  //created by:irfan
   getPatientInsurance: (req, res, next) => {
     const _mysql = new algaehMysql();
 

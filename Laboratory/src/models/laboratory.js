@@ -15,6 +15,9 @@ module.exports = {
       let inputValues = [];
       let _stringData = "";
 
+      _stringData += " and LO.hospital_id=?";
+      inputValues.push(req.userIdentity.hospital_id);
+
       if (req.query.from_date != null) {
         _stringData +=
           "date(ordered_date) between date('" +
@@ -128,7 +131,8 @@ module.exports = {
             includeValues: IncludeValues,
             extraValues: {
               created_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_by: req.userIdentity.algaeh_d_app_user_id
+              updated_by: req.userIdentity.algaeh_d_app_user_id,
+              hospital_id: req.userIdentity.hospital_id
             },
             bulkInsertOrUpdate: true,
             printQuery: true

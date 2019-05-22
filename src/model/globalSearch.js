@@ -18,7 +18,7 @@ let searchData = (req, res, next) => {
           "Please provide correct search details"
         )
       );
-    let queryConfig = algaehSearchConfig(inputParam.searchName);
+    let queryConfig = algaehSearchConfig(inputParam.searchName, req);
     if (queryConfig == null) {
       next(
         httpStatus.generateError(
@@ -92,7 +92,7 @@ const newSearch = (req, res, next) => {
     );
     return;
   }
-  let queryConfig = algaehSearchConfig(inputParam.searchName);
+  let queryConfig = algaehSearchConfig(inputParam.searchName, req);
   if (queryConfig == null) {
     next(
       httpStatus.generateError(

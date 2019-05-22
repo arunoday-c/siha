@@ -208,8 +208,8 @@ let addOrder = (req, res, next) => {
       connection.query(
         "insert into hims_f_lab_order(\
           patient_id,visit_id,provider_id,service_id,status,billed,\
-          cancelled,ordered_date,test_type,created_by,updated_by)values(\
-              ?,?,?,?,?,?,?,?,?,?,?)",
+          cancelled,ordered_date,test_type,created_by,updated_by,hospital_id)values(\
+              ?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.patient_id,
           input.visit_id,
@@ -220,8 +220,9 @@ let addOrder = (req, res, next) => {
           input.cancelled,
           input.ordered_date,
           input.test_type,
-          input.created_by,
-          input.updated_by
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.hospital_id
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -266,18 +267,19 @@ let addSample = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_d_lab_sample(\
+        "insert into hims_f_lab_sample(\
           order_id,sample_id,status,collected,\
-          collected_date,created_by,updated_by)values(\
-              ?,?,?,?,?,?,?)",
+          collected_date,created_by,updated_by,hospital_id)values(\
+              ?,?,?,?,?,?,?,?)",
         [
           input.order_id,
           input.sample_id,
           input.status,
           input.collected,
           input.collected_date,
-          input.created_by,
-          input.updated_by
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.hospital_id
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -621,14 +623,15 @@ let addEncounterReview = (req, res, next) => {
 
       connection.query(
         "insert into hims_f_encounter_review(\
-          encounter_id,review_header_id,review_details_id,created_by,updated_by)values(\
-              ?,?,?,?,?)",
+          encounter_id,review_header_id,review_details_id,created_by,updated_by,hospital_id)values(\
+              ?,?,?,?,?,?)",
         [
           input.encounter_id,
           input.review_header_id,
           input.review_details_id,
-          input.created_by,
-          input.updated_by
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.hospital_id
         ],
         (error, results) => {
           releaseDBConnection(db, connection);
@@ -766,8 +769,9 @@ let getMyDay = (req, res, next) => {
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
             inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  \
             inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id  \
-            where E.record_status='A' AND  V.record_status='A' AND " +
+            where E.record_status='A' AND  V.record_status='A' and v.hospital_id=? AND " +
           _query,
+         values: [ req.userIdentity.hospital_id],
         printQuery: true
       })
       .then(result => {
@@ -1218,12 +1222,12 @@ let addPatientChiefComplaints = (req, res, next) => {
       connection.query(
         "INSERT INTO hims_f_episode_chief_complaint(`" +
           insurtColumns.join("`,`") +
-          "`,created_date,updated_date) VALUES ?",
+          "`,created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
-            newFieldToInsert: [new Date(), new Date()],
+            newFieldToInsert: [new Date(), new Date(), req.userIdentity.hospital_id],
             req: req
           })
         ],
@@ -1349,8 +1353,9 @@ let addPatientNewAllergy = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`, allergy_inactive,created_date,`created_by`,updated_date,`updated_by`)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_f_patient_allergy` (`patient_id`, `allergy_id`, onset, onset_date, severity, `comment`,\
+         allergy_inactive,created_date,`created_by`,updated_date,`updated_by`,hospital_id)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.allergy_id,
@@ -1360,9 +1365,10 @@ let addPatientNewAllergy = (req, res, next) => {
           inputparam.comment,
           inputparam.allergy_inactive,
           new Date(),
-          inputparam.created_by,
+          req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          inputparam.updated_by
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.hospital_id
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1553,11 +1559,12 @@ let addPatientDiagnosis = (req, res, next) => {
       connection.query(
         "INSERT INTO hims_f_patient_diagnosis(" +
           insurtColumns.join(",") +
-          ") VALUES ?",
+          ",hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
+            newFieldToInsert: [ req.userIdentity.hospital_id],
             req: req
           })
         ],
@@ -1591,8 +1598,9 @@ let addPatientROS = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,review_details_id,`comment`,created_date,created_by,updated_date,updated_by)\
-        VALUE(?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_f_encounter_review` (patient_id,episode_id,review_header_id,\
+          review_details_id,`comment`,created_date,created_by,updated_date,updated_by,hospital_id)\
+        VALUE(?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.episode_id,
@@ -1600,9 +1608,10 @@ let addPatientROS = (req, res, next) => {
           inputparam.review_details_id,
           inputparam.comment,
           new Date(),
-          inputparam.created_by,
+          req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          inputparam.updated_by
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.hospital_id
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -1936,12 +1945,13 @@ let addPatientVitals = (req, res, next) => {
       const _query = mysql.format(
         "INSERT INTO hims_f_patient_vitals(" +
           insurtColumns.join(",") +
-          ",created_date,updated_date) VALUES ?",
+          ",created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
-            newFieldToInsert: [new Date(), new Date()],
+            newFieldToInsert: [new Date(), new Date(), req.userIdentity.hospital_id],
+
             req: req
           })
         ]
@@ -1991,8 +2001,8 @@ let addPatientPhysicalExamination = (req, res, next) => {
 
       connection.query(
         "INSERT INTO hims_f_episode_examination (`patient_id`, `episode_id`, `exam_header_id`, \
-        `exam_details_id`, `exam_subdetails_id`, `comments`, `created_date`, `created_by`, `updated_date`, `updated_by`) \
-        VALUE(?,?,?,?,?,?,?,?,?,?)",
+        `exam_details_id`, `exam_subdetails_id`, `comments`, `created_date`, `created_by`, `updated_date`, `updated_by`,hospital_id) \
+        VALUE(?,?,?,?,?,?,?,?,?,?,?)",
         [
           inputparam.patient_id,
           inputparam.episode_id,
@@ -2003,7 +2013,8 @@ let addPatientPhysicalExamination = (req, res, next) => {
           new Date(),
           inputparam.created_by,
           new Date(),
-          inputparam.updated_by
+          inputparam.updated_by,
+          req.userIdentity.hospital_id
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -2223,8 +2234,8 @@ let addDietAdvice = (req, res, next) => {
     let inputParam = extend(dietadvice, req.body);
     connection.query(
       "INSERT INTO `hims_f_patient_diet` (`patient_id`, `episode_id`,`diet_id`, `comments`, `till_date` \
-      , `created_by` ,`created_date`,updated_date,updated_by) \
-   VALUES ( ?, ?, ?, ?, ?, ?, ?,?,?)",
+      , `created_by` ,`created_date`,updated_date,updated_by,hospital_id) \
+   VALUES ( ?, ?, ?, ?, ?, ?,?, ?,?,?)",
       [
         inputParam.patient_id,
         inputParam.episode_id,
@@ -2234,7 +2245,8 @@ let addDietAdvice = (req, res, next) => {
         inputParam.created_by,
         new Date(),
         new Date(),
-        inputParam.updated_by
+        inputParam.updated_by,
+        req.userIdentity.hospital_id
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -2338,8 +2350,8 @@ let addReferalDoctor = (req, res, next) => {
     let inputParam = extend(referraldoc, req.body);
     connection.query(
       "INSERT INTO `hims_f_patient_referral` (`patient_id`, `episode_id`,`referral_type`, `sub_department_id`, \
-      `doctor_id` ,`hospital_name`, `reason`, `created_by` ,`created_date`) \
-      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      `doctor_id` ,`hospital_name`, `reason`, `created_by` ,`created_date`,hospital_id) \
+      VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
       [
         inputParam.patient_id,
         inputParam.episode_id,
@@ -2349,7 +2361,8 @@ let addReferalDoctor = (req, res, next) => {
         inputParam.hospital_name,
         inputParam.reason,
         inputParam.created_by,
-        new Date()
+        new Date(),
+        req.userIdentity.hospital_id
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -2386,8 +2399,8 @@ let addFollowUp = (req, res, next) => {
     let inputParam = extend(followup, req.body);
     connection.query(
       "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`,`followup_type`, \
-       `followup_date`, `reason`, `created_by` ,`created_date`) \
-      VALUES ( ?, ?, ?, ?, ?, ?, ?)",
+       `followup_date`, `reason`, `created_by` ,`created_date`,hospital_id) \
+      VALUES ( ?, ?, ?, ?, ?, ?,?, ?)",
       [
         inputParam.patient_id,
         inputParam.doctor_id,
@@ -2395,7 +2408,8 @@ let addFollowUp = (req, res, next) => {
         inputParam.followup_date,
         inputParam.reason,
         inputParam.created_by,
-        new Date()
+        new Date(),
+        req.userIdentity.hospital_id
       ],
       (error, result) => {
         releaseDBConnection(db, connection);
@@ -2587,7 +2601,7 @@ let addPatientHistory = (req, res, next) => {
       connection.query(
         "INSERT INTO hims_f_patient_history(" +
           insurtColumns.join(",") +
-          ",patient_id,provider_id, created_date,updated_date) VALUES ?",
+          ",patient_id,provider_id, created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -2596,7 +2610,7 @@ let addPatientHistory = (req, res, next) => {
               input.patient_id,
               input.provider_id,
               new Date(),
-              new Date()
+              new Date(),req.userIdentity.hospital_id
             ],
             req: req
           })

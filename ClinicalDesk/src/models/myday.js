@@ -41,14 +41,15 @@ module.exports = {
         INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
            inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' \
            and date(V.visit_date) BETWEEN date(?) and date(?) and \
-           provider_id=? and  sub_department_id=?  " +
+           provider_id=? and  sub_department_id=? and V.hospital_id=? " +
             _queryData +
             " order by E.updated_date desc",
           values: [
             input.fromDate,
             input.toDate,
             input.provider_id,
-            input.sub_department_id
+            input.sub_department_id,
+            req.userIdentity.hospital_id
           ]
         })
         .then(result => {
@@ -79,8 +80,7 @@ module.exports = {
              PE.created_date as encounter_date  from hims_f_patient_encounter PE ,\
              hims_f_patient P ,hims_d_nationality N,hims_f_patient_visit PV \
              where P.hims_d_patient_id=PE.patient_id and N.hims_d_nationality_id=P.nationality_id \
-             and PV.hims_f_patient_visit_id=PE.visit_id \
-             and P.hims_d_patient_id=? order by PE.updated_date desc",
+             and PV.hims_f_patient_visit_id=PE.visit_id and P.hims_d_patient_id=? order by PE.updated_date desc",
           values: [input.hims_d_patient_id]
         })
         .then(result => {
@@ -167,8 +167,13 @@ module.exports = {
         .executeQuery({
           query:
             "SELECT hims_f_patient_visit_id,visit_date,episode_id FROM hims_f_patient_visit \
-where patient_id=? and sub_department_id=? and doctor_id=? order by hims_f_patient_visit_id desc;",
-          values: [input.patient_id, input.sub_department_id, input.doctor_id]
+where patient_id=? and sub_department_id=? and doctor_id=? and hospital_id=? order by hims_f_patient_visit_id desc;",
+          values: [
+            input.patient_id,
+            input.sub_department_id,
+            input.doctor_id,
+            req.userIdentity.hospital_id
+          ]
         })
         .then(result => {
           _mysql.releaseConnection();
