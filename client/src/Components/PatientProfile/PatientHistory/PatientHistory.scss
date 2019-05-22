@@ -51,22 +51,9 @@
     padding-right: 5px;
   }
 
-  .customTable {
-    th {
-      background: #8c8c8c;
-      text-transform: uppercase;
 
-      min-width: auto !important;
-      color: #fff;
-      font-weight: normal;
-    }
-    td {
-      min-width: auto !important;
-    }
-  }
 
   .actions {
-    float: left;
     display: inline-block;
     margin-top: 0px;
     margin-left: 4px;
@@ -95,4 +82,20 @@
   padding: 5px;
   background: #f9f9f9 !important;
   color: #444;
+}
+.customTable {
+  font-size: 0.8rem;
+  th {
+    background: #8c8c8c!important;
+    text-transform: uppercase;
+    min-width: auto !important;
+    color: #fff;
+    font-weight: normal;
+    &:first-child{
+      width: 75%;
+    }
+  }
+  td {
+    font-size: 0.9rem;
+  }
 }

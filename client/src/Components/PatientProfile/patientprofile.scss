@@ -215,7 +215,7 @@
         display: inline-block;
         font-size: 1.1rem;
         section {
-          width: 30vw;
+          width: 40vw;
           height: auto;
           position: absolute;
           right: 0;
@@ -226,19 +226,20 @@
           border-radius: 5px;
           color: $color-white;
           display: none;
-          b.top-nav-sec-hdg {
-            text-align: center;
-            border-bottom: 1px solid darken($primary-color, 10%);
-            margin-left: -10px;
-            margin-right: -10px;
-            padding-bottom: 11px;
-          }
-          b {
+          span.top-nav-sec-hdg {    text-align: center;
+            border-bottom: none;
+            height: 25px;
+            padding: 0;
+            font-weight: bold;
             display: block;
-            border-bottom: 1px solid darken($primary-color, 10%);
-            margin-bottom: 10px;
-            padding-bottom: 5px;
+            color: #fff;
           }
+          // b {
+          //   display: block;
+          //   border-bottom: 1px solid darken($primary-color, 10%);
+          //   margin-bottom: 10px;
+          //   padding-bottom: 5px;
+          // }
           .listofA-D-D {
             display: inline-block;
             margin-right: 8px;
@@ -252,11 +253,7 @@
             background: $primary-color;
             white-space: normal;
           }
-          p {
-            border-top: 1px solid lighten($primary-color, 50%);
-            margin: -10px;
-            padding: 10px;
-          }
+          
         }
       }
       li:hover {
@@ -295,7 +292,6 @@
     span {
       padding: 7px 10px;
       text-align: left;
-
       display: block;
       cursor: pointer;
     }
@@ -324,7 +320,23 @@
     color: $primary-color !important;
   }
 }
-
 .AllergyActive {
   color: red;
+}
+.listofADDTable{
+  width: 100%;
+  max-width: 100%;
+  background-color: transparent;
+  font-size: 0.8rem;
+  th{
+    border: 1px solid darken($primary-color,5%);
+    padding: 3px;
+    text-align: center;
+    background: darken($primary-color,3%);
+  }
+  td{
+    border: 1px solid darken($primary-color,5%);
+    padding: 3px;
+    text-align: center;
+  }
 }
