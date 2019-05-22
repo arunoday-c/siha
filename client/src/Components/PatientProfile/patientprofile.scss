@@ -322,7 +322,15 @@
 }
 .AllergyActive {
   color: red;
+  animation: blinker 2s linear infinite;
 }
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+
 .listofADDTable{
   width: 100%;
   max-width: 100%;

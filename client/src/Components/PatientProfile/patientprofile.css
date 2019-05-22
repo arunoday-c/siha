@@ -260,7 +260,12 @@
     color: #00a796 !important; }
 
 .AllergyActive {
-  color: red; }
+  color: red;
+  animation: blinker 2s linear infinite; }
+
+@keyframes blinker {
+  50% {
+    opacity: 0; } }
 
 .listofADDTable {
   width: 100%;
