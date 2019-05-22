@@ -191,16 +191,23 @@ const DeliverySearch = ($this, e) => {
               }
 
               for (let i = 0; i < data.dn_entry_detail.length; i++) {
+                debugger;
                 data.dn_entry_detail[i].outstanding_quantity = 0;
-                data.dn_entry_detail[i].quantity_recieved_todate = Math.abs(
-                  data.dn_entry_detail[i].dn_quantity -
-                    data.dn_entry_detail[i].quantity_outstanding
-                );
+                data.dn_entry_detail[i].quantity_recieved_todate =
+                  parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
+                    ? 0
+                    : Math.abs(
+                        data.dn_entry_detail[i].dn_quantity -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
-                data.dn_entry_detail[i].recieved_quantity = Math.abs(
-                  data.dn_entry_detail[i].quantity_recieved_todate -
-                    data.dn_entry_detail[i].quantity_outstanding
-                );
+                data.dn_entry_detail[i].recieved_quantity =
+                  parseFloat(data.dn_entry_detail[i].quantity_outstanding) === 0
+                    ? data.dn_entry_detail[i].dn_quantity
+                    : Math.abs(
+                        data.dn_entry_detail[i].quantity_recieved_todate -
+                          data.dn_entry_detail[i].quantity_outstanding
+                      );
 
                 data.dn_entry_detail[i].dn_header_id =
                   data.hims_f_procurement_dn_header_id;
