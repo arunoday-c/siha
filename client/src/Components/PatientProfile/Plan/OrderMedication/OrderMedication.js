@@ -150,9 +150,9 @@ class OrderMedication extends Component {
       <div>
       <div className="popupInner">
       <div className="popRightDiv">
-        <div className="row paddin-bottom-5" style={{ marginTop: 5 }}>
+        <div className="row">
           <AlagehAutoComplete
-            div={{ className: "col-3" }}
+            div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Generic Name" }}
             selector={{
               name: "generic_id",
@@ -169,7 +169,7 @@ class OrderMedication extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-3" }}
+            div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Item Name" }}
             selector={{
               name: "item_id",
@@ -187,7 +187,7 @@ class OrderMedication extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col form-group" }}
             label={{ forceLabel: "Frequency" }}
             selector={{
               name: "frequency",
@@ -203,7 +203,7 @@ class OrderMedication extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col form-group" }}
             label={{ forceLabel: "Freq. Type" }}
             selector={{
               name: "frequency_type",
@@ -219,7 +219,7 @@ class OrderMedication extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col" }}
+            div={{ className: "col form-group" }}
             label={{ forceLabel: "Consume" }}
             selector={{
               name: "frequency_time",
@@ -237,7 +237,7 @@ class OrderMedication extends Component {
         </div>
         <div className="row paddin-bottom-5">
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col form-group" }}
             label={{
               forceLabel: "Dosage"
             }}
@@ -259,7 +259,7 @@ class OrderMedication extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col form-group" }}
             label={{
               forceLabel: "Duration (Days)"
             }}
@@ -297,7 +297,7 @@ class OrderMedication extends Component {
           />*/}
 
           <AlgaehDateHandler
-            div={{ className: "col" }}
+            div={{ className: "col form-group" }}
             label={{ forceLabel: "Start Date" }}
             textBox={{ className: "txt-fld", name: "start_date" }}
             minDate={new Date()}
@@ -335,8 +335,9 @@ class OrderMedication extends Component {
             </button>
           </div>
         </div>
+        <div className="row"><div className="col"><p>Pharmacy Stock Availability: <b>{this.state.total_quantity}</b></p></div></div>
         <div className="row">
-          <div className="col-lg-12" style={{ marginTop: 10 }}>
+          <div className="col-lg-12">
             <AlgaehDataGrid
               id="Order_Medication"
               columns={[
@@ -490,15 +491,6 @@ class OrderMedication extends Component {
               }}
             />
           </div>
-        </div>
-        <div className="row" style={{ marginTop: 5, marginBottom: 5 }}>
-          <div className="col">
-            <p>
-            Instructions: {this.state.followup_comments}</p>
-            <p>
-            Pharmacy Stock: {this.state.total_quantity}</p>
-          </div>
-
         </div>
 </div>
       </div>
