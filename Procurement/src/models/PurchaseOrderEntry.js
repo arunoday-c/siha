@@ -99,7 +99,12 @@ module.exports = {
       utilities.logger().log("addDeliveryNoteEntry: ");
       _mysql
         .generateRunningNumber({
-          modules: ["PO_NUM"]
+          modules: ["PO_NUM"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           purchase_number = generatedNumbers[0];

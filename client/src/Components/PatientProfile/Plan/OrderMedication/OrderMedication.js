@@ -42,9 +42,12 @@ class OrderMedication extends Component {
     this.state = {
       patient_id: Window.global["current_patient"],
       encounter_id: Window.global["encounter_id"],
+      visit_id: Window.global["visit_id"],
 
       provider_id: Window.global["provider_id"],
       episode_id: Window.global["episode_id"],
+
+      vat_applicable: this.props.vat_applicable,
 
       itemlist: [],
       medicationitems: [],
@@ -94,14 +97,62 @@ class OrderMedication extends Component {
         mappingName: "genericlist"
       }
     });
+    this.getPatientInsurance();
+  }
+
+  getPatientInsurance() {
+    debugger;
+    this.props.getPatientInsurance({
+      uri: "/patientRegistration/getPatientInsurance",
+      module: "frontDesk",
+      method: "GET",
+      data: {
+        patient_id: this.state.patient_id,
+        patient_visit_id: this.state.visit_id
+      },
+      redux: {
+        type: "EXIT_INSURANCE_GET_DATA",
+        mappingName: "existinginsurance"
+      },
+      afterSuccess: data => {
+        if (data.length > 0) {
+          this.setState({
+            insured: "Y",
+            primary_insurance_provider_id: data.insurance_provider_id,
+            primary_network_office_id: data.hims_d_insurance_network_office_id,
+            primary_network_id: data.network_id,
+            sec_insured: data.sec_insured,
+            secondary_insurance_provider_id:
+              data.secondary_insurance_provider_id,
+            secondary_network_id: data.secondary_network_id,
+            secondary_network_office_id: data.secondary_network_office_id
+          });
+        }
+      }
+    });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    debugger;
+
+    if (
+      nextProps.existinginsurance !== undefined &&
+      nextProps.existinginsurance.length !== 0
+    ) {
+      let output = nextProps.existinginsurance[0];
+      output.insured = "Y";
+      this.setState({ ...output });
+    }
   }
 
   render() {
     return (
-      <div className="hptl-phase1-order-medication-form">
-        <div className="row paddin-bottom-5" style={{ marginTop: 5 }}>
+      <div>
+      <div className="popupInner">
+      <div className="popRightDiv">
+        <div className="row">
           <AlagehAutoComplete
-            div={{ className: "col-lg-3" }}
+            div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Generic Name" }}
             selector={{
               name: "generic_id",
@@ -112,12 +163,13 @@ class OrderMedication extends Component {
                 valueField: "hims_d_item_generic_id",
                 data: this.props.genericlist
               },
-              onChange: genericnamehandle.bind(this, this)
+              onChange: genericnamehandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-lg-3" }}
+            div={{ className: "col-3 form-group" }}
             label={{ forceLabel: "Item Name" }}
             selector={{
               name: "item_id",
@@ -129,12 +181,13 @@ class OrderMedication extends Component {
                 data: this.state.itemlist
               },
               onChange: itemhandle.bind(this, this),
-              onClear: itemhandle.bind(this, this)
+              onClear: itemhandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-lg-2" }}
+            div={{ className: "col form-group" }}
             label={{ forceLabel: "Frequency" }}
             selector={{
               name: "frequency",
@@ -145,11 +198,12 @@ class OrderMedication extends Component {
                 valueField: "value",
                 data: PRESCRIPTION_FREQ_PERIOD
               },
-              onChange: texthandle.bind(this, this)
+              onChange: texthandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col-lg-2" }}
+            div={{ className: "col form-group" }}
             label={{ forceLabel: "Freq. Type" }}
             selector={{
               name: "frequency_type",
@@ -160,11 +214,12 @@ class OrderMedication extends Component {
                 valueField: "value",
                 data: PRESCRIPTION_FREQ_TIME
               },
-              onChange: texthandle.bind(this, this)
+              onChange: texthandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col-lg-2" }}
+            div={{ className: "col form-group" }}
             label={{ forceLabel: "Consume" }}
             selector={{
               name: "frequency_time",
@@ -175,13 +230,14 @@ class OrderMedication extends Component {
                 valueField: "value",
                 data: PRESCRIPTION_FREQ_DURATION
               },
-              onChange: texthandle.bind(this, this)
+              onChange: texthandle.bind(this, this),
+              autoComplete: "off"
             }}
           />
         </div>
         <div className="row paddin-bottom-5">
           <AlagehFormGroup
-            div={{ className: "col" }}
+            div={{ className: "col form-group" }}
             label={{
               forceLabel: "Dosage"
             }}
@@ -194,7 +250,6 @@ class OrderMedication extends Component {
                 onChange: numberhandle.bind(this, this)
               },
               others: {
-                type: "number",
                 // onBlur: calcuateDispense.bind(this, this),
                 onFocus: e => {
                   e.target.oldvalue = e.target.value;
@@ -204,7 +259,7 @@ class OrderMedication extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col-lg-3" }}
+            div={{ className: "col form-group" }}
             label={{
               forceLabel: "Duration (Days)"
             }}
@@ -225,7 +280,7 @@ class OrderMedication extends Component {
             }}
           />
 
-          <AlagehFormGroup
+          {/*<AlagehFormGroup
             div={{ className: "col" }}
             label={{
               forceLabel: "Total Qty."
@@ -239,10 +294,10 @@ class OrderMedication extends Component {
                 onChange: numberhandle.bind(this, this)
               }
             }}
-          />
+          />*/}
 
           <AlgaehDateHandler
-            div={{ className: "col" }}
+            div={{ className: "col form-group" }}
             label={{ forceLabel: "Start Date" }}
             textBox={{ className: "txt-fld", name: "start_date" }}
             minDate={new Date()}
@@ -252,7 +307,24 @@ class OrderMedication extends Component {
             value={this.state.start_date}
           />
 
-          <div className="col-lg-2" style={{ paddingTop: 21, paddingLeft: 0 }}>
+           <AlagehFormGroup
+           div={{ className: "col-4 form-group" }}
+           label={{
+           forceLabel: "Instruction",
+          isImp: false
+            }}
+           textBox={{ 
+          className: "txt-fld",
+          name: "",
+          value:"",
+          events: {},
+          option:{
+          type:"text"
+           }
+          }}
+          />
+
+          <div className="col" style={{ paddingTop: 21, paddingLeft: 0 }}>
             <button
               className="btn btn-default btn-sm"
               type="button"
@@ -263,8 +335,9 @@ class OrderMedication extends Component {
             </button>
           </div>
         </div>
+        <div className="row"><div className="col"><p>Pharmacy Stock Availability: <b>{this.state.total_quantity}</b></p></div></div>
         <div className="row">
-          <div className="col-lg-12" style={{ marginTop: 10 }}>
+          <div className="col-lg-12">
             <AlgaehDataGrid
               id="Order_Medication"
               columns={[
@@ -311,7 +384,7 @@ class OrderMedication extends Component {
                 },
                 {
                   fieldName: "frequency",
-                  label: <AlgaehLabel label={{ forceLabel: "Frequency" }} />,
+                  label: <AlgaehLabel label={{ forceLabel: "Freq." }} />,
                   displayTemplate: row => {
                     return row.frequency === "0"
                       ? "1-0-1"
@@ -328,12 +401,15 @@ class OrderMedication extends Component {
                       : row.frequency === "6"
                       ? "1-1-1"
                       : null;
+                  },
+                  others:{
+                    minWidth:50
                   }
                 },
                 {
                   fieldName: "frequency_type",
                   label: (
-                    <AlgaehLabel label={{ forceLabel: "Frequency Type" }} />
+                    <AlgaehLabel label={{ forceLabel: "Freq. Type" }} />
                   ),
                   displayTemplate: row => {
                     return row.frequency_type === "PD"
@@ -347,12 +423,15 @@ class OrderMedication extends Component {
                       : row.frequency_type === "AD"
                       ? "Alternate Day"
                       : null;
+                  },
+                  others:{
+                    minWidth:70
                   }
                 },
                 {
                   fieldName: "frequency_time",
                   label: (
-                    <AlgaehLabel label={{ forceLabel: "Frequency Time" }} />
+                    <AlgaehLabel label={{ forceLabel: "Freq. Time" }} />
                   ),
                   displayTemplate: row => {
                     return row.frequency_time === "BM"
@@ -360,23 +439,42 @@ class OrderMedication extends Component {
                       : row.frequency_time === "AM"
                       ? "After Meals"
                       : null;
+                  },
+                  others:{
+                    minWidth:70
                   }
                 },
                 {
                   fieldName: "dosage",
-                  label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />
+                  label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />,
+                  others:{
+                    minWidth:50
+                  }
                 },
                 {
                   fieldName: "no_of_days",
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Duration (Days)" }} />
-                  )
+                  ),
+                  others:{
+                    minWidth:90
+                  }
                 },
                 {
                   fieldName: "start_date",
                   label: <AlgaehLabel label={{ forceLabel: "Start Date" }} />,
                   displayTemplate: row => {
                     return <span>{dateFormater(row.start_date)}</span>;
+                  },
+                  others:{
+                    minWidth:70
+                  }
+                },
+                {
+                  fieldName: "instruction",
+                  label: <AlgaehLabel label={{ forceLabel: "Instruction" }} />,
+                  displayTemplate: row => {
+                    return <span>Need to Edit Instruction</span>;
                   }
                 }
               ]}
@@ -394,18 +492,11 @@ class OrderMedication extends Component {
             />
           </div>
         </div>
-        <div className="row" style={{ marginTop: 5, marginBottom: 5 }}>
-          <div className="col-lg-9">
-            Instructions: {this.state.followup_comments}
-          </div>
-
-          <div className="col-lg-9">
-            Pharmacy Stock: {this.state.total_quantity}
-          </div>
-
-          <div className="col-lg-2">
-            <button
-              className="btn btn-primary btn-sm"
+</div>
+      </div>
+        <div className="popupFooter">
+              <div className="col-lg-12"><button
+              className="btn btn-primary"
               type="button"
               onClick={SaveMedication.bind(this, this)}
               disabled={this.state.saveMedicationEnable}
@@ -413,15 +504,25 @@ class OrderMedication extends Component {
               Save Medication
             </button>
             <button
-              className="btn btn-primary btn-sm"
+              className="btn btn-default"
               type="button"
               onClick={printPrescription.bind(this, this)}
+              disabled={this.state.saveMedicationEnable}
             >
               Print Prescription
             </button>
-          </div>
-        </div>
-      </div>
+                    <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={e => {
+                        this.props.onclosePopup && this.props.onclosePopup(e);
+                      }}
+                    >
+                      Cancel
+                    </button>
+                </div>
+            </div>
+            </div>
     );
   }
 }
@@ -430,7 +531,8 @@ function mapStateToProps(state) {
   return {
     itemlist: state.itemlist,
     genericlist: state.genericlist,
-    itemStock: state.itemStock
+    itemStock: state.itemStock,
+    existinginsurance: state.existinginsurance
   };
 }
 
@@ -439,7 +541,8 @@ function mapDispatchToProps(dispatch) {
     {
       getItems: AlgaehActions,
       getGenerics: AlgaehActions,
-      getItemStock: AlgaehActions
+      getItemStock: AlgaehActions,
+      getPatientInsurance: AlgaehActions
     },
     dispatch
   );

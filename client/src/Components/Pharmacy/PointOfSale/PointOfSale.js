@@ -16,7 +16,8 @@ import {
   SavePosEnrty,
   VisitSearch,
   LocationchangeTexts,
-  closePopup
+  closePopup,
+  POSSearch
 } from "./PointOfSaleEvents";
 // getCtrlCode,
 import "./PointOfSale.css";
@@ -140,39 +141,42 @@ class PointOfSale extends Component {
     });
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   let posHeaderOut = {};
+  generateReport(rpt_name, rpt_desc) {
+    debugger;
+    algaehApiCall({
+      uri: "/report",
+      method: "GET",
+      module: "reports",
+      headers: {
+        Accept: "blob"
+      },
+      others: { responseType: "blob" },
+      data: {
+        report: {
+          reportName: rpt_name,
+          reportParams: [
+            {
+              name: "hims_f_pharmacy_pos_header_id",
+              value: this.state.hims_f_pharmacy_pos_header_id
+            }
+          ],
+          outputFileType: "PDF"
+        }
+      },
+      onSuccess: res => {
+        const url = URL.createObjectURL(res.data);
+        let myWindow = window.open(
+          "{{ product.metafields.google.custom_label_0 }}",
+          "_blank"
+        );
 
-  //   if (nextProps.posheader !== undefined && nextProps.posheader.length !== 0) {
-  //     nextProps.posheader.patient_payable_h =
-  //       nextProps.posheader.patient_payable || this.state.patient_payable;
-  //     nextProps.posheader.sub_total =
-  //       nextProps.posheader.sub_total_amount || this.state.sub_total;
-  //     nextProps.posheader.patient_responsibility =
-  //       nextProps.posheader.patient_res || this.state.patient_responsibility;
-  //     nextProps.posheader.company_responsibility =
-  //       nextProps.posheader.company_res || this.state.company_responsibility;
-
-  //     nextProps.posheader.company_payable =
-  //       nextProps.posheader.company_payble || this.state.company_payable;
-  //     nextProps.posheader.sec_company_responsibility =
-  //       nextProps.posheader.sec_company_res ||
-  //       this.state.sec_company_responsibility;
-  //     nextProps.posheader.sec_company_payable =
-  //       nextProps.posheader.sec_company_paybale ||
-  //       this.state.sec_company_payable;
-
-  //     nextProps.posheader.copay_amount =
-  //       nextProps.posheader.copay_amount || this.state.copay_amount;
-  //     nextProps.posheader.sec_copay_amount =
-  //       nextProps.posheader.sec_copay_amount || this.state.sec_copay_amount;
-  //     nextProps.posheader.addItemButton = false;
-  //     nextProps.posheader.saveEnable = false;
-  //     posHeaderOut = nextProps.posheader;
-  //   }
-
-  //   this.setState({ ...this.state, ...posHeaderOut });
-  // }
+        myWindow.document.write(
+          "<iframe src= '" + url + "' width='100%' height='100%' />"
+        );
+        myWindow.document.title = rpt_desc;
+      }
+    });
+  }
 
   onKeyPress(e) {
     if (e.ctrlKey && e.keyCode === 9) {
@@ -202,74 +206,12 @@ class PointOfSale extends Component {
     return (
       <React.Fragment>
         <div onKeyPress={this.onKeyPress}>
-          {/* <BreadCrumb
-            title={
-              <AlgaehLabel
-                label={{ forceLabel: "Point Of Sale", align: "ltr" }}
-              />
-            }
-            breadStyle={this.props.breadStyle}
-            pageNavPath={[
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "Home",
-                      align: "ltr"
-                    }}
-                  />
-                )
-              },
-              {
-                pageName: (
-                  <AlgaehLabel
-                    label={{ forceLabel: "Point Of Sale", align: "ltr" }}
-                  />
-                )
-              }
-            ]}
-            soptlightSearch={{
-              label: (
-                <AlgaehLabel
-                  label={{ forceLabel: "POS Number", returnText: true }}
-                />
-              ),
-              value: this.state.pos_number,
-              selectValue: "pos_number",
-              events: {
-                onChange: getCtrlCode.bind(this, this)
-              },
-              jsonFile: {
-                fileName: "spotlightSearch",
-                fieldName: "pointofsaleEntry.POSEntry"
-              },
-              searchName: "POSEntry"
-            }}
-            userArea={
-              <div className="row">
-                <div className="col">
-                  <AlgaehLabel
-                    label={{
-                      forceLabel: "POS Date"
-                    }}
-                  />
-                  <h6>
-                    {this.state.pos_date
-                      ? moment(this.state.pos_date).format(Options.dateFormat)
-                      : Options.dateFormat}
-                  </h6>
-                </div>
-              </div>
-            }
-            selectedLang={this.state.selectedLang}
-          /> */}
-
           <div className="row  inner-top-search" style={{ paddingBottom: 10 }}>
             {/* Patient code */}
-            <div className="col-lg-4">
+            <div className="col-3">
               <div className="row">
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
+                  div={{ className: "col" }}
                   label={{ forceLabel: "Location" }}
                   selector={{
                     name: "location_id",
@@ -289,7 +231,7 @@ class PointOfSale extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-6" }}
+                  div={{ className: "col-5" }}
                   label={{ forceLabel: "Case Type" }}
                   selector={{
                     name: "pos_customer_type",
@@ -300,7 +242,6 @@ class PointOfSale extends Component {
                       valueField: "value",
                       data: GlobalVariables.FORMAT_POS_CASE_TYPE
                     },
-
                     onChange: changeTexts.bind(this, this),
                     others: {
                       disabled: this.state.dataExitst
@@ -309,11 +250,11 @@ class PointOfSale extends Component {
                 />
               </div>
             </div>
-            <div className="col-lg-8">
+            <div className="col-9">
               {this.state.pos_customer_type === "OP" ? (
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3" }}
                     label={{
                       forceLabel: "Visit Code"
                     }}
@@ -331,8 +272,8 @@ class PointOfSale extends Component {
                   />
 
                   <div
-                    className="col-lg-2 print_actions"
-                    style={{ marginTop: "auto" }}
+                    className="col-1 print_actions"
+                    style={{ marginTop: "auto", padding: 0 }}
                   >
                     <span
                       style={{ cursor: "pointer" }}
@@ -341,7 +282,7 @@ class PointOfSale extends Component {
                     />
                   </div>
 
-                  <div className="col-lg-2">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Patient Name"
@@ -354,7 +295,7 @@ class PointOfSale extends Component {
                     </h6>
                   </div>
 
-                  <div className="col-lg-2">
+                  <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Patient Code"
@@ -366,29 +307,26 @@ class PointOfSale extends Component {
                         : "-----------"}
                     </h6>
                   </div>
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-2" }}
-                    label={{ forceLabel: "Mode of Payment" }}
-                    selector={{
-                      name: "mode_of_pay",
-                      className: "select-fld",
-                      value: this.state.mode_of_pay,
-                      dataSource: {
-                        textField: "name",
-                        valueField: "value",
-                        data: GlobalVariables.MODE_OF_PAY
-                      },
-                      others: {
-                        disabled: true
-                      },
-                      onChange: changeTexts.bind(this, this)
-                    }}
-                  />
+                  <div className="col">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Mode of Payment"
+                      }}
+                    />
+                    <h6>
+                      {console.log(typeof this.state.mode_of_pay)}
+                      {this.state.mode_of_pay === "1"
+                        ? "Self"
+                        : this.state.mode_of_pay === "2"
+                        ? "Insurance"
+                        : "-----------"}
+                    </h6>
+                  </div>
                 </div>
               ) : (
                 <div className="row">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       forceLabel: "Patient Name"
                     }}
@@ -403,7 +341,7 @@ class PointOfSale extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       forceLabel: "Prescribed Doctor"
                     }}
@@ -418,7 +356,7 @@ class PointOfSale extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col" }}
                     label={{
                       forceLabel: "Mobile Number"
                     }}
@@ -476,6 +414,44 @@ class PointOfSale extends Component {
                     label={{ forceLabel: "Clear", returnText: true }}
                   />
                 </button>
+
+                <button
+                  type="button"
+                  className="btn btn-other"
+                  onClick={POSSearch.bind(this, this)}
+                  style={{ float: "left" }}
+                >
+                  <AlgaehLabel
+                    label={{ forceLabel: "Past POS Bill", returnText: true }}
+                  />
+                </button>
+                {this.state.dataExitst === true ? (
+                  <div>
+                    <button
+                      onClick={this.generateReport.bind(
+                        this,
+                        "posCashInvoice",
+                        "Cash Invoice"
+                      )}
+                      className="btn btn-default"
+                    >
+                      Cash Invoice
+                    </button>
+
+                    {this.state.insured === "Y" ? (
+                      <button
+                        className="btn btn-default"
+                        onClick={this.generateReport.bind(
+                          this,
+                          "posCreditInvoice",
+                          "Credit Invoice"
+                        )}
+                      >
+                        Credit Invoice
+                      </button>
+                    ) : null}
+                  </div>
+                ) : null}
 
                 {/* <button
                     type="button"
@@ -541,6 +517,29 @@ class PointOfSale extends Component {
                 >
                   Close
                 </button>
+                <button
+                  onClick={this.generateReport.bind(
+                    this,
+                    "posCashInvoice",
+                    "Cash Invoice"
+                  )}
+                  className="btn btn-default"
+                >
+                  Cash Invoice
+                </button>
+
+                {this.state.insured === "Y" ? (
+                  <button
+                    className="btn btn-default"
+                    onClick={this.generateReport.bind(
+                      this,
+                      "posCreditInvoice",
+                      "Credit Invoice"
+                    )}
+                  >
+                    Credit Invoice
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>

@@ -31,7 +31,8 @@ import {
   ViewInsurance,
   qtyonchangegridcol,
   EditGrid,
-  credittexthandle
+  credittexthandle,
+  SelectBatchDetails
 } from "./PosListItemsEvents";
 import ReciptForm from "./ReciptDetails/AddReciptForm";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -444,65 +445,10 @@ class PosListItems extends Component {
                                             : ""}
                                         </span>
                                       );
-                                    }
-                                  },
-
-                                  {
-                                    fieldName: "item_category",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{ forceLabel: "Item Category" }}
-                                      />
-                                    ),
-                                    displayTemplate: row => {
-                                      let display =
-                                        this.props.itemcategory === undefined
-                                          ? []
-                                          : this.props.itemcategory.filter(
-                                              f =>
-                                                f.hims_d_item_category_id ===
-                                                row.item_category
-                                            );
-
-                                      return (
-                                        <span>
-                                          {display !== null &&
-                                          display.length !== 0
-                                            ? display[0].category_desc
-                                            : ""}
-                                        </span>
-                                      );
                                     },
-                                    editorTemplate: row => {
-                                      let display =
-                                        this.props.itemcategory === undefined
-                                          ? []
-                                          : this.props.itemcategory.filter(
-                                              f =>
-                                                f.hims_d_item_category_id ===
-                                                row.item_category
-                                            );
-
-                                      return (
-                                        <span>
-                                          {display !== null &&
-                                          display.length !== 0
-                                            ? display[0].category_desc
-                                            : ""}
-                                        </span>
-                                      );
+                                    others: {
+                                      minWidth: 200
                                     }
-                                  },
-                                  {
-                                    fieldName: "qtyhand",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{
-                                          forceLabel: "Quantity In Hand"
-                                        }}
-                                      />
-                                    ),
-                                    disabled: true
                                   },
                                   {
                                     fieldName: "expiry_date",
@@ -533,6 +479,129 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Batch No." }}
                                       />
                                     ),
+                                    displayTemplate: row => {
+                                      // {this.state.dataExitst === false}
+                                      return this.state.dataExitst === false ? (
+                                        <AlagehAutoComplete
+                                          div={{ className: "" }}
+                                          selector={{
+                                            name: "batchno",
+                                            className: "select-fld",
+                                            value: row.batchno,
+                                            dataSource: {
+                                              textField: "batchno",
+                                              valueField: "batchno",
+                                              data: row.batches
+                                            },
+                                            onChange: SelectBatchDetails.bind(
+                                              this,
+                                              this,
+                                              row,
+                                              context
+                                            ),
+                                            onClear: () => {
+                                              row["batchno"] = null;
+                                            }
+                                          }}
+                                        />
+                                      ) : (
+                                        row.batchno
+                                      );
+                                    },
+                                    disabled: true,
+                                    others:{
+                                      minWidth:150
+                                    }
+                                  },
+                                  {
+                                    fieldName: "qtyhand",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{
+                                          forceLabel: "Qty In Hand"
+                                        }}
+                                      />
+                                    ),
+                                    disabled: true,
+                                    others:{
+                                      minWidth:90
+                                    }
+                                  },
+                                  {
+                                    fieldName: "quantity",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "Qty Req." }}
+                                      />
+                                    ),
+                                    displayTemplate: row => {
+                                      return this.state.dataExitst === false ? (
+                                        <AlagehFormGroup
+                                          div={{}}
+                                          textBox={{
+                                            number: {
+                                              allowNegative: false,
+                                              thousandSeparator: ","
+                                            },
+                                            value: row.quantity,
+                                            className: "txt-fld",
+                                            name: "quantity",
+                                            events: {
+                                              onChange: qtyonchangegridcol.bind(
+                                                this,
+                                                this,
+                                                context,
+                                                row
+                                              )
+                                            },
+                                            others: {
+                                              onFocus: e => {
+                                                e.target.oldvalue =
+                                                  e.target.value;
+                                              }
+                                            }
+                                          }}
+                                        />
+                                      ) : (
+                                        row.quantity
+                                      );
+                                    },
+                                    others:{
+                                      minWidth:80
+                                    }
+                                  },
+                                  {
+                                    fieldName: "insurance_yesno",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "Insured" }}
+                                      />
+                                    ),
+                                    displayTemplate: row => {
+                                      return (
+                                        <span>
+                                          {row.insured === "N"
+                                            ? "Not Covered"
+                                            : "Covered"}
+                                        </span>
+                                      );
+                                    },
+                                    disabled: true
+                                  },
+                                  {
+                                    fieldName: "pre_approval",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "Pre Approval" }}
+                                      />
+                                    ),
+                                    displayTemplate: row => {
+                                      return row.pre_approval === "N" ? (
+                                        <span>Not Required</span>
+                                      ) : (
+                                        <span className="a-link">Required </span>
+                                      );
+                                    },
                                     disabled: true
                                   },
                                   {
@@ -579,6 +648,9 @@ class PosListItems extends Component {
                                             : ""}
                                         </span>
                                       );
+                                    },
+                                    others:{
+                                      minWidth:80
                                     }
                                   },
                                   {
@@ -588,80 +660,23 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Unit Cost" }}
                                       />
                                     ),
-                                    disabled: true
-                                  },
-                                  {
-                                    fieldName: "quantity",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{ forceLabel: "Quantity" }}
-                                      />
-                                    ),
-                                    displayTemplate: row => {
-                                      return (
-                                        <AlagehFormGroup
-                                          div={{}}
-                                          textBox={{
-                                            number: {
-                                              allowNegative: false,
-                                              thousandSeparator: ","
-                                            },
-                                            value: row.quantity,
-                                            className: "txt-fld",
-                                            name: "quantity",
-                                            events: {
-                                              onChange: qtyonchangegridcol.bind(
-                                                this,
-                                                this,
-                                                context,
-                                                row
-                                              )
-                                            },
-                                            others: {
-                                              onFocus: e => {
-                                                e.target.oldvalue =
-                                                  e.target.value;
-                                              }
-                                            }
-                                          }}
-                                        />
-                                      );
+                                    disabled: true,
+                                    others:{
+                                      minWidth:80
                                     }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         value: row.quantity,
-                                    //         className: "txt-fld",
-                                    //         name: "quantity",
-                                    //         events: {
-                                    //           onChange: qtyonchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
                                   },
 
                                   {
                                     fieldName: "extended_cost",
                                     label: (
                                       <AlgaehLabel
-                                        label={{ forceLabel: "Extended Cost" }}
+                                        label={{ forceLabel: "Ext. Cost" }}
                                       />
                                     ),
-                                    disabled: true
+                                    disabled: true,
+                                    others:{
+                                      minWidth:80
+                                    }
                                   },
                                   {
                                     fieldName: "discount_percentage",
@@ -673,7 +688,7 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return (
+                                      return this.state.dataExitst === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -697,46 +712,22 @@ class PosListItems extends Component {
                                             }
                                           }}
                                         />
+                                      ) : (
+                                        row.discount_percentage
                                       );
                                     }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         decimal: { allowNegative: false },
-                                    //         value: row.discount_percentage,
-                                    //         className: "txt-fld",
-                                    //         name: "discount_percentage",
-                                    //         events: {
-                                    //           onChange: onchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
                                   },
                                   {
                                     fieldName: "discount_amount",
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "discount Amount"
+                                          forceLabel: "Discount Amt"
                                         }}
                                       />
                                     ),
                                     displayTemplate: row => {
-                                      return (
+                                      return this.state.dataExitst === false ? (
                                         <AlagehFormGroup
                                           div={{}}
                                           textBox={{
@@ -760,34 +751,10 @@ class PosListItems extends Component {
                                             }
                                           }}
                                         />
+                                      ) : (
+                                        row.discount_amount
                                       );
                                     }
-                                    // editorTemplate: row => {
-                                    //   return (
-                                    //     <AlagehFormGroup
-                                    //       div={{}}
-                                    //       textBox={{
-                                    //         decimal: { allowNegative: false },
-                                    //         value: row.discount_amount,
-                                    //         className: "txt-fld",
-                                    //         name: "discount_amount",
-                                    //         events: {
-                                    //           onChange: onchangegridcol.bind(
-                                    //             this,
-                                    //             this,
-                                    //             row
-                                    //           )
-                                    //         },
-                                    //         others: {
-                                    //           onFocus: e => {
-                                    //             e.target.oldvalue =
-                                    //               e.target.value;
-                                    //           }
-                                    //         }
-                                    //       }}
-                                    //     />
-                                    //   );
-                                    // }
                                   },
 
                                   {
@@ -795,7 +762,7 @@ class PosListItems extends Component {
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Net Extended Cost"
+                                          forceLabel: "Net Ext. Cost"
                                         }}
                                       />
                                     ),
@@ -1270,3 +1237,53 @@ export default withRouter(
     mapDispatchToProps
   )(PosListItems)
 );
+
+{
+  /*
+{
+  fieldName: "item_category",
+  label: (
+    <AlgaehLabel
+      label={{ forceLabel: "Item Category" }}
+    />
+  ),
+  displayTemplate: row => {
+    let display =
+      this.props.itemcategory === undefined
+        ? []
+        : this.props.itemcategory.filter(
+            f =>
+              f.hims_d_item_category_id ===
+              row.item_category
+          );
+
+    return (
+      <span>
+        {display !== null &&
+        display.length !== 0
+          ? display[0].category_desc
+          : ""}
+      </span>
+    );
+  },
+  editorTemplate: row => {
+    let display =
+      this.props.itemcategory === undefined
+        ? []
+        : this.props.itemcategory.filter(
+            f =>
+              f.hims_d_item_category_id ===
+              row.item_category
+          );
+
+    return (
+      <span>
+        {display !== null &&
+        display.length !== 0
+          ? display[0].category_desc
+          : ""}
+      </span>
+    );
+  }
+},*/
+}

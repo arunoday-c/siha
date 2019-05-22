@@ -221,7 +221,7 @@ class AddOPBillingForm extends Component {
   //Calculate Row Detail
   calculateAmount(row, ctrl, e) {
     e = e || ctrl;
-    debugger
+    debugger;
     if (e.target.value !== e.target.oldvalue) {
       let $this = this;
       let billdetails = this.state.billdetails;
@@ -587,6 +587,23 @@ class AddOPBillingForm extends Component {
                             );
                           }
                         },
+
+                        {
+                          fieldName: "insurance_yesno",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "insurance" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {row.insurance_yesno === "N"
+                                  ? "Not Covered"
+                                  : "Covered"}
+                              </span>
+                            );
+                          },
+                          disabled: true
+                        },
                         {
                           fieldName: "unit_cost",
                           label: (
@@ -598,37 +615,7 @@ class AddOPBillingForm extends Component {
                           fieldName: "quantity",
                           label: (
                             <AlgaehLabel label={{ fieldName: "quantity" }} />
-                          ),
-                          editorTemplate: row => {
-                            return (
-                              <AlagehFormGroup
-                                div={{}}
-                                textBox={{
-                                  value: row.quantity,
-                                  className: "txt-fld",
-                                  name: "quantity",
-                                  events: {
-                                    onChange: onquantitycol.bind(
-                                      this,
-                                      this,
-                                      row
-                                    )
-                                  },
-                                  others: {
-                                    placeholder: "0.00",
-                                    onBlur: this.calculateAmount.bind(
-                                      this,
-                                      row
-                                    ),
-                                    onFocus: e => {
-                                      e.target.oldvalue = e.target.value;
-                                    },
-                                    type:"number"
-                                  }
-                                }}
-                              />
-                            );
-                          }
+                          )
                         },
 
                         {
@@ -1183,3 +1170,34 @@ export default withRouter(
     mapDispatchToProps
   )(AddOPBillingForm)
 );
+
+// editorTemplate: row => {
+//   return (
+//     <AlagehFormGroup
+//       div={{}}
+//       textBox={{
+//         value: row.quantity,
+//         className: "txt-fld",
+//         name: "quantity",
+//         events: {
+//           onChange: onquantitycol.bind(
+//             this,
+//             this,
+//             row
+//           )
+//         },
+//         others: {
+//           placeholder: "0.00",
+//           onBlur: this.calculateAmount.bind(
+//             this,
+//             row
+//           ),
+//           onFocus: e => {
+//             e.target.oldvalue = e.target.value;
+//           },
+//           type: "number"
+//         }
+//       }}
+//     />
+//   );
+// }

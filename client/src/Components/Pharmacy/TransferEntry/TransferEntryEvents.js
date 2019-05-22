@@ -13,37 +13,63 @@ const changeTexts = ($this, ctrl, e) => {
   $this.setState({ [name]: value });
 };
 
-const getCtrlCode = ($this, docNumber) => {
+const getCtrlCode = ($this, docNumber, row) => {
   AlgaehLoader({ show: true });
-  $this.props.getTransferEntry({
+  debugger;
+
+  algaehApiCall({
     uri: "/transferEntry/gettransferEntry",
     module: "pharmacy",
     method: "GET",
-    printInput: true,
-    data: { transfer_number: docNumber },
-    redux: {
-      type: "TRNS_ENTRY_GET_DATA",
-      mappingName: "tranferEntry"
+    data: {
+      transfer_number: docNumber,
+      from_location_id: row.from_location_id,
+      to_location_id: row.to_location_id
     },
-    afterSuccess: data => {
-      data.saveEnable = true;
+    onSuccess: response => {
+      if (response.data.success === true) {
+        debugger;
+        let pharmacy_stock_detail = [];
+        let data = response.data.records[0];
+        for (let i = 0; i < data.stock_detail.length; i++) {
+          data.pharmacy_stock_detail = pharmacy_stock_detail.concat(
+            data.stock_detail[i].pharmacy_stock_detail
+          );
+        }
 
-      if (data.completed === "Y") {
-        data.postEnable = true;
-      } else {
-        data.postEnable = false;
+        for (let j = 0; j < data.pharmacy_stock_detail.length; j++) {
+          data.pharmacy_stock_detail[j].quantity_transferred =
+            data.pharmacy_stock_detail[j].quantity_transfer;
+        }
+
+        data.saveEnable = true;
+
+        if (data.completed === "Y") {
+          data.postEnable = true;
+        } else {
+          data.postEnable = false;
+        }
+
+        data.cannotEdit = true;
+
+        data.dataExitst = true;
+
+        data.quantity_transferred = 0;
+        data.item_details = null;
+        data.batch_detail_view = false;
+
+        $this.setState(data);
+        AlgaehLoader({ show: false });
+
+        AlgaehLoader({ show: false });
       }
-
-      data.cannotEdit = true;
-
-      data.dataExitst = true;
-
-      data.quantity_transferred = 0;
-      data.item_details = null;
-      data.batch_detail_view = false;
-
-      $this.setState(data);
+    },
+    onFailure: error => {
       AlgaehLoader({ show: false });
+      swalMessage({
+        title: error.message,
+        type: "error"
+      });
     }
   });
 };
@@ -88,7 +114,7 @@ const SaveTransferEntry = $this => {
   delete $this.state.item_details;
 
   for (let j = 0; j < $this.state.stock_detail.length; j++) {
-    if ($this.state.stock_detail[j].inventory_stock_detail === undefined) {
+    if ($this.state.stock_detail[j].pharmacy_stock_detail === undefined) {
       $this.state.stock_detail[j].removed = "Y";
     } else {
       delete $this.state.stock_detail[j].batches;

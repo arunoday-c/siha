@@ -233,64 +233,6 @@ const itemchangeText = ($this, context, e, ctrl) => {
           });
         }
       });
-
-      // $this.props.getSelectedItemDetais({
-      //   uri: "/pharmacyGlobal/getUomLocationStock",
-
-      //   method: "GET",
-      //   data: {
-      //     location_id: $this.state.location_id,
-      //     item_id: value
-      //   },
-      //   redux: {
-      //     type: "ITEMS_UOM_DETAILS_GET_DATA",
-      //     mappingName: "itemdetaillist"
-      //   },
-      //   afterSuccess: data => {
-      //     if (data.locationResult.length > 0) {
-      //       getUnitCost($this, context, e.selected.service_id);
-      //       $this.setState({
-      //         [name]: value,
-      //         item_category: e.selected.category_id,
-      //         uom_id: e.selected.sales_uom_id,
-      //         service_id: e.selected.service_id,
-      //         item_group_id: e.selected.group_id,
-      //         quantity: 1,
-      //         expiry_date: data.locationResult[0].expirydt,
-      //         batchno: data.locationResult[0].batchno,
-      //         grn_no: data.locationResult[0].grnno,
-      //         qtyhand: data.locationResult[0].qtyhand,
-      //         ItemUOM: data.uomResult,
-      //         Batch_Items: data.locationResult,
-      //         addItemButton: false
-      //       });
-
-      //       if (context !== undefined) {
-      //         context.updateState({
-      //           [name]: value,
-      //           item_category: e.selected.category_id,
-      //           uom_id: e.selected.sales_uom_id,
-      //           service_id: e.selected.service_id,
-      //           item_group_id: e.selected.group_id,
-      //           quantity: 1,
-
-      //           expiry_date: data.locationResult[0].expirydt,
-      //           batchno: data.locationResult[0].batchno,
-      //           grn_no: data.locationResult[0].grnno,
-      //           qtyhand: data.locationResult[0].qtyhand,
-      //           ItemUOM: data.uomResult,
-      //           Batch_Items: data.locationResult,
-      //           addItemButton: false
-      //         });
-      //       }
-      //     } else {
-      //       swalMessage({
-      //         title: "No stock available for selected Item.",
-      //         type: "warning"
-      //       });
-      //     }
-      //   }
-      // });
     } else {
       $this.setState(
         {
@@ -442,6 +384,7 @@ const AddItems = ($this, context) => {
         method: "POST",
         data: ItemInput,
         onSuccess: response => {
+          debugger;
           if (response.data.success) {
             let data = response.data.records;
             if (data.billdetails[0].pre_approval === "Y") {
@@ -454,6 +397,13 @@ const AddItems = ($this, context) => {
               let existingservices = $this.state.pharmacy_stock_detail;
 
               if (data.billdetails.length !== 0) {
+                data.billdetails[0].pre_approval =
+                  data.billdetails[0].pre_approval === undefined
+                    ? "N"
+                    : data.billdetails[0].pre_approval;
+
+                data.billdetails[0].insured =
+                  data.billdetails[0].insurance_yesno;
                 data.billdetails[0].extended_cost =
                   data.billdetails[0].gross_amount;
                 data.billdetails[0].net_extended_cost =
@@ -473,6 +423,16 @@ const AddItems = ($this, context) => {
                   data.billdetails[0].services_id;
                 data.billdetails[0].discount_amount =
                   data.billdetails[0].discount_amout;
+
+                data.billdetails[0].batches = [
+                  {
+                    batchno: $this.state.batchno,
+                    expiry_date: $this.state.expiry_date,
+                    grn_no: $this.state.grn_no,
+                    barcode: $this.state.barcode,
+                    qtyhand: $this.state.qtyhand
+                  }
+                ];
 
                 data.billdetails[0].patient_responsibility =
                   data.billdetails[0].patient_resp;
@@ -766,7 +726,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
   e = e || ctrl;
   // if (e.target.value !== e.target.oldvalue) {
   let pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
-
+  debugger;
   row[e.target.name] = parseFloat(e.target.value);
   let inputParam = [
     {
@@ -774,7 +734,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
       vat_applicable: "Y",
       unit_cost: row.unit_cost,
       pharmacy_item: "Y",
-      quantity: row.quantity,
+      quantity: row.quantity === null ? 0 : row.quantity,
       discount_amout:
         e.target.name === "discount_percentage" || e.target.name === "quantity"
           ? 0
@@ -802,6 +762,7 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
     data: inputParam,
     onSuccess: response => {
       if (response.data.success) {
+        debugger;
         let data = response.data.records;
 
         data.billdetails[0].extended_cost = data.billdetails[0].gross_amount;
@@ -815,7 +776,10 @@ const calculateAmount = ($this, context, row, ctrl, e) => {
         data.billdetails[0].discount_amount =
           data.billdetails[0].discount_amout;
         extend(row, data.billdetails[0]);
-        pharmacy_stock_detail[row.rowIdx] = row;
+
+        const _index = pharmacy_stock_detail.indexOf(row);
+        pharmacy_stock_detail[_index] = row;
+        // pharmacy_stock_detail[row.rowIdx] = row;
 
         $this.setState({ pharmacy_stock_detail: pharmacy_stock_detail });
 
@@ -986,17 +950,32 @@ const ShowItemBatch = ($this, e) => {
   });
 };
 
-
 const CloseItemBatch = ($this, context, e) => {
-  let batchno= e !== undefined ? e.selected === true ? e.batchno :
-    $this.state.batchno : $this.state.batchno;
-  let expiry_date=
-    e !== undefined ? e.selected === true ? moment(e.expirydt)._d : $this.state.expiry_date : $this.state.expiry_date;
+  let batchno =
+    e !== undefined
+      ? e.selected === true
+        ? e.batchno
+        : $this.state.batchno
+      : $this.state.batchno;
+  let expiry_date =
+    e !== undefined
+      ? e.selected === true
+        ? moment(e.expirydt)._d
+        : $this.state.expiry_date
+      : $this.state.expiry_date;
 
-  let grn_no= e !== undefined ? e.selected === true ? e.grnno :
-    $this.state.grn_no : $this.state.grn_no;
-  let qtyhand= e !== undefined ? e.selected === true ? e.qtyhand :
-    $this.state.qtyhand : $this.state.qtyhand;
+  let grn_no =
+    e !== undefined
+      ? e.selected === true
+        ? e.grnno
+        : $this.state.grn_no
+      : $this.state.grn_no;
+  let qtyhand =
+    e !== undefined
+      ? e.selected === true
+        ? e.qtyhand
+        : $this.state.qtyhand
+      : $this.state.qtyhand;
 
   $this.setState({
     ...$this.state,
@@ -1033,12 +1012,20 @@ const onchangegridcol = ($this, context, row, e) => {
 };
 
 const qtyonchangegridcol = ($this, context, row, e) => {
-  let name = e.name || e.target.name;
-  let value = e.value || e.target.value;
-
-  if (value <= 0) {
+  debugger;
+  if (row.batchno === undefined || row.batchno === null) {
     swalMessage({
-      title: "Quantity cannot be less than or equal to Zero",
+      title: "Please select Batch",
+      type: "error"
+    });
+    return;
+  }
+  let name = e.target.name;
+  let value = e.target.value === "" ? null : e.target.value;
+
+  if (value < 0) {
+    swalMessage({
+      title: "Quantity cannot be less than Zero",
       type: "warning"
     });
   } else if (parseFloat(value) > row.qtyhand) {
@@ -1103,6 +1090,28 @@ const credittexthandle = ($this, context, ctrl, e) => {
   }
 };
 
+const SelectBatchDetails = ($this, row, context, e) => {
+  //
+
+  debugger;
+  let _pharmacy_stock_detail = $this.state.pharmacy_stock_detail;
+
+  row["batchno"] = e.selected.batchno;
+  row["expiry_date"] = e.selected.expiry_date;
+  row["qtyhand"] = e.selected.qtyhand;
+  row["grn_no"] = e.selected.grnno;
+  row["barcode"] = e.selected.barcode;
+
+  const _index = _pharmacy_stock_detail.indexOf(row);
+  _pharmacy_stock_detail[_index] = row;
+
+  if (context !== null) {
+    context.updateState({
+      pharmacy_stock_detail: _pharmacy_stock_detail
+    });
+  }
+};
+
 export {
   discounthandle,
   UomchangeTexts,
@@ -1122,5 +1131,6 @@ export {
   ViewInsurance,
   qtyonchangegridcol,
   EditGrid,
-  credittexthandle
+  credittexthandle,
+  SelectBatchDetails
 };

@@ -655,10 +655,6 @@
       padding-top: 4px;
       padding-bottom: 4px;
       height: 40px; }
-      :global .algaeh-modal .popupFooter .button-left {
-        float: left;
-        margin-right: 10px;
-        margin-left: 0px; }
       :global .algaeh-modal .popupFooter .btn {
         float: right;
         min-width: 70px;
@@ -723,6 +719,10 @@
           background-color: #007468;
           color: #fff !important;
           border-color: #00dac4; }
+      :global .algaeh-modal .popupFooter .btn-left {
+        float: left  !important;
+        margin-right: 10px  !important;
+        margin-left: 0px  !important; }
   :global .algaeh-modal-Ar {
     margin: 3% auto 0;
     background-color: #fff;
@@ -798,9 +798,9 @@
       padding-bottom: 4px;
       height: 40px; }
       :global .algaeh-modal-Ar .popupFooter .button-left {
-        float: left;
-        margin-right: 10px;
-        margin-left: 0px; }
+        float: left  !important;
+        margin-right: 10px  !important;
+        margin-left: 0px  !important; }
       :global .algaeh-modal-Ar .popupFooter button {
         float: left;
         margin-right: 10px;

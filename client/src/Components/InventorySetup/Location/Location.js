@@ -75,9 +75,12 @@ class Location extends Component {
 
   render() {
     return (
-      <div className="lab_section">
-        <div className="container-fluid">
-          <div className="row">
+      
+<div className="portlet portlet-bordered margin-bottom-15">
+
+<div className="portlet-body">
+
+<div className="row">
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
@@ -167,12 +170,11 @@ class Location extends Component {
               </button>
             </div>
           </div>
-
-          <div className="row form-details">
-            <div className="col" data-validate="pharLocDiv">
-              <AlgaehDataGrid
+<div className="row">
+<div className="col-12" id="inventory_locationGrid_Cntr"  data-validate="pharLocDiv">
+<AlgaehDataGrid
                 datavalidate="data-validate='pharLocDiv'"
-                id="inventory_location"
+                id="inventory_locationGrid"
                 columns={[
                   {
                     fieldName: "location_description",
@@ -395,10 +397,10 @@ class Location extends Component {
                   onDone: updateLocation.bind(this, this)
                 }}
               />
-            </div>
-          </div>
-        </div>
-      </div>
+</div>
+</div>
+</div>
+</div>
     );
   }
 }

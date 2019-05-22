@@ -13,9 +13,9 @@ module.exports = {
           query:
             "INSERT INTO `hims_d_item_master` (`item_code`, `item_description`, `structure_id`,\
           `generic_id`, `category_id`, `group_id`, `item_uom_id`, `purchase_uom_id`, `sales_uom_id`, `stocking_uom_id`, `service_id`,\
-            addl_information, decimals, purchase_cost, markup_percent, sales_price,\
+            addl_information, decimals, purchase_cost, markup_percent, sales_price,sfda_id,\
           `created_date`, `created_by`, `update_date`, `updated_by`)\
-         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+         VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.item_code,
             input.item_description,
@@ -33,6 +33,7 @@ module.exports = {
             input.purchase_cost,
             input.markup_percent,
             input.sales_price,
+            input.sfda_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
@@ -409,7 +410,8 @@ module.exports = {
           IM.generic_id, IM.category_id,IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, \
           IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, IM.service_id from  hims_d_item_master IM left join \
           hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
-          left join hims_d_pharmacy_uom PH  on  MIU.uom_id=PH.hims_d_pharmacy_uom_id "+ _strQry,
+          left join hims_d_pharmacy_uom PH  on  MIU.uom_id=PH.hims_d_pharmacy_uom_id " +
+            _strQry,
           values: intValues,
           printQuery: true
         })
@@ -1030,7 +1032,7 @@ module.exports = {
             "UPDATE `hims_d_item_master` SET `item_code`=?, `item_description`=?, `structure_id`=?,\
           `generic_id`=?, `category_id`=?, `group_id`=?, `form_id`=?, `storage_id`=?, `item_uom_id`=?,\
            `purchase_uom_id`=?, `sales_uom_id`=?, `stocking_uom_id`=?, `item_status`=?, `service_id`=?,\
-           addl_information=?, decimals=?, purchase_cost=?, markup_percent=?, sales_price=?,\
+           addl_information=?, decimals=?, purchase_cost=?, markup_percent=?, sales_price=?,sfda_id=?,\
             `update_date`=?, `updated_by`=?, `record_status`=? WHERE record_status='A' and\
            `hims_d_item_master_id`=?",
           values: [
@@ -1053,6 +1055,7 @@ module.exports = {
             input.purchase_cost,
             input.markup_percent,
             input.sales_price,
+            input.sfda_id,
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             input.record_status,

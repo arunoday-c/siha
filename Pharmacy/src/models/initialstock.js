@@ -64,7 +64,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["STK_DOC"]
+          modules: ["STK_DOC"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           document_number = generatedNumbers[0];

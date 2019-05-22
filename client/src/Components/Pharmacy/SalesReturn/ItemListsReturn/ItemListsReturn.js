@@ -82,7 +82,7 @@ class ItemListsReturn extends Component {
           {context => (
             <div className="hptl-phase1-item-list-billing-form">
               <div className="portlet portlet-bordered margin-bottom-15">
-                <div className="portlet-body">
+                <div className="portlet-body" id="RETURN_detailsGrid_Cntr">
                   <AlgaehDataGrid
                     id="RETURN_details"
                     columns={[
@@ -122,51 +122,9 @@ class ItemListsReturn extends Component {
                                 : ""}
                             </span>
                           );
-                        }
-                      },
-
-                      {
-                        fieldName: "item_category",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Item Category" }}
-                          />
-                        ),
-                        displayTemplate: row => {
-                          let display =
-                            this.props.itemcategory === undefined
-                              ? []
-                              : this.props.itemcategory.filter(
-                                  f =>
-                                    f.hims_d_item_category_id ===
-                                    row.item_category
-                                );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].category_desc
-                                : ""}
-                            </span>
-                          );
                         },
-                        editorTemplate: row => {
-                          let display =
-                            this.props.itemcategory === undefined
-                              ? []
-                              : this.props.itemcategory.filter(
-                                  f =>
-                                    f.hims_d_item_category_id ===
-                                    row.item_category
-                                );
-
-                          return (
-                            <span>
-                              {display !== null && display.length !== 0
-                                ? display[0].category_desc
-                                : ""}
-                            </span>
-                          );
+                        others:{
+                          minWidth:150
                         }
                       },
 
@@ -192,6 +150,57 @@ class ItemListsReturn extends Component {
                           <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                         ),
                         disabled: true
+                      },
+                      {
+                        fieldName: "quantity",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Sold Qty" }}
+                          />
+                        ),
+                        disabled: true,
+                        others:{
+                          minWidth:90
+                        }
+                      },
+                      {
+                        fieldName: "return_quantity",
+                        label: (
+                          <AlgaehLabel
+                            label={{ forceLabel: "Return Qty" }}
+                          />
+                        ),
+                        editorTemplate: row => {
+                          return (
+                            <AlagehFormGroup
+                              div={{}}
+                              textBox={{
+                                value: row.return_quantity,
+                                className: "txt-fld",
+                                name: "return_quantity",
+                                events: {
+                                  onChange: calculateAmount.bind(
+                                    this,
+                                    this,
+                                    row,
+                                    context
+                                  )
+                                },
+                                others: {
+                                  disabled:
+                                    this.state
+                                      .hims_f_pharmcy_sales_return_header_id !==
+                                    null
+                                      ? true
+                                      : false
+                                }
+                              }}
+                            />
+                          );
+                        },
+                        others:{
+                          minWidth:90
+                        }
                       },
                       {
                         fieldName: "uom_id",
@@ -227,6 +236,9 @@ class ItemListsReturn extends Component {
                                 : ""}
                             </span>
                           );
+                        },
+                        others:{
+                          minWidth:90
                         }
                       },
                       {
@@ -234,51 +246,9 @@ class ItemListsReturn extends Component {
                         label: (
                           <AlgaehLabel label={{ forceLabel: "Unit Cost" }} />
                         ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "quantity",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Sold Quantity" }}
-                          />
-                        ),
-                        disabled: true
-                      },
-                      {
-                        fieldName: "return_quantity",
-                        label: (
-                          <AlgaehLabel
-                            label={{ forceLabel: "Return Quantity" }}
-                          />
-                        ),
-                        editorTemplate: row => {
-                          return (
-                            <AlagehFormGroup
-                              div={{}}
-                              textBox={{
-                                value: row.return_quantity,
-                                className: "txt-fld",
-                                name: "return_quantity",
-                                events: {
-                                  onChange: calculateAmount.bind(
-                                    this,
-                                    this,
-                                    row,
-                                    context
-                                  )
-                                },
-                                others: {
-                                  disabled:
-                                    this.state
-                                      .hims_f_pharmcy_sales_return_header_id !==
-                                    null
-                                      ? true
-                                      : false
-                                }
-                              }}
-                            />
-                          );
+                        disabled: true,
+                        others:{
+                          minWidth:90
                         }
                       },
 
@@ -286,7 +256,7 @@ class ItemListsReturn extends Component {
                         fieldName: "extended_cost",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "Extended Cost" }}
+                            label={{ forceLabel: "Ext. Cost" }}
                           />
                         ),
                         disabled: true
@@ -306,7 +276,7 @@ class ItemListsReturn extends Component {
                         fieldName: "discount_amout",
                         label: (
                           <AlgaehLabel
-                            label={{ forceLabel: "discount Amount" }}
+                            label={{ forceLabel: "discount Amt" }}
                           />
                         ),
                         disabled: true

@@ -24,9 +24,11 @@ class OwnMedication extends Component {
 
   render() {
     return (
-      <div className="hptl-phase1-medication-history-form">
+      <div>
+      <div className="popupInner">
+      <div className="popRightDiv">
         <AlgaehDataGrid
-          id="Order_Medication"
+          id="ownMedication"
           columns={[
             {
               fieldName: "quantity",
@@ -84,6 +86,22 @@ class OwnMedication extends Component {
           }}
           paging={{ page: 0, rowsPerPage: 10 }}
         />
+       </div>
+        </div>
+        <div className="popupFooter">
+           
+                   <div className="col"> <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={e => {
+                        this.props.onclosePopup && this.props.onclosePopup(e);
+                      }}
+                    >
+                      Cancel
+                    </button></div>
+                </div>
+
+
       </div>
     );
   }

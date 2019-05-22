@@ -3,12 +3,6 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 
-// import {
-//   PRESCRIPTION_FREQ_PERIOD,
-//   PRESCRIPTION_FREQ_TIME,
-//   PRESCRIPTION_FREQ_DURATION
-// } from "../../../../utils/GlobalVariables.json";
-
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 
 import "./ActiveMedication.css";
@@ -26,9 +20,11 @@ class ActiveMedication extends Component {
 
   render() {
     return (
-      <div className="hptl-active-medication-form">
+      <div>
+      <div className="popupInner">
+      <div className="popRightDiv">
         <AlgaehDataGrid
-          id="Order_Medication"
+          id="activeMedication"
           columns={[
             {
               fieldName: "quantity",
@@ -86,6 +82,24 @@ class ActiveMedication extends Component {
           }}
           paging={{ page: 0, rowsPerPage: 10 }}
         />
+        
+
+        </div>
+        </div>
+        <div className="popupFooter">
+           
+                   <div className="col"> <button
+                      type="button"
+                      className="btn btn-default"
+                      onClick={e => {
+                        this.props.onclosePopup && this.props.onclosePopup(e);
+                      }}
+                    >
+                      Cancel
+                    </button></div>
+                </div>
+
+
       </div>
     );
   }

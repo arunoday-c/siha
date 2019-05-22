@@ -11,16 +11,22 @@ import {
 
 import { updateIntoItemLocation } from "../models/commonFunction";
 // import s from "algaeh-billing/src/models/receiptentry"
-const { addReceiptEntry } = algaehPath(
+const { addReceiptEntry, getReceiptEntry } = algaehPath(
   "algaeh-billing/src/models/receiptentry"
 );
 
 export default () => {
   const api = Router();
-  api.get("/getPosEntry", getPosEntry, (req, res, next) => {
+  api.get("/getPosEntry", getPosEntry, getReceiptEntry, (req, res, next) => {
+    let _receptEntry = req.receptEntry;
+    let _pos = req.records;
+    let result = { ..._receptEntry, ..._pos };
+
+    delete req.receptEntry;
+    delete req.pos;
     res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
       success: true,
-      records: req.records
+      records: result
     });
   });
 

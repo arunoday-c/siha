@@ -42,7 +42,8 @@
     border: none; }
 
 #PointSaleGrid .ReactTable {
-  max-height: 30vh !important; }
+  max-height: 30vh !important;
+  max-width: 95vw !important; }
 
 @media screen and (min-width: 481px) and (max-width: 1280px) and (orientation: landscape) {
   #PointSaleGrid .ReactTable {

@@ -92,7 +92,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["POS_RET_NUM"]
+          modules: ["POS_RET_NUM"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           sales_return_number = generatedNumbers[0];

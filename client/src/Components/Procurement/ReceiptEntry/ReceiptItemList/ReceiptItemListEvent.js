@@ -172,7 +172,7 @@ const dateFormater = ($this, value) => {
 const onchangegridcol = ($this, row, e) => {
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
-  if (parseFloat(value) > row.dn_quantity) {
+  if (parseFloat(value) > parseFloat(row.dn_quantity)) {
     swalMessage({
       title: "Authorize Quantity cannot be greater than Ordered Quantity.",
       type: "warning"
@@ -191,19 +191,23 @@ const onchhangegriddiscount = ($this, row, ctrl, e) => {
   let extended_cost = 0;
   let extended_price = 0;
   let tax_amount = 0;
-
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
   let quantity_recieved_todate =
-    row.quantity_recieved_todate + parseFloat(value);
+    parseFloat(row.quantity_recieved_todate) + parseFloat(value);
   if (value !== "") {
-    if (quantity_recieved_todate > row.dn_quantity) {
+    if (parseFloat(value) < 0) {
       swalMessage({
-        title: " Recived Quantity cannot be greater than Delivery Note Quantity.",
+        title: "Recived Quantity cannot be less than Zero.",
         type: "warning"
       });
-      row[name] = row[name];
-      row.update();
+    } else if (quantity_recieved_todate > parseFloat(row.dn_quantity)) {
+      swalMessage({
+        title:
+          " Recived Quantity cannot be greater than Delivery Note Quantity.",
+        type: "warning"
+      });
     } else {
       extended_price = parseFloat(row.unit_cost) * parseFloat(value);
       discount_amount = (extended_price * discount_percentage) / 100;
@@ -295,8 +299,16 @@ const CancelGrid = ($this, context, cancelRow) => {
 };
 
 const onchangegridcoldatehandle = ($this, row, ctrl, e) => {
-  row[e] = moment(ctrl)._d;
-  $this.setState({ append: !$this.state.append });
+  debugger;
+  if (Date.parse(moment(ctrl)._d) < Date.parse(new Date())) {
+    swalMessage({
+      title: "Expiry date cannot be past Date.",
+      type: "warning"
+    });
+  } else {
+    row[e] = moment(ctrl)._d;
+    $this.setState({ append: !$this.state.append });
+  }
 };
 
 const changeDateFormat = date => {

@@ -3,6 +3,7 @@ import moment from "moment";
 import algaehPath from "algaeh-module-bridge";
 import algaehUtilities from "algaeh-utilities/utilities";
 import { LINQ } from "node-linq";
+import _ from "lodash";
 
 const { getBillDetailsFunction } = algaehPath(
   "algaeh-billing/src/models/billing"
@@ -50,7 +51,10 @@ module.exports = {
                 _mysql.releaseConnection();
                 req.records = {
                   ...headerResult[0],
-                  ...{ pharmacy_stock_detail }
+                  ...{ pharmacy_stock_detail },
+                  ...{
+                    hims_f_receipt_header_id: headerResult[0].receipt_header_id
+                  }
                 };
                 next();
               })
@@ -87,7 +91,12 @@ module.exports = {
 
       _mysql
         .generateRunningNumber({
-          modules: ["POS_NUM"]
+          modules: ["POS_NUM"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           pos_number = generatedNumbers[0];
@@ -311,7 +320,7 @@ module.exports = {
       });
     }
   },
-  getPrescriptionPOS: (req, res, next) => {
+  getPrescriptionPOSBackUp: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
       const utilities = new algaehUtilities();
@@ -437,6 +446,101 @@ module.exports = {
             _mysql.releaseConnection();
             next();
           }
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
+  getPrescriptionPOS: (req, res, next) => {
+    const _mysql = new algaehMysql();
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("getPrescriptionPOS: ");
+
+      const _reqBody = req.body;
+      const item_ids = new LINQ(_reqBody)
+        .Select(s => {
+          return s.item_id;
+        })
+        .ToArray();
+      const location_ids = new LINQ(_reqBody)
+        .Select(s => {
+          return s.pharmacy_location_id;
+        })
+        .ToArray();
+      let _message = "";
+
+      _mysql
+        .executeQuery({
+          query:
+            "select itmloc.item_id, itmloc.pharmacy_location_id, itmloc.batchno, itmloc.expirydt, itmloc.qtyhand, \
+              itmloc.grnno, itmloc.sales_uom, itmloc.barcode, item.item_description, item.service_id,\
+              item.category_id,item.group_id \
+              from hims_m_item_location as itmloc \
+              inner join hims_d_item_master as item on itmloc.item_id = item.hims_d_item_master_id  \
+              where item_id in (?) and pharmacy_location_id in (?) and qtyhand > 0 and expirydt > CURDATE() order by expirydt",
+          values: [item_ids, location_ids],
+          printQuery: true
+        })
+        .then(result => {
+          var item_grp = _(result)
+            .groupBy("item_id")
+            .map((row, item_id) => item_id)
+            .value();
+
+          let outputArray = [];
+          utilities.logger().log("item_grp: ", item_grp);
+
+          for (let i = 0; i < item_grp.length; i++) {
+            // utilities.logger().log("item_details: ", item_details);
+
+            let item = new LINQ(result)
+              .Where(w => w.item_id == item_grp[i])
+              .Select(s => {
+                let item_details = new LINQ(_reqBody)
+                  .Where(w => w.item_id == s.item_id)
+                  .FirstOrDefault();
+                return {
+                  item_id: s.item_id,
+                  service_id: s.service_id,
+                  item_category: s.category_id,
+                  item_group_id: s.group_id,
+                  uom_id: s.sales_uom,
+                  quantity: 0,
+                  qtyhand: 0,
+                  expiry_date: null,
+                  insured: item_details.insured,
+                  pre_approval: item_details.pre_approval
+                };
+              })
+              .FirstOrDefault();
+
+            let batches = new LINQ(result)
+              .Where(w => w.item_id == item_grp[i])
+              .Select(s => {
+                return {
+                  item_id: s.item_id,
+                  pharmacy_location_id: s.pharmacy_location_id,
+                  batchno: s.batchno,
+                  expiry_date: s.expirydt,
+                  barcode: s.barcode,
+                  qtyhand: s.qtyhand,
+                  grnno: s.grnno
+                };
+              })
+              .ToArray();
+
+            outputArray.push({ ...item, batches });
+          }
+
+          req.records = outputArray;
+          next();
         })
         .catch(error => {
           _mysql.releaseConnection();

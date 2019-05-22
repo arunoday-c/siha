@@ -33,7 +33,6 @@
                         <th>Discount<p>خصم</p></th>
                         <th>Net Amt. <p>المبلغ الصافي</p></th>
                         <th>Patient Respo.<p>حصة المريض</p></th>
-                        <th>Company Respo.<p>حصة المريض</p></th>
                         <th>Vat Amt. <p>قيمة الضريبة</p></th>
                         <th>Net/Claim Amt.<p>صافي / مبلغ المطالبة</th>
                     </tr>
@@ -42,24 +41,22 @@
                     {{#each detail}}
                     <tr>
                       <td>{{registration_number}}</td>
-                      <td>{{service_name}}</td>
-
+                      <td>{{item_description}}</td>
                       <td>{{quantity}}</td>
                       <td class="numberFld">{{price}}</td>
                       <td class="numberFld">{{gross_amount}}</td>
                       <td class="numberFld">{{discount_amount}}</td>
                       <td class="numberFld">{{net_amount}}</td>
                       <td class="numberFld">{{patient_share}}</td>
-                      <td class="numberFld">{{company_resp}}</td>
-                      <td class="numberFld">{{company_tax}}</td>
-                      <td class="numberFld">{{net_claim}}</td>
+                      <td class="numberFld">{{patient_tax}}</td>
+                      <td class="numberFld">{{patient_payable}}</td>
                     </tr>
                     {{/each}}
 
 
 
                 </tbody>
-            </table>   </table>   <table class="tableTotal">
+            </table>  </table>  <table class="tableTotal">
                 <tr><td>Total Amount before VAT</td><td>{{total_gross_amount}}</td><td>الإجمالي قبل الضريبة المضافة</td></tr>
                  <tr><td>Discount</td><td>{{total_discount_amount}}</td><td>الخصم</td></tr>
                   <tr><td>VAT Amount 5%</td><td>Patient + Company</td><td>قيمة الضريبة المضافة %5</td></tr>

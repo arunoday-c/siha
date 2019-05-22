@@ -32,7 +32,7 @@
                         <th>Gross Amount<p>المبلغ الإجمالي</p></th>
                         <th>Discount<p>خصم</p></th>
                         <th>Net Amt. <p>المبلغ الصافي</p></th>
-                        <th>Patient Respo.<p>حصة المريض</p></th>                        
+                        <th>Patient Respo.<p>حصة المريض</p></th>
                         <th>Vat Amt. <p>قيمة الضريبة</p></th>
                         <th>Net/Claim Amt.<p>صافي / مبلغ المطالبة</th>
                     </tr>
@@ -40,7 +40,7 @@
                 <tbody>
                     {{#each detail}}
                     <tr>
-                      <td>{{cpt_code}}</td>
+                      <td>{{registration_number}}</td>
                       <td>{{service_name}}</td>
                       <td>{{quantity}}</td>
                       <td class="numberFld">{{price}}</td>
@@ -52,7 +52,7 @@
                       <td class="numberFld">{{patient_payable}}</td>
                     </tr>
                     {{/each}}
- 
+
 
 
                 </tbody>

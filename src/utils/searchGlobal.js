@@ -73,16 +73,22 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "POSEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_pos_header\
-          where record_status ='A' and hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS PH.*, date(PH.pos_date) as posdate, V.visit_code, P.patient_code, P.full_name \
+          from hims_f_pharmacy_pos_header PH \
+          left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
+          left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
+          where PH.record_status ='A' and PH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },
       {
         searchName: "POSNOReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_pos_header\
-          where record_status ='A' and posted='Y' and hospital_id=" +
+          "select SQL_CALC_FOUND_ROWS PH.*,date(PH.pos_date) as posdate, V.visit_code, P.patient_code, P.full_name \
+          from hims_f_pharmacy_pos_header PH \
+          left join hims_f_patient P on PH.patient_id = P.hims_d_patient_id \
+          left join hims_f_patient_visit V on PH.visit_id = V.hims_f_patient_visit_id \
+          where PH.record_status ='A' and PH.posted='Y' and PH.hospital_id=" +
           hospitalId,
         orderBy: "hims_f_pharmacy_pos_header_id desc"
       },
@@ -104,15 +110,17 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "SalesReturn",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmcy_sales_return_header where hospital_id=" +
-          hospitalId,
+          "select SQL_CALC_FOUND_ROWS *,date(sales_return_date) as return_date from hims_f_pharmcy_sales_return_header",
         orderBy: "hims_f_pharmcy_sales_return_header_id desc"
       },
       {
         searchName: "TransferEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_pharmacy_transfer_header  where hospital_id=" +
-          hospitalId,
+          "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description as from_location, \
+          TPL.location_description as to_location \
+          from hims_f_pharmacy_transfer_header TH, hims_d_pharmacy_location FPL, hims_d_pharmacy_location TPL \
+          where FPL.hims_d_pharmacy_location_id = TH.from_location_id and  \
+          TH.to_location_id = TPL.hims_d_pharmacy_location_id ",
         orderBy: "hims_f_pharmacy_transfer_header_id desc"
       },
       {
@@ -154,8 +162,13 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "InvTransferEntry",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS * from hims_f_inventory_transfer_header where hospital_id=" +
-          hospitalId
+          "select SQL_CALC_FOUND_ROWS TH.*, FPL.location_description as from_location,   \
+          TPL.location_description as to_location from hims_f_inventory_transfer_header TH, \
+          hims_d_inventory_location FPL, hims_d_inventory_location TPL          \
+          where FPL.hims_d_inventory_location_id = TH.from_location_id and           \
+          TH.to_location_id = TPL.hims_d_inventory_location_id and  TH.hospital_id=" +
+          hospitalId,
+        orderBy: "hims_f_inventory_transfer_header_id desc"
       },
       {
         searchName: "InvREQTransEntry",

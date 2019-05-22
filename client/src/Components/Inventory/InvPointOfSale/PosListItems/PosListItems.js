@@ -425,66 +425,12 @@ class PosListItems extends Component {
                                             : ""}
                                         </span>
                                       );
-                                    }
-                                  },
-
-                                  {
-                                    fieldName: "item_category",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{ forceLabel: "Item Category" }}
-                                      />
-                                    ),
-                                    displayTemplate: row => {
-                                      let display =
-                                        this.props.inventoryitemcategory === undefined
-                                          ? []
-                                          : this.props.inventoryitemcategory.filter(
-                                              f =>
-                                                f.hims_d_inventory_tem_category_id ===
-                                                row.item_category
-                                            );
-
-                                      return (
-                                        <span>
-                                          {display !== null &&
-                                          display.length !== 0
-                                            ? display[0].category_desc
-                                            : ""}
-                                        </span>
-                                      );
                                     },
-                                    editorTemplate: row => {
-                                      let display =
-                                        this.props.inventoryitemcategory === undefined
-                                          ? []
-                                          : this.props.inventoryitemcategory.filter(
-                                              f =>
-                                                f.hims_d_inventory_tem_category_id ===
-                                                row.item_category
-                                            );
-
-                                      return (
-                                        <span>
-                                          {display !== null &&
-                                          display.length !== 0
-                                            ? display[0].category_desc
-                                            : ""}
-                                        </span>
-                                      );
+                                    others:{
+                                      minWidth:200
                                     }
                                   },
-                                  {
-                                    fieldName: "qtyhand",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{
-                                          forceLabel: "Quantity In Hand"
-                                        }}
-                                      />
-                                    ),
-                                    disabled: true
-                                  },
+
                                   {
                                     fieldName: "expiry_date",
                                     label: (
@@ -515,6 +461,58 @@ class PosListItems extends Component {
                                       />
                                     ),
                                     disabled: true
+                                  },
+                                  {
+                                    fieldName: "qtyhand",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{
+                                          forceLabel: "Qty In Hand"
+                                        }}
+                                      />
+                                    ),
+                                    disabled: true
+                                  },
+                                  {
+                                    fieldName: "quantity",
+                                    label: (
+                                      <AlgaehLabel
+                                        label={{ forceLabel: "Qty Req." }}
+                                      />
+                                    ),
+                                    displayTemplate: row => {
+                                      return (
+                                        <AlagehFormGroup
+                                          div={{}}
+                                          textBox={{
+                                            number: {
+                                              allowNegative: false,
+                                              thousandSeparator: ","
+                                            },
+                                            value: row.quantity,
+                                            className: "txt-fld",
+                                            name: "quantity",
+                                            events: {
+                                              onChange: qtyonchangegridcol.bind(
+                                                this,
+                                                this,
+                                                context,
+                                                row
+                                              )
+                                            },
+                                            others: {
+                                              onFocus: e => {
+                                                e.target.oldvalue =
+                                                  e.target.value;
+                                              }
+                                            }
+                                          }}
+                                        />
+                                      );
+                                    },
+                                    others:{
+                                      minWidth:90
+                                    }
                                   },
                                   {
                                     fieldName: "uom_id",
@@ -560,6 +558,9 @@ class PosListItems extends Component {
                                             : ""}
                                         </span>
                                       );
+                                    },
+                                    others:{
+                                      minWidth:90
                                     }
                                   },
                                   {
@@ -569,44 +570,9 @@ class PosListItems extends Component {
                                         label={{ forceLabel: "Unit Cost" }}
                                       />
                                     ),
-                                    disabled: true
-                                  },
-                                  {
-                                    fieldName: "quantity",
-                                    label: (
-                                      <AlgaehLabel
-                                        label={{ forceLabel: "Quantity" }}
-                                      />
-                                    ),
-                                    displayTemplate: row => {
-                                      return (
-                                        <AlagehFormGroup
-                                          div={{}}
-                                          textBox={{
-                                            number: {
-                                              allowNegative: false,
-                                              thousandSeparator: ","
-                                            },
-                                            value: row.quantity,
-                                            className: "txt-fld",
-                                            name: "quantity",
-                                            events: {
-                                              onChange: qtyonchangegridcol.bind(
-                                                this,
-                                                this,
-                                                context,
-                                                row
-                                              )
-                                            },
-                                            others: {
-                                              onFocus: e => {
-                                                e.target.oldvalue =
-                                                  e.target.value;
-                                              }
-                                            }
-                                          }}
-                                        />
-                                      );
+                                    disabled: true,
+                                    others:{
+                                      minWidth:90
                                     }
                                   },
 
@@ -614,7 +580,7 @@ class PosListItems extends Component {
                                     fieldName: "extended_cost",
                                     label: (
                                       <AlgaehLabel
-                                        label={{ forceLabel: "Extended Cost" }}
+                                        label={{ forceLabel: "Ext. Cost" }}
                                       />
                                     ),
                                     disabled: true
@@ -661,7 +627,7 @@ class PosListItems extends Component {
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "discount Amount"
+                                          forceLabel: "discount Amt."
                                         }}
                                       />
                                     ),
@@ -699,7 +665,7 @@ class PosListItems extends Component {
                                     label: (
                                       <AlgaehLabel
                                         label={{
-                                          forceLabel: "Net Extended Cost"
+                                          forceLabel: "Net Ext. Cost"
                                         }}
                                       />
                                     ),
