@@ -70,11 +70,12 @@ module.exports = {
           hims_f_patient_visit.sub_department_id=hims_d_sub_department.hims_d_sub_department_id \
           and hims_d_sub_department.record_status='A' and hims_f_patient_visit.record_status='A' \
           and hims_f_patient_visit.visit_date =DATE(now()) and hims_d_sub_department.hims_d_sub_department_id=?\
-          and hims_f_patient_visit.doctor_id=? and patient_id =? ",
+          and hims_f_patient_visit.doctor_id=? and patient_id =? and hims_f_patient_visit.hospital_id=?",
           values: [
             inputParam.sub_department_id,
             inputParam.doctor_id,
-            inputParam.patient_id
+            inputParam.patient_id,
+            req.userIdentity.hospital_id
           ],
           printQuery: true
         })
@@ -140,8 +141,8 @@ module.exports = {
                 `visit_date`, `department_id`, `sub_department_id`, `doctor_id`, `maternity_patient`,\
                 `is_mlc`, `mlc_accident_reg_no`, `mlc_police_station`, `mlc_wound_certified_date`, `existing_plan`,\
                 `treatment_plan_id`,`created_by`, `created_date`,`visit_code`,`visit_expiery_date`,`episode_id`,\
-                `appointment_id`, `appointment_patient`, `new_visit_patient`)\
-                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?);",
+                `appointment_id`, `appointment_patient`, `new_visit_patient`,hospital_id)\
+                VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?,?, ?, ?, ?,?);",
             values: [
               inputParam.patient_id,
               inputParam.visit_type,
@@ -172,7 +173,8 @@ module.exports = {
               inputParam.episode_id,
               inputParam.appointment_id,
               inputParam.appointment_patient,
-              inputParam.new_visit_patient
+              inputParam.new_visit_patient,
+              req.userIdentity.hospital_id
             ],
             printQuery: true
           })
@@ -228,8 +230,12 @@ module.exports = {
             query:
               "select max(visit_expiery_date) as visit_expiery_date,max(episode_id) as episode_id, no_free_visit\
                  from hims_f_patient_visit where\
-                patient_id=? and doctor_id=? and record_status='A';",
-            values: [inputParam.patient_id, inputParam.doctor_id],
+                patient_id=? and doctor_id=? and record_status='A' and  hospital_id=?;",
+            values: [
+              inputParam.patient_id,
+              inputParam.doctor_id,
+              req.userIdentity.hospital_id
+            ],
             printQuery: true
           })
           .then(expResult => {
@@ -367,8 +373,8 @@ module.exports = {
         .executeQuery({
           query:
             "insert into hims_f_patient_encounter(patient_id,provider_id,visit_id,source,\
-                episode_id,age,payment_type,created_date,created_by,updated_date,updated_by)values(\
-                 ?,?,?,?,?,?,?,?,?,?,?) ",
+                episode_id,age,payment_type,created_date,created_by,updated_date,updated_by,hospital_id)values(\
+                 ?,?,?,?,?,?,?,?,?,?,?,?) ",
           values: [
             input.patient_id,
             input.provider_id,
@@ -380,7 +386,8 @@ module.exports = {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            req.userIdentity.algaeh_d_app_user_id
+            req.userIdentity.algaeh_d_app_user_id,
+            req.userIdentity.hospital_id
           ],
           printQuery: true
         })

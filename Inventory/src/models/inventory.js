@@ -316,7 +316,8 @@ module.exports = {
           IM.category_id,IM.group_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, \
           IM.item_status, IM.service_id from  hims_d_inventory_item_master IM left join \
           hims_m_inventory_item_uom MIU on IM.hims_d_inventory_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
-          left join hims_d_inventory_uom PH  on  MIU.uom_id=PH.hims_d_inventory_uom_id "+ _strQry,
+          left join hims_d_inventory_uom PH  on  MIU.uom_id=PH.hims_d_inventory_uom_id " +
+            _strQry,
           values: intValues,
           printQuery: true
         })
@@ -878,7 +879,8 @@ module.exports = {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             created_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            updated_date: new Date()
+            updated_date: new Date(),
+            hospital_id: req.userIdentity.hospital_id
           },
           bulkInsertOrUpdate: true,
           printQuery: true

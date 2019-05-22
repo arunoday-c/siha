@@ -2199,9 +2199,10 @@ getYearlyLeaveData: (req, res, next) => {
       E.employee_code,  E.full_name as employee_name,SD.sub_department_code,\
       SD.sub_department_name from  hims_f_employee_yearly_leave EYL  inner join hims_d_employee E on\
       EYL.employee_id=E.hims_d_employee_id  left join hims_d_sub_department SD\
-      on E.sub_department_id=SD.hims_d_sub_department_id  where EYL.year=? order by hims_f_employee_yearly_leave_id desc",
+      on E.sub_department_id=SD.hims_d_sub_department_id  where EYL.year=? and EYL.hospital_id=? order by hims_f_employee_yearly_leave_id desc",
       values: [
-        req.query.year
+        req.query.year,
+        req.userIdentity.hospital_id
         
      
       ],
@@ -2619,16 +2620,16 @@ processYearlyLeave: (req, res, next) => {
         query:
           "select hims_d_employee_id, employee_code,full_name  as employee_name,\
                 employee_status,date_of_joining ,hospital_id ,employee_type,sex\
-                from hims_d_employee where employee_status <>'I' and  record_status='A' " +
+                from hims_d_employee where employee_status <>'I' and  record_status='A' and hospital_id=?" +
           employee_id +
           ";\
                 select L.hims_d_leave_id,L.leave_code,LD.employee_type,LD.gender,LD.eligible_days from hims_d_leave  L \
                 inner join hims_d_leave_detail LD on L.hims_d_leave_id=LD.leave_header_id  and L.record_status='A' ;\
                 select hims_f_employee_yearly_leave_id,employee_id,`year` from hims_f_employee_yearly_leave\
-                 where record_status='A' and `year`=? ;\
+                 where record_status='A' and `year`=? and hospital_id=?;\
                  select hims_f_employee_monthly_leave_id,employee_id,year,leave_id from\
-                hims_f_employee_monthly_leave where   `year`=?; ",
-        values: [year, year],
+                hims_f_employee_monthly_leave where   `year`=? and hospital_id=?; ",
+        values: [req.userIdentity.hospital_id,year,req.userIdentity.hospital_id, year,req.userIdentity.hospital_id],
         printQuery: true
       })
       .then(allResult => {
@@ -2792,7 +2793,8 @@ processYearlyLeave: (req, res, next) => {
                         created_date: new Date(),
                         updated_date: new Date(),
                         created_by: req.userIdentity.algaeh_d_app_user_id,
-                        updated_by: req.userIdentity.algaeh_d_app_user_id
+                        updated_by: req.userIdentity.algaeh_d_app_user_id,
+                        hospital_id: req.userIdentity.hospital_id
                       },
                       bulkInsertOrUpdate: true,
                       printQuery: true
@@ -2846,7 +2848,10 @@ processYearlyLeave: (req, res, next) => {
                           "INSERT INTO hims_f_employee_monthly_leave(??) VALUES ?",
                         values: monthlyArray,
                         includeValues: insurtColumns,
+                        extraValues: {          
 
+                          hospital_id: req.userIdentity.hospital_id
+                        },
                         bulkInsertOrUpdate: true,
                         printQuery: true
                       })
@@ -2986,7 +2991,7 @@ getLeaveApllication: (req, res, next) => {
         from hims_f_leave_application LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
         and L.record_status='A' inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id \
         and E.record_status='A' inner join hims_d_sub_department SD \
-        on LA.sub_department_id=SD.hims_d_sub_department_id  where " +
+        on LA.sub_department_id=SD.hims_d_sub_department_id  where LA.hospital_id=? and " +
           leave_status +
           "" +
           auth_level +
@@ -2995,6 +3000,7 @@ getLeaveApllication: (req, res, next) => {
           "" +
           employee +
           "order by hims_f_leave_application_id desc",
+          values: [req.userIdentity.hospital_id],
 
         printQuery: true
       })
@@ -4574,7 +4580,7 @@ function saveF  (_mysql,req,  next,  input, msg){
       values: [
         numGenLeave[0],
         input.employee_id,
-       input.hospital_id,
+        req.userIdentity.hospital_id,
         new Date(),
         input.sub_department_id,
         input.leave_id,

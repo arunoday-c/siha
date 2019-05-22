@@ -10,7 +10,7 @@ let addGlassPrescription = (req, res, next) => {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO hims_f_glass_prescription (patient_id,visit_id,provider_id,prescription_date,pgp_power_right_odsph,\
+          "INSERT INTO hims_f_glass_prescription (patient_id,visit_id,provider_id,hospital_id,prescription_date,pgp_power_right_odsph,\
             pgp_power_right_odcyl,pgp_power_right_odaxis,pgp_power_right_odadd,pgp_power_right_ossph,pgp_power_right_oscyl,\
             pgp_power_right_osaxis,pgp_power_right_osadd,pgp_power_left_odsph,pgp_power_left_odcyl,pgp_power_left_odaxis,\
             pgp_power_left_odadd,pgp_power_left_ossph,pgp_power_left_oscyl,pgp_power_left_osaxis,pgp_power_left_osadd,\
@@ -27,11 +27,13 @@ let addGlassPrescription = (req, res, next) => {
             bifocal,medium,lenticular,single_vision,dark,\
             safety_thickness,anti_reflecting_coating,photosensitive,\
             high_index,colored,anti_scratch,cl_type,remarks)\
-                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.patient_id,
           input.visit_id,
           input.provider_id,
+
+          req.userIdentity.hospital_id,
           input.prescription_date,
           input.pgp_power_right_odsph,
           input.pgp_power_right_odcyl,
@@ -130,7 +132,7 @@ let addGlassPrescription = (req, res, next) => {
           input.cl_type,
           input.remarks
         ],
-        printQuery:true
+        printQuery: true
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -159,15 +161,11 @@ let getGlassPrescription = (req, res, next) => {
   }
 
   if (req.query.patient_id > 0) {
-    str_qry += ` and patient_id=${
-      req.query.patient_id
-    }`;
+    str_qry += ` and patient_id=${req.query.patient_id}`;
   }
 
   if (req.query.visit_id > 0) {
-    str_qry += ` and visit_id=${
-      req.query.visit_id
-    }`;
+    str_qry += ` and visit_id=${req.query.visit_id}`;
   }
 
   try {
@@ -189,7 +187,8 @@ let getGlassPrescription = (req, res, next) => {
             multi_coated,varilux,light,aspheric,\
             bifocal,medium,lenticular,single_vision,dark,\
             safety_thickness,anti_reflecting_coating,photosensitive,\
-            high_index,colored,anti_scratch,cl_type,remarks from hims_f_glass_prescription where 1=1 ${str_qry} `
+            high_index,colored,anti_scratch,cl_type,remarks from hims_f_glass_prescription where hospital_id=? ${str_qry} `,
+        values: [req.userIdentity.hospital_id]
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -336,7 +335,7 @@ let updateGlassPrescription = (req, res, next) => {
             input.remarks,
             input.hims_f_glass_prescription_id
           ],
-          printQuery:true
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();

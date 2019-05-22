@@ -12,8 +12,8 @@ module.exports = {
             "insert into hims_f_overtime_header(`employee_id`,\
               `year`,`month`,`overtime_type`,`total_ot_hours`,`ot_hours`,\
               `weekof_ot_hours`,`holiday_ot_hours`,`status`,`overtime_payment_type`,`leave_id`,`comp_off_leaves`,\
-              `created_by`,`created_date`) \
-              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              `created_by`,`created_date`,hospital_id) \
+              values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             _input.employee_id,
             _input.year,
@@ -28,7 +28,8 @@ module.exports = {
             _input.leave_id,
             _input.comp_off_leaves,
             req.userIdentity.algaeh_d_app_user_id,
-            new Date()
+            new Date(),
+            req.userIdentity.hospital_id
           ],
           printQuery: true
         })

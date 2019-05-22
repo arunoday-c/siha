@@ -369,8 +369,8 @@ module.exports = {
               query:
                 "INSERT INTO `hims_f_leave_salary_header` (leave_salary_number,leave_salary_date,employee_id,year,month,\
                 leave_start_date,leave_end_date,salary_amount,leave_amount,\
-                airfare_amount,total_amount,leave_period,status,created_date,created_by)\
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                airfare_amount,total_amount,leave_period,status,created_date,created_by,hospital_id)\
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 generatedNumbers[0],
                 moment(inputParam.leave_salary_date).format("YYYY-MM-DD"),
@@ -386,7 +386,8 @@ module.exports = {
                 inputParam.leave_period,
                 inputParam.status,
                 new Date(),
-                req.userIdentity.algaeh_d_app_user_id
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })

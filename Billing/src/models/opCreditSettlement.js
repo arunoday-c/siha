@@ -36,7 +36,7 @@ module.exports = {
                 inputParam.patient_id,
                 inputParam.reciept_amount,
                 inputParam.write_off_amount,
-                inputParam.hospital_id,
+                req.userIdentity.hospital_id,
                 inputParam.recievable_amount,
                 inputParam.remarks,
                 inputParam.reciept_header_id,

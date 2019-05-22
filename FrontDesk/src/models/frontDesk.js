@@ -12,6 +12,9 @@ module.exports = {
 
       let inputValues = [];
       let _stringData = "";
+      _stringData += " and hospital_id=?";
+      inputValues.push(req.userIdentity.hospital_id);
+
       if (input.hims_d_patient_id != null) {
         _stringData += " and hims_d_patient_id=?";
         inputValues.push(input.hims_d_patient_id);
@@ -343,18 +346,11 @@ module.exports = {
       next(e);
     }
   },
+
+  //created by :irfan
   getCashHandoverDetails: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      //let shift_status = "";
-
-      // if (
-      //   req.query.shift_status != "null" &&
-      //   req.query.shift_status != null &&
-      //   req.query.shift_status != undefined
-      // ) {
-      //   shift_status = `and shift_status='${req.query.shift_status}'`;
-      // }
       _mysql
         .executeQuery({
           query: ` select hims_f_cash_handover_header_id,shift_id ,shift_description from\

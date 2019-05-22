@@ -115,8 +115,8 @@ module.exports = {
               insurance_provider_id, sub_insurance_provider_id, network_id, network_type, network_office_id, policy_number, \
               secondary_card_number, secondary_effective_start_date, secondary_effective_end_date, secondary_insurance_provider_id,\
               secondary_network_id, secondary_network_type, secondary_sub_insurance_provider_id, secondary_network_office_id, \
-              posted,reciept_id,created_date,created_by,updated_date,updated_by) \
-          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              posted,reciept_id,created_date,created_by,updated_date,updated_by,hospital_id=?) \
+          VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 sales_return_number,
                 today,
@@ -173,7 +173,8 @@ module.exports = {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                req.userIdentity.algaeh_d_app_user_id
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })

@@ -80,8 +80,9 @@ module.exports = {
           _mysql
             .executeQuery({
               query:
-                "INSERT INTO `hims_f_pharmacy_stock_header` (document_number,docdate,`year`,period,description,posted,created_date,created_by,updated_date,updated_by) \
-                VALUE(?,?,?,?,?,?,?,?,?,?)",
+                "INSERT INTO `hims_f_pharmacy_stock_header` (document_number,docdate,`year`,period,\
+                description,posted,created_date,created_by,updated_date,updated_by,hospital_id) \
+                VALUE(?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 document_number,
                 today,
@@ -92,7 +93,8 @@ module.exports = {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                req.userIdentity.algaeh_d_app_user_id
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })

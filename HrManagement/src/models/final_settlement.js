@@ -197,8 +197,8 @@ where E.hims_d_employee_id=? ",
               `settled_date`,`final_settlement_status`,`total_amount`,`total_earnings`,`total_deductions`,\
               `total_loans`,`salary_id`,`total_salary`,`end_of_service_id`,`total_eos`,`leave_encashment_id`,\
               `total_leave_encash`,`employee_status`,`forfiet`,`remarks`,`created_by`,`created_date`,`updated_date`,\
-              `updated_by`,`posted`,`posted_date`,`posted_by`,`cancelled`,`cancelled_by`,`cancelled_date`) values(?,?,?,?,\
-                ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              `updated_by`,`posted`,`posted_date`,`posted_by`,`cancelled`,`cancelled_by`,`cancelled_date`,hospital_id) values(?,?,?,?,\
+                ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 newNumber[0],
                 _input.employee_id,
@@ -230,7 +230,8 @@ where E.hims_d_employee_id=? ",
                 _input.cancelled === "Y"
                   ? req.userIdentity.algaeh_d_app_user_id
                   : null,
-                _input.cancelled === "Y" ? new Date() : null
+                _input.cancelled === "Y" ? new Date() : null,
+                req.userIdentity.hospital_id
               ]
             })
             .then(header_result => {

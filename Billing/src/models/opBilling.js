@@ -192,6 +192,9 @@ module.exports = {
       let _stringData = "";
       let inputValues = [];
 
+      _stringData += " and hospital_id=?";
+      inputValues.push(req.userIdentity.hospital_id);
+
       if (req.query.created_date != null) {
         _stringData += " and date(S.created_date)=?";
         inputValues.push(req.query.created_date);

@@ -20,7 +20,7 @@ module.exports = {
             year: input.year,
             month: input.month,
             category: input.category,
-
+            hospital_id: req.userIdentity.hospital_id,
             created_by: req.userIdentity.algaeh_d_app_user_id,
             created_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id,
@@ -67,8 +67,9 @@ module.exports = {
         _mysql
           .executeQuery({
             query:
-              "SELECT *, hims_d_employee_id as employee_id  FROM hims_d_employee WHERE record_status ='A'" +
+              "SELECT *, hims_d_employee_id as employee_id  FROM hims_d_employee WHERE record_status ='A' and hospital_id=?" +
               _strAppend,
+            values: [req.userIdentity.hospital_id],
             printQuery: true
           })
           .then(result => {
@@ -481,6 +482,10 @@ module.exports = {
 
         let inputValues = [];
         let _stringData = "";
+
+        _stringData += " AND ED.hospital_id=?";
+        inputValues.push(req.userIdentity.hospital_id);
+
         if (input.employee_id != null) {
           _stringData += " AND employee_id=?";
           inputValues.push(input.employee_id);
@@ -990,8 +995,8 @@ module.exports = {
             query:
               "select hims_m_doctor_service_commission_id,provider_id,services_id,service_type_id,op_cash_commission_percent,\
           op_credit_commission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
-           from hims_m_doctor_service_commission where record_status='A'and provider_id=?",
-            values: [input.provider_id],
+           from hims_m_doctor_service_commission where record_status='A'and provider_id=? and hospital_id=?",
+            values: [input.provider_id, req.userIdentity.hospital_id],
             printQuery: true
           })
           .then(result => {
@@ -1023,8 +1028,8 @@ module.exports = {
             query:
               "select hims_m_doctor_service_type_commission_id,provider_id,service_type_id,\
         op_cash_comission_percent,op_credit_comission_percent,ip_cash_commission_percent,ip_credit_commission_percent\
-         from hims_m_doctor_service_type_commission where record_status='A' and provider_id=?",
-            values: [input.provider_id],
+         from hims_m_doctor_service_type_commission where record_status='A' and provider_id=? and hospital_id=?",
+            values: [input.provider_id, req.userIdentity.hospital_id],
             printQuery: true
           })
           .then(result => {
@@ -1132,7 +1137,8 @@ module.exports = {
             created_date: new Date(),
             created_by: req.userIdentity.algaeh_d_app_user_id,
             updated_date: new Date(),
-            updated_by: req.userIdentity.algaeh_d_app_user_id
+            updated_by: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity.hospital_id
           },
           bulkInsertOrUpdate: true,
           printQuery: true
@@ -1183,7 +1189,8 @@ function InsertEmployeeDepartment(options) {
               created_by: req.userIdentity.algaeh_d_app_user_id,
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_date: new Date()
+              updated_date: new Date(),
+              hospital_id: req.userIdentity.hospital_id
             },
             bulkInsertOrUpdate: true,
             printQuery: true
@@ -1292,7 +1299,8 @@ function InsertServiceCommission(options) {
               created_by: req.userIdentity.algaeh_d_app_user_id,
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_date: new Date()
+              updated_date: new Date(),
+              hospital_id: req.userIdentity.hospital_id
             },
             bulkInsertOrUpdate: true,
             printQuery: true
@@ -1400,7 +1408,8 @@ function InsertServiceTypeCommission(options) {
               created_by: req.userIdentity.algaeh_d_app_user_id,
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_date: new Date()
+              updated_date: new Date(),
+              hospital_id: req.userIdentity.hospital_id
             },
             bulkInsertOrUpdate: true,
             printQuery: true
@@ -1509,6 +1518,9 @@ function InsertEmployeeEarnings(options) {
             values: req.body.insertearnComp,
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
+            extraValues: {
+              hospital_id: req.userIdentity.hospital_id
+            },
             printQuery: true
           })
           .then(result => {
@@ -1648,6 +1660,9 @@ function InsertEmployeeDeduction(options) {
             values: req.body.insertDeductionComp,
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
+            extraValues: {
+              hospital_id: req.userIdentity.hospital_id
+            },
             printQuery: true
           })
           .then(result => {
@@ -1792,6 +1807,9 @@ function InsertEmployeeContributions(options) {
             values: req.body.insertContributeComp,
             includeValues: insurtColumns,
             bulkInsertOrUpdate: true,
+            extraValues: {
+              hospital_id: req.userIdentity.hospital_id
+            },
             printQuery: true
           })
           .then(result => {
@@ -2070,7 +2088,8 @@ function InsertEmployeeDependents(options) {
               created_by: req.userIdentity.algaeh_d_app_user_id,
               created_date: new Date(),
               updated_by: req.userIdentity.algaeh_d_app_user_id,
-              updated_date: new Date()
+              updated_date: new Date(),
+              hospital_id: req.userIdentity.hospital_id
             },
             bulkInsertOrUpdate: true,
             printQuery: true

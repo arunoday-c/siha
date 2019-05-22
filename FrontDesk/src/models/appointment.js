@@ -88,14 +88,16 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_d_appointment_room` (description, created_date, created_by, updated_date, updated_by)\
-        VALUE(?,?,?,?,?)",
+          "INSERT INTO `hims_d_appointment_room` (description,\
+             created_date, created_by, updated_date, updated_by,hospital_id)\
+        VALUE(?,?,?,?,?,?)",
         values: [
           input.description,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.hospital_id
         ]
       })
       .then(result => {
@@ -116,8 +118,9 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "INSERT INTO `hims_d_appointment_clinic` (description, sub_department_id, provider_id, room_id, created_date, created_by, updated_date, updated_by)\
-        VALUE(?,?,?,?,?,?,?,?)",
+          "INSERT INTO `hims_d_appointment_clinic` (description, sub_department_id,\
+             provider_id, room_id, created_date, created_by, updated_date, updated_by,hospital_id)\
+        VALUE(?,?,?,?,?,?,?,?,?)",
         values: [
           input.description,
           input.sub_department_id,
@@ -126,7 +129,8 @@ module.exports = {
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
-          req.userIdentity.algaeh_d_app_user_id
+          req.userIdentity.algaeh_d_app_user_id,
+          req.userIdentity.hospital_id
         ]
       })
       .then(result => {
@@ -170,7 +174,9 @@ module.exports = {
     }
     _mysql
       .executeQuery({
-        query: `select hims_d_appointment_room_id, description, room_active FROM hims_d_appointment_room where record_status='A' ${appointment_room_id} order by hims_d_appointment_room_id desc `
+        query: `select hims_d_appointment_room_id, description, room_active FROM hims_d_appointment_room where record_status='A'
+         and hospital_id=? ${appointment_room_id} order by hims_d_appointment_room_id desc `,
+        values: [req.userIdentity.hospital_id]
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -194,8 +200,10 @@ module.exports = {
     }
     _mysql
       .executeQuery({
-        query: `select hims_d_appointment_clinic_id,description, sub_department_id, provider_id, room_id FROM hims_d_appointment_clinic where record_status='A' ${appointment_clinic_id}
-        order by hims_d_appointment_clinic_id desc`
+        query: `select hims_d_appointment_clinic_id,description, sub_department_id, provider_id, room_id\
+         FROM hims_d_appointment_clinic where record_status='A'  and hospital_id=? ${appointment_clinic_id}
+        order by hims_d_appointment_clinic_id desc`,
+        values: [req.userIdentity.hospital_id]
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -417,8 +425,8 @@ module.exports = {
         query:
           "INSERT INTO `hims_d_appointment_schedule_header` (sub_dept_id,schedule_description,`month`,`year`,from_date,to_date,\
         from_work_hr,to_work_hr,work_break1,from_break_hr1,to_break_hr1,work_break2,from_break_hr2,to_break_hr2,monday,tuesday,wednesday,\
-        thursday,friday,saturday,sunday,created_by,created_date,updated_by,updated_date)\
-        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+        thursday,friday,saturday,sunday,created_by,created_date,updated_by,updated_date,hospital_id)\
+        VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.sub_dept_id,
           input.schedule_description,
@@ -444,7 +452,8 @@ module.exports = {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          new Date()
+          new Date(),
+          req.userIdentity.hospital_id
         ]
       })
       .then(result => {
@@ -722,7 +731,7 @@ module.exports = {
   },
 
   //created by irfan: to add appointment leave
-  addLeaveOrModifySchedule: (req, res, next) => {
+  addLeaveOrModifySchedule_TO_BE_DELETD: (req, res, next) => {
     const _mysql = new algaehMysql();
     let input = req.body;
 
@@ -771,21 +780,29 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_appointment_schedule_header_id, sub_dept_id, schedule_status, schedule_description, month, year,from_date,to_date, from_work_hr, to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
-        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday from hims_d_appointment_schedule_header where record_status='A' AND sub_dept_id=? and year=? and month=?  ",
-        values: [req.query.sub_dept_id, req.query.year, req.query.month]
+          "select hims_d_appointment_schedule_header_id, sub_dept_id, schedule_status, schedule_description, month, year,from_date,to_date, from_work_hr,\
+           to_work_hr, work_break1, from_break_hr1, to_break_hr1, work_break2, from_break_hr2,\
+        to_break_hr2, monday, tuesday, wednesday, thursday, friday, saturday, sunday\
+         from hims_d_appointment_schedule_header where record_status='A' AND sub_dept_id=?\
+          and year=? and month=? and hospital_id=? ",
+        values: [
+          req.query.sub_dept_id,
+          req.query.year,
+          req.query.month,
+          req.userIdentity.hospital_id
+        ]
       })
       .then(result => {
         // _mysql.releaseConnection();
         // req.records = result;
         // next();
 
-        let schedule_header_id_all = new LINQ(result)
-          .Where(w => w.hims_d_appointment_schedule_header_id != null)
-          .Select(s => s.hims_d_appointment_schedule_header_id)
-          .ToArray();
+        // let schedule_header_id_all = new LINQ(result)
+        //   .Where(w => w.hims_d_appointment_schedule_header_id != null)
+        //   .Select(s => s.hims_d_appointment_schedule_header_id)
+        //   .ToArray();
 
-        if (result.length != 0) {
+        if (result.length > 0) {
           for (let i = 0; i < result.length; i++) {
             _mysql
               .executeQuery({
@@ -862,7 +879,8 @@ module.exports = {
      and ASD.record_status='A' and R.record_status='A' and ASD.provider_id=E.hims_d_employee_id and \
          SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id \
          and ASD.clinic_id=C.hims_d_appointment_clinic_id and C.room_id=R.hims_d_appointment_room_id \
-          and sub_dept_id= SD.hims_d_sub_department_id   ${selectDoctor} ${qry} `
+          and sub_dept_id= SD.hims_d_sub_department_id  and SH.hospital_id=?  ${selectDoctor} ${qry} `,
+        values: [req.userIdentity.hospital_id]
       })
       .then(result => {
         if (result.length > 0) {
@@ -981,7 +999,8 @@ module.exports = {
         hims_d_appointment_schedule_detail_id, provider_id,clinic_id, ASD.schedule_status as doctor_schedule_status, slot,schedule_date, modified  \
        from hims_d_appointment_schedule_header SH, hims_d_appointment_schedule_detail ASD \
        where SH.record_status='A' and ASD.record_status='A' and  SH.hims_d_appointment_schedule_header_id=ASD.appointment_schedule_header_id\
-       ${selectQry}`
+         and SH.hospital_id=? ${selectQry}`,
+        values: [req.userIdentity.hospital_id]
       })
       .then(result => {
         // _mysql.releaseConnection();
@@ -1109,8 +1128,8 @@ module.exports = {
             .executeQuery({
               query:
                 "INSERT INTO `hims_d_appointment_schedule_modify` ( appointment_schedule_detail_id, to_date, slot, from_work_hr, to_work_hr, work_break1, from_break_hr1,\
-                to_break_hr1, work_break2, from_break_hr2, to_break_hr2,created_date, created_by, updated_date, updated_by)\
-                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                to_break_hr1, work_break2, from_break_hr2, to_break_hr2,created_date, created_by, updated_date, updated_by,hospital_id)\
+                VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 input.hims_d_appointment_schedule_detail_id,
                 input.to_date,
@@ -1126,7 +1145,8 @@ module.exports = {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                req.userIdentity.algaeh_d_app_user_id
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.hospital_id
               ]
             })
             .then(results => {
@@ -1498,14 +1518,15 @@ module.exports = {
       .executeQuery({
         query:
           "select hims_f_patient_appointment_id,provider_id,title_id,patient_name,appointment_date,appointment_from_time,\
-        appointment_to_time from hims_f_patient_appointment where record_status='A'\
+        appointment_to_time from hims_f_patient_appointment where record_status='A' and hospital_id=?\
         and date(appointment_date)=date(?) and provider_id=? and cancelled='N' and is_stand_by='N' and sub_department_id=? and\
         ((?>=appointment_from_time and ?<appointment_to_time)\
         or(?>appointment_from_time and ?<=appointment_to_time));\
         SELECT hims_f_patient_appointment_id,patient_id,sub_department_id,patient_name FROM hims_f_patient_appointment\
-        where record_status='A' and cancelled='N' and is_stand_by='N' and contact_number=?\
+        where record_status='A' and hospital_id=? and cancelled='N' and is_stand_by='N' and contact_number=?\
         and sub_department_id=? and provider_id=? and appointment_date=?",
         values: [
+          req.userIdentity.hospital_id,
           input.appointment_date,
           input.provider_id,
           input.sub_department_id,
@@ -1513,6 +1534,7 @@ module.exports = {
           input.appointment_from_time,
           input.appointment_to_time,
           input.appointment_to_time,
+          req.userIdentity.hospital_id,
           input.contact_number,
           input.sub_department_id,
           input.provider_id,
@@ -1538,8 +1560,8 @@ module.exports = {
               query:
                 "INSERT INTO `hims_f_patient_appointment` (patient_id,title_id,patient_code,provider_id,sub_department_id,number_of_slot,appointment_date,appointment_from_time,appointment_to_time,\
               appointment_status_id,patient_name,arabic_name,date_of_birth,age,contact_number,email,send_to_provider,gender,appointment_remarks,is_stand_by,\
-              created_date, created_by, updated_date, updated_by)\
-              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              created_date, created_by, updated_date, updated_by,hospital_id)\
+              VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 input.patient_id,
                 input.title_id,
@@ -1564,7 +1586,8 @@ module.exports = {
                 new Date(),
                 req.userIdentity.algaeh_d_app_user_id,
                 new Date(),
-                req.userIdentity.algaeh_d_app_user_id
+                req.userIdentity.algaeh_d_app_user_id,
+                req.userIdentity.hospital_id
               ]
             })
             .then(result => {
@@ -1699,7 +1722,8 @@ module.exports = {
         appointment_from_time,appointment_to_time,appointment_status_id,patient_name,arabic_name,date_of_birth,age,\
     contact_number,email,send_to_provider,gender,confirmed,visit_created,\
     confirmed_by,comfirmed_date,cancelled,cancelled_by,cancelled_date,appointment_remarks,cancel_reason,is_stand_by\
-    from hims_f_patient_appointment where record_status='A'  ${selectQry}`
+    from hims_f_patient_appointment where record_status='A'  and hospital_id=? ${selectQry}`,
+        values: [req.userIdentity.hospital_id]
       })
       .then(result => {
         _mysql.releaseConnection();
@@ -1728,7 +1752,8 @@ module.exports = {
       .executeQuery({
         query: `select  hims_d_employee_department_id, employee_id, services_id,\
         sub_department_id, category_speciality_id, user_id from hims_m_employee_department_mappings\
-         where record_status='A'  ${selectQry}`
+         where record_status='A' and hospital_id=?  ${selectQry}`,
+        values: [req.userIdentity.hospital_id]
       })
       .then(result => {
         _mysql.releaseConnection();

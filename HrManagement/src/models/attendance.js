@@ -925,10 +925,10 @@ module.exports = {
           query:
             "select  hims_f_absent_id, employee_id, absent_date, from_session, to_session,\
           absent_reason, cancel ,absent_duration,cancel_reason,E.employee_code,E.full_name as employee_name\
-          from hims_f_absent A,hims_d_employee E where A.record_status='A'\
+          from hims_f_absent A,hims_d_employee E where A.record_status='A' and E.hospital_id=?\
           and date(absent_date) between date(?) and date(?) and A.employee_id=E.hims_d_employee_id order by hims_f_absent_id desc",
 
-          values: [startOfMonth, endOfMonth]
+          values: [ req.userIdentity.hospital_id,startOfMonth, endOfMonth]
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -1027,8 +1027,8 @@ module.exports = {
           "INSERT INTO `hims_f_attendance_regularize` (employee_id,attendance_date,regularize_status,\
             login_date,logout_date,\
             punch_in_time,punch_out_time,regularize_in_time,regularize_out_time,regularization_reason,\
-            created_by,created_date,updated_by,updated_date)\
-            VALUE(?,date(?),?,date(?),date(?),?,?,?,?,?,?,?,?,?)",
+            created_by,created_date,updated_by,updated_date,hospital_id)\
+            VALUE(?,date(?),?,date(?),date(?),?,?,?,?,?,?,?,?,?,?)",
         values: [
           input.employee_id,
           input.attendance_date,
@@ -1043,7 +1043,8 @@ module.exports = {
           req.userIdentity.algaeh_d_app_user_id,
           new Date(),
           req.userIdentity.algaeh_d_app_user_id,
-          new Date()
+          new Date(),
+          req.userIdentity.hospital_id
         ]
       })
       .then(result => {
@@ -1224,14 +1225,15 @@ module.exports = {
           regularize_status,login_date,logout_date,punch_in_time,punch_out_time,\
           regularize_in_time,regularize_out_time,regularization_reason , AR.created_date\
           from hims_f_attendance_regularize   AR inner join hims_d_employee E  on\
-           AR.employee_id=E.hims_d_employee_id and record_status='A' where " +
+           AR.employee_id=E.hims_d_employee_id  where AR.hospital_id=? and record_status='A'" +
             stringData +
             " and " +
             employee +
             "" +
             dateRange +
             " order by\
-          hims_f_attendance_regularize_id desc ;"
+          hims_f_attendance_regularize_id desc ;",
+          values: [req.userIdentity.hospital_id]
         })
         .then(result => {
           _mysql.releaseConnection();
@@ -1352,7 +1354,9 @@ module.exports = {
           selectWhere.hospital_id,
           startOfMonth,
           endOfMonth,
+          selectWhere.hospital_id,
           year,
+          selectWhere.hospital_id,
           startOfMonth,
           endOfMonth,
           startOfMonth,
@@ -1360,7 +1364,8 @@ module.exports = {
           startOfMonth,
           endOfMonth,
           pendingYear,
-          pendingMonth
+          pendingMonth,
+          selectWhere.hospital_id
         );
         //EN---------to fetch employee data
 
@@ -1421,19 +1426,19 @@ module.exports = {
                     "select hims_d_holiday_id, hospital_id, holiday_date, holiday_description,weekoff, holiday, holiday_type,\
                   religion_id from hims_d_holiday where record_status='A' and date(holiday_date) between date(?) and date(?) and hospital_id=?;\
                   select hims_f_absent_id, employee_id, absent_date, from_session, to_session,cancel ,absent_duration from hims_f_absent where\
-                  record_status='A' and cancel='N'  and date(absent_date) between date(?) and date(?) ;\
+                  record_status='A' and cancel='N'  and date(absent_date) between date(?) and date(?) and hospital_id=?;\
                   select hims_f_leave_application_id, LA.employee_id,LA.leave_id,LA.weekoff_days,LA.holidays, L.leave_type, L.include_weekoff,L.include_holiday,LA.status,\
                   hims_f_employee_monthly_leave_id,year,total_eligible,availed_till_date,close_balance," +
                     month_name +
                     " as present_month FROM \
                   hims_f_leave_application  LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
                   inner join hims_f_employee_monthly_leave  ML on LA.leave_id=ML.leave_id and LA.employee_id=ML.employee_id and ML.year=?\
-                  where  status= 'APR' AND ((from_date>= ? and from_date <= ?) or\
+                  where  hospital_id=? and status= 'APR' AND ((from_date>= ? and from_date <= ?) or\
                   (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?));\
                   select hims_f_pending_leave_id,PL.employee_id,year,month,leave_application_id,adjusted,\
                   adjusted_year,adjusted_month,updaid_leave_duration,status from hims_f_pending_leave PL \
                   inner join hims_f_leave_application LA on  PL.leave_application_id=LA.hims_f_leave_application_id\
-                  where LA.status='APR' and  year=? and month=?",
+                  where LA.status='APR' and  year=? and month=? and hospital_id=?",
                   values: inputValues,
                   printQuery: true
                 })
@@ -4267,7 +4272,8 @@ module.exports = {
                   created_by: req.userIdentity.algaeh_d_app_user_id,
                   created_date: new Date(),
                   updated_by: req.userIdentity.algaeh_d_app_user_id,
-                  updated_date: new Date()
+                  updated_date: new Date(),
+                  hospital_id:s.hospital_id
                 };
               })
               .ToArray();
@@ -4285,7 +4291,8 @@ module.exports = {
                   created_by: req.userIdentity.algaeh_d_app_user_id,
                   created_date: new Date(),
                   updated_by: req.userIdentity.algaeh_d_app_user_id,
-                  updated_date: new Date()
+                  updated_date: new Date(),
+                  hospital_id:s.hospital_id
                 };
               })
               .ToArray();
@@ -4308,7 +4315,8 @@ module.exports = {
                     "created_by",
                     "created_date",
                     "updated_by",
-                    "updated_date"
+                    "updated_date",
+                    "hospital_id"
                   ];
                   _mysql
                     .executeQueryWithTransaction({
@@ -4350,7 +4358,8 @@ module.exports = {
                   "created_by",
                   "created_date",
                   "updated_by",
-                  "updated_date"
+                  "updated_date",
+                  "hospital_id"
                 ];
                 _mysql
                   .executeQueryWithTransaction({
@@ -6426,10 +6435,10 @@ let outputArray=[];
                 where status='APR' and ((  date('${from_date}')>=date(from_date) and date('${from_date}')<=date(to_date)) or\
                 ( date('${to_date}')>=date(from_date) and   date('${to_date}')<=date(to_date)) \
                   or (date(from_date)>= date('${from_date}') and date(from_date)<=date('${to_date}') ) or \
-                  (date(to_date)>=date('${from_date}') and date(to_date)<= date('${to_date}') )) ${employee};\
+                  (date(to_date)>=date('${from_date}') and date(to_date)<= date('${to_date}') )) ${employee} and hospital_id=? ;\
                 select hims_d_holiday_id,holiday_date,holiday_description,weekoff,holiday,holiday_type,religion_id\
-                from hims_d_holiday H where date(holiday_date) between date('${from_date}') and date('${to_date}');    `,
-            values: [input.branch_id, from_date, to_date],
+                from hims_d_holiday  where hospital_id=? and date(holiday_date) between date('${from_date}') and date('${to_date}');    `,
+            values: [input.branch_id, from_date, to_date,input.branch_id,input.branch_id],
             printQuery: true
           })
           .then(result => {
