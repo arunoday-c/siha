@@ -81,6 +81,7 @@ class PatientProfile extends Component {
     getPatientHistory(this);
     this.getLocation();
     this.changeTabs = this.changeTabs.bind(this);
+    this.alergyExist = "";
   }
 
   openAllergies(e) {
@@ -173,7 +174,7 @@ class PatientProfile extends Component {
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"],
+        visit_id: Window.global["visit_id"]
         // forceReplace: true
       },
       onSuccess: response => {
@@ -200,7 +201,7 @@ class PatientProfile extends Component {
         visit_id: Window.global["visit_id"]
       },
       onSuccess: response => {
-        debugger
+        debugger;
         if (response.data.success) {
           that.setState({ openOCAF: true, OCAFData: response.data.records });
         }
@@ -216,15 +217,15 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(_patient_allergies) {
-    debugger
+    debugger;
     if (allergyPopUp && _patient_allergies.length > 0) {
       allergyPopUp = false;
       swalMessage({
         title: "Alergy Exists...",
         type: "warning"
       });
+      this.alergyExist = " AllergyActive";
     }
-
   }
   decissionAllergyOnSet(row) {
     const _onSet = Enumerable.from(GlobalVariables.ALLERGY_ONSET)
@@ -372,23 +373,21 @@ class PatientProfile extends Component {
           <div className="patientName">
             <h6>{_pat_profile.full_name}</h6>
             <p>
-              {_pat_profile.gender} - {_pat_profile.age_in_years}y,{" "}
+              {_pat_profile.gender} - {_pat_profile.age_in_years}y,
               {_pat_profile.age_in_months}m, {_pat_profile.age_in_days}d
             </p>
           </div>
           <div className="patientDemographic">
             <span>
-              DOB:{" "}
+              DOB:
               <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
-            {/* <span>
-              Mobile: <b>{_pat_profile.contact_number}</b>
-            </span> */}
+
             <span>
               Nationality: <b>{_pat_profile.nationality}</b>
             </span>
             <span>
-              Payment:{" "}
+              Payment:
               <b>
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
@@ -403,7 +402,7 @@ class PatientProfile extends Component {
               MRN: <b>{_pat_profile.patient_code}</b>
             </span>
             <span>
-              Encounter:{" "}
+              Encounter:
               <b>
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY | hh:mm a"
@@ -413,15 +412,10 @@ class PatientProfile extends Component {
           </div>
           {_Vitals.length > 0 ? (
             <div className="patientVital">
-              {/* <span>
-                Vitals updated on:
-                <b>{_Vitals[_Vitals.length - 1]["updated_Date"]}</b>
-              </span>
-              <br /> */}
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
                   {console.log("Viatal Details", row)}
-                  {row.vital_short_name}:<b> {row.vital_value}</b>{" "}
+                  {row.vital_short_name}:<b> {row.vital_value}</b>
                   {row.formula_value}
                 </span>
               ))}
@@ -530,7 +524,7 @@ class PatientProfile extends Component {
               </li>
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className="fas fa-allergies AllergyActive" />
+                  <i className={"fas fa-allergies" + this.alergyExist} />
                   <section>
                     <b className="top-nav-sec-hdg">
                       Allergies
@@ -668,7 +662,7 @@ class PatientProfile extends Component {
 
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className="fas fa-allergies" />
+                  <i className={"fas fa-allergies" + this.alergyExist} />
                   <section>
                     <b className="top-nav-sec-hdg">Allergies</b>
                     <p>

@@ -19,7 +19,8 @@ import {
   texthandle,
   datehandle,
   addDiet,
-  getDietList
+  getDietList,
+  deleteDietAdvice
 } from "./DietAdviceEvents";
 
 class DietAdvice extends Component {
@@ -98,6 +99,21 @@ class DietAdvice extends Component {
             <AlgaehDataGrid
               id="Lab_Result_grid"
               columns={[
+                {
+                  fieldName: "action",
+                  label: <AlgaehLabel label={{ forceLabel: "action" }} />,
+                  displayTemplate: row => {
+                    return (
+                      <span>
+                        <i
+                          className="fas fa-trash-alt"
+                          aria-hidden="true"
+                          onClick={deleteDietAdvice.bind(this, this, row)}
+                        />
+                      </span>
+                    );
+                  }
+                },
                 {
                   fieldName: "created_date",
                   label: <AlgaehLabel label={{ forceLabel: "From Date" }} />,

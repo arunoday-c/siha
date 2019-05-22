@@ -159,7 +159,8 @@ module.exports = {
             prescription_date, prescription_status , \
             hims_f_prescription_detail_id, prescription_id, item_id,IM.item_description, PD.generic_id, IG.generic_name, \
             dosage, frequency, no_of_days,\
-            dispense, frequency_type, frequency_time, start_date, PD.service_id, uom_id, item_category_id, PD.item_status\
+            dispense, frequency_type, frequency_time, start_date, PD.service_id, uom_id, \
+            item_category_id, PD.item_status, PD.instructions\
              from hims_f_prescription P,hims_f_prescription_detail PD,hims_d_item_master IM,hims_d_item_generic IG\
             where P.record_status='A' and IM.record_status='A' and IG.record_status='A' and \
             P.hims_f_prescription_id=PD.prescription_id and PD.item_id=IM.hims_d_item_master_id \

@@ -1499,7 +1499,6 @@ let updatePatientChiefComplaints = (req, res, next) => {
           console.log("qry: ", qry);
         }
 
-
         connection.query(qry, (error, updateResult) => {
           if (error) {
             connection.rollback(() => {
@@ -2237,6 +2236,31 @@ let addDietAdvice = (req, res, next) => {
         new Date(),
         inputParam.updated_by
       ],
+      (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      }
+    );
+  });
+};
+
+let deleteDietAdvice = (req, res, next) => {
+  if (req.db == null) {
+    next(httpStatus.dataBaseNotInitilizedError());
+  }
+  let db = req.db;
+  db.getConnection((error, connection) => {
+    if (error) {
+      next(error);
+    }
+    let inputParam = req.body;
+    connection.query(
+      "DELETE FROM  `hims_f_patient_diet`  WHERE `hims_f_patient_diet_id`=?;",
+      [inputParam.hims_f_patient_diet_id],
       (error, result) => {
         releaseDBConnection(db, connection);
         if (error) {
@@ -3001,5 +3025,6 @@ module.exports = {
 
   updatePatientEncounter,
   getPatientEncounter,
-  getPatientBasicChiefComplaints
+  getPatientBasicChiefComplaints,
+  deleteDietAdvice
 };
