@@ -152,7 +152,7 @@ class OrderMedication extends Component {
       <div className="popRightDiv">
         <div className="row paddin-bottom-5" style={{ marginTop: 5 }}>
           <AlagehAutoComplete
-            div={{ className: "col-lg-3" }}
+            div={{ className: "col-3" }}
             label={{ forceLabel: "Generic Name" }}
             selector={{
               name: "generic_id",
@@ -169,7 +169,7 @@ class OrderMedication extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-lg-3" }}
+            div={{ className: "col-3" }}
             label={{ forceLabel: "Item Name" }}
             selector={{
               name: "item_id",
@@ -187,7 +187,7 @@ class OrderMedication extends Component {
           />
 
           <AlagehAutoComplete
-            div={{ className: "col-lg-2" }}
+            div={{ className: "col" }}
             label={{ forceLabel: "Frequency" }}
             selector={{
               name: "frequency",
@@ -203,7 +203,7 @@ class OrderMedication extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col-lg-2" }}
+            div={{ className: "col" }}
             label={{ forceLabel: "Freq. Type" }}
             selector={{
               name: "frequency_type",
@@ -219,7 +219,7 @@ class OrderMedication extends Component {
             }}
           />
           <AlagehAutoComplete
-            div={{ className: "col-lg-2" }}
+            div={{ className: "col" }}
             label={{ forceLabel: "Consume" }}
             selector={{
               name: "frequency_time",
@@ -259,7 +259,7 @@ class OrderMedication extends Component {
           />
 
           <AlagehFormGroup
-            div={{ className: "col-lg-3" }}
+            div={{ className: "col" }}
             label={{
               forceLabel: "Duration (Days)"
             }}
@@ -307,7 +307,24 @@ class OrderMedication extends Component {
             value={this.state.start_date}
           />
 
-          <div className="col-lg-2" style={{ paddingTop: 21, paddingLeft: 0 }}>
+           <AlagehFormGroup
+           div={{ className: "col-4 form-group" }}
+           label={{
+           forceLabel: "Instruction",
+          isImp: false
+            }}
+           textBox={{ 
+          className: "txt-fld",
+          name: "",
+          value:"",
+          events: {},
+          option:{
+          type:"text"
+           }
+          }}
+          />
+
+          <div className="col" style={{ paddingTop: 21, paddingLeft: 0 }}>
             <button
               className="btn btn-default btn-sm"
               type="button"
@@ -366,7 +383,7 @@ class OrderMedication extends Component {
                 },
                 {
                   fieldName: "frequency",
-                  label: <AlgaehLabel label={{ forceLabel: "Frequency" }} />,
+                  label: <AlgaehLabel label={{ forceLabel: "Freq." }} />,
                   displayTemplate: row => {
                     return row.frequency === "0"
                       ? "1-0-1"
@@ -383,12 +400,15 @@ class OrderMedication extends Component {
                       : row.frequency === "6"
                       ? "1-1-1"
                       : null;
+                  },
+                  others:{
+                    minWidth:50
                   }
                 },
                 {
                   fieldName: "frequency_type",
                   label: (
-                    <AlgaehLabel label={{ forceLabel: "Frequency Type" }} />
+                    <AlgaehLabel label={{ forceLabel: "Freq. Type" }} />
                   ),
                   displayTemplate: row => {
                     return row.frequency_type === "PD"
@@ -402,12 +422,15 @@ class OrderMedication extends Component {
                       : row.frequency_type === "AD"
                       ? "Alternate Day"
                       : null;
+                  },
+                  others:{
+                    minWidth:70
                   }
                 },
                 {
                   fieldName: "frequency_time",
                   label: (
-                    <AlgaehLabel label={{ forceLabel: "Frequency Time" }} />
+                    <AlgaehLabel label={{ forceLabel: "Freq. Time" }} />
                   ),
                   displayTemplate: row => {
                     return row.frequency_time === "BM"
@@ -415,23 +438,42 @@ class OrderMedication extends Component {
                       : row.frequency_time === "AM"
                       ? "After Meals"
                       : null;
+                  },
+                  others:{
+                    minWidth:70
                   }
                 },
                 {
                   fieldName: "dosage",
-                  label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />
+                  label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />,
+                  others:{
+                    minWidth:50
+                  }
                 },
                 {
                   fieldName: "no_of_days",
                   label: (
                     <AlgaehLabel label={{ forceLabel: "Duration (Days)" }} />
-                  )
+                  ),
+                  others:{
+                    minWidth:90
+                  }
                 },
                 {
                   fieldName: "start_date",
                   label: <AlgaehLabel label={{ forceLabel: "Start Date" }} />,
                   displayTemplate: row => {
                     return <span>{dateFormater(row.start_date)}</span>;
+                  },
+                  others:{
+                    minWidth:70
+                  }
+                },
+                {
+                  fieldName: "instruction",
+                  label: <AlgaehLabel label={{ forceLabel: "Instruction" }} />,
+                  displayTemplate: row => {
+                    return <span>Need to Edit Instruction</span>;
                   }
                 }
               ]}
