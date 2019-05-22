@@ -11,11 +11,6 @@ const texthandle = ($this, ctrl, e) => {
   $this.setState({
     [name]: value
   });
-
-  // ,
-  // () => {
-  //   calcuateDispense($this, e);
-  // }
 };
 
 const numberhandle = ($this, ctrl, e) => {
@@ -210,6 +205,7 @@ const AddItems = $this => {
       service_id: $this.state.service_id,
       item_category_id: $this.state.item_category_id,
       item_group_id: $this.state.item_group_id,
+      instructions: $this.state.instructions,
       insured: $this.state.insured,
       item_status: "A"
     };
@@ -262,7 +258,8 @@ const AddItems = $this => {
             service_id: null,
             item_category_id: null,
             item_group_id: null,
-            pre_approval: null
+            pre_approval: null,
+            instructions: null
           });
         }
       },
@@ -293,7 +290,28 @@ const dateFormater = value => {
   }
 };
 
-const deleteItems = $this => {};
+const deleteItems = ($this, row) => {
+  debugger;
+  let medicationitems = $this.state.medicationitems;
+  medicationitems.splice(row.rowIdx, 1);
+  let saveMedicationEnable = medicationitems.length > 0 ? false : true;
+
+  $this.setState({
+    medicationitems: medicationitems,
+    saveMedicationEnable: saveMedicationEnable
+  });
+};
+
+const updateItems = ($this, row) => {
+  debugger;
+  let medicationitems = $this.state.medicationitems;
+  medicationitems[row.rowId] = row;
+
+  $this.setState({
+    saveMedicationEnable: false,
+    medicationitems: medicationitems
+  });
+};
 
 const calcuateDispense = ($this, e) => {
   // if (e.target === null || e.target.value !== e.target.oldvalue) {
@@ -389,6 +407,37 @@ const getItemStock = $this => {
   });
 };
 
+const onchangegridcol = ($this, row, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+  row[name] = value;
+  row.update();
+};
+
+const EditGrid = ($this, cancelRow) => {
+  debugger;
+  let _medicationitems = $this.state.medicationitems;
+  if (cancelRow !== undefined) {
+    _medicationitems[cancelRow.rowIdx] = cancelRow;
+  }
+  $this.setState({
+    saveMedicationEnable: true,
+    medicationitems: _medicationitems
+  });
+};
+
+const CancelGrid = ($this, cancelRow) => {
+  debugger;
+  let _medicationitems = $this.state.medicationitems;
+  if (cancelRow !== undefined) {
+    _medicationitems[cancelRow.rowIdx] = cancelRow;
+  }
+  $this.setState({
+    saveMedicationEnable: false,
+    medicationitems: _medicationitems
+  });
+};
+
 export {
   texthandle,
   SaveMedication,
@@ -401,5 +450,9 @@ export {
   numberhandle,
   calcuateDispense,
   getItemStock,
-  printPrescription
+  printPrescription,
+  updateItems,
+  onchangegridcol,
+  EditGrid,
+  CancelGrid
 };

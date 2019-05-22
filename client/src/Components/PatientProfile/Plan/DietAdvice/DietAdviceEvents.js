@@ -1,6 +1,6 @@
 import moment from "moment";
-import { successfulMessage } from "../../../../utils/GlobalFunctions";
-import { algaehApiCall } from "../../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import swal from "sweetalert2";
 
 const texthandle = ($this, e) => {
   let name = e.name || e.target.name;
@@ -21,10 +21,9 @@ const addDiet = $this => {
   // doctorsWorkBench/addDietAdvice
 
   if ($this.state.diet_id === null) {
-    successfulMessage({
-      message: "Please select Diet",
-      title: "Warning",
-      icon: "warning"
+    swalMessage({
+      title: "Please select Diet",
+      type: "warning"
     });
   } else {
     let inputObj = {
@@ -40,20 +39,18 @@ const addDiet = $this => {
       method: "POST",
       onSuccess: response => {
         if (response.data.success) {
-          successfulMessage({
-            message: "Added Succesfully...",
-            title: "Success",
-            icon: "success"
+          swalMessage({
+            title: "Added Succesfully...",
+            type: "success"
           });
         }
         getDietList($this, $this);
         $this.setState({ diet_id: null });
       },
       onFailure: error => {
-        successfulMessage({
-          message: error.message,
-          title: "Success",
-          icon: "success"
+        swalMessage({
+          title: error.message,
+          type: "erroe"
         });
       }
     });
@@ -75,4 +72,40 @@ const getDietList = $this => {
     }
   });
 };
-export { texthandle, datehandle, addDiet, getDietList };
+
+const deleteDietAdvice = ($this, row) => {
+  debugger;
+  swal({
+    title: "Are you sure you want to delete Diet?",
+    type: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes!",
+    confirmButtonColor: "#44b8bd",
+    cancelButtonColor: "#d33",
+    cancelButtonText: "No"
+  }).then(willDelete => {
+    if (willDelete.value) {
+      algaehApiCall({
+        uri: "/doctorsWorkBench/deleteDietAdvice",
+        data: { hims_f_patient_diet_id: row.hims_f_patient_diet_id },
+        method: "DELETE",
+        onSuccess: response => {
+          if (response.data.success) {
+            swalMessage({
+              title: "Removed Succesfully...",
+              type: "success"
+            });
+          }
+          getDietList($this, $this);
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.message,
+            type: "error"
+          });
+        }
+      });
+    }
+  });
+};
+export { texthandle, datehandle, addDiet, getDietList, deleteDietAdvice };

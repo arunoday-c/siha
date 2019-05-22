@@ -137,6 +137,8 @@ class Examination extends Component {
     clear =
       clear === undefined ? { hims_d_physical_examination_header_id: "" } : {};
     this.setState({
+      hims_d_physical_examination_header_id: "",
+
       hims_d_physical_examination_details_id: "",
       hims_d_physical_examination_subdetails_id: "",
       examination_comment: "",
@@ -170,23 +172,6 @@ class Examination extends Component {
     });
   }
 
-  // openExaminationModal(e) {
-  //   // getPhysicalExaminations(this);
-  //   if (
-  //     this.props.allexaminations === undefined ||
-  //     this.props.allexaminations.length === 0
-  //   )
-  //     getAllDepartmentBased({
-  //       that: this,
-  //       afterSucces: () => {
-  //       this.props.onClose && this.props.onClose(e);
-  //       }
-  //     });
-  //   else {
-  //     this.props.onClose && this.props.onClose(e);
-  //   }
-  // }
-
   headerDropDownHandle(value) {
     this.setState(
       { [value.name]: value.value }
@@ -195,12 +180,7 @@ class Examination extends Component {
   }
 
   detailDropDownHandle(value) {
-    this.setState({ [value.name]: value.value }, () => {
-      // getPhysicalExaminationsSubDetails(
-      //   this,
-      //   this.state.hims_d_physical_examination_details_id
-      // );
-    });
+    this.setState({ [value.name]: value.value });
   }
 
   dropDownHandle(value) {
@@ -267,7 +247,7 @@ class Examination extends Component {
     });
   }
   render() {
-    debugger
+    debugger;
     const _specility =
       this.props.allexaminations !== undefined &&
       this.props.allexaminations.length !== 0
@@ -489,59 +469,6 @@ class Examination extends Component {
             </div>
           </div>
         </AlgaehModalPopUp>
-
-        {/* Examination Modal End
-        <div className="portlet portlet-bordered margin-top-15">
-          <div className="portlet-title">
-            <div className="caption">
-              <h3 className="caption-subject">Physical Examination</h3>
-            </div>
-            <div className="actions">
-              <a
-                className="btn btn-primary btn-circle active"
-                onClick={this.openExaminationModal.bind(this)}
-              >
-                <i className="fas fa-edit" />
-              </a>
-            </div>
-          </div>
-
-          <div className="portlet-body">
-            <div className="row">
-              <div className="col-lg-12" id="physicalExamination-grid-cntr">
-                <AlgaehDataGrid
-                  id="patient-examn-grid"
-                  columns={[
-                    {
-                      fieldName: "header_description",
-                      label: "Examination Type"
-                    },
-                    {
-                      fieldName: "detail_description",
-                      label: "Examination Description"
-                    },
-                    {
-                      fieldName: "subdetail_description",
-                      label: "Examination"
-                    },
-
-                    {
-                      fieldName: "comments",
-                      label: "Comments"
-                    }
-                  ]}
-                  keyId="hims_f_episode_examination_id"
-                  dataSource={{
-                    data: this.props.all_patient_examinations
-                  }}
-                  isEditable={false}
-                  paging={{ page: 0, rowsPerPage: 10 }}
-                  events={{}}
-                />
-              </div>
-            </div>
-          </div>
-        </div>*/}
       </React.Fragment>
     );
   }

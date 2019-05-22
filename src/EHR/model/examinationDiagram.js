@@ -34,7 +34,7 @@ const saveExaminationDiagrams = (req, res, next) => {
       .executeQueryWithTransaction({
         query:
           "INSERT INTO hims_f_examination_diagram_header(`diagram_desc`,`diagram_id`,\
-      `patient_id`,`provider_id`,`hims_d_sub_department_id`,`header_datetime`)values(?,?,?,?,?,?)  ON DUPLICATE KEY UPDATE last_update=?",
+      `patient_id`,`provider_id`,`hims_d_sub_department_id`,`header_datetime`,hospital_id)values(?,?,?,?,?,?,?)  ON DUPLICATE KEY UPDATE last_update=?",
         values: [
           input.diagram_desc,
           input.diagram_id,
@@ -42,7 +42,8 @@ const saveExaminationDiagrams = (req, res, next) => {
           _req.employee_id,
           _req.sub_department_id,
           input.header_datetime,
-          new Date()
+          new Date(),
+          req.userIdentity.hospital_id
         ],
         printQuery: true
       })

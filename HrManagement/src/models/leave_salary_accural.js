@@ -8,6 +8,9 @@ module.exports = {
 
     let inputValues = [inputParam.year, inputParam.month];
     let _stringData = "";
+
+    _stringData += " and E.hims_d_employee_id=?";
+    inputValues.push(req.userIdentity.hospital_id);
     if (inputParam.employee_id != null) {
       _stringData += " and D.employee_id=?";
       inputValues.push(inputParam.employee_id);

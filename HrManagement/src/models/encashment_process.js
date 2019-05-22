@@ -128,8 +128,8 @@ module.exports = {
           .executeQuery({
             query:
               "INSERT INTO `hims_f_leave_encash_header` (encashment_number, employee_id, encashment_date,\
-                year, total_amount, authorized1, authorized2, authorized)\
-          VALUE(?,?,?,?,?,?,?,?)",
+                year, total_amount, authorized1, authorized2, authorized,hospital_id)\
+          VALUE(?,?,?,?,?,?,?,?,?)",
             values: [
               generatedNumbers[0],
               inputParam.employee_id,
@@ -138,7 +138,8 @@ module.exports = {
               inputParam.total_amount,
               inputParam.authorized1,
               inputParam.authorized2,
-              inputParam.authorized
+              inputParam.authorized,
+              req.userIdentity.hospital_id
             ]
           })
           .then(inserted_encash => {

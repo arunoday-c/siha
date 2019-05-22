@@ -310,7 +310,7 @@ module.exports = {
             `employee_id`,`transaction_date`,`exit_type`,`join_date`,\
             `exit_date`,`service_years`,`payable_days`,`previous_gratuity_amount`,\
             `calculated_gratutity_amount`,`payable_amount`, `gratuity_status`, `remarks`,\
-            `created_by`,`created_date`,`updated_by`,`updated_date`) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            `created_by`,`created_date`,`updated_by`,`updated_date`,hospital_id) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                   values: [
                     result[0],
                     _input.employee_id,
@@ -328,7 +328,8 @@ module.exports = {
                     req.userIdentity.algaeh_d_app_user_id,
                     new Date(),
                     req.userIdentity.algaeh_d_app_user_id,
-                    new Date()
+                    new Date(),
+                    req.userIdentity.hospital_id
                   ]
                 })
                 .then(insertResult => {

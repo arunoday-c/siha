@@ -18,8 +18,8 @@ module.exports = {
         .executeQuery({
           query:
             "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, total_amount,\
-              created_by, created_date, updated_by, updated_date,  counter_id, shift_id) \
-              VALUES (?,?,?,?,?,?,?,?,?)",
+              created_by, created_date, updated_by, updated_date,  counter_id, shift_id,hospital_id ) \
+              VALUES (?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.receipt_number,
             new Date(),
@@ -29,7 +29,8 @@ module.exports = {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputParam.counter_id,
-            inputParam.shift_id
+            inputParam.shift_id,
+            req.userIdentity.hospital_id
           ],
           printQuery: true
         })
@@ -136,8 +137,8 @@ module.exports = {
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
               , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,balance_credit \
-              , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount) VALUES (?,?,?,?\
-                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount,hospital_id) VALUES (?,?,?,?\
+                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -176,7 +177,8 @@ module.exports = {
             inputParam.updated_by,
             new Date(),
             inputParam.copay_amount,
-            inputParam.deductable_amount
+            inputParam.deductable_amount,
+            req.userIdentity.hospital_id
           ],
           printQuery: true
         })
@@ -582,8 +584,8 @@ module.exports = {
             .executeQuery({
               query:
                 "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, total_amount,\
-                  created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_type) \
-                  VALUES (?,?,?,?,?,?,?,?,?,?)",
+                  created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_type,hospital_id) \
+                  VALUES (?,?,?,?,?,?,?,?,?,?,?)",
               values: [
                 generatedNumbers[0],
                 new Date(),
@@ -594,7 +596,8 @@ module.exports = {
                 new Date(),
                 inputParam.counter_id,
                 inputParam.shift_id,
-                inputParam.pay_type
+                inputParam.pay_type,
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })
@@ -631,7 +634,7 @@ module.exports = {
                         query:
                           "INSERT  INTO hims_f_patient_advance ( hims_f_patient_id, hims_f_receipt_header_id,\
                             transaction_type, advance_amount, created_by, \
-                            created_date, updated_by, update_date,  record_status) VALUES (?,?,?,?,?,?,?,?,?) ",
+                            created_date, updated_by, update_date,  hospital_id) VALUES (?,?,?,?,?,?,?,?,?) ",
                         values: [
                           inputParam.hims_f_patient_id,
                           headerRcptResult.insertId,
@@ -641,7 +644,7 @@ module.exports = {
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
-                          inputParam.record_status
+                          req.userIdentity.hospital_id
                         ],
                         printQuery: true
                       })
@@ -1421,7 +1424,7 @@ function getBillDetailsFunctionality(req, res, next, resolve) {
 
                 patient_payable = math.round(patient_resp + patient_tax, 2);
 
-                console.log("approved_amount", approved_amount)
+                console.log("approved_amount", approved_amount);
                 if (approved_amount !== 0) {
                   let diff_val = approved_amount - comapany_resp;
                   patient_payable = math.round(patient_payable + diff_val, 2);

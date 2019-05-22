@@ -181,6 +181,12 @@ class BasicSubjective extends Component {
         }
       });
     }
+
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
   }
 
   showAllergies() {
@@ -243,9 +249,26 @@ class BasicSubjective extends Component {
     } else {
       SubjectiveHandler().updatePatientChiefComplaints(this);
     }
-    this.setState({
-      openDiet: !this.state.openDiet
-    });
+    this.setState(
+      {
+        openDiet: !this.state.openDiet
+      },
+      () => {
+        this.props.getPatientDiet({
+          uri: "/doctorsWorkBench/getPatientDiet",
+          method: "GET",
+          data: {
+            patient_id: Window.global["current_patient"],
+            episode_id: Window.global["episode_id"]
+          },
+          cancelRequestId: "getPatientDiet",
+          redux: {
+            type: "PATIENT_DIET",
+            mappingName: "patient_diet"
+          }
+        });
+      }
+    );
   }
 
   showVitals() {
@@ -353,6 +376,7 @@ class BasicSubjective extends Component {
               <Plan
                 openMedication={this.state.openMedication}
                 onClose={this.showMedication.bind(this)}
+                vat_applicable={this.props.vat_applicable}
               />
               <li>
                 <span className="animated slideInLeft faster">Diet Plan</span>
@@ -510,7 +534,7 @@ class BasicSubjective extends Component {
                               className: "txt-fld",
                               name: "lmp_days",
                               number: true,
-                               value: this.state.lmp_days,
+                              value: this.state.lmp_days,
                               disabled: this.state.isPregnancy,
                               events: {
                                 onChange: this.ChangeEventHandler.bind(this)
@@ -773,7 +797,8 @@ function mapStateToProps(state) {
   return {
     assdeptanddoctors: state.assdeptanddoctors,
     assservices: state.assservices,
-    patient_diagnosis: state.patient_diagnosis
+    patient_diagnosis: state.patient_diagnosis,
+    patient_diet: state.patient_diet
   };
 }
 
@@ -782,7 +807,8 @@ function mapDispatchToProps(dispatch) {
     {
       getDepartmentsandDoctors: AlgaehActions,
       getServices: AlgaehActions,
-      getPatientDiagnosis: AlgaehActions
+      getPatientDiagnosis: AlgaehActions,
+      getPatientDiet: AlgaehActions
     },
     dispatch
   );

@@ -25,8 +25,9 @@ let addTreatmentPlan = (req, res, next) => {
       }
 
       connection.query(
-        "INSERT INTO `hims_f_treatment_plan` (plan_name,patient_id,episode_id,visit_id,remarks,consult_date,       created_date, created_by, updated_date, updated_by)\
-            VALUE(?,?,?,?,?,?,?,?,?,?)",
+        "INSERT INTO `hims_f_treatment_plan` (plan_name,patient_id,episode_id,visit_id,remarks,\
+          consult_date,       created_date, created_by, updated_date, updated_by,hospital_id)\
+            VALUE(?,?,?,?,?,?,?,?,?,?,?)",
         [
           input.plan_name,
           input.patient_id,
@@ -38,7 +39,8 @@ let addTreatmentPlan = (req, res, next) => {
           new Date(),
           input.created_by,
           new Date(),
-          input.updated_by
+          input.updated_by,
+          req.userIdentity.hospital_id
         ],
         (error, result) => {
           releaseDBConnection(db, connection);
@@ -210,7 +212,7 @@ let addDentalTreatment = (req, res, next) => {
         "INSERT INTO hims_f_dental_treatment(" +
           insurtColumns.join(",") +
           ",patient_id,episode_id,treatment_plan_id,service_id,\
-          scheduled_date,created_date,updated_date) VALUES ?",
+          scheduled_date,created_date,updated_date,hospital_id) VALUES ?",
         [
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
@@ -223,7 +225,8 @@ let addDentalTreatment = (req, res, next) => {
               new Date(input.scheduled_date),
 
               new Date(),
-              new Date()
+              new Date(),
+              req.userIdentity.hospital_id
             ],
             req: req
           })

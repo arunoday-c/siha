@@ -72,7 +72,8 @@ module.exports = {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             created_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            updated_date: new Date()
+            updated_date: new Date(),
+            hospital_id: req.userIdentity.hospital_id
           },
           bulkInsertOrUpdate: true,
           printQuery: true
@@ -232,7 +233,8 @@ module.exports = {
             created_by: req.userIdentity.algaeh_d_app_user_id,
             created_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id,
-            updated_date: new Date()
+            updated_date: new Date(),
+            hospital_id: req.userIdentity.hospital_id
           },
           bulkInsertOrUpdate: true,
           printQuery: true

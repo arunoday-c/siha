@@ -85,8 +85,8 @@ module.exports = {
         .executeQuery({
           query:
             "insert into hims_f_employee_documents(document_type,employee_id,document_id,\
-            document_name,dependent_id,download_uniq_id,create_by,created_date,update_by,update_date,document_type_name)\
-             values(?,?,?,?,?,?,?,?,?,?,?)",
+            document_name,dependent_id,download_uniq_id,create_by,created_date,update_by,update_date,document_type_name,hospital_id)\
+             values(?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             input.document_type,
             input.employee_id,
@@ -98,7 +98,8 @@ module.exports = {
             new Date(),
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            input.document_type_name
+            input.document_type_name,
+            req.userIdentity.hospital_id
           ]
         })
         .then(result => {

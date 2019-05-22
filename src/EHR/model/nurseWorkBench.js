@@ -213,12 +213,16 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
               connection.query(
                 "INSERT INTO hims_f_nurse_episode_chief_complaint(`" +
                   insurtColumns.join("`,`") +
-                  "`,created_date,updated_date) VALUES ?",
+                  "`,created_date,updated_date,hospital_id) VALUES ?",
                 [
                   jsonArrayToObject({
                     sampleInputObject: insurtColumns,
                     arrayObj: req.body.chief_complaints,
-                    newFieldToInsert: [new Date(), new Date()],
+                    newFieldToInsert: [
+                      new Date(),
+                      new Date(),
+                      req.userIdentity.hospital_id
+                    ],
                     req: req
                   })
                 ],
@@ -275,12 +279,16 @@ let addPatientNurseChiefComplaints = (req, res, next) => {
                 connection.query(
                   "INSERT INTO hims_f_patient_vitals(" +
                     insurtColumns.join(",") +
-                    ",created_date,updated_date) VALUES ?",
+                    ",created_date,updated_date,hospital_id) VALUES ?",
                   [
                     jsonArrayToObject({
                       sampleInputObject: insurtColumns,
                       arrayObj: req.body.patient_vitals,
-                      newFieldToInsert: [new Date(), new Date()],
+                      newFieldToInsert: [
+                        new Date(),
+                        new Date(),
+                        req.userIdentity.hospital_id
+                      ],
                       req: req
                     })
                   ],
@@ -599,7 +607,7 @@ let getNurseMyDay = (req, res, next) => {
         "select  E.hims_f_patient_encounter_id,P.patient_code,P.full_name,E.patient_id ,V.appointment_patient,E.provider_id,E.`status`,E.nurse_examine,E.checked_in,\
          E.payment_type,E.episode_id,E.encounter_id,E.`source`,E.updated_date as encountered_date,E.visit_id ,sub_department_id from hims_f_patient_encounter E\
          INNER JOIN hims_f_patient P ON E.patient_id=P.hims_d_patient_id \
-            inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' AND " +
+            inner join hims_f_patient_visit V on E.visit_id=V.hims_f_patient_visit_id  where E.record_status='A' AND  V.record_status='A' and E.hospital_id=? AND " +
           statusFlag +
           "" +
           dateDiff +
@@ -607,6 +615,7 @@ let getNurseMyDay = (req, res, next) => {
           where.condition +
           " order by E.updated_date desc",
         where.values,
+        req.userIdentity.hospital_id,
 
         (error, result) => {
           releaseDBConnection(db, connection);

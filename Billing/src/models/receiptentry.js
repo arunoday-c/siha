@@ -92,8 +92,8 @@ module.exports = {
             .executeQuery({
               query:
                 "INSERT INTO hims_f_receipt_header (receipt_number, receipt_date, billing_header_id, total_amount,\
-                created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_type) VALUES (?,?,?\
-                ,?,?,?,?,?,?,?,?)",
+                created_by, created_date, updated_by, updated_date,  counter_id, shift_id, pay_type,hospital_id) VALUES (?,?,?\
+                ,?,?,?,?,?,?,?,?,?)",
               values: [
                 inputParam.receipt_number,
                 new Date(),
@@ -105,7 +105,8 @@ module.exports = {
                 new Date(),
                 inputParam.counter_id,
                 inputParam.shift_id,
-                inputParam.pay_type
+                inputParam.pay_type,
+                req.userIdentity.hospital_id
               ],
               printQuery: true
             })
