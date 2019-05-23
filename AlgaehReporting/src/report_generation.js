@@ -565,7 +565,7 @@ module.exports = {
                           );
                           _pdfTemplating["headerTemplate"] = _header;
                           _pdfTemplating["margin"] = {
-                            top: "100px"
+                            top: "140px"
                           };
                         }
                         if (
