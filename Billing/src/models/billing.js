@@ -634,7 +634,8 @@ module.exports = {
                         query:
                           "INSERT  INTO hims_f_patient_advance ( hims_f_patient_id, hims_f_receipt_header_id,\
                             transaction_type, advance_amount, created_by, \
-                            created_date, updated_by, update_date,  hospital_id) VALUES (?,?,?,?,?,?,?,?,?) ",
+                            created_date, updated_by, update_date,  hospital_id) VALUES (?,?,?,?,?,?,?,?,?) ;\
+                            SELECT advance_amount FROM hims_f_patient WHERE hims_d_patient_id=?",
                         values: [
                           inputParam.hims_f_patient_id,
                           headerRcptResult.insertId,
@@ -644,7 +645,8 @@ module.exports = {
                           new Date(),
                           req.userIdentity.algaeh_d_app_user_id,
                           new Date(),
-                          req.userIdentity.hospital_id
+                          req.userIdentity.hospital_id,
+                          inputParam.hims_f_patient_id
                         ],
                         printQuery: true
                       })

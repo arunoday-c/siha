@@ -32,6 +32,7 @@ const addFollowUp = $this => {
     let inputObj = {
       patient_id: Window.global["current_patient"],
       doctor_id: Window.global["provider_id"],
+      episode_id: Window.global["episode_id"],
       reason: $this.state.followup_comments,
       followup_type: $this.state.followup_type,
       followup_days: $this.state.followup_days,

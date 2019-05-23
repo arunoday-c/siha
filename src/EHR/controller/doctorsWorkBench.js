@@ -57,7 +57,9 @@ import {
   updatePatientEncounter,
   getPatientEncounter,
   getPatientBasicChiefComplaints,
-  deleteDietAdvice
+  deleteDietAdvice,
+  getSummaryFollowUp,
+  addSickLeave
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -913,6 +915,36 @@ export default ({ config, db }) => {
   api.delete(
     "/deleteDietAdvice",
     deleteDietAdvice,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad: to Delete DIET Advice
+  api.get(
+    "/getSummaryFollowUp",
+    getSummaryFollowUp,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad:
+  api.post(
+    "/addSickLeave",
+    addSickLeave,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

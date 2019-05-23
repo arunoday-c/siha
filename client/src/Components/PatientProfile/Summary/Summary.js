@@ -6,14 +6,16 @@ import "./summary.css";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import Enumerable from "linq";
 import { getPatientHistory } from "../PatientProfileHandlers";
-import { algaehApiCall } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import moment from "moment";
 
 class Summary extends Component {
   constructor(props) {
     super(props);
     this.state = {
       patientMedications: [],
-      patientEpisode: []
+      patientEpisode: [],
+      patientFollowUp: []
     };
 
     if (
@@ -25,6 +27,8 @@ class Summary extends Component {
 
     this.getPatientMedication();
     this.getEpisodeSummary();
+
+    this.getSummaryFollowUp();
   }
 
   getEpisodeSummary() {
@@ -41,10 +45,10 @@ class Summary extends Component {
         }
       },
       onFailure: error => {
-        // swalMessage({
-        //   title: error.message,
-        //   type: "error"
-        // });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
   }
@@ -64,21 +68,38 @@ class Summary extends Component {
         }
       },
       onFailure: error => {
-        // swalMessage({
-        //   title: error.message,
-        //   type: "error"
-        // });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
+
+  getSummaryFollowUp() {
+    debugger;
+    algaehApiCall({
+      uri: "/doctorsWorkBench/getSummaryFollowUp",
+      method: "GET",
+      data: {
+        episode_id: Window.global["episode_id"]
+      },
+      onSuccess: response => {
+        if (response.data.success) {
+          debugger;
+          this.setState({ patientFollowUp: response.data.records });
+        }
+      },
+      onFailure: error => {
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
       }
     });
   }
 
   render() {
-    // const _pat_profile =
-    //   this.props.patient_profile !== undefined &&
-    //   this.props.patient_profile.length > 0
-    //     ? this.props.patient_profile[0]
-    //     : {};
-
     const _pat_allergies =
       this.props.patient_allergies !== undefined &&
       this.props.patient_allergies.length > 0
@@ -406,6 +427,29 @@ class Summary extends Component {
                   </li>
                 ))}
               </ul> */}
+            </div>
+
+            <div className="bd-callout bd-callout-theme">
+              <h6>Follow Up Details</h6>
+              <table
+                className="table table-sm table-bordered customTable"
+                style={{ marginTop: 10 }}
+              >
+                <thead className="table-primary">
+                  <tr>
+                    <th>Reason</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {this.state.patientFollowUp.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.reason}</td>
+                      <td>{moment(data.followup_date).format("DD-MM-YYYY")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
           <div className="col-md-3 col-lg-3">

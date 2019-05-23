@@ -199,7 +199,6 @@ export function algaehApiCall(options) {
             settings.onSuccess(response);
         })
         .catch(err => {
-          debugger;
           if (
             settings.cancelRequestId !== undefined ||
             settings.cancelRequestId !== null ||
@@ -253,7 +252,7 @@ export function algaehApiCall(options) {
                   type: "info",
                   position: "top"
                 });
-              }else{
+              } else {
                 reader.readAsText(err.response.data);
               }
             } else if (
@@ -273,17 +272,16 @@ export function algaehApiCall(options) {
               err.response === undefined &&
               err.message === "Network Error"
             ) {
-              debugger;
               const routers = config.routersAndPorts;
-              const moduleName =settings.module ===undefined?"":routers[settings.module]["name"];
-              swalMessage({
-                title:
-                  "'" +
-                  moduleName +
-                  "' module is not yet started",
-                type: "info",
-                position: "top"
-              });
+
+              // swalMessage({
+              //   title:
+              //     "'" +
+              //     routers[settings.module]["name"] +
+              //     "' module is not yet started",
+              //   type: "info",
+              //   position: "top"
+              // });
             } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] ===

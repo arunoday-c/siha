@@ -25,6 +25,7 @@ import PatientHistory from "../PatientHistory/PatientHistory";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
+import SickLeave from "../SickLeave/SickLeave";
 
 class BasicSubjective extends Component {
   constructor(props) {
@@ -36,6 +37,7 @@ class BasicSubjective extends Component {
       openDiet: false,
       openVital: false,
       openAlergy: false,
+      openSickLeave: false,
       openExamnModal: null,
       chief_complaint: null,
 
@@ -221,6 +223,17 @@ class BasicSubjective extends Component {
     });
   }
 
+  showSickLeave() {
+    if (this.state.hims_f_episode_chief_complaint_id === null) {
+      SubjectiveHandler().addChiefComplainToPatient(this);
+    } else {
+      SubjectiveHandler().updatePatientChiefComplaints(this);
+    }
+    this.setState({
+      openSickLeave: !this.state.openSickLeave
+    });
+  }
+
   showPatientHistory() {
     if (this.state.hims_f_episode_chief_complaint_id === null) {
       SubjectiveHandler().addChiefComplainToPatient(this);
@@ -402,13 +415,27 @@ class BasicSubjective extends Component {
                 openMedicaldata={this.state.openMedicaldata}
                 onClose={this.showMedicalData.bind(this)}
               />
+
+              <li>
+                <span className="animated slideInLeft faster">
+                  Sick Leave Application
+                </span>
+                <i
+                  className="fas fa-heartbeat"
+                  onClick={this.showSickLeave.bind(this)}
+                />
+              </li>
+
+              <SickLeave
+                openSickLeave={this.state.openSickLeave}
+                onClose={this.showSickLeave.bind(this)}
+              />
             </ul>
           </div>
           <div className="algaeh-col-4">
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {" "}
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">
@@ -489,22 +516,6 @@ class BasicSubjective extends Component {
                             }}
                           />
 
-                          {/* <AlagehAutoComplete
-                            div={{ className: "col-4" }}
-                            label={{ forceLabel: "Chronic", isImp: false }}
-                            selector={{
-                              name: "chronic",
-                              className: "select-fld",
-                              value: this.state.chronic,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
-                              },
-                              onChange: this.ChangeEventHandler.bind(this)
-                            }}
-                          /> */}
-
                           <AlagehAutoComplete
                             div={{ className: "col-4" }}
                             label={{
@@ -549,7 +560,6 @@ class BasicSubjective extends Component {
               </div>
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {" "}
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Significant Signs</h3>
@@ -573,7 +583,6 @@ class BasicSubjective extends Component {
 
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {" "}
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Other Conditions</h3>
@@ -755,34 +764,6 @@ class BasicSubjective extends Component {
                   ) : this.state.pageDisplay === "RisResults" ? (
                     <RadResults />
                   ) : null}
-                  {/* this.state.pageDisplay === "AssesmentsNotes" ? (
-                          <div className="row">
-                            <div className="container-fluid">
-                              <AlagehFormGroup
-                                div={{ className: "col-lg-12 form-details" }}
-                                label={{
-                                  forceLabel: "Assesment Notes",
-                                  isImp: true
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "assesment_notes",
-                                  value: this.state.assesment_notes,
-                                  others: {
-                                    multiline: true,
-                                    rows: "4",
-                                    style: {
-                                      height: "25vh"
-                                    }
-                                  },
-                                  events: {
-                                    onChange: assnotetexthandle.bind(this, this)
-                                  }
-                                }}
-                              />
-                            </div>
-                          </div>
-                        ) : null */}
                 </div>
               </div>
             </div>
