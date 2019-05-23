@@ -107,7 +107,106 @@ export default [
       {
         subitem: "Appointment List",
         template_name: "appt_availability",
-        reportParameters: []
+        reportParameters: [
+
+          {
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Select Department",
+            link: {
+              uri: "/department/get/subdepartment"
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "hims_d_sub_department_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "provider_id",
+            initialLoad: true,
+            link: {
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              schema: [{ name: "provider_id", response: "doctors" }]
+            },
+            events: {
+              onChange: (reportState, currentValue) => {}
+            },
+            dataSource: {
+              textField: "full_name",
+              valueField: "employee_id",
+              data: undefined
+            }
+          },
+          {
+            type: "dropdown",
+            name: "provider_id",
+            initialLoad: true,
+            link: {
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              schema: [{ name: "provider_id", response: "doctors" }]
+            },
+            events: {
+              onChange: (reportState, currentValue) => {}
+            },
+            dataSource: {
+              textField: "full_name",
+              valueField: "employee_id",
+              data: undefined
+            }
+          },
+          // {
+          //   type: "search",
+          //   name: "patient_code",
+          //   label: "Patient Code",
+          //   search: {
+          //     searchName: "patients",
+          //     columns: FrontDesk,
+          //     schema: [
+          //       { name: "patient_code", response: "patient_code" },
+          //       { name: "hims_d_patient_id", response: "hims_d_patient_id" }
+          //     ]
+          //   }
+          // },
+          
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            },
+            events: {
+              onChange: (reportState, currentValue) => {}
+            }
+          }
+          // {
+          //   type: "dropdown",
+          //   name: "appt_type",
+          //   initialLoad: true,
+          //   dataSource: {
+          //     textField: "name",
+          //     valueField: "value",
+          //     data: APPT_TYPE
+          //   },
+          //   events: {
+          //     onChange: (reportState, currentValue) => {}
+          //   }
+          // }
+        ]
       },
       {
         subitem: "Cancelled Appointments",

@@ -28,7 +28,8 @@ import {
   getPatientDiet,
   getPatientDiagnosis,
   getPatientAllergies,
-  getPatientHistory
+  getPatientHistory,
+  printPrescription
 } from "./PatientProfileHandlers";
 // import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
@@ -81,6 +82,7 @@ class PatientProfile extends Component {
     getPatientHistory(this);
     this.getLocation();
     this.changeTabs = this.changeTabs.bind(this);
+    this.alergyExist = "";
   }
 
   openAllergies(e) {
@@ -173,7 +175,7 @@ class PatientProfile extends Component {
       method: "GET",
       data: {
         patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"],
+        visit_id: Window.global["visit_id"]
         // forceReplace: true
       },
       onSuccess: response => {
@@ -200,7 +202,7 @@ class PatientProfile extends Component {
         visit_id: Window.global["visit_id"]
       },
       onSuccess: response => {
-        debugger
+        debugger;
         if (response.data.success) {
           that.setState({ openOCAF: true, OCAFData: response.data.records });
         }
@@ -216,15 +218,15 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(_patient_allergies) {
-    debugger
+    debugger;
     if (allergyPopUp && _patient_allergies.length > 0) {
       allergyPopUp = false;
       swalMessage({
         title: "Alergy Exists...",
         type: "warning"
       });
+      this.alergyExist = " AllergyActive";
     }
-
   }
   decissionAllergyOnSet(row) {
     const _onSet = Enumerable.from(GlobalVariables.ALLERGY_ONSET)
@@ -372,23 +374,21 @@ class PatientProfile extends Component {
           <div className="patientName">
             <h6>{_pat_profile.full_name}</h6>
             <p>
-              {_pat_profile.gender} - {_pat_profile.age_in_years}y,{" "}
+              {_pat_profile.gender} - {_pat_profile.age_in_years}y,
               {_pat_profile.age_in_months}m, {_pat_profile.age_in_days}d
             </p>
           </div>
           <div className="patientDemographic">
             <span>
-              DOB:{" "}
+              DOB:
               <b>{moment(_pat_profile.date_of_birth).format("DD-MM-YYYY")}</b>
             </span>
-            {/* <span>
-              Mobile: <b>{_pat_profile.contact_number}</b>
-            </span> */}
+
             <span>
               Nationality: <b>{_pat_profile.nationality}</b>
             </span>
             <span>
-              Payment:{" "}
+              Payment:
               <b>
                 {_pat_profile.payment_type === "I"
                   ? "Insurance"
@@ -403,7 +403,7 @@ class PatientProfile extends Component {
               MRN: <b>{_pat_profile.patient_code}</b>
             </span>
             <span>
-              Encounter:{" "}
+              Encounter:
               <b>
                 {moment(_pat_profile.Encounter_Date).format(
                   "DD-MM-YYYY | hh:mm a"
@@ -413,15 +413,10 @@ class PatientProfile extends Component {
           </div>
           {_Vitals.length > 0 ? (
             <div className="patientVital">
-              {/* <span>
-                Vitals updated on:
-                <b>{_Vitals[_Vitals.length - 1]["updated_Date"]}</b>
-              </span>
-              <br /> */}
               {_Vitals.map((row, idx) => (
                 <span key={idx}>
                   {console.log("Viatal Details", row)}
-                  {row.vital_short_name}:<b> {row.vital_value}</b>{" "}
+                  {row.vital_short_name}:<b> {row.vital_value}</b>
                   {row.formula_value}
                 </span>
               ))}
@@ -435,6 +430,11 @@ class PatientProfile extends Component {
             <ul className="moreActionUl">
               <li>
                 <span>Open MRD</span>
+              </li>
+              <li>
+                <span onClick={printPrescription.bind(this, this)}>
+                  Preceprion
+                </span>
               </li>
 
               {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
@@ -530,83 +530,73 @@ class PatientProfile extends Component {
               </li>
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className="fas fa-allergies AllergyActive" />
+                  <i className={"fas fa-allergies" + this.alergyExist} />
                   <section>
-                    <b className="top-nav-sec-hdg">
+                    <span className="top-nav-sec-hdg">
                       Allergies
-                      <span
+                      {/* <span
                         className="fas fa-plus miniActionIcon"
                         onClick={this.openAllergies.bind(this)}
                       />
                       <Allergies
                         openAllergyModal={this.state.openAlergy}
                         onClose={this.closeAllergies.bind(this)}
-                      />
-                    </b>
+                      /> */}
+                    </span>
                     <p>
+                        <table className="listofADDTable">
+
+                       <thead> <tr><th><b>Allergy</b></th><th><b>Onset From</b></th><th><b>Severity</b></th><th><b>Comments</b></th></tr></thead>
+                        
                       {_patient_allergies.map((data, index) => (
-                        <React.Fragment key={index}>
-                          <b>{data.allergy_type_desc}</b>
+                          <tbody   key={index} >
+                          {/* <tr><td colSpan="4">{data.allergy_type_desc}</td></tr> */}
+                          
                           {data.allergyList.map((allergy, aIndex) => (
-                            <span
-                              key={aIndex}
-                              className={
-                                "listofA-D-D " +
-                                (allergy.allergy_inactive === "Y" ? "red" : "")
-                              }
-                              title={
-                                "Onset Date : " +
-                                allergy.onset_date +
-                                "\n Comment : " +
-                                allergy.comment +
-                                "\n Severity : " +
-                                allergy.severity
-                              }
-                            >
-                              {allergy.allergy_name}
-                            </span>
-                          ))}
-                        </React.Fragment>
-                      ))}
+                            <tr className={(allergy.allergy_inactive === "Y" ? "red" : "")}><td>{allergy.allergy_name}</td><td>{(allergy.onset === "O" ? allergy.onset_date : allergy.onset === "A" ? "Adulthood" : allergy.onset === "C" ? "Childhood"  : allergy.onset === "P" ? "Pre Terms" : allergy.onset === "T" ? "Teenage":"")}</td><td>{ (allergy.severity === "MO" ? "Moderate" : allergy.severity === "MI" ? "Mild" :allergy.severity === "SE" ? "Severe" :  "")}</td><td>{allergy.comment}</td></tr>
+                          ))}</tbody>
+                      ))} </table>
                     </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-diagnoses" />
                   <section>
-                    <b className="top-nav-sec-hdg">Diagnosis</b>
+                    <span className="top-nav-sec-hdg">Diagnosis</span>
                     <p>
+                        <table className="listofADDTable">
+                        <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
+                          
                       {_diagnosis.map((item, index) => (
-                        <React.Fragment key={index}>
-                          <span key={index} className="listofA-D-D">
-                            {item.icd_code} | {item.icd_description} |
-                            {item.diagnosis_type === "S"
-                              ? "Secondary"
-                              : "Primary"}
-                            | {item.final_daignosis}
-                          </span>
-                        </React.Fragment>
-                      ))}
+                        <tr key={index}>
+                         
+                          <td>{item.icd_code}</td>
+                          <td>{item.icd_description}</td>
+                          <td>{item.diagnosis_type === "S"? "Secondary": "Primary"}</td>
+                          <td>{item.final_daignosis  === "Y"? "Final": "Not Final"}</td>
+                         
+                        </tr>
+                      ))}</table>
                     </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
-                    <b className="top-nav-sec-hdg">Diet</b>
-                    <p>
+                    <span className="top-nav-sec-hdg">Diet</span>
+                    <p> <table className="listofADDTable">
+                        {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
+                        */}
                       {_diet.map((item, index) => {
-                        <React.Fragment key={index}>
-                          <span key={index} className="listofA-D-D">
-                            {item.hims_d_diet_note}
-                          </span>
-                        </React.Fragment>;
-                      })}
-                      {/* {_diet.map((data, index) => (
-                        <span key={index} className="listofA-D-D">
-                          {data.hims_d_diet_description}
-                        </span>
-                      ))} */}
+                        return (
+
+                            <tr key={index}>
+                         
+                         <td>{item.hims_d_diet_note}</td>
+                        
+                       </tr>
+                        );
+                      })}</table>
                     </p>
                   </section>
                 </li>
@@ -668,70 +658,63 @@ class PatientProfile extends Component {
 
               <ul className="float-right patient-quick-info">
                 <li>
-                  <i className="fas fa-allergies" />
+                  <i className={"fas fa-allergies" + this.alergyExist} />
                   <section>
-                    <b className="top-nav-sec-hdg">Allergies</b>
+                    <span className="top-nav-sec-hdg">Allergies</span>
                     <p>
+                        <table className="listofADDTable">
+
+                       <thead> <tr><th><b>Allergy</b></th><th><b>Onset From</b></th><th><b>Severity</b></th><th><b>Comments</b></th></tr></thead>
+                        
                       {_patient_allergies.map((data, index) => (
-                        <React.Fragment key={index}>
-                          <b>{data.allergy_type_desc}</b>
+                          <tbody   key={index} >
+                          {/* <tr><td colSpan="4">{data.allergy_type_desc}</td></tr> */}
+                          
                           {data.allergyList.map((allergy, aIndex) => (
-                            <span
-                              key={aIndex}
-                              className={
-                                "listofA-D-D " +
-                                (allergy.allergy_inactive === "Y" ? "red" : "")
-                              }
-                              title={
-                                "Onset Date : " +
-                                allergy.onset_date +
-                                "\n Comment : " +
-                                allergy.comment +
-                                "\n Severity : " +
-                                allergy.severity
-                              }
-                            >
-                              {allergy.allergy_name}
-                            </span>
-                          ))}
-                        </React.Fragment>
-                      ))}
+                            <tr className={(allergy.allergy_inactive === "Y" ? "red" : "")}><td>{allergy.allergy_name}</td><td>{(allergy.onset === "O" ? allergy.onset_date : allergy.onset === "A" ? "Adulthood" : allergy.onset === "C" ? "Childhood"  : allergy.onset === "P" ? "Pre Terms" : allergy.onset === "T" ? "Teenage":"")}</td><td>{ (allergy.severity === "MO" ? "Moderate" : allergy.severity === "MI" ? "Mild" :allergy.severity === "SE" ? "Severe" :  "")}</td><td>{allergy.comment}</td></tr>
+                          ))}</tbody>
+                      ))} </table>
                     </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-diagnoses" />
                   <section>
-                    <b className="top-nav-sec-hdg">Diagnosis:</b>
+                  <span className="top-nav-sec-hdg">Diagnosis</span>
                     <p>
+                        <table className="listofADDTable">
+                        <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
+                          
                       {_diagnosis.map((item, index) => (
-                        <React.Fragment key={index}>
-                          <span key={index} className="listofA-D-D">
-                            {item.icd_code} | {item.icd_description} |
-                            {item.diagnosis_type === "S"
-                              ? "Secondary"
-                              : "Primary"}
-                            | {item.final_daignosis}
-                          </span>
-                        </React.Fragment>
-                      ))}
+                        <tr key={index}>
+                         
+                          <td>{item.icd_code}</td>
+                          <td>{item.icd_description}</td>
+                          <td>{item.diagnosis_type === "S"? "Secondary": "Primary"}</td>
+                          <td>{item.final_daignosis  === "Y"? "Final": "Not Final"}</td>
+                         
+                        </tr>
+                      ))}</table>
                     </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
-                    <b className="top-nav-sec-hdg">Diet:</b>
-                    <p>
+                  <span className="top-nav-sec-hdg">Diet</span>
+                    <p> <table className="listofADDTable">
+                        {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
+                        */}
                       {_diet.map((item, index) => {
                         return (
-                          <React.Fragment key={index}>
-                            <span key={index} className="listofA-D-D">
-                              {item.hims_d_diet_note}
-                            </span>
-                          </React.Fragment>
+
+                            <tr key={index}>
+                         
+                         <td>{item.hims_d_diet_note}</td>
+                        
+                       </tr>
                         );
-                      })}
+                      })}</table>
                     </p>
                   </section>
                 </li>

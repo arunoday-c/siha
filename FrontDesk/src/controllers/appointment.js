@@ -13,7 +13,6 @@ import {
   deleteAppointmentRoom,
   updateAppointmentClinic,
   addDoctorsSchedule,
-  addLeaveOrModifySchedule,
   getDoctorsScheduledList,
   getDoctorScheduleDateWise,
   getDoctorScheduleToModify,
@@ -131,16 +130,7 @@ export default () => {
     }
   });
 
-  api.post(
-    "/addLeaveOrModifySchedule",
-    addLeaveOrModifySchedule,
-    (req, res, next) => {
-      res.status(utlities.AlgaehUtilities().httpStatus().ok).json({
-        success: true,
-        records: req.records
-      });
-    }
-  );
+
   api.get(
     "/getDoctorsScheduledList",
     getDoctorsScheduledList,

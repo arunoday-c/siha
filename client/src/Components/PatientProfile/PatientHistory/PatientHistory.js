@@ -28,11 +28,15 @@ class PatientHistory extends Component {
     let his_array = [];
 
     if (
-      this.state.social_history === null &&
-      this.state.surgical_history === null &&
-      this.state.medical_history === null &&
-      this.state.family_history === null &&
-      this.state.birth_history === null
+      (this.state.social_history === null ||
+        this.state.social_history === "") &&
+      (this.state.surgical_history === null ||
+        this.state.surgical_history === "") &&
+      (this.state.medical_history === null ||
+        this.state.medical_history === "") &&
+      (this.state.family_history === null ||
+        this.state.family_history === "") &&
+      (this.state.birth_history === null || this.state.birth_history === "")
     ) {
       swalMessage({
         title: "Please Enter History to save",
@@ -88,12 +92,20 @@ class PatientHistory extends Component {
             title: "Record added successfully",
             type: "success"
           });
+          debugger;
 
-          this.setState({
-            openAddModal: false,
-            history: ""
-          });
-          getPatientHistory(this);
+          this.setState(
+            {
+              social_history: "",
+              surgical_history: "",
+              medical_history: "",
+              family_history: "",
+              birth_history: ""
+            },
+            () => {
+              getPatientHistory(this);
+            }
+          );
         }
       },
       onFailure: error => {
@@ -260,10 +272,10 @@ class PatientHistory extends Component {
                 </textarea>
               </div>
             </div>
-            <div className="col-8">
-              <div className="popRightDiv">
+            <div className="col-8" style={{paddingLeft:0}}>
+              <div className="popRightDiv" style={{paddingLeft:0}}>
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
                       <th>Social History</th>
                       <th>Recorded By</th>
@@ -279,7 +291,7 @@ class PatientHistory extends Component {
                   </tbody>
                 </table>
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
                       <th>Medical History</th>
                       <th>Recorded By</th>
@@ -295,7 +307,7 @@ class PatientHistory extends Component {
                   </tbody>
                 </table>
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
                       <th>Surgical History</th>
                       <th>Recorded By</th>
@@ -312,7 +324,7 @@ class PatientHistory extends Component {
                 </table>
 
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
                       <th>Family History</th>
                       <th>Recorded By</th>
@@ -329,9 +341,9 @@ class PatientHistory extends Component {
                 </table>
 
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
-                      <th>Birth History</th>
+                      <th>Birth History</th>  
                       <th>Recorded By</th>
                     </tr>
                   </thead>

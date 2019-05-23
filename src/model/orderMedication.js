@@ -74,7 +74,8 @@ let addPatientPrescription = (req, res, next) => {
                 "frequency_type",
                 "frequency_time",
                 "insured",
-                "pre_approval"
+                "pre_approval",
+                "instructions"
               ];
 
               connection.query(

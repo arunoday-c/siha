@@ -96,7 +96,8 @@
         height: 22px;
         line-height: 1;
         top: 12px;
-        white-space: nowrap; }
+        white-space: nowrap;
+        z-index: -1; }
       .algaeh-fixed-right-menu .rightActionIcon li:hover {
         color: #fff;
         background: #00a796;

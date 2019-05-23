@@ -132,7 +132,7 @@ class Summary extends Component {
         ? this.props.patient_diagnosis
         : [];
 
-debugger
+    debugger;
     let _pat_episode =
       Enumerable.from(this.state.patientEpisode).firstOrDefault() !== undefined
         ? Enumerable.from(this.state.patientEpisode).firstOrDefault()
@@ -148,29 +148,26 @@ debugger
                 <p>Not recorded</p>
               ) : (
                 <p>
-                  Patient {_pat_episode.patient_name}, {_pat_episode.age} Yrs/{_pat_episode.gender},<br />
-                  visited {_pat_episode.sub_department_name} Department
-                  on {_pat_episode.visit_date} for the chief complaint
-                  of <b>{_pat_episode.comment}</b> from {_pat_episode.onset_date}.
+                  Patient {_pat_episode.patient_name}, {_pat_episode.age} Yrs/
+                  {_pat_episode.gender},<br />
+                  visited {_pat_episode.sub_department_name} Department on{" "}
+                  {_pat_episode.visit_date} for the chief complaint of{" "}
+                  <b>{_pat_episode.comment}</b> from {_pat_episode.onset_date}.
                 </p>
               )}
-              <br></br>
-                 <h6>Significant Signs</h6>
+              <br />
+              <h6>Significant Signs</h6>
               {_pat_episode.patient_name === undefined ? (
                 <p>Not recorded</p>
               ) : (
-                <p>
-                 Show Significant Signs Comments Here
-                </p>
+                <p>Show Significant Signs Comments Here</p>
               )}
-              <br></br>
-               <h6>Other Signs</h6>
+              <br />
+              <h6>Other Signs</h6>
               {_pat_episode.patient_name === undefined ? (
                 <p>Not recorded</p>
               ) : (
-                <p>
-                 Show Other Signs Comments Here
-                </p>
+                <p>Show Other Signs Comments Here</p>
               )}
             </div>
 
@@ -231,6 +228,7 @@ debugger
                     <th>Dosage</th>
                     <th>Frequency</th>
                     <th>Duration(days)</th>
+                    <th>Instructions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -240,8 +238,21 @@ debugger
                           <td>{index + 1}</td>
                           <td>{data.item_description}</td>
                           <td>{data.dosage}</td>
-                          <td>{data.frequency_type}</td>
+                          <td>
+                            {data.frequency_type === "PD"
+                              ? "Per Day"
+                              : data.frequency_type === "PH"
+                              ? "Per Hour"
+                              : data.frequency_type === "PW"
+                              ? "Per Week"
+                              : data.frequency_type === "PM"
+                              ? "Per Month"
+                              : data.frequency_type === "AD"
+                              ? "Alternate Day"
+                              : ""}
+                          </td>
                           <td>{data.no_of_days}</td>
+                          <td>{data.instructions}</td>
                         </tr>
                       ))
                     : null}

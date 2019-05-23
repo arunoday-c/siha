@@ -533,6 +533,9 @@ class Allergies extends Component {
                                 value={data.onset_date}
                               />
                             );
+                          },
+                          others: {
+                            minWidth:130
                           }
                         },
                         {

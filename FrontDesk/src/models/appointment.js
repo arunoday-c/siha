@@ -730,41 +730,7 @@ module.exports = {
       });
   },
 
-  //created by irfan: to add appointment leave
-  addLeaveOrModifySchedule_TO_BE_DELETD: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    let input = req.body;
 
-    _mysql
-      .executeQuery({
-        query:
-          "INSERT INTO `hims_d_appointment_schedule_leave` ( provider_id, sub_dept_id, clinic_id, to_date,\
-            from_time, to_time, modified, created_date, created_by, updated_date, updated_by)\
-           VALUE(?,?,?,?,?,?,?,?,?,?,?)",
-        values: [
-          input.provider_id,
-          input.sub_dept_id,
-          input.clinic_id,
-          input.to_date,
-          input.from_time,
-          input.to_time,
-          input.modified,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id,
-          new Date(),
-          req.userIdentity.algaeh_d_app_user_id
-        ]
-      })
-      .then(result => {
-        _mysql.releaseConnection();
-        req.records = result;
-        next();
-      })
-      .catch(e => {
-        _mysql.releaseConnection();
-        next(e);
-      });
-  },
 
   //created by irfan: to get doctors Schedule list
   getDoctorsScheduledList: (req, res, next) => {

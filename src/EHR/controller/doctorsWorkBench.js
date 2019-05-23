@@ -56,7 +56,8 @@ import {
   getPatientEpisodeSummary,
   updatePatientEncounter,
   getPatientEncounter,
-  getPatientBasicChiefComplaints
+  getPatientBasicChiefComplaints,
+  deleteDietAdvice
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -897,6 +898,21 @@ export default ({ config, db }) => {
   api.get(
     "/getPatientBasicChiefComplaints",
     getPatientBasicChiefComplaints,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad: to Delete DIET Advice
+  api.delete(
+    "/deleteDietAdvice",
+    deleteDietAdvice,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

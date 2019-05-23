@@ -35,8 +35,18 @@ class ResultEntry extends Component {
     super(props);
     this.state = {
       test_analytes: [],
-      run_type: "N"
+      run_type: "N",
+      comments: ""
     };
+  }
+
+  textAreaEvent(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    this.setState({
+      [name]: value
+    });
   }
 
   showReport(refBy) {
@@ -625,6 +635,20 @@ class ResultEntry extends Component {
                       data: this.state.test_analytes
                     }}
                     paging={{ page: 0, rowsPerPage: 20 }}
+                  />
+                </div>
+
+                <div className="row form-row-gap">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Comments"
+                    }}
+                  />
+
+                  <textarea
+                    value={this.state.comments}
+                    name="comments"
+                    onChange={this.textAreaEvent.bind(this)}
                   />
                 </div>
               </div>

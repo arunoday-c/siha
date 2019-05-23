@@ -38,7 +38,8 @@ class RadResultEntry extends Component {
       pre_exam_status: null,
       exam_start_date_time: null,
       exam_end_date_time: null,
-      changesDone: false
+      changesDone: false,
+      comments: ""
     };
   }
 
@@ -108,6 +109,16 @@ class RadResultEntry extends Component {
       return moment(value).format(Options.dateFormat);
     }
   }
+
+  textAreaEvent(e) {
+    let name = e.name || e.target.name;
+    let value = e.value || e.target.value;
+
+    this.setState({
+      [name]: value
+    });
+  }
+
   render() {
     let display =
       this.props.providers === undefined
@@ -352,6 +363,22 @@ class RadResultEntry extends Component {
                         onChange: texthandle.bind(this, this)
                       }}
                     />
+                  </div>
+
+                  <div className="row form-row-gap">
+                    <AlgaehLabel
+                      label={{
+                        forceLabel: "Comments"
+                      }}
+                    />
+
+                    <textarea
+                      value={this.state.comments}
+                      name="comments"
+                      onChange={this.textAreaEvent.bind(this)}
+                    >
+                      {this.state.comments}
+                    </textarea>
                   </div>
                 </div>
                 <div className="col-8 popRightDiv">
