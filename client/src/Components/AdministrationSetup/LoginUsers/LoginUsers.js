@@ -22,6 +22,7 @@ class LoginUsers extends Component {
     };
     this.getGroups();
     this.getLoginUsers();
+    this.getOrganization();
   }
 
   searchSelect(data) {
@@ -55,6 +56,30 @@ class LoginUsers extends Component {
     row.update();
   }
 
+  getOrganization() {
+    algaehApiCall({
+      uri: "/organization/getOrganization",
+      method: "GET",
+      onSuccess: response => {
+        if (response.data.success) {
+          this.setState({
+            hospitals: response.data.records
+          });
+        }
+      },
+      onFailure: error => {
+        this.setState({
+          branch: {
+            loader: false
+          }
+        });
+        swalMessage({
+          title: error.message,
+          type: "error"
+        });
+      }
+    });
+  }
   getLoginUsers() {
     algaehApiCall({
       uri: "/algaehappuser/getLoginUserMaster",
@@ -139,7 +164,7 @@ class LoginUsers extends Component {
 
   deleteLoginUser(data) {
     swal({
-      title: "Do you want to delete user: "+data.username+"?",
+      title: "Do you want to delete user: " + data.username + "?",
       type: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes!",
@@ -197,7 +222,8 @@ class LoginUsers extends Component {
             role_id: this.state.role_id,
             user_type: this.state.user_type,
             employee_id: this.state.employee_id,
-            sub_department_id: this.state.sub_department_id
+            sub_department_id: this.state.sub_department_id,
+            hospital_id: this.state.hospital_id
           },
           onSuccess: response => {
             if (response.data.success) {
@@ -381,6 +407,25 @@ class LoginUsers extends Component {
                 }}
               />
 
+              <AlagehAutoComplete
+                div={{ className: "col" }}
+                label={{
+                  forceLabel: "branch",
+                  isImp: true
+                }}
+                selector={{
+                  name: "hospital_id",
+                  className: "select-fld",
+                  value: this.state.hospital_id,
+                  dataSource: {
+                    textField: "hospital_name",
+                    valueField: "hims_d_hospital_id",
+                    data: this.state.hospitals
+                  },
+                  onChange: this.dropDownHandler.bind(this)
+                }}
+              />
+
               <AlgaehDateHandler
                 div={{ className: "col" }}
                 label={{
@@ -545,8 +590,18 @@ class LoginUsers extends Component {
                           label: (
                             <AlgaehLabel label={{ forceLabel: "User Type" }} />
                           ),
-                          disabled: true,
+
                           displayTemplate: row => {
+                            let x = Enumerable.from(USER_TYPE)
+                              .where(w => w.value === row.user_type)
+                              .firstOrDefault();
+                            return (
+                              <span>
+                                {x !== undefined ? x.name : "Unknown user"}
+                              </span>
+                            );
+                          },
+                          editorTemplate: row => {
                             let x = Enumerable.from(USER_TYPE)
                               .where(w => w.value === row.user_type)
                               .firstOrDefault();

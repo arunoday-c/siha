@@ -456,7 +456,7 @@ let createUserLogin = (req, res, next) => {
                                   input.employee_id,
                                   result.insertId,
                                   input.sub_department_id,
-                                  req.userIdentity.hospital_id,
+                                  input.hospital_id,
                                   input.created_by,
                                   new Date(),
                                   input.updated_by,
