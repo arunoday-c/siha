@@ -272,10 +272,10 @@ class PatientHistory extends Component {
                 </textarea>
               </div>
             </div>
-            <div className="col-8">
-              <div className="popRightDiv">
+            <div className="col-8" style={{paddingLeft:0}}>
+              <div className="popRightDiv" style={{paddingLeft:0}}>
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
                       <th>Social History</th>
                       <th>Recorded By</th>
@@ -291,7 +291,7 @@ class PatientHistory extends Component {
                   </tbody>
                 </table>
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
                       <th>Medical History</th>
                       <th>Recorded By</th>
@@ -307,7 +307,7 @@ class PatientHistory extends Component {
                   </tbody>
                 </table>
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
                       <th>Surgical History</th>
                       <th>Recorded By</th>
@@ -324,7 +324,7 @@ class PatientHistory extends Component {
                 </table>
 
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
                       <th>Family History</th>
                       <th>Recorded By</th>
@@ -341,9 +341,9 @@ class PatientHistory extends Component {
                 </table>
 
                 <table className="table table-sm table-bordered customTable">
-                  <thead className="table-primary">
+                  <thead className="">
                     <tr>
-                      <th>Birth History</th>
+                      <th>Birth History</th>  
                       <th>Recorded By</th>
                     </tr>
                   </thead>

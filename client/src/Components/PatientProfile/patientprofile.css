@@ -173,7 +173,7 @@
       display: inline-block;
       font-size: 1.1rem; }
       .patientProfile .patientTopNav .patient-quick-info li section {
-        width: 30vw;
+        width: 40vw;
         height: auto;
         position: absolute;
         right: 0;
@@ -184,17 +184,14 @@
         border-radius: 5px;
         color: #fff;
         display: none; }
-        .patientProfile .patientTopNav .patient-quick-info li section b.top-nav-sec-hdg {
+        .patientProfile .patientTopNav .patient-quick-info li section span.top-nav-sec-hdg {
           text-align: center;
-          border-bottom: 1px solid #007468;
-          margin-left: -10px;
-          margin-right: -10px;
-          padding-bottom: 11px; }
-        .patientProfile .patientTopNav .patient-quick-info li section b {
+          border-bottom: none;
+          height: 25px;
+          padding: 0;
+          font-weight: bold;
           display: block;
-          border-bottom: 1px solid #007468;
-          margin-bottom: 10px;
-          padding-bottom: 5px; }
+          color: #fff; }
         .patientProfile .patientTopNav .patient-quick-info li section .listofA-D-D {
           display: inline-block;
           margin-right: 8px;
@@ -207,10 +204,6 @@
           border-radius: 5px;
           background: #00a796;
           white-space: normal; }
-        .patientProfile .patientTopNav .patient-quick-info li section p {
-          border-top: 1px solid #a7fff6;
-          margin: -10px;
-          padding: 10px; }
     .patientProfile .patientTopNav .patient-quick-info li:hover {
       background: #007468;
       color: #fff;
@@ -267,4 +260,24 @@
     color: #00a796 !important; }
 
 .AllergyActive {
-  color: red; }
+  color: red;
+  animation: blinker 2s linear infinite; }
+
+@keyframes blinker {
+  50% {
+    opacity: 0; } }
+
+.listofADDTable {
+  width: 100%;
+  max-width: 100%;
+  background-color: transparent;
+  font-size: 0.8rem; }
+  .listofADDTable th {
+    border: 1px solid #008e7f;
+    padding: 3px;
+    text-align: center;
+    background: #009888; }
+  .listofADDTable td {
+    border: 1px solid #008e7f;
+    padding: 3px;
+    text-align: center; }

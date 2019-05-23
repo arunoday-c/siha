@@ -117,6 +117,7 @@
         line-height: 1;
         top: 12px;
         white-space: nowrap;
+        z-index: -1;
       }
       &:hover {
         color: $color-white;

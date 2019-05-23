@@ -281,6 +281,7 @@ class Plan extends Component {
         </AlgaehModalPopUp>
 
         <AlgaehModalPopUp
+        class="dietPopupWidth"
           events={{
             //onClose: this.onClose.bind(this)
             onClose: () => {
@@ -292,7 +293,7 @@ class Plan extends Component {
         >
           <div className="popupInner">
             <div className="popRightDiv">
-              <DietAdvice />
+              <DietAdvice   />
             </div>
           </div>
           <div className=" popupFooter">
