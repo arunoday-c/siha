@@ -28,7 +28,8 @@ import {
   getPatientDiet,
   getPatientDiagnosis,
   getPatientAllergies,
-  getPatientHistory
+  getPatientHistory,
+  printPrescription
 } from "./PatientProfileHandlers";
 // import AlgaehReport from "../Wrapper/printReports";
 import Enumerable from "linq";
@@ -429,6 +430,11 @@ class PatientProfile extends Component {
             <ul className="moreActionUl">
               <li>
                 <span>Open MRD</span>
+              </li>
+              <li>
+                <span onClick={printPrescription.bind(this, this)}>
+                  Preceprion
+                </span>
               </li>
 
               {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>

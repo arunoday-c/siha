@@ -47,7 +47,7 @@ module.exports = {
             "SELECT hims_f_rad_order_id,patient_id,visit_id,provider_id, template_id, billed, service_id,\
             SR.service_code,SR.service_name,status, cancelled, ordered_by, ordered_date, test_type, technician_id, \
             scheduled_date_time,scheduled_by,arrived_date,arrived,validate_by,result_html,validate_date_time,\
-            attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,\
+            attended_by,attended_date_time,exam_start_date_time,exam_end_date_time,exam_status,report_type,comments,\
             PAT.patient_code,PAT.full_name,PAT.date_of_birth,PAT.gender\
             from ((hims_f_rad_order SA inner join hims_f_patient PAT ON SA.patient_id=PAT.hims_d_patient_id) inner join \
             hims_d_services SR on SR.hims_d_services_id=SA.service_id) WHERE " +
@@ -219,9 +219,10 @@ module.exports = {
         .executeQuery({
           query:
             "UPDATE `hims_f_rad_order` \
-          SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,`arrived`=?,\
-          `validate_by`=?, `validate_date_time` = ?, `attended_by`=?,`attended_date_time`=?,`exam_start_date_time`=?, \
-          `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,`technician_id`=?, `template_id`=?, `result_html`=?\
+          SET `status`=?,  `cancelled`=?,`scheduled_date_time`=?, `scheduled_by`=?, `arrived_date`=?,\
+          `arrived`=?,`validate_by`=?, `validate_date_time` = ?, `attended_by`=?, `attended_date_time`=?,\
+          `exam_start_date_time`=?, `exam_end_date_time`=?, `exam_status`=?, `report_type`=?,\
+          `technician_id`=?, `template_id`=?, `result_html`=?, `comments`=?\
           WHERE `hims_f_rad_order_id`=?",
           values: [
             inputParam.status,
@@ -241,6 +242,7 @@ module.exports = {
             inputParam.technician_id,
             inputParam.template_id,
             inputParam.result_html,
+            inputParam.comments,
             inputParam.hims_f_rad_order_id
           ],
           printQuery: true

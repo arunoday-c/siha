@@ -112,7 +112,8 @@ const UpdateRadOrder = ($this, value) => {
       exam_end_date_time: $this.state.exam_end_date_time,
       exam_status: $this.state.exam_status,
       report_type: report_type,
-      result_html: $this.state.result_html
+      result_html: $this.state.result_html,
+      comments: $this.state.comments
     };
 
     swal({
@@ -129,14 +130,6 @@ const UpdateRadOrder = ($this, value) => {
       cancelButtonText: "No"
     }).then(willProceed => {
       if (willProceed.value) {
-        //SaveTemplate
-        // if (value === "Validate") {
-        //   $this.radiologyValidateTemplate.SavingImageOnServer(
-        //     $this.state.result_html,
-        //     "html"
-        //   );
-        // }
-
         algaehApiCall({
           uri: "/radiology/updateRadOrderedServices",
           module: "radiology",
