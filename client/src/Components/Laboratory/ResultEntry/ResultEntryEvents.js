@@ -11,6 +11,8 @@ const texthandle = ($this, e) => {
 };
 
 const UpdateLabOrder = ($this, value, status) => {
+  debugger;
+
   algaehApiCall({
     uri: "/laboratory/updateLabResultEntry",
     module: "laboratory",
@@ -65,6 +67,7 @@ const onvalidate = $this => {
       test_analytes[k].validate = "Y";
       test_analytes[k].isre_run = false;
     }
+    test_analytes[k].comments = $this.state.comments;
   }
   if (success === true) {
     swal({
@@ -205,6 +208,7 @@ const resultEntryUpdate = $this => {
       enterResult = false;
     }
     test_analytes[k].isre_run = false;
+    test_analytes[k].comments = $this.state.comments;
   }
   if (enterResult === true && enterRemarks === true) {
     test_analytes.push({ run_type: $this.state.run_type });
@@ -240,6 +244,7 @@ const onconfirm = $this => {
       test_analytes[k].confirm = "Y";
       test_analytes[k].isre_run = false;
     }
+    test_analytes[k].comments = $this.state.comments;
   }
   if (success === true) {
     swal({
@@ -293,6 +298,8 @@ const onReRun = $this => {
     test_analytes[k].validate = "N";
     test_analytes[k].status = "N";
     test_analytes[k].isre_run = true;
+
+    test_analytes[k].comments = $this.state.comments;
   }
   test_analytes.push(runtype);
 

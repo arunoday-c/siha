@@ -15,18 +15,18 @@ module.exports = {
       let inputValues = [];
       let _stringData = "";
 
-      _stringData += " and LO.hospital_id=?";
+      _stringData += " LO.hospital_id=?";
       inputValues.push(req.userIdentity.hospital_id);
 
       if (req.query.from_date != null) {
         _stringData +=
-          "date(ordered_date) between date('" +
+          " and date(ordered_date) between date('" +
           req.query.from_date +
           "') AND date('" +
           req.query.to_date +
           "')";
       } else {
-        _stringData += "date(ordered_date) <= date(now())";
+        _stringData += " and date(ordered_date) <= date(now())";
       }
 
       if (req.query.patient_id != null) {
@@ -50,7 +50,7 @@ module.exports = {
           query:
             " select hims_f_lab_order_id,LO.patient_id, entered_by, confirmed_by, validated_by,visit_id,V.visit_code, provider_id, E.full_name as doctor_name, billed, service_id,S.service_code,S.service_name,LO.status,\
             cancelled, provider_id, ordered_date, test_type, lab_id_number, run_type, P.patient_code,P.full_name,P.date_of_birth, P.gender,\
-            LS.sample_id,LS.collected,LS.collected_by, LS.remarks,LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status\
+            LS.sample_id,LS.collected,LS.collected_by, LS.remarks,LS.collected_date,LS.hims_d_lab_sample_id,LS.status as sample_status, LO.comments\
             from hims_f_lab_order LO inner join hims_d_services S on LO.service_id=S.hims_d_services_id and S.record_status='A'\
             inner join hims_f_patient_visit V on LO.visit_id=V.hims_f_patient_visit_id and  V.record_status='A'\
             inner join hims_d_employee E on LO.provider_id=E.hims_d_employee_id and  E.record_status='A'\
@@ -580,7 +580,6 @@ module.exports = {
     utilities.logger().log("updateLabResultEntry: ");
     try {
       let inputParam = req.body;
-      let user_id = { ...req.body };
 
       let status_C = new LINQ(inputParam).Where(w => w.status == "C").ToArray()
         .length;
@@ -598,7 +597,7 @@ module.exports = {
         .Select(s => s.run_type)
         .ToArray();
 
-      utilities.logger().log("runtype: ", runtype);
+      utilities.logger().log("inputParam: ", inputParam);
 
       let ref = null;
       let entered_by = "";
@@ -649,13 +648,17 @@ module.exports = {
             inputParam[i].run2,
             inputParam[i].run3,
             inputParam[i].critical_type,
-            user_id.updated_by,
+            req.userIdentity.algaeh_d_app_user_id,
             moment().format("YYYY-MM-DD HH:mm"),
-            inputParam[i].validate == "N" ? null : user_id.updated_by,
+            inputParam[i].validate == "N"
+              ? null
+              : req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].validate == "N"
               ? null
               : moment().format("YYYY-MM-DD HH:mm"),
-            inputParam[i].confirm == "N" ? null : user_id.updated_by,
+            inputParam[i].confirm == "N"
+              ? null
+              : req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].confirm == "N"
               ? null
               : moment().format("YYYY-MM-DD HH:mm"),
@@ -664,7 +667,7 @@ module.exports = {
               ? moment().format("YYYY-MM-DD HH:mm")
               : null,
             moment().format("YYYY-MM-DD HH:mm"),
-            user_id.updated_by,
+            req.userIdentity.algaeh_d_app_user_id,
             inputParam[i].order_id,
             inputParam[i].hims_f_ord_analytes_id
           ]
@@ -684,19 +687,21 @@ module.exports = {
               .executeQuery({
                 query:
                   "update hims_f_lab_order set `status`=?, run_type=?, entered_date= ?, entered_by= ?, \
-                  confirmed_date= ?,confirmed_by= ?, validated_date= ?, validated_by=?, updated_date= ?, updated_by=? \
+                  confirmed_date= ?,confirmed_by= ?, validated_date= ?, validated_by=?, \
+                  updated_date= ?, updated_by=?, comments=? \
                   where hims_f_lab_order_id=? ",
                 values: [
                   ref,
                   runtype[0],
                   moment().format("YYYY-MM-DD HH:mm"),
-                  user_id.updated_by,
+                  req.userIdentity.algaeh_d_app_user_id,
                   moment().format("YYYY-MM-DD HH:mm"),
-                  user_id.updated_by,
+                  req.userIdentity.algaeh_d_app_user_id,
                   moment().format("YYYY-MM-DD HH:mm"),
-                  user_id.updated_by,
+                  req.userIdentity.algaeh_d_app_user_id,
                   moment().format("YYYY-MM-DD HH:mm"),
-                  user_id.updated_by,
+                  req.userIdentity.algaeh_d_app_user_id,
+                  inputParam[0].comments,
                   inputParam[0].order_id
                 ],
                 printQuery: true
