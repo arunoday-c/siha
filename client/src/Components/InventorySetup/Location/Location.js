@@ -24,6 +24,9 @@ import {
 } from "./LocationEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
+import {
+  AlgaehOpenContainer
+} from "../../../utils/GlobalFunctions";
 
 class Location extends Component {
   constructor(props) {
@@ -33,10 +36,15 @@ class Location extends Component {
       hims_d_inventory_location_id: "",
       location_description: "",
       location_type: null,
-      hospital_id: null,
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
       allow_pos:"N"
     };
     this.baseState = this.state;
+    // console.log("Currency Detail:",JSON.parse(
+    //   AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    // ))
   }
 
   componentDidMount() {
@@ -76,24 +84,33 @@ class Location extends Component {
   render() {
     return (
       
-<div className="portlet portlet-bordered margin-bottom-15">
+<div className="portlet portlet-bordered">
 
 <div className="portlet-body">
 
 <div className="row">
-            <AlagehFormGroup
+
+
+<AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
-                fieldName: "type_desc",
+                fieldName: "hospital_id",
                 isImp: true
               }}
-              textBox={{
-                className: "txt-fld",
-                name: "location_description",
-                value: this.state.location_description,
-
-                events: {
-                  onChange: changeTexts.bind(this, this)
+              selector={{
+                name: "hospital_id",
+                className: "select-fld",
+                value: this.state.hospital_id,
+                dataSource: {
+                  textField: "hospital_name",
+                  valueField: "hims_d_hospital_id",
+                  data: this.props.organizations
+                },
+                onChange: changeTexts.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    hospital_id: null
+                  });
                 }
               }}
             />
@@ -122,11 +139,28 @@ class Location extends Component {
               }}
             />
 
+
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "type_desc",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "location_description",
+                value: this.state.location_description,
+
+                events: {
+                  onChange: changeTexts.bind(this, this)
+                }
+              }}
+            />
+
             <div
               className="customCheckbox col-lg-2"
-              style={{ border: "none", marginTop: "28px" }}
-            >
-              <label className="checkbox" style={{ color: "#212529" }}>
+              style={{ border: "none", marginTop: "19px" }}
+            ><label className="checkbox" style={{ color: "#212529" }}>
                 <input
                   type="checkbox"
                   name="Allow POS"
@@ -136,30 +170,6 @@ class Location extends Component {
                 <span style={{ fontSize: "0.8rem" }}>Allow POS</span>
               </label>
             </div>
-
-            <AlagehAutoComplete
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "hospital_id",
-                isImp: true
-              }}
-              selector={{
-                name: "hospital_id",
-                className: "select-fld",
-                value: this.state.hospital_id,
-                dataSource: {
-                  textField: "hospital_name",
-                  valueField: "hims_d_hospital_id",
-                  data: this.props.organizations
-                },
-                onChange: changeTexts.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    hospital_id: null
-                  });
-                }
-              }}
-            />
 
             <div className="col-lg-2 align-middle" style={{ paddingTop: 21 }}>
               <button
