@@ -140,15 +140,20 @@ class SickLeave extends Component {
       <React.Fragment>
         <div>
           <AlgaehModalPopUp
+          class="sickPopupWidth"
             events={{
               onClose: this.onClose.bind(this)
             }}
             title="Sick Leave"
             openPopup={this.props.openSickLeave}
           >
-            <div className="row" style={{ paddingBottom: "10px" }}>
+            
+          <div className="popupInner">
+            <div className="popRightDiv">
+              <div className="row">
+
               <AlgaehDateHandler
-                div={{ className: "col-5" }}
+                div={{ className: "col-4 form-group" }}
                 label={{ forceLabel: "From Date" }}
                 textBox={{ className: "txt-fld", name: "from_date" }}
                 minDate={new Date()}
@@ -158,7 +163,7 @@ class SickLeave extends Component {
                 value={this.state.from_date}
               />
               <AlgaehDateHandler
-                div={{ className: "col-5" }}
+                div={{ className: "col-4 form-group" }}
                 label={{ forceLabel: "To Date" }}
                 textBox={{ className: "txt-fld", name: "to_date" }}
                 minDate={new Date()}
@@ -169,7 +174,7 @@ class SickLeave extends Component {
               />
 
               <AlagehFormGroup
-                div={{ className: "col" }}
+                div={{ className: "col-4 form-group" }}
                 label={{
                   forceLabel: "No. Of Days"
                 }}
@@ -186,7 +191,7 @@ class SickLeave extends Component {
                   }
                 }}
               />
-
+<div className="col form-group">
               <AlgaehLabel
                 label={{
                   forceLabel: "Remarks"
@@ -197,6 +202,9 @@ class SickLeave extends Component {
                 name="remarks"
                 onChange={this.textAreaEvent.bind(this)}
               />
+</div>
+              </div>
+              </div></div>
 
               <div className=" popupFooter">
                 <div className="col-lg-12">
@@ -222,7 +230,6 @@ class SickLeave extends Component {
                   </div>
                 </div>
               </div>
-            </div>
           </AlgaehModalPopUp>
         </div>
       </React.Fragment>
