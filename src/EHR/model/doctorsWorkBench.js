@@ -3087,6 +3087,38 @@ let addSickLeave = (req, res, next) => {
   }
 };
 
+//created by irfan: to add  physical_examination_details
+let getSickLeave = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "SELECT * FROM hims_f_patient_sick_leave where patient_id=? and visit_id=?;",
+        [req.query.patient_id, req.query.visit_id],
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -3147,5 +3179,6 @@ module.exports = {
   getPatientBasicChiefComplaints,
   deleteDietAdvice,
   getSummaryFollowUp,
-  addSickLeave
+  addSickLeave,
+  getSickLeave
 };

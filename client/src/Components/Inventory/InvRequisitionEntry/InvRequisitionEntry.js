@@ -36,7 +36,7 @@ class InvRequisitionEntry extends Component {
 
   componentWillMount() {
     let IOputs = RequisitionIOputs.inputParam();
-    IOputs.requisition_auth=this.props.requisition_auth
+    IOputs.requisition_auth = this.props.requisition_auth;
     this.setState(IOputs);
   }
 
@@ -44,53 +44,40 @@ class InvRequisitionEntry extends Component {
     const hospital = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
-    if (
-      this.props.inventoryitemlist === undefined ||
-      this.props.inventoryitemlist.length === 0
-    ) {
-      this.props.getItems({
-        uri: "/inventory/getItemMaster",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "ITEM_GET_DATA",
-          mappingName: "inventoryitemlist"
-        }
-      });
-    }
-    if (
-      this.props.inventoryreqlocations === undefined ||
-      this.props.inventoryreqlocations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/inventory/getInventoryLocation",
-        module: "inventory",
-        method: "GET",
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "inventoryreqlocations"
-        }
-      });
-    }
 
-    if (
-      this.props.invuserwiselocations === undefined ||
-      this.props.invuserwiselocations.length === 0
-    ) {
-      this.props.getUserLocationPermission({
-        uri: "/inventoryGlobal/getUserLocationPermission",
-        module: "inventory",
-        method: "GET",
-        data: {
-          location_status: "A",
-          hospital_id: hospital.hims_d_hospital_id
-        },
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "invuserwiselocations"
-        }
-      });
-    }
+    this.props.getItems({
+      uri: "/inventory/getItemMaster",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "inventoryitemlist"
+      }
+    });
+
+    this.props.getLocation({
+      uri: "/inventory/getInventoryLocation",
+      module: "inventory",
+      method: "GET",
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "inventoryreqlocations"
+      }
+    });
+
+    this.props.getUserLocationPermission({
+      uri: "/inventoryGlobal/getUserLocationPermission",
+      module: "inventory",
+      method: "GET",
+      data: {
+        location_status: "A",
+        hospital_id: hospital.hims_d_hospital_id
+      },
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "invuserwiselocations"
+      }
+    });
 
     if (
       this.props.material_requisition_number !== undefined &&

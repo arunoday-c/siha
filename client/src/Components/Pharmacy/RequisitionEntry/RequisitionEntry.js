@@ -35,7 +35,7 @@ class RequisitionEntry extends Component {
 
   componentWillMount() {
     let IOputs = RequisitionIOputs.inputParam();
-    IOputs.requisition_auth=this.props.requisition_auth
+    IOputs.requisition_auth = this.props.requisition_auth;
     this.setState(IOputs);
   }
 
@@ -43,37 +43,28 @@ class RequisitionEntry extends Component {
     const hospital = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
-    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
-      this.props.getItems({
-        uri: "/pharmacy/getItemMaster",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_GET_DATA",
-          mappingName: "itemlist"
-        }
-      });
-    }
-    if (
-      this.props.reqlocations === undefined ||
-      this.props.reqlocations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/pharmacy/getPharmacyLocation",
-        module: "pharmacy",
-        method: "GET",
 
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "reqlocations"
-        }
-      });
-    }
+    this.props.getItems({
+      uri: "/pharmacy/getItemMaster",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "itemlist"
+      }
+    });
 
-    // if (
-    //   this.props.userwiselocations === undefined ||
-    //   this.props.userwiselocations.length === 0
-    // ) {
+    this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
+      method: "GET",
+
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "reqlocations"
+      }
+    });
+
     this.props.getUserLocationPermission({
       uri: "/pharmacyGlobal/getUserLocationPermission",
       module: "pharmacy",
@@ -87,7 +78,6 @@ class RequisitionEntry extends Component {
         mappingName: "userwiselocations"
       }
     });
-    // }
 
     if (
       this.props.material_requisition_number !== undefined &&
@@ -287,7 +277,7 @@ class RequisitionEntry extends Component {
                       ? this.state.to_location_type === "MS"
                         ? "Main Store"
                         : "Sub Store"
-                        : "----------"}
+                      : "----------"}
                   </h6>
                 </div>
               </div>
