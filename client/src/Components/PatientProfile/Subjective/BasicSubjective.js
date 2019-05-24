@@ -408,7 +408,6 @@ class BasicSubjective extends Component {
             <div className="row">
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {" "}
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">
@@ -489,22 +488,6 @@ class BasicSubjective extends Component {
                             }}
                           />
 
-                          {/* <AlagehAutoComplete
-                            div={{ className: "col-4" }}
-                            label={{ forceLabel: "Chronic", isImp: false }}
-                            selector={{
-                              name: "chronic",
-                              className: "select-fld",
-                              value: this.state.chronic,
-                              dataSource: {
-                                textField: "name",
-                                valueField: "value",
-                                data: GlobalVariables.FORMAT_YESNO
-                              },
-                              onChange: this.ChangeEventHandler.bind(this)
-                            }}
-                          /> */}
-
                           <AlagehAutoComplete
                             div={{ className: "col-4" }}
                             label={{
@@ -549,7 +532,6 @@ class BasicSubjective extends Component {
               </div>
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {" "}
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Significant Signs</h3>
@@ -573,7 +555,6 @@ class BasicSubjective extends Component {
 
               <div className="col-12">
                 <div className="portlet portlet-bordered margin-bottom-15">
-                  {" "}
                   <div className="portlet-title">
                     <div className="caption">
                       <h3 className="caption-subject">Other Conditions</h3>
@@ -755,34 +736,6 @@ class BasicSubjective extends Component {
                   ) : this.state.pageDisplay === "RisResults" ? (
                     <RadResults />
                   ) : null}
-                  {/* this.state.pageDisplay === "AssesmentsNotes" ? (
-                          <div className="row">
-                            <div className="container-fluid">
-                              <AlagehFormGroup
-                                div={{ className: "col-lg-12 form-details" }}
-                                label={{
-                                  forceLabel: "Assesment Notes",
-                                  isImp: true
-                                }}
-                                textBox={{
-                                  className: "txt-fld",
-                                  name: "assesment_notes",
-                                  value: this.state.assesment_notes,
-                                  others: {
-                                    multiline: true,
-                                    rows: "4",
-                                    style: {
-                                      height: "25vh"
-                                    }
-                                  },
-                                  events: {
-                                    onChange: assnotetexthandle.bind(this, this)
-                                  }
-                                }}
-                              />
-                            </div>
-                          </div>
-                        ) : null */}
                 </div>
               </div>
             </div>

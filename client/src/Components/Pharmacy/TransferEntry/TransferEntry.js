@@ -45,37 +45,26 @@ class TransferEntry extends Component {
       AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
     );
 
-    if (this.props.itemlist === undefined || this.props.itemlist.length === 0) {
-      this.props.getItems({
-        uri: "/pharmacy/getItemMaster",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "ITEM_GET_DATA",
-          mappingName: "itemlist"
-        }
-      });
-    }
+    this.props.getItems({
+      uri: "/pharmacy/getItemMaster",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEM_GET_DATA",
+        mappingName: "itemlist"
+      }
+    });
 
-    if (
-      this.props.locations === undefined ||
-      this.props.locations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/pharmacy/getPharmacyLocation",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "locations"
-        }
-      });
-    }
+    this.props.getLocation({
+      uri: "/pharmacy/getPharmacyLocation",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "locations"
+      }
+    });
 
-    // if (
-    //   this.props.userwiselocations === undefined ||
-    //   this.props.userwiselocations.length === 0
-    // ) {
     this.props.getUserLocationPermission({
       uri: "/pharmacyGlobal/getUserLocationPermission",
       module: "pharmacy",
@@ -90,7 +79,6 @@ class TransferEntry extends Component {
       },
       afterSuccess: data => {}
     });
-    // }
   }
 
   render() {

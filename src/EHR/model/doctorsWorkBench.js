@@ -771,7 +771,7 @@ let getMyDay = (req, res, next) => {
             inner join hims_d_sub_department SD on sub_department_id=SD.hims_d_sub_department_id  \
             where E.record_status='A' AND  V.record_status='A' and v.hospital_id=? AND " +
           _query,
-         values: [ req.userIdentity.hospital_id],
+        values: [req.userIdentity.hospital_id],
         printQuery: true
       })
       .then(result => {
@@ -1227,7 +1227,11 @@ let addPatientChiefComplaints = (req, res, next) => {
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
-            newFieldToInsert: [new Date(), new Date(), req.userIdentity.hospital_id],
+            newFieldToInsert: [
+              new Date(),
+              new Date(),
+              req.userIdentity.hospital_id
+            ],
             req: req
           })
         ],
@@ -1564,7 +1568,7 @@ let addPatientDiagnosis = (req, res, next) => {
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
-            newFieldToInsert: [ req.userIdentity.hospital_id],
+            newFieldToInsert: [req.userIdentity.hospital_id],
             req: req
           })
         ],
@@ -1950,7 +1954,11 @@ let addPatientVitals = (req, res, next) => {
           jsonArrayToObject({
             sampleInputObject: insurtColumns,
             arrayObj: req.body,
-            newFieldToInsert: [new Date(), new Date(), req.userIdentity.hospital_id],
+            newFieldToInsert: [
+              new Date(),
+              new Date(),
+              req.userIdentity.hospital_id
+            ],
 
             req: req
           })
@@ -2380,6 +2388,7 @@ let addFollowUp = (req, res, next) => {
   let followup = {
     hims_f_patient_followup_id: null,
     patient_id: null,
+    episode_id: null,
     doctor_id: null,
     followup_type: null,
     followup_date: null,
@@ -2398,12 +2407,13 @@ let addFollowUp = (req, res, next) => {
     }
     let inputParam = extend(followup, req.body);
     connection.query(
-      "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`,`followup_type`, \
+      "INSERT INTO `hims_f_patient_followup` (`patient_id`, `doctor_id`, `episode_id`, `followup_type`, \
        `followup_date`, `reason`, `created_by` ,`created_date`,hospital_id) \
-      VALUES ( ?, ?, ?, ?, ?, ?,?, ?)",
+      VALUES ( ?, ?, ?, ?, ?, ?,?, ?, ?)",
       [
         inputParam.patient_id,
         inputParam.doctor_id,
+        inputParam.episode_id,
         inputParam.followup_type,
         inputParam.followup_date,
         inputParam.reason,
@@ -2610,7 +2620,8 @@ let addPatientHistory = (req, res, next) => {
               input.patient_id,
               input.provider_id,
               new Date(),
-              new Date(),req.userIdentity.hospital_id
+              new Date(),
+              req.userIdentity.hospital_id
             ],
             req: req
           })
@@ -2982,6 +2993,132 @@ let getPatientEncounter = (req, res, next) => {
   }
 };
 
+//created by irfan:  to get allergic details
+let getSummaryFollowUp = (req, res, next) => {
+  debugFunction("getAllergyDetails");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "SELECT * FROM hims_f_patient_followup where episode_id=?;",
+        [req.query.episode_id],
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          debugLog("Results fetched");
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add  physical_examination_details
+let addSickLeave = (req, res, next) => {
+  let addSickLeave = {};
+
+  debugFunction("addSickLeave");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend(addSickLeave, req.body);
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "SELECT * FROM hims_f_patient_sick_leave where patient_id=? and visit_id=?;",
+        [input.patient_id, input.visit_id],
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          if (results.length == 0) {
+            connection.query(
+              "insert into hims_f_patient_sick_leave(patient_id, visit_id, episode_id, from_date, \
+                to_date, no_of_days, remarks)values(?, ?, ?, ?, ?, ?, ?)",
+              [
+                input.patient_id,
+                input.visit_id,
+                input.episode_id,
+                input.from_date,
+                input.to_date,
+                input.no_of_days,
+                input.remarks
+              ],
+              (error, results) => {
+                releaseDBConnection(db, connection);
+                if (error) {
+                  next(error);
+                }
+                debugLog("Results are recorded...");
+                req.records = results;
+                next();
+              }
+            );
+          } else {
+            req.records = results;
+            next();
+          }
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add  physical_examination_details
+let getSickLeave = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        releaseDBConnection(db, connection);
+        next(error);
+      }
+
+      connection.query(
+        "SELECT * FROM hims_f_patient_sick_leave where patient_id=? and visit_id=?;",
+        [req.query.patient_id, req.query.visit_id],
+        (error, results) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = results;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   physicalExaminationHeader,
   physicalExaminationDetails,
@@ -3040,5 +3177,8 @@ module.exports = {
   updatePatientEncounter,
   getPatientEncounter,
   getPatientBasicChiefComplaints,
-  deleteDietAdvice
+  deleteDietAdvice,
+  getSummaryFollowUp,
+  addSickLeave,
+  getSickLeave
 };

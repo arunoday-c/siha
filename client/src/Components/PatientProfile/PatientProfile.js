@@ -38,6 +38,7 @@ import Dental from "./Dental/Dental";
 import Eye from "./Eye/Eye";
 import _ from "lodash";
 import Allergies from "./Allergies/Allergies";
+import SickLeave from "./SickLeave/SickLeave";
 
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
@@ -70,6 +71,7 @@ class PatientProfile extends Component {
       DCAFData: undefined,
       openAlergy: false,
       openOCAF: false,
+      openSickLeave: false,
       OCAFData: [],
       chart_type: Window.global["chart_type"]
     };
@@ -94,6 +96,12 @@ class PatientProfile extends Component {
   closeAllergies(e) {
     this.setState({
       openAlergy: false
+    });
+  }
+
+  showSickLeave() {
+    this.setState({
+      openSickLeave: !this.state.openSickLeave
     });
   }
 
@@ -202,7 +210,6 @@ class PatientProfile extends Component {
         visit_id: Window.global["visit_id"]
       },
       onSuccess: response => {
-        debugger;
         if (response.data.success) {
           that.setState({ openOCAF: true, OCAFData: response.data.records });
         }
@@ -218,7 +225,6 @@ class PatientProfile extends Component {
   }
 
   showAllergyAlert(_patient_allergies) {
-    debugger;
     if (allergyPopUp && _patient_allergies.length > 0) {
       allergyPopUp = false;
       swalMessage({
@@ -334,7 +340,6 @@ class PatientProfile extends Component {
         ? []
         : this.props.patient_diagnosis;
 
-    debugger;
     const _diet =
       this.props.patient_diet === undefined ? [] : this.props.patient_diet;
 
@@ -433,8 +438,12 @@ class PatientProfile extends Component {
               </li>
               <li>
                 <span onClick={printPrescription.bind(this, this)}>
-                  Preceprion
+                  Prescription
                 </span>
+              </li>
+
+              <li>
+                <span onClick={this.showSickLeave.bind(this)}>Sick Leave</span>
               </li>
 
               {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
@@ -544,18 +553,63 @@ class PatientProfile extends Component {
                       /> */}
                     </span>
                     <p>
-                        <table className="listofADDTable">
+                      <table className="listofADDTable">
+                        <thead>
+                          {" "}
+                          <tr>
+                            <th>
+                              <b>Allergy</b>
+                            </th>
+                            <th>
+                              <b>Onset From</b>
+                            </th>
+                            <th>
+                              <b>Severity</b>
+                            </th>
+                            <th>
+                              <b>Comments</b>
+                            </th>
+                          </tr>
+                        </thead>
+                        {_patient_allergies.map((data, index) => (
+                          <tbody key={index}>
+                            {/* <tr><td colSpan="4">{data.allergy_type_desc}</td></tr> */}
 
-                       <thead> <tr><th><b>Allergy</b></th><th><b>Onset From</b></th><th><b>Severity</b></th><th><b>Comments</b></th></tr></thead>
-                        
-                      {_patient_allergies.map((data, index) => (
-                          <tbody   key={index} >
-                          {/* <tr><td colSpan="4">{data.allergy_type_desc}</td></tr> */}
-                          
-                          {data.allergyList.map((allergy, aIndex) => (
-                            <tr className={(allergy.allergy_inactive === "Y" ? "red" : "")}><td>{allergy.allergy_name}</td><td>{(allergy.onset === "O" ? allergy.onset_date : allergy.onset === "A" ? "Adulthood" : allergy.onset === "C" ? "Childhood"  : allergy.onset === "P" ? "Pre Terms" : allergy.onset === "T" ? "Teenage":"")}</td><td>{ (allergy.severity === "MO" ? "Moderate" : allergy.severity === "MI" ? "Mild" :allergy.severity === "SE" ? "Severe" :  "")}</td><td>{allergy.comment}</td></tr>
-                          ))}</tbody>
-                      ))} </table>
+                            {data.allergyList.map((allergy, aIndex) => (
+                              <tr
+                                className={
+                                  allergy.allergy_inactive === "Y" ? "red" : ""
+                                }
+                              >
+                                <td>{allergy.allergy_name}</td>
+                                <td>
+                                  {allergy.onset === "O"
+                                    ? allergy.onset_date
+                                    : allergy.onset === "A"
+                                    ? "Adulthood"
+                                    : allergy.onset === "C"
+                                    ? "Childhood"
+                                    : allergy.onset === "P"
+                                    ? "Pre Terms"
+                                    : allergy.onset === "T"
+                                    ? "Teenage"
+                                    : ""}
+                                </td>
+                                <td>
+                                  {allergy.severity === "MO"
+                                    ? "Moderate"
+                                    : allergy.severity === "MI"
+                                    ? "Mild"
+                                    : allergy.severity === "SE"
+                                    ? "Severe"
+                                    : ""}
+                                </td>
+                                <td>{allergy.comment}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        ))}{" "}
+                      </table>
                     </p>
                   </section>
                 </li>
@@ -564,19 +618,41 @@ class PatientProfile extends Component {
                   <section>
                     <span className="top-nav-sec-hdg">Diagnosis</span>
                     <p>
-                        <table className="listofADDTable">
-                        <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
-                          
-                      {_diagnosis.map((item, index) => (
-                        <tr key={index}>
-                         
-                          <td>{item.icd_code}</td>
-                          <td>{item.icd_description}</td>
-                          <td>{item.diagnosis_type === "S"? "Secondary": "Primary"}</td>
-                          <td>{item.final_daignosis  === "Y"? "Final": "Not Final"}</td>
-                         
-                        </tr>
-                      ))}</table>
+                      <table className="listofADDTable">
+                        <thead>
+                          <tr>
+                            <th>
+                              <b>ICD Code</b>
+                            </th>
+                            <th>
+                              <b>Description</b>
+                            </th>
+                            <th>
+                              <b>Diagnosis Type</b>
+                            </th>
+                            <th>
+                              <b>Diagnosis Level</b>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        {_diagnosis.map((item, index) => (
+                          <tr key={index}>
+                            <td>{item.icd_code}</td>
+                            <td>{item.icd_description}</td>
+                            <td>
+                              {item.diagnosis_type === "S"
+                                ? "Secondary"
+                                : "Primary"}
+                            </td>
+                            <td>
+                              {item.final_daignosis === "Y"
+                                ? "Final"
+                                : "Not Final"}
+                            </td>
+                          </tr>
+                        ))}
+                      </table>
                     </p>
                   </section>
                 </li>
@@ -584,19 +660,19 @@ class PatientProfile extends Component {
                   <i className="fas fa-utensils" />
                   <section>
                     <span className="top-nav-sec-hdg">Diet</span>
-                    <p> <table className="listofADDTable">
+                    <p>
+                      {" "}
+                      <table className="listofADDTable">
                         {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
-                        */}
-                      {_diet.map((item, index) => {
-                        return (
-
+                         */}
+                        {_diet.map((item, index) => {
+                          return (
                             <tr key={index}>
-                         
-                         <td>{item.hims_d_diet_note}</td>
-                        
-                       </tr>
-                        );
-                      })}</table>
+                              <td>{item.hims_d_diet_note}</td>
+                            </tr>
+                          );
+                        })}
+                      </table>
                     </p>
                   </section>
                 </li>
@@ -662,59 +738,126 @@ class PatientProfile extends Component {
                   <section>
                     <span className="top-nav-sec-hdg">Allergies</span>
                     <p>
-                        <table className="listofADDTable">
+                      <table className="listofADDTable">
+                        <thead>
+                          {" "}
+                          <tr>
+                            <th>
+                              <b>Allergy</b>
+                            </th>
+                            <th>
+                              <b>Onset From</b>
+                            </th>
+                            <th>
+                              <b>Severity</b>
+                            </th>
+                            <th>
+                              <b>Comments</b>
+                            </th>
+                          </tr>
+                        </thead>
+                        {_patient_allergies.map((data, index) => (
+                          <tbody key={index}>
+                            {/* <tr><td colSpan="4">{data.allergy_type_desc}</td></tr> */}
 
-                       <thead> <tr><th><b>Allergy</b></th><th><b>Onset From</b></th><th><b>Severity</b></th><th><b>Comments</b></th></tr></thead>
-                        
-                      {_patient_allergies.map((data, index) => (
-                          <tbody   key={index} >
-                          {/* <tr><td colSpan="4">{data.allergy_type_desc}</td></tr> */}
-                          
-                          {data.allergyList.map((allergy, aIndex) => (
-                            <tr className={(allergy.allergy_inactive === "Y" ? "red" : "")}><td>{allergy.allergy_name}</td><td>{(allergy.onset === "O" ? allergy.onset_date : allergy.onset === "A" ? "Adulthood" : allergy.onset === "C" ? "Childhood"  : allergy.onset === "P" ? "Pre Terms" : allergy.onset === "T" ? "Teenage":"")}</td><td>{ (allergy.severity === "MO" ? "Moderate" : allergy.severity === "MI" ? "Mild" :allergy.severity === "SE" ? "Severe" :  "")}</td><td>{allergy.comment}</td></tr>
-                          ))}</tbody>
-                      ))} </table>
+                            {data.allergyList.map((allergy, aIndex) => (
+                              <tr
+                                className={
+                                  allergy.allergy_inactive === "Y" ? "red" : ""
+                                }
+                              >
+                                <td>{allergy.allergy_name}</td>
+                                <td>
+                                  {allergy.onset === "O"
+                                    ? allergy.onset_date
+                                    : allergy.onset === "A"
+                                    ? "Adulthood"
+                                    : allergy.onset === "C"
+                                    ? "Childhood"
+                                    : allergy.onset === "P"
+                                    ? "Pre Terms"
+                                    : allergy.onset === "T"
+                                    ? "Teenage"
+                                    : ""}
+                                </td>
+                                <td>
+                                  {allergy.severity === "MO"
+                                    ? "Moderate"
+                                    : allergy.severity === "MI"
+                                    ? "Mild"
+                                    : allergy.severity === "SE"
+                                    ? "Severe"
+                                    : ""}
+                                </td>
+                                <td>{allergy.comment}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        ))}{" "}
+                      </table>
                     </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-diagnoses" />
                   <section>
-                  <span className="top-nav-sec-hdg">Diagnosis</span>
+                    <span className="top-nav-sec-hdg">Diagnosis</span>
                     <p>
-                        <table className="listofADDTable">
-                        <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
-                          
-                      {_diagnosis.map((item, index) => (
-                        <tr key={index}>
-                         
-                          <td>{item.icd_code}</td>
-                          <td>{item.icd_description}</td>
-                          <td>{item.diagnosis_type === "S"? "Secondary": "Primary"}</td>
-                          <td>{item.final_daignosis  === "Y"? "Final": "Not Final"}</td>
-                         
-                        </tr>
-                      ))}</table>
+                      <table className="listofADDTable">
+                        <thead>
+                          <tr>
+                            <th>
+                              <b>ICD Code</b>
+                            </th>
+                            <th>
+                              <b>Description</b>
+                            </th>
+                            <th>
+                              <b>Diagnosis Type</b>
+                            </th>
+                            <th>
+                              <b>Diagnosis Level</b>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        {_diagnosis.map((item, index) => (
+                          <tr key={index}>
+                            <td>{item.icd_code}</td>
+                            <td>{item.icd_description}</td>
+                            <td>
+                              {item.diagnosis_type === "S"
+                                ? "Secondary"
+                                : "Primary"}
+                            </td>
+                            <td>
+                              {item.final_daignosis === "Y"
+                                ? "Final"
+                                : "Not Final"}
+                            </td>
+                          </tr>
+                        ))}
+                      </table>
                     </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
-                  <span className="top-nav-sec-hdg">Diet</span>
-                    <p> <table className="listofADDTable">
+                    <span className="top-nav-sec-hdg">Diet</span>
+                    <p>
+                      {" "}
+                      <table className="listofADDTable">
                         {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
-                        */}
-                      {_diet.map((item, index) => {
-                        return (
-
+                         */}
+                        {_diet.map((item, index) => {
+                          return (
                             <tr key={index}>
-                         
-                         <td>{item.hims_d_diet_note}</td>
-                        
-                       </tr>
-                        );
-                      })}</table>
+                              <td>{item.hims_d_diet_note}</td>
+                            </tr>
+                          );
+                        })}
+                      </table>
                     </p>
                   </section>
                 </li>
@@ -758,6 +901,10 @@ class PatientProfile extends Component {
         {this.renderUCAFReport()}
         {this.renderDCAFReport()}
         {this.renderOCAFReport()}
+        <SickLeave
+          openSickLeave={this.state.openSickLeave}
+          onClose={this.showSickLeave.bind(this)}
+        />
       </div>
     );
   }

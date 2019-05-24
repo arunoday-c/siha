@@ -247,7 +247,6 @@ class Examination extends Component {
     });
   }
   render() {
-    debugger;
     const _specility =
       this.props.allexaminations !== undefined &&
       this.props.allexaminations.length !== 0

@@ -5,7 +5,8 @@ import { LINQ } from "node-linq";
 
 import {
   addPatientPrescription,
-  getPatientPrescription
+  getPatientPrescription,
+  getPatientMedications
 } from "../model/orderMedication";
 
 export default ({ config, db }) => {
@@ -39,5 +40,14 @@ export default ({ config, db }) => {
     },
     releaseConnection
   );
+
+  api.get("/getPatientMedications", getPatientMedications, (req, res, next) => {
+    res.status(httpStatus.ok).json({
+      success: true,
+      records: req.records
+    });
+    next();
+  });
+
   return api;
 };

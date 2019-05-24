@@ -6,15 +6,13 @@ import {
   jsonArrayToObject
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
-//import { LINQ } from "node-linq";
-//import moment from "moment";
 import { debugFunction, debugLog } from "../utils/logging";
+
+import algaehMysql from "algaeh-mysql";
+const keyPath = require("algaeh-keys/keys");
 
 //created by irfan: to add Patient Prescription
 let addPatientPrescription = (req, res, next) => {
-  // created_by: req.userIdentity.algaeh_d_app_user_id,
-  // updated_by: req.userIdentity.algaeh_d_app_user_id
-
   debugFunction("addPatientPrescription");
   try {
     if (req.db == null) {
@@ -168,4 +166,50 @@ let getPatientPrescription = (req, res, next) => {
   }
 };
 
-module.exports = { addPatientPrescription, getPatientPrescription };
+//created by Nowshad: Latest Prescription
+let getPatientMedications = (req, res, next) => {
+  const _mysql = new algaehMysql({ path: keyPath });
+  try {
+    let input = req.body;
+
+    _mysql
+      .executeQuery({
+        query:
+          "SELECT * FROM hims_f_prescription P, hims_f_prescription_detail PD \
+            where P.hims_f_prescription_id=PD.prescription_id and patient_id=? and  \
+            date(prescription_date) =(SELECT max(date(prescription_date))  FROM hims_f_prescription P, \
+            hims_f_prescription_detail PD where P.hims_f_prescription_id=PD.prescription_id and patient_id=?);\
+            SELECT * FROM hims_test_db.hims_f_prescription P, hims_f_prescription_detail PD \
+            where P.hims_f_prescription_id=PD.prescription_id and patient_id=? ;",
+        values: [
+          req.query.patient_id,
+          req.query.patient_id,
+          req.query.patient_id
+        ],
+        printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        let latest_mediction = result[0];
+        let all_mediction = result[1];
+        req.records = {
+          latest_mediction,
+          all_mediction
+        };
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  } catch (e) {
+    _mysql.releaseConnection();
+    next(e);
+  }
+};
+
+module.exports = {
+  addPatientPrescription,
+  getPatientPrescription,
+  getPatientMedications
+};

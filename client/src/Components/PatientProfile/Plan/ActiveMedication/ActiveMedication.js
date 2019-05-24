@@ -18,88 +18,170 @@ class ActiveMedication extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.getItems({
+      uri: "/pharmacy/getItemMaster",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "ITEMS_GET_DATA",
+        mappingName: "meditemlist"
+      }
+    });
+  }
+
   render() {
+    debugger;
+    const latest_mediction =
+      this.props.latest_mediction === undefined
+        ? []
+        : this.props.latest_mediction;
     return (
       <div>
-      <div className="popupInner">
-      <div className="popRightDiv">
-        <AlgaehDataGrid
-          id="activeMedication"
-          columns={[
-            {
-              fieldName: "quantity",
-              label: <AlgaehLabel label={{ forceLabel: "Generic Name" }} />
-            },
-            {
-              fieldName: "service_type_id",
-              label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
-              displayTemplate: row => {
-                let display =
-                  this.props.servicetype === undefined
-                    ? []
-                    : this.props.servicetype.filter(
-                        f => f.hims_d_service_type_id === row.service_type_id
-                      );
+        <div className="popupInner">
+          <div className="popRightDiv">
+            <AlgaehDataGrid
+              id="activeMedication"
+              columns={[
+                {
+                  fieldName: "generic_id",
+                  label: <AlgaehLabel label={{ forceLabel: "Generic Name" }} />,
+                  displayTemplate: row => {
+                    let display =
+                      this.props.genericlist === undefined
+                        ? []
+                        : this.props.genericlist.filter(
+                            f => f.hims_d_item_generic_id === row.generic_id
+                          );
 
-                return (
-                  <span>
-                    {display !== undefined && display.length !== 0
-                      ? this.state.selectedLang === "en"
-                        ? display[0].service_type
-                        : display[0].arabic_service_type
-                      : ""}
-                  </span>
-                );
-              },
-              disabled: true
-            },
-            {
-              fieldName: "quantity",
-              label: <AlgaehLabel label={{ forceLabel: "Frequency Period" }} />
-            },
-            {
-              fieldName: "quantity",
-              label: (
-                <AlgaehLabel label={{ forceLabel: "Frequency Duration" }} />
-              )
-            },
-            {
-              fieldName: "quantity",
-              label: <AlgaehLabel label={{ forceLabel: "Frequency Type" }} />
-            },
-            {
-              fieldName: "quantity",
-              label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />
-            },
-            {
-              fieldName: "quantity",
-              label: <AlgaehLabel label={{ forceLabel: "Duration (Days)" }} />
-            }
-          ]}
-          keyId="item_id"
-          dataSource={{
-            data: this.state.orderservicesdata
-          }}
-          paging={{ page: 0, rowsPerPage: 10 }}
-        />
-        
+                    return (
+                      <span>
+                        {display !== undefined && display.length !== 0
+                          ? display[0].generic_name
+                          : ""}
+                      </span>
+                    );
+                  }
+                },
+                {
+                  fieldName: "item_id",
+                  label: <AlgaehLabel label={{ forceLabel: "Item Name" }} />,
+                  displayTemplate: row => {
+                    let display =
+                      this.props.meditemlist === undefined
+                        ? []
+                        : this.props.meditemlist.filter(
+                            f => f.hims_d_item_master_id === row.item_id
+                          );
 
-        </div>
+                    return (
+                      <span>
+                        {display !== undefined && display.length !== 0
+                          ? display[0].item_description
+                          : ""}
+                      </span>
+                    );
+                  }
+                },
+                {
+                  fieldName: "frequency",
+                  label: <AlgaehLabel label={{ forceLabel: "Freq." }} />,
+                  displayTemplate: row => {
+                    return row.frequency === "0"
+                      ? "1-0-1"
+                      : row.frequency === "1"
+                      ? "1-0-0"
+                      : row.frequency === "2"
+                      ? "0-0-1"
+                      : row.frequency === "3"
+                      ? "0-1-0"
+                      : row.frequency === "4"
+                      ? "1-1-0"
+                      : row.frequency === "5"
+                      ? "0-1-1"
+                      : row.frequency === "6"
+                      ? "1-1-1"
+                      : null;
+                  },
+
+                  others: {
+                    minWidth: 50
+                  }
+                },
+                {
+                  fieldName: "frequency_type",
+                  label: <AlgaehLabel label={{ forceLabel: "Freq. Type" }} />,
+                  displayTemplate: row => {
+                    return row.frequency_type === "PD"
+                      ? "Per Day"
+                      : row.frequency_type === "PH"
+                      ? "Per Hour"
+                      : row.frequency_type === "PW"
+                      ? "Per Week"
+                      : row.frequency_type === "PM"
+                      ? "Per Month"
+                      : row.frequency_type === "AD"
+                      ? "Alternate Day"
+                      : null;
+                  },
+
+                  others: {
+                    minWidth: 70
+                  }
+                },
+                {
+                  fieldName: "frequency_time",
+                  label: <AlgaehLabel label={{ forceLabel: "Freq. Time" }} />,
+                  displayTemplate: row => {
+                    return row.frequency_time === "BM"
+                      ? "Before Meals"
+                      : row.frequency_time === "AM"
+                      ? "After Meals"
+                      : null;
+                  },
+
+                  others: {
+                    minWidth: 70
+                  }
+                },
+                {
+                  fieldName: "dosage",
+                  label: <AlgaehLabel label={{ forceLabel: "Dosage" }} />,
+                  others: {
+                    minWidth: 50
+                  }
+                },
+                {
+                  fieldName: "no_of_days",
+                  label: (
+                    <AlgaehLabel label={{ forceLabel: "Duration (Days)" }} />
+                  ),
+                  others: {
+                    minWidth: 90
+                  }
+                }
+              ]}
+              keyId="item_id"
+              dataSource={{
+                data: latest_mediction
+              }}
+              paging={{ page: 0, rowsPerPage: 10 }}
+            />
+          </div>
         </div>
         <div className="popupFooter">
-           
-                   <div className="col"> <button
-                      type="button"
-                      className="btn btn-default"
-                      onClick={e => {
-                        this.props.onclosePopup && this.props.onclosePopup(e);
-                      }}
-                    >
-                      Cancel
-                    </button></div>
-                </div>
-
-
+          <div className="col">
+            <button
+              type="button"
+              className="btn btn-default"
+              onClick={e => {
+                this.props.onclosePopup && this.props.onclosePopup(e);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -107,21 +189,16 @@ class ActiveMedication extends Component {
 
 function mapStateToProps(state) {
   return {
-    servicetype: state.servicetype,
-    services: state.services,
-    orderservices: state.orderservices,
-    existinginsurance: state.existinginsurance,
-    serviceslist: state.serviceslist
+    meditemlist: state.meditemlist,
+    genericlist: state.genericlist
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getServiceTypes: AlgaehActions,
-      getServices: AlgaehActions,
-      generateBill: AlgaehActions,
-      getPatientInsurance: AlgaehActions
+      getItems: AlgaehActions,
+      getGenerics: AlgaehActions
     },
     dispatch
   );
