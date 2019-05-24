@@ -141,36 +141,8 @@ export default [
               data: undefined
             }
           },
-          {
-            type: "dropdown",
-            name: "provider_id",
-            initialLoad: true,
-            link: {
-              uri: "/department/get/get_All_Doctors_DepartmentWise",
-              schema: [{ name: "provider_id", response: "doctors" }]
-            },
-            events: {
-              onChange: (reportState, currentValue) => {}
-            },
-            dataSource: {
-              textField: "full_name",
-              valueField: "employee_id",
-              data: undefined
-            }
-          },
-          // {
-          //   type: "search",
-          //   name: "patient_code",
-          //   label: "Patient Code",
-          //   search: {
-          //     searchName: "patients",
-          //     columns: FrontDesk,
-          //     schema: [
-          //       { name: "patient_code", response: "patient_code" },
-          //       { name: "hims_d_patient_id", response: "hims_d_patient_id" }
-          //     ]
-          //   }
-          // },
+         
+        
           
           {
             type: "date",

@@ -540,7 +540,6 @@ class PatientProfile extends Component {
                         onClose={this.closeAllergies.bind(this)}
                       /> */}
                     </span>
-                    <p>
                       <table className="listofADDTable">
                         <thead>
                           {" "}
@@ -598,14 +597,12 @@ class PatientProfile extends Component {
                           </tbody>
                         ))}{" "}
                       </table>
-                    </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-diagnoses" />
                   <section>
                     <span className="top-nav-sec-hdg">Diagnosis</span>
-                    <p>
                       <table className="listofADDTable">
                         <thead>
                           <tr>
@@ -641,14 +638,12 @@ class PatientProfile extends Component {
                           </tr>
                         ))}
                       </table>
-                    </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
                     <span className="top-nav-sec-hdg">Diet</span>
-                    <p>
                       {" "}
                       <table className="listofADDTable">
                         {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
@@ -661,7 +656,6 @@ class PatientProfile extends Component {
                           );
                         })}
                       </table>
-                    </p>
                   </section>
                 </li>
               </ul>
@@ -725,7 +719,6 @@ class PatientProfile extends Component {
                   <i className={"fas fa-allergies" + this.alergyExist} />
                   <section>
                     <span className="top-nav-sec-hdg">Allergies</span>
-                    <p>
                       <table className="listofADDTable">
                         <thead>
                           {" "}
@@ -783,14 +776,12 @@ class PatientProfile extends Component {
                           </tbody>
                         ))}{" "}
                       </table>
-                    </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-diagnoses" />
                   <section>
                     <span className="top-nav-sec-hdg">Diagnosis</span>
-                    <p>
                       <table className="listofADDTable">
                         <thead>
                           <tr>
@@ -826,14 +817,12 @@ class PatientProfile extends Component {
                           </tr>
                         ))}
                       </table>
-                    </p>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
                     <span className="top-nav-sec-hdg">Diet</span>
-                    <p>
                       {" "}
                       <table className="listofADDTable">
                         {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
@@ -846,7 +835,6 @@ class PatientProfile extends Component {
                           );
                         })}
                       </table>
-                    </p>
                   </section>
                 </li>
               </ul>
