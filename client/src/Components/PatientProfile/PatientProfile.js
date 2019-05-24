@@ -126,15 +126,51 @@ class PatientProfile extends Component {
   }
 
   changeTabs(e) {
-    var element = document.querySelectorAll("[algaehsoap]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
+    debugger;
+    let chief_complaint = Window.global["chief_complaint"];
+    let significant_signs = Window.global["significant_signs"];
+    const _Vitals =
+      this.props.patient_vitals !== undefined &&
+      this.props.patient_vitals.length > 0
+        ? Enumerable.from(this.props.patient_vitals)
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy(g => g.visit_date)
+            .lastOrDefault()
+        : [];
+
+    if (chief_complaint === null || chief_complaint.length < 4) {
+      swalMessage({
+        title: "Enter Chief Complaint. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (significant_signs === null || significant_signs.length < 4) {
+      swalMessage({
+        title: "Enter Significant Signs. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (_Vitals.length === 0) {
+      swalMessage({
+        title: "Enter All Vitals...",
+        type: "warning"
+      });
+    } else if (_Vitals.length === 0) {
+      swalMessage({
+        title: "Enter All Vitals...",
+        type: "warning"
+      });
+    } else {
+      var element = document.querySelectorAll("[algaehsoap]");
+      for (var i = 0; i < element.length; i++) {
+        element[i].classList.remove("active");
+      }
+      e.currentTarget.classList.add("active");
+      var page = e.currentTarget.getAttribute("algaehsoap");
+      this.setState({
+        pageDisplay: page
+      });
     }
-    e.currentTarget.classList.add("active");
-    var page = e.currentTarget.getAttribute("algaehsoap");
-    this.setState({
-      pageDisplay: page
-    });
   }
 
   componentWillUnmount() {
@@ -152,76 +188,165 @@ class PatientProfile extends Component {
   }
 
   openUCAFReport(data, e) {
-    let that = this;
-    algaehApiCall({
-      uri: "/ucaf/getPatientUCAF",
-      method: "GET",
-      data: {
-        patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"],
-        forceReplace: true
-        // visit_date: "2018-09-15"
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          that.setState({ openUCAF: true, UCAFData: response.data.records });
+    debugger;
+    let chief_complaint = Window.global["chief_complaint"];
+    let significant_signs = Window.global["significant_signs"];
+    const _Vitals =
+      this.props.patient_vitals !== undefined &&
+      this.props.patient_vitals.length > 0
+        ? Enumerable.from(this.props.patient_vitals)
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy(g => g.visit_date)
+            .lastOrDefault()
+        : [];
+
+    if (chief_complaint === null || chief_complaint.length < 4) {
+      swalMessage({
+        title: "Enter Chief Complaint. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (significant_signs === null || significant_signs.length < 4) {
+      swalMessage({
+        title: "Enter Significant Signs. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (_Vitals.length === 0) {
+      swalMessage({
+        title: "Enter All Vitals...",
+        type: "warning"
+      });
+    } else {
+      let that = this;
+      algaehApiCall({
+        uri: "/ucaf/getPatientUCAF",
+        method: "GET",
+        data: {
+          patient_id: Window.global["current_patient"],
+          visit_id: Window.global["visit_id"],
+          forceReplace: true
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            that.setState({ openUCAF: true, UCAFData: response.data.records });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.response.data.message,
+            type: "warning"
+          });
         }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.response.data.message,
-          type: "warning"
-        });
-      }
-    });
+      });
+    }
   }
 
   openDCAFReport(data, e) {
-    let that = this;
-    algaehApiCall({
-      uri: "/dcaf/getPatientDCAF",
-      method: "GET",
-      data: {
-        patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"]
-        // forceReplace: true
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          that.setState({ openDCAF: true, DCAFData: response.data.records });
+    let chief_complaint = Window.global["chief_complaint"];
+    let significant_signs = Window.global["significant_signs"];
+    const _Vitals =
+      this.props.patient_vitals !== undefined &&
+      this.props.patient_vitals.length > 0
+        ? Enumerable.from(this.props.patient_vitals)
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy(g => g.visit_date)
+            .lastOrDefault()
+        : [];
+
+    if (chief_complaint === null || chief_complaint.length < 4) {
+      swalMessage({
+        title: "Enter Chief Complaint. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (significant_signs === null || significant_signs.length < 4) {
+      swalMessage({
+        title: "Enter Significant Signs. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (_Vitals.length === 0) {
+      swalMessage({
+        title: "Enter All Vitals...",
+        type: "warning"
+      });
+    } else {
+      let that = this;
+      algaehApiCall({
+        uri: "/dcaf/getPatientDCAF",
+        method: "GET",
+        data: {
+          patient_id: Window.global["current_patient"],
+          visit_id: Window.global["visit_id"]
+          // forceReplace: true
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            that.setState({ openDCAF: true, DCAFData: response.data.records });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.response.data.message,
+            type: "warning"
+          });
         }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.response.data.message,
-          type: "warning"
-        });
-      }
-    });
+      });
+    }
   }
 
   openOCAFReport(data, e) {
-    let that = this;
-    algaehApiCall({
-      uri: "/ocaf/getPatientOCAF",
-      method: "GET",
-      data: {
-        patient_id: Window.global["current_patient"],
-        visit_id: Window.global["visit_id"]
-      },
-      onSuccess: response => {
-        if (response.data.success) {
-          that.setState({ openOCAF: true, OCAFData: response.data.records });
+    let chief_complaint = Window.global["chief_complaint"];
+    let significant_signs = Window.global["significant_signs"];
+    const _Vitals =
+      this.props.patient_vitals !== undefined &&
+      this.props.patient_vitals.length > 0
+        ? Enumerable.from(this.props.patient_vitals)
+            .groupBy("$.visit_date", null, (k, g) => {
+              return g.getSource();
+            })
+            .orderBy(g => g.visit_date)
+            .lastOrDefault()
+        : [];
+
+    if (chief_complaint === null || chief_complaint.length < 4) {
+      swalMessage({
+        title: "Enter Chief Complaint. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (significant_signs === null || significant_signs.length < 4) {
+      swalMessage({
+        title: "Enter Significant Signs. Atlest 4 letter",
+        type: "warning"
+      });
+    } else if (_Vitals.length === 0) {
+      swalMessage({
+        title: "Enter All Vitals...",
+        type: "warning"
+      });
+    } else {
+      let that = this;
+      algaehApiCall({
+        uri: "/ocaf/getPatientOCAF",
+        method: "GET",
+        data: {
+          patient_id: Window.global["current_patient"],
+          visit_id: Window.global["visit_id"]
+        },
+        onSuccess: response => {
+          if (response.data.success) {
+            that.setState({ openOCAF: true, OCAFData: response.data.records });
+          }
+        },
+        onFailure: error => {
+          swalMessage({
+            title: error.response.data.message,
+            type: "warning"
+          });
         }
-      },
-      onFailure: error => {
-        swalMessage({
-          title: error.response.data.message,
-          type: "warning"
-        });
-      }
-    });
-    // this.setState({ openOCAF: true, OCAFData: [] });
+      });
+    }
   }
 
   showAllergyAlert(_patient_allergies) {
@@ -541,17 +666,7 @@ class PatientProfile extends Component {
                 <li>
                   <i className={"fas fa-allergies" + this.alergyExist} />
                   <section>
-                    <span className="top-nav-sec-hdg">
-                      Allergies
-                      {/* <span
-                        className="fas fa-plus miniActionIcon"
-                        onClick={this.openAllergies.bind(this)}
-                      />
-                      <Allergies
-                        openAllergyModal={this.state.openAlergy}
-                        onClose={this.closeAllergies.bind(this)}
-                      /> */}
-                    </span>
+                    <span className="top-nav-sec-hdg">Allergies</span>
                     <p>
                       <table className="listofADDTable">
                         <thead>

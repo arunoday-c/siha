@@ -18,7 +18,7 @@ module.exports = {
             from hims_f_patient P, hims_d_nationality N,hims_d_identity_document DOC\
             where P.record_status='A' and N.record_status='A' and DOC.record_status='A' and\
             P.nationality_id=N.hims_d_nationality_id and P.primary_identity_id=DOC.hims_d_identity_document_id \
-            where P.hospital_id=? order by registration_date desc",
+            and P.hospital_id=? order by registration_date desc",
           values: [req.userIdentity.hospital_id],
           printQuery: true
         })
