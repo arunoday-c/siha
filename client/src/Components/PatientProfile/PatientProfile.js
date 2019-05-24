@@ -38,6 +38,7 @@ import Dental from "./Dental/Dental";
 import Eye from "./Eye/Eye";
 import _ from "lodash";
 import Allergies from "./Allergies/Allergies";
+import SickLeave from "./SickLeave/SickLeave";
 
 const UcafEditor = React.lazy(() => import("../ucafEditors/ucaf"));
 const DcafEditor = React.lazy(() => import("../ucafEditors/dcaf"));
@@ -70,6 +71,7 @@ class PatientProfile extends Component {
       DCAFData: undefined,
       openAlergy: false,
       openOCAF: false,
+      openSickLeave: false,
       OCAFData: [],
       chart_type: Window.global["chart_type"]
     };
@@ -94,6 +96,12 @@ class PatientProfile extends Component {
   closeAllergies(e) {
     this.setState({
       openAlergy: false
+    });
+  }
+
+  showSickLeave() {
+    this.setState({
+      openSickLeave: !this.state.openSickLeave
     });
   }
 
@@ -430,8 +438,12 @@ class PatientProfile extends Component {
               </li>
               <li>
                 <span onClick={printPrescription.bind(this, this)}>
-                  Preceprion
+                  Prescription
                 </span>
+              </li>
+
+              <li>
+                <span onClick={this.showSickLeave.bind(this)}>Sick Leave</span>
               </li>
 
               {/* <li onClick={this.openUCAFReport.bind(this, _pat_profile)}>
@@ -889,6 +901,10 @@ class PatientProfile extends Component {
         {this.renderUCAFReport()}
         {this.renderDCAFReport()}
         {this.renderOCAFReport()}
+        <SickLeave
+          openSickLeave={this.state.openSickLeave}
+          onClose={this.showSickLeave.bind(this)}
+        />
       </div>
     );
   }

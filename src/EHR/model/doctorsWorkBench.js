@@ -3029,14 +3029,7 @@ let getSummaryFollowUp = (req, res, next) => {
 
 //created by irfan: to add  physical_examination_details
 let addSickLeave = (req, res, next) => {
-  let addSickLeave = {
-    hims_f_patient_sick_leave_id: null,
-    physical_examination_header_id: null,
-    description: null,
-    mandatory: null,
-    created_by: null,
-    updated_by: null
-  };
+  let addSickLeave = {};
 
   debugFunction("addSickLeave");
   try {
@@ -3052,24 +3045,40 @@ let addSickLeave = (req, res, next) => {
       }
 
       connection.query(
-        "insert into hims_f_patient_sick_leave(patient_id, visit_id, from_date, \
-          to_date, no_of_days, remarks)values(?, ?, ?, ?, ?, ?)",
-        [
-          input.patient_id,
-          input.visit_id,
-          input.from_date,
-          input.to_date,
-          input.no_of_days,
-          input.remarks
-        ],
+        "SELECT * FROM hims_f_patient_sick_leave where patient_id=? and visit_id=?;",
+        [input.patient_id, input.visit_id],
         (error, results) => {
           releaseDBConnection(db, connection);
           if (error) {
             next(error);
           }
-          debugLog("Results are recorded...");
-          req.records = results;
-          next();
+          if (results.length == 0) {
+            connection.query(
+              "insert into hims_f_patient_sick_leave(patient_id, visit_id, episode_id, from_date, \
+                to_date, no_of_days, remarks)values(?, ?, ?, ?, ?, ?, ?)",
+              [
+                input.patient_id,
+                input.visit_id,
+                input.episode_id,
+                input.from_date,
+                input.to_date,
+                input.no_of_days,
+                input.remarks
+              ],
+              (error, results) => {
+                releaseDBConnection(db, connection);
+                if (error) {
+                  next(error);
+                }
+                debugLog("Results are recorded...");
+                req.records = results;
+                next();
+              }
+            );
+          } else {
+            req.records = results;
+            next();
+          }
         }
       );
     });

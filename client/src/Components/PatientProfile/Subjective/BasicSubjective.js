@@ -25,7 +25,6 @@ import PatientHistory from "../PatientHistory/PatientHistory";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
-import SickLeave from "../SickLeave/SickLeave";
 
 class BasicSubjective extends Component {
   constructor(props) {
@@ -37,7 +36,6 @@ class BasicSubjective extends Component {
       openDiet: false,
       openVital: false,
       openAlergy: false,
-      openSickLeave: false,
       openExamnModal: null,
       chief_complaint: null,
 
@@ -223,17 +221,6 @@ class BasicSubjective extends Component {
     });
   }
 
-  showSickLeave() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
-    }
-    this.setState({
-      openSickLeave: !this.state.openSickLeave
-    });
-  }
-
   showPatientHistory() {
     if (this.state.hims_f_episode_chief_complaint_id === null) {
       SubjectiveHandler().addChiefComplainToPatient(this);
@@ -414,21 +401,6 @@ class BasicSubjective extends Component {
               <Plan
                 openMedicaldata={this.state.openMedicaldata}
                 onClose={this.showMedicalData.bind(this)}
-              />
-
-              <li>
-                <span className="animated slideInLeft faster">
-                  Sick Leave Application
-                </span>
-                <i
-                  className="fas fa-heartbeat"
-                  onClick={this.showSickLeave.bind(this)}
-                />
-              </li>
-
-              <SickLeave
-                openSickLeave={this.state.openSickLeave}
-                onClose={this.showSickLeave.bind(this)}
               />
             </ul>
           </div>
