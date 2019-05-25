@@ -27,119 +27,115 @@ const DeptselectedHandeler = ($this, context, e) => {
 };
 
 const selectedHandeler = ($this, context, e) => {
-  debugger
+  debugger;
 
-  if($this.state.insured === "Y"){
-    $this.setState(
-      {
-        [e.name]: e.value,
-        visittypeselect: false,
-        consultation: e.selected.consultation
-      },
-      () => {
-        debugger
-        if (context !== null) {
-          context.updateState({
-            ...$this.state
-          });
-        }
-
-        $this.props.getDepartmentsandDoctors({
-          uri: "/department/get/get_All_Doctors_DepartmentWise",
-          method: "GET",
-          redux: {
-            type: "DEPT_DOCTOR_GET_DATA",
-            mappingName: "deptanddoctors"
-          }
-        });
-      });
-  }else{
-    SetBulkState({
+  SetBulkState({
     state: $this,
     callback: () => {
       AlgaehValidation({
         alertTypeIcon: "warning",
         querySelector: "data-validate='demographicDetails'",
         onSuccess: () => {
-          $this.setState(
-            {
-              [e.name]: e.value,
-              visittypeselect: false,
-              consultation: e.selected.consultation
-            },
-            () => {
-              debugger
-              if (context !== null) {
-                context.updateState({
-                  ...$this.state
+          if (
+            $this.state.insured === "Y" &&
+            ($this.state.primary_insurance_provider_id == null ||
+              $this.state.primary_network_office_id == null ||
+              $this.state.primary_network_id == null)
+          ) {
+            $this.setState(
+              {
+                [e.name]: null
+              },
+              () => {
+                swalMessage({
+                  title:
+                    "Please select the primary insurance details properly.",
+                  type: "error"
                 });
               }
-
-              $this.props.getDepartmentsandDoctors({
-                uri: "/department/get/get_All_Doctors_DepartmentWise",
-                method: "GET",
-                redux: {
-                  type: "DEPT_DOCTOR_GET_DATA",
-                  mappingName: "deptanddoctors"
+            );
+          } else {
+            $this.setState(
+              {
+                [e.name]: e.value,
+                visittypeselect: false,
+                consultation: e.selected.consultation
+              },
+              () => {
+                debugger;
+                if (context !== null) {
+                  context.updateState({
+                    ...$this.state
+                  });
                 }
-              });
-            }
-          );
+
+                $this.props.getDepartmentsandDoctors({
+                  uri: "/department/get/get_All_Doctors_DepartmentWise",
+                  method: "GET",
+                  redux: {
+                    type: "DEPT_DOCTOR_GET_DATA",
+                    mappingName: "deptanddoctors"
+                  }
+                });
+              }
+            );
+          }
         },
-        onFailure: () => {
+        onCatch: () => {
+          debugger;
           $this.setState({
             [e.name]: null
           });
         }
       });
     }
-  });}
+  });
 };
 
 const doctorselectedHandeler = ($this, context, e) => {
+  debugger;
   if ($this.state.sub_department_id !== null) {
-    if (
-      $this.state.insured === "Y" &&
-      ($this.state.primary_insurance_provider_id == null ||
-        $this.state.primary_network_office_id == null ||
-        $this.state.primary_network_id == null)
-    ) {
-      swalMessage({
-        title: "Please select the primary insurance details properly.",
-        type: "error"
-      });
-    } else if (
-      $this.state.sec_insured === "Y" &&
-      ($this.state.secondary_insurance_provider_id == null ||
-        $this.state.secondary_network_office_id == null ||
-        $this.state.secondary_network_id == null)
-    ) {
-      swalMessage({
-        title: "Please select the secondary insurance details properly.",
-        type: "error"
-      });
-    } else {
-      let doctor_name = e.selected.full_name;
+    debugger;
+    let doctor_name = e.selected.full_name;
 
-      if ($this.state.hims_d_patient_id != null) {
-        if (e.selected.services_id !== null) {
-          let intputObj = {
-            sub_department_id: $this.state.sub_department_id,
-            doctor_id: e.value,
-            patient_id: $this.state.patient_id
-          };
-          algaehApiCall({
-            uri: "/visit/checkVisitExists",
-            module: "frontDesk",
-            method: "get",
-            data: intputObj,
-            onSuccess: response => {
-              if (response.data.success === true) {
-                if (response.data.records.length > 0) {
-                  swalMessage({
-                    title: "Visit already exists for select Doctor",
-                    type: "warning"
-                  });
+    if ($this.state.hims_d_patient_id != null) {
+      if (e.selected.services_id !== null) {
+        let intputObj = {
+          sub_department_id: $this.state.sub_department_id,
+          doctor_id: e.value,
+          patient_id: $this.state.patient_id
+        };
+        algaehApiCall({
+          uri: "/visit/checkVisitExists",
+          module: "frontDesk",
+          method: "get",
+          data: intputObj,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              if (response.data.records.length > 0) {
+                swalMessage({
+                  title: "Visit already exists for select Doctor",
+                  type: "warning"
+                });
+              } else {
+                if (
+                  $this.state.insured === "Y" &&
+                  ($this.state.primary_insurance_provider_id == null ||
+                    $this.state.primary_network_office_id == null ||
+                    $this.state.primary_network_id == null)
+                ) {
+                  $this.setState(
+                    {
+                      [e.name]: null
+                    },
+                    () => {
+                      swalMessage({
+                        title:
+                          "Please select the primary insurance details properly.",
+                        type: "error"
+                      });
+                    }
+                  );
                 } else {
                   $this.setState(
                     {
@@ -170,73 +166,73 @@ const doctorselectedHandeler = ($this, context, e) => {
                     });
                   }
                 }
-              } else {
-                $this.setState(
-                  {
-                    [e.name]: null
-                  },
-                  () => {
-                    swalMessage({
-                      title: response.data.message,
-                      type: "warning"
-                    });
-                  }
-                );
               }
-            },
-            onFailure: error => {
-              swalMessage({
-                title: error.message,
-                type: "error"
-              });
+            } else {
+              $this.setState(
+                {
+                  [e.name]: null
+                },
+                () => {
+                  swalMessage({
+                    title: response.data.message,
+                    type: "warning"
+                  });
+                }
+              );
             }
-          });
-        } else {
-          $this.setState({
-            [e.name]: null
-          });
-          swalMessage({
-            title: "No Service defined for the selected doctor.",
-            type: "warning"
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        $this.setState({
+          [e.name]: null
+        });
+        swalMessage({
+          title: "No Service defined for the selected doctor.",
+          type: "warning"
+        });
+      }
+    } else {
+      if (e.selected.services_id !== null) {
+        $this.setState(
+          {
+            [e.name]: e.value,
+            visittypeselect: false,
+            hims_d_services_id: e.selected.services_id,
+            incharge_or_provider: e.value,
+            provider_id: e.value,
+            doctor_name: doctor_name,
+            saveEnable: false,
+            billdetail: false
+          },
+          () => {
+            generateBillDetails($this, context);
+          }
+        );
+        if (context !== null) {
+          context.updateState({
+            [e.name]: e.value,
+            hims_d_services_id: e.selected.services_id,
+            incharge_or_provider: e.value,
+            provider_id: e.value,
+            doctor_name: doctor_name,
+            saveEnable: false,
+            billdetail: false
           });
         }
       } else {
-        if (e.selected.services_id !== null) {
-          $this.setState(
-            {
-              [e.name]: e.value,
-              visittypeselect: false,
-              hims_d_services_id: e.selected.services_id,
-              incharge_or_provider: e.value,
-              provider_id: e.value,
-              doctor_name: doctor_name,
-              saveEnable: false,
-              billdetail: false
-            },
-            () => {
-              generateBillDetails($this, context);
-            }
-          );
-          if (context !== null) {
-            context.updateState({
-              [e.name]: e.value,
-              hims_d_services_id: e.selected.services_id,
-              incharge_or_provider: e.value,
-              provider_id: e.value,
-              doctor_name: doctor_name,
-              saveEnable: false,
-              billdetail: false
-            });
-          }
-        } else {
-          $this.setState({
-            [e.name]: null
-          });
-          swalMessage({
-            title: "No Service defined for the selected doctor.",
-            type: "warning"
-          });
-        }
+        $this.setState({
+          [e.name]: null
+        });
+        swalMessage({
+          title: "No Service defined for the selected doctor.",
+          type: "warning"
+        });
       }
     }
   } else {

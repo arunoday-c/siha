@@ -35,7 +35,10 @@ import {
   ClearData,
   ShowAdvanceScreen,
   getHospitalDetails,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
+  closePopup,
+  generateIdCard,
+  generateReceipt
 } from "./RegistrationPatientEvent";
 import { SetBulkState } from "../../utils/GlobalFunctions";
 
@@ -156,6 +159,28 @@ class RegistrationPatient extends Component {
         });
       }
     });
+  }
+
+  CloseRefundScreen(e) {
+    this.setState(
+      {
+        RefundOpen: !this.state.RefundOpen
+      },
+      () => {
+        this.getCtrlCode(this.state.patient_code);
+      }
+    );
+  }
+
+  CloseAdvanceScreen(e) {
+    this.setState(
+      {
+        AdvanceOpen: !this.state.AdvanceOpen
+      },
+      () => {
+        this.getCtrlCode(this.state.patient_code);
+      }
+    );
   }
 
   GenerateReciept(callback) {
@@ -363,7 +388,10 @@ class RegistrationPatient extends Component {
                         );
                       }
 
-                      if (_patInsuranceFrontImg !== undefined && this.state.insured ==="Y") {
+                      if (
+                        _patInsuranceFrontImg !== undefined &&
+                        this.state.insured === "Y"
+                      ) {
                         _arrayImages.push(
                           new Promise((resolve, reject) => {
                             _patInsuranceFrontImg.SavingImageOnServer(
@@ -378,7 +406,10 @@ class RegistrationPatient extends Component {
                           })
                         );
                       }
-                      if (_patInsuranceBackImg !== undefined && this.state.insured ==="Y") {
+                      if (
+                        _patInsuranceBackImg !== undefined &&
+                        this.state.insured === "Y"
+                      ) {
                         _arrayImages.push(
                           new Promise((resolve, reject) => {
                             _patInsuranceBackImg.SavingImageOnServer(
@@ -393,37 +424,6 @@ class RegistrationPatient extends Component {
                           })
                         );
                       }
-                      // if (_patSecInsuranceFrontImg !== undefined) {
-                      //   _arrayImages.push(
-                      //     new Promise((resolve, reject) => {
-                      //       _patSecInsuranceFrontImg.SavingImageOnServer(
-                      //         undefined,
-                      //         undefined,
-                      //         undefined,
-                      //         $this.state.secondary_card_number + "_sec_front",
-                      //         () => {
-                      //           resolve();
-                      //         }
-                      //       );
-                      //     })
-                      //   );
-                      // }
-                      //
-                      // if (_patSecInsuranceBackImg !== undefined) {
-                      //   _arrayImages.push(
-                      //     new Promise((resolve, reject) => {
-                      //       _patSecInsuranceBackImg.SavingImageOnServer(
-                      //         undefined,
-                      //         undefined,
-                      //         undefined,
-                      //         $this.state.secondary_card_number + "_sec_back",
-                      //         () => {
-                      //           resolve();
-                      //         }
-                      //       );
-                      //     })
-                      //   );
-                      // }
 
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
@@ -435,7 +435,9 @@ class RegistrationPatient extends Component {
                           insuranceYes: true,
                           sec_insuranceYes: true,
                           ProcessInsure: true,
-                          existingPatient: true
+                          existingPatient: true,
+                          popUpGenereted: true,
+                          advanceEnable: false
                         });
 
                         swalMessage({
@@ -494,7 +496,10 @@ class RegistrationPatient extends Component {
                         );
                       }
 
-                      if (_patInsuranceFrontImg !== undefined && this.state.insured ==="Y") {
+                      if (
+                        _patInsuranceFrontImg !== undefined &&
+                        this.state.insured === "Y"
+                      ) {
                         _arrayImages.push(
                           new Promise((resolve, reject) => {
                             _patInsuranceFrontImg.SavingImageOnServer(
@@ -509,7 +514,10 @@ class RegistrationPatient extends Component {
                           })
                         );
                       }
-                      if (_patInsuranceBackImg !== undefined && this.state.insured ==="Y") {
+                      if (
+                        _patInsuranceBackImg !== undefined &&
+                        this.state.insured === "Y"
+                      ) {
                         _arrayImages.push(
                           new Promise((resolve, reject) => {
                             _patInsuranceBackImg.SavingImageOnServer(
@@ -565,14 +573,15 @@ class RegistrationPatient extends Component {
                           insuranceYes: true,
                           sec_insuranceYes: true,
                           ProcessInsure: true,
-                          existingPatient: true
+                          existingPatient: true,
+                          popUpGenereted: true
                         });
 
                         swalMessage({
                           title: "Done Successfully",
                           type: "success"
                         });
-                      });                    
+                      });
                     }
                   },
                   onFailure: error => {
@@ -658,6 +667,8 @@ class RegistrationPatient extends Component {
           data.patientRegistration.date_of_birth = moment(
             data.patientRegistration.date_of_birth
           )._d;
+
+          data.patientRegistration.advanceEnable = false;
           $this.setState(data.patientRegistration, () => {
             if (fromAppoinment === true) {
               generateBillDetails(this, this);
@@ -786,22 +797,16 @@ class RegistrationPatient extends Component {
                 label: "Print Receipt",
                 events: {
                   onClick: () => {
-                    AlgaehReport({
-                      report: {
-                        fileName: "printreceipt"
-                      },
-                      data: {
-                        patient_code: this.state.patient_code,
-                        full_name: this.state.full_name,
-                        advance_amount: this.state.advance_amount,
-                        bill_date: moment(this.state.bill_date).format(
-                          Options.datetimeFormat
-                        ),
-                        receipt_number: this.state.receipt_number,
-                        doctor_name: this.state.doctor_name,
-                        bill_details: this.state.billdetails
-                      }
-                    });
+                    generateReceipt(this, this);
+                  }
+                }
+              },
+              {
+                label: "ID Card",
+                events: {
+                  onClick: () => {
+                    debugger;
+                    generateIdCard(this, this);
                   }
                 }
               }
@@ -860,6 +865,7 @@ class RegistrationPatient extends Component {
                     type="button"
                     className="btn btn-other"
                     onClick={ShowRefundScreen.bind(this, this)}
+                    disabled={this.state.advanceEnable}
                   >
                     <AlgaehLabel
                       label={{
@@ -871,7 +877,7 @@ class RegistrationPatient extends Component {
 
                   <AddAdvanceModal
                     show={this.state.RefundOpen}
-                    onClose={ShowRefundScreen.bind(this, this)}
+                    onClose={this.CloseRefundScreen.bind(this)}
                     selectedLang={this.state.selectedLang}
                     HeaderCaption={
                       <AlgaehLabel
@@ -896,6 +902,7 @@ class RegistrationPatient extends Component {
                     type="button"
                     className="btn btn-other"
                     onClick={ShowAdvanceScreen.bind(this, this)}
+                    disabled={this.state.advanceEnable}
                   >
                     <AlgaehLabel
                       label={{
@@ -907,7 +914,7 @@ class RegistrationPatient extends Component {
 
                   <AddAdvanceModal
                     show={this.state.AdvanceOpen}
-                    onClose={ShowAdvanceScreen.bind(this, this)}
+                    onClose={this.CloseAdvanceScreen.bind(this)}
                     selectedLang={this.state.selectedLang}
                     HeaderCaption={
                       <AlgaehLabel
@@ -917,6 +924,7 @@ class RegistrationPatient extends Component {
                         }}
                       />
                     }
+                    Advance={true}
                     NumberLabel="receipt_number"
                     DateLabel="receipt_date"
                     inputsparameters={{
@@ -932,6 +940,75 @@ class RegistrationPatient extends Component {
               </div>
             </div>
           </MyContext.Provider>
+        </div>
+
+        <div
+          className={
+            "col-12 editFloatCntr animated  " +
+            (this.state.popUpGenereted ? "slideInUp" : "slideOutDown") +
+            " faster"
+          }
+        >
+          {/* <h5>Edit Basic Details</h5> */}
+          <div className="row">
+            <div className="col-3">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Patient Code"
+                }}
+              />
+              <h6>{this.state.patient_code}</h6>
+            </div>
+
+            <div className="col-3">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Bill Number"
+                }}
+              />
+              <h6>{this.state.bill_number}</h6>
+            </div>
+
+            <div className="col-3">
+              <AlgaehLabel
+                label={{
+                  forceLabel: "Receipt Number"
+                }}
+              />
+              <h6>{this.state.receipt_number}</h6>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={generateReceipt.bind(this, this)}
+              >
+                Print Receipt
+              </button>
+              <button
+                type="button"
+                className="btn btn-default"
+                onClick={closePopup.bind(this, this)}
+              >
+                Close
+              </button>
+              <button
+                className="btn btn-default"
+                onClick={generateIdCard.bind(this, this)}
+              >
+                Print Card
+              </button>
+
+              <button
+                className="btn btn-default"
+                // onClick={closePopup.bind(this, this, "")}
+              >
+                Print Barcode
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     );

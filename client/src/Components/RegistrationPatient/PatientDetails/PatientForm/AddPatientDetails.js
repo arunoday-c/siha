@@ -60,12 +60,14 @@ const titlehandle = ($this, e) => {
       [e]: null
     });
   } else {
-    if (e.selected.title === "Mr") {
+    if (e.selected.title === "Mr" || e.selected.title === "Master") {
       setGender = "Male";
-    } else if (e.selected.title === "Mrs") {
+    } else if (e.selected.title === "Mrs" || e.selected.title === "Miss") {
       setGender = "Female";
     } else if (e.selected.title === "Ms") {
       setGender = "Female";
+    } else if (e.selected.title === "Dr" || e.selected.title === "Prof") {
+      setGender = "";
     }
     $this.setState({
       gender: setGender,
@@ -108,7 +110,7 @@ const setAge = ($this, e) => {
     let months = $this.state.AGEMM;
     let days = $this.state.AGEDD;
 
-    if (e.target.name === "AGEMM" && parseInt(e.target.value,10) > 23) {
+    if (e.target.name === "AGEMM" && parseInt(e.target.value, 10) > 23) {
       swalMessage({
         title: "Age in months cannot be greater than 23.",
         type: "error"
@@ -117,7 +119,7 @@ const setAge = ($this, e) => {
         [e.target.name]: $this.state.AGEMM
       });
     }
-    if (e.target.name === "AGEDD" && parseInt(e.target.value,10) > 365) {
+    if (e.target.name === "AGEDD" && parseInt(e.target.value, 10) > 365) {
       swalMessage({
         title: "Age in days cannot be greater than 365.",
         type: "error"

@@ -5,6 +5,7 @@ import algaehLoader from "../../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
+// import Summary from "../Summary/Summary";
 
 class Encounters extends Component {
   constructor(props) {
@@ -21,18 +22,21 @@ class Encounters extends Component {
   }
 
   setEncounterDetails(row, e) {
+    debugger;
     const enc_id = e.currentTarget.getAttribute("enc-id");
     const episode_id = e.currentTarget.getAttribute("epi-id");
     const visit_id = e.currentTarget.getAttribute("visit-id");
 
     this.getPatientChiefComplaint(episode_id);
     this.getPatientDiagnosis(episode_id);
-    this.getPatientMedication(enc_id);
+    this.getPatientMedication(row.encounter_id);
     this.getPatientInvestigation(visit_id);
     this.getPatientVitals(Window.global["mrd_patient"], visit_id);
 
     const general_info = Enumerable.from(this.state.patientEncounters)
-      .where(w => w.hims_f_patient_encounter_id === parseInt(enc_id, 10))
+      .where(
+        w => w.hims_f_patient_encounter_id === parseInt(row.encounter_id, 10)
+      )
       .firstOrDefault();
 
     this.setState({
@@ -138,13 +142,13 @@ class Encounters extends Component {
       },
       cancelRequestId: "getPatientMedication",
       onSuccess: response => {
-        algaehLoader({ show: false });
+        debugger;
+
         if (response.data.success) {
           this.setState({ patientMedications: response.data.records });
         }
       },
       onFailure: error => {
-        algaehLoader({ show: false });
         swalMessage({
           title: error.message,
           type: "error"

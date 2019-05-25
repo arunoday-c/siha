@@ -157,7 +157,9 @@ export default {
       card_holder_age: null,
       card_holder_gender: null,
       card_class: null,
-      employee_id: null
+      employee_id: null,
+      popUpGenereted: false,
+      advanceEnable: true
     };
     return output;
   }

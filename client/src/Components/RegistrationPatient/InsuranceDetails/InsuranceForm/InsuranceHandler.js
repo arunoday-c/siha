@@ -68,7 +68,7 @@ const clearinsurancehandle = ($this, context, e) => {
   }
 };
 const insurancehandle = ($this, context, e) => {
-  debugger
+  debugger;
   let ProcessInsure = false;
   if ($this.state.doctor_id === null) {
     ProcessInsure = true;
@@ -113,7 +113,8 @@ const insurancehandle = ($this, context, e) => {
         primary_card_number: e.selected.card_number,
         primary_effective_start_date: e.selected.net_effective_start_date,
         primary_effective_end_date: e.selected.net_effective_end_date,
-        primary_network_office_id: e.selected.hims_d_insurance_network_office_id,
+        primary_network_office_id:
+          e.selected.hims_d_insurance_network_office_id,
         card_holder_name: e.selected.card_holder_name,
         ProcessInsure: ProcessInsure
       });
@@ -190,7 +191,7 @@ const InsuranceDetails = ($this, context, e) => {
   const hospital = JSON.parse(
     AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
   );
-  debugger
+  debugger;
 
   AlgaehSearch({
     searchGrid: {
@@ -242,7 +243,7 @@ const InsuranceDetails = ($this, context, e) => {
                 policy_number: row.policy_number,
                 net_effective_start_date: row.net_effective_start_date,
                 net_effective_end_date: row.net_effective_end_date,
-                effective_end_date: row.effective_end_date,
+                effective_end_date: row.effective_end_date
               };
 
               let insObj = $this.props.existinsurance || [];
@@ -481,6 +482,7 @@ const radioChange = ($this, context, e) => {
   SetBulkState({
     state: $this,
     callback: () => {
+      debugger;
       let PatType = null;
       let saveEnable = false;
       let ProcessInsure = false;
@@ -495,22 +497,6 @@ const radioChange = ($this, context, e) => {
         }
       } else {
         PatType = "S";
-        // ProcessInsurance($this, context);
-        // if (
-        //   $this.state.primary_insurance_provider_id === null &&
-        //   $this.state.doctor_id === null
-        // ) {
-        //   saveEnable = true;
-        //   ProcessInsure = true;
-        // } else {
-        //   if ($this.state.doctor_id === null) {
-        //     saveEnable = false;
-        //     ProcessInsure = true;
-        //   } else {
-        //     saveEnable = true;
-        //     ProcessInsure = false;
-        //   }
-        // }
       }
 
       $this.setState(
@@ -527,7 +513,7 @@ const radioChange = ($this, context, e) => {
           primary_card_number: null,
           primary_effective_start_date: null,
           primary_effective_end_date: null,
-          patInsuranceFrontImg:undefined
+          patInsuranceFrontImg: undefined
         },
         () => {
           if (value !== "Y") {
@@ -554,7 +540,7 @@ const radioChange = ($this, context, e) => {
           primary_card_number: null,
           primary_effective_start_date: null,
           primary_effective_end_date: null,
-          patInsuranceFrontImg:undefined
+          patInsuranceFrontImg: undefined
         });
       }
     }

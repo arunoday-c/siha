@@ -155,7 +155,15 @@ class AddConsultationForm extends Component {
                         others: {
                           disabled: this.state.clearEnable
                         },
-                        onChange: selectedHandeler.bind(this, this, context)
+                        onChange: selectedHandeler.bind(this, this, context),
+                        onClear: () => {
+                          this.setState({
+                            visit_type: null,
+                            sub_department_id: null,
+                            doctor_id: null,
+                            visittypeselect: true
+                          });
+                        }
                       }}
                     />
 
@@ -183,7 +191,17 @@ class AddConsultationForm extends Component {
                         others: {
                           disabled: this.state.visittypeselect
                         },
-                        onChange: DeptselectedHandeler.bind(this, this, context)
+                        onChange: DeptselectedHandeler.bind(
+                          this,
+                          this,
+                          context
+                        ),
+                        onClear: () => {
+                          this.setState({
+                            sub_department_id: null,
+                            doctor_id: null
+                          });
+                        }
                       }}
                     />
                   </div>
@@ -216,7 +234,12 @@ class AddConsultationForm extends Component {
                           this,
                           this,
                           context
-                        )
+                        ),
+                        onClear: () => {
+                          this.setState({
+                            doctor_id: null
+                          });
+                        }
                       }}
                     />
 
