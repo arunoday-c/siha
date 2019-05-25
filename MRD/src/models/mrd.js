@@ -44,7 +44,8 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,E.full_name as provider_name, visit_id,\
+            "select hims_f_patient_encounter_id, PE.patient_id,P.full_name,PE.provider_id,\
+              E.full_name as provider_name, visit_id,significant_signs,\
               V.insured,V.sec_insured,V.sub_department_id,SD.sub_department_name,PE.episode_id,PE.encounter_id,PE.updated_date as encountered_date,\
               primary_insurance_provider_id,IP.insurance_provider_name as pri_insurance_provider_name,PE.examination_notes,PE.assesment_notes,\
               secondary_insurance_provider_id,IPR.insurance_provider_name as sec_insurance_provider_name  from hims_f_patient_encounter PE  inner join  hims_f_patient P on\
@@ -78,10 +79,9 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select hims_f_episode_chief_complaint_id ,episode_id,chief_complaint_id,HH.hpi_description as chief_complaint\
-              from hims_f_episode_chief_complaint ECC,hims_d_hpi_header HH\
-              Where ECC.record_status='A' and HH.record_status='A' \
-              and ECC.chief_complaint_id=HH.hims_d_hpi_header_id and episode_id=?",
+            "select hims_f_episode_chief_complaint_id ,episode_id,chief_complaint_id,HH.hpi_description as chief_complaint, comment from hims_f_episode_chief_complaint ECC \
+            left join hims_d_hpi_header HH on ECC.chief_complaint_id=HH.hims_d_hpi_header_id\
+            Where ECC.record_status='A' and episode_id=?",
           values: [req.query.episode_id],
           printQuery: true
         })
