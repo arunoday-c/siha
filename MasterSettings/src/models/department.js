@@ -1,4 +1,5 @@
 import algaehMysql from "algaeh-mysql";
+import { LINQ } from "node-linq";
 module.exports = {
   addDepartment: (req, res, next) => {
     return new Promise((resolve, reject) => {
@@ -262,6 +263,199 @@ module.exports = {
           input.hims_d_sub_department_id
         ],
         printQuery: true
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+  deleteDepartment: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_d_department SET  record_status='I' WHERE hims_d_department_id=?;",
+        values: [req.body.hims_d_department_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+  selectdoctors: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    // let connectionString = "";
+    // if (input.department_type == "CLINICAL") {
+    //   connectionString = " and hims_d_department.department_type='CLINICAL' ";
+    // } else if (input.department_type == "NON-CLINICAL") {
+    //   connectionString =
+    //     " and hims_d_department.department_type='NON-CLINICAL' ";
+    // }
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_m_employee_department_mappings.employee_id,\
+        hims_m_employee_department_mappings.sub_department_id,\
+     hims_d_employee.full_name,\
+     hims_d_employee.arabic_name,\
+     hims_m_employee_department_mappings.services_id,\
+     hims_d_sub_department.department_id,\
+     hims_d_sub_department.sub_department_name,\
+     hims_d_sub_department.arabic_sub_department_name,\
+     hims_d_sub_department.department_type\
+     from hims_m_employee_department_mappings,\
+     hims_d_employee,hims_d_sub_department,hims_d_department,\
+     hims_d_employee_category,hims_m_category_speciality_mappings\
+     where\
+     hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
+     and hims_m_employee_department_mappings.employee_id = hims_d_employee.hims_d_employee_id \
+     and hims_d_sub_department.hims_d_sub_department_id= hims_m_employee_department_mappings.sub_department_id\
+     and hims_m_employee_department_mappings.record_status='A'\
+     and hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
+     and hims_d_sub_department.record_status='A'\
+     and hims_d_employee.record_status ='A'\
+     and hims_d_sub_department.sub_department_status='A'\
+     and hims_d_employee.employee_status='A'\
+     and hims_d_department.department_type='CLINICAL'\
+     and hims_d_employee.isdoctor='Y'\
+     group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.services_id,hims_m_employee_department_mappings.sub_department_id;"
+      })
+      .then(results => {
+        _mysql.releaseConnection();
+        let departments = new LINQ(results).GroupBy(g => g.sub_department_id);
+        let doctors = new LINQ(results).GroupBy(g => g.employee_id);
+        req.records = { departments: departments, doctors: doctors };
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+  selectDoctorsAndClinic: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    // let connectionString = "";
+    // if (input.department_type == "CLINICAL") {
+    //   connectionString = " and hims_d_department.department_type='CLINICAL' ";
+    // } else if (input.department_type == "NON-CLINICAL") {
+    //   connectionString =
+    //     " and hims_d_department.department_type='NON-CLINICAL' ";
+    // }
+
+    _mysql
+      .executeQuery({
+        query:
+          "select hims_m_employee_department_mappings.employee_id as provider_id,\
+         hims_m_employee_department_mappings.sub_department_id as sub_dept_id,\
+       hims_d_employee.full_name,\
+       hims_d_employee.arabic_name,\
+      hims_m_employee_department_mappings.services_id,\
+      hims_d_sub_department.department_id,\
+      hims_d_sub_department.sub_department_name,\
+      hims_d_sub_department.arabic_sub_department_name,hims_d_appointment_clinic_id as clinic_id,AP.description as clinic_description\
+      from hims_m_employee_department_mappings,\
+      hims_d_employee,hims_d_sub_department,hims_d_department,\
+      hims_d_employee_category,hims_m_category_speciality_mappings,hims_d_appointment_clinic AP\
+      where\
+      hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
+      and hims_m_employee_department_mappings.employee_id = hims_d_employee.hims_d_employee_id \
+      and hims_d_sub_department.hims_d_sub_department_id= hims_m_employee_department_mappings.sub_department_id\
+      and hims_m_employee_department_mappings.record_status='A'\
+      and hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
+      and hims_d_sub_department.record_status='A'\
+      and hims_d_employee.record_status ='A'\
+      and hims_d_sub_department.sub_department_status='A'\
+      and hims_d_employee.employee_status='A'\
+      and hims_d_department.department_type='CLINICAL'\
+      and hims_d_employee.isdoctor='Y'\
+      and AP.record_status='A' and hims_d_employee.hims_d_employee_id=AP.provider_id \
+      group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.sub_department_id;",
+        values: [req.body.hims_d_department_id]
+      })
+      .then(results => {
+        _mysql.releaseConnection();
+        let departments = new LINQ(results).GroupBy(g => g.sub_dept_id);
+        let doctors = new LINQ(results).GroupBy(g => g.provider_id);
+
+        req.records = { departments: departments, doctors: doctors };
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+  deleteSubDepartment: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_d_sub_department SET  record_status='I' WHERE hims_d_sub_department_id=?",
+        values: [req.body.hims_d_sub_department_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+  makeSubDepartmentInActive: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_d_sub_department SET  sub_department_status='I' WHERE hims_d_sub_department_id=?",
+        values: [req.body.hims_d_sub_department_id]
+      })
+      .then(result => {
+        _mysql.releaseConnection();
+        req.records = result;
+
+        next();
+      })
+      .catch(error => {
+        _mysql.releaseConnection();
+        next(error);
+      });
+  },
+  makeDepartmentInActive: (req, res, next) => {
+    let input = req.body;
+    const _mysql = new algaehMysql();
+
+    _mysql
+      .executeQuery({
+        query:
+          "UPDATE hims_d_department SET  department_status='I' WHERE hims_d_department_id=?",
+        values: [req.body.hims_d_department_id]
       })
       .then(result => {
         _mysql.releaseConnection();
