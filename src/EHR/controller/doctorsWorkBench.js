@@ -59,7 +59,8 @@ import {
   getPatientBasicChiefComplaints,
   deleteDietAdvice,
   getSummaryFollowUp,
-  addSickLeave
+  addSickLeave,
+  getSickLeave
 } from "../model/doctorsWorkBench";
 export default ({ config, db }) => {
   let api = Router();
@@ -945,6 +946,21 @@ export default ({ config, db }) => {
   api.post(
     "/addSickLeave",
     addSickLeave,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad:
+  api.get(
+    "/getSickLeave",
+    getSickLeave,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

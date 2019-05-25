@@ -4,8 +4,8 @@ import {
   updateDepartment, //Done
   selectDepartment, //Done
   selectSubDepartment, //Done
-  addSubDepartment,
-  updateSubDepartment,
+  addSubDepartment, //Done
+  updateSubDepartment, //Done
   deleteDepartment,
   selectdoctors,
   selectDoctorsAndClinic,

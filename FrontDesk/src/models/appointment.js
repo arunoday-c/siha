@@ -730,8 +730,6 @@ module.exports = {
       });
   },
 
-
-
   //created by irfan: to get doctors Schedule list
   getDoctorsScheduledList: (req, res, next) => {
     const _mysql = new algaehMysql();
@@ -1740,7 +1738,9 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "update hims_f_patient_appointment set cancelled='Y',cancelled_by=?,cancelled_date=?,cancel_reason=?,\
+          "update hims_f_patient_appointment set appointment_status_id=(select hims_d_appointment_status_id from hims_d_appointment_status\
+            where default_status='CAN'),\
+        cancelled='Y',cancelled_by=?,cancelled_date=?,cancel_reason=?,\
         updated_by=?,updated_date=? where record_status='A' and hims_f_patient_appointment_id=?;",
         values: [
           req.userIdentity.algaeh_d_app_user_id,

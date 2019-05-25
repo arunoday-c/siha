@@ -5,6 +5,7 @@ import spotlightSearch from "../../../Search/spotlightSearch.json";
 import swal from "sweetalert2";
 import moment from "moment";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
+import { setGlobal } from "../../../utils/GlobalFunctions";
 
 export default function SubjectiveHandler() {
   return {
@@ -24,16 +25,12 @@ export default function SubjectiveHandler() {
           interval: _duration_Date_Interval.interval,
           [name]: value
         });
-
-        // row["onset_date"] = _duration_Date_Interval.onset_date;
-        // row["interval"] = _duration_Date_Interval.interval;
       } else if (name === "interval") {
         value = e.value || e.target.value;
         const _dur_date_inter = durationToDateAndInterval(
           $this.state.duration,
           value
         );
-        // row["onset_date"] = _dur_date_inter.onset_date;
 
         $this.setState({
           onset_date: _dur_date_inter.onset_date,
@@ -150,10 +147,6 @@ export default function SubjectiveHandler() {
         onSuccess: response => {
           if (response.data.success) {
             getPatientChiefComplaints($this);
-            // swalMessage({
-            //   title: "Chief Complaint Recorded",
-            //   type: "success"
-            // });
           }
         }
       });
@@ -226,6 +219,10 @@ function getPatientChiefComplaints($this) {
 
             chronic: response.data.records[0].chronic,
             complaint_type: response.data.records[0].complaint_type
+          });
+
+          setGlobal({
+            chief_complaint: response.data.records[0].comment
           });
         }
       }

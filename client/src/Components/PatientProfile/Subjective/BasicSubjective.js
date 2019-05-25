@@ -25,6 +25,8 @@ import PatientHistory from "../PatientHistory/PatientHistory";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
 import Allergies from "../Allergies/Allergies";
 import Examination from "../Examination/Examination";
+import { Validations } from "./Validation";
+import { setGlobal } from "../../../utils/GlobalFunctions";
 
 class BasicSubjective extends Component {
   constructor(props) {
@@ -124,21 +126,23 @@ class BasicSubjective extends Component {
     SubjectiveHandler().dataLevelUpdate(this, e);
   }
   openTab(e) {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      var element = document.querySelectorAll("[algaehtabs]");
+      for (var i = 0; i < element.length; i++) {
+        element[i].classList.remove("active");
+      }
+      e.currentTarget.classList.add("active");
+      var specified = e.currentTarget.getAttribute("algaehtabs");
+      this.setState({
+        pageDisplay: specified
+      });
     }
-
-    var element = document.querySelectorAll("[algaehtabs]");
-    for (var i = 0; i < element.length; i++) {
-      element[i].classList.remove("active");
-    }
-    e.currentTarget.classList.add("active");
-    var specified = e.currentTarget.getAttribute("algaehtabs");
-    this.setState({
-      pageDisplay: specified
-    });
   }
 
   getPatientEncounterDetails() {
@@ -155,6 +159,10 @@ class BasicSubjective extends Component {
             significant_signs: data.significant_signs,
             other_signs: data.other_signs
           });
+
+          setGlobal({
+            significant_signs: data.significant_signs
+          });
         }
       },
       onFailure: error => {
@@ -167,119 +175,144 @@ class BasicSubjective extends Component {
   }
 
   componentWillUnmount() {
-    if (
-      this.state.significant_signs !== null ||
-      this.state.other_signs !== null
-    ) {
-      algaehApiCall({
-        uri: "/doctorsWorkBench/updatePatientEncounter",
-        method: "PUT",
-        data: {
-          other_signs: this.state.other_signs,
-          significant_signs: this.state.significant_signs,
-          encounter_id: Window.global.encounter_id
-        }
-      });
-    }
+    const err = Validations(this);
+    if (!err) {
+      if (
+        this.state.significant_signs !== null ||
+        this.state.other_signs !== null
+      ) {
+        algaehApiCall({
+          uri: "/doctorsWorkBench/updatePatientEncounter",
+          method: "PUT",
+          data: {
+            other_signs: this.state.other_signs,
+            significant_signs: this.state.significant_signs,
+            encounter_id: Window.global.encounter_id
+          }
+        });
+      }
 
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
     }
   }
 
   showAllergies() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        openAlergy: !this.state.openAlergy
+      });
     }
-    this.setState({
-      openAlergy: !this.state.openAlergy
-    });
   }
   showMedication() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        openMedication: !this.state.openMedication
+      });
     }
-    this.setState({
-      openMedication: !this.state.openMedication
-    });
   }
 
   showMedicalData() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        openMedicaldata: !this.state.openMedicaldata
+      });
     }
-    this.setState({
-      openMedicaldata: !this.state.openMedicaldata
-    });
   }
 
   showPatientHistory() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        openAddModal: !this.state.openAddModal
+      });
     }
-    this.setState({
-      openAddModal: !this.state.openAddModal
-    });
   }
 
   showDietPlan() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        openDiet: !this.state.openDiet
+      });
     }
-    this.setState({
-      openDiet: !this.state.openDiet
-    });
   }
 
   closeDietPlan() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
-    }
-    this.setState(
-      {
-        openDiet: !this.state.openDiet
-      },
-      () => {
-        this.props.getPatientDiet({
-          uri: "/doctorsWorkBench/getPatientDiet",
-          method: "GET",
-          data: {
-            patient_id: Window.global["current_patient"],
-            episode_id: Window.global["episode_id"]
-          },
-          cancelRequestId: "getPatientDiet",
-          redux: {
-            type: "PATIENT_DIET",
-            mappingName: "patient_diet"
-          }
-        });
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
       }
-    );
+      this.setState(
+        {
+          openDiet: !this.state.openDiet
+        },
+        () => {
+          this.props.getPatientDiet({
+            uri: "/doctorsWorkBench/getPatientDiet",
+            method: "GET",
+            data: {
+              patient_id: Window.global["current_patient"],
+              episode_id: Window.global["episode_id"]
+            },
+            cancelRequestId: "getPatientDiet",
+            redux: {
+              type: "PATIENT_DIET",
+              mappingName: "patient_diet"
+            }
+          });
+        }
+      );
+    }
   }
 
   showVitals() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+    debugger;
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        openVital: !this.state.openVital
+      });
     }
-    this.setState({
-      openVital: !this.state.openVital
-    });
   }
 
   closeVitals() {
@@ -289,24 +322,37 @@ class BasicSubjective extends Component {
   }
 
   showPhysicalExamination() {
-    if (this.state.hims_f_episode_chief_complaint_id === null) {
-      SubjectiveHandler().addChiefComplainToPatient(this);
-    } else {
-      SubjectiveHandler().updatePatientChiefComplaints(this);
+    const err = Validations(this);
+    if (!err) {
+      if (this.state.hims_f_episode_chief_complaint_id === null) {
+        SubjectiveHandler().addChiefComplainToPatient(this);
+      } else {
+        SubjectiveHandler().updatePatientChiefComplaints(this);
+      }
+      this.setState({
+        openExamnModal: !this.state.openExamnModal
+      });
     }
-    this.setState({
-      openExamnModal: !this.state.openExamnModal
-    });
   }
 
   textAreaEvent(e) {
-    // significant_signs
     let name = e.name || e.target.name;
     let value = e.value || e.target.value;
 
     this.setState({
       [name]: value
     });
+
+    if (name === "chief_complaint") {
+      setGlobal({
+        chief_complaint: value
+      });
+    }
+    if (name === "significant_signs") {
+      setGlobal({
+        significant_signs: value
+      });
+    }
   }
 
   render() {

@@ -22,17 +22,17 @@
         <section>
             <table class="tableForData" cell-padding="0">
                 <tbody>
-                  <tr><td><label class="textEnLft">Patient History</label>:<span class="valueText">Patient History Details</span><label class="textArRht">تاريخ المريض</label></td></tr>
-                  <tr><td><label class="textEnLft">Clinical Examination</label>:<span class="valueText">Clinical Examination Details</span><label class="textArRht">الفحص الاكلينيكي</label></td></tr>
-                  <tr><td><label class="textEnLft">Diagnosis</label>:<span class="valueText">Diagnosis Details</span><label class="textArRht">التشخيص</label></td></tr>
+
+                  <tr><td><label class="textEnLft">Clinical Examination</label>:<span class="valueText">{{header.comment}}</span><label class="textArRht">الفحص الاكلينيكي</label></td></tr>
+                  <tr><td><label class="textEnLft">Diagnosis</label>:<span class="valueText">{{header.icd_description}}</span><label class="textArRht">التشخيص</label></td></tr>
                   <tr><td><label class="textEnLft">Treatment</label>:<span class="valueText">Treatment Details</span><label class="textArRht">العلاج</label></td></tr>
-                  <tr><td><label class="textEnLft">From</label>:<span class="valueText">From Details</span><label class="textArRht">منتاريخ</label></td></tr>
-                  <tr><td><label class="textEnLft">To</label>:<span class="valueText">To Details</span><label class="textArRht">الىتاريخ</label></td></tr>
-                  <tr><td><label class="textEnLft">No. of Rest Days</label>:<span class="valueText">No. of Rest Days Details</span><label class="textArRht">تاريخ المريض</label></td></tr>
-                  <tr><td><label class="textEnLft">Remarks</label>:<span class="valueText">Remarks Details</span><label class="textArRht">الملاحظات</label></td></tr>
-                
+                  <tr><td><label class="textEnLft">From</label>:<span class="valueText">{{header.from_date}}</span><label class="textArRht">منتاريخ</label></td></tr>
+                  <tr><td><label class="textEnLft">To</label>:<span class="valueText">{{header.to_date}}</span><label class="textArRht">الىتاريخ</label></td></tr>
+                  <tr><td><label class="textEnLft">No. of Rest Days</label>:<span class="valueText">{{header.no_of_days}}</span><label class="textArRht">تاريخ المريض</label></td></tr>
+                  <tr><td><label class="textEnLft">Remarks</label>:<span class="valueText">{{header.remarks}}</span><label class="textArRht">الملاحظات</label></td></tr>
+
                 </tbody>
-            </table>  
+            </table>
         </section>
         <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer>
     </div>
