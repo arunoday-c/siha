@@ -221,11 +221,12 @@ export default class ReportUI extends Component {
         const that = this;
         let options = { ...this.props.options, ...{ getRaw: true } };
 
-        const uri =
-          typeof options.report.reportUri === "string"
-            ? options.report.reportUri
-            : "/generateReport/getReport";
+        // const uri =
+        //   typeof options.report.reportUri === "string"
+        //     ? options.report.reportUri
+        //     : "/generateReport/getReport";
 
+        const uri ="";
         const _module =
           typeof options.report.module === "string"
             ? { module: options.report.module }
@@ -637,11 +638,12 @@ export default class ReportUI extends Component {
               ref={el => (this.algehPrintRef = el)}
               style={{ minHeight: "30vh" }}
             >
-              <div
+              {/* <div
                 dangerouslySetInnerHTML={{
                   __html: this.state._htmlString
                 }}
-              />
+              /> */}
+              <iframe src={this.state._htmlString}></iframe>
 
               <div className="col-lg-12">
                 <div className="row">

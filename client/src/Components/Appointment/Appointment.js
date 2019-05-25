@@ -468,7 +468,7 @@ class Appointment extends PureComponent {
                         : null,
                     width:
                       response.data.records !== undefined
-                        ? 254 * response.data.records.length
+                        ? 265 * response.data.records.length
                         : 0
                   });
                 }
@@ -2241,7 +2241,7 @@ class Appointment extends PureComponent {
                           "YYYY-MM"
                         )}
                       />
-                      <button
+                      {/* <button
                         onClick={() => {
                           this.setState({
                             activeDateHeader: new Date()
@@ -2252,7 +2252,7 @@ class Appointment extends PureComponent {
                         {getLabelFromLanguage({
                           fieldName: "today"
                         })}
-                      </button>
+                      </button> */}
                     </div>
                   </div>
                   {this.generateHorizontalDateBlocks()}

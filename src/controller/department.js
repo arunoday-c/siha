@@ -11,7 +11,12 @@ import {
   selectDoctorsAndClinic, //Done
   deleteSubDepartment, //Done
   makeSubDepartmentInActive, //Done
-  makeDepartmentInActive //Done
+  makeDepartmentInActive, //Done
+  selectdoctors,
+  selectDoctorsAndClinic,
+  deleteSubDepartment,
+  makeSubDepartmentInActive,
+  makeDepartmentInActive
 } from "../model/department";
 import { releaseConnection } from "../utils";
 import httpStatus from "../utils/httpStatus";
