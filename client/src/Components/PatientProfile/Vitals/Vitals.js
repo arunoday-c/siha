@@ -114,7 +114,27 @@ class Vitals extends Component {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    this.setState(
+      {
+        weight: "",
+        height: "",
+        heart_rate: "",
+        respiratory_rate: "",
+        glucose_fbs: "",
+        glucose_rbs: "",
+        glucose_pbs: "",
+        temperature_from: "",
+        oxysat: "",
+        temperature_celsisus: "",
+        systolic: "",
+        diastolic: "",
+        recorded_date: new Date(),
+        recorded_time: moment().format(config.formators.time)
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
 
   addPatientVitals(e) {
@@ -132,7 +152,7 @@ class Vitals extends Component {
               patient_id: Window.global["current_patient"],
               visit_id: Window.global["visit_id"],
               visit_date: this.state.recorded_date,
-              visit_time: this.state.recorded_time,
+              visit_time: moment().format(config.formators.time),
               case_type: Window.global["case_type"],
               vital_id: _elements[i].getAttribute("vitalid"),
               vital_value: _elements[i].children[0].value,
@@ -151,11 +171,31 @@ class Vitals extends Component {
           data: bodyArray,
           onSuccess: response => {
             if (response.data.success) {
-              getVitalHistory(this);
-              swalMessage({
-                title: "Vitals recorded successfully . .",
-                type: "success"
-              });
+              this.setState(
+                {
+                  weight: "",
+                  height: "",
+                  heart_rate: "",
+                  respiratory_rate: "",
+                  glucose_fbs: "",
+                  glucose_rbs: "",
+                  glucose_pbs: "",
+                  temperature_from: "",
+                  oxysat: "",
+                  temperature_celsisus: "",
+                  systolic: "",
+                  diastolic: "",
+                  recorded_date: new Date(),
+                  recorded_time: moment().format(config.formators.time)
+                },
+                () => {
+                  getVitalHistory(this);
+                  swalMessage({
+                    title: "Vitals recorded successfully . .",
+                    type: "success"
+                  });
+                }
+              );
             }
           }
         });
@@ -478,7 +518,6 @@ class Vitals extends Component {
                             disabled: true
                           }
                         }}
-
                       />
                       <div className="col-12 margin-top-15">
                         <button

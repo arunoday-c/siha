@@ -1,7 +1,10 @@
+.appoPopupWidth {
+  width: 50vw; }
+
 .appointment .appointment-outer-cntr {
   overflow-x: auto;
   overflow-y: hidden;
-  width: 94vw; }
+  min-width: 96vw; }
 
 .appointment .appointment-inner-cntr {
   min-width: 94vw !important; }

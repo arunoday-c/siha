@@ -136,8 +136,6 @@ class InventorySetup extends Component {
         </div>
 
         <div className="common-section">
-          {/*  {<this.state.pageDisplay />} */}
-
           {this.state.pageDisplay === "ItemCategory" ? (
             <ItemCategory />
           ) : this.state.pageDisplay === "ItemGroup" ? (

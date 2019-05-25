@@ -109,7 +109,10 @@ class AddAdvanceModal extends PureComponent {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    let IOputs = AdvRefunIOputs.inputParam();
+    this.setState(IOputs, () => {
+      this.props.onClose && this.props.onClose(e);
+    });
   };
 
   GenerateReciept(callback) {
@@ -189,10 +192,18 @@ class AddAdvanceModal extends PureComponent {
                 AdvanceOpen: false,
                 RefundOpen: false
               });
-              swalMessage({
-                title: "Done Successfully...",
-                type: "success"
-              });
+
+              if (this.props.Advance === true) {
+                swalMessage({
+                  title: "Advance Collected Successfully...",
+                  type: "success"
+                });
+              } else {
+                swalMessage({
+                  title: "Refunded Successfully...",
+                  type: "success"
+                });
+              }
             }
           },
           onFailure: error => {
@@ -208,6 +219,7 @@ class AddAdvanceModal extends PureComponent {
   }
 
   render() {
+    let Advance = this.props.Advance;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -394,6 +406,7 @@ class AddAdvanceModal extends PureComponent {
                           name="Pay by Card"
                           checked={this.state.Cardchecked}
                           onChange={checkcardhandaler.bind(this, this)}
+                          display={Advance}
                         />
                         <span style={{ fontSize: "0.8rem" }}>
                           {getLabelFromLanguage({ fieldName: "payby_card" })}
@@ -461,83 +474,89 @@ class AddAdvanceModal extends PureComponent {
                     />
                   </div>
                   {/* Check */}
-                  <div className="row secondary-box-container">
-                    <div
-                      className="customCheckbox col-lg-3"
-                      style={{ border: "none", marginTop: "28px" }}
-                    >
-                      <label className="checkbox" style={{ color: "#212529" }}>
-                        <input
-                          type="checkbox"
-                          name="Pay by Cheque"
-                          checked={this.state.Checkchecked}
-                          onChange={checkcheckhandaler.bind(this, this)}
-                        />
-                        <span style={{ fontSize: "0.8rem" }}>
-                          {getLabelFromLanguage({ fieldName: "payby_check" })}
-                        </span>
-                      </label>
+                  {Advance === true ? (
+                    <div className="row secondary-box-container">
+                      <div
+                        className="customCheckbox col-lg-3"
+                        style={{ border: "none", marginTop: "28px" }}
+                      >
+                        <label
+                          className="checkbox"
+                          style={{ color: "#212529" }}
+                        >
+                          <input
+                            type="checkbox"
+                            name="Pay by Cheque"
+                            checked={this.state.Checkchecked}
+                            onChange={checkcheckhandaler.bind(this, this)}
+                          />
+                          <span style={{ fontSize: "0.8rem" }}>
+                            {getLabelFromLanguage({ fieldName: "payby_check" })}
+                          </span>
+                        </label>
+                      </div>
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-2" }}
+                        label={{
+                          fieldName: "amount",
+                          isImp: true
+                        }}
+                        textBox={{
+                          disabled: !this.state.Checkchecked,
+                          decimal: { allowNegative: false },
+                          className: "txt-fld",
+                          name: "cheque_amount",
+                          error: this.state.errorInCheck,
+                          value: this.state.cheque_amount,
+                          events: {
+                            onChange: chequetexthandle.bind(this, this)
+                          },
+                          others: {
+                            disabled: !this.state.Checkchecked,
+                            placeholder: "0.00"
+                          }
+                        }}
+                      />
+
+                      <AlagehFormGroup
+                        div={{ className: "col-lg-4" }}
+                        label={{
+                          fieldName: "card_check_number"
+                        }}
+                        textBox={{
+                          disabled: !this.state.Checkchecked,
+                          className: "txt-fld",
+                          name: "cheque_number",
+                          value: this.state.cheque_number,
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
+                          others: {
+                            disabled: !this.state.Checkchecked,
+                            placeholder: "'000000'"
+                          }
+                        }}
+                      />
+
+                      <AlgaehDateHandler
+                        div={{ className: "col-lg-3" }}
+                        label={{
+                          fieldName: "expiry_date"
+                        }}
+                        textBox={{
+                          className: "txt-fld",
+                          name: "cheque_date"
+                        }}
+                        disabled={!this.state.Checkchecked}
+                        minDate={new Date()}
+                        events={{
+                          onChange: datehandle.bind(this, this)
+                        }}
+                        value={this.state.cheque_date}
+                      />
                     </div>
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-2" }}
-                      label={{
-                        fieldName: "amount",
-                        isImp: true
-                      }}
-                      textBox={{
-                        disabled: !this.state.Checkchecked,
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "cheque_amount",
-                        error: this.state.errorInCheck,
-                        value: this.state.cheque_amount,
-                        events: {
-                          onChange: chequetexthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: !this.state.Checkchecked,
-                          placeholder: "0.00"
-                        }
-                      }}
-                    />
+                  ) : null}
 
-                    <AlagehFormGroup
-                      div={{ className: "col-lg-4" }}
-                      label={{
-                        fieldName: "card_check_number"
-                      }}
-                      textBox={{
-                        disabled: !this.state.Checkchecked,
-                        className: "txt-fld",
-                        name: "cheque_number",
-                        value: this.state.cheque_number,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: !this.state.Checkchecked,
-                          placeholder: "'000000'"
-                        }
-                      }}
-                    />
-
-                    <AlgaehDateHandler
-                      div={{ className: "col-lg-3" }}
-                      label={{
-                        fieldName: "expiry_date"
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "cheque_date"
-                      }}
-                      disabled={!this.state.Checkchecked}
-                      minDate={new Date()}
-                      events={{
-                        onChange: datehandle.bind(this, this)
-                      }}
-                      value={this.state.cheque_date}
-                    />
-                  </div>
                   <hr />
                   <div className="row secondary-box-container">
                     <div className="col-lg-3">
@@ -559,7 +578,7 @@ class AddAdvanceModal extends PureComponent {
                           fieldName: "total_amount"
                         }}
                       />
-                      <h5>{getAmountFormart(this.state.sub_total_amount)}</h5>
+                      <h5>{getAmountFormart(this.state.total_amount)}</h5>
                     </div>
                     <div className="col-lg-3">
                       <AlgaehLabel

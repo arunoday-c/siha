@@ -103,5 +103,14 @@ const VatAppilicable = ($this, context, e) => {
     }
   });
 };
+const texthandle = ($this, ctrl, e) => {
+  e = e || ctrl;
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
 
-export { radioChange, BatchExpRequired, CptCodesSearch, VatAppilicable };
+  $this.setState({
+    [name]: value
+  });
+};
+
+export { radioChange, BatchExpRequired, CptCodesSearch, VatAppilicable, texthandle };

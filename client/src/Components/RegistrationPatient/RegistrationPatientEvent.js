@@ -224,11 +224,100 @@ const ShowAdvanceScreen = ($this, e) => {
   }
 };
 
+const closePopup = $this => {
+  $this.setState({ popUpGenereted: false });
+};
+
+const generateIdCard = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "patientIDCard",
+        reportParams: [
+          {
+            name: "hims_d_patient_id",
+            value: $this.state.hims_d_patient_id
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "ID Card";
+    }
+  });
+};
+
+const generateReceipt = $this => {
+  debugger;
+  algaehApiCall({
+    uri: "/report",
+    method: "GET",
+    module: "reports",
+    headers: {
+      Accept: "blob"
+    },
+    others: { responseType: "blob" },
+    data: {
+      report: {
+        reportName: "cashInvoice",
+        reportParams: [
+          {
+            name: "hims_d_patient_id",
+            value: $this.state.hims_d_patient_id
+          },
+          {
+            name: "visit_id",
+            value: $this.state.patient_visit_id
+          },
+          {
+            name: "visit_date",
+            value: null
+          }
+        ],
+        outputFileType: "PDF"
+      }
+    },
+    onSuccess: res => {
+      const url = URL.createObjectURL(res.data);
+      let myWindow = window.open(
+        "{{ product.metafields.google.custom_label_0 }}",
+        "_blank"
+      );
+
+      myWindow.document.write(
+        "<iframe src= '" + url + "' width='100%' height='100%' />"
+      );
+      myWindow.document.title = "Cash Invoice";
+    }
+  });
+};
+
 export {
   generateBillDetails,
   ShowRefundScreen,
   ClearData,
   ShowAdvanceScreen,
   getHospitalDetails,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
+  closePopup,
+  generateIdCard,
+  generateReceipt
 };

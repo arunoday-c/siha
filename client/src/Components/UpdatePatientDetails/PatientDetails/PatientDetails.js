@@ -24,6 +24,7 @@ import {
 import variableJson from "../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class UpdatePatientForm extends Component {
   constructor(props) {
@@ -210,6 +211,9 @@ class UpdatePatientForm extends Component {
     }
   }
   render() {
+    let requied_emp_id = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).requied_emp_id;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -351,7 +355,6 @@ class UpdatePatientForm extends Component {
                         maxDate={new Date()}
                         //maxDate={this.state.CurrentDate}
                         disabled={this.state.existingPatient}
-                        // events={{onChange: AddPatientHandlers(this,context).CalculateAge.bind(this)}}
                         value={this.state.hijiri_date}
                       />
                       <AlagehFormGroup
@@ -451,9 +454,9 @@ class UpdatePatientForm extends Component {
                           className: "txt-fld",
                           name: "contact_number",
 
-                          // events: {
-                          //   onChange: texthandle.bind(this, this, context)
-                          // },
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
                           others: {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "10",
@@ -674,9 +677,9 @@ class UpdatePatientForm extends Component {
                           className: "txt-fld",
                           name: "address1",
                           value: this.state.address1,
-                          // events: {
-                          //   onChange: texthandle.bind(this, this, context)
-                          // },
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
                           others: {
                             onBlur: texthandle.bind(this, this),
                             placeholder: "Enter Full Address 1",
@@ -684,22 +687,27 @@ class UpdatePatientForm extends Component {
                           }
                         }}
                       />
-                      <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
-                        label={{
-                          fieldName: "employee_id",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "",
-                          value: "",
-                          events: {},
-                          option: {
-                            type: "text"
-                          }
-                        }}
-                      />
+
+                      {requied_emp_id === "Y" ? (
+                        <AlagehFormGroup
+                          div={{ className: "col-3 form-group mandatory" }}
+                          label={{
+                            fieldName: "employee_id",
+                            isImp: true
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "employee_id",
+                            value: this.state.employee_id,
+                            events: {
+                              onChange: texthandle.bind(this, this)
+                            },
+                            option: {
+                              type: "text"
+                            }
+                          }}
+                        />
+                      ) : null}
                     </div>
                   </div>
                   <div className="col-lg-4 secondary-details">
@@ -795,9 +803,9 @@ class UpdatePatientForm extends Component {
                           className: "txt-fld",
                           name: "primary_id_no",
                           value: this.state.primary_id_no,
-                          // events: {
-                          //   onChange: texthandle.bind(this, this, context)
-                          // },
+                          events: {
+                            onChange: texthandle.bind(this, this)
+                          },
                           others: {
                             onBlur: texthandle.bind(this, this),
                             tabIndex: "21",
@@ -819,7 +827,9 @@ class UpdatePatientForm extends Component {
                       value: this.state.secondary_contact_number,
                       className: "txt-fld",
                       name: "secondary_contact_number",
-
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
                       others: {
                         placeholder: "(+01)123-456-7890",
                         type: "number"
@@ -836,7 +846,9 @@ class UpdatePatientForm extends Component {
                       value: this.state.emergency_contact_number,
                       className: "txt-fld",
                       name: "emergency_contact_number",
-
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
                       others: {
                         placeholder: "(+01)123-456-7890",
                         type: "number"
@@ -853,7 +865,9 @@ class UpdatePatientForm extends Component {
                       value: this.state.emergency_contact_name,
                       className: "txt-fld",
                       name: "emergency_contact_name",
-
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
                       others: {
                         disabled: this.state.existingPatient
                       }
@@ -869,7 +883,9 @@ class UpdatePatientForm extends Component {
                       value: this.state.relationship_with_patient,
                       className: "txt-fld",
                       name: "relationship_with_patient",
-
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
                       others: {
                         disabled: this.state.existingPatient
                       }
@@ -884,7 +900,9 @@ class UpdatePatientForm extends Component {
                       value: this.state.email,
                       className: "txt-fld",
                       name: "email",
-
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
                       others: {
                         placeholder: "Enter Email Address",
                         type: "email"
@@ -901,7 +919,10 @@ class UpdatePatientForm extends Component {
                     textBox={{
                       className: "txt-fld",
                       name: "postal_code",
-                      value: this.state.postal_code
+                      value: this.state.postal_code,
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      }
                     }}
                   />
                   <AlagehFormGroup
@@ -913,7 +934,9 @@ class UpdatePatientForm extends Component {
                       className: "txt-fld",
                       name: "address2",
                       value: this.state.address2,
-
+                      events: {
+                        onChange: texthandle.bind(this, this)
+                      },
                       others: {
                         placeholder: "Enter Full Address 2"
                       }

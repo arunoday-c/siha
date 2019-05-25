@@ -15,6 +15,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { AlgaehActions } from "../../actions/algaehActions";
 import GlobalVariables from "../../utils/GlobalVariables.json";
+import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import config from "../../utils/config.json";
 import {
   getAllChiefComplaints,
@@ -825,9 +826,18 @@ class NurseWorkbench extends Component {
                   value={moment(this.state.selectedHDate).format("YYYY-MM")}
                   max={moment(new Date()).format("YYYY-MM")}
                 />
-                <button className="btn btn-default btn-sm  todayBtn">
-                  Today
-                </button>
+               {/* <button
+                        onClick={() => {
+                          this.setState({
+                            activeDateHeader: new Date()
+                          });
+                        }}
+                        className="btn btn-default btn-sm  todayBtn"
+                      >
+                        {getLabelFromLanguage({
+                          fieldName: "today"
+                        })}
+                      </button> */}
               </div>
             </div>
             {this.generateHorizontalDateBlocks()}

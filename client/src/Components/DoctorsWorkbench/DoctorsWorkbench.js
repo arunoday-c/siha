@@ -6,7 +6,8 @@ import {
   cancelRequest,
   swalMessage
 } from "../../utils/algaehApiCall";
-import { setGlobal } from "../../utils/GlobalFunctions";
+import { setGlobal,
+  getLabelFromLanguage } from "../../utils/GlobalFunctions";
 import Enumerable from "linq";
 import moment from "moment";
 import algaehLoader from "../Wrapper/fullPageLoader";
@@ -236,9 +237,18 @@ class DoctorsWorkbench extends Component {
                   value={moment(this.state.selectedHDate).format("YYYY-MM")}
                   max={moment(new Date()).format("YYYY-MM")}
                 />
-                <button className="btn btn-default btn-sm  todayBtn">
-                  Today
-                </button>
+              {/* <button
+                        onClick={() => {
+                          this.setState({
+                            activeDateHeader: new Date()
+                          });
+                        }}
+                        className="btn btn-default btn-sm  todayBtn"
+                      >
+                        {getLabelFromLanguage({
+                          fieldName: "today"
+                        })}
+                      </button> */}
               </div>
             </div>
             {this.generateHorizontalDateBlocks()}

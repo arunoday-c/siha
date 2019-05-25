@@ -589,6 +589,7 @@ module.exports = {
   selectSubDepartment,
   addSubDepartment,
   updateSubDepartment,
+
   deleteDepartment,
   selectdoctors,
   selectDoctorsAndClinic,

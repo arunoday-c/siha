@@ -1,6 +1,14 @@
 import { swalMessage } from "../../utils/algaehApiCall";
+import { AlgaehOpenContainer } from "../../utils/GlobalFunctions";
+
 export function Validations(state) {
   let isError = false;
+  debugger;
+  var tow_word_name = state.state.full_name.split(" ");
+
+  let requied_emp_id = JSON.parse(
+    AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+  ).requied_emp_id;
 
   if (state.state.full_name.length <= 0) {
     isError = true;
@@ -10,6 +18,24 @@ export function Validations(state) {
     });
 
     document.querySelector("[name='full_name']").focus();
+    return isError;
+  } else if (tow_word_name.length < 2) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Name Atleast 2 word required."
+    });
+
+    document.querySelector("[name='full_name']").focus();
+    return isError;
+  } else if (requied_emp_id === "Y" && state.state.employee_id <= 0) {
+    isError = true;
+    swalMessage({
+      type: "warning",
+      title: "Employee ID Cannot be blank."
+    });
+
+    document.querySelector("[name='employee_id']").focus();
     return isError;
   } else if (state.state.arabic_name.length <= 0) {
     isError = true;

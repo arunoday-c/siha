@@ -25,6 +25,10 @@ import {
 import Options from "../../../Options.json";
 import moment from "moment";
 
+import {
+  AlgaehOpenContainer
+} from "../../../utils/GlobalFunctions";
+
 class Location extends Component {
   constructor(props) {
     super(props);
@@ -34,7 +38,9 @@ class Location extends Component {
       location_description: "",
       location_type: null,
       allowpos: false,
-      hospital_id: null
+      hospital_id: JSON.parse(
+        AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+      ).hims_d_hospital_id,
     };
     this.baseState = this.state;
   }
@@ -74,49 +80,7 @@ class Location extends Component {
     return (
       <div className="lab_section">
         <div className="container-fluid">
-          <div className="row">
-            <AlagehFormGroup
-              div={{ className: "col-lg-3" }}
-              label={{
-                fieldName: "type_desc",
-                isImp: true
-              }}
-              textBox={{
-                className: "txt-fld",
-                name: "location_description",
-                value: this.state.location_description,
-
-                events: {
-                  onChange: changeTexts.bind(this, this)
-                }
-              }}
-            />
-
-            <AlagehAutoComplete
-              div={{ className: "col-lg-2" }}
-              label={{
-                fieldName: "location_type",
-                isImp: true
-              }}
-              selector={{
-                name: "location_type",
-                className: "select-fld",
-                value: this.state.location_type,
-                dataSource: {
-                  textField: "name",
-                  valueField: "value",
-                  data: GlobalVariables.FORMAT_PHARMACY_STORE
-                },
-                onChange: changeTexts.bind(this, this),
-                onClear: () => {
-                  this.setState({
-                    location_type: null
-                  });
-                }
-              }}
-            />
-
-            <AlagehAutoComplete
+          <div className="row"> <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
                 fieldName: "hospital_id",
@@ -140,9 +104,52 @@ class Location extends Component {
               }}
             />
 
+<AlagehAutoComplete
+              div={{ className: "col-lg-2" }}
+              label={{
+                fieldName: "location_type",
+                isImp: true
+              }}
+              selector={{
+                name: "location_type",
+                className: "select-fld",
+                value: this.state.location_type,
+                dataSource: {
+                  textField: "name",
+                  valueField: "value",
+                  data: GlobalVariables.FORMAT_PHARMACY_STORE
+                },
+                onChange: changeTexts.bind(this, this),
+                onClear: () => {
+                  this.setState({
+                    location_type: null
+                  });
+                }
+              }}
+            />
+
+            <AlagehFormGroup
+              div={{ className: "col-lg-3" }}
+              label={{
+                fieldName: "type_desc",
+                isImp: true
+              }}
+              textBox={{
+                className: "txt-fld",
+                name: "location_description",
+                value: this.state.location_description,
+
+                events: {
+                  onChange: changeTexts.bind(this, this)
+                }
+              }}
+            />
+
+
+           
             <div
               className="customCheckbox col-lg-2"
-              style={{ border: "none", marginTop: "28px" }}
+              style={{ border: "none", marginTop: "19px" }}
             >
               <label className="checkbox" style={{ color: "#212529" }}>
                 <input
@@ -403,6 +410,7 @@ class Location extends Component {
                     this.props.location === undefined ? [] : this.props.location
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteLocation.bind(this, this),

@@ -5,6 +5,7 @@ import algaehLoader from "../../../Wrapper/fullPageLoader";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
 import moment from "moment";
 import Enumerable from "linq";
+// import Summary from "../Summary/Summary";
 
 class Encounters extends Component {
   constructor(props) {
@@ -20,23 +21,27 @@ class Encounters extends Component {
     };
   }
 
-  setEncounterDetails(e) {
+  setEncounterDetails(row, e) {
+    debugger;
     const enc_id = e.currentTarget.getAttribute("enc-id");
     const episode_id = e.currentTarget.getAttribute("epi-id");
     const visit_id = e.currentTarget.getAttribute("visit-id");
 
     this.getPatientChiefComplaint(episode_id);
     this.getPatientDiagnosis(episode_id);
-    this.getPatientMedication(enc_id);
+    this.getPatientMedication(row.encounter_id);
     this.getPatientInvestigation(visit_id);
     this.getPatientVitals(Window.global["mrd_patient"], visit_id);
 
     const general_info = Enumerable.from(this.state.patientEncounters)
-      .where(w => w.hims_f_patient_encounter_id === parseInt(enc_id, 10))
+      .where(
+        w => w.hims_f_patient_encounter_id === parseInt(row.encounter_id, 10)
+      )
       .firstOrDefault();
 
     this.setState({
-      generalInfo: general_info
+      generalInfo: general_info,
+      significant_signs: row.significant_signs
     });
   }
 
@@ -90,13 +95,12 @@ class Encounters extends Component {
       module: "MRD",
       cancelRequestId: "getPatientChiefComplaint",
       onSuccess: response => {
-        algaehLoader({ show: false });
+        debugger;
         if (response.data.success) {
           this.setState({ patientComplaints: response.data.records });
         }
       },
       onFailure: error => {
-        algaehLoader({ show: false });
         swalMessage({
           title: error.message,
           type: "error"
@@ -138,13 +142,13 @@ class Encounters extends Component {
       },
       cancelRequestId: "getPatientMedication",
       onSuccess: response => {
-        algaehLoader({ show: false });
+        debugger;
+
         if (response.data.success) {
           this.setState({ patientMedications: response.data.records });
         }
       },
       onFailure: error => {
-        algaehLoader({ show: false });
         swalMessage({
           title: error.message,
           type: "error"
@@ -190,6 +194,7 @@ class Encounters extends Component {
       onSuccess: response => {
         algaehLoader({ show: false });
         if (response.data.success) {
+          debugger;
           this.setState({ patientEncounters: response.data.records });
         }
       },
@@ -231,7 +236,7 @@ class Encounters extends Component {
                             enc-id={row.hims_f_patient_encounter_id}
                             epi-id={row.episode_id}
                             visit-id={row.visit_id}
-                            onClick={this.setEncounterDetails.bind(this)}
+                            onClick={this.setEncounterDetails.bind(this, row)}
                             className="pat-code"
                           >
                             {moment(row.encountered_date).format(
@@ -284,7 +289,7 @@ class Encounters extends Component {
                 </div>
               </div>
 
-              <div className="portlet-body">
+              <div className="portlet-body encounterDetailCntr">
                 <div className="row generalInfo">
                   <div className="col-lg-12">
                     <h6 className="smallh6">General Information</h6>
@@ -349,12 +354,28 @@ class Encounters extends Component {
                     <h6 className="smallh6">Chief Complaint(s)</h6>
                     <div className="row">
                       <div className="col">
-                        <h6 className="danger">
-                          {this.state.patientComplaints.map((data, index) =>
-                            data.chief_complaint !== ""
+                        <h6 className="">
+                          {this.state.patientComplaints.map((data, index) => {
+                            debugger;
+                            return data.chief_complaint
                               ? data.chief_complaint
-                              : "----------"
-                          )}
+                              : data.comment
+                              ? data.comment
+                              : "-------";
+                          })}
+                        </h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="row chiefComplaint">
+                  <div className="col-lg-12">
+                    <h6 className="smallh6">Significant Signs</h6>
+                    <div className="row">
+                      <div className="col">
+                        <h6 className="">
+                          {this.state.significant_signs}
                         </h6>
                       </div>
                     </div>

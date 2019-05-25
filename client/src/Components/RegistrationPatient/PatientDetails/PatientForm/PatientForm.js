@@ -24,6 +24,7 @@ import {
 import variableJson from "../../../../utils/GlobalVariables.json";
 import AlgaehFileUploader from "../../../Wrapper/algaehFileUpload";
 import Enumerable from "linq";
+import { AlgaehOpenContainer } from "../../../../utils/GlobalFunctions";
 
 class AddPatientForm extends Component {
   constructor(props) {
@@ -210,6 +211,10 @@ class AddPatientForm extends Component {
     }
   }
   render() {
+    debugger;
+    let requied_emp_id = JSON.parse(
+      AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
+    ).requied_emp_id;
     return (
       <React.Fragment>
         <MyContext.Consumer>
@@ -702,23 +707,26 @@ class AddPatientForm extends Component {
                           }
                         }}
                       />
-                      <AlagehFormGroup
-                        div={{ className: "col-3 form-group" }}
-                        label={{
-                          fieldName: "employee_id",
-                          isImp: false
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "employee_id",
-                          value: this.state.employee_id,
-                          // events: {},
-                          option: {
-                            type: "text",
-                            tabIndex: "20"
-                          }
-                        }}
-                      />
+                      {requied_emp_id === "Y" ? (
+                        <AlagehFormGroup
+                          div={{ className: "col-3 form-group mandatory" }}
+                          label={{
+                            fieldName: "employee_id",
+                            isImp: requied_emp_id === "Y" ? true : false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "employee_id",
+                            value: this.state.employee_id,
+                            // events: {},
+                            option: {
+                              disabled: this.state.existingPatient,
+                              type: "text",
+                              tabIndex: "20"
+                            }
+                          }}
+                        />
+                      ) : null}
                     </div>
                   </div>
                   <div className="col-lg-4 secondary-details">

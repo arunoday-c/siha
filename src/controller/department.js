@@ -4,13 +4,13 @@ import {
   updateDepartment, //Done
   selectDepartment, //Done
   selectSubDepartment, //Done
-  addSubDepartment,
-  updateSubDepartment,
-  deleteDepartment,
-  selectdoctors,
-  selectDoctorsAndClinic,
-  deleteSubDepartment,
-  makeSubDepartmentInActive,
+  addSubDepartment, //Done
+  updateSubDepartment, //Done
+  deleteDepartment, //Done
+  selectdoctors, //Done
+  selectDoctorsAndClinic, //Done
+  deleteSubDepartment, //Done
+  makeSubDepartmentInActive, //Done
   makeDepartmentInActive
 } from "../model/department";
 import { releaseConnection } from "../utils";
