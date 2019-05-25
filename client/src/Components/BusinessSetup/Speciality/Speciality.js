@@ -219,7 +219,7 @@ class Speciality extends Component {
           onSuccess: response => {
             if (response.data.success) {
               swalMessage({
-                title: "Speciality added Successfully",
+                title: "Speciality added successfully",
                 type: "success"
               });
 

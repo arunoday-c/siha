@@ -377,12 +377,9 @@ class DisplayOPBilling extends PureComponent {
               {/* Insurance Details */}
               <div className="row">
                 <div className="col-4">
-                  <AlgaehLabel
-                    label={{
-                      fieldName: "prim-insurance"
-                    }}
-                  />
-                  <div className="Paper">
+               <b><u><AlgaehLabel label={{fieldName: "prim-insurance", returnText: true}}/></u></b>
+               
+               <div className="Paper">
                     <div className="row insurance-details">
                       <div className="col-6">
                         <AlgaehLabel
@@ -434,11 +431,8 @@ class DisplayOPBilling extends PureComponent {
                 </div>
 
                   <div className="col-4" style={{borderLeft:"1px solid #ccc",borderRight:"1px solid #ccc"}}>
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "patient_lbl"
-                      }}
-                    />
+                  <b><u><AlgaehLabel label={{ fieldName: "patient_lbl", returnText: true}}/></u></b>
+
                     <div className="Paper">
                       <div className="row insurance-details">
                         <div className="col-7">
@@ -473,11 +467,7 @@ class DisplayOPBilling extends PureComponent {
                   {/* <div className="col-lg-1"> &nbsp; </div> */}
 
                   <div className="col-4">
-                    <AlgaehLabel
-                      label={{
-                        fieldName: "company_lbl"
-                      }}
-                    />
+                    <b><u><AlgaehLabel label={{ fieldName: "company_lbl", returnText: true }}/></u></b>
                     <div className="Paper">
                       <div className="row insurance-details">
                         <div className="col-7">

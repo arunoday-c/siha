@@ -70,7 +70,7 @@ class Components extends Component {
           this.getComponents();
           this.clearState();
           swalMessage({
-            title: "Records Added Successfully",
+            title: "Records added successfully",
             type: "success"
           });
         }
