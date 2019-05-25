@@ -454,7 +454,7 @@ class HistoricalData extends Component {
                 </div>
               </div>
               <div className="portlet-body">
-                <div className="row chartCNtr">
+                <div className="row chartCNtr" id="VitalsChart_Cntr">
                   <Line
                     options={{
                       scales: {
@@ -482,7 +482,7 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="mrdDiagnosisGrid_Cntr">
                     <TreeTable
                       expanded={this.state.patientDiagnosis.map(
                         (data, index) => {
@@ -532,12 +532,12 @@ class HistoricalData extends Component {
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
                 <div className="caption">
-                  <h3 className="caption-subject">Treatements</h3>
+                  <h3 className="caption-subject">Treatments/ Procedure</h3>
                 </div>
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="mrdTreatmentsGrid_Cntr">
                     <TreeTable
                       //Most recent 3 rows are expanded
                       //expanded={{ 0: true, 1: true, 2: true, 3: true }}
@@ -587,7 +587,7 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12" id="mrdMedicalHistoryGrid_Cntr">
                     <TreeTable
                       //Most recent 3 rows are expanded
                       expanded={this.state.patientMedication.map(
@@ -643,7 +643,7 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12"  id="mrdInvestigationGrid_Cntr">
                     <TreeTable
                       //Most recent 3 rows are expanded
                       //expanded={{ 0: true, 1: true, 2: true, 3: true }}
@@ -695,8 +695,8 @@ class HistoricalData extends Component {
         {/* Second Two Sections End */}
 
         {/* Third Two Sections Start */}
-
-        {/* <div className="row">
+ {/*
+        <div className="row">
           <div className="col-lg-6">
             <div className="portlet portlet-bordered margin-bottom-15">
               <div className="portlet-title">
@@ -706,7 +706,7 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12"   id="mrdAttachmentsGrid_Cntr">
                     <TreeTable
                       //Most recent 3 rows are expanded
                       //expanded={{ 0: true, 1: true, 2: true, 3: true }}
@@ -764,14 +764,14 @@ class HistoricalData extends Component {
               </div>
               <div className="portlet-body">
                 <div className="row">
-                  <div className="col-lg-12">
+                  <div className="col-lg-12"  id="mrdNurseNotesGrid_Cntr">
                     <TreeTable
                       //Most recent 3 rows are expanded
-                      //expanded={{ 0: true, 1: true, 2: true, 3: true }}
+                      expanded={{ 0: true, 1: true, 2: true, 3: true }}
                       expanded={_data.map((data, index) => {
                         return { index: true };
                       })}
-                      //data={_data}
+                      data={_data}
                       data={[]}
                       pivotBy={["date_doctor"]}
                       columns={[
@@ -825,10 +825,9 @@ class HistoricalData extends Component {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
- */}
-        {/* Third Two Sections End */}
+          </div> 
+        </div>*/}
+      
 
         <div className="portlet portlet-bordered margin-bottom-15">
           <div className="portlet-title">
@@ -838,7 +837,7 @@ class HistoricalData extends Component {
           </div>
           <div className="portlet-body">
             <div className="row">
-              <div className="col-lg-12">
+              <div className="col-lg-12" id="PaymentHistoryGrid_Cntr">
                 <ReactTable
                   columns={[
                     {

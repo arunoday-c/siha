@@ -1895,6 +1895,7 @@ class Appointment extends PureComponent {
 
               {/* Add Pop up start */}
               <AlgaehModalPopUp
+          class="appoPopupWidth"
                 title={getLabelFromLanguage({
                   fieldName: "bookAppo"
                 })}

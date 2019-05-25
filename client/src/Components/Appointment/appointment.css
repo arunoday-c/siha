@@ -1,3 +1,6 @@
+.appoPopupWidth {
+  width: 50vw; }
+
 .appointment .appointment-outer-cntr {
   overflow-x: auto;
   overflow-y: hidden;

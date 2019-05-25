@@ -1,5 +1,4 @@
-.historical-data {
-}
+
 #historicGridDataCntr {
   .ReactTable {
     max-height: 31vh !important;
@@ -11,4 +10,14 @@
     max-height: 30vh !important;
     margin: 2%;
   }
+}
+#PaymentHistoryGrid_Cntr{ .ReactTable {
+  max-width: 95vw !important;
+  max-height: 40vh !important;
+}
+}
+#mrdDiagnosisGrid_Cntr, #mrdTreatmentsGrid_Cntr, #mrdMedicalHistoryGrid_Cntr, #mrdInvestigationGrid_Cntr{
+.ReactTable {
+  max-height: 40vh !important;
+}
 }

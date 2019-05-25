@@ -398,6 +398,7 @@ class Location extends Component {
                       ? []
                       : this.props.inventorylocation
                 }}
+                filter={true}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{

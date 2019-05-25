@@ -863,6 +863,7 @@ class Shift extends Component {
               dataSource={{
                 data: this.state.shifts
               }}
+              filter={true}
               isEditable={true}
               filter={true}
               paging={{ page: 0, rowsPerPage: 10 }}

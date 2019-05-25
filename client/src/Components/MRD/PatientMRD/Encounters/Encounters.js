@@ -285,7 +285,7 @@ class Encounters extends Component {
                 </div>
               </div>
 
-              <div className="portlet-body">
+              <div className="portlet-body encounterDetailCntr">
                 <div className="row generalInfo">
                   <div className="col-lg-12">
                     <h6 className="smallh6">General Information</h6>
@@ -350,7 +350,7 @@ class Encounters extends Component {
                     <h6 className="smallh6">Chief Complaint(s)</h6>
                     <div className="row">
                       <div className="col">
-                        <h6 className="danger">
+                        <h6 className="">
                           {this.state.patientComplaints.map((data, index) => {
                             debugger;
                             return data.chief_complaint
@@ -370,7 +370,7 @@ class Encounters extends Component {
                     <h6 className="smallh6">Significant Signs</h6>
                     <div className="row">
                       <div className="col">
-                        <h6 className="danger">
+                        <h6 className="">
                           {this.state.significant_signs}
                         </h6>
                       </div>

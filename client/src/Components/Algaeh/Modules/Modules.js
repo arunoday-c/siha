@@ -374,6 +374,7 @@ class Modules extends Component {
               dataSource={{
                 data: this.state.modules
               }}
+              filter={true}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{
