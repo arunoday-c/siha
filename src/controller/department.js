@@ -6,11 +6,11 @@ import {
   selectSubDepartment, //Done
   addSubDepartment, //Done
   updateSubDepartment, //Done
-  deleteDepartment,
-  selectdoctors,
-  selectDoctorsAndClinic,
-  deleteSubDepartment,
-  makeSubDepartmentInActive,
+  deleteDepartment, //Done
+  selectdoctors, //Done
+  selectDoctorsAndClinic, //Done
+  deleteSubDepartment, //Done
+  makeSubDepartmentInActive, //Done
   makeDepartmentInActive
 } from "../model/department";
 import { releaseConnection } from "../utils";

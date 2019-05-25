@@ -379,11 +379,11 @@ let selectdoctors = (req, res, next) => {
       group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.services_id,hims_m_employee_department_mappings.sub_department_id;",
         (error, results) => {
           connection.release();
-          console.log("error: ", error)
+          console.log("error: ", error);
           if (error) {
             next(error);
           }
-          console.log("data:", results)
+          console.log("data:", results);
           let departments = new LINQ(results).GroupBy(g => g.sub_department_id);
           let doctors = new LINQ(results).GroupBy(g => g.employee_id);
           // .SelectMany(s => {
@@ -589,6 +589,7 @@ module.exports = {
   selectSubDepartment,
   addSubDepartment,
   updateSubDepartment,
+
   deleteDepartment,
   selectdoctors,
   selectDoctorsAndClinic,

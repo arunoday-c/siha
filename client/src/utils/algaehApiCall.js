@@ -274,14 +274,14 @@ export function algaehApiCall(options) {
             ) {
               const routers = config.routersAndPorts;
 
-              // swalMessage({
-              //   title:
-              //     "'" +
-              //     routers[settings.module]["name"] +
-              //     "' module is not yet started",
-              //   type: "info",
-              //   position: "top"
-              // });
+              swalMessage({
+                title:
+                  "'" +
+                  routers[settings.module]["name"] +
+                  "' module is not yet started",
+                type: "info",
+                position: "top"
+              });
             } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] ===

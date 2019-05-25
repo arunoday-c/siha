@@ -1,0 +1,39 @@
+#patientSummary {
+  line-height: 1.3rem;
+  color: #3d3d3d;
+  margin-top: 1rem; }
+  #patientSummary .card-header {
+    padding: 0.5rem;
+    font-weight: 600; }
+  #patientSummary .list-group-item {
+    padding: 0.3rem 0.5rem; }
+  #patientSummary p {
+    margin-bottom: 0.3rem; }
+  #patientSummary .vitals-sec {
+    border: 1px solid #ccc;
+    padding: 0.5rem 0.3rem 0.3rem; }
+    #patientSummary .vitals-sec .counter i {
+      margin-bottom: 0.5rem;
+      height: 30px; }
+  #patientSummary .bd-callout {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border: 1px solid #eee;
+    border-left-width: 0.25rem;
+    border-radius: 0.25rem;
+    background: #fff; }
+  #patientSummary .bd-callout-theme {
+    border-left-color: #34b8bc; }
+  #patientSummary h6 {
+    border-bottom: 1px dashed #e5e5e5;
+    padding-bottom: 5px; }
+  #patientSummary p h4,
+  #patientSummary p h5,
+  #patientSummary p h6 {
+    display: inline-block;
+    margin-right: 3px;
+    margin-top: 6px; }
+  #patientSummary .table-primary,
+  #patientSummary .table-primary > td,
+  #patientSummary .table-primary > th {
+    background: #defffc; }

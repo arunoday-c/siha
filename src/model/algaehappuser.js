@@ -383,11 +383,12 @@ let createUserLogin = (req, res, next) => {
               });
             }
             connection.query(
-              "INSERT INTO `algaeh_d_app_user` (username, user_display_name, user_type, effective_start_date, created_date, created_by, updated_date, updated_by)\
-          VALUE(?,?,?,?,?,?,?,?)",
+              "INSERT INTO `algaeh_d_app_user` (username, user_display_name,employe_id, user_type, effective_start_date, created_date, created_by, updated_date, updated_by)\
+          VALUE(?,?,?,?,?,?,?,?,?)",
               [
                 input.username,
                 input.user_display_name,
+                input.employee_id,
                 input.user_type,
                 input.effective_start_date,
                 new Date(),
@@ -450,12 +451,12 @@ let createUserLogin = (req, res, next) => {
                               input.employee_id > 0
                             ) {
                               connection.query(
-                                "INSERT INTO `hims_m_user_employee` (employee_id,user_id,sub_department_id,hospital_id,created_by,created_date,updated_by,updated_date)\
-                      VALUE(?,?,?,?,?,?,?,?)",
+                                "INSERT INTO `hims_m_user_employee` (employee_id,user_id,hospital_id,created_by,created_date,updated_by,updated_date)\
+                      VALUE(?,?,?,?,?,?,?)",
                                 [
                                   input.employee_id,
                                   result.insertId,
-                                  input.sub_department_id,
+
                                   input.hospital_id,
                                   input.created_by,
                                   new Date(),
