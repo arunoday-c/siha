@@ -207,9 +207,6 @@ export default [
             others: {
               maxDate: new Date(),
               minDate: null
-            },
-            events: {
-              onChange: (reportState, currentValue) => {}
             }
           }
           // {
