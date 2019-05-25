@@ -125,7 +125,7 @@ export default () => {
         doc_Obj.push(doc);
       });
 
-      let result = req.records;
+      // let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
         records: {
@@ -172,7 +172,7 @@ export default () => {
         doc_Obj.push(doc);
       });
 
-      let result = req.records;
+      // let result = req.records;
       res.status(utlities.httpStatus().ok).json({
         success: true,
         records: {
