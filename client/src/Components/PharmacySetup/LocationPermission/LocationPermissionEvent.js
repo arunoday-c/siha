@@ -105,12 +105,24 @@ const insertLocationPermission = ($this, e) => {
         onSuccess: response => {
           if (response.data.success === true) {
             //Handle Successful Add here
-            getLocationPermission($this);
 
-            swalMessage({
-              title: "Added Successfully ..",
-              type: "success"
-            });
+            $this.setState(
+              {
+                hims_m_location_permission_id: null,
+                user_id: null,
+                location_id: null,
+                allow: "Y",
+                allowLocation: true
+              },
+              () => {
+                getLocationPermission($this);
+
+                swalMessage({
+                  title: "Added Successfully ..",
+                  type: "success"
+                });
+              }
+            );
           } else {
             //Handle unsuccessful Add here.
           }
@@ -128,7 +140,7 @@ const insertLocationPermission = ($this, e) => {
 
 const allowHandle = ($this, e) => {
   let allow = "N";
-  if (!$this.state.allow === true) {
+  if (!$this.state.allowLocation === true) {
     allow = "Y";
   }
   $this.setState({

@@ -159,7 +159,7 @@ const insertLocationPermission = ($this, e) => {
 
 const allowHandle = ($this, e) => {
   let allow = "N";
-  if (!$this.state.allow === true) {
+  if (!$this.state.allowLocation === true) {
     allow = "Y";
   }
   $this.setState({

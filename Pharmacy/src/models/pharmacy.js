@@ -405,12 +405,14 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, \
-          MIU.conversion_factor,IM.hims_d_item_master_id, IM.item_code, IM.item_description, IM.structure_id, \
-          IM.generic_id, IM.category_id,IM.group_id, IM.form_id, IM.storage_id, IM.item_uom_id, IM.purchase_uom_id, \
-          IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, IM.service_id from  hims_d_item_master IM left join \
-          hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
-          left join hims_d_pharmacy_uom PH  on  MIU.uom_id=PH.hims_d_pharmacy_uom_id " +
+            "select  MIU.hims_m_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, \
+            MIU.stocking_uom, MIU.conversion_factor,IM.hims_d_item_master_id, IM.item_code, IM.item_description,\
+             IM.structure_id, IM.generic_id, IM.category_id,IM.group_id, IM.form_id, IM.storage_id, \
+             IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
+             IM.service_id , IM.purchase_cost,IM.addl_information from  hims_d_item_master IM left join \
+             hims_m_item_uom MIU on IM.hims_d_item_master_id=MIU.item_master_id and IM.record_status='A' \
+             and MIU.record_status='A' left join hims_d_pharmacy_uom PH  on  \
+             MIU.uom_id=PH.hims_d_pharmacy_uom_id " +
             _strQry,
           values: intValues,
           printQuery: true
@@ -621,39 +623,6 @@ module.exports = {
             "select * FROM hims_d_item_form where record_status='A'" +
             _strQry +
             " order by hims_d_item_form_id desc;",
-          values: intValues,
-          printQuery: true
-        })
-        .then(result => {
-          _mysql.releaseConnection();
-          req.records = result;
-          next();
-        })
-        .catch(error => {
-          _mysql.releaseConnection();
-          next(error);
-        });
-    } catch (e) {
-      _mysql.releaseConnection();
-      next(e);
-    }
-  },
-
-  getItemForm: (req, res, next) => {
-    const _mysql = new algaehMysql();
-    try {
-      let _strQry = "";
-      let intValues = [];
-      if (req.query.hims_d_item_storage_id != null) {
-        _strQry = "and hims_d_item_storage_id=?";
-        intValues.push(req.query.hims_d_item_storage_id);
-      }
-      _mysql
-        .executeQuery({
-          query:
-            "select * FROM hims_d_item_storage where record_status='A'" +
-            _strQry +
-            " order by hims_d_item_storage_id desc;",
           values: intValues,
           printQuery: true
         })

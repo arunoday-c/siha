@@ -1,9 +1,12 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { SetBulkState } from "../../../utils/GlobalFunctions";
+import InventoryItem from "../../../Models/InventoryItem";
 // import { parse } from "querystring";
 
 const Validations = $this => {
   let isError = false;
+
+  debugger;
 
   if ($this.state.item_description === null) {
     isError = true;
@@ -49,12 +52,33 @@ const Validations = $this => {
     return isError;
   } else if (
     $this.state.hims_d_inventory_item_master_id === null &&
-    $this.state.standard_fee === 0
+    parseFloat($this.state.standard_fee) === 0
   ) {
     isError = true;
     swalMessage({
       type: "error",
       title: "Enter the Price."
+    });
+    return isError;
+  } else if (
+    $this.state.purchase_cost === null ||
+    $this.state.purchase_cost === 0
+  ) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Please Enter Purchase Cost."
+    });
+    return isError;
+  } else if (
+    $this.state.hims_d_inventory_item_master_id === null &&
+    $this.state.vat_applicable === "Y" &&
+    parseFloat($this.state.vat_percent) === 0
+  ) {
+    isError = true;
+    swalMessage({
+      type: "error",
+      title: "Enter the Vat Percentage."
     });
     return isError;
   }
@@ -79,11 +103,14 @@ const InsertUpdateItems = $this => {
             data: $this.state,
             onSuccess: response => {
               if (response.data.success === true) {
+                let IOputs = InventoryItem.inputParam();
+                $this.setState({ ...$this.state, ...IOputs }, () => {
+                  $this.props.onClose && $this.props.onClose(true);
+                });
                 swalMessage({
                   type: "success",
                   title: "Saved successfully . ."
                 });
-                $this.props.onClose && $this.props.onClose(true);
               }
             }
           });
@@ -96,11 +123,15 @@ const InsertUpdateItems = $this => {
             method: "PUT",
             onSuccess: response => {
               if (response.data.success === true) {
+                let IOputs = InventoryItem.inputParam();
+                $this.setState({ ...$this.state, ...IOputs }, () => {
+                  $this.props.onClose && $this.props.onClose(true);
+                });
+
                 swalMessage({
                   type: "success",
                   title: "Updated successfully . ."
                 });
-                $this.props.onClose && $this.props.onClose(true);
               }
             }
           });

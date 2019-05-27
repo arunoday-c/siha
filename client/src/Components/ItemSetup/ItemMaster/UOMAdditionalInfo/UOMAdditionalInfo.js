@@ -20,7 +20,8 @@ import {
   onchangegridcol,
   uomtexthandle,
   stockingtexthandle,
-  stockonchangegridcol
+  stockonchangegridcol,
+  additionaleInfo
 } from "./UOMAdditionalInfoEvents";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 
@@ -311,27 +312,13 @@ class UOMAdditionalInfo extends Component {
                 <div className="col-lg-4 card">
                   <div className="row">
                     <div className="container-fluid">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-12 form-details" }}
-                        label={{
-                          forceLabel: "Additional Information",
-                          isImp: true
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "addl_information",
-                          value: this.state.addl_information,
-                          others: {
-                            multiline: true,
-                            rows: "4",
-                            style: {
-                              height: "25vh"
-                            }
-                          },
-                          events: {
-                            onChange: texthandle.bind(this, this)
-                          }
-                        }}
+                      <AlgaehLabel
+                        label={{ forceLabel: "Additional Information" }}
+                      />
+                      <textarea
+                        value={this.state.addl_information}
+                        name="addl_information"
+                        onChange={additionaleInfo.bind(this, this, context)}
                       />
                     </div>
                   </div>
