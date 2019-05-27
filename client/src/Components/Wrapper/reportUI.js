@@ -44,19 +44,25 @@ export default class ReportUI extends Component {
                 ...{ method: "GET" },
                 ...{
                   onSuccess: response => {
+                    debugger;
                     if (response.data.success) {
-                      if (s.link.schema !== undefined) {
-                        s.link.schema.map(sch => {
-                          this.setState({
-                            [sch.name + "_list"]: eval(
-                              "response.data.records." + sch.response
-                            )
-                          });
-                        });
+                      const manupulateResult = s.manupulation;
+                      if (typeof manupulateResult === "function") {
+                        manupulateResult(response.data, this, s.name + "_list");
                       } else {
-                        this.setState({
-                          [s.name + "_list"]: response.data.records
-                        });
+                        if (s.link.schema !== undefined) {
+                          s.link.schema.map(sch => {
+                            this.setState({
+                              [sch.name + "_list"]: eval(
+                                "response.data.records." + sch.response
+                              )
+                            });
+                          });
+                        } else {
+                          this.setState({
+                            [s.name + "_list"]: response.data.records
+                          });
+                        }
                       }
                     }
                   }
@@ -200,78 +206,62 @@ export default class ReportUI extends Component {
     }
   }
   generateReport(e) {
-    let $this = this;
     AlgaehValidation({
       querySelector: "data-validate='parameters-data'",
       alertTypeIcon: "warning",
-      onSuccess: () => {
-        const _reportQuery =
-          this.state.reportQuery !== undefined
-            ? this.state.reportQuery
-            : this.props.options.report.fileName;
+      pageState: this,
+      onSuccess: that => {
+        debugger;
+        const element = document.getElementById("report_generation_interface");
+        let parameters = [];
+        element.querySelectorAll("input").forEach(item => {
+          if (item.name !== undefined) {
+            let type = item.getAttribute("data_role");
+            let data =
+              type === "dropdownlist"
+                ? item.getAttribute("referencevalue")
+                : item.value;
 
-        let inputs = { ...this.state.parameterCollection };
-        let report_name = _reportQuery.split("/");
-        inputs["reportName"] = _reportQuery;
-        let querString =
-          inputs.sub_department_id !== undefined
-            ? "S.sub_department_id=" + inputs.sub_department_id
-            : "";
-
-        const that = this;
-        let options = { ...this.props.options, ...{ getRaw: true } };
-
-        // const uri =
-        //   typeof options.report.reportUri === "string"
-        //     ? options.report.reportUri
-        //     : "/generateReport/getReport";
-
-        const uri ="";
-        const _module =
-          typeof options.report.module === "string"
-            ? { module: options.report.module }
-            : {};
-        algaehApiCall({
-          uri: uri,
-          data: inputs,
-          method: "GET",
-          inputs: querString,
-          ..._module,
-          onSuccess: response => {
-            let buttonDisable = true;
-            if (response.data.success === true) {
-              new Promise((resolve, reject) => {
-                resolve(response.data.records);
-              }).then(data => {
-                if (Array.isArray(data)) {
-                  if (data.length > 0) {
-                    buttonDisable = false;
-                  }
-                } else if (data !== null || data !== undefined) {
-                  buttonDisable = false;
-                }
-                options.inputData = that.state.parameterCollection;
-                options.data = data;
-                let _optionsFetch = options;
-
-                let _htm = accessReport(_optionsFetch);
-                let _hasTable =
-                  _htm !== undefined
-                    ? String(_htm).indexOf("algaeh-report-table") > -1
-                      ? true
-                      : false
-                    : false;
-
-                that.setState({
-                  _htmlString: _htm,
-                  hasTable: _hasTable,
-                  buttonDisable: buttonDisable,
-                  report_name: report_name[report_name.length - 1]
-                });
-              });
-            }
+            parameters.push({
+              name: item.name,
+              value: data
+            });
           }
         });
+        const reportName = that.props.options.report.reportName;
+
+        this.setState(
+          {
+            buttonDisable: true
+          },
+          () => {
+            algaehApiCall({
+              uri: "/report",
+              module: "reports",
+              method: "GET",
+              headers: {
+                Accept: "blob"
+              },
+              others: { responseType: "blob" },
+              data: {
+                report: {
+                  reportName: reportName,
+                  reportParams: parameters
+                }
+              },
+              onSuccess: response => {
+                debugger;
+                const url = URL.createObjectURL(response.data);
+
+                that.setState({
+                  _htmlString: url,
+                  buttonDisable: false,
+                  report_name: reportName
+                });
+              }
+            });
+          }
+        );
       }
     });
   }
@@ -302,6 +292,21 @@ export default class ReportUI extends Component {
       });
     }
   }
+  dropDownOnClear(e) {
+    const _hasEvents = Enumerable.from(this.props.options.plotUI.paramters)
+      .where(w => w.name === e)
+      .firstOrDefault().events;
+    if (_hasEvents !== undefined) {
+      if (typeof _hasEvents.onClear === "function") {
+        _hasEvents.onClear(this, e);
+      } else {
+        this.setState({ [e]: undefined });
+      }
+    } else {
+      this.setState({ [e]: undefined });
+    }
+  }
+
   searchButton(e) {
     const _name = e.currentTarget.getAttribute("surrounds");
     const _hasSearch = Enumerable.from(this.props.options.plotUI.paramters)
@@ -433,6 +438,7 @@ export default class ReportUI extends Component {
                   data: _data
                 },
                 onChange: this.dropDownHandle.bind(this),
+                onClear: this.dropDownOnClear.bind(this),
                 ..._param.others
               }}
             />
@@ -638,12 +644,17 @@ export default class ReportUI extends Component {
               ref={el => (this.algehPrintRef = el)}
               style={{ minHeight: "30vh" }}
             >
-              {/* <div
+              {/*}<div
                 dangerouslySetInnerHTML={{
                   __html: this.state._htmlString
                 }}
-              /> */}
-              <iframe src={this.state._htmlString}></iframe>
+              />*/}
+
+              <iframe
+                src={this.state._htmlString}
+                width="100%"
+                height="500px"
+              />
 
               <div className="col-lg-12">
                 <div className="row">

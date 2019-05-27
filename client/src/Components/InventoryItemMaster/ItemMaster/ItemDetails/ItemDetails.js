@@ -56,9 +56,9 @@ class ItemDetails extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-item-master-form">
-              <div className="col-lg-12 card" style={{ paddingBottom: "10px" }}>
-                <div className="row">
+            <div className="">
+
+<div className="row">
                   <AlagehFormGroup
                     div={{ className: "col-lg-3" }}
                     label={{
@@ -139,7 +139,6 @@ class ItemDetails extends Component {
                     }}
                   />
                 </div>
-
                 <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-lg-3" }}
@@ -289,7 +288,7 @@ class ItemDetails extends Component {
                     </div>
                   </div>
                 </div>
-
+            
                 {this.state.hims_d_inventory_item_master_id === null ? (
                   <div className="row">
                     <AlagehFormGroup
@@ -376,7 +375,6 @@ class ItemDetails extends Component {
                     </div>
                   </div>
                 ) : null}
-              </div>
             </div>
           )}
         </MyContext.Consumer>

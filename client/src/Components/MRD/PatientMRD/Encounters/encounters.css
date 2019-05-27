@@ -1,4 +1,10 @@
 .encounterListCntr {
-  min-height: 66vh; }
+  min-height: 62vh; }
   .encounterListCntr .ReactTable {
-    max-height: 70vh !important; }
+    max-height: 61vh !important; }
+
+.encounterDetailCntr {
+  overflow-y: auto;
+  max-height: 62vh;
+  overflow-x: hidden;
+  margin-right: -15px; }

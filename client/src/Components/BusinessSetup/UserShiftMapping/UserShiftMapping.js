@@ -472,7 +472,7 @@ class UserShiftMapping extends Component {
               keyId="hims_m_cashier_shift_id"
               dataSource={{
                 data: this.state.cashiers_list
-              }}
+              }}  filter={true}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{

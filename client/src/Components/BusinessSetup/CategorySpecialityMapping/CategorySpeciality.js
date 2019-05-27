@@ -375,8 +375,11 @@ class CategorySpeciality extends Component {
                     );
                   },
                   others: {
-                    maxWidth: 50
-                  }
+                    maxWidth: 50,
+                    resizable: false,
+                    filterable: false,
+                  },
+                  
                 },
                 {
                   fieldName: "speciality_id",
@@ -497,6 +500,7 @@ class CategorySpeciality extends Component {
               dataSource={{
                 data: this.state.cat_specialities
               }}
+              filter={true}
               isEditable={false}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{

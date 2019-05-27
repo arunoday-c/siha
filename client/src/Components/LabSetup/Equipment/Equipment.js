@@ -194,6 +194,7 @@ class Equipment extends Component {
                       ? []
                       : this.props.visatypes
                 }}
+                filter={true}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 5 }}
                 events={{

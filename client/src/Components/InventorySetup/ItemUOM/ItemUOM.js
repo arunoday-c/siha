@@ -203,6 +203,7 @@ class ItemUOM extends Component {
                       ? []
                       : this.props.inventoryitemuom
                 }}
+                filter={true}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{

@@ -334,6 +334,7 @@ class LocationPermission extends Component {
                       ? []
                       : this.props.locationpermission
                 }}
+                filter={true}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
