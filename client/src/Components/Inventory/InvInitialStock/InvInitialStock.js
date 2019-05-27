@@ -219,9 +219,9 @@ class InvInitialStock extends Component {
               <div className="portlet-body">
                 <div className="row inline">
                   <AlagehFormGroup
-                    div={{ className: "col-4" }}
+                    div={{ className: "col-4 form-group" }}
                     label={{
-                      forceLabel: "Description Inv"
+                      forceLabel: "Description Inventory"
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -239,7 +239,7 @@ class InvInitialStock extends Component {
                 </div>
                 <div className="row" data-validate="InvIntialStock">
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "Location", isImp: true }}
                     selector={{
                       name: "location_id",
@@ -262,7 +262,7 @@ class InvInitialStock extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "Item Name", isImp: true }}
                     selector={{
                       name: "item_id",
@@ -286,7 +286,7 @@ class InvInitialStock extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "Item Category", isImp: true }}
                     selector={{
                       name: "item_category_id",
@@ -306,7 +306,7 @@ class InvInitialStock extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "Item Group", isImp: true }}
                     selector={{
                       name: "item_group_id",
@@ -326,7 +326,7 @@ class InvInitialStock extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "UOM", isImp: true }}
                     selector={{
                       name: "uom_id",
@@ -345,7 +345,7 @@ class InvInitialStock extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{
                       forceLabel: "Batch No.",
                       isImp: true
@@ -364,7 +364,7 @@ class InvInitialStock extends Component {
                   />
 
                   <AlgaehDateHandler
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{ forceLabel: "Expiry Date", isImp: true }}
                     textBox={{ className: "txt-fld", name: "expiry_date" }}
                     minDate={new Date()}
@@ -375,7 +375,7 @@ class InvInitialStock extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{
                       forceLabel: "Quantity",
                       isImp: true
@@ -397,7 +397,7 @@ class InvInitialStock extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{
                       forceLabel: "Unit Cost",
                       isImp: true
@@ -416,7 +416,7 @@ class InvInitialStock extends Component {
                   />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-lg-3 form-group" }}
                     label={{
                       forceLabel: "Receipt Number(GRN)",
                       isImp: true
