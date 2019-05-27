@@ -49,10 +49,9 @@ class UOMAdditionalInfo extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="hptl-phase1-uom-Add-form">
-              <div className="row card-deck panel-layout">
+            <div className="row">
                 {/* Patient code */}
-                <div className="col-lg-8 card">
+                <div className="col-8 card" style={{paddingTop:15,paddingBottom:15, marginTop:15,marginBottom:0}}>
                   <div className="row">
                     <AlagehAutoComplete
                       div={{ className: "col" }}
@@ -70,6 +69,23 @@ class UOMAdditionalInfo extends Component {
                         },
                         onChange: uomtexthandle.bind(this, this, context),
                         others: {
+                          exclude: "true"
+                        }
+                      }}
+                    />     <AlagehFormGroup
+                      div={{ className: "col-4" }}
+                      label={{
+                        fieldName: "conversion_factor"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "conversion_factor",
+                        value: this.state.conversion_factor,
+                        events: {
+                          onChange: texthandle.bind(this, this)
+                        },
+                        others: {
+                          disabled: this.state.convertEnable,
                           exclude: "true"
                         }
                       }}
@@ -96,29 +112,12 @@ class UOMAdditionalInfo extends Component {
                       }}
                     />
 
-                    <AlagehFormGroup
-                      div={{ className: "col-4" }}
-                      label={{
-                        fieldName: "conversion_factor"
-                      }}
-                      textBox={{
-                        className: "txt-fld",
-                        name: "conversion_factor",
-                        value: this.state.conversion_factor,
-                        events: {
-                          onChange: texthandle.bind(this, this)
-                        },
-                        others: {
-                          disabled: this.state.convertEnable,
-                          exclude: "true"
-                        }
-                      }}
-                    />
+               
 
                     <div className="col actions">
                       <a
                         onClick={AddUom.bind(this, this, context)}
-                        style={{ marginTop: 23 }}
+                        style={{ marginTop: 19 }}
                         // href="javascript"
                         className="btn btn-primary btn-circle active"
                       >
@@ -308,11 +307,10 @@ class UOMAdditionalInfo extends Component {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-4 card">
+                <div className="col-lg-4 card"  style={{paddingTop:15,paddingBottom:15, marginTop:15,marginBottom:0}}>
                   <div className="row">
-                    <div className="container-fluid">
-                      <AlagehFormGroup
-                        div={{ className: "col-lg-12 form-details" }}
+                   <AlagehFormGroup
+                        div={{ className: "col-12" }}
                         label={{
                           forceLabel: "Additional Information",
                           isImp: true
@@ -333,11 +331,9 @@ class UOMAdditionalInfo extends Component {
                           }
                         }}
                       />
-                    </div>
                   </div>
                 </div>
               </div>
-            </div>
           )}
         </MyContext.Consumer>
       </React.Fragment>
