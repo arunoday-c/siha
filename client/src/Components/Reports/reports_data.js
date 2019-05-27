@@ -57,6 +57,7 @@ export default [
             initialLoad: true,
             link: {
               uri: "/department/get/get_All_Doctors_DepartmentWise",
+              module: "masterSettings",
               schema: [{ name: "provider_id", response: "doctors" }]
             },
             events: {
@@ -119,7 +120,8 @@ export default [
             label: "Select Department",
             link: {
               //uri: "/department/get/subdepartment"
-              uri: "/department/get/get_All_Doctors_DepartmentWise"
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              module: "masterSettings"
             },
             manupulation: (response, reportState, stateProperty) => {
               reportState.setState({

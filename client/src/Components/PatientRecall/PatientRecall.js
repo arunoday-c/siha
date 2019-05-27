@@ -70,6 +70,7 @@ class PatientRecall extends Component {
   getDoctorsAndDepts() {
     algaehApiCall({
       uri: "/department/get/get_All_Doctors_DepartmentWise",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {

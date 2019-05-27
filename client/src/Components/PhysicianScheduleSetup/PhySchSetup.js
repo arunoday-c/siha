@@ -518,7 +518,7 @@ class PhySchSetup extends Component {
   getDoctorsAndDepts() {
     algaehApiCall({
       uri: "/department/selectDoctorsAndClinic",
-
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
