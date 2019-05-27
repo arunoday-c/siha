@@ -369,7 +369,7 @@ class InventoryItemMaster extends Component {
                     data: ItemList
                   }}
                   filter={true}
-                  paging={{ page: 0, rowsPerPage: 10 }}
+                  paging={{ page: 0, rowsPerPage: 20 }}
                 />
               </div>
             </div>

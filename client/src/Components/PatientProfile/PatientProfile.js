@@ -667,6 +667,7 @@ class PatientProfile extends Component {
                   <i className={"fas fa-allergies" + this.alergyExist} />
                   <section>
                     <span className="top-nav-sec-hdg">Allergies</span>
+                    <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         <thead>
                           {" "}
@@ -723,13 +724,14 @@ class PatientProfile extends Component {
                             ))}
                           </tbody>
                         ))}{" "}
-                      </table>
+                      </table></div>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-diagnoses" />
                   <section>
                     <span className="top-nav-sec-hdg">Diagnosis</span>
+                    <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         <thead>
                           <tr>
@@ -764,7 +766,7 @@ class PatientProfile extends Component {
                             </td>
                           </tr>
                         ))}
-                      </table>
+                      </table></div>
                   </section>
                 </li>
                 <li>
@@ -772,6 +774,7 @@ class PatientProfile extends Component {
                   <section>
                     <span className="top-nav-sec-hdg">Diet</span>
                       {" "}
+                    <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
                          */}
@@ -782,7 +785,7 @@ class PatientProfile extends Component {
                             </tr>
                           );
                         })}
-                      </table>
+                      </table></div>
                   </section>
                 </li>
               </ul>
@@ -846,6 +849,7 @@ class PatientProfile extends Component {
                   <i className={"fas fa-allergies" + this.alergyExist} />
                   <section>
                     <span className="top-nav-sec-hdg">Allergies</span>
+                    <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         <thead>
                           {" "}
@@ -902,13 +906,14 @@ class PatientProfile extends Component {
                             ))}
                           </tbody>
                         ))}{" "}
-                      </table>
+                      </table></div>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-diagnoses" />
                   <section>
                     <span className="top-nav-sec-hdg">Diagnosis</span>
+                    <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         <thead>
                           <tr>
@@ -943,7 +948,7 @@ class PatientProfile extends Component {
                             </td>
                           </tr>
                         ))}
-                      </table>
+                      </table></div>
                   </section>
                 </li>
                 <li>
@@ -951,6 +956,7 @@ class PatientProfile extends Component {
                   <section>
                     <span className="top-nav-sec-hdg">Diet</span>
                       {" "}
+                    <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
                          */}
@@ -961,7 +967,7 @@ class PatientProfile extends Component {
                             </tr>
                           );
                         })}
-                      </table>
+                      </table></div>
                   </section>
                 </li>
               </ul>

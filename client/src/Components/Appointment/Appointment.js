@@ -333,6 +333,7 @@ class Appointment extends PureComponent {
   getDoctorsAndDepts() {
     algaehApiCall({
       uri: "/department/selectDoctorsAndClinic",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -677,7 +678,6 @@ class Appointment extends PureComponent {
         type: "warning"
       });
     } else {
-      
       let openPatEdit = false;
       if (data === null) {
         openPatEdit = true;
@@ -1895,7 +1895,7 @@ class Appointment extends PureComponent {
 
               {/* Add Pop up start */}
               <AlgaehModalPopUp
-          class="appoPopupWidth"
+                class="appoPopupWidth"
                 title={getLabelFromLanguage({
                   fieldName: "bookAppo"
                 })}
