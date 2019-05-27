@@ -16,6 +16,7 @@ import {
 } from "../models/department";
 
 import algaehPath from "algaeh-module-bridge";
+import { LINQ } from "node-linq";
 
 const { addInventoryLocation } = algaehPath(
   "algaeh-inventory/src/models/inventory"

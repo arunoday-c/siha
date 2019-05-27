@@ -37,6 +37,7 @@ class PatientDetails extends PureComponent {
     ) {
       this.props.getDepartmentsandDoctors({
         uri: "/department/get/get_All_Doctors_DepartmentWise",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "DEPT_DOCTOR_GET_DATA",
