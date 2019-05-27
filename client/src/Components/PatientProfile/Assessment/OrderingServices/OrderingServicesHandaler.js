@@ -22,21 +22,35 @@ const serviceTypeHandeler = ($this, e) => {
       s_service: null
     },
     () => {
-      $this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        data: { service_type_id: $this.state.s_service_type },
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "services"
-        }
-      });
+      if ($this.state.insured === "N") {
+        $this.props.getServices({
+          uri: "/serviceType/getService",
+          module: "masterSettings",
+          method: "GET",
+          data: { service_type_id: $this.state.s_service_type },
+          redux: {
+            type: "SERVICES_GET_DATA",
+            mappingName: "services"
+          }
+        });
+      } else {
+        this.props.getServices({
+          uri: "/serviceType/getServiceInsured",
+          module: "masterSettings",
+          method: "GET",
+          data: { insurance_id: $this.state.insurance_provider_id },
+          redux: {
+            type: "SERVICES_INS_GET_DATA",
+            mappingName: "services"
+          }
+        });
+      }
     }
   );
 };
 
 const serviceHandeler = ($this, e) => {
+  debugger;
   $this.setState({
     [e.name]: e.value,
     s_service_type: e.selected.service_type_id,
@@ -58,16 +72,15 @@ const ProcessService = ($this, e) => {
     )
     .toArray();
 
-    let PreSelectedService = Enumerable.from($this.state.orderservicesdata)
-      .where(
-        w =>
-          w.service_type_id === $this.state.s_service_type &&
-          w.services_id === $this.state.s_service
-      )
-      .toArray();
+  let PreSelectedService = Enumerable.from($this.state.orderservicesdata)
+    .where(
+      w =>
+        w.service_type_id === $this.state.s_service_type &&
+        w.services_id === $this.state.s_service
+    )
+    .toArray();
 
-
-  if (SelectedService.length === 0 && PreSelectedService.length ===0) {
+  if (SelectedService.length === 0 && PreSelectedService.length === 0) {
     if ($this.state.s_service_type !== null && $this.state.s_service !== null) {
       let preserviceInput = $this.state.preserviceInput || [];
       let serviceInput = [

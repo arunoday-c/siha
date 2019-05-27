@@ -108,6 +108,7 @@ class OrderingServices extends Component {
       });
     }
 
+    debugger;
     if (
       this.props.serviceslist === undefined ||
       this.props.serviceslist.length === 0
@@ -140,17 +141,30 @@ class OrderingServices extends Component {
         mappingName: "existinginsurance"
       },
       afterSuccess: data => {
+        debugger;
         if (data.length > 0) {
           this.setState({
             insured: "Y",
-            primary_insurance_provider_id: data.insurance_provider_id,
-            primary_network_office_id: data.hims_d_insurance_network_office_id,
-            primary_network_id: data.network_id,
-            sec_insured: data.sec_insured,
+            primary_insurance_provider_id: data[0].insurance_provider_id,
+            primary_network_office_id:
+              data[0].hims_d_insurance_network_office_id,
+            primary_network_id: data[0].network_id,
+            sec_insured: data[0].sec_insured,
             secondary_insurance_provider_id:
-              data.secondary_insurance_provider_id,
-            secondary_network_id: data.secondary_network_id,
-            secondary_network_office_id: data.secondary_network_office_id
+              data[0].secondary_insurance_provider_id,
+            secondary_network_id: data[0].secondary_network_id,
+            secondary_network_office_id: data[0].secondary_network_office_id
+          });
+
+          this.props.getServices({
+            uri: "/serviceType/getServiceInsured",
+            module: "masterSettings",
+            method: "GET",
+            data: { insurance_id: data[0].insurance_provider_id },
+            redux: {
+              type: "SERVICES_INS_GET_DATA",
+              mappingName: "services"
+            }
           });
         }
       }
@@ -249,13 +263,14 @@ class OrderingServices extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col" }}
                   label={{
                     fieldName: "sel_srvc"
                   }}
                   selector={{
                     name: "s_service",
                     className: "select-fld",
+                    autoComplete: "off",
                     value: this.state.s_service,
                     dataSource: {
                       textField:
@@ -265,8 +280,31 @@ class OrderingServices extends Component {
                       valueField: "hims_d_services_id",
                       data: this.props.services
                     },
+                    onChange: serviceHandeler.bind(this, this),
                     autoComplete: "off",
-                    onChange: serviceHandeler.bind(this, this)
+                    template: item => (
+                      <div
+                        className={
+                          this.state.insured === "N"
+                            ? "multiInfoList"
+                            : item.covered === "N"
+                            ? "multiInfoList"
+                            : item.pre_approval === "N"
+                            ? ""
+                            : "color"
+                        }
+                      >
+                        <h5>
+                          {this.state.selectedLang === "en"
+                            ? item.service_name
+                            : item.arabic_service_name}
+                        </h5>
+                        <h6>"Covred: "{item.covered === "Y" ? "Yes" : "No"}</h6>
+                        <h6>
+                          "Approval: "{item.pre_approval === "Y" ? "Yes" : "No"}
+                        </h6>
+                      </div>
+                    )
                   }}
                 />
 

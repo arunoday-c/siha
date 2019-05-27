@@ -14,7 +14,12 @@ module.exports = {
       //Bill
       _mysql
         .generateRunningNumber({
-          modules: ["PAT_BILL"]
+          modules: ["PAT_BILL"],
+          tableName: "hims_f_app_numgen",
+          identity: {
+            algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+            hospital_id: req.userIdentity["x-branch"]
+          }
         })
         .then(generatedNumbers => {
           req.connection = {
@@ -27,7 +32,12 @@ module.exports = {
           //Receipt
           _mysql
             .generateRunningNumber({
-              modules: ["RECEIPT"]
+              modules: ["RECEIPT"],
+              tableName: "hims_f_app_numgen",
+              identity: {
+                algaeh_d_app_user_id: req.userIdentity.algaeh_d_app_user_id,
+                hospital_id: req.userIdentity["x-branch"]
+              }
             })
             .then(generatedNumbers => {
               req.body.receipt_number = generatedNumbers[0];
