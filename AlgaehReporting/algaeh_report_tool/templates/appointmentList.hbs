@@ -21,18 +21,25 @@
                     </tr>
                 </thead>
                 <tbody>
-                   
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
-                        <td>--</td>
+                  {{#each detail}}
+                    <tr>
+                        <td colspan="10" class="tableSubHdg">Doctor Name and Emp. ID/Doctor ID</td>
+                    </tr>
+                    {{#each detailList}}
+                    <tr>
+                       <td>----</td>
+                       <td>----</td>
+                       <td>----</td>
+                       <td>----</td>
+                       <td>----</td>
+                       <td>----</td>
+                       <td>----</td>
+                       <td>----</td>
+                       <td>----</td>
+                       <td>----</td>
+                    </tr>
+                    {{/each}}
+                    {{/each}}
                 </tbody>
             </table> 
         </section>
