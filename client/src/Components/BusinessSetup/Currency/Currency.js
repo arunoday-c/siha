@@ -608,7 +608,7 @@ class Currency extends Component {
               keyId="hims_d_counter_id"
               dataSource={{
                 data: this.state.currencies
-              }}
+              }} filter={true}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{

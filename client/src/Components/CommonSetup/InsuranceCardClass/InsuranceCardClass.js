@@ -364,6 +364,7 @@ class InsuranceCardClass extends Component {
                       ? []
                       : this.props.insurancecardclass
                 }}
+                filter={true}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{

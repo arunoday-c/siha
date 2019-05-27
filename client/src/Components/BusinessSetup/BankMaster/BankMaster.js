@@ -471,6 +471,7 @@ class BankMaster extends Component {
               dataSource={{
                 data: this.props.banks === undefined ? [] : this.props.banks
               }}
+              filter={true}
               isEditable={true}
               paging={{ page: 0, rowsPerPage: 10 }}
               events={{

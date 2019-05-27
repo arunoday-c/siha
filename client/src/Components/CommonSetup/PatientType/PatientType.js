@@ -404,6 +404,7 @@ class PatientType extends Component {
                       ? []
                       : this.props.patienttypes
                 }}
+                filter={true}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{

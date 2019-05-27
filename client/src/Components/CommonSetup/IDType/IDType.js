@@ -411,6 +411,7 @@ class IDType extends Component {
                   data:
                     this.props.idtypes === undefined ? [] : this.props.idtypes
                 }}
+                filter={true}
                 isEditable={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{

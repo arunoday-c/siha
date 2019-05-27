@@ -287,6 +287,7 @@ class AppointmentRooms extends Component {
             dataSource={{
               data: this.state.appointmentRooms
             }}
+            filter={true}
             isEditable={true}
             paging={{ page: 0, rowsPerPage: 10 }}
             events={{
