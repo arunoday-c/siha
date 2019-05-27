@@ -2,6 +2,21 @@ import { swalMessage } from "../../../../utils/algaehApiCall";
 import Enumerable from "linq";
 import { SetBulkState } from "../../../../utils/GlobalFunctions";
 
+const additionaleInfo = ($this, context, e) => {
+  let name = e.name || e.target.name;
+  let value = e.value || e.target.value;
+
+  $this.setState({
+    [name]: value
+  });
+
+  if (context !== undefined) {
+    context.updateState({
+      [name]: value
+    });
+  }
+};
+
 const texthandle = ($this, ctrl, e) => {
   e = e || ctrl;
   let name = e.name || e.target.name;
@@ -335,5 +350,6 @@ export {
   onchangegridcol,
   uomtexthandle,
   stockingtexthandle,
-  stockonchangegridcol
+  stockonchangegridcol,
+  additionaleInfo
 };
