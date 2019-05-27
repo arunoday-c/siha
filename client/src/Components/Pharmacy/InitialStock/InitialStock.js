@@ -207,7 +207,7 @@ class InitialStock extends Component {
             <div
               className="portlet portlet-bordered margin-bottom-15"
               style={{ marginTop: 90 }}
-              data-validate="InvIntialStock"
+            
             >
               {/* <div className="portlet-title">
             <div className="caption">
@@ -216,7 +216,7 @@ class InitialStock extends Component {
             <div className="actions">
             </div>
           </div> */}
-              <div className="portlet-body" data-validate="IntialStock">
+              <div className="portlet-body">
                 <div className="row inline">
                   <AlagehFormGroup
                     div={{ className: "col-6 form-group" }}
@@ -236,8 +236,7 @@ class InitialStock extends Component {
                     }}
                   />
                   </div>
-                <div className="row" >
- {/* data-validate="InvIntialStock" */}
+                <div className="row"  data-validate="IntialStock">
               
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
@@ -271,8 +270,6 @@ class InitialStock extends Component {
                       onChange: itemchangeText.bind(this, this)
                     }}
                   />
-                </div>
-                <div className="row">
                   <AlagehAutoComplete
                     div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "Item Category", isImp: true }}
@@ -312,7 +309,7 @@ class InitialStock extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-2 form-group" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "UOM", isImp: true }}
                     selector={{
                       name: "uom_id",
@@ -330,7 +327,7 @@ class InitialStock extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-2 form-group" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Batch No.",
                       isImp: true
@@ -346,8 +343,18 @@ class InitialStock extends Component {
                     }
                     }}
                   />
+                  <AlgaehDateHandler
+                    div={{ className: "col-3 form-group" }}
+                    label={{ forceLabel: "Expiry Date", isImp: true }}
+                    textBox={{ className: "txt-fld", name: "expiry_date" }}
+                    minDate={new Date()}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    value={this.state.expiry_date}
+                  />
                   <AlagehFormGroup
-                    div={{ className: "col-2 form-group" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Quantity",
                       isImp: true
@@ -362,13 +369,13 @@ class InitialStock extends Component {
                       value: this.state.quantity,
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
-                      },  others:{
+                      },  others:{    step: "1",  
                        autoComplete:"off"
                     }
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-2 form-group" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Unit Cost",
                       isImp: true
@@ -386,19 +393,9 @@ class InitialStock extends Component {
                     }}
                   />
 
-                  <AlgaehDateHandler
-                    div={{ className: "col-3 form-group" }}
-                    label={{ forceLabel: "Expiry Date", isImp: true }}
-                    textBox={{ className: "txt-fld", name: "expiry_date" }}
-                    minDate={new Date()}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    value={this.state.expiry_date}
-                  />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3 form-group" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Receipt Number(GRN)",
                       isImp: true
