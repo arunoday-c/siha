@@ -250,13 +250,19 @@ module.exports = {
                   _value.push(_params.value);
                 }
               }
-
+              let queryObject = {
+                query: _data.report_query,
+                values: _value,
+                printQuery: true
+              };
+              if (_data.report_query == null || _data.report_query == "") {
+                    queryObject = {
+                query: "select 1",
+                printQuery: true
+              };
+                  }
               _mysql
-                .executeQuery({
-                  query: _data.report_query,
-                  values: _value,
-                  printQuery: true
-                })
+                .executeQuery(queryObject)
                 .then(result => {
                   const _path = path.join(
                     process.cwd(),
@@ -615,9 +621,14 @@ module.exports = {
                         );
                         await page.emulateMedia("screen");
 
+                        const pageOrentation = _inputParam.pageOrentation == null ? {} :
+                          _inputParam.pageOrentation == "landscap" ? { landscape: true } : {};
+                        const pageSize = _inputParam.pageSize == null ? { format: "A4" } :
+                          { format: _inputParam.pageSize };
                         await page.pdf({
                           path: _outPath,
-                          format: "A4",
+                          ...pageSize,
+                          ...pageOrentation,
                           printBackground: true,
                           displayHeaderFooter: true,
                           ..._pdfTemplating
