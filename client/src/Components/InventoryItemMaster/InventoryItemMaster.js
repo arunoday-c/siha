@@ -10,8 +10,8 @@ import { AlgaehLabel, AlgaehDataGrid } from "../Wrapper/algaehWrapper";
 
 import ItemMaster from "./ItemMaster/ItemMaster";
 import { AlgaehActions } from "../../actions/algaehActions";
-// import { getItems, EditItemMaster } from "./InventoryItemMasterEvent";
 import InvItemSetupEvent from "./InventoryItemMasterEvent";
+import GlobalVariables from "../../utils/GlobalVariables.json";
 
 class InventoryItemMaster extends Component {
   constructor(props) {
@@ -135,6 +135,9 @@ class InventoryItemMaster extends Component {
           radioActive: firstRecordSet.item_status === "A" ? true : false,
           radioInactive: firstRecordSet.item_status === "I" ? true : false,
           service_id: firstRecordSet.service_id,
+          item_type: firstRecordSet.item_type,
+          purchase_cost: firstRecordSet.purchase_cost,
+          addl_information: firstRecordSet.addl_information,
           detail_item_uom: g.getSource()
         };
       })
@@ -213,6 +216,23 @@ class InventoryItemMaster extends Component {
                           label={{ fieldName: "item_description" }}
                         />
                       )
+                    },
+                    {
+                      fieldName: "item_type",
+                      label: <AlgaehLabel label={{ fieldName: "item_type" }} />,
+                      displayTemplate: row => {
+                        let display = GlobalVariables.ITEM_TYPE.filter(
+                          f => f.value === row.item_type
+                        );
+
+                        return (
+                          <span>
+                            {display !== undefined && display.length !== 0
+                              ? display[0].name
+                              : ""}
+                          </span>
+                        );
+                      }
                     },
 
                     {

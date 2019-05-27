@@ -134,10 +134,18 @@ class Reports extends Component {
                     key={index}
                     className="col-lg-2 reportList"
                     onClick={() => {
+                      let pageProperies = { reportName: item.reportName };
+                      if (item.pageSize !== undefined && item.pageSize !== "") {
+                        pageProperies["pageSize"] = item.pageSize;
+                      }
+                      if (
+                        item.pageOrentation !== undefined &&
+                        item.pageOrentation !== ""
+                      ) {
+                        pageProperies["pageOrentation"] = item.pageOrentation;
+                      }
                       AlgaehReport({
-                        report: {
-                          reportName: item.reportName
-                        },
+                        report: pageProperies,
                         plotUI: {
                           paramters: item.reportParameters
                         }
