@@ -107,6 +107,8 @@ export default [
       {
         subitem: "Appointment List",
         reportName: "appointmentList",
+        pageSize: "A4",
+        pageOrentation: "landscap", //"portrait",
         reportParameters: [
           {
             type: "dropdown",

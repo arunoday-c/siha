@@ -8,7 +8,8 @@ import merge from "easy-pdf-merge";
 import hbs from "handlebars";
 import "babel-polyfill";
 import chrome from "algaeh-keys";
-const chromePath =chrome.default.chromePuppeteer !=null ?chrome.default.chromePuppeteer :{};
+const chromePath =
+  chrome.default.chromePuppeteer != null ? chrome.default.chromePuppeteer : {};
 
 const XlsxTemplate = require("xlsx-template");
 
@@ -108,7 +109,7 @@ hbs.registerHelper("imageSource", function(filePath) {
     "algaeh_report_tool/templates",
     `${filePath}`
   );
-  const _extention = path.extname(fullPath).replace(".","");
+  const _extention = path.extname(fullPath).replace(".", "");
   const img = fs.readFileSync(fullPath, "base64");
   return "data:image/" + _extention + ";base64," + img;
 });
@@ -256,11 +257,11 @@ module.exports = {
                 printQuery: true
               };
               if (_data.report_query == null || _data.report_query == "") {
-                    queryObject = {
-                query: "select 1",
-                printQuery: true
-              };
-                  }
+                queryObject = {
+                  query: "select 1",
+                  printQuery: true
+                };
+              }
               _mysql
                 .executeQuery(queryObject)
                 .then(result => {
@@ -349,10 +350,21 @@ module.exports = {
                       })
                     );
                     await page.emulateMedia("screen");
+                    const pageOrentation =
+                      _inputParam.pageOrentation == null
+                        ? {}
+                        : _inputParam.pageOrentation == "landscap"
+                        ? { landscape: true }
+                        : {};
 
+                    const pageSize =
+                      _inputParam.pageSize == null
+                        ? { format: "A4" }
+                        : { format: _inputParam.pageSize };
                     await page.pdf({
                       path: _outPath,
-                      format: "A4",
+                      ...pageSize,
+                      ...pageOrentation,
                       printBackground: true,
                       displayHeaderFooter: true,
                       ..._pdfTemplating
@@ -621,10 +633,16 @@ module.exports = {
                         );
                         await page.emulateMedia("screen");
 
-                        const pageOrentation = _inputParam.pageOrentation == null ? {} :
-                          _inputParam.pageOrentation == "landscap" ? { landscape: true } : {};
-                        const pageSize = _inputParam.pageSize == null ? { format: "A4" } :
-                          { format: _inputParam.pageSize };
+                        const pageOrentation =
+                          _inputParam.pageOrentation == null
+                            ? {}
+                            : _inputParam.pageOrentation == "landscap"
+                            ? { landscape: true }
+                            : {};
+                        const pageSize =
+                          _inputParam.pageSize == null
+                            ? { format: "A4" }
+                            : { format: _inputParam.pageSize };
                         await page.pdf({
                           path: _outPath,
                           ...pageSize,
