@@ -24,9 +24,7 @@ import {
 } from "./LocationEvents";
 import Options from "../../../Options.json";
 import moment from "moment";
-import {
-  AlgaehOpenContainer
-} from "../../../utils/GlobalFunctions";
+import { AlgaehOpenContainer } from "../../../utils/GlobalFunctions";
 
 class Location extends Component {
   constructor(props) {
@@ -39,7 +37,7 @@ class Location extends Component {
       hospital_id: JSON.parse(
         AlgaehOpenContainer(sessionStorage.getItem("CurrencyDetail"))
       ).hims_d_hospital_id,
-      allow_pos:"N"
+      allow_pos: "N"
     };
     this.baseState = this.state;
     // console.log("Currency Detail:",JSON.parse(
@@ -83,15 +81,10 @@ class Location extends Component {
 
   render() {
     return (
-      
-<div className="portlet portlet-bordered">
-
-<div className="portlet-body">
-
-<div className="row">
-
-
-<AlagehAutoComplete
+      <div className="portlet portlet-bordered">
+        <div className="portlet-body">
+          <div className="row">
+            <AlagehAutoComplete
               div={{ className: "col-lg-3" }}
               label={{
                 fieldName: "hospital_id",
@@ -139,7 +132,6 @@ class Location extends Component {
               }}
             />
 
-
             <AlagehFormGroup
               div={{ className: "col-lg-3" }}
               label={{
@@ -160,7 +152,8 @@ class Location extends Component {
             <div
               className="customCheckbox col-lg-2"
               style={{ border: "none", marginTop: "19px" }}
-            ><label className="checkbox" style={{ color: "#212529" }}>
+            >
+              <label className="checkbox" style={{ color: "#212529" }}>
                 <input
                   type="checkbox"
                   name="Allow POS"
@@ -180,9 +173,13 @@ class Location extends Component {
               </button>
             </div>
           </div>
-<div className="row">
-<div className="col-12" id="inventory_locationGrid_Cntr"  data-validate="pharLocDiv">
-<AlgaehDataGrid
+          <div className="row">
+            <div
+              className="col-12"
+              id="inventory_locationGrid_Cntr"
+              data-validate="pharLocDiv"
+            >
+              <AlgaehDataGrid
                 datavalidate="data-validate='pharLocDiv'"
                 id="inventory_locationGrid"
                 columns={[
@@ -232,7 +229,6 @@ class Location extends Component {
                         ? "Sub Store"
                         : null;
                     }
-
                   },
                   {
                     fieldName: "allow_pos",
@@ -399,6 +395,7 @@ class Location extends Component {
                       : this.props.inventorylocation
                 }}
                 isEditable={true}
+                filter={true}
                 paging={{ page: 0, rowsPerPage: 10 }}
                 events={{
                   onDelete: deleteLocation.bind(this, this),
@@ -407,10 +404,10 @@ class Location extends Component {
                   onDone: updateLocation.bind(this, this)
                 }}
               />
-</div>
-</div>
-</div>
-</div>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 }

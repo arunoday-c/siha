@@ -50,8 +50,8 @@ class ItemGroup extends Component {
     }
 
     if (
-      this.props.inventoryitemcategory === undefined ||
-      this.props.inventoryitemcategory.length === 0
+      this.props.invitemcategory === undefined ||
+      this.props.invitemcategory.length === 0
     ) {
       getItemCategory(this, this);
     }
@@ -97,7 +97,7 @@ class ItemGroup extends Component {
                 dataSource: {
                   textField: "category_desc",
                   valueField: "hims_d_inventory_tem_category_id",
-                  data: this.props.inventoryitemcategory
+                  data: this.props.invitemcategory
                 },
                 onChange: changeTexts.bind(this, this)
               }}
@@ -291,7 +291,7 @@ class ItemGroup extends Component {
 function mapStateToProps(state) {
   return {
     inventoryitemgroup: state.inventoryitemgroup,
-    inventoryitemcategory: state.inventoryitemcategory,
+    invitemcategory: state.invitemcategory,
     userdrtails: state.userdrtails
   };
 }

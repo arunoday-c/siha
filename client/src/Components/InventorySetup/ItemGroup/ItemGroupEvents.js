@@ -141,7 +141,7 @@ const getItemCategory = $this => {
     method: "GET",
     redux: {
       type: "ANALYTES_GET_DATA",
-      mappingName: "inventoryitemcategory"
+      mappingName: "invitemcategory"
     }
   });
 };

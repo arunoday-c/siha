@@ -1,6 +1,7 @@
 import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import swal from "sweetalert2";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
+import _ from "lodash";
 
 const changeTexts = ($this, ctrl, e) => {
   e = e || ctrl;
@@ -100,30 +101,58 @@ const insertLocationPermission = ($this, e) => {
   AlgaehValidation({
     alertTypeIcon: "warning",
     onSuccess: () => {
-      algaehApiCall({
-        uri: "/inventory/addLocationPermission",
-        module: "inventory",
-        data: $this.state,
-        onSuccess: response => {
-          if (response.data.success === true) {
-            //Handle Successful Add here
-            getLocationPermission($this);
-
-            swalMessage({
-              title: "Added Successfully ..",
-              type: "success"
-            });
-          } else {
-            //Handle unsuccessful Add here.
-          }
-        },
-        onFailure: error => {
-          swalMessage({
-            title: error.message,
-            type: "error"
-          });
-        }
+      debugger;
+      const data_exists = _.filter($this.props.invlocationpermission, f => {
+        return (
+          f.user_id === $this.state.user_id &&
+          f.location_id === $this.state.location_id
+        );
       });
+
+      if (data_exists.length === 0) {
+        algaehApiCall({
+          uri: "/inventory/addLocationPermission",
+          module: "inventory",
+          data: $this.state,
+          onSuccess: response => {
+            if (response.data.success === true) {
+              //Handle Successful Add here
+              getLocationPermission($this);
+
+              $this.setState(
+                {
+                  hims_m_location_permission_id: null,
+                  user_id: null,
+                  location_id: null,
+                  allow: "Y",
+                  allowLocation: true
+                },
+                () => {
+                  getLocationPermission($this);
+                }
+              );
+
+              swalMessage({
+                title: "Added Successfully ..",
+                type: "success"
+              });
+            } else {
+              //Handle unsuccessful Add here.
+            }
+          },
+          onFailure: error => {
+            swalMessage({
+              title: error.message,
+              type: "error"
+            });
+          }
+        });
+      } else {
+        swalMessage({
+          title: "Selected Loaction already assined to this user.",
+          type: "warning"
+        });
+      }
     }
   });
 };

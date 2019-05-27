@@ -31,8 +31,7 @@ class LocationPermission extends Component {
     this.state = {
       hims_m_location_permission_id: null,
       user_id: null,
-      from_location: null,
-      to_location: null,
+      location_id: null,
       allow: "Y",
       allowLocation: true
     };

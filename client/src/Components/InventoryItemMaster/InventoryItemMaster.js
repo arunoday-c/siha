@@ -25,8 +25,8 @@ class InventoryItemMaster extends Component {
 
   componentDidMount() {
     if (
-      this.props.inventoryitemcategory === undefined ||
-      this.props.inventoryitemcategory.length === 0
+      this.props.invitemcategory === undefined ||
+      this.props.invitemcategory.length === 0
     ) {
       this.props.getItemCategory({
         uri: "/inventory/getItemCategory",
@@ -34,7 +34,7 @@ class InventoryItemMaster extends Component {
         method: "GET",
         redux: {
           type: "ITEM_CATEGORY_GET_DATA",
-          mappingName: "inventoryitemcategory"
+          mappingName: "invitemcategory"
         }
       });
     }
@@ -222,9 +222,9 @@ class InventoryItemMaster extends Component {
                       ),
                       displayTemplate: row => {
                         let display =
-                          this.props.inventoryitemcategory === undefined
+                          this.props.invitemcategory === undefined
                             ? []
-                            : this.props.inventoryitemcategory.filter(
+                            : this.props.invitemcategory.filter(
                                 f =>
                                   f.hims_d_inventory_tem_category_id ===
                                   row.category_id
@@ -363,7 +363,7 @@ class InventoryItemMaster extends Component {
 function mapStateToProps(state) {
   return {
     inventoryitemlist: state.inventoryitemlist,
-    inventoryitemcategory: state.inventoryitemcategory,
+    invitemcategory: state.invitemcategory,
     inventoryitemgroup: state.inventoryitemgroup,
     inventoryitemuom: state.inventoryitemuom,
     inventoryitemservices: state.inventoryitemservices

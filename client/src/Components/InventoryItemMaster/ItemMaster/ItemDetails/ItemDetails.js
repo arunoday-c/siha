@@ -116,7 +116,7 @@ class ItemDetails extends Component {
                       dataSource: {
                         textField: "category_desc",
                         valueField: "hims_d_inventory_tem_category_id",
-                        data: this.props.inventoryitemcategory
+                        data: this.props.invitemcategory
                       }
                     }}
                   />
@@ -387,7 +387,7 @@ class ItemDetails extends Component {
 
 function mapStateToProps(state) {
   return {
-    inventoryitemcategory: state.inventoryitemcategory,
+    invitemcategory: state.invitemcategory,
     inventoryitemgroup: state.inventoryitemgroup,
     inventoryitemuom: state.inventoryitemuom,
     inventoryitemservices: state.inventoryitemservices
