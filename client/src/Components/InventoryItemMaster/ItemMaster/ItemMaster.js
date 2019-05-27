@@ -59,7 +59,6 @@ export default class PatientDetails extends Component {
                 }}
               >
                 <ItemDetails itemPop={this.state} />
-                <UOMAdditionalInfo itemPop={this.state} />
               </MyContext.Provider>
             </div>
           </div>
