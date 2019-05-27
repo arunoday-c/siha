@@ -71,10 +71,11 @@ class ItemDetails extends Component {
       <React.Fragment>
         <MyContext.Consumer>
           {context => (
-            <div className="">
+            <div className="row">
+            <div className="col-6">
               <div className="row">
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className:"col-4 mandatory form-group" }}
                   label={{
                     fieldName: "item_code",
                     isImp: true
@@ -87,7 +88,7 @@ class ItemDetails extends Component {
                 />
 
                 <AlagehFormGroup
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-8 mandatory form-group" }}
                   label={{
                     fieldName: "item_description",
                     isImp: true
@@ -100,7 +101,7 @@ class ItemDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-4 mandatory form-group" }}
                   label={{
                     fieldName: "item_type",
                     isImp: true
@@ -118,7 +119,7 @@ class ItemDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-4 mandatory form-group" }}
                   label={{
                     fieldName: "category_id",
                     isImp: true
@@ -136,7 +137,7 @@ class ItemDetails extends Component {
                 />
 
                 <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
+                  div={{ className: "col-4 mandatory form-group" }}
                   label={{
                     fieldName: "group_id",
                     isImp: true
@@ -152,162 +153,116 @@ class ItemDetails extends Component {
                     }
                   }}
                 />
-              </div>
-              <div className="row">
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "purchase_uom_id",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "purchase_uom_id",
-                    className: "select-fld",
-                    value: this.state.purchase_uom_id,
-                    dataSource: {
-                      textField: "uom_description",
-                      valueField: "uom_id",
-                      data: this.state.detail_item_uom
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "sales_uom_id",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "sales_uom_id",
-                    className: "select-fld",
-                    value: this.state.sales_uom_id,
-                    dataSource: {
-                      textField: "uom_description",
-                      valueField: "uom_id",
-                      data: this.state.detail_item_uom
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "stocking_uom_id",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "stocking_uom_id",
-                    className: "select-fld",
-                    value: this.state.stocking_uom_id,
-                    dataSource: {
-                      textField: "uom_description",
-                      valueField: "hims_d_inventory_uom_id",
-                      data: this.props.inventoryitemuom
-                    },
-                    others: {
-                      disabled: true
-                    }
-                  }}
-                />
-                <AlagehAutoComplete
-                  div={{ className: "col" }}
-                  label={{
-                    fieldName: "item_uom_id"
-                  }}
-                  selector={{
-                    name: "item_uom_id",
-                    className: "select-fld",
-                    value: this.state.item_uom_id,
-                    dataSource: {
-                      textField: "uom_description",
-                      valueField: "uom_id",
-                      data: this.state.detail_item_uom
-                    }
-                  }}
-                />
-              </div>
-
-              <div className="row">
-                <AlagehFormGroup
-                  div={{ className: "col-lg-3 mandatory" }}
-                  label={{
-                    fieldName: "purchase_cost",
-                    isImp: true
-                  }}
-                  textBox={{
-                    className: "txt-fld",
-                    name: "purchase_cost",
-                    value: this.state.purchase_cost,
-                    others: {
-                      min: 0,
-                      type: "number"
-                    }
-                  }}
-                />
-
-                <div
-                  className="customCheckbox col"
-                  style={{ border: "none", marginTop: "28px" }}
-                >
-                  <label className="checkbox" style={{ color: "#212529" }}>
-                    <input
-                      type="checkbox"
-                      name="required_batchno_expiry"
-                      checked={
-                        this.state.required_batchno_expiry === "Y"
-                          ? true
-                          : false
-                      }
-                      onChange={BatchExpRequired.bind(this, this, context)}
-                    />
-                    <span style={{ fontSize: "0.8rem" }}>
-                      Req. Batch Expiry
-                    </span>
-                  </label>
-                </div>
-                <div className="col" style={{ marginTop: "23px" }}>
-                  <div className="customRadio">
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="Active"
-                        checked={this.state.radioActive}
-                        onChange={radioChange.bind(this, this, context)}
-                      />
-                      <span>
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "active"
-                          }}
+             
+                  
+                  <div className="col-6">
+                    <label>Item Currently </label>
+                    <div className="customRadio" style={{ borderBottom: 0 }}>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Active"
+                          checked={this.state.radioActive}
+                          onChange={radioChange.bind(this, this, context)}
                         />
-                      </span>
-                    </label>
-                    <label className="radio inline">
-                      <input
-                        type="radio"
-                        value="Inactive"
-                        checked={this.state.radioInactive}
-                        onChange={radioChange.bind(this, this, context)}
-                      />
-                      <span>
-                        <AlgaehLabel
-                          label={{
-                            fieldName: "inactive"
-                          }}
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "active"
+                            }}
+                          />
+                        </span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Inactive"
+                          checked={this.state.radioInactive}
+                          onChange={radioChange.bind(this, this, context)}
                         />
-                      </span>
-                    </label>
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "inactive"
+                            }}
+                          />
+                        </span>
+                      </label>
+                    </div>
                   </div>
-                </div>
-              </div>
+                  <div className="col-6">
+                    <label>Expiry Date</label>
+                    <div className="customCheckbox" style={{ borderBottom: 0 }}>
+                      <label className="checkbox" style={{ color: "#212529" }}>
+                        <input
+                          type="checkbox"
+                          name="required_batchno_expiry"
+                          checked={
+                            this.state.required_batchno_expiry === "Y"
+                              ? true
+                              : false
+                          }
+                          onChange={BatchExpRequired.bind(this, this, context)}
+                        />
+                        <span>Not Required</span>
+                      </label>
+                    </div>
+                  </div>              {this.state.hims_d_inventory_item_master_id === null ? (
 
-              <div>
-                <div className="hptl-phase1-uom-Add-form">
-                  <div className="row card-deck panel-layout">
-                    {/* Patient code */}
-                    <div className="col-lg-8 card">
+                  <div  className="col-12">
+                  <div  className="row">
+                   <div className="col-6">
+                      <AlgaehLabel label={{ fieldName: "vat_applicable" }} />
+                      <div className=" customCheckbox ">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="vat_applicable"
+                            value="Y"
+                            checked={
+                              this.state.vat_applicable === "Y" ? true : false
+                            }
+                            onChange={VatAppilicable.bind(this, this, context)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                    <AlagehFormGroup
+                      div={{ className: "col-6 form-group" }}
+                      label={{
+                        fieldName: "vat_percent"
+                      }}
+                      textBox={{
+                        className: "txt-fld",
+                        name: "vat_percent",
+                        value: this.state.vat_percent,
+
+                        others: {
+                          disabled:
+                            this.state.vat_applicable === "Y" ? false : true
+                        }
+                      }}
+                  /></div></div>
+                  ) : null}
+                  <div className="col-12">
+
+                         <AlgaehLabel
+                            label={{ forceLabel: "Additional Information" }}
+                          />
+                          <textarea
+                            value={this.state.addl_information}
+                            name="addl_information"
+                            onChange={additionaleInfo.bind(this, this, context)}
+                          />
+
+                  </div>
+              </div>
+              </div>
+            <div className="col-6">
                       <div className="row">
                         <AlagehAutoComplete
-                          div={{ className: "col" }}
+                          div={{ className: "col-3" }}
                           label={{
                             fieldName: "uom_id"
                           }}
@@ -328,7 +283,7 @@ class ItemDetails extends Component {
                         />
 
                         <AlagehAutoComplete
-                          div={{ className: "col-3" }}
+                          div={{ className: "col-4" }}
                           label={{
                             fieldName: "stocking_uom"
                           }}
@@ -367,10 +322,10 @@ class ItemDetails extends Component {
                           }}
                         />
 
-                        <div className="col actions">
+                        <div className="col-1 actions" style={{paddingLeft:0}}>
                           <a
                             onClick={AddUom.bind(this, this, context)}
-                            style={{ marginTop: 23 }}
+                            style={{ marginTop: 19 }}
                             // href="javascript"
                             className="btn btn-primary btn-circle active"
                           >
@@ -379,8 +334,8 @@ class ItemDetails extends Component {
                         </div>
                       </div>
 
-                      <div className="row" style={{ marginTop: "10px" }}>
-                        <div className="col-lg-12" id="itemSetupPopGrid">
+                      <div className="row" style={{ marginBottom: "10px" }}>
+                        <div className="col-12" id="itemSetupPopGrid">
                           <AlgaehDataGrid
                             id="UOM_stck"
                             columns={[
@@ -566,108 +521,98 @@ class ItemDetails extends Component {
                             }}
                           />
                         </div>
-                      </div>
-                    </div>
-                    <div className="col-lg-4 card">
-                      <div className="row">
-                        <div className="container-fluid">
-                          <AlgaehLabel
-                            label={{ forceLabel: "Additional Information" }}
-                          />
-                          <textarea
-                            value={this.state.addl_information}
-                            name="addl_information"
-                            onChange={additionaleInfo.bind(this, this, context)}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {this.state.hims_d_inventory_item_master_id === null ? (
-                <div className="row">
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "price"
-                    }}
-                    textBox={{
-                      decimal: { allowNegative: false },
-                      className: "txt-fld",
-                      name: "standard_fee",
-                      value: this.state.standard_fee
-                    }}
+                        </div>    <small>Add UOM in above table to show the list in dropdown</small>
+                <hr style={{ marginTop: 0 }}/>
+                        <div className="row">
+               
+                <AlagehAutoComplete
+                  div={{ className: "col-4 mandatory form-group" }}
+                  label={{
+                    fieldName: "purchase_uom_id",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "purchase_uom_id",
+                    className: "select-fld",
+                    value: this.state.purchase_uom_id,
+                    dataSource: {
+                      textField: "uom_description",
+                      valueField: "uom_id",
+                      data: this.state.detail_item_uom
+                    }
+                  }}
+                />
+                <AlagehAutoComplete
+                  div={{ className: "col-4 mandatory form-group" }}
+                  label={{
+                    fieldName: "sales_uom_id",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "sales_uom_id",
+                    className: "select-fld",
+                    value: this.state.sales_uom_id,
+                    dataSource: {
+                      textField: "uom_description",
+                      valueField: "uom_id",
+                      data: this.state.detail_item_uom
+                    }
+                  }}
+                /><AlagehAutoComplete
+                  div={{ className: "col-4" }}
+                  label={{
+                    fieldName: "item_uom_id"
+                  }}
+                  selector={{
+                    name: "item_uom_id",
+                    className: "select-fld",
+                    value: this.state.item_uom_id,
+                    dataSource: {
+                      textField: "uom_description",
+                      valueField: "uom_id",
+                      data: this.state.detail_item_uom
+                    }
+                  }}
                   />
-
-                  <div className="col">
-                    <div className="row">
-                      <div
-                        className="col customCheckbox"
-                        style={{ paddingTop: "10px" }}
-                      >
-                        <label className="checkbox inline">
-                          <input
-                            type="checkbox"
-                            name="vat_applicable"
-                            value="Y"
-                            checked={
-                              this.state.vat_applicable === "Y" ? true : false
-                            }
-                            onChange={VatAppilicable.bind(this, this, context)}
-                          />
-                          <span>
-                            <AlgaehLabel
-                              label={{ fieldName: "vat_applicable" }}
-                            />
-                          </span>
-                        </label>
-                      </div>
-                      <AlagehFormGroup
-                        div={{ className: "col" }}
-                        label={{
-                          fieldName: "vat_percent"
-                        }}
-                        textBox={{
-                          className: "txt-fld",
-                          name: "vat_percent",
-                          value: this.state.vat_percent,
-
-                          others: {
-                            disabled:
-                              this.state.vat_applicable === "Y" ? false : true
-                          }
-                        }}
-                      />
+                <AlagehAutoComplete
+                  div={{ className: "col-4 mandatory form-group" }}
+                  label={{
+                    fieldName: "stocking_uom_id",
+                    isImp: true
+                  }}
+                  selector={{
+                    name: "stocking_uom_id",
+                    className: "select-fld",
+                    value: this.state.stocking_uom_id,
+                    dataSource: {
+                      textField: "uom_description",
+                      valueField: "hims_d_inventory_uom_id",
+                      data: this.props.inventoryitemuom
+                    },
+                    others: {
+                      disabled: true
+                    }
+                  }}
+                  /> 
+                   <AlagehFormGroup
+                  div={{ className: "col-4 mandatory form-group" }}
+                  label={{
+                    fieldName: "purchase_cost",
+                    isImp: true
+                  }}
+                  textBox={{
+                    className: "txt-fld",
+                    name: "purchase_cost",
+                    value: this.state.purchase_cost,
+                    others: {
+                      min: 0,
+                      type: "number"
+                    }
+                  }}
+                />
+  </div>
                     </div>
-                  </div>
 
-                  <AlagehFormGroup
-                    div={{ className: "col" }}
-                    label={{
-                      fieldName: "cpt_code"
-                    }}
-                    textBox={{
-                      className: "txt-fld",
-                      name: "cpt_code",
-                      value: this.state.cpt_code_data,
-
-                      others: {
-                        disabled: true
-                      }
-                    }}
-                  />
-
-                  <div className="col">
-                    <i
-                      className="fas fa-search"
-                      onClick={CptCodesSearch.bind(this, this, context)}
-                      style={{ marginTop: 25, fontSize: "1.4rem" }}
-                    />
-                  </div>
-                </div>
-              ) : null}
             </div>
           )}
         </MyContext.Consumer>

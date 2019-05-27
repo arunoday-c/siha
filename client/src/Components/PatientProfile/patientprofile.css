@@ -267,17 +267,20 @@
   50% {
     opacity: 0; } }
 
-.listofADDTable {
-  width: 100%;
-  max-width: 100%;
-  background-color: transparent;
-  font-size: 0.8rem; }
-  .listofADDTable th {
-    border: 1px solid #008e7f;
-    padding: 3px;
-    text-align: center;
-    background: #009888; }
-  .listofADDTable td {
-    border: 1px solid #008e7f;
-    padding: 3px;
-    text-align: center; }
+.listofADDWrapper {
+  overflow: auto;
+  max-height: 40vh; }
+  .listofADDWrapper .listofADDTable {
+    width: 100%;
+    max-width: 100%;
+    background-color: transparent;
+    font-size: 0.8rem; }
+    .listofADDWrapper .listofADDTable th {
+      border: 1px solid #008e7f;
+      padding: 3px;
+      text-align: center;
+      background: #009888; }
+    .listofADDWrapper .listofADDTable td {
+      border: 1px solid #008e7f;
+      padding: 3px;
+      text-align: center; }
