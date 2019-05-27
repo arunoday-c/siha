@@ -21,3 +21,6 @@
 
 #itemSetupPopGrid .ReactTable {
   max-height: 25vh !important; }
+
+#InventoryItemMasterGrid .ReactTable {
+  max-height: 77vh !important; }

@@ -94,6 +94,7 @@ class DeptMaster extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/department/deleteDepartment",
+          module: "masterSettings",
           data: {
             hims_d_department_id: data.hims_d_department_id
           },
@@ -141,6 +142,7 @@ class DeptMaster extends Component {
       if (willDelete.value) {
         algaehApiCall({
           uri: "/department/deleteSubDepartment",
+          module: "masterSettings",
           data: {
             hims_d_sub_department_id: data.hims_d_sub_department_id
           },
@@ -180,6 +182,7 @@ class DeptMaster extends Component {
     data.department_status === "I"
       ? algaehApiCall({
           uri: "/department/makeDepartmentInActive",
+          module: "masterSettings",
           data: {
             hims_d_department_id: data.hims_d_department_id
           },
@@ -239,6 +242,7 @@ class DeptMaster extends Component {
     data.sub_department_status === "I"
       ? algaehApiCall({
           uri: "/department/makeSubDepartmentInActive",
+          module: "masterSettings",
           data: {
             hims_d_sub_department_id: data.hims_d_sub_department_id
           },

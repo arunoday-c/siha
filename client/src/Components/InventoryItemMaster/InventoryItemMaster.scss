@@ -1,35 +1,40 @@
 .hims_inventoryitem_setup {
-  #itemSetupGrid {
-    .ReactTable {
-      max-height: 80vh !important;
-    }
-  }
+	#itemSetupGrid {
+		.ReactTable {
+			max-height: 80vh !important;
+		}
+	}
 
-  .toggle-section {
-    margin: 10px;
-    margin-bottom: 0px;
-    // background-color: #f2f2f2;
-  }
+	.toggle-section {
+		margin: 10px;
+		margin-bottom: 0px;
+		// background-color: #f2f2f2;
+	}
 
-  .item-footer {
-    height: "60px";
-    background-color: #000;
-  }
-  .item-section {
-    border: 1px solid #d3d3d3;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    border-top-right-radius: 5px;
-  }
+	.item-footer {
+		height: "60px";
+		background-color: #000;
+	}
+	.item-section {
+		border: 1px solid #d3d3d3;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+		border-top-right-radius: 5px;
+	}
 
-  th,
-  td {
-    border-right: 1px solid #e6e6e6;
-  }
+	th,
+	td {
+		border-right: 1px solid #e6e6e6;
+	}
 }
 
 #itemSetupPopGrid {
-  .ReactTable {
-    max-height: 25vh !important;
-  }
+	.ReactTable {
+		max-height: 25vh !important;
+	}
+}
+#InventoryItemMasterGrid {
+	.ReactTable {
+		max-height: 77vh !important;
+	}
 }

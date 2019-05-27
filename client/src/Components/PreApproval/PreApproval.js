@@ -64,6 +64,7 @@ class PreApproval extends Component {
     ) {
       this.props.getDepartmentsandDoctors({
         uri: "/department/get/get_All_Doctors_DepartmentWise",
+        module: "masterSettings",
         method: "GET",
         redux: {
           type: "DEPT_DOCTOR_GET_DATA",
@@ -346,7 +347,7 @@ class PreApproval extends Component {
                                 />
                                 <i
                                   className="fas fa-file-medical-alt"
-                                  onClick={openUCAFReport.bind(this, this,row)}
+                                  onClick={openUCAFReport.bind(this, this, row)}
                                 />
                               </span>
                             );
@@ -530,7 +531,6 @@ class PreApproval extends Component {
         {this.renderDCAFReport()}
         {this.renderOCAFReport()}
       </div>
-
     );
   }
 }

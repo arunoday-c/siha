@@ -394,6 +394,7 @@ class NurseWorkbench extends Component {
   getDoctorsAndDepts() {
     algaehApiCall({
       uri: "/department/selectDoctorsAndClinic",
+      module: "masterSettings",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -826,7 +827,7 @@ class NurseWorkbench extends Component {
                   value={moment(this.state.selectedHDate).format("YYYY-MM")}
                   max={moment(new Date()).format("YYYY-MM")}
                 />
-               {/* <button
+                {/* <button
                         onClick={() => {
                           this.setState({
                             activeDateHeader: new Date()

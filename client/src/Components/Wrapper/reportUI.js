@@ -211,7 +211,6 @@ export default class ReportUI extends Component {
       alertTypeIcon: "warning",
       pageState: this,
       onSuccess: that => {
-        debugger;
         const element = document.getElementById("report_generation_interface");
         let parameters = [];
         element.querySelectorAll("input").forEach(item => {
@@ -228,7 +227,7 @@ export default class ReportUI extends Component {
             });
           }
         });
-        const reportName = that.props.options.report.reportName;
+        const reportProperties = that.props.options.report;
 
         this.setState(
           {
@@ -245,7 +244,7 @@ export default class ReportUI extends Component {
               others: { responseType: "blob" },
               data: {
                 report: {
-                  reportName: reportName,
+                  ...reportProperties,
                   reportParams: parameters
                 }
               },
@@ -256,7 +255,7 @@ export default class ReportUI extends Component {
                 that.setState({
                   _htmlString: url,
                   buttonDisable: false,
-                  report_name: reportName
+                  report_name: reportProperties.reportName
                 });
               }
             });

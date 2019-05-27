@@ -181,6 +181,8 @@ class ItemSetup extends Component {
           radioActive: firstRecordSet.item_status === "A" ? true : false,
           radioInactive: firstRecordSet.item_status === "I" ? true : false,
           service_id: firstRecordSet.service_id,
+          purchase_cost: firstRecordSet.purchase_cost,
+          addl_information: firstRecordSet.addl_information,
           detail_item_uom:
             firstRecordSet.hims_m_item_uom_id === null ? [] : g.getSource()
         };

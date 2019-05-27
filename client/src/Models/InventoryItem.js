@@ -33,7 +33,8 @@ export default {
       purchase_cost: 0,
       markup_percent: 0,
       sales_price: 0,
-      assesments_notes: null
+      assesments_notes: null,
+      item_type: null
     };
     return output;
   }

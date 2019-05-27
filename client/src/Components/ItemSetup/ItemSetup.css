@@ -20,4 +20,21 @@
   border-right: 1px solid #e6e6e6; }
 
 #itemSetupPopGrid .ReactTable {
-  max-height: 25vh !important; }
+  max-height: 17vh !important; }
+
+.AutoCompleteRight .menu {
+  right: 0 !important;
+  left: auto !important; }
+
+.customGlobalSearch .searchView {
+  padding-right: 0; }
+
+.customGlobalSearch i.searchIcon {
+  border: 1px solid #ebebeb;
+  padding: 7px;
+  margin-top: 20px;
+  height: 30px;
+  border-radius: 0 3px 3px 0;
+  cursor: pointer; }
+  .customGlobalSearch i.searchIcon:hover {
+    border: 1px solid #000; }

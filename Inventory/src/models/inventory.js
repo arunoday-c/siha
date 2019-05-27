@@ -311,12 +311,14 @@ module.exports = {
       _mysql
         .executeQuery({
           query:
-            "select  MIU.hims_m_inventory_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description, MIU.stocking_uom, \
-          MIU.conversion_factor,IM.hims_d_inventory_item_master_id, IM.item_code, IM.item_description, IM.structure_id, \
-          IM.category_id,IM.group_id, IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, \
-          IM.item_status, IM.service_id from  hims_d_inventory_item_master IM left join \
-          hims_m_inventory_item_uom MIU on IM.hims_d_inventory_item_master_id=MIU.item_master_id and IM.record_status='A' and MIU.record_status='A' \
-          left join hims_d_inventory_uom PH  on  MIU.uom_id=PH.hims_d_inventory_uom_id " +
+            "select  MIU.hims_m_inventory_item_uom_id, MIU.item_master_id, MIU.uom_id,PH.uom_description,\
+             MIU.stocking_uom, MIU.conversion_factor,IM.hims_d_inventory_item_master_id,\
+             IM.item_code, IM.item_description, IM.structure_id, IM.category_id,IM.group_id,IM.item_type, \
+             IM.item_uom_id, IM.purchase_uom_id, IM.sales_uom_id, IM.stocking_uom_id, IM.item_status, \
+             IM.service_id, IM.purchase_cost,IM.addl_information from  hims_d_inventory_item_master IM left join \
+             hims_m_inventory_item_uom MIU on IM.hims_d_inventory_item_master_id=MIU.item_master_id \
+             and IM.record_status='A' and MIU.record_status='A' \
+             left join hims_d_inventory_uom PH  on  MIU.uom_id=PH.hims_d_inventory_uom_id " +
             _strQry,
           values: intValues,
           printQuery: true
