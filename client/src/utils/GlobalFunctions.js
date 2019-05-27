@@ -319,7 +319,7 @@ export function AlgaehValidation(options) {
       settings.onSuccess !== undefined &&
       typeof settings.onSuccess === "function"
     )
-      settings.onSuccess();
+      settings.onSuccess(settings.pageState);
 
     return;
   }
@@ -338,96 +338,95 @@ export function AlgaehValidation(options) {
     "[algaeh_required='true']"
   );
   for (let i = 0; i < _Validateerror.length; i++) {
-    try{
-    let _element = _Validateerror[i];
-    let _checkVal = _element.getAttribute("checkvalidation");
-    if (_Validateerror[i].tagName === "DIV") {
-      _element = _Validateerror[i].children[0];
-      if (_checkVal === null) {
-        _checkVal = _Validateerror[i].getAttribute("checkvalidation");
-      }
-    }
-    let value = "";
-    if (_checkVal !== null) {
-      const _val =_element.value ;//=== "" ? "''" : _element.value;
-      value = _val;
-      _checkVal = _checkVal.replace(/\$value/g, _val);
-    }
-    const _role = _element.getAttribute("data_role");
-    let _evalConditions = null;
-    if (_checkVal === null) {
-      if (_role === null) {
-        if (_element.value === "") {
-          _evalConditions = true;
-        } else _evalConditions = false;
-      } else {
-        const _reVal = _element.getAttribute("referencevalue");
-        if (_reVal === null || _reVal === "") {
-          _evalConditions = true;
-        } else _evalConditions = false;
-      }
-    } else {
-      _evalConditions = _checkVal;
-    }
-let expression=false;
-try{
-  expression= eval(_evalConditions)
-}catch(e){
-  expression=false;
-}
-    if (expression) {
-      let _title = _element.getAttribute("errormessage");
+    try {
+      let _element = _Validateerror[i];
+      let _checkVal = _element.getAttribute("checkvalidation");
       if (_Validateerror[i].tagName === "DIV") {
-        _title = _Validateerror[i].getAttribute("errormessage");
-      }
-      const _langua = getCookie("Language");
-
-      if (_title === null) {
-        let _lable = null;
-
-        if (_role === "datepicker") {
-          _lable = _element.offsetParent.offsetParent.innerText;
-        } else if (_role === "dropdownlist") {
-          _lable = _element.offsetParent.previousSibling.innerText;
-        } else {
-          _lable = _element.offsetParent.innerText;
-          if (_Validateerror[i].tagName === "DIV") {
-            _lable = _Validateerror[i].offsetParent.innerText;
-          }
+        _element = _Validateerror[i].children[0];
+        if (_checkVal === null) {
+          _checkVal = _Validateerror[i].getAttribute("checkvalidation");
         }
+      }
+      let value = "";
+      if (_checkVal !== null) {
+        const _val = _element.value; //=== "" ? "''" : _element.value;
+        value = _val;
+        _checkVal = _checkVal.replace(/\$value/g, _val);
+      }
+      const _role = _element.getAttribute("data_role");
+      let _evalConditions = null;
+      if (_checkVal === null) {
+        if (_role === null) {
+          if (_element.value === "") {
+            _evalConditions = true;
+          } else _evalConditions = false;
+        } else {
+          const _reVal = _element.getAttribute("referencevalue");
+          if (_reVal === null || _reVal === "") {
+            _evalConditions = true;
+          } else _evalConditions = false;
+        }
+      } else {
+        _evalConditions = _checkVal;
+      }
+      let expression = false;
+      try {
+        expression = eval(_evalConditions);
+      } catch (e) {
+        expression = false;
+      }
+      if (expression) {
+        let _title = _element.getAttribute("errormessage");
+        if (_Validateerror[i].tagName === "DIV") {
+          _title = _Validateerror[i].getAttribute("errormessage");
+        }
+        const _langua = getCookie("Language");
 
-        _title =
-          _langua === "en"
-            ? _lable
-                .replace("*", "")
-                .toLowerCase()
-                .replace(/^\w/, c => {
-                  return c.toUpperCase();
-                }) + "- Can not be empty"
-            : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
+        if (_title === null) {
+          let _lable = null;
+
+          if (_role === "datepicker") {
+            _lable = _element.offsetParent.offsetParent.innerText;
+          } else if (_role === "dropdownlist") {
+            _lable = _element.offsetParent.previousSibling.innerText;
+          } else {
+            _lable = _element.offsetParent.innerText;
+            if (_Validateerror[i].tagName === "DIV") {
+              _lable = _Validateerror[i].offsetParent.innerText;
+            }
+          }
+
+          _title =
+            _langua === "en"
+              ? _lable
+                  .replace("*", "")
+                  .toLowerCase()
+                  .replace(/^\w/, c => {
+                    return c.toUpperCase();
+                  }) + "- Can not be empty"
+              : _lable.replace("*", "") + "- لا يمكن أن يكون فارغا";
+        }
+        swalMessage({
+          title: _title,
+          type: settings.alertTypeIcon
+        });
+        _element.focus();
+        if (settings.onCatch !== undefined) settings.onCatch(_element.value);
+        if (!settings.multivalidate) {
+          isError = true;
+          break;
+        }
       }
-      swalMessage({
-        title: _title,
-        type: settings.alertTypeIcon
-      });
-      _element.focus();
-      if (settings.onCatch !== undefined) settings.onCatch(_element.value);
-      if (!settings.multivalidate) {
-        isError = true;
-        break;
-      }
+    } catch (e) {
+      console.log(e);
     }
-  }catch(e){
-    console.log(e);
-  }
-
   }
   if (!isError) {
     if (
       settings.onSuccess !== undefined &&
       typeof settings.onSuccess === "function"
     )
-      settings.onSuccess();
+      settings.onSuccess(settings.pageState);
   }
 
   // else {

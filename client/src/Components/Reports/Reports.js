@@ -136,10 +136,7 @@ class Reports extends Component {
                     onClick={() => {
                       AlgaehReport({
                         report: {
-                          fileName: item.template_name,
-                          reportQuery: item.reportQuery,
-                          reportUri: item.reportUri,
-                          module: item.module
+                          reportName: item.reportName
                         },
                         plotUI: {
                           paramters: item.reportParameters
