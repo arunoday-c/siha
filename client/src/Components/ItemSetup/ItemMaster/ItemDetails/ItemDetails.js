@@ -9,6 +9,7 @@ import {
   AlagehAutoComplete,
   AlgaehLabel
 } from "../../../Wrapper/algaehWrapper";
+import { algaehApiCall } from "../../../../utils/algaehApiCall";
 import MyContext from "../../../../utils/MyContext.js";
 import {
   radioChange,
@@ -22,9 +23,10 @@ class ItemDetails extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      batchexpreq: false
+      batchexpreq: false,
+      item_code_placeHolder: ""
     };
-
+    this.initCall();
     if (
       this.props.itemservices === undefined ||
       this.props.itemservices.length === 0
@@ -39,6 +41,28 @@ class ItemDetails extends Component {
         }
       });
     }
+  }
+
+  initCall() {
+    let that = this;
+    algaehApiCall({
+      uri: "/init/",
+      method: "GET",
+      data: {
+        fields: "item_code",
+        tableName: "hims_d_item_master",
+        keyFieldName: "hims_d_item_master_id"
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const placeHolder =
+            response.data.records.length > 0 ? response.data.records[0] : {};
+          that.setState({
+            item_code_placeHolder: placeHolder.item_code
+          });
+        }
+      }
+    });
   }
 
   componentWillMount() {
@@ -57,10 +81,8 @@ class ItemDetails extends Component {
         <MyContext.Consumer>
           {context => (
             <div className="row">
-<div className="col-12">
-
-
-<div className="row">
+              <div className="col-12">
+                <div className="row">
                   {/* Patient code */}
                   <AlagehFormGroup
                     div={{ className: "col-2 mandatory form-group" }}
@@ -71,10 +93,12 @@ class ItemDetails extends Component {
                     textBox={{
                       className: "txt-fld",
                       name: "item_code",
-                      value: this.state.item_code
+                      value: this.state.item_code,
+                      others: {
+                        placeholder: this.state.item_code_placeHolder
+                      }
                     }}
                   />
-
                   <AlagehFormGroup
                     div={{ className: "col-4 mandatory form-group" }}
                     label={{
@@ -87,7 +111,6 @@ class ItemDetails extends Component {
                       value: this.state.item_description
                     }}
                   />
-                  
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory form-group" }}
                     label={{
@@ -106,7 +129,9 @@ class ItemDetails extends Component {
                     }}
                   />
                   <AlagehAutoComplete
-                    div={{ className: "col-3 mandatory AutoCompleteRight form-group " }}
+                    div={{
+                      className: "col-3 mandatory AutoCompleteRight form-group "
+                    }}
                     label={{
                       fieldName: "category_id",
                       isImp: true
@@ -122,7 +147,6 @@ class ItemDetails extends Component {
                       }
                     }}
                   />
-
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory form-group" }}
                     label={{
@@ -139,25 +163,25 @@ class ItemDetails extends Component {
                         data: this.props.sfda
                       }
                     }}
-                  />  <AlagehAutoComplete
-                  div={{ className: "col-3 mandatory form-group" }}
-                  label={{
-                    fieldName: "group_id",
-                    isImp: true
-                  }}
-                  selector={{
-                    name: "group_id",
-                    className: "select-fld",
-                    value: this.state.group_id,
-                    dataSource: {
-                      textField: "group_description",
-                      valueField: "hims_d_item_group_id",
-                      data: this.props.itemgroup
-                    }
-                  }}
-                />
-
-<AlagehFormGroup
+                  />{" "}
+                  <AlagehAutoComplete
+                    div={{ className: "col-3 mandatory form-group" }}
+                    label={{
+                      fieldName: "group_id",
+                      isImp: true
+                    }}
+                    selector={{
+                      name: "group_id",
+                      className: "select-fld",
+                      value: this.state.group_id,
+                      dataSource: {
+                        textField: "group_description",
+                        valueField: "hims_d_item_group_id",
+                        data: this.props.itemgroup
+                      }
+                    }}
+                  />
+                  <AlagehFormGroup
                     div={{ className: "col-2 mandatory form-group" }}
                     label={{
                       fieldName: "purchase_cost",
@@ -189,7 +213,6 @@ class ItemDetails extends Component {
                       }
                     }}
                   />
-
                   <AlagehAutoComplete
                     div={{ className: "col-2 AutoCompleteRight form-group " }}
                     label={{
@@ -206,155 +229,134 @@ class ItemDetails extends Component {
                       }
                     }}
                   />
-
                 </div>
-</div>
+              </div>
 
-
-<div className="col-5">
-
-                    <div className="row">
-
-
-<div className="col-6">
+              <div className="col-5">
+                <div className="row">
+                  <div className="col-6">
                     <label>Item Currently </label>
-<div className="customRadio"  style={{borderBottom:0}}>
-    <label className="radio inline">
-      <input
-        type="radio"
-        value="Active"
-        checked={this.state.radioActive}
-        onChange={radioChange.bind(this, this, context)}
-      />
-      <span>
-        <AlgaehLabel
-          label={{
-            fieldName: "active"
-          }}
-        />
-      </span>
-    </label>
-    <label className="radio inline">
-      <input
-        type="radio"
-        value="Inactive"
-        checked={this.state.radioInactive}
-        onChange={radioChange.bind(this, this, context)}
-      />
-      <span>
-        <AlgaehLabel
-          label={{
-            fieldName: "inactive"
-          }}
-        />
-      </span>
-    </label>
-  </div>
-</div>
-                    <div className="col-6">
+                    <div className="customRadio" style={{ borderBottom: 0 }}>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Active"
+                          checked={this.state.radioActive}
+                          onChange={radioChange.bind(this, this, context)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "active"
+                            }}
+                          />
+                        </span>
+                      </label>
+                      <label className="radio inline">
+                        <input
+                          type="radio"
+                          value="Inactive"
+                          checked={this.state.radioInactive}
+                          onChange={radioChange.bind(this, this, context)}
+                        />
+                        <span>
+                          <AlgaehLabel
+                            label={{
+                              fieldName: "inactive"
+                            }}
+                          />
+                        </span>
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-6">
                     <label>Expiry Date</label>
-<div
-  className="customCheckbox" style={{borderBottom:0}}
->
-  <label className="checkbox" style={{ color: "#212529" }}>
-    <input
-      type="checkbox"
-      name="required_batchno_expiry"
-      checked={
-        this.state.required_batchno_expiry === "Y"
-          ? true
-          : false
-      }  onChange={BatchExpRequired.bind(this, this, context)}
-    />
-    <span>
-      Not Required
-    </span>
-  </label>
-</div>
-</div>
-</div>
+                    <div className="customCheckbox" style={{ borderBottom: 0 }}>
+                      <label className="checkbox" style={{ color: "#212529" }}>
+                        <input
+                          type="checkbox"
+                          name="required_batchno_expiry"
+                          checked={
+                            this.state.required_batchno_expiry === "Y"
+                              ? true
+                              : false
+                          }
+                          onChange={BatchExpRequired.bind(this, this, context)}
+                        />
+                        <span>Not Required</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-</div>
-            
-<div className="col-7">
+              <div className="col-7">
                 {this.state.hims_d_item_master_id === null ? (
                   <div className="row">
-                   
-<div className="col-3">
-<AlgaehLabel label={{ fieldName: "vat_applicable" }}/>
- <div
-                          className=" customCheckbox "
-                        >
-                          <label className="checkbox inline">
-                            <input
-                              type="checkbox"
-                              name="vat_applicable"
-                              value="Y"
-                              checked={
-                                this.state.vat_applicable === "Y" ? true : false
-                              }
-                              onChange={VatAppilicable.bind(
-                                this,
-                                this,
-                                context
-                              )}
-                            />
-                            <span>
-                             Yes
-                            </span>
-                          </label>
-                        </div></div>
-                        <AlagehFormGroup
-                          div={{ className: "col-3" }}
-                          label={{
-                            fieldName: "vat_percent"
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "vat_percent",
-                            value: this.state.vat_percent,
-
-                            others: {
-                              disabled:
-                                this.state.vat_applicable === "Y" ? false : true
+                    <div className="col-3">
+                      <AlgaehLabel label={{ fieldName: "vat_applicable" }} />
+                      <div className=" customCheckbox ">
+                        <label className="checkbox inline">
+                          <input
+                            type="checkbox"
+                            name="vat_applicable"
+                            value="Y"
+                            checked={
+                              this.state.vat_applicable === "Y" ? true : false
                             }
-                          }}
-                        />
-    <div className="col customGlobalSearch"> 
-    <div className="row"><AlagehFormGroup
-                      div={{ className: "col-10  searchView" }}
+                            onChange={VatAppilicable.bind(this, this, context)}
+                          />
+                          <span>Yes</span>
+                        </label>
+                      </div>
+                    </div>
+                    <AlagehFormGroup
+                      div={{ className: "col-3" }}
                       label={{
-                        fieldName: "cpt_code"
+                        fieldName: "vat_percent"
                       }}
                       textBox={{
                         className: "txt-fld",
-                        name: "cpt_code",
-                        value: this.state.cpt_code_data,
+                        name: "vat_percent",
+                        value: this.state.vat_percent,
+
                         others: {
-                          disabled: true
+                          disabled:
+                            this.state.vat_applicable === "Y" ? false : true
                         }
                       }}
-                    />  
-                       <i
-                        className="fas fa-search searchIcon"
-                        onClick={CptCodesSearch.bind(this, this, context)}
-                        //style={{ marginTop: 25, fontSize: "1.4rem" }}
-                      /></div>
+                    />
+                    <div className="col customGlobalSearch">
+                      <div className="row">
+                        <AlagehFormGroup
+                          div={{ className: "col-10  searchView" }}
+                          label={{
+                            fieldName: "cpt_code"
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "cpt_code",
+                            value: this.state.cpt_code_data,
+                            others: {
+                              disabled: true
+                            }
+                          }}
+                        />
+                        <i
+                          className="fas fa-search searchIcon"
+                          onClick={CptCodesSearch.bind(this, this, context)}
+                          //style={{ marginTop: 25, fontSize: "1.4rem" }}
+                        />
+                      </div>
                     </div>
-                   
-
                   </div>
                 ) : null}
-</div>
-
-
-
+              </div>
 
               <div className="col-12">
-                <hr/>
-                   <div className="row">
+                <hr />
+                <div className="row">
                   {/* Patient code */}
-                
 
                   <AlagehAutoComplete
                     div={{ className: "col-3 mandatory p" }}
@@ -411,42 +413,41 @@ class ItemDetails extends Component {
                     }}
                     //forceUpdate={true}
                   />
-                   <AlagehFormGroup
-                      div={{ className: "col-2 mandatory " }}
-                      label={{
-                        fieldName: "price"
-                      }}
-                      textBox={{
-                        decimal: { allowNegative: false },
-                        className: "txt-fld",
-                        name: "standard_fee",
-                        value: this.state.standard_fee
-                      }}
-                    />
+                  <AlagehFormGroup
+                    div={{ className: "col-2 mandatory " }}
+                    label={{
+                      fieldName: "price"
+                    }}
+                    textBox={{
+                      decimal: { allowNegative: false },
+                      className: "txt-fld",
+                      name: "standard_fee",
+                      value: this.state.standard_fee
+                    }}
+                  />
 
                   <AlagehAutoComplete
-                                      div={{ className: "col-3" }}
-                                      label={{
-                                        fieldName: "item_uom_id"
-                                      }}
-                                      selector={{
-                                        name: "item_uom_id",
-                                        className: "select-fld",
-                                        value: this.state.item_uom_id,
-                                        dataSource: {
-                                          textField: "uom_description",
-                                          valueField: "uom_id",
-                                          data: this.state.detail_item_uom
-                                        }
-                                      }}
-                                    />
+                    div={{ className: "col-3" }}
+                    label={{
+                      fieldName: "item_uom_id"
+                    }}
+                    selector={{
+                      name: "item_uom_id",
+                      className: "select-fld",
+                      value: this.state.item_uom_id,
+                      dataSource: {
+                        textField: "uom_description",
+                        valueField: "uom_id",
+                        data: this.state.detail_item_uom
+                      }
+                    }}
+                  />
                 </div>
- <small>(Add UOM from below table to show in dropdown list)</small>
+                <small>
+                  (Add UOM from below table to show in dropdown list)
+                </small>
               </div>
-
             </div>
-
-            
           )}
         </MyContext.Consumer>
       </React.Fragment>

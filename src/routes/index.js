@@ -82,12 +82,14 @@ import dentalForm from "../EHR/controller/dentalForm";
 import opthometry from "../EHR/controller/opthometry";
 
 import diagram from "../controller/diagram";
+import myInit from "../controller/myinit";
 //connect to DB
 //function(db)
 initializedDb(db => {
   //internal middleware
   router.use(middleware({ config, db }));
   //api router v1
+  router.use("/init", myInit());
   router.use("/apiAuth", account({ config, db }));
   router.use("/employee", employee({ config, db }));
   router.use("/department", department({ config, db }));

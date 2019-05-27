@@ -273,15 +273,16 @@ export function algaehApiCall(options) {
               err.message === "Network Error"
             ) {
               const routers = config.routersAndPorts;
-
-              swalMessage({
-                title:
-                  "'" +
-                  routers[settings.module]["name"] +
-                  "' module is not yet started",
-                type: "info",
-                position: "top"
-              });
+              if (routers[settings.module] !== undefined) {
+                swalMessage({
+                  title:
+                    "'" +
+                    routers[settings.module]["name"] +
+                    "' module is not yet started",
+                  type: "info",
+                  position: "top"
+                });
+              }
             } else if (
               err.response !== undefined &&
               err.response.headers["content-type"] ===

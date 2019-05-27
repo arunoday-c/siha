@@ -40,7 +40,7 @@
   "author": "ALGAEH Technologies Pvt Ltd",
   "license": "ISC",
   "dependencies": {
-    "algaeh-mysql": "^1.2.5",
+    "algaeh-mysql": "^1.2.11",
     "aws-sdk": "^2.247.1",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
