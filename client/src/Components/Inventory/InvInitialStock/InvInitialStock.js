@@ -219,7 +219,7 @@ class InvInitialStock extends Component {
               <div className="portlet-body">
                 <div className="row inline">
                   <AlagehFormGroup
-                    div={{ className: "col-lg-12" }}
+                    div={{ className: "col-4" }}
                     label={{
                       forceLabel: "Description Inv"
                     }}
@@ -229,8 +229,12 @@ class InvInitialStock extends Component {
                       value: this.state.description,
                       events: {
                         onChange: changeTexts.bind(this, this)
-                      }
+                      },
+              others:{
+                       autoComplete:"off"
+                    }
                     }}
+                   
                   />
                 </div>
                 <div className="row" data-validate="InvIntialStock">
@@ -244,7 +248,8 @@ class InvInitialStock extends Component {
                       dataSource: {
                         textField: "location_description",
                         valueField: "hims_d_inventory_location_id",
-                        data: this.props.inventorylocations
+                        data: this.props.inventorylocations,
+                autoComplete: "off"
                       },
 
                       onChange: LocationchangeTexts.bind(this, this),
@@ -276,7 +281,8 @@ class InvInitialStock extends Component {
                           item_group_id: null,
                           uom_id: null
                         });
-                      }
+                      },
+                autoComplete: "off"
                     }}
                   />
                   <AlagehAutoComplete
@@ -294,7 +300,8 @@ class InvInitialStock extends Component {
                       others: {
                         disabled: true
                       },
-                      onChange: null
+                      onChange: null,
+                autoComplete: "off"
                     }}
                   />
 
@@ -313,7 +320,8 @@ class InvInitialStock extends Component {
                       others: {
                         disabled: true
                       },
-                      onChange: null
+                      onChange: null,
+                autoComplete: "off"
                     }}
                   />
 
@@ -332,7 +340,8 @@ class InvInitialStock extends Component {
                       others: {
                         disabled: true
                       },
-                      onChange: itemchangeText.bind(this, this)
+                      onChange: itemchangeText.bind(this, this),
+                autoComplete: "off"
                     }}
                   />
                   <AlagehFormGroup
@@ -347,7 +356,10 @@ class InvInitialStock extends Component {
                       value: this.state.batchno,
                       events: {
                         onChange: changeTexts.bind(this, this)
-                      }
+                      },
+              others:{
+                       autoComplete:"off"
+                    }
                     }}
                   />
 
@@ -380,7 +392,7 @@ class InvInitialStock extends Component {
                         onChange: numberchangeTexts.bind(this, this)
                       },
                       others: {
-                        step: "1"
+                        step: "1",  autoComplete:"off"
                       }
                     }}
                   />
@@ -397,6 +409,8 @@ class InvInitialStock extends Component {
                       name: "unit_cost",
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
+                      },
+                 others: { autoComplete:"off"
                       }
                     }}
                   />
@@ -413,6 +427,9 @@ class InvInitialStock extends Component {
                       name: "grn_number",
                       events: {
                         onChange: changeTexts.bind(this, this)
+                      },
+                 others: {
+                        autoComplete:"off"
                       }
                     }}
                   />

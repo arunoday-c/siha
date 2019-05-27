@@ -1045,7 +1045,10 @@
   :global .lab_section {
     font-weight: normal; }
   :global .imp {
-    color: #ff063e; }
+    color: #ff063e;
+    font-size: 1.2rem;
+    font-weight: bold;
+    line-height: 0; }
   :global .txt-fld {
     background-color: #fbfbfb;
     width: 100%; }
