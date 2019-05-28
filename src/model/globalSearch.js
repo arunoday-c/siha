@@ -9,8 +9,9 @@ import _ from "lodash";
 let searchData = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
+    console.log("ABCD");
     let inputParam = req.query;
-    debugLog("Query based Parameters", inputParam);
+    console.log("Query based Parameters", inputParam);
     if (inputParam.searchName == null || inputParam.searchName == "")
       next(
         httpStatus.generateError(

@@ -439,6 +439,17 @@ let algaehSearchConfig = (searchName, req) => {
           and IM.group_id = IG.hims_d_inventory_item_group_id and IM.sales_uom_id=PU.hims_d_inventory_uom_id \
           and IL.item_id = IM.hims_d_inventory_item_master_id",
         orderBy: "IM.hims_d_inventory_item_master_id desc"
+      },
+      {
+        searchName: "insservicemaster",
+        searchQuery:
+          "select service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval\
+            from hims_d_services where hims_d_services_id not in\
+            (SELECT services_id FROM hims_d_services_insurance where  insurance_id=?)\
+            union all\
+            SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval \
+            FROM hims_d_services_insurance where  insurance_id=?",
+        orderBy: "hims_d_services_id desc"
       }
     ]
   };

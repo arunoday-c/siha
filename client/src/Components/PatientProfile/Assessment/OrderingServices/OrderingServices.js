@@ -10,6 +10,8 @@ import {
   AlagehAutoComplete,
   AlgaehModalPopUp
 } from "../../../Wrapper/algaehWrapper";
+import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
+import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 import {
   serviceTypeHandeler,
@@ -262,7 +264,44 @@ class OrderingServices extends Component {
                   }}
                 />
 
-                {this.state.insured === "Y" ? (
+                <AlgaehAutoSearch
+                  div={{ className: "col-3" }}
+                  label={{ forceLabel: "Select Service" }}
+                  title="Search Services"
+                  id="service_id_search"
+                  template={result => {
+                    debugger;
+                    return (
+                      <section className="resultSecStyles">
+                        <div className="row">
+                          <div className="col-8">
+                            <h4 className="title">{result.service_name}</h4>
+                            <small>
+                              {result.covered === "Y" ? "Yes" : "No"}
+                            </small>
+                            <small>
+                              {result.pre_approval === "Y" ? "Yes" : "No"}
+                            </small>
+                          </div>
+                        </div>
+                      </section>
+                    );
+                  }}
+                  name="item_id"
+                  columns={spotlightSearch.Services.servicemaster}
+                  displayField="service_name"
+                  value={this.state.service_name}
+                  extraParameters={{
+                    insurance_id: this.state.insurance_provider_id,
+                    insurance_id: this.state.insurance_provider_id
+                  }}
+                  searchName="insservicemaster"
+                  onClick={serviceHandeler.bind(this, this)}
+                  ref={attReg => {
+                    this.attReg = attReg;
+                  }}
+                />
+                {/*{this.state.insured === "Y" ? (
                   <AlagehAutoComplete
                     div={{ className: "col" }}
                     label={{
@@ -298,13 +337,6 @@ class OrderingServices extends Component {
                               ? item.service_name
                               : item.arabic_service_name}
                           </h5>
-                          <h6>
-                            "Covred: "{item.covered === "Y" ? "Yes" : "No"}
-                          </h6>
-                          <h6>
-                            "Approval: "
-                            {item.pre_approval === "Y" ? "Yes" : "No"}
-                          </h6>
                         </div>
                       )
                     }}
@@ -331,7 +363,7 @@ class OrderingServices extends Component {
                       onChange: serviceHandeler.bind(this, this)
                     }}
                   />
-                )}
+                )}*/}
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}
@@ -614,14 +646,6 @@ class OrderingServices extends Component {
                               {row.pre_approval === "Y"
                                 ? "Required"
                                 : "Not Required"}
-                              {row.pre_approval === "Y" ? (
-                                <button
-                                  className="btn btn-primary btn-rounded"
-                                  onClick={this.playclick.bind(this)}
-                                >
-                                  Apply
-                                </button>
-                              ) : null}
                             </span>
                           );
                         },

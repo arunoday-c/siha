@@ -82,20 +82,15 @@ class PointOfSale extends Component {
       });
     }
 
-    if (
-      this.props.poslocations === undefined ||
-      this.props.poslocations.length === 0
-    ) {
-      this.props.getLocation({
-        uri: "/pharmacyGlobal/getUserLocationPermission",
-        module: "pharmacy",
-        method: "GET",
-        redux: {
-          type: "LOCATIOS_GET_DATA",
-          mappingName: "poslocations"
-        }
-      });
-    }
+    this.props.getLocation({
+      uri: "/pharmacyGlobal/getUserLocationPermission",
+      module: "pharmacy",
+      method: "GET",
+      redux: {
+        type: "LOCATIOS_GET_DATA",
+        mappingName: "poslocations"
+      }
+    });
 
     let IOputs = {};
     let _screenName = getCookie("ScreenName").replace("/", "");
@@ -200,6 +195,7 @@ class PointOfSale extends Component {
   }
 
   render() {
+    debugger;
     const _posLocation = Enumerable.from(this.props.poslocations)
       .where(w => w.allow_pos === "Y")
       .toArray();
