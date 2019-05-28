@@ -343,12 +343,13 @@ let addPatientPrescription = (req, res, next) => {
                     connection.query(
                       "SELECT hims_f_prescription_detail_id, service_id from hims_f_prescription P, hims_f_prescription_detail PD\
                          where P.hims_f_prescription_id = PD.prescription_id and P.`patient_id`=? and \
-                         P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and `service_id` in (?)",
+                         P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and hospital_id=? and `service_id` in (?)",
                       [
                         input.patient_id,
                         input.provider_id,
                         input.encounter_id,
                         input.episode_id,
+                        req.userIdentity.hospital_id,
                         services
                       ],
                       (error, detail_res) => {

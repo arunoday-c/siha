@@ -23,10 +23,11 @@ import Enumarable from "linq";
 import AlgaehFile from "../../../../Wrapper/algaehFileUpload";
 import { getCookie } from "../../../../../utils/algaehApiCall";
 import { AlgaehOpenContainer } from "../../../../../utils/GlobalFunctions";
+import { algaehApiCall } from "../../../../../utils/algaehApiCall";
 class PersonalDetails extends Component {
   constructor(props) {
     super(props);
-
+    this.initCall();
     const _activeModel = JSON.parse(
       AlgaehOpenContainer(sessionStorage.getItem("AlgaehOrbitaryData"))
     );
@@ -35,6 +36,28 @@ class PersonalDetails extends Component {
       selectedLang: getCookie("Language"),
       activeModel: _activeModel
     };
+  }
+
+  initCall() {
+    let that = this;
+    algaehApiCall({
+      uri: "/init/",
+      method: "GET",
+      data: {
+        fields: "employee_code",
+        tableName: "hims_d_employee",
+        keyFieldName: "hims_d_employee_id"
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const placeHolder =
+            response.data.records.length > 0 ? response.data.records[0] : {};
+          that.setState({
+           employee_code_placeHolder: placeHolder.employee_code
+          });
+        }
+      }
+    });
   }
 
   componentDidMount() {
@@ -94,6 +117,9 @@ class PersonalDetails extends Component {
     }
   }
 
+
+
+
   componentWillReceiveProps(nextProps) {
     this.setState(nextProps.EmpMasterIOputs.state.personalDetails, () => {});
   }
@@ -136,8 +162,10 @@ class PersonalDetails extends Component {
                         events: {
                           onChange: texthandle.bind(this, this)
                         },
+                        
                         others: {
-                          tabIndex: "1"
+                          tabIndex: "1",
+                            placeholder: this.state.employee_code_placeHolder
                         }
                       }}
                     />

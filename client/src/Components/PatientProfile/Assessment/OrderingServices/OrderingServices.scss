@@ -1,42 +1,51 @@
 .hptl-phase1-ordering-services-form {
-  background: #ffff;
-  .form-details {
-    padding: 5px;
-    padding-bottom: 5px;
-  }
-  mark {
-    background: none;
-    color: red;
-  }
+	background: #ffff;
+	.form-details {
+		padding: 5px;
+		padding-bottom: 5px;
+	}
+	mark {
+		background: none;
+		color: red;
+	}
 
-  .form-group {
-    margin-bottom: 0;
-    margin-top: 4px;
-    padding: 0;
-    padding-top: 20px;
-    cursor: pointer;
-  }
+	.form-group {
+		margin-bottom: 0;
+		margin-top: 4px;
+		padding: 0;
+		padding-top: 20px;
+		cursor: pointer;
+	}
 
-  .go-button {
-    cursor: pointer;
-    margin-bottom: -15px;
-    margin-top: -10px;
-  }
-  #doctorOrder {
-    .ReactTable {
-      height: 33vh !important;
-      margin-bottom: 15px;
-    }
-  }
+	.go-button {
+		cursor: pointer;
+		margin-bottom: -15px;
+		margin-top: -10px;
+	}
+	#doctorOrder {
+		.ReactTable {
+			height: 33vh !important;
+			margin-bottom: 15px;
+		}
+	}
 }
 #Services_Ordering {
-  .ReactTable {
-    height: 54vh !important;
-  }
+	.ReactTable {
+		height: 54vh !important;
+	}
 }
 .GridTotalDetails {
-  h5 {
-    margin-top: 0;
-    font-size: 1.3rem;
-  }
+	h5 {
+		margin-top: 0;
+		font-size: 1.3rem;
+	}
+}
+.insurancecovered {
+	background: #00a796;
+	color: #fff;
+}
+
+.coveredandpreapp {
+	background: #f58220;
+	color: #fff;
 }

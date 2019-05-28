@@ -124,6 +124,7 @@ hbs.registerHelper("groupBy", function(data, groupby) {
       };
     })
     .value();
+
   return groupBy;
 });
 hbs.registerHelper("currentDateTime", function(type) {
@@ -219,7 +220,7 @@ module.exports = {
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
-
+      console.log("_inputParam:", _inputParam);
       _mysql
         .executeQuery({
           query:
@@ -233,6 +234,7 @@ module.exports = {
           printQuery: true
         })
         .then(data => {
+          _inputParam["hospital_id"] = req.userIdentity["x-branch"];
           const _reportCount = data[0].length;
           if (_reportCount > 0) {
             let _reportOutput = [];
@@ -448,6 +450,7 @@ module.exports = {
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
+                      args: _inputParam,
                       loadash: _,
                       moment: moment,
                       mainData: data[1],

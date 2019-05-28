@@ -109,13 +109,14 @@ export default [
         subitem: "Appointment List",
         reportName: "appointmentList",
         pageSize: "A4",
+        requireIframe:true,
         pageOrentation: "landscap", //"portrait",
         reportParameters: [
           {
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
 
             label: "Select Department",
             link: {

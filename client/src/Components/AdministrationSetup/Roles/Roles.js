@@ -20,12 +20,35 @@ class Roles extends Component {
   constructor(props) {
     super(props);
 
+    this.initCall();
     this.state = {
       groups: [],
       roles: []
     };
     this.getGroups();
     this.getRoles();
+  }
+
+      initCall() {
+    let that = this;
+    algaehApiCall({
+      uri: "/init/",
+      method: "GET",
+      data: {
+        fields: "role_code",
+        tableName: "algaeh_d_app_roles",
+        keyFieldName: "app_d_app_roles_id"
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const placeHolder =
+            response.data.records.length > 0 ? response.data.records[0] : {};
+          that.setState({
+           role_code_placeHolder: placeHolder.role_code
+          });
+        }
+      }
+    });
   }
 
   changeTexts(e) {
@@ -243,7 +266,10 @@ class Roles extends Component {
                   value: this.state.role_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  }
+                  },   others: {
+                          tabIndex: "1",
+                            placeholder: this.state.role_code_placeHolder
+                        }
                 }}
               />
               <AlagehFormGroup

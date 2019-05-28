@@ -26,3 +26,11 @@
 .GridTotalDetails h5 {
   margin-top: 0;
   font-size: 1.3rem; }
+
+.insurancecovered {
+  background: #00a796;
+  color: #fff; }
+
+.coveredandpreapp {
+  background: #f58220;
+  color: #fff; }

@@ -22,7 +22,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 class PatientType extends Component {
   constructor(props) {
     super(props);
-
+    this.initCall();
     this.state = {
       hims_d_patient_type_id: "",
       patient_type_code: "",
@@ -32,6 +32,28 @@ class PatientType extends Component {
       gridrefresh: true
     };
     this.baseState = this.state;
+  }
+
+      initCall() {
+    let that = this;
+    algaehApiCall({
+      uri: "/init/",
+      method: "GET",
+      data: {
+        fields: "patient_type_code",
+        tableName: "hims_d_patient_type",
+        keyFieldName: "hims_d_patient_type_id"
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const placeHolder =
+            response.data.records.length > 0 ? response.data.records[0] : {};
+          that.setState({
+         patient_type_code_placeHolder: placeHolder.patient_type_code
+          });
+        }
+      }
+    });
   }
 
   componentDidMount() {
@@ -215,7 +237,10 @@ class PatientType extends Component {
                   value: this.state.patient_type_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  }
+                  },   others: {
+                          tabIndex: "1",
+                            placeholder: this.state.patient_type_code_placeHolder
+                        }
                 }}
               />
 

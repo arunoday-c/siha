@@ -132,10 +132,10 @@ ajv@^5.2.3, ajv@^5.3.0:
     fast-json-stable-stringify "^2.0.0"
     json-schema-traverse "^0.3.0"
 
-algaeh-mysql@^1.1.13:
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/algaeh-mysql/-/algaeh-mysql-1.2.9.tgz#4784be04be5943e941fa8b6a420047d9de3f0fb0"
-  integrity sha512-XGU3HW31jhNNSP1dCnP8V2SROYNTEH82HWucldS7BZF6vMNaxIxRwHwxSul0Hx1+PGieAnZvWJPxnoxgpGrinQ==
+algaeh-mysql@^1.2.11:
+  version "1.2.11"
+  resolved "https://registry.yarnpkg.com/algaeh-mysql/-/algaeh-mysql-1.2.11.tgz#f3c8a4864b675347c8349febf1c6e654adb60fe3"
+  integrity sha512-9ZRftcJsi/tbp8hFVYB0fZpLs3E3a/zlwNqkyuXCVJsPIX3yNkXdBJvlOLgDWRY6jnD3Jh0GbV/p0vwnZAlSPg==
   dependencies:
     lodash "^4.17.11"
     lokijs "^1.5.6"

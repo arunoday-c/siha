@@ -576,6 +576,7 @@ export default class ReportUI extends Component {
 
   render() {
     const _isBarcodeReport = this.props.isbarcodereport;
+    
     if (this.state.hasError) {
       return null;
     }
@@ -643,17 +644,18 @@ export default class ReportUI extends Component {
               ref={el => (this.algehPrintRef = el)}
               style={{ minHeight: "30vh" }}
             >
-              {/*}<div
-                dangerouslySetInnerHTML={{
-                  __html: this.state._htmlString
-                }}
-              />*/}
-
-              <iframe
+              {/*}*/}
+              {console.log("this.props", this.props)}
+{this.props.options.report !==undefined && this.props.options.report.requireIframe ===true?(<iframe
                 src={this.state._htmlString}
                 width="100%"
                 height="500px"
-              />
+              />):(<div
+                dangerouslySetInnerHTML={{
+                  __html: this.state._htmlString
+                }}
+              />)}
+              
 
               <div className="col-lg-12">
                 <div className="row">
