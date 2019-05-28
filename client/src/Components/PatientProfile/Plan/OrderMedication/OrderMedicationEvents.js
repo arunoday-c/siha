@@ -29,20 +29,25 @@ const numberhandle = ($this, ctrl, e) => {
       [name]: value
     });
   }
-  // ,
-  // () => {
-  //   calcuateDispense($this);
-  // }
 };
 
 //Save Order
 const SaveMedication = ($this, e) => {
   if ($this.state.medicationitems.length > 0) {
+    debugger;
     let inputObj = {
       patient_id: $this.state.patient_id,
       encounter_id: $this.state.encounter_id,
       provider_id: $this.state.provider_id,
       episode_id: $this.state.episode_id,
+      visit_id: $this.state.visit_id,
+
+      insurance_provider_id: $this.state.insurance_provider_id,
+      insurance_network_office_id:
+        $this.state.hims_d_insurance_network_office_id,
+      network_id: $this.state.network_id,
+      sub_insurance_provider_id: $this.state.sub_insurance_provider_id,
+
       medicationitems: $this.state.medicationitems
     };
     algaehApiCall({
@@ -241,6 +246,16 @@ const AddItems = $this => {
               ? "N"
               : data.billdetails[0].pre_approval;
           medicationobj.insured = data.billdetails[0].insurance_yesno;
+          medicationobj.gross_amt = data.billdetails[0].gross_amount;
+          medicationobj.net_amount = data.billdetails[0].net_amout;
+
+          if (medicationobj.pre_approval === "Y") {
+            swalMessage({
+              title: "Selected Item is Pre Approval",
+              type: "warning"
+            });
+          }
+
           medicationitems.push(medicationobj);
           $this.setState({
             medicationitems: medicationitems,

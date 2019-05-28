@@ -112,11 +112,13 @@ const saveNetworkPlan = ($this, context) => {
 
     algaehApiCall({
       uri: "/insurance/addPlanAndPolicy",
+      module: "insurance",
       data: newdata,
       onSuccess: response => {
         if (response.data.success === true) {
           $this.props.getNetworkPlans({
             uri: "/insurance/getNetworkAndNetworkOfficRecords",
+            module: "insurance",
             method: "GET",
             printInput: true,
             data: {
@@ -142,8 +144,8 @@ const saveNetworkPlan = ($this, context) => {
           if (context !== undefined) {
             context.updateState({
               network_plan: previous,
-              insurance_provider_id:$this.state.insurance_provider_id,
-              insurance_provider_name:$this.state.insurance_provider_name              
+              insurance_provider_id: $this.state.insurance_provider_id,
+              insurance_provider_name: $this.state.insurance_provider_name
             });
           }
           addNewNetwork($this);
@@ -155,45 +157,48 @@ const saveNetworkPlan = ($this, context) => {
 };
 
 const addNewNetwork = $this => {
-  $this.setState({
-    hims_d_insurance_network_id: null,
-    network_type: null,
-    insurance_sub_id: null,
+  $this.setState(
+    {
+      hims_d_insurance_network_id: null,
+      network_type: null,
+      insurance_sub_id: null,
 
-    effective_start_date: null,
-    effective_end_date: null,
+      effective_start_date: null,
+      effective_end_date: null,
 
-    hims_d_insurance_network_office_id: null,
-    network_id: null,
-    deductible: 0,
-    copay_consultation: 0,
-    max_value: 0,
-    deductible_lab: 0,
-    copay_percent: 0,
-    lab_max: 0,
-    deductible_rad: 0,
-    copay_percent_rad: 0,
-    rad_max: 0,
-    deductible_trt: 0,
-    copay_percent_trt: 0,
-    trt_max: 0,
-    deductible_dental: 0,
-    copay_percent_dental: 0,
-    dental_max: 0,
-    deductible_medicine: 0,
-    copay_medicine: 0,
-    medicine_max: 0,
+      hims_d_insurance_network_office_id: null,
+      network_id: null,
+      deductible: 0,
+      copay_consultation: 0,
+      max_value: 0,
+      deductible_lab: 0,
+      copay_percent: 0,
+      lab_max: 0,
+      deductible_rad: 0,
+      copay_percent_rad: 0,
+      rad_max: 0,
+      deductible_trt: 0,
+      copay_percent_trt: 0,
+      trt_max: 0,
+      deductible_dental: 0,
+      copay_percent_dental: 0,
+      dental_max: 0,
+      deductible_medicine: 0,
+      copay_medicine: 0,
+      medicine_max: 0,
 
-    price_from: null,
-    employer: null,
-    policy_number: null,
-    preapp_limit: 0,
-    hospital_id: null,
-    saveupdate: false,
-    btnupdate: true
-  },()=>{
-    debugger
-  });
+      price_from: null,
+      employer: null,
+      policy_number: null,
+      preapp_limit: 0,
+      hospital_id: null,
+      saveupdate: false,
+      btnupdate: true
+    },
+    () => {
+      debugger;
+    }
+  );
 };
 
 const datehandle = ($this, ctrl, e) => {
@@ -247,6 +252,7 @@ const UpdateNetworkPlan = ($this, context) => {
     if ($this.state.hims_d_insurance_network_id !== null) {
       algaehApiCall({
         uri: "/insurance/updateNetworkAndNetworkOffice",
+        module: "insurance",
         data: updateobj,
         method: "PUT",
         onSuccess: response => {

@@ -26,7 +26,8 @@ import {
   VerifyOrderModel,
   CloseOrderModel,
   getPreAprovalList,
-  openUCAFReport
+  openUCAFReport,
+  getMedicationAprovalList
 } from "./PreApprovalHandaler";
 import moment from "moment";
 import Options from "../../Options.json";
@@ -50,6 +51,7 @@ class PreApproval extends Component {
       doctor_id: null,
       insurance_id: null,
       pre_approval_Services: [],
+      medca_approval_Services: [],
       selected_services: null,
       OCAFData: false,
       DCAFData: false,
@@ -79,6 +81,7 @@ class PreApproval extends Component {
     ) {
       this.props.getInsuranceProviders({
         uri: "/insurance/getListOfInsuranceProvider",
+        module: "insurance",
         method: "GET",
         redux: {
           type: "INSURANCE_PROVIDER_GET_DATA",
@@ -88,6 +91,7 @@ class PreApproval extends Component {
     }
 
     getPreAprovalList(this, this);
+    getMedicationAprovalList(this, this);
   }
 
   ShowSubmitModel(row, e) {
@@ -314,12 +318,6 @@ class PreApproval extends Component {
               <div className="portlet-body">
                 <div className="row">
                   <div className="col-12" id="preApprovalGird_Cntr">
-                    {/*
-                      <i
-                        className="fas fa-file-export"
-                        onClick={this.ShowSubmitModel.bind(this, row)}
-                      />
-                       */}
                     <AlgaehDataGrid
                       id="preApprovalGird"
                       datavalidate="preApprovalGird"
@@ -477,7 +475,177 @@ class PreApproval extends Component {
                         data: this.state.pre_approval_Services
                       }}
                       filter={true}
-                      // isEditable={true}
+                      paging={{ page: 0, rowsPerPage: 6 }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="portlet-title">
+                <div className="caption">
+                  <h3 className="caption-subject">Medication Approval List</h3>
+                </div>
+              </div>
+              <div className="portlet-body">
+                <div className="row">
+                  <div className="col-12" id="preApprovalGird_Cntr">
+                    <AlgaehDataGrid
+                      id="preApprovalGird"
+                      datavalidate="preApprovalGird"
+                      columns={[
+                        {
+                          fieldName: "action",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "action" }} />
+                          ),
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                <i
+                                  className="fas fa-eye"
+                                  onClick={this.ShowEditModel.bind(this, row)}
+                                />
+
+                                <i
+                                  className="fas fa-check"
+                                  onClick={VerifyOrderModel.bind(
+                                    this,
+                                    this,
+                                    row
+                                  )}
+                                />
+                                <i
+                                  className="fas fa-file-medical-alt"
+                                  onClick={openUCAFReport.bind(this, this, row)}
+                                />
+                              </span>
+                            );
+                          },
+                          others: {
+                            minWidth: 175,
+                            filterable: false,
+                            resizable: false,
+                            style: { textAlign: "center" }
+                          }
+                        },
+                        {
+                          fieldName: "patient_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_code" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 150
+                          }
+                        },
+                        {
+                          fieldName: "full_name",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "patient_name" }}
+                            />
+                          ),
+                          others: {
+                            minWidth: 250
+                          }
+                        },
+                        {
+                          fieldName: "created_date",
+                          label: <AlgaehLabel label={{ fieldName: "date" }} />,
+                          displayTemplate: row => {
+                            return (
+                              <span>
+                                {this.changeDateFormat(row.created_date)}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "doctor_id",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "doctor_id" }} />
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.deptanddoctors === undefined
+                                ? []
+                                : this.props.deptanddoctors.doctors.filter(
+                                    f => f.employee_id === row.doctor_id
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].full_name
+                                  : ""}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "insurance_provider_id",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "insurance_id" }}
+                            />
+                          ),
+                          displayTemplate: row => {
+                            let display =
+                              this.props.insurarProviders === undefined
+                                ? []
+                                : this.props.insurarProviders.filter(
+                                    f =>
+                                      f.hims_d_insurance_provider_id ===
+                                      row.insurance_provider_id
+                                  );
+
+                            return (
+                              <span>
+                                {display !== null && display.length !== 0
+                                  ? display[0].insurance_provider_name
+                                  : ""}
+                              </span>
+                            );
+                          }
+                        },
+                        {
+                          fieldName: "icd_code",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "insurance_code" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "number_of_Services",
+                          label: (
+                            <AlgaehLabel
+                              label={{ fieldName: "no_of_services" }}
+                            />
+                          )
+                        },
+                        {
+                          fieldName: "apprv_status",
+                          label: (
+                            <AlgaehLabel label={{ fieldName: "dis_status" }} />
+                          ),
+                          displayTemplate: row => {
+                            return row.apprv_status === "NR"
+                              ? "Not Requested"
+                              : row.apprv_status === "AW"
+                              ? "Awaiting Approval"
+                              : row.apprv_status === "AP"
+                              ? "Approved"
+                              : "Rejected";
+                          }
+                        }
+                      ]}
+                      keyId="pre_approval_code"
+                      dataSource={{
+                        data: this.state.medca_approval_Services
+                      }}
+                      filter={true}
                       paging={{ page: 0, rowsPerPage: 6 }}
                     />
                   </div>
@@ -537,7 +705,6 @@ class PreApproval extends Component {
 
 function mapStateToProps(state) {
   return {
-    preapprovallist: state.preapprovallist,
     deptanddoctors: state.deptanddoctors,
     insurarProviders: state.insurarProviders
   };
@@ -546,7 +713,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      getPreAprovalList: AlgaehActions,
       getDepartmentsandDoctors: AlgaehActions,
       getInsuranceProviders: AlgaehActions
     },

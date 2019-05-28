@@ -46,6 +46,7 @@ class InsuranceProvider extends PureComponent {
     ) {
       this.props.getInsuranceDetails({
         uri: "/insurance/getListOfInsuranceProvider",
+        module: "insurance",
         method: "GET",
         printInput: true,
         data: {
@@ -229,8 +230,8 @@ class InsuranceProvider extends PureComponent {
                         type: "number",
                         onChange: texthandle.bind(this, this, context)
                       },
-                      others:{
-                        type:"number"
+                      others: {
+                        type: "number"
                       }
                     }}
                   />

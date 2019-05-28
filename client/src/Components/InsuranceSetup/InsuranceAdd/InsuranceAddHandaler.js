@@ -3,7 +3,7 @@ import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 
 const handleNext = ($this, setp, e) => {
-  debugger
+  debugger;
   // if (setp === "Close") {
   //   $this.onClose(e);
   // } else if (setp === "Next") {
@@ -16,6 +16,7 @@ const handleNext = ($this, setp, e) => {
         //Save Insurance
         algaehApiCall({
           uri: "/insurance/addInsuranceProvider",
+          module: "insurance",
           data: $this.state,
           onSuccess: response => {
             if (response.data.success === true) {
@@ -135,6 +136,7 @@ const updatedata = ($this, e) => {
     if (isError === false) {
       algaehApiCall({
         uri: "/insurance/updateInsuranceProvider",
+        module: "insurance",
         method: "PUT",
         data: $this.state,
         onSuccess: response => {

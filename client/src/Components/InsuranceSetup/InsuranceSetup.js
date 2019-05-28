@@ -38,6 +38,7 @@ class InsuranceSetup extends Component {
     ) {
       this.props.getInsuranceProviders({
         uri: "/insurance/getListOfInsuranceProvider",
+        module: "insurance",
         method: "GET",
         redux: {
           type: "INSURANCE_PROVIDER_GET_DATA",
@@ -74,6 +75,7 @@ class InsuranceSetup extends Component {
       () => {
         this.props.getInsuranceProviders({
           uri: "/insurance/getListOfInsuranceProvider",
+          module: "insurance",
           method: "GET",
           redux: {
             type: "INSURANCE_PROVIDER_GET_DATA",

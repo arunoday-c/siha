@@ -41,7 +41,11 @@
       "url": "",
       "name": "Pharmacy"
     },
-
+    "insurance": {
+      "port": 3010,
+      "url": "",
+      "name": "Insurance"
+    },
     "clicnicalDesk": {
       "port": 3011,
       "url": "",
