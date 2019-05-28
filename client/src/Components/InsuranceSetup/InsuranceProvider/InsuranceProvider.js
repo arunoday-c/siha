@@ -25,12 +25,36 @@ import {
   FORMAT_PACKAGE_CLAIM,
   FORMAT_PAYMENT_TYPE
 } from "../../../utils/GlobalVariables.json";
+import {algaehApiCall } from "../../../utils/algaehApiCall";
 import MyContext from "../../../utils/MyContext";
 
 class InsuranceProvider extends PureComponent {
   constructor(props) {
     super(props);
+    this.initCall();
     this.state = {};
+  }
+
+    initCall() {
+    let that = this;
+    algaehApiCall({
+      uri: "/init/",
+      method: "GET",
+      data: {
+        fields: "service_code",
+        tableName: "hims_d_services",
+        keyFieldName: "hims_d_services_id"
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const placeHolder =
+            response.data.records.length > 0 ? response.data.records[0] : {};
+          that.setState({
+           service_code_placeHolder: placeHolder.service_code
+          });
+        }
+      }
+    });
   }
 
   componentWillMount() {

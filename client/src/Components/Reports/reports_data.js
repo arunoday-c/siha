@@ -109,6 +109,7 @@ export default [
         subitem: "Appointment List",
         reportName: "appointmentList",
         pageSize: "A4",
+        requireIframe:true,
         pageOrentation: "landscap", //"portrait",
         reportParameters: [
           {

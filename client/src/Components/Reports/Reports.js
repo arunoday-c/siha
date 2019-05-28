@@ -1,66 +1,66 @@
-import React, { Component } from "react";
-import "./reports.css";
-import { AlagehAutoComplete } from "../Wrapper/algaehWrapper";
-import data from "./reports_data";
-import AlgaehReport from "../Wrapper/printReports";
+import React, { Component } from 'react';
+import './reports.css';
+import { AlagehAutoComplete } from '../Wrapper/algaehWrapper';
+import data from './reports_data';
+import AlgaehReport from '../Wrapper/printReports';
 class Reports extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      itemList: [],
-      module: "",
-      showSelector: false
-    };
-  }
+	constructor(props) {
+		super(props);
+		this.state = {
+			itemList: [],
+			module: '',
+			showSelector: false
+		};
+	}
 
-  // loadItemList(e) {
-  //   e.preventDefault();
+	// loadItemList(e) {
+	//   e.preventDefault();
 
-  //   if (this.state.module.length === 0) {
-  //     swalMessage({
-  //       title: "Please Select a Category",
-  //       type: "warning "
-  //     });
-  //   } else {
-  //   }
-  // }
+	//   if (this.state.module.length === 0) {
+	//     swalMessage({
+	//       title: "Please Select a Category",
+	//       type: "warning "
+	//     });
+	//   } else {
+	//   }
+	// }
 
-  dropDownHandler(value) {
-    this.setState({
-      [value.name]: value.value,
-      itemList: value.selected.submenu
-    });
-  }
+	dropDownHandler(value) {
+		this.setState({
+			[value.name]: value.value,
+			itemList: value.selected.submenu
+		});
+	}
 
-  handleClose() {
-    this.setState({ showSelector: false });
-  }
+	handleClose() {
+		this.setState({ showSelector: false });
+	}
 
-  render() {
-    return (
-      <div className="reports">
-        <div className="row inner-top-search">
-          <form action="none" style={{ width: "100%" }}>
-            <div className="row padding-10">
-              <AlagehAutoComplete
-                div={{ className: "col-3 form-group" }}
-                label={{ forceLabel: "Report Category", isImp: false }}
-                selector={{
-                  name: "module",
-                  autoComplete: "off",
-                  className: "select-fld",
-                  value: this.state.module,
-                  dataSource: {
-                    textField: "name",
-                    valueField: "name",
-                    data: data
-                  },
-                  others: {},
-                  onChange: this.dropDownHandler.bind(this)
-                }}
-              />
+	render() {
+		return (
+			<div className="reports">
+				<div className="row inner-top-search">
+					<form action="none" style={{ width: '100%' }}>
+						<div className="row padding-10">
+							<AlagehAutoComplete
+								div={{ className: 'col-3 form-group' }}
+								label={{ forceLabel: 'Report Category', isImp: false }}
+								selector={{
+									name: 'module',
+									autoComplete: 'off',
+									className: 'select-fld',
+									value: this.state.module,
+									dataSource: {
+										textField: 'name',
+										valueField: 'name',
+										data: data
+									},
+									others: {},
+									onChange: this.dropDownHandler.bind(this)
+								}}
+							/>
 
-              {/* <AlagehAutoComplete
+							{/* <AlagehAutoComplete
                 div={{ className: "col form-group" }}
                 label={{ forceLabel: "Report Category", isImp: false }}
                 selector={{
@@ -77,7 +77,7 @@ class Reports extends Component {
                 }}
               /> */}
 
-              {/* <AlagehFormGroup
+							{/* <AlagehFormGroup
                 div={{ className: "col form-group" }}
                 label={{
                   forceLabel: "Filter by Reports",
@@ -98,7 +98,7 @@ class Reports extends Component {
                 }}
               /> */}
 
-              {/* <AlagehFormGroup
+							{/* <AlagehFormGroup
                 div={{ className: "col" }}
                 textBox={{
                   className: "txt-fld",
@@ -113,58 +113,55 @@ class Reports extends Component {
                   }
                 }}
               /> */}
-            </div>
-          </form>
-        </div>
+						</div>
+					</form>
+				</div>
 
-        <div className="portlet portlet-bordered ">
-          {/* <div className="portlet-title">
+				<div className="portlet portlet-bordered ">
+					{/* <div className="portlet-title">
             <div className="caption">
               <h3 className="caption-subject">Report List</h3>
             </div>
           </div> */}
-          <div
-            className="portlet-body"
-            style={{ height: "75vh", overflow: "auto" }}
-          >
-            <div className="col-lg-12">
-              <div className="row">
-                {this.state.itemList.map((item, index) => (
-                  <div
-                    key={index}
-                    className="col-lg-2 reportList"
-                    onClick={() => {
-                      let pageProperies = { reportName: item.reportName };
-                      if (item.pageSize !== undefined && item.pageSize !== "") {
-                        pageProperies["pageSize"] = item.pageSize;
-                      }
-                      if (
-                        item.pageOrentation !== undefined &&
-                        item.pageOrentation !== ""
-                      ) {
-                        pageProperies["pageOrentation"] = item.pageOrentation;
-                      }
-                      AlgaehReport({
-                        report: pageProperies,
-                        plotUI: {
-                          paramters: item.reportParameters
-                        }
-                      });
-                    }}
-                  >
-                    <div>
-                      <i className="fas fa-file-medical-alt" />
-                      <p>{item.subitem}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+					<div className="portlet-body" style={{ height: '75vh', overflow: 'auto' }}>
+						<div className="col-lg-12">
+							<div className="row">
+								{this.state.itemList.map((item, index) => (
+									<div
+										key={index}
+										className="col-lg-2 reportList"
+										onClick={() => {
+											let pageProperies = {
+												reportName: item.reportName,
+												requireIframe: item.requireIframe
+											};
+											if (item.pageSize !== undefined && item.pageSize !== '') {
+												pageProperies['pageSize'] = item.pageSize;
+											}
+											if (item.pageOrentation !== undefined && item.pageOrentation !== '') {
+												pageProperies['pageOrentation'] = item.pageOrentation;
+											}
+											AlgaehReport({
+												report: pageProperies,
+												plotUI: {
+													paramters: item.reportParameters
+												}
+											});
+										}}
+									>
+										<div>
+											<i className="fas fa-file-medical-alt" />
+											<p>{item.subitem}</p>
+										</div>
+									</div>
+								))}
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	}
 }
 
 export default Reports;

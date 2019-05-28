@@ -576,6 +576,7 @@ export default class ReportUI extends Component {
 
   render() {
     const _isBarcodeReport = this.props.isbarcodereport;
+    
     if (this.state.hasError) {
       return null;
     }
@@ -648,12 +649,12 @@ export default class ReportUI extends Component {
                   __html: this.state._htmlString
                 }}
               />*/}
-
-              <iframe
+{this.props.report !==undefined && this.props.report.requireIframe ===true?(<iframe
                 src={this.state._htmlString}
                 width="100%"
                 height="500px"
-              />
+              />):null}
+              
 
               <div className="col-lg-12">
                 <div className="row">

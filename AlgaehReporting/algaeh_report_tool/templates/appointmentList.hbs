@@ -21,14 +21,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                  {{#each detail}}
+                  {{#each groupdetails}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg">Doctor Name and Emp. ID/Doctor ID</td>
+                        <td colspan="10" class="tableSubHdg">{{doctor_name}} | {{doctor_code}}</td>
                     </tr>
-                    {{#each detailList}}
+                    {{#each details}}
                     <tr>
-                       <td>----</td>
-                       <td>----</td>
+                       <td>{{sql_no}}</td>
+                       <td>{{appointment_date}}</td>
                        <td>----</td>
                        <td>----</td>
                        <td>----</td>
