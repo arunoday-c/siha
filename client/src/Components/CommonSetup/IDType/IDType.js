@@ -19,7 +19,7 @@ import { AlgaehValidation } from "../../../utils/GlobalFunctions";
 class IDType extends Component {
   constructor(props) {
     super(props);
-
+    this.initCall();
     this.state = {
       identity_status: "A",
       effective_end_date: "",
@@ -30,6 +30,28 @@ class IDType extends Component {
     };
 
     this.baseState = this.state;
+  }
+
+      initCall() {
+    let that = this;
+    algaehApiCall({
+      uri: "/init/",
+      method: "GET",
+      data: {
+        fields: "identity_document_code",
+        tableName: "hims_d_identity_document",
+        keyFieldName: "hims_d_identity_document_id"
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const placeHolder =
+            response.data.records.length > 0 ? response.data.records[0] : {};
+          that.setState({
+        identity_document_code_placeHolder: placeHolder.identity_document_code
+          });
+        }
+      }
+    });
   }
 
   changeTexts(e) {
@@ -221,7 +243,10 @@ class IDType extends Component {
                   value: this.state.identity_document_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  }
+                  },   others: {
+                          tabIndex: "1",
+                            placeholder: this.state.identity_document_code_placeHolder
+                        }
                 }}
               />
 

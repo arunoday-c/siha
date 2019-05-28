@@ -11,3 +11,6 @@
 
 .popUpHospitalServices .algaeh-modal {
   max-width: 40vw; }
+
+.HospitalServicesPopup .algaeh-modal {
+  width: 50vw; }
