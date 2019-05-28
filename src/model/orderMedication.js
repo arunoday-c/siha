@@ -113,12 +113,14 @@ let addPatientPrescriptionBAckup = (req, res, next) => {
                     servicesForPreAproval.push(input.provider_id);
                     servicesForPreAproval.push(input.encounter_id);
                     servicesForPreAproval.push(input.episode_id);
+                    servicesForPreAproval.push(results.insertId);
                     servicesForPreAproval.push(services);
 
                     connection.query(
                       "SELECT hims_f_prescription_detail_id, service_id from hims_f_prescription P, hims_f_prescription_detail PD\
                          where P.hims_f_prescription_id = PD.prescription_id and P.`patient_id`=? and \
-                         P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and `services_id` in (?)",
+                         P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and \
+                         `hims_f_prescription_id`=? and `services_id` in (?)",
                       servicesForPreAproval,
                       (error, ResultOfFetchOrderIds) => {
                         if (error) {

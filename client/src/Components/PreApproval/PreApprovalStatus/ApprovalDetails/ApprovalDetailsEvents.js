@@ -3,22 +3,24 @@ import _ from "lodash";
 
 const texthandle = ($this, row, e) => {
   // e = e || ctrl;
-
+  debugger;
   const amount_from = _.find(
     $this.props.insurarProviders,
     f => f.hims_d_insurance_provider_id === $this.state.insurance_provider_id
   );
-  debugger
+  debugger;
 
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
   row[name] = value;
 
-  debugger
+  debugger;
   if (name === "apprv_status" && value === "AP") {
-    row.approved_amount = amount_from.company_service_price_type === "G"
-      ? row.gross_amt : row.net_amount;
+    row.approved_amount =
+      amount_from.company_service_price_type === "G"
+        ? row.gross_amt
+        : row.net_amount;
     row.apprv_date = moment(new Date())._d;
   }
   $this.setState({ append: !$this.state.append });

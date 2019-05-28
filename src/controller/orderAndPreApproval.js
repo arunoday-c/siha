@@ -12,7 +12,9 @@ import {
   updateOrderedServicesBilled,
   getOrderServices,
   selectOrderServicesbyDoctor,
-  getMedicationAprovalList
+  getMedicationAprovalList,
+  updateMedicinePreApproval,
+  updatePrescriptionDetail
 } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
 import { insertLadOrderedServices } from "../model/laboratory";
@@ -157,6 +159,36 @@ export default ({ config, db }) => {
   api.put(
     "/updateOrderedServicesBilled",
     updateOrderedServicesBilled,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad :to update OrderedServices as billed
+  api.put(
+    "/updateMedicinePreApproval",
+    updateMedicinePreApproval,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  //created by Nowshad :to update OrderedServices as billed
+  api.put(
+    "/updatePrescriptionDetail",
+    updatePrescriptionDetail,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

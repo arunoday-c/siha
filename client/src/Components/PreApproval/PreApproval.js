@@ -117,10 +117,11 @@ class PreApproval extends Component {
     );
   }
 
-  ShowEditModel(row, e) {
+  ShowEditModel(row, oFrom, e) {
     this.setState({
       isEditOpen: !this.state.isEditOpen,
-      selected_services: row
+      selected_services: row,
+      openFrom: oFrom
     });
   }
 
@@ -332,7 +333,11 @@ class PreApproval extends Component {
                               <span>
                                 <i
                                   className="fas fa-eye"
-                                  onClick={this.ShowEditModel.bind(this, row)}
+                                  onClick={this.ShowEditModel.bind(
+                                    this,
+                                    row,
+                                    "S"
+                                  )}
                                 />
 
                                 <i
@@ -340,6 +345,7 @@ class PreApproval extends Component {
                                   onClick={VerifyOrderModel.bind(
                                     this,
                                     this,
+                                    "S",
                                     row
                                   )}
                                 />
@@ -503,7 +509,11 @@ class PreApproval extends Component {
                               <span>
                                 <i
                                   className="fas fa-eye"
-                                  onClick={this.ShowEditModel.bind(this, row)}
+                                  onClick={this.ShowEditModel.bind(
+                                    this,
+                                    row,
+                                    "M"
+                                  )}
                                 />
 
                                 <i
@@ -511,6 +521,7 @@ class PreApproval extends Component {
                                   onClick={VerifyOrderModel.bind(
                                     this,
                                     this,
+                                    "M",
                                     row
                                   )}
                                 />
@@ -679,6 +690,7 @@ class PreApproval extends Component {
             />
           }
           open={this.state.isEditOpen}
+          openFrom={this.state.openFrom}
           onClose={this.CloseEditModel.bind(this)}
           selected_services={this.state.selected_services}
         />
@@ -692,6 +704,7 @@ class PreApproval extends Component {
             />
           }
           open={this.state.isVerifyOpen}
+          openFrom={this.state.openFrom}
           onClose={CloseOrderModel.bind(this, this)}
           selected_services={this.state.selected_services}
         />

@@ -207,6 +207,64 @@ let updatePreApproval = (req, res, next) => {
   }
 };
 
+//created by irfan:UPDATE PREAPPROVAL
+let updateMedicinePreApproval = (req, res, next) => {
+  debugFunction("updatePreApproval");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      let inputParam = extend({}, req.body);
+
+      let qry = "";
+
+      for (let i = 0; i < req.body.length; i++) {
+        let _appDate =
+          inputParam[i].apprv_date != null ? inputParam[i].apprv_date : null;
+        qry += mysql.format(
+          "UPDATE `hims_f_medication_approval` SET requested_date=?,\
+          requested_by=?, requested_mode=?,requested_quantity=?,submission_type=?,refer_no=?,approved_amount=?,\
+          apprv_remarks=?,apprv_date=?,rejected_reason=?, apprv_status=?, updated_date=?, updated_by=? \
+          where hims_f_medication_approval_id=?;",
+          [
+            inputParam[i].requested_date,
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam[i].requested_mode,
+            inputParam[i].requested_quantity,
+            inputParam[i].submission_type,
+            inputParam[i].refer_no,
+            inputParam[i].approved_amount,
+            inputParam[i].apprv_remarks,
+            _appDate,
+            inputParam[i].rejected_reason,
+            inputParam[i].apprv_status,
+            moment().format("YYYY-MM-DD HH:mm"),
+            req.userIdentity.algaeh_d_app_user_id,
+            inputParam[i].hims_f_medication_approval_id
+          ]
+        );
+      }
+      debugLog("qry: ", qry);
+      connection.query(qry, (error, result) => {
+        releaseDBConnection(db, connection);
+        if (error) {
+          next(error);
+        }
+        req.records = result;
+        next();
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 //created by irfan: insert ordered services and pre-approval services for insurance
 let insertOrderedServices = (req, res, next) => {
   const insurtColumns = [
@@ -754,6 +812,42 @@ let updateOrderedServicesBilled = (req, res, next) => {
   }
 };
 
+//ordered services update as billed
+let updatePrescriptionDetail = (req, res, next) => {
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+
+      let input = extend({}, req.body[0]);
+
+      connection.query(
+        "UPDATE hims_f_prescription_detail SET apprv_status = ?, approved_amount=?,pre_approval = 'N' WHERE `hims_f_prescription_detail_id`=? ",
+        [
+          input.apprv_status,
+          input.approved_amount,
+          input.hims_f_prescription_detail_id
+        ],
+        (error, result) => {
+          releaseDBConnection(db, connection);
+          if (error) {
+            next(error);
+          }
+          req.records = result;
+          next();
+        }
+      );
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
 module.exports = {
   insertOrderedServices,
   getPreAprovalList,
@@ -763,5 +857,7 @@ module.exports = {
   updateOrderedServicesBilled,
   getOrderServices,
   selectOrderServicesbyDoctor,
-  getMedicationAprovalList
+  getMedicationAprovalList,
+  updateMedicinePreApproval,
+  updatePrescriptionDetail
 };

@@ -119,10 +119,11 @@ const getPreAprovalList = $this => {
   });
 };
 
-const VerifyOrderModel = ($this, row, e) => {
+const VerifyOrderModel = ($this, oFrom, row, e) => {
   $this.setState({
     isVerifyOpen: !$this.state.isVerifyOpen,
-    selected_services: row
+    selected_services: row,
+    openFrom: oFrom
   });
 };
 const CloseOrderModel = ($this, e) => {
