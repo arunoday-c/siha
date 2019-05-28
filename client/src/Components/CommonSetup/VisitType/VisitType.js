@@ -2,7 +2,6 @@ import React, { Component } from "react";
 
 import "./visit_type.css";
 import moment from "moment";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -16,13 +15,14 @@ import GlobalVariables from "../../../utils/GlobalVariables";
 import swal from "sweetalert2";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import { FORMAT_YESNO } from "../../../utils/GlobalVariables.json";
-import { getCookie } from "../../../utils/algaehApiCall";
+import { algaehApiCall, swalMessage, getCookie } from "../../../utils/algaehApiCall";
 import { setGlobal, AlgaehValidation } from "../../../utils/GlobalFunctions";
 import Options from "../../../Options.json";
 
 class VisitType extends Component {
   constructor(props) {
     super(props);
+    this.initCall();
 
     this.state = {
       isEditable: true,
@@ -42,7 +42,27 @@ class VisitType extends Component {
 
     this.baseState = this.state;
   }
-
+   initCall() {
+    let that = this;
+    algaehApiCall({
+      uri: "/init/",
+      method: "GET",
+      data: {
+        fields: "visit_type_code",
+        tableName: "hims_d_visit_type",
+        keyFieldName: "hims_d_visit_type_id"
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const placeHolder =
+            response.data.records.length > 0 ? response.data.records[0] : {};
+          that.setState({
+           visit_type_code_placeHolder: placeHolder.visit_type_code
+          });
+        }
+      }
+    });
+  }
   showconfirmDialog(id) {
     swal({
       title: "Are you sure you want to delete this Visit Type?",
@@ -283,7 +303,10 @@ class VisitType extends Component {
                     value: this.state.visit_type_code,
                     events: {
                       onChange: this.changeTexts.bind(this)
-                    }
+                    },   others: {
+                          tabIndex: "1",
+                            placeholder: this.state.visit_type_code_placeHolder
+                        }
                   }}
                 />
 

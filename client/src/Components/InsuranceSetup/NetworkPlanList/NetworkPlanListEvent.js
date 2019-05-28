@@ -20,12 +20,14 @@ const showconfirmDialog = ($this, row) => {
       };
       algaehApiCall({
         uri: "/insurance/deleteNetworkAndNetworkOfficRecords",
+        module: "insurance",
         data: data,
         method: "PUT",
         onSuccess: response => {
           if (response.data.success) {
             algaehApiCall({
               uri: "/insurance/getNetworkAndNetworkOfficRecords",
+              module: "insurance",
               method: "GET",
               data: {
                 insuranceProviderId: $this.state.insurance_provider_id
@@ -130,6 +132,7 @@ const UpdateNetworkPlan = ($this, row) => {
   if (row.hims_d_insurance_network_id !== null) {
     algaehApiCall({
       uri: "/insurance/updateNetworkAndNetworkOffice",
+      module: "insurance",
       data: updateobj,
       method: "PUT",
       onSuccess: response => {

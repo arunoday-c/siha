@@ -76,7 +76,7 @@ class NetworkPlan extends PureComponent {
   }
 
   componentWillMount() {
-    debugger
+    debugger;
     let InputOutput = this.props.InsuranceSetup;
     this.setState({ ...this.state, ...InputOutput });
   }
@@ -85,6 +85,7 @@ class NetworkPlan extends PureComponent {
     if (this.state.insurance_provider_id !== null) {
       this.props.getSubInsuranceDetails({
         uri: "/insurance/getSubInsurance",
+        module: "insurance",
         method: "GET",
         printInput: true,
         data: {
@@ -98,6 +99,7 @@ class NetworkPlan extends PureComponent {
 
       this.props.getNetworkPlans({
         uri: "/insurance/getNetworkAndNetworkOfficRecords",
+        module: "insurance",
         method: "GET",
         printInput: true,
         data: {
@@ -329,7 +331,6 @@ class NetworkPlan extends PureComponent {
                 </div>
                 <div className="col-lg-12 networkPlanCntr">
                   <div className="row">
-
                     <div className="col-2">
                       <label style={{ marginTop: 26 }}>Deductible</label>
                     </div>
@@ -353,7 +354,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -369,7 +370,6 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Lab" }}
                       textBox={{
-
                         value: this.state.deductible_lab,
                         className: "txt-fld",
                         name: "deductible_lab",
@@ -379,7 +379,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -395,7 +395,6 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Radiology" }}
                       textBox={{
-
                         value: this.state.deductible_rad,
                         className: "txt-fld",
                         name: "deductible_rad",
@@ -405,7 +404,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -421,7 +420,6 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "OPD Services" }}
                       textBox={{
-
                         value: this.state.deductible_trt,
                         className: "txt-fld",
                         name: "deductible_trt",
@@ -431,7 +429,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -447,7 +445,6 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Dental" }}
                       textBox={{
-
                         value: this.state.deductible_dental,
                         className: "txt-fld",
                         name: "deductible_dental",
@@ -457,7 +454,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -472,7 +469,6 @@ class NetworkPlan extends PureComponent {
                       div={{ className: "col" }}
                       label={{ forceLabel: "Medicine" }}
                       textBox={{
-
                         value: this.state.deductible_medicine,
                         className: "txt-fld",
                         name: "deductible_medicine",
@@ -482,7 +478,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -502,7 +498,6 @@ class NetworkPlan extends PureComponent {
                       //consultation
                       div={{ className: "col" }}
                       textBox={{
-
                         value: this.state.copay_consultation,
                         className: "txt-fld",
                         name: "copay_consultation",
@@ -512,7 +507,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -527,7 +522,6 @@ class NetworkPlan extends PureComponent {
                       //Lab
                       div={{ className: "col" }}
                       textBox={{
-
                         value: this.state.copay_percent,
                         className: "txt-fld",
                         name: "copay_percent",
@@ -537,7 +531,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -561,7 +555,7 @@ class NetworkPlan extends PureComponent {
 
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -585,7 +579,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -609,7 +603,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -633,7 +627,7 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
                     />
@@ -655,10 +649,10 @@ class NetworkPlan extends PureComponent {
                         },
                         others: {
                           "data-netdata": true,
-                          type:"number"
+                          type: "number"
                         }
                       }}
-                     />
+                    />
                   </div>
                   <div className="row hidden">
                     <AlagehFormGroup

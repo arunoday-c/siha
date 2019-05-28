@@ -45,6 +45,7 @@ const saveSubInsurance = ($this, context) => {
     updatedata.push(obj);
     algaehApiCall({
       uri: "/insurance/addSubInsuranceProvider",
+      module: "insurance",
       data: updatedata,
       onSuccess: response => {
         if (response.data.success === true) {
@@ -110,6 +111,7 @@ const showconfirmDialog = ($this, id) => {
       };
       algaehApiCall({
         uri: "/insurance/deleteSubInsurance",
+        module: "insurance",
         data: data,
         method: "DELETE",
         onSuccess: response => {
@@ -144,6 +146,7 @@ const deleteSubInsurance = ($this, row) => {
 const getSubInsuranceDetails = $this => {
   algaehApiCall({
     uri: "/insurance/getSubInsurance",
+    module: "insurance",
     method: "GET",
     data: {
       insurance_provider_id: $this.state.insurance_provider_id
@@ -166,6 +169,7 @@ const getSubInsuranceDetails = $this => {
 const updateSubInsurance = ($this, data) => {
   algaehApiCall({
     uri: "/insurance/updateSubInsuranceProvider",
+    module: "insurance",
     data: data,
     method: "PUT",
     onSuccess: response => {

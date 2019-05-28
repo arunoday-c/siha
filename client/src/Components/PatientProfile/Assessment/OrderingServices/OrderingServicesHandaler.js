@@ -34,11 +34,11 @@ const serviceTypeHandeler = ($this, e) => {
           }
         });
       } else {
-        this.props.getServices({
+        $this.props.getServices({
           uri: "/serviceType/getServiceInsured",
           module: "masterSettings",
           method: "GET",
-          data: { insurance_id: $this.state.insurance_provider_id },
+          data: { insurance_id: $this.state.insurance_provider_id,service_type_id: $this.state.s_service_type },
           redux: {
             type: "SERVICES_INS_GET_DATA",
             mappingName: "services"

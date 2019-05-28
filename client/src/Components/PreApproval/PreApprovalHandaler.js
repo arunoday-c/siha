@@ -15,6 +15,7 @@ const texthandle = ($this, e) => {
     },
     () => {
       getPreAprovalList($this);
+      getMedicationAprovalList($this);
     }
   );
 };
@@ -26,6 +27,7 @@ const datehandle = ($this, ctrl, e) => {
     },
     () => {
       getPreAprovalList($this);
+      getMedicationAprovalList($this);
     }
   );
 };
@@ -48,6 +50,7 @@ const PatientSearch = ($this, e) => {
         },
         () => {
           getPreAprovalList($this);
+          getMedicationAprovalList($this);
         }
       );
     }
@@ -76,37 +79,42 @@ const getPreAprovalList = $this => {
     inputobj.insurance_provider_id = $this.state.insurance_id;
   }
 
-  $this.props.getPreAprovalList({
+  algaehApiCall({
     uri: "/orderAndPreApproval/getPreAprovalList",
     method: "GET",
     data: inputobj,
-    redux: {
-      type: "PRE_APPROVAL_GET_DATA",
-      mappingName: "preapprovallist"
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        let pre_approval_Services = Enumerable.from(data)
+          .groupBy("$.patient_id", null, (k, g) => {
+            let firstRecordSet = Enumerable.from(g).firstOrDefault();
+            return {
+              patient_code: firstRecordSet.patient_code,
+              full_name: firstRecordSet.full_name,
+              created_date: firstRecordSet.created_date,
+              doctor_id: firstRecordSet.doctor_id,
+              insurance_provider_id: firstRecordSet.insurance_provider_id,
+              patient_id: firstRecordSet.patient_id,
+              visit_id: firstRecordSet.visit_id,
+              chart_type: firstRecordSet.chart_type,
+              icd_code: firstRecordSet.icd_code,
+              number_of_Services: g.getSource().length,
+              apprv_status: firstRecordSet.apprv_status,
+
+              services_details: g.getSource()
+            };
+          })
+          .toArray();
+
+        $this.setState({ pre_approval_Services: pre_approval_Services });
+      }
     },
-    afterSuccess: data => {
-      let pre_approval_Services = Enumerable.from(data)
-        .groupBy("$.patient_id", null, (k, g) => {
-          let firstRecordSet = Enumerable.from(g).firstOrDefault();
-          return {
-            patient_code: firstRecordSet.patient_code,
-            full_name: firstRecordSet.full_name,
-            created_date: firstRecordSet.created_date,
-            doctor_id: firstRecordSet.doctor_id,
-            insurance_provider_id: firstRecordSet.insurance_provider_id,
-            patient_id: firstRecordSet.patient_id,
-            visit_id: firstRecordSet.visit_id,
-            chart_type: firstRecordSet.chart_type,
-            icd_code: firstRecordSet.icd_code,
-            number_of_Services: g.getSource().length,
-            apprv_status: firstRecordSet.apprv_status,
-
-            services_details: g.getSource()
-          };
-        })
-        .toArray();
-
-      $this.setState({ pre_approval_Services: pre_approval_Services });
+    onFailure: error => {
+      swalMessage({
+        title: error.response.data.message,
+        type: "warning"
+      });
     }
   });
 };
@@ -123,15 +131,14 @@ const CloseOrderModel = ($this, e) => {
   });
 };
 
-const openUCAFReport = ($this, row) =>{
-  debugger
-  if(row.chart_type === "N")
-  {
-      algaehApiCall({
+const openUCAFReport = ($this, row) => {
+  debugger;
+  if (row.chart_type === "N") {
+    algaehApiCall({
       uri: "/ucaf/getPatientUCAF",
       method: "GET",
       data: {
-        patient_id:row.patient_id,
+        patient_id: row.patient_id,
         visit_id: row.visit_id,
         forceReplace: true
       },
@@ -148,7 +155,69 @@ const openUCAFReport = ($this, row) =>{
       }
     });
   }
-}
+};
+
+const getMedicationAprovalList = $this => {
+  let inputobj = {};
+
+  if ($this.state.date !== null) {
+    inputobj.created_date = moment($this.state.date).format(
+      Options.dateFormatYear
+    );
+  }
+
+  if ($this.state.dis_status !== null) {
+    inputobj.apprv_status = $this.state.dis_status;
+  }
+  if ($this.state.doctor_id !== null) {
+    inputobj.doctor_id = $this.state.doctor_id;
+  }
+  if ($this.state.patient_id !== null) {
+    inputobj.patient_id = $this.state.patient_id;
+  }
+  if ($this.state.insurance_id !== null) {
+    inputobj.insurance_provider_id = $this.state.insurance_id;
+  }
+
+  algaehApiCall({
+    uri: "/orderAndPreApproval/getMedicationAprovalList",
+    method: "GET",
+    data: inputobj,
+    onSuccess: response => {
+      if (response.data.success) {
+        let data = response.data.records;
+        let medca_approval_Services = Enumerable.from(data)
+          .groupBy("$.patient_id", null, (k, g) => {
+            let firstRecordSet = Enumerable.from(g).firstOrDefault();
+            return {
+              patient_code: firstRecordSet.patient_code,
+              full_name: firstRecordSet.full_name,
+              created_date: firstRecordSet.created_date,
+              doctor_id: firstRecordSet.doctor_id,
+              insurance_provider_id: firstRecordSet.insurance_provider_id,
+              patient_id: firstRecordSet.patient_id,
+              visit_id: firstRecordSet.visit_id,
+              chart_type: firstRecordSet.chart_type,
+              icd_code: firstRecordSet.icd_code,
+              number_of_Services: g.getSource().length,
+              apprv_status: firstRecordSet.apprv_status,
+
+              services_details: g.getSource()
+            };
+          })
+          .toArray();
+
+        $this.setState({ medca_approval_Services: medca_approval_Services });
+      }
+    },
+    onFailure: error => {
+      swalMessage({
+        title: error.response.data.message,
+        type: "warning"
+      });
+    }
+  });
+};
 
 export {
   texthandle,
@@ -157,5 +226,6 @@ export {
   getPreAprovalList,
   VerifyOrderModel,
   CloseOrderModel,
-  openUCAFReport
+  openUCAFReport,
+  getMedicationAprovalList
 };

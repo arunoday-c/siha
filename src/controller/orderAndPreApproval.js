@@ -11,7 +11,8 @@ import {
   updateOrderedServices,
   updateOrderedServicesBilled,
   getOrderServices,
-  selectOrderServicesbyDoctor
+  selectOrderServicesbyDoctor,
+  getMedicationAprovalList
 } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
 import { insertLadOrderedServices } from "../model/laboratory";
@@ -112,6 +113,20 @@ export default ({ config, db }) => {
   api.get(
     "/getOrderServices",
     getOrderServices,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+  //created by Nowshad :to get Ordered Services to Display
+  api.get(
+    "/getMedicationAprovalList",
+    getMedicationAprovalList,
     (req, res, next) => {
       let result = req.records;
       res.status(httpStatus.ok).json({

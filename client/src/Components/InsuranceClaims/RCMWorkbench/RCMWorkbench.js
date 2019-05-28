@@ -26,10 +26,10 @@ class RCMWorkbench extends Component {
       selectedLang: "en",
       claims: [],
       openClaims: false,
-      generateReport:true
+      generateReport: true
     };
-    this.validatedClaims=[]
-    this.select = true
+    this.validatedClaims = [];
+    this.select = true;
     this.dropDownHandler = this.dropDownHandler.bind(this);
     this.clearSearch = this.clearSearch.bind(this);
     this.getInvoicesForClaims = this.getInvoicesForClaims.bind(this);
@@ -49,6 +49,7 @@ class RCMWorkbench extends Component {
           () => {
             algaehApiCall({
               uri: "/insurance/getSubInsuraces",
+              module: "insurance",
               method: "GET",
               data: {
                 insurance_provider_id: this.state.insurance_provider_id
@@ -75,8 +76,8 @@ class RCMWorkbench extends Component {
   }
 
   addClaimsArray(row, e) {
-    debugger
-    let generateReport = true
+    debugger;
+    let generateReport = true;
     if (row.claim_validated === "P") {
       e.preventDefault();
       swalMessage({
@@ -84,24 +85,24 @@ class RCMWorkbench extends Component {
         type: "warning"
       });
 
-      generateReport = this.validatedClaims.length > 0 ? false : true
+      generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
         generateReport: generateReport
-      })
+      });
     } else if (this.validatedClaims.includes(row)) {
       this.validatedClaims.pop(row);
 
-      generateReport = this.validatedClaims.length > 0 ? false : true
+      generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
         generateReport: generateReport
-      })
+      });
     } else {
       this.validatedClaims.push(row);
 
-      generateReport = this.validatedClaims.length > 0 ? false : true
+      generateReport = this.validatedClaims.length > 0 ? false : true;
       this.setState({
         generateReport: generateReport
-      })
+      });
     }
   }
 
@@ -152,6 +153,7 @@ class RCMWorkbench extends Component {
   getInsuranceProviders() {
     algaehApiCall({
       uri: "/insurance/getInsuranceProviders",
+      module: "insurance",
       method: "GET",
       onSuccess: response => {
         if (response.data.success) {
@@ -179,7 +181,7 @@ class RCMWorkbench extends Component {
   generateReports() {
     AlgaehLoader({ show: true });
     let rpt_paramenter = [];
-    debugger
+    debugger;
     // validatedClaims
     for (let i = 0; i < this.validatedClaims.length; i++) {
       rpt_paramenter.push([

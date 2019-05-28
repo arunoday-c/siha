@@ -37,6 +37,7 @@ class NetworkPlanList extends PureComponent {
       ) {
         this.props.getSubInsuranceDetails({
           uri: "/insurance/getSubInsurance",
+          module: "insurance",
           method: "GET",
           printInput: true,
           data: {
@@ -644,7 +645,7 @@ class NetworkPlanList extends PureComponent {
           ]}
           keyId="network_type"
           dataSource={{
-            data: this.state.network_plan            
+            data: this.state.network_plan
           }}
           isEditable={true}
           paging={{ page: 0, rowsPerPage: 10 }}
