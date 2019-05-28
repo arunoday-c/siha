@@ -24,7 +24,7 @@ import {
   getSubInsuraces
 } from "../models/insurance";
 
-export default ({ config, db }) => {
+export default () => {
   let api = Router();
 
   api.get("/getPatientInsurance", getPatientInsurance, (req, res, next) => {
