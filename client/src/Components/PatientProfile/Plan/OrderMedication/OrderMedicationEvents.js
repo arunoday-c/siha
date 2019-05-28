@@ -241,6 +241,16 @@ const AddItems = $this => {
               ? "N"
               : data.billdetails[0].pre_approval;
           medicationobj.insured = data.billdetails[0].insurance_yesno;
+          medicationobj.gross_amount = data.billdetails[0].gross_amount;
+          medicationobj.net_amout = data.billdetails[0].net_amout;
+
+          if (medicationobj.pre_approval === "Y") {
+            swalMessage({
+              title: "Selected Item is Pre Approval",
+              type: "warning"
+            });
+          }
+
           medicationitems.push(medicationobj);
           $this.setState({
             medicationitems: medicationitems,

@@ -20,3 +20,6 @@
     border-top-right-radius: 5px;
     background: #ffff;
     padding-bottom: 10px; }
+
+#itemSetupPopGrid .ReactTable {
+  max-height: 27vh !important; }

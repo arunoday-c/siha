@@ -3,6 +3,7 @@ import algaehUtlities from "algaeh-utilities/utilities";
 import {
   getServiceType,
   getServices,
+  getServiceInsured,
   addServices,
   updateServices,
   addProcedure,
@@ -42,6 +43,14 @@ export default () => {
   });
 
   api.get("/getService", getServices, (req, res, next) => {
+    let result = req.records;
+    res.status(utlities.httpStatus().ok).json({
+      success: true,
+      records: result
+    });
+    next();
+  });
+  api.get("/getServiceInsured", getServiceInsured, (req, res, next) => {
     let result = req.records;
     res.status(utlities.httpStatus().ok).json({
       success: true,

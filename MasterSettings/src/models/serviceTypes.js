@@ -192,6 +192,70 @@ module.exports = {
     }
   },
 
+  getServiceInsured: (req, res, next) => {
+    let input = req.query;
+    const _mysql = new algaehMysql();
+
+    try {
+      let _strAppend = "";
+      let inputValues = [];
+
+      if (input.hims_d_services_id != null) {
+        _strAppend += " and hims_d_services_id=?";
+        inputValues.push(input.hims_d_services_id);
+      }
+
+      if (input.service_type_id != null) {
+        _strAppend += " and service_type_id=?";
+        inputValues.push(input.service_type_id);
+      }
+
+      if (input.service_name != null) {
+        _strAppend += " and service_name=?";
+        inputValues.push(input.service_name);
+      }
+
+      if (input.sub_department_id != null) {
+        _strAppend += " and sub_department_id=?";
+        inputValues.push(input.sub_department_id);
+      }
+      if (input.procedure_type != null) {
+        _strAppend += " and procedure_type=?";
+        inputValues.push(input.procedure_type);
+      }
+
+      if (input.insurance_id != null) {
+        _strAppend += " and SI.insurance_id=?";
+        inputValues.push(input.insurance_id);
+      }
+
+      _mysql
+        .executeQuery({
+          query:
+            "SELECT SI.service_name,S.service_type_id,S.hims_d_services_id,S.arabic_service_name,\
+            SI.covered,SI.pre_approval\
+            FROM hims_d_services S left join hims_d_services_insurance SI on \
+            S.hims_d_services_id = SI.services_id  where 1=1 " +
+            _strAppend +
+            " order by hims_d_services_id desc",
+          values: inputValues,
+          printQuery: true
+        })
+        .then(result => {
+          _mysql.releaseConnection();
+          req.records = result;
+          next();
+        })
+        .catch(error => {
+          _mysql.releaseConnection();
+          next(error);
+        });
+    } catch (e) {
+      _mysql.releaseConnection();
+      next(e);
+    }
+  },
+
   addProcedure: (req, res, next) => {
     let input = req.body;
     const _mysql = new algaehMysql();

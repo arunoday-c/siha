@@ -108,6 +108,7 @@ class OrderingServices extends Component {
       });
     }
 
+    debugger;
     if (
       this.props.serviceslist === undefined ||
       this.props.serviceslist.length === 0
@@ -127,7 +128,6 @@ class OrderingServices extends Component {
 
   getPatientInsurance() {
     this.props.getPatientInsurance({
-      // uri: "/insurance/getPatientInsurance",
       uri: "/patientRegistration/getPatientInsurance",
       module: "frontDesk",
       method: "GET",
@@ -140,17 +140,30 @@ class OrderingServices extends Component {
         mappingName: "existinginsurance"
       },
       afterSuccess: data => {
+        debugger;
         if (data.length > 0) {
           this.setState({
             insured: "Y",
-            primary_insurance_provider_id: data.insurance_provider_id,
-            primary_network_office_id: data.hims_d_insurance_network_office_id,
-            primary_network_id: data.network_id,
-            sec_insured: data.sec_insured,
+            primary_insurance_provider_id: data[0].insurance_provider_id,
+            primary_network_office_id:
+              data[0].hims_d_insurance_network_office_id,
+            primary_network_id: data[0].network_id,
+            sec_insured: data[0].sec_insured,
             secondary_insurance_provider_id:
-              data.secondary_insurance_provider_id,
-            secondary_network_id: data.secondary_network_id,
-            secondary_network_office_id: data.secondary_network_office_id
+              data[0].secondary_insurance_provider_id,
+            secondary_network_id: data[0].secondary_network_id,
+            secondary_network_office_id: data[0].secondary_network_office_id
+          });
+
+          this.props.getServices({
+            uri: "/serviceType/getServiceInsured",
+            module: "masterSettings",
+            method: "GET",
+            data: { insurance_id: data[0].insurance_provider_id },
+            redux: {
+              type: "SERVICES_INS_GET_DATA",
+              mappingName: "services"
+            }
           });
         }
       }
@@ -214,6 +227,7 @@ class OrderingServices extends Component {
     });
   };
   render() {
+    debugger;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
@@ -248,27 +262,76 @@ class OrderingServices extends Component {
                   }}
                 />
 
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "sel_srvc"
-                  }}
-                  selector={{
-                    name: "s_service",
-                    className: "select-fld",
-                    value: this.state.s_service,
-                    dataSource: {
-                      textField:
-                        this.state.selectedLang === "en"
-                          ? "service_name"
-                          : "arabic_service_name",
-                      valueField: "hims_d_services_id",
-                      data: this.props.services
-                    },
-                    autoComplete: "off",
-                    onChange: serviceHandeler.bind(this, this)
-                  }}
-                />
+                {this.state.insured === "Y" ? (
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "sel_srvc"
+                    }}
+                    selector={{
+                      name: "s_service",
+                      className: "select-fld",
+                      autoComplete: "off",
+                      value: this.state.s_service,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "service_name"
+                            : "arabic_service_name",
+                        valueField: "hims_d_services_id",
+                        data: this.props.services
+                      },
+                      onChange: serviceHandeler.bind(this, this),
+                      autoComplete: "off",
+                      template: item => (
+                        <div
+                          className={
+                            item.covered === "N"
+                              ? "notcovered"
+                              : item.pre_approval === "N"
+                              ? "insurancecovered"
+                              : "coveredandpreapp"
+                          }
+                        >
+                          <h5>
+                            {this.state.selectedLang === "en"
+                              ? item.service_name
+                              : item.arabic_service_name}
+                          </h5>
+                          <h6>
+                            "Covred: "{item.covered === "Y" ? "Yes" : "No"}
+                          </h6>
+                          <h6>
+                            "Approval: "
+                            {item.pre_approval === "Y" ? "Yes" : "No"}
+                          </h6>
+                        </div>
+                      )
+                    }}
+                  />
+                ) : (
+                  <AlagehAutoComplete
+                    div={{ className: "col" }}
+                    label={{
+                      fieldName: "sel_srvc"
+                    }}
+                    selector={{
+                      name: "s_service",
+                      className: "select-fld",
+                      autoComplete: "off",
+                      value: this.state.s_service,
+                      dataSource: {
+                        textField:
+                          this.state.selectedLang === "en"
+                            ? "service_name"
+                            : "arabic_service_name",
+                        valueField: "hims_d_services_id",
+                        data: this.props.services
+                      },
+                      onChange: serviceHandeler.bind(this, this)
+                    }}
+                  />
+                )}
 
                 <AlagehAutoComplete
                   div={{ className: "col-lg-3" }}

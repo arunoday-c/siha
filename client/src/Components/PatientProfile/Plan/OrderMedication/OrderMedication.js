@@ -567,6 +567,22 @@ class OrderMedication extends Component {
                       }
                     },
                     {
+                      fieldName: "pre_approval",
+                      label: (
+                        <AlgaehLabel label={{ forceLabel: "Pre Approval" }} />
+                      ),
+                      displayTemplate: row => {
+                        return row.pre_approval === "Y"
+                          ? "Required"
+                          : "Not Required";
+                      },
+                      editorTemplate: row => {
+                        return row.pre_approval === "Y"
+                          ? "Required"
+                          : "Not Required";
+                      }
+                    },
+                    {
                       fieldName: "instructions",
                       label: (
                         <AlgaehLabel label={{ forceLabel: "Instruction" }} />

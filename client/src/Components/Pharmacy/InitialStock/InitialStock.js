@@ -207,7 +207,7 @@ class InitialStock extends Component {
             <div
               className="portlet portlet-bordered margin-bottom-15"
               style={{ marginTop: 90 }}
-              data-validate="InvIntialStock"
+            
             >
               {/* <div className="portlet-title">
             <div className="caption">
@@ -216,12 +216,12 @@ class InitialStock extends Component {
             <div className="actions">
             </div>
           </div> */}
-              <div className="portlet-body" data-validate="IntialStock">
+              <div className="portlet-body">
                 <div className="row inline">
                   <AlagehFormGroup
-                    div={{ className: "col-6" }}
+                    div={{ className: "col-6 form-group" }}
                     label={{
-                      forceLabel: "Description"
+                      forceLabel: "Description Pharmacy"
                     }}
                     textBox={{
                       className: "txt-fld",
@@ -229,11 +229,17 @@ class InitialStock extends Component {
                       value: this.state.description,
                       events: {
                         onChange: changeTexts.bind(this, this)
-                      }
+                      },
+              others:{
+                       autoComplete:"off"
+                    }
                     }}
                   />
+                  </div>
+                <div className="row"  data-validate="IntialStock">
+              
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "Location", isImp: true }}
                     selector={{
                       name: "location_id",
@@ -242,7 +248,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "location_description",
                         valueField: "hims_d_pharmacy_location_id",
-                        data: this.props.intlocations
+                        data: this.props.intlocations, autoComplete:"off"
                       },
 
                       onChange: LocationchangeTexts.bind(this, this)
@@ -250,7 +256,7 @@ class InitialStock extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "Item Name", isImp: true }}
                     selector={{
                       name: "item_id",
@@ -259,15 +265,13 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "item_description",
                         valueField: "hims_d_item_master_id",
-                        data: this.props.intitemlist
+                        data: this.props.intitemlist, autoComplete:"off"
                       },
                       onChange: itemchangeText.bind(this, this)
                     }}
                   />
-                </div>
-                <div className="row">
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "Item Category", isImp: true }}
                     selector={{
                       name: "item_category_id",
@@ -276,7 +280,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "category_desc",
                         valueField: "hims_d_item_category_id",
-                        data: this.props.intitemcategory
+                        data: this.props.intitemcategory, autoComplete:"off"
                       },
                       others: {
                         disabled: true
@@ -286,7 +290,7 @@ class InitialStock extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-3" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "Item Group", isImp: true }}
                     selector={{
                       name: "item_group_id",
@@ -295,7 +299,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "group_description",
                         valueField: "hims_d_item_group_id",
-                        data: this.props.intitemgroup
+                        data: this.props.intitemgroup, autoComplete:"off"
                       },
                       others: {
                         disabled: true
@@ -305,7 +309,7 @@ class InitialStock extends Component {
                   />
 
                   <AlagehAutoComplete
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{ forceLabel: "UOM", isImp: true }}
                     selector={{
                       name: "uom_id",
@@ -314,7 +318,7 @@ class InitialStock extends Component {
                       dataSource: {
                         textField: "uom_description",
                         valueField: "hims_d_pharmacy_uom_id",
-                        data: this.props.intitemuom
+                        data: this.props.intitemuom, autoComplete:"off"
                       },
                       others: {
                         disabled: true
@@ -323,7 +327,7 @@ class InitialStock extends Component {
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Batch No.",
                       isImp: true
@@ -334,11 +338,23 @@ class InitialStock extends Component {
                       value: this.state.batchno,
                       events: {
                         onChange: changeTexts.bind(this, this)
-                      }
+                      },  others:{
+                       autoComplete:"off"
+                    }
                     }}
                   />
+                  <AlgaehDateHandler
+                    div={{ className: "col-3 form-group" }}
+                    label={{ forceLabel: "Expiry Date", isImp: true }}
+                    textBox={{ className: "txt-fld", name: "expiry_date" }}
+                    minDate={new Date()}
+                    events={{
+                      onChange: datehandle.bind(this, this)
+                    }}
+                    value={this.state.expiry_date}
+                  />
                   <AlagehFormGroup
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Quantity",
                       isImp: true
@@ -353,11 +369,13 @@ class InitialStock extends Component {
                       value: this.state.quantity,
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
-                      }
+                      },  others:{    step: "1",  
+                       autoComplete:"off"
+                    }
                     }}
                   />
                   <AlagehFormGroup
-                    div={{ className: "col-2" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Unit Cost",
                       isImp: true
@@ -369,23 +387,15 @@ class InitialStock extends Component {
                       name: "unit_cost",
                       events: {
                         onChange: numberchangeTexts.bind(this, this)
-                      }
+                      },  others:{
+                       autoComplete:"off"
+                    }
                     }}
                   />
 
-                  <AlgaehDateHandler
-                    div={{ className: "col-3" }}
-                    label={{ forceLabel: "Expiry Date", isImp: true }}
-                    textBox={{ className: "txt-fld", name: "expiry_date" }}
-                    minDate={new Date()}
-                    events={{
-                      onChange: datehandle.bind(this, this)
-                    }}
-                    value={this.state.expiry_date}
-                  />
 
                   <AlagehFormGroup
-                    div={{ className: "col-lg-3" }}
+                    div={{ className: "col-3 form-group" }}
                     label={{
                       forceLabel: "Receipt Number(GRN)",
                       isImp: true
@@ -396,7 +406,9 @@ class InitialStock extends Component {
                       name: "grn_number",
                       events: {
                         onChange: changeTexts.bind(this, this)
-                      }
+                      },  others:{
+                       autoComplete:"off"
+                    }
                     }}
                   />
 
