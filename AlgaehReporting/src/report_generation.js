@@ -219,7 +219,7 @@ module.exports = {
     const _mysql = new algaehMysql();
     try {
       const _inputParam = JSON.parse(input.report);
-
+      console.log("_inputParam:", _inputParam);
       _mysql
         .executeQuery({
           query:
@@ -448,6 +448,7 @@ module.exports = {
                     executePDF({
                       mysql: _mysql,
                       inputs: _inputOrders,
+                      args: _inputParam,
                       loadash: _,
                       moment: moment,
                       mainData: data[1],
