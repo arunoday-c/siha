@@ -155,6 +155,7 @@ class ResultEntry extends Component {
           openPopup={this.props.open}
         >
           <div className="popupInner">
+          <div className="popRightDiv" style={{padding:0}}>
             <div className="col-lg-12">
               <div className="row">
                 <div className="patientInfo-lab-Top box-shadow-normal">
@@ -637,8 +638,7 @@ class ResultEntry extends Component {
                     paging={{ page: 0, rowsPerPage: 20 }}
                   />
                 </div>
-
-                <div className="row form-row-gap">
+<div className="col-12">
                   <AlgaehLabel
                     label={{
                       forceLabel: "Comments"
@@ -651,8 +651,10 @@ class ResultEntry extends Component {
                     onChange={this.textAreaEvent.bind(this)}
                   />
                 </div>
+                
               </div>
             </div>
+          </div>
           </div>
 
           <div className="popupFooter">

@@ -88,3 +88,5 @@
 
 .RadResultEntryPopupInner .editor {
   padding-top: 10px; }
+  .RadResultEntryPopupInner .editor .quill .ql-editor {
+    max-height: 43vh; }

@@ -10,10 +10,8 @@
                         <th>Sl No.<p>وصف الخدمة</p></th>
                         <th>Date<p>السعر</p></th>
                         <th>Time Slot<p>الخصم</p></th>
-                        <th>Doctor Name<p>حصة المريض</p></th>
-                        <th>Department<p>حصة المريض</p></th>
-                        <th>Patient Name<p>حصة المريض</p></th>
                         <th>Patient MRN.<p>ضريبة المريض</p></th>
+                        <th>Patient Name<p>حصة المريض</p></th>
                         <th>Age<p>المبلغ الصافي</p></th>
                         <th>Appo. Type<p>المبلغ الصافي</p></th>
                         <th>Appo. Status<p>المبلغ الصافي</p></th>
@@ -23,20 +21,19 @@
                 <tbody>
                   {{#each groupdetails}}
                     <tr>
-                        <td colspan="10" class="tableSubHdg">{{doctor_name}} | {{doctor_code}}</td>
+                        <td colspan="9" class="tableSubHdg">{{doctor_name}} | {{doctor_code}}</td>
                     </tr>
                     {{#each details}}
                     <tr>
                        <td>{{sql_no}}</td>
                        <td>{{appointment_date}}</td>
-                       <td>----</td>
-                       <td>----</td>
-                       <td>----</td>
-                       <td>----</td>
-                       <td>----</td>
-                       <td>----</td>
-                       <td>----</td>
-                       <td>----</td>
+                       <td>{{appointment_from_time}} - {{appointment_to_time}}</td>
+                          <td>{{patient_code}}</td>
+                             <td>{{patient_name}}</td>
+                             <td></td>
+                             <td></td>
+                                <td>{{app_status}}</td>
+                                   <td>{{appointment_remarks}}</td>
                     </tr>
                     {{/each}}
                     {{/each}}

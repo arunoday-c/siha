@@ -143,8 +143,7 @@ class RadResultEntry extends Component {
               </div>
               <div className="patientDemographic">
                 <span>
-                  DOB:
-                  <b>
+                  DOB: <b>
                     {moment(this.state.date_of_birth).format(
                       Options.dateFormat
                     )}
@@ -156,16 +155,14 @@ class RadResultEntry extends Component {
               </div>
               <div className="patientDemographic">
                 <span>
-                  Ref by:
-                  <b>
+                  Ref by: <b>
                     {display !== null && display.length !== 0
                       ? display[0].full_name
                       : ""}
                   </b>
                 </span>
                 <span>
-                  Scheduled Date:
-                  <b>
+                  Scheduled Date: <b>
                     {moment(this.state.scheduled_date_time).format(
                       Options.dateFormat
                     )}
@@ -343,11 +340,8 @@ class RadResultEntry extends Component {
                         }
                       }}
                     />
-                  </div>
-
-                  <div className="row form-row-gap">
-                    <AlagehAutoComplete
-                      div={{ className: "col-lg-12" }}
+                      <AlagehAutoComplete
+                      div={{ className: "col-12" }}
                       label={{
                         forceLabel: "Report Type"
                       }}
@@ -362,10 +356,9 @@ class RadResultEntry extends Component {
                         },
                         onChange: texthandle.bind(this, this)
                       }}
-                    />
-                  </div>
-
-                  <div className="row form-row-gap">
+                  />
+                  
+                   <div className="col">
                     <AlgaehLabel
                       label={{
                         forceLabel: "Comments"
@@ -380,6 +373,11 @@ class RadResultEntry extends Component {
                       {this.state.comments}
                     </textarea>
                   </div>
+                  </div>
+
+                  
+
+                 
                 </div>
                 <div className="col-8 popRightDiv">
                   <h5 style={{ color: "gray" }}>

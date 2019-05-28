@@ -649,7 +649,8 @@ export default class ReportUI extends Component {
 {this.props.options.report !==undefined && this.props.options.report.requireIframe ===true?(<iframe
                 src={this.state._htmlString}
                 width="100%"
-                height="500px"
+                height="100%"
+                className="reportPDFIframe"
               />):(<div
                 dangerouslySetInnerHTML={{
                   __html: this.state._htmlString

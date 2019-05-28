@@ -1,123 +1,124 @@
 .RadResultEntryPopupInner {
-  .patientInfo-Top {
-    background: white;
-    height: 70px;
-    padding: 5px 0 0;
-    width: 100%;
-    position: relative;
-    z-index: 1;
+	.patientInfo-Top {
+		background: white;
+		height: 70px;
+		padding: 5px 0 0;
+		width: 100%;
+		position: relative;
+		z-index: 1;
 
-    div {
-      float: left;
-      color: #858585;
-    }
+		div {
+			float: left;
+			color: #858585;
+		}
 
-    .backBtn {
-      border-right: 1px solid #e1e1e1;
-      padding-right: 10px;
-      button {
-        height: 60px;
-        border: 1px solid #e1e1e1;
-      }
-      i {
-        display: block;
-        margin-bottom: 5px;
-      }
-    }
+		.backBtn {
+			border-right: 1px solid #e1e1e1;
+			padding-right: 10px;
+			button {
+				height: 60px;
+				border: 1px solid #e1e1e1;
+			}
+			i {
+				display: block;
+				margin-bottom: 5px;
+			}
+		}
 
-    .patientImg {
-      margin: 1px 10px;
-      border-radius: 4px;
-      border: 1px solid #e1e1e1;
-      img {
-        height: 55px;
-        border-radius: 4px;
-        overflow: hidden;
-      }
-    }
-    .patientName {
-      max-width: 230px;
-      margin-top: 2px;
-      border-left: 1px solid #e1e1e1;
-      border-right: 1px solid #e1e1e1;
-      padding-left: 10px;
-      padding-right: 10px;
-      min-height: 57px;
-      h6 {
-        margin-bottom: 2px;
-        color: #000;
-        line-height: 1.2rem;
-      }
-      p {
-        margin: 0;
-        padding: 0;
-      }
-    }
-    .patientDemographic {
-      line-height: 1.3rem;
-      border-right: 1px solid #e1e1e1;
-      padding-left: 10px;
-      padding-right: 10px;
-      min-height: 57px;
-      span {
-        display: block;
-        b {
-          color: #34b8bc;
-        }
-      }
-    }
-    .patientHospitalDetail {
-      line-height: 1.3rem;
-      border-right: 1px solid #e1e1e1;
-      padding-left: 10px;
-      padding-right: 10px;
-      min-height: 57px;
-      span {
-        display: block;
-        b {
-          color: #34b8bc;
-        }
-      }
-    }
-    .patientVital {
-      width: 210px;
-      line-height: 1.3rem;
-      padding-left: 10px;
-      padding-right: 10px;
-      min-height: 57px;
-      span {
-        display: inline-block;
-        margin-right: 8px;
+		.patientImg {
+			margin: 1px 10px;
+			border-radius: 4px;
+			border: 1px solid #e1e1e1;
+			img {
+				height: 55px;
+				border-radius: 4px;
+				overflow: hidden;
+			}
+		}
+		.patientName {
+			max-width: 230px;
+			margin-top: 2px;
+			border-left: 1px solid #e1e1e1;
+			border-right: 1px solid #e1e1e1;
+			padding-left: 10px;
+			padding-right: 10px;
+			min-height: 57px;
+			h6 {
+				margin-bottom: 2px;
+				color: #000;
+				line-height: 1.2rem;
+			}
+			p {
+				margin: 0;
+				padding: 0;
+			}
+		}
+		.patientDemographic {
+			line-height: 1.3rem;
+			border-right: 1px solid #e1e1e1;
+			padding-left: 10px;
+			padding-right: 10px;
+			min-height: 57px;
+			span {
+				display: block;
+				b {
+					color: #34b8bc;
+				}
+			}
+		}
+		.patientHospitalDetail {
+			line-height: 1.3rem;
+			border-right: 1px solid #e1e1e1;
+			padding-left: 10px;
+			padding-right: 10px;
+			min-height: 57px;
+			span {
+				display: block;
+				b {
+					color: #34b8bc;
+				}
+			}
+		}
+		.patientVital {
+			width: 210px;
+			line-height: 1.3rem;
+			padding-left: 10px;
+			padding-right: 10px;
+			min-height: 57px;
+			span {
+				display: inline-block;
+				margin-right: 8px;
 
-        b {
-          color: #34b8bc;
-        }
-      }
-    }
-    .moreAction {
-      float: right;
-      border-right: 1px solid #e1e1e1;
-      padding-right: 10px;
-      button {
-        height: 60px;
-        border: 1px solid #e1e1e1;
+				b {
+					color: #34b8bc;
+				}
+			}
+		}
+		.moreAction {
+			float: right;
+			border-right: 1px solid #e1e1e1;
+			padding-right: 10px;
+			button {
+				height: 60px;
+				border: 1px solid #e1e1e1;
 
-        margin-left: 0;
-      }
-      i {
-        display: block;
-        margin-bottom: 5px;
-      }
-    }
-  }
-  .form-row-gap {
-    padding-top: 5px;
-  }
-  .editor {
-    padding-top: 10px;
-    .quill {
-      .ql-editor {
-      }
-    }
-  }
+				margin-left: 0;
+			}
+			i {
+				display: block;
+				margin-bottom: 5px;
+			}
+		}
+	}
+	.form-row-gap {
+		padding-top: 5px;
+	}
+	.editor {
+		padding-top: 10px;
+		.quill {
+			.ql-editor {
+				max-height: 43vh;
+			}
+		}
+	}
 }
