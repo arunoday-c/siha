@@ -14,10 +14,33 @@ import swal from "sweetalert2";
 class Groups extends Component {
   constructor(props) {
     super(props);
+    this.initCall();
     this.state = {
       groups: []
     };
     this.getGroups();
+  }
+
+    initCall() {
+    let that = this;
+    algaehApiCall({
+      uri: "/init/",
+      method: "GET",
+      data: {
+        fields: "app_group_code",
+        tableName: "algaeh_d_app_group",
+        keyFieldName: "algaeh_d_app_group_id"
+      },
+      onSuccess: response => {
+        if (response.data.success === true) {
+          const placeHolder =
+            response.data.records.length > 0 ? response.data.records[0] : {};
+          that.setState({
+           app_group_code_placeHolder: placeHolder.app_group_code
+          });
+        }
+      }
+    });
   }
 
   getGroups() {
@@ -182,7 +205,10 @@ class Groups extends Component {
                   value: this.state.app_group_code,
                   events: {
                     onChange: this.changeTexts.bind(this)
-                  }
+                  },   others: {
+                          tabIndex: "1",
+                            placeholder: this.state.app_group_code_placeHolder
+                        }
                 }}
               />
               <AlagehFormGroup
