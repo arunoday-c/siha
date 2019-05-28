@@ -7,12 +7,13 @@ import {
 } from "../utils";
 import httpStatus from "../utils/httpStatus";
 import { debugFunction, debugLog } from "../utils/logging";
+import { LINQ } from "node-linq";
 
 import algaehMysql from "algaeh-mysql";
 const keyPath = require("algaeh-keys/keys");
 
 //created by irfan: to add Patient Prescription
-let addPatientPrescription = (req, res, next) => {
+let addPatientPrescriptionBAckup = (req, res, next) => {
   debugFunction("addPatientPrescription");
   try {
     if (req.db == null) {
@@ -34,18 +35,20 @@ let addPatientPrescription = (req, res, next) => {
         }
 
         connection.query(
-          "INSERT INTO `hims_f_prescription` (`patient_id`, `encounter_id`, `provider_id`, `episode_id`, `prescription_date`, `created_by`, `created_date`, `updated_by`, `updated_date`) values(\
-            ?,?,?,?,?,?,?,?,?)",
+          "INSERT INTO `hims_f_prescription` (`patient_id`, `encounter_id`, `provider_id`, `episode_id`,\
+           `prescription_date`, `created_by`, `created_date`, `updated_by`, `updated_date`,hospital_id) values(\
+            ?,?,?,?,?,?,?,?,?,?)",
           [
             input.patient_id,
             input.encounter_id,
             input.provider_id,
             input.episode_id,
             new Date(),
-            input.created_by,
+            req.userIdentity.algaeh_d_app_user_id,
             new Date(),
-            input.updated_by,
-            new Date()
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.hospital_id
           ],
           (error, results) => {
             if (error) {
@@ -56,7 +59,7 @@ let addPatientPrescription = (req, res, next) => {
             }
             // debugLog("Results are recorded...");
 
-            if (results.insertId != null) {
+            if (results.insertId > 0) {
               req.body.prescription_id = results.insertId;
 
               const insurtColumns = [
@@ -122,11 +125,6 @@ let addPatientPrescription = (req, res, next) => {
                           releaseDBConnection(db, connection);
                           next(error);
                         }
-                        debugLog("Query ", connection);
-                        console.log(
-                          "Results are recorded...",
-                          ResultOfFetchOrderIds
-                        );
 
                         let detailsPush = new LINQ(req.body.medicationitems)
                           .Where(g => g.pre_approval == "Y")
@@ -234,6 +232,254 @@ let addPatientPrescription = (req, res, next) => {
                   }
                 }
               );
+            } else {
+              req.records = results;
+              releaseDBConnection(db, connection);
+              next();
+            }
+          }
+        );
+      });
+    });
+  } catch (e) {
+    next(e);
+  }
+};
+
+//created by irfan: to add Patient Prescription
+let addPatientPrescription = (req, res, next) => {
+  console.log("addPatientPrescription");
+  try {
+    if (req.db == null) {
+      next(httpStatus.dataBaseNotInitilizedError());
+    }
+    let db = req.db;
+    let input = extend({}, req.body);
+
+    db.getConnection((error, connection) => {
+      if (error) {
+        next(error);
+      }
+      connection.beginTransaction(error => {
+        if (error) {
+          connection.rollback(() => {
+            releaseDBConnection(db, connection);
+            next(error);
+          });
+        }
+
+        connection.query(
+          "INSERT INTO `hims_f_prescription` (`patient_id`, `encounter_id`, `provider_id`, `episode_id`,\
+           `prescription_date`, `created_by`, `created_date`, `updated_by`, `updated_date`,hospital_id) values(\
+            ?,?,?,?,?,?,?,?,?,?)",
+          [
+            input.patient_id,
+            input.encounter_id,
+            input.provider_id,
+            input.episode_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.algaeh_d_app_user_id,
+            new Date(),
+            req.userIdentity.hospital_id
+          ],
+          (error, results) => {
+            if (error) {
+              connection.rollback(() => {
+                releaseDBConnection(db, connection);
+                next(error);
+              });
+            }
+            // debugLog("Results are recorded...");
+
+            if (results.insertId > 0) {
+              req.body.prescription_id = results.insertId;
+
+              const insurtColumns = [
+                "item_id",
+                "generic_id",
+                "dosage",
+                "service_id",
+                "uom_id",
+                "item_category_id",
+                "item_group_id",
+                "frequency",
+                "no_of_days",
+                "frequency_type",
+                "frequency_time",
+                "insured",
+                "pre_approval",
+                "instructions"
+              ];
+
+              connection.query(
+                "INSERT INTO hims_f_prescription_detail(" +
+                  insurtColumns.join(",") +
+                  ",`prescription_id`) VALUES ?",
+                [
+                  jsonArrayToObject({
+                    sampleInputObject: insurtColumns,
+                    arrayObj: req.body.medicationitems,
+                    newFieldToInsert: [req.body.prescription_id],
+                    req: req
+                  })
+                ],
+                (error, detailResult) => {
+                  if (error) {
+                    connection.rollback(() => {
+                      releaseDBConnection(db, connection);
+                      next(error);
+                    });
+                  }
+
+                  let services = new LINQ(req.body.medicationitems)
+                    .Select(s => s.service_id)
+                    .ToArray();
+
+                  if (services.length > 0) {
+                    connection.query(
+                      "SELECT hims_f_prescription_detail_id, service_id from hims_f_prescription P, hims_f_prescription_detail PD\
+                         where P.hims_f_prescription_id = PD.prescription_id and P.`patient_id`=? and \
+                         P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and `service_id` in (?)",
+                      [
+                        input.patient_id,
+                        input.provider_id,
+                        input.encounter_id,
+                        input.episode_id,
+                        services
+                      ],
+                      (error, detail_res) => {
+                        if (error) {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        }
+                        // console.log("detail_res:", detail_res);
+
+                        let insertArr = [];
+                        for (let i = 0; i < detail_res.length; i++) {
+                          let pre_data = new LINQ(input.medicationitems)
+                            .Where(
+                              w =>
+                                w.pre_approval == "Y" &&
+                                w.service_id == detail_res[i]["service_id"]
+                            )
+                            .Select(s => {
+                              return {
+                                ...s,
+                                prescription_detail_id:
+                                  detail_res[i]["hims_f_prescription_detail_id"]
+                              };
+                            })
+                            .ToArray();
+
+                          insertArr.push(...pre_data);
+                        }
+                        //console.log("insertArr:", insertArr);
+                        //if request for pre-aproval needed
+                        if (insertArr.length > 0) {
+                          const insurtCols = [
+                            "prescription_detail_id",
+                            "item_id",
+                            "service_id",
+                            "requested_quantity",
+                            "insurance_service_name",
+                            "doctor_id",
+                            "gross_amt",
+                            "net_amount"
+                          ];
+
+                          connection.query(
+                            "INSERT INTO hims_f_medication_approval(" +
+                              insurtCols.join(",") +
+                              ",created_by,updated_by,created_date,updated_date,insurance_provider_id,sub_insurance_id,\
+                              network_id,insurance_network_office_id,patient_id,visit_id,hospital_id) VALUES ?",
+                            [
+                              jsonArrayToObject({
+                                sampleInputObject: insurtCols,
+                                arrayObj: insertArr,
+
+                                req: req,
+                                newFieldToInsert: [
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                  new Date(),
+                                  new Date(),
+                                  input.insurance_provider_id,
+                                  input.sub_insurance_id,
+                                  input.network_id,
+                                  input.insurance_network_office_id,
+                                  input.patient_id,
+                                  input.visit_id,
+                                  req.userIdentity.hospital_id
+                                ]
+                              })
+                            ],
+                            (error, resultPreAprvl) => {
+                              if (error) {
+                                console.log("Error 1 Here result ", error);
+                                connection.rollback(() => {
+                                  releaseDBConnection(db, connection);
+                                  next(error);
+                                });
+                              }
+
+                              connection.commit(error => {
+                                if (error) {
+                                  connection.rollback(() => {
+                                    releaseDBConnection(db, connection);
+                                    next(error);
+                                  });
+                                }
+                                releaseDBConnection(db, connection);
+                                req.records = {
+                                  resultPreAprvl,
+                                  detail_res
+                                };
+                                next();
+                              });
+                            }
+                          );
+                        } else {
+                          console.log("Commit result ");
+                          connection.commit(error => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+                            releaseDBConnection(db, connection);
+                            req.records = {
+                              detailResult,
+                              detail_res
+                            };
+                            next();
+                          });
+                        }
+                      }
+                    );
+                  } else {
+                    console.log("Else: ");
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      releaseDBConnection(db, connection);
+                      req.records = { detailResult, detail_res };
+                      next();
+                    });
+                  }
+                }
+              );
+            } else {
+              req.records = results;
+              releaseDBConnection(db, connection);
+              next();
             }
           }
         );
