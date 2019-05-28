@@ -116,7 +116,7 @@ export default [
             type: "dropdown",
             name: "sub_department_id",
             initialLoad: true,
-            isImp: false,
+            isImp: true,
 
             label: "Select Department",
             link: {

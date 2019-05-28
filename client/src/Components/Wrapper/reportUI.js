@@ -644,16 +644,17 @@ export default class ReportUI extends Component {
               ref={el => (this.algehPrintRef = el)}
               style={{ minHeight: "30vh" }}
             >
-              {/*}<div
-                dangerouslySetInnerHTML={{
-                  __html: this.state._htmlString
-                }}
-              />*/}
-{this.props.report !==undefined && this.props.report.requireIframe ===true?(<iframe
+              {/*}*/}
+              {console.log("this.props", this.props)}
+{this.props.options.report !==undefined && this.props.options.report.requireIframe ===true?(<iframe
                 src={this.state._htmlString}
                 width="100%"
                 height="500px"
-              />):null}
+              />):(<div
+                dangerouslySetInnerHTML={{
+                  __html: this.state._htmlString
+                }}
+              />)}
               
 
               <div className="col-lg-12">

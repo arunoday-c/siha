@@ -133,6 +133,8 @@ class Reports extends Component {
 										onClick={() => {
 											let pageProperies = {
 												reportName: item.reportName,
+												template_name: item.reportName,
+												reportQuery: item.reportQuery,
 												requireIframe: item.requireIframe
 											};
 											if (item.pageSize !== undefined && item.pageSize !== '') {
