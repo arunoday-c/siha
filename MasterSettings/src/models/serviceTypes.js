@@ -198,7 +198,7 @@ module.exports = {
 
     try {
       let _strAppend = "";
-      let inputValues = [];
+      let inputValues = [input.insurance_id, input.insurance_id];
 
       if (input.hims_d_services_id != null) {
         _strAppend += " and hims_d_services_id=?";
@@ -224,18 +224,15 @@ module.exports = {
         inputValues.push(input.procedure_type);
       }
 
-      if (input.insurance_id != null) {
-        _strAppend += " and SI.insurance_id=?";
-        inputValues.push(input.insurance_id);
-      }
-
       _mysql
         .executeQuery({
           query:
-            "SELECT SI.service_name,S.service_type_id,S.hims_d_services_id,S.arabic_service_name,\
-            SI.covered,SI.pre_approval\
-            FROM hims_d_services S left join hims_d_services_insurance SI on \
-            S.hims_d_services_id = SI.services_id  where 1=1 " +
+            "select service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval\
+              from hims_d_services where hims_d_services_id not in\
+              (SELECT services_id FROM hims_d_services_insurance where  insurance_id=?)\
+              union all\
+              SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval \
+              FROM hims_d_services_insurance where  insurance_id=?" +
             _strAppend +
             " order by hims_d_services_id desc",
           values: inputValues,

@@ -10,28 +10,30 @@ const texthandle = ($this, e) => {
 };
 
 const networkhandle = ($this, e) => {
-  debugger
+  debugger;
   let name = e.name || e.target.name;
   let value = e.value || e.target.value;
 
-  let inputObj = { insurance_id: $this.state.insurance_provider_id,
-  network_id: value};
+  let inputObj = {
+    insurance_id: $this.state.insurance_provider_id,
+    network_id: value
+  };
 
   $this.props.getPriceList({
     uri: "/insurance/getPolicyPriceList",
+    module: "insurance",
     method: "GET",
     data: inputObj,
     redux: {
       type: "PRICE_LIST_GET_DATA",
       mappingName: "pricelist"
     },
-    afterSuccess:data=>{
+    afterSuccess: data => {
       $this.setState({
         [name]: value
       });
     }
   });
-
 };
 
 const onchangecalculation = ($this, row, e) => {
@@ -65,6 +67,7 @@ const updatePriceList = ($this, data) => {
   //data.updated_by = getCookie("UserID");
   algaehApiCall({
     uri: "/insurance/updatePriceList",
+    module: "insurance",
     data: data,
     method: "PUT",
     onSuccess: response => {
@@ -128,6 +131,7 @@ const bulkUpdate = ($this, data) => {
   }
   algaehApiCall({
     uri: "/insurance/updatePriceListBulk",
+    module: "insurance",
     data: updateobj,
     method: "PUT",
     onSuccess: response => {
@@ -156,13 +160,14 @@ const bulkUpdate = ($this, data) => {
 
         $this.props.getPriceList({
           uri: "/insurance/getPriceList",
+          module: "insurance",
           method: "GET",
           data: inputObj,
           redux: {
             type: "PRICE_LIST_GET_DATA",
             mappingName: "pricelist"
           },
-          afterSuccess:data=>{
+          afterSuccess: data => {
             swalMessage({
               title: "Record updated successfully . .",
               type: "success"
@@ -202,6 +207,7 @@ const getPriceList = $this => {
 
   $this.props.getPriceList({
     uri: "/insurance/getPriceList",
+    module: "insurance",
     method: "GET",
     data: inputObj,
     redux: {

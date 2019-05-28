@@ -12,7 +12,7 @@ import {
   updateInvoiceDetails
 } from "../models/invoiceGeneration";
 
-export default ({ config, db }) => {
+export default () => {
   let api = Router();
 
   api.get(

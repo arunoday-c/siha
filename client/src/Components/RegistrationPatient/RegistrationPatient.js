@@ -317,10 +317,9 @@ class RegistrationPatient extends Component {
         const err = Validations(this);
 
         if (!err) {
+          AlgaehLoader({ show: true });
           if (this.state.unbalanced_amount === 0) {
             this.GenerateReciept($this => {
-              AlgaehLoader({ show: true });
-
               let patientdata = {};
 
               if ($this.state.filePreview !== null) {
