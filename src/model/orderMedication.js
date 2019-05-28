@@ -96,17 +96,142 @@ let addPatientPrescription = (req, res, next) => {
                     });
                   }
 
-                  connection.commit(error => {
-                    if (error) {
-                      connection.rollback(() => {
-                        releaseDBConnection(db, connection);
-                        next(error);
-                      });
-                    }
-                    releaseDBConnection(db, connection);
-                    req.records = detailResult;
-                    next();
-                  });
+                  let servicesForPreAproval = [];
+
+                  let services = new LINQ(req.body.medicationitems)
+                    .Select(s => {
+                      return s.service_id;
+                    })
+                    .ToArray();
+
+                  console.log("services...", services.length);
+                  if (services.length > 0) {
+                    servicesForPreAproval.push(input.patient_id);
+                    servicesForPreAproval.push(input.provider_id);
+                    servicesForPreAproval.push(input.encounter_id);
+                    servicesForPreAproval.push(input.episode_id);
+                    servicesForPreAproval.push(services);
+
+                    connection.query(
+                      "SELECT hims_f_prescription_detail_id, service_id from hims_f_prescription P, hims_f_prescription_detail PD\
+                         where P.hims_f_prescription_id = PD.prescription_id and P.`patient_id`=? and \
+                         P.`provider_id`=? and `encounter_id`=? and `episode_id`=? and `services_id` in (?)",
+                      servicesForPreAproval,
+                      (error, ResultOfFetchOrderIds) => {
+                        if (error) {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        }
+                        debugLog("Query ", connection);
+                        console.log(
+                          "Results are recorded...",
+                          ResultOfFetchOrderIds
+                        );
+
+                        let detailsPush = new LINQ(req.body.medicationitems)
+                          .Where(g => g.pre_approval == "Y")
+                          .Select(s => {
+                            return {
+                              ...s,
+                              ...{
+                                hims_f_prescription_detail_id: new LINQ(
+                                  ResultOfFetchOrderIds
+                                )
+                                  .Where(w => w.services_id == s.services_id)
+                                  .FirstOrDefault()
+                                  .hims_f_prescription_detail_id
+                              }
+                            };
+                          })
+                          .ToArray();
+
+                        //if request for pre-aproval needed
+                        if (detailsPush.length > 0) {
+                          const insurtCols = [
+                            "prescription_id",
+                            "item_id",
+                            "service_id",
+                            "insurance_provider_id",
+                            "insurance_network_office_id",
+                            "requested_quantity",
+                            "insurance_service_name",
+                            "doctor_id",
+                            "patient_id",
+                            "visit_id",
+                            "gross_amt",
+                            "net_amount"
+                          ];
+
+                          connection.query(
+                            "INSERT INTO hims_f_medication_approval(" +
+                              insurtCols.join(",") +
+                              ",created_by,updated_by) VALUES ?",
+                            [
+                              jsonArrayToObject({
+                                sampleInputObject: insurtCols,
+                                arrayObj: detailsPush,
+                                replaceObject: [
+                                  {
+                                    originalKey: "prescription_id",
+                                    NewKey: "hims_f_prescription_detail_id"
+                                  }
+                                ],
+                                req: req,
+                                newFieldToInsert: [
+                                  req.userIdentity.algaeh_d_app_user_id,
+                                  req.userIdentity.algaeh_d_app_user_id
+                                ]
+                              })
+                            ],
+                            (error, resultPreAprvl) => {
+                              if (error) {
+                                debugLog("Error 1 Here result ", error);
+                                connection.rollback(() => {
+                                  releaseDBConnection(db, connection);
+                                  next(error);
+                                });
+                              }
+                              req.records = {
+                                resultPreAprvl,
+                                ResultOfFetchOrderIds
+                              };
+                              next();
+                            }
+                          );
+                        } else {
+                          debugLog("Commit result ");
+                          connection.commit(error => {
+                            if (error) {
+                              connection.rollback(() => {
+                                releaseDBConnection(db, connection);
+                                next(error);
+                              });
+                            }
+                            releaseDBConnection(db, connection);
+                            req.records = {
+                              detailResult,
+                              ResultOfFetchOrderIds
+                            };
+                            next();
+                          });
+                        }
+                      }
+                    );
+                  } else {
+                    debugFunction("Else: ");
+
+                    connection.commit(error => {
+                      if (error) {
+                        connection.rollback(() => {
+                          releaseDBConnection(db, connection);
+                          next(error);
+                        });
+                      }
+                      releaseDBConnection(db, connection);
+                      req.records = { detailResult, ResultOfFetchOrderIds };
+                      next();
+                    });
+                  }
                 }
               );
             }
