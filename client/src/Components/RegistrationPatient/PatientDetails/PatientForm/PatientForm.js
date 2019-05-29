@@ -719,7 +719,8 @@ class AddPatientForm extends Component {
                             name: "employee_id",
                             value: this.state.employee_id,
                             // events: {},
-                            option: {
+                            others: {
+                              onBlur: texthandle.bind(this, this),
                               disabled: this.state.existingPatient,
                               type: "text",
                               tabIndex: "20"

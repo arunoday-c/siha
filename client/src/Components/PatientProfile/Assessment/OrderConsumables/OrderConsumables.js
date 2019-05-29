@@ -14,9 +14,8 @@ import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
 
 import {
-  serviceTypeHandeler,
   texthandle,
-  serviceHandeler,
+  selectItemHandeler,
   ProcessService,
   deleteServices,
   SaveOrdersServices,
@@ -24,15 +23,15 @@ import {
   updateBillDetail,
   onchangegridcol,
   EditGrid
-} from "./OrderingServicesHandaler";
-import "./OrderingServices.css";
+} from "./OrderConsumablesHandaler";
+import "./OrderConsumables.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 import { getCookie } from "../../../../utils/algaehApiCall";
 import GlobalVariables from "../../../../utils/GlobalVariables.json";
 import { getAmountFormart } from "../../../../utils/GlobalFunctions";
-
-class OrderingServices extends Component {
+import moment from "moment";
+class OrderConsumables extends Component {
   constructor(props) {
     super(props);
 
@@ -83,48 +82,6 @@ class OrderingServices extends Component {
       selectedLang: prevLang
     });
 
-    if (
-      this.props.servicetype === undefined ||
-      this.props.servicetype.length === 0
-    ) {
-      this.props.getServiceTypes({
-        uri: "/serviceType",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVIES_TYPES_GET_DATA",
-          mappingName: "servicetype"
-        }
-      });
-    }
-
-    if (this.props.services === undefined || this.props.services.length === 0) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "services"
-        }
-      });
-    }
-
-    debugger;
-    if (
-      this.props.serviceslist === undefined ||
-      this.props.serviceslist.length === 0
-    ) {
-      this.props.getServices({
-        uri: "/serviceType/getService",
-        module: "masterSettings",
-        method: "GET",
-        redux: {
-          type: "SERVICES_GET_DATA",
-          mappingName: "serviceslist"
-        }
-      });
-    }
     this.getPatientInsurance();
   }
 
@@ -155,17 +112,6 @@ class OrderingServices extends Component {
               data[0].secondary_insurance_provider_id,
             secondary_network_id: data[0].secondary_network_id,
             secondary_network_office_id: data[0].secondary_network_office_id
-          });
-
-          this.props.getServices({
-            uri: "/serviceType/getServiceInsured",
-            module: "masterSettings",
-            method: "GET",
-            data: { insurance_id: data[0].insurance_provider_id },
-            redux: {
-              type: "SERVICES_INS_GET_DATA",
-              mappingName: "services"
-            }
           });
         }
       }
@@ -229,7 +175,6 @@ class OrderingServices extends Component {
   };
   render() {
     debugger;
-    const insurance_id = this.state.insurance_provider_id;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
@@ -242,33 +187,9 @@ class OrderingServices extends Component {
           <div className="popupInner">
             <div className="col-lg-12">
               <div className="row">
-                {/*
-                  <AlagehAutoComplete
-                    div={{ className: "col-lg-3" }}
-                    label={{
-                      fieldName: "sel_srvc_typ"
-                    }}
-                    selector={{
-                      name: "s_service_type",
-                      className: "select-fld",
-                      value: this.state.s_service_type,
-                      dataSource: {
-                        textField:
-                          this.state.selectedLang === "en"
-                            ? "service_type"
-                            : "arabic_service_type",
-                        valueField: "hims_d_service_type_id",
-                        data: this.props.servicetype
-                      },
-                      autoComplete: "off",
-                      onChange: serviceTypeHandeler.bind(this, this)
-                    }}
-                  />
-                */}
-
                 <AlgaehAutoSearch
                   div={{ className: "col-3" }}
-                  label={{ forceLabel: "Select Service" }}
+                  label={{ forceLabel: "Select Item" }}
                   title="Search Services"
                   id="service_id_search"
                   template={result => {
@@ -277,9 +198,10 @@ class OrderingServices extends Component {
                       <section className="resultSecStyles">
                         <div className="row">
                           <div className="col-8">
-                            <h4 className="title">{result.service_name}</h4>
-                            <h5>{result.service_type}</h5>
-
+                            <h4 className="title">{result.item_description}</h4>
+                            <h5>
+                              {result.batchno} /{result.expirydt}
+                            </h5>
                             <small>
                               Covered: {result.covered === "Y" ? "Yes" : "No"}
                               Pre Approval:
@@ -291,14 +213,14 @@ class OrderingServices extends Component {
                     );
                   }}
                   name="item_id"
-                  columns={spotlightSearch.Services.servicemaster}
-                  displayField="service_name"
-                  value={this.state.service_name}
+                  columns={spotlightSearch.Items.InvItems}
+                  displayField="item_description"
+                  value={this.state.item_description}
                   extraParameters={{
-                    insurance_id: insurance_id
+                    insurance_id: this.state.insurance_provider_id
                   }}
-                  searchName="insservicemaster"
-                  onClick={serviceHandeler.bind(this, this)}
+                  searchName="insitemmaster"
+                  onClick={selectItemHandeler.bind(this, this)}
                   ref={attReg => {
                     this.attReg = attReg;
                   }}
@@ -432,6 +354,20 @@ class OrderingServices extends Component {
                         others: {
                           minWidth: 400
                         }
+                      },
+                      {
+                        fieldName: "barcode",
+                        label: (
+                          <AlgaehLabel label={{ forceLabel: "Barcode" }} />
+                        ),
+                        disabled: true
+                      },
+                      {
+                        fieldName: "expirydt",
+                        label: (
+                          <AlgaehLabel label={{ fieldName: "Expiry Date" }} />
+                        ),
+                        disabled: true
                       },
                       {
                         fieldName: "unit_cost",
@@ -757,5 +693,5 @@ export default withRouter(
   connect(
     mapStateToProps,
     mapDispatchToProps
-  )(OrderingServices)
+  )(OrderConsumables)
 );
