@@ -724,7 +724,8 @@ class PatientProfile extends Component {
                             ))}
                           </tbody>
                         ))}{" "}
-                      </table></div>
+                      </table>
+                    </div>
                   </section>
                 </li>
                 <li>
@@ -766,14 +767,14 @@ class PatientProfile extends Component {
                             </td>
                           </tr>
                         ))}
-                      </table></div>
+                      </table>
+                    </div>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
-                    <span className="top-nav-sec-hdg">Diet</span>
-                      {" "}
+                    <span className="top-nav-sec-hdg">Diet</span>{" "}
                     <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
@@ -785,7 +786,8 @@ class PatientProfile extends Component {
                             </tr>
                           );
                         })}
-                      </table></div>
+                      </table>
+                    </div>
                   </section>
                 </li>
               </ul>
@@ -906,7 +908,8 @@ class PatientProfile extends Component {
                             ))}
                           </tbody>
                         ))}{" "}
-                      </table></div>
+                      </table>
+                    </div>
                   </section>
                 </li>
                 <li>
@@ -948,14 +951,14 @@ class PatientProfile extends Component {
                             </td>
                           </tr>
                         ))}
-                      </table></div>
+                      </table>
+                    </div>
                   </section>
                 </li>
                 <li>
                   <i className="fas fa-utensils" />
                   <section>
-                    <span className="top-nav-sec-hdg">Diet</span>
-                      {" "}
+                    <span className="top-nav-sec-hdg">Diet</span>{" "}
                     <div className="listofADDWrapper">
                       <table className="listofADDTable">
                         {/* <thead><tr><th><b>ICD Code</b></th><th><b>Description</b></th><th><b>Diagnosis Type</b></th><th><b>Diagnosis Level</b></th></tr></thead>
@@ -967,7 +970,8 @@ class PatientProfile extends Component {
                             </tr>
                           );
                         })}
-                      </table></div>
+                      </table>
+                    </div>
                   </section>
                 </li>
               </ul>
@@ -1019,6 +1023,7 @@ class PatientProfile extends Component {
   }
 
   vatApplicable() {
+    debugger;
     const _atApplicable = Enumerable.from(
       this.props.patient_profile
     ).firstOrDefault();

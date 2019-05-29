@@ -180,9 +180,11 @@ class OrderingServices extends Component {
       output.insured = "Y";
       this.setState({ ...output });
     }
+  }
 
-    if (nextProps.addNew === true && this.state.addNew === true) {
-      this.setState({
+  onClose = e => {
+    this.setState(
+      {
         s_service_type: null,
         s_service: null,
         selectedLang: "en",
@@ -217,15 +219,11 @@ class OrderingServices extends Component {
         sub_total_amount: null,
         discount_amount: null,
         net_total: null
-      });
-    }
-  }
-
-  onClose = e => {
-    this.props.onClose && this.props.onClose(e);
-    this.setState({
-      addNew: true
-    });
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
   render() {
     debugger;
@@ -272,7 +270,6 @@ class OrderingServices extends Component {
                   title="Search Services"
                   id="service_id_search"
                   template={result => {
-                    debugger;
                     return (
                       <section className="resultSecStyles">
                         <div className="row">
@@ -290,7 +287,7 @@ class OrderingServices extends Component {
                       </section>
                     );
                   }}
-                  name="item_id"
+                  name="s_service"
                   columns={spotlightSearch.Services.servicemaster}
                   displayField="service_name"
                   value={this.state.service_name}

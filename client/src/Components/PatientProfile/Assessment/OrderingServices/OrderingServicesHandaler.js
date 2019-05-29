@@ -55,7 +55,7 @@ const serviceTypeHandeler = ($this, e) => {
 const serviceHandeler = ($this, e) => {
   debugger;
   $this.setState({
-    [e.name]: e.hims_d_services_id,
+    s_service: e.hims_d_services_id,
     s_service_type: e.service_type_id,
     insurance_service_name: e.service_name
   });

@@ -12,7 +12,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import AlgaehAutoSearch from "../../../Wrapper/autoSearch";
 import spotlightSearch from "../../../../Search/spotlightSearch.json";
-
+import _ from "lodash";
 import {
   texthandle,
   selectItemHandeler,
@@ -71,7 +71,8 @@ class OrderConsumables extends Component {
       sub_total_amount: null,
       discount_amount: null,
       net_total: null,
-      addNewService: false
+      addNewService: false,
+      inventory_location_id: this.props.inventory_location_id
     };
   }
 
@@ -99,7 +100,6 @@ class OrderConsumables extends Component {
         mappingName: "existinginsurance"
       },
       afterSuccess: data => {
-        debugger;
         if (data.length > 0) {
           this.setState({
             insured: "Y",
@@ -117,18 +117,43 @@ class OrderConsumables extends Component {
       }
     });
   }
+
   componentWillReceiveProps(nextProps) {
+    let Location_name =
+      this.props.inventorylocations !== undefined &&
+      this.props.inventorylocations.length > 0
+        ? _.filter(this.props.inventorylocations, f => {
+            return (
+              f.hims_d_inventory_location_id ===
+              nextProps.inputsparameters.inventory_location_id
+            );
+          })
+        : [];
+
     if (
       nextProps.existinginsurance !== undefined &&
       nextProps.existinginsurance.length !== 0
     ) {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
+      if (Location_name.length > 0) {
+        output.location_name = Location_name[0].location_description;
+        output.location_type = Location_name[0].location_type;
+      }
       this.setState({ ...output });
+    } else {
+      if (Location_name.length > 0) {
+        this.setState({
+          location_name: Location_name[0].location_description,
+          location_type: Location_name[0].location_type
+        });
+      }
     }
+  }
 
-    if (nextProps.addNew === true && this.state.addNew === true) {
-      this.setState({
+  onClose = e => {
+    this.setState(
+      {
         s_service_type: null,
         s_service: null,
         selectedLang: "en",
@@ -163,18 +188,13 @@ class OrderConsumables extends Component {
         sub_total_amount: null,
         discount_amount: null,
         net_total: null
-      });
-    }
-  }
-
-  onClose = e => {
-    this.props.onClose && this.props.onClose(e);
-    this.setState({
-      addNew: true
-    });
+      },
+      () => {
+        this.props.onClose && this.props.onClose(e);
+      }
+    );
   };
   render() {
-    debugger;
     return (
       <div className="hptl-phase1-ordering-services-form">
         <AlgaehModalPopUp
@@ -193,7 +213,6 @@ class OrderConsumables extends Component {
                   title="Search Services"
                   id="service_id_search"
                   template={result => {
-                    debugger;
                     return (
                       <section className="resultSecStyles">
                         <div className="row">
@@ -223,25 +242,6 @@ class OrderConsumables extends Component {
                   onClick={selectItemHandeler.bind(this, this)}
                   ref={attReg => {
                     this.attReg = attReg;
-                  }}
-                />
-
-                <AlagehAutoComplete
-                  div={{ className: "col-lg-3" }}
-                  label={{
-                    fieldName: "tst_type"
-                  }}
-                  selector={{
-                    name: "test_type",
-                    className: "select-fld",
-                    value: this.state.test_type,
-                    dataSource: {
-                      textField: "name",
-                      valueField: "value",
-                      data: GlobalVariables.FORMAT_PRIORITY
-                    },
-                    onChange: texthandle.bind(this, this),
-                    autoComplete: "off"
                   }}
                 />
 
@@ -356,16 +356,16 @@ class OrderConsumables extends Component {
                         }
                       },
                       {
-                        fieldName: "barcode",
+                        fieldName: "batchno",
                         label: (
-                          <AlgaehLabel label={{ forceLabel: "Barcode" }} />
+                          <AlgaehLabel label={{ forceLabel: "Batch No." }} />
                         ),
                         disabled: true
                       },
                       {
                         fieldName: "expirydt",
                         label: (
-                          <AlgaehLabel label={{ fieldName: "Expiry Date" }} />
+                          <AlgaehLabel label={{ forceLabel: "Expiry Date" }} />
                         ),
                         disabled: true
                       },

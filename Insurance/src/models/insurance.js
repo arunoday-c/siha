@@ -913,7 +913,7 @@ module.exports = {
   updatePriceList: (req, res, next) => {
     const _mysql = new algaehMysql();
     try {
-      let input = req.body;
+      let inputParam = req.body;
 
       _mysql
         .executeQuery({

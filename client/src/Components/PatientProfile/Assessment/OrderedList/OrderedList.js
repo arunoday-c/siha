@@ -393,6 +393,7 @@ class OrderedList extends PureComponent {
           open={this.state.isConsOpen}
           onClose={this.ShowConsumableModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
+          inventory_location_id={this.state.inventory_location_id}
           addNew={true}
         />
 
