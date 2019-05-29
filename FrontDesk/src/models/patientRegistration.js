@@ -268,7 +268,8 @@ module.exports = {
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputparam.hims_d_patient_id
-          ]
+          ],
+          printQuery: true
         })
         .then(result => {
           _mysql.releaseConnection();

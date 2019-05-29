@@ -47,8 +47,9 @@ exports.default = {
   chromePuppeteer: {
     headless: true,
     // for mac
+    // "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     executablePath:
-      "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
     // for windows
     // "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
   }
