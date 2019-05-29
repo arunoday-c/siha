@@ -245,6 +245,19 @@ class OrderConsumables extends Component {
                   }}
                 />
 
+                <div className="col-3">
+                  <AlgaehLabel
+                    label={{
+                      forceLabel: "Location Name"
+                    }}
+                  />
+                  <h6>
+                    {this.state.location_name
+                      ? this.state.location_name
+                      : "Location Name"}
+                  </h6>
+                </div>
+
                 <div className="col-lg-3">
                   <button
                     className="btn btn-primary"
