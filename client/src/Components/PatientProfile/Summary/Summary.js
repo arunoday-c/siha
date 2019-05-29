@@ -267,8 +267,8 @@ class Summary extends Component {
               <table className="table table-sm table-bordered customTable">
                 <thead className="table-primary">
                   <tr>
-                    <th>Sl. No.</th>
-                    <th>Item Name</th>
+                    <th style={{ width: 30 }}>Sl. No.</th>
+                    <th style={{ width:"45%" }}>Item Name</th>
                     <th>Dosage</th>
                     <th>Frequency</th>
                     <th>Duration(days)</th>

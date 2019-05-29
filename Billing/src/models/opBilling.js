@@ -141,7 +141,7 @@ module.exports = {
         .executeQuery({
           query:
             "SELECT *,emp.full_name as doctor_name  FROM hims_f_billing_header bh \
-          inner join hims_d_employee as emp on bh.incharge_or_provider = emp.hims_d_employee_id\
+          left join hims_d_employee as emp on bh.incharge_or_provider = emp.hims_d_employee_id\
           inner join hims_f_patient as PAT on bh.patient_id = PAT.hims_d_patient_id\
           inner join hims_f_patient_visit as vst on bh.visit_id = vst.hims_f_patient_visit_id\
           where bh.record_status='A' AND bh.bill_number='" +

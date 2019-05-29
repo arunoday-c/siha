@@ -417,7 +417,8 @@ module.exports = {
               let result = {
                 patient_code: input.patient_code,
                 receipt_number: input.receipt_number,
-                bill_number: input.bill_number
+                bill_number: input.bill_number,
+                patient_visit_id: input.visit_id
               };
               _mysql.commitTransaction(() => {
                 _mysql.releaseConnection();
