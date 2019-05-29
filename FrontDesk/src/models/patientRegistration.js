@@ -229,7 +229,7 @@ module.exports = {
            `relationship_with_patient`=?, `visa_type_id`=?, `nationality_id`=?, `postal_code`=?,\
            `primary_identity_id`=?, `primary_id_no`=?, `secondary_identity_id`=?, `secondary_id_no`=?,\
            `photo_file`=?, `primary_id_file`=?, `secondary_id_file`=?, `patient_type`=?,\
-          `city_id`=?,`state_id`=?,`country_id` =?, `updated_by`=?, `updated_date`=? where hims_d_patient_id=?",
+          `city_id`=?,`state_id`=?,`country_id` =?, `employee_id`=?,`updated_by`=?, `updated_date`=? where hims_d_patient_id=?",
           values: [
             inputparam.title_id,
             inputparam.full_name,
@@ -264,6 +264,7 @@ module.exports = {
             inputparam.city_id,
             inputparam.state_id,
             inputparam.country_id,
+            inputparam.employee_id,
             req.userIdentity.algaeh_d_app_user_id,
             new Date(),
             inputparam.hims_d_patient_id
