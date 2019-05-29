@@ -49,6 +49,8 @@ const executePDF = function executePDFMethod(options) {
         })
         .catch(error => {
           _mysql.releaseConnection();
+
+          console.log("error", error);
           res.writeHead(400, { "Content-Type": "text/plain" });
           res.end(error);
         });

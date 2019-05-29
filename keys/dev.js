@@ -44,10 +44,9 @@ exports.default = {
     date: "YYYY-MM-DD"
   },
   useSSL: false,
-  chromePuppeteer:{
+  chromePuppeteer: {
     headless: true,
-      executablePath:
-        "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-    
+    executablePath:
+      "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
   }
 };
