@@ -366,31 +366,30 @@ module.exports = {
       .executeQuery({
         query:
           "select hims_m_employee_department_mappings.employee_id as provider_id,\
-         hims_m_employee_department_mappings.sub_department_id as sub_dept_id,\
-       hims_d_employee.full_name,\
-       hims_d_employee.arabic_name,\
-      hims_m_employee_department_mappings.services_id,\
-      hims_d_sub_department.department_id,\
-      hims_d_sub_department.sub_department_name,\
-      hims_d_sub_department.arabic_sub_department_name,hims_d_appointment_clinic_id as clinic_id,AP.description as clinic_description\
-      from hims_m_employee_department_mappings,\
-      hims_d_employee,hims_d_sub_department,hims_d_department,\
-      hims_d_employee_category,hims_m_category_speciality_mappings,hims_d_appointment_clinic AP\
-      where\
-      hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
-      and hims_m_employee_department_mappings.employee_id = hims_d_employee.hims_d_employee_id \
-      and hims_d_sub_department.hims_d_sub_department_id= hims_m_employee_department_mappings.sub_department_id\
-      and hims_m_employee_department_mappings.record_status='A'\
-      and hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
-      and hims_d_sub_department.record_status='A'\
-      and hims_d_employee.record_status ='A'\
-      and hims_d_sub_department.sub_department_status='A'\
-      and hims_d_employee.employee_status='A'\
-      and hims_d_department.department_type='CLINICAL'\
-      and hims_d_employee.isdoctor='Y'\
-      and AP.record_status='A' and hims_d_employee.hims_d_employee_id=AP.provider_id \
-      group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.sub_department_id;",
-        values: [req.body.hims_d_department_id]
+        hims_m_employee_department_mappings.sub_department_id as sub_dept_id,\
+      hims_d_employee.full_name,\
+ hims_d_employee.arabic_name,\
+     hims_m_employee_department_mappings.services_id,\
+     hims_d_sub_department.department_id,\
+     hims_d_sub_department.sub_department_name,\
+     hims_d_sub_department.arabic_sub_department_name,hims_d_appointment_clinic_id as clinic_id,AP.description as clinic_description\
+     from hims_m_employee_department_mappings,\
+     hims_d_employee,hims_d_sub_department,hims_d_department,\
+     hims_d_employee_category,hims_m_category_speciality_mappings,hims_d_appointment_clinic AP\
+     where\
+     hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
+     and hims_m_employee_department_mappings.employee_id = hims_d_employee.hims_d_employee_id \
+     and hims_d_sub_department.hims_d_sub_department_id= hims_m_employee_department_mappings.sub_department_id\
+     and hims_m_employee_department_mappings.record_status='A'\
+     and hims_d_department.hims_d_department_id = hims_d_sub_department.department_id\
+     and hims_d_sub_department.record_status='A'\
+     and hims_d_employee.record_status ='A'\
+     and hims_d_sub_department.sub_department_status='A'\
+     and hims_d_employee.employee_status='A'\
+     and hims_d_department.department_type='CLINICAL'\
+     and hims_d_employee.isdoctor='Y'\
+     and AP.record_status='A' and hims_d_employee.hims_d_employee_id=AP.provider_id \
+     group by hims_m_employee_department_mappings.employee_id,hims_m_employee_department_mappings.sub_department_id;"
       })
       .then(results => {
         _mysql.releaseConnection();

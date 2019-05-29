@@ -1,8 +1,12 @@
+import algaehUtilities from 'algaeh-utilities/utilities';
 const executePDF = function executePDFMethod(options) {
 	const _ = options.loadash;
 	return new Promise(function(resolve, reject) {
+		const utilities = new algaehUtilities();
 		try {
 			let str = '';
+			let input = {};
+			let params = options.args.reportParams;
 
 			let input = {};
 			let params = options.args.reportParams;
@@ -45,10 +49,11 @@ const executePDF = function executePDFMethod(options) {
 						})
 						.value();
 					console.log('data', data);
+					utilities.logger().log('datazz: ', data);
 					resolve({ groupdetails: data });
 				})
 				.catch((error) => {
-					_mysql.releaseConnection();
+					options.mysql.releaseConnection();
 
 					console.log('error', error);
 					res.writeHead(400, { 'Content-Type': 'text/plain' });
