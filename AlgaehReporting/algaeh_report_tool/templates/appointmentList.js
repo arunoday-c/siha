@@ -11,7 +11,11 @@ const executePDF = function executePDFMethod(options) {
       });
 
       if (input.provider_id > 0) {
-        str = ` and A.provider_id= ${input.provider_id}`;
+        str += ` and A.provider_id= ${input.provider_id}`;
+      }
+
+      if (input.status_id > 0) {
+        str += ` and A.appointment_status_id= ${input.status_id}`;
       }
       options.mysql
         .executeQuery({
