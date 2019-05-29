@@ -180,5 +180,6 @@
   "payby_card": "Pay By Card",
   "payby_check": "Pay By Cheque",
   "NotGenerated": "Not Generated",
-  "PastVisit": "Past Visit"
+  "PastVisit": "Past Visit",
+  "employee_id": "Employee ID"
 }
