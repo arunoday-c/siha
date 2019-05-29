@@ -43,14 +43,19 @@ const executePDF = function executePDFMethod(options) {
           const data = _.chain(result)
             .groupBy(g => g.doctor_code)
             .map(function(detail, key) {
+              let confirm = detail.filter(item => {
+                return item.app_status == "Checked In";
+              }).length;
+
               return {
                 doctor_code: key,
                 doctor_name: detail[0]["doctor_name"],
-                details: detail
+                details: detail,
+                confirm: confirm
               };
             })
             .value();
-          console.log("data", data);
+          //   console.log("data", data);
           utilities.logger().log("datazz: ", data);
           resolve({ groupdetails: data });
         })
