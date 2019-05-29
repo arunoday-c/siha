@@ -14,83 +14,6 @@ export default [
     name: "Appointment",
     submenu: [
       {
-        subitem: "Appointment Availability Report",
-        template_name: "appt_availability",
-        reportParameters: [
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            },
-            events: {
-              onChange: (reportState, currentValue) => {}
-            }
-          },
-          {
-            type: "dropdown",
-            name: "appt_type",
-            initialLoad: true,
-            dataSource: {
-              textField: "name",
-              valueField: "value",
-              data: APPT_TYPE
-            },
-            events: {
-              onChange: (reportState, currentValue) => {}
-            }
-          },
-          {
-            type: "dropdown",
-            name: "provider_id",
-            initialLoad: true,
-            link: {
-              uri: "/department/get/get_All_Doctors_DepartmentWise",
-              module: "masterSettings",
-              schema: [{ name: "provider_id", response: "doctors" }]
-            },
-            events: {
-              onChange: (reportState, currentValue) => {}
-            },
-            dataSource: {
-              textField: "full_name",
-              valueField: "employee_id",
-              data: undefined
-            }
-          }
-          // {
-          //   type: "search",
-          //   name: "patient_code",
-          //   label: "Patient Code",
-          //   search: {
-          //     searchName: "patients",
-          //     columns: FrontDesk,
-          //     schema: [
-          //       { name: "patient_code", response: "patient_code" },
-          //       { name: "hims_d_patient_id", response: "hims_d_patient_id" }
-          //     ]
-          //   }
-          // },
-          // {
-          //   type: "checkbox",
-          //   name: "employee_type",
-          //   label: "Not able",
-          //   default: false
-          // }
-        ]
-      },
-      {
         subitem: "Patient Wise Appointment Details",
         template_name: "appt_availability",
         reportParameters: [
@@ -106,7 +29,7 @@ export default [
         ]
       },
       {
-        subitem: "Appointment List by Doctor or Status",
+        subitem: "Doctor and Status wise report",
         reportName: "appointmentList",
         pageSize: "A4",
         requireIframe:true,
@@ -155,12 +78,6 @@ export default [
             initialLoad: true,
             isImp: false,
             label: "Filter by Doctor",
-            // initialLoad: false,
-            // link: {
-            //   uri: "/department/get/get_All_Doctors_DepartmentWise",
-            //   schema: [{ name: "provider_id", response: "doctors" }]
-            // },
-
             dataSource: {
               textField: "full_name",
               valueField: "employee_id",
@@ -201,89 +118,13 @@ export default [
               minDate: null
             }
           }
-          // {
-          //   type: "dropdown",
-          //   name: "appt_type",
-          //   initialLoad: true,
-          //   dataSource: {
-          //     textField: "name",
-          //     valueField: "value",
-          //     data: APPT_TYPE
-          //   },
-          //   events: {
-          //     onChange: (reportState, currentValue) => {}
-          //   }
-          // }
         ]
-      },
-      {
-        subitem: "Appointment Status wise Report",
-        reportName: "appointmentList",
-        pageSize: "A4",
-        requireIframe:true,
-        pageOrentation: "landscap", //"portrait",
-        reportParameters: [
-          {
-            type: "dropdown",
-            name: "sub_department_id",
-            initialLoad: true,
-            isImp: true,
-
-            label: "Select Department",
-            link: {
-              //uri: "/department/get/subdepartment"
-              uri: "/department/get/get_All_Doctors_DepartmentWise",
-              module: "masterSettings"
-            },
-            manupulation: (response, reportState, stateProperty) => {
-              reportState.setState({
-                [stateProperty]: response.records.departmets
-              });
-            },
-            dataSource: {
-              textField: "sub_department_name",
-              valueField: "sub_department_id",
-              data: undefined
-            },
-            events: {
-              onChange: (reportState, currentEvent) => {
-                //provider_id_list CONTROL NAME AND APPEND BY _LIST
-                reportState.setState({
-                  sub_department_id: currentEvent.value,
-                  provider_id_list: currentEvent.selected.doctors
-                });
-              },
-              onClear: (reportState, currentName) => {
-                reportState.setState({
-                  [currentName]: undefined,
-                  provider_id_list: []
-                });
-              }
-            }
-          }]
-      },
-      {
-        subitem: "Pending Appointments",
-        template_name: "appt_availability",
-        reportParameters: []
-        ////reportParameters: () => <Appointment ui="appt_list_detailed" />
-      },
-      {
-        subitem: "Confirmed Appointments",
-        template_name: "appt_availability",
-        reportParameters: []
-        ////reportParameters: () => <Appointment ui="appt_list_detailed" />
       },
       {
         subitem: "Patient Recall Report",
         template_name: "appt_availability",
         reportParameters: []
-        ////reportParameters: () => <Appointment ui="pat_recall_report" />
       }
-      // {
-      //   subitem: "Rescheduled Resource Appointments",
-      //   ////reportParameters: () => <Appointment ui="rescheduled_resources_appts" />
-      // }
     ]
   },
 

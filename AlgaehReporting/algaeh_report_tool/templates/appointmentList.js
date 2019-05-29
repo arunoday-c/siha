@@ -22,7 +22,7 @@ const executePDF = function executePDFMethod(options) {
       options.mysql
         .executeQuery({
           query: `select hims_f_patient_appointment_id,appointment_date,appointment_from_time,appointment_to_time,
-            s.description as app_status, patient_name,patient_code,A.age,contact_number,cancelled,appointment_remarks,
+            s.description as app_status,s.default_status, patient_name,patient_code,A.age,contact_number,cancelled,appointment_remarks,
             E.full_name as doctor_name,E.employee_code as doctor_code ,cancel_reason,concat(D.full_name,'-' ,D.employee_code)as updated_by from 
             hims_f_patient_appointment A inner join hims_d_employee E on A.provider_id=E.hims_d_employee_id
             inner join hims_d_appointment_status S on A.appointment_status_id=S.hims_d_appointment_status_id
@@ -43,15 +43,23 @@ const executePDF = function executePDFMethod(options) {
           const data = _.chain(result)
             .groupBy(g => g.doctor_code)
             .map(function(detail, key) {
-              let confirm = detail.filter(item => {
-                return item.app_status == "Checked In";
+              let cancel = detail.filter(item => {
+                return item.default_status == "CAN";
+              }).length;
+              let checked_in = detail.filter(item => {
+                return item.default_status == "C";
+              }).length;
+              let no_show = detail.filter(item => {
+                return item.default_status == "NS";
               }).length;
 
               return {
                 doctor_code: key,
                 doctor_name: detail[0]["doctor_name"],
-                details: detail,
-                confirm: confirm
+                checked_in: checked_in,
+                no_show: no_show,
+                cancel: cancel,
+                details: detail
               };
             })
             .value();
@@ -63,8 +71,6 @@ const executePDF = function executePDFMethod(options) {
           options.mysql.releaseConnection();
 
           console.log("error", error);
-          res.writeHead(400, { "Content-Type": "text/plain" });
-          res.end(error);
         });
     } catch (e) {
       reject(e);
