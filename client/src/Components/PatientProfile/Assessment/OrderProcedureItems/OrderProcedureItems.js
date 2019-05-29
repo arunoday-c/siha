@@ -15,13 +15,7 @@ import {
 } from "../../../Wrapper/algaehWrapper";
 import _ from "lodash";
 
-// import { getLabelFromLanguage } from "../../utils/GlobalFunctions";
-
 import OrderProcedureItemsEvent from "./OrderProcedureItemsEvent";
-
-// import AlgaehLoader from "../Wrapper/fullPageLoader";
-// import { getAmountFormart } from "../../utils/GlobalFunctions";
-// import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall.js";
 import { AlgaehActions } from "../../../../actions/algaehActions";
 
 class OrderProcedureItems extends Component {

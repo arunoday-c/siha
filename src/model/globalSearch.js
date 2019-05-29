@@ -121,11 +121,16 @@ const newSearch = (req, res, next) => {
   let _values = [];
   let sortedParameters = [];
   const queryP = queryConfig.inputSequence;
+
   if (queryP != null) {
     for (let p = 0; p < queryP.length; p++) {
-      const finder = _.find(inputParam.parameters, f => f[queryP[p]] != null);
-      if (finder != null) {
-        _values.push(finder[queryP[p]]);
+      for (let f = 0; f < inputParam.parameters.length; f++) {
+        const keyCollection = Object.keys(inputParam.parameters[f]);
+        const keyName = _.find(keyCollection, f => f == queryP[p]);
+        if (keyName != null) {
+          _values.push(inputParam.parameters[f][keyName]);
+          break;
+        }
       }
     }
 

@@ -196,9 +196,8 @@ class PointOfSale extends Component {
 
   render() {
     debugger;
-    const _posLocation = Enumerable.from(this.props.poslocations)
-      .where(w => w.allow_pos === "Y")
-      .toArray();
+    const _posLocation =
+      this.props.poslocations === undefined ? [] : this.props.poslocations;
     return (
       <React.Fragment>
         <div onKeyPress={this.onKeyPress}>

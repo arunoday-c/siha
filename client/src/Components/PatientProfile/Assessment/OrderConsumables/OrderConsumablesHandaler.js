@@ -14,57 +14,23 @@ const texthandle = ($this, ctrl, e) => {
   });
 };
 
-// When Service Type selects respective Service Type theService to be filter
-const serviceTypeHandeler = ($this, e) => {
-  $this.setState(
-    {
-      [e.name]: e.value,
-      s_service: null
-    },
-    () => {
-      if ($this.state.insured === "N") {
-        $this.props.getServices({
-          uri: "/serviceType/getService",
-          module: "masterSettings",
-          method: "GET",
-          data: { service_type_id: $this.state.s_service_type },
-          redux: {
-            type: "SERVICES_GET_DATA",
-            mappingName: "services"
-          }
-        });
-      } else {
-        $this.props.getServices({
-          uri: "/serviceType/getServiceInsured",
-          module: "masterSettings",
-          method: "GET",
-          data: {
-            insurance_id: $this.state.insurance_provider_id,
-            service_type_id: $this.state.s_service_type
-          },
-          redux: {
-            type: "SERVICES_INS_GET_DATA",
-            mappingName: "services"
-          }
-        });
-      }
-    }
-  );
-};
-
-const serviceHandeler = ($this, e) => {
+const selectItemHandeler = ($this, e) => {
   debugger;
   $this.setState({
-    [e.name]: e.hims_d_services_id,
-    s_service_type: e.service_type_id,
-    insurance_service_name: e.service_name
+    [e.name]: e.hims_d_inventory_item_master_id,
+    service_type_id: e.service_type_id,
+    services_id: e.services_id,
+    batchno: e.batchno,
+    expirydt: e.expirydt,
+    grnno: e.grnno,
+    barcode: e.barcode,
+    qtyhand: e.qtyhand,
+    uom_id: e.sales_uom
   });
 };
 
 //Process and gets selectd service data with all calculation
 const ProcessService = ($this, e) => {
-  // orderedList
-
   debugger;
 
   let SelectedService = Enumerable.from($this.props.orderedList)
@@ -161,10 +127,21 @@ const ProcessService = ($this, e) => {
                             $this.state.policy_number;
                           data.billdetails[i].insurance_service_name =
                             $this.state.insurance_service_name;
-                          data.billdetails[i].sec_company =
-                            $this.state.sec_insured;
-                          // data.billdetails[i].icd_code === data.billdetails[0].icd_code;
-                          // Approval Table
+
+                          data.billdetails[0].item_id = $this.state.item_id;
+                          data.billdetails[0].item_category =
+                            $this.state.item_category;
+                          data.billdetails[0].item_group_id =
+                            $this.state.item_group_id;
+                          data.billdetails[0].expirydt = $this.state.expirydt;
+                          data.billdetails[0].batchno = $this.state.batchno;
+                          data.billdetails[0].uom_id = $this.state.uom_id;
+                          data.billdetails[0].operation = "-";
+                          data.billdetails[0].grn_no = $this.state.grn_no;
+                          data.billdetails[0].qtyhand = $this.state.qtyhand;
+                          data.billdetails[0].barcode = $this.state.barcode;
+                          data.billdetails[0].service_id =
+                            data.billdetails[0].services_id;
 
                           data.billdetails[i].insurance_network_office_id =
                             $this.state.hims_d_insurance_network_office_id;
@@ -554,8 +531,7 @@ const EditGrid = ($this, cancelRow) => {
 };
 
 export {
-  serviceTypeHandeler,
-  serviceHandeler,
+  selectItemHandeler,
   texthandle,
   ProcessService,
   deleteServices,

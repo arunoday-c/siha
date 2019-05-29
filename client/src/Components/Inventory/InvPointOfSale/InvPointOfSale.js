@@ -69,7 +69,7 @@ class InvPointOfSale extends Component {
         visit_id: this.state.visit_id
       },
       onSuccess: response => {
-        debugger
+        debugger;
         if (response.data.success) {
           that.setState({ openOCAF: true, OCAFData: response.data.records });
         }
@@ -204,14 +204,13 @@ class InvPointOfSale extends Component {
   }
 
   render() {
-    debugger
-    const _posLocation = Enumerable.from(this.props.oplocations)
-      .where(w => w.allow_pos === "Y")
-      .toArray();
+    debugger;
+    const _posLocation =
+      this.props.poslocations === undefined ? [] : this.props.poslocations;
+
     return (
       <React.Fragment>
         <div onKeyPress={this.onKeyPress}>
-
           <div className="row  inner-top-search" style={{ paddingBottom: 10 }}>
             {/* Patient code */}
             <div className="col-lg-3">
@@ -321,11 +320,14 @@ class InvPointOfSale extends Component {
                       }}
                     />
                     <h6>
-                    {console.log(typeof this.state.mode_of_pay)}
-                    {this.state.mode_of_pay === "1"? "Self" : this.state.mode_of_pay ==="2"? "Insurance" : "-----------"}
+                      {console.log(typeof this.state.mode_of_pay)}
+                      {this.state.mode_of_pay === "1"
+                        ? "Self"
+                        : this.state.mode_of_pay === "2"
+                        ? "Insurance"
+                        : "-----------"}
                     </h6>
                   </div>
-                
                 </div>
               ) : (
                 <div className="row">

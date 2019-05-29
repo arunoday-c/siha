@@ -590,14 +590,6 @@
       {
         "fieldName": "barcode",
         "label": "Bar Code"
-      },
-      {
-        "fieldName": "qtyhand",
-        "label": "Quantity in Hand"
-      },
-      {
-        "fieldName": "sales_uom",
-        "label": "UOM"
       }
     ],
     "Invitemmaster": [

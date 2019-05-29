@@ -443,16 +443,35 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "insservicemaster",
         searchQuery:
-          "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval\
+          "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval, IT.service_type\
             from hims_d_services as S,hims_d_service_type as IT where hims_d_services_id not in\
             (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
             insurance_id=? and {mapper} and I.service_type_id = T.hims_d_service_type_id and \
             I.service_type_id in (2,5,11,14)) and {mapper} and S.service_type_id = IT.hims_d_service_type_id \
             and S.service_type_id in (2,5,11,14) \
             union all\
-            SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval \
+            SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval, \
+            T.service_type\
             FROM hims_d_services_insurance as I,hims_d_service_type as T where  insurance_id=? and {mapper}  and I.service_type_id = T.hims_d_service_type_id and I.service_type_id in (2,5,11,14)",
         orderBy: "hims_d_services_id desc",
+        inputSequence: ["insurance_id", "insurance_id"]
+      },
+      {
+        searchName: "insitemmaster",
+        searchQuery:
+          "select SQL_CALC_FOUND_ROWS hims_d_inventory_item_master_id, item_description, \
+            service_id as services_id,'N' as covered,'N' as pre_approval,IL.batchno,\
+            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom \
+            from hims_d_inventory_item_master I, hims_m_inventory_item_location IL \
+            where service_id not in (SELECT services_id FROM hims_d_services_insurance where \
+            insurance_id=? and {mapper}) and I.hims_d_inventory_item_master_id = IL.item_id and {mapper}\
+            union \
+            SELECT IM.hims_d_inventory_item_master_id,service_name as item_description,services_id,covered,\
+            pre_approval, ITL.batchno, ITL.expirydt,ITL.barcode, ITL.qtyhand,ITL.sales_uom FROM \
+            hims_d_services_insurance INS, hims_d_inventory_item_master IM, hims_m_inventory_item_location \
+            ITL where INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
+            insurance_id=? and {mapper} and service_type_id=4",
+        orderBy: "services_id desc",
         inputSequence: ["insurance_id", "insurance_id"]
       }
     ]

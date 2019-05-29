@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import moment from "moment";
 import { AlgaehDataGrid, AlgaehLabel } from "../../../Wrapper/algaehWrapper";
 import OrderingServices from "../OrderingServices/OrderingServices";
+import OrderConsumables from "../OrderConsumables/OrderConsumables";
 import "./OrderedList.css";
 import "../../../../styles/site.css";
 import { AlgaehActions } from "../../../../actions/algaehActions";
@@ -25,7 +26,8 @@ class OrderedList extends PureComponent {
       isOpen: false,
       isOpenItems: false,
       procedure_name: null,
-      inventory_location_id: null
+      inventory_location_id: null,
+      isConsOpen: false
     };
   }
 
@@ -56,6 +58,12 @@ class OrderedList extends PureComponent {
         });
       }
     );
+  }
+
+  ShowConsumableModel() {
+    this.setState({
+      isConsOpen: !this.state.isConsOpen
+    });
   }
 
   ShowProcedureModel(row, e) {
@@ -203,6 +211,13 @@ class OrderedList extends PureComponent {
             onClick={this.ShowModel.bind(this)}
           >
             Order Investigation
+          </button>
+
+          <button
+            className="btn btn-primary"
+            onClick={this.ShowConsumableModel.bind(this)}
+          >
+            Order Consumables
           </button>
         </div>
         <div className="col-lg-12">
@@ -370,6 +385,13 @@ class OrderedList extends PureComponent {
         <OrderingServices
           open={this.state.isOpen}
           onClose={this.CloseModel.bind(this)}
+          vat_applicable={this.props.vat_applicable}
+          addNew={true}
+        />
+
+        <OrderConsumables
+          open={this.state.isConsOpen}
+          onClose={this.ShowConsumableModel.bind(this)}
           vat_applicable={this.props.vat_applicable}
           addNew={true}
         />
