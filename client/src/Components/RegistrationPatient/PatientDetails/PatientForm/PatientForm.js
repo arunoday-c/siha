@@ -554,7 +554,28 @@ class AddPatientForm extends Component {
                             tabIndex: "13"
                           }
                         }}
-                      />
+                      />  {requied_emp_id === "Y" ? (
+                        <AlagehFormGroup
+                          div={{ className: "col-3 form-group mandatory" }}
+                          label={{
+                            fieldName: "employee_id",
+                            isImp: requied_emp_id === "Y" ? true : false
+                          }}
+                          textBox={{
+                            className: "txt-fld",
+                            name: "employee_id",
+                            value: this.state.employee_id,
+                            // events: {},
+                            option: {
+                              disabled: this.state.existingPatient,
+                              type: "text",
+                              tabIndex: "20"
+                            }
+                          }}
+                        />
+                      ) : null}
+                    </div>
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{
                           className: "col-lg-3"
@@ -581,9 +602,7 @@ class AddPatientForm extends Component {
                             tabIndex: "14"
                           }
                         }}
-                      />
-                    </div>
-                    <div className="row paddin-bottom-5">
+                      />   
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -659,6 +678,9 @@ class AddPatientForm extends Component {
                           }
                         }}
                       />
+                    </div>
+
+                    <div className="row paddin-bottom-5">
                       <AlagehAutoComplete
                         div={{ className: "col-lg-3" }}
                         label={{
@@ -684,9 +706,6 @@ class AddPatientForm extends Component {
                           }
                         }}
                       />
-                    </div>
-
-                    <div className="row paddin-bottom-5">
                       <AlagehFormGroup
                         div={{ className: "col" }}
                         label={{
@@ -707,26 +726,7 @@ class AddPatientForm extends Component {
                           }
                         }}
                       />
-                      {requied_emp_id === "Y" ? (
-                        <AlagehFormGroup
-                          div={{ className: "col-3 form-group mandatory" }}
-                          label={{
-                            fieldName: "employee_id",
-                            isImp: requied_emp_id === "Y" ? true : false
-                          }}
-                          textBox={{
-                            className: "txt-fld",
-                            name: "employee_id",
-                            value: this.state.employee_id,
-                            // events: {},
-                            option: {
-                              disabled: this.state.existingPatient,
-                              type: "text",
-                              tabIndex: "20"
-                            }
-                          }}
-                        />
-                      ) : null}
+                 
                     </div>
                   </div>
                   <div className="col-lg-4 secondary-details">
