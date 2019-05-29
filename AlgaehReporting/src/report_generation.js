@@ -83,6 +83,10 @@ hbs.registerHelper("capitalization", function(value) {
   return _.startCase(_.toLower(value));
 });
 
+hbs.registerHelper("inc", function(value, options) {
+  return parseInt(value) + 1;
+});
+
 hbs.registerHelper("importStyle", function(styleSheetName) {
   const fullPath = path.join(
     process.cwd(),
@@ -230,11 +234,11 @@ module.exports = {
             O.organization_name,O.business_registration_number,O.legal_name,O.tax_number,O.address1,O.address2 ,\
             O.email,O.phone1 from hims_d_hospital H,hims_d_organization O \
             where O.hims_d_organization_id =H.organization_id and H.hims_d_hospital_id=?;",
-          values: [_inputParam.reportName, req.userIdentity["x-branch"]],
+          values: [_inputParam.reportName, req.userIdentity["hospital_id"]],
           printQuery: true
         })
         .then(data => {
-          _inputParam["hospital_id"] = req.userIdentity["x-branch"];
+          _inputParam["hospital_id"] = req.userIdentity["hospital_id"];
           const _reportCount = data[0].length;
           if (_reportCount > 0) {
             let _reportOutput = [];
