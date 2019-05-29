@@ -7,45 +7,36 @@
             <table class="tableForData" cell-padding="0">
                 <thead>
                     <tr>
-                        <th>Sl No.<p>وصف الخدمة</p>
-                        </th>
-                        <th>Date<p>السعر</p>
-                        </th>
-                        <th>Time Slot<p>الخصم</p>
-                        </th>
-                        <th>Patient MRN.<p>ضريبة المريض</p>
-                        </th>
-                        <th>Patient Name<p>حصة المريض</p>
-                        </th>
-                        <th>Age<p>المبلغ الصافي</p>
-                        </th>
-                        <th>Appo. Type<p>المبلغ الصافي</p>
-                        </th>
-                        <th>Appo. Status<p>المبلغ الصافي</p>
-                        </th>
-                        <th>Taken/ Cancelled By<p>قيمة الضريبة</p>
-                        </th>
+                        <th>Sl No.</th>
+                        <th>Date</th>
+                        <th>Time Slot</th>
+                        <th>Patient MRN.</th>
+                        <th>Patient Name</th>
+                        <th>Age</th>
+                        <th>Appo. Status</th>
+                        <th>Remarks</th>
+                        <th>Taken/ Cancelled By</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each groupdetails}}
                     <tr>
-                        <td colspan="9" class="tableSubHdg">{{doctor_name}} | {{doctor_code}}</td>
+                        <td colspan="9" class="tableSubHdg">{{doctor_name}} | {{doctor_code}} <small>Total - Booked:{{doctor_name}} |  Cancelled:{{doctor_name}} | No Show:{{doctor_name}}</small></td>
                     </tr>
                     {{#each details}}
                     <tr>
-                        <td>{{sql_no}}</td>
-                        <td>{{appointment_date}}</td>
-                        <td>{{appointment_from_time}} - {{appointment_to_time}}</td>
-                        <td>{{patient_code}}</td>
-                        <td>{{patient_name}}</td>
-                        <td></td>
-                        <td></td>
-                        <td>{{app_status}}</td>
-                        <td>{{appointment_remarks}}</td>
+                       <td>{{inc @index}}</td>
+                       <td>{{appointment_date}}</td>
+                       <td>{{appointment_from_time}} - {{appointment_to_time}}</td>
+                    <td>{{patient_code}}</td>
+                    <td>{{patient_name}}</td>
+                    <td>{{age}}</td>
+                    <td>{{app_status}}</td>
+                     <td> {{#if default_status "CAN"}} {{cancel_reason}} {{else}} {{appointment_remarks}}{{/if}}</td>
+                     <td>{{updated_by}}</td>
                     </tr>
-                    {{/each}}
-                    {{/each}}
+                    {{/each }}
+                    {{/each }}
                 </tbody>
             </table>
         </section>

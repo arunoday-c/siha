@@ -150,7 +150,8 @@ module.exports = {
     _mysql
       .executeQuery({
         query:
-          "select hims_d_appointment_status_id, color_code, description, default_status,steps,authorized FROM hims_d_appointment_status where record_status='A'  order by steps "
+          "select hims_d_appointment_status_id, color_code, description, default_status,steps,authorized FROM\
+           hims_d_appointment_status where record_status='A'  order by steps "
       })
       .then(result => {
         _mysql.releaseConnection();

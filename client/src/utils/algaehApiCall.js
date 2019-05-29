@@ -61,6 +61,7 @@ export function algaehApiCall(options) {
       },
       options
     );
+
     let _baseUrl = settings.baseUrl;
     const _localaddress =
       window.location.protocol + "//" + window.location.hostname + ":";
@@ -84,8 +85,16 @@ export function algaehApiCall(options) {
         _myRouter.baseUrl === undefined ? _baseUrl : _myRouter.baseUrl;
       settings.baseUrl = _url + _myRouter.port + _baseurlInner;
     }
+
     let queryParametres = "";
-    settings.data = JSON.parse(JSON.stringify(settings.data), valueReviver);
+
+    settings.data = JSON.parse(
+      JSON.stringify(settings.data, function(k, v) {
+        return v === undefined ? null : v;
+      }),
+      valueReviver
+    );
+
     if (String(settings.method).toUpperCase() === "GET") {
       let str = [];
       for (let p in settings.data) {
@@ -111,7 +120,7 @@ export function algaehApiCall(options) {
       }
     }
     if (settings.printInput) {
-      console.log("Input data :", settings.data);
+      console.log("Input data next :", settings.data);
     }
     let cancelRequest = {};
 
