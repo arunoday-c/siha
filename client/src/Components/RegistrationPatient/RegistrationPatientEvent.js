@@ -277,7 +277,7 @@ const generateReceipt = $this => {
     others: { responseType: "blob" },
     data: {
       report: {
-        reportName: "cashInvoice",
+        reportName: "cashReceipt",
         reportParams: [
           {
             name: "hims_d_patient_id",
@@ -305,7 +305,7 @@ const generateReceipt = $this => {
       myWindow.document.write(
         "<iframe src= '" + url + "' width='100%' height='100%' />"
       );
-      myWindow.document.title = "Cash Invoice";
+      myWindow.document.title = "Receipt";
     }
   });
 };

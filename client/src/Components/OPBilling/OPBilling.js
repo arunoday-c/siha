@@ -16,7 +16,8 @@ import { getCookie } from "../../utils/algaehApiCall";
 import {
   ClearData,
   Validations,
-  getCashiersAndShiftMAP
+  getCashiersAndShiftMAP,
+  generateReceipt
 } from "./OPBillingEvents";
 import { AlgaehActions } from "../../actions/algaehActions";
 import { successfulMessage } from "../../utils/GlobalFunctions";
@@ -489,22 +490,7 @@ class OPBilling extends Component {
                       label: "Print Receipt",
                       events: {
                         onClick: () => {
-                          AlgaehReport({
-                            report: {
-                              fileName: "printreceipt"
-                            },
-                            data: {
-                              patient_code: this.state.patient_code,
-                              full_name: this.state.full_name,
-                              advance_amount: this.state.advance_amount,
-                              bill_date: moment(this.state.bill_date).format(
-                                Options.datetimeFormat
-                              ),
-                              receipt_number: this.state.receipt_number,
-                              doctor_name: this.state.doctor_name,
-                              bill_details: this.state.billdetails
-                            }
-                          });
+                          generateReceipt(this, this);
                         }
                       }
                     }

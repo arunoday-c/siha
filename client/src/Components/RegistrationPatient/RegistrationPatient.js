@@ -796,14 +796,7 @@ class RegistrationPatient extends Component {
                   }
                 }
               },
-              {
-                label: "Print Receipt",
-                events: {
-                  onClick: () => {
-                    generateReceipt(this, this);
-                  }
-                }
-              },
+
               {
                 label: "ID Card",
                 events: {
