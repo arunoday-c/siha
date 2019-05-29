@@ -19,7 +19,11 @@ import Enumerable from "linq";
 import { AlgaehActions } from "../../../actions/algaehActions";
 import OrderedList from "../Assessment/OrderedList/OrderedList";
 import Plan from "../Plan/Plan";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  maxCharactersLeft
+} from "../../../utils/algaehApiCall";
 import SubjectiveHandler from "./SubjectiveHandler";
 import PatientHistory from "../PatientHistory/PatientHistory";
 import GlobalVariables from "../../../utils/GlobalVariables.json";
@@ -52,6 +56,9 @@ class BasicSubjective extends Component {
       isPregnancy: true,
       hims_f_episode_chief_complaint_id: null
     };
+    this.chiefComplaintMaxLength = 200;
+    this.significantSignsLength = 65535;
+    this.otherConditionMaxLength = 300;
     this.getMasters();
     this.getPatientEncounterDetails();
 
@@ -475,9 +482,17 @@ class BasicSubjective extends Component {
                               }
                               name="chief_complaint"
                               onChange={this.textAreaEvent.bind(this)}
+                              maxLength={this.chiefComplaintMaxLength}
                             >
                               {this.state.chief_complaint}
                             </textarea>
+                            <small className="float-right">
+                              Max characters {this.chiefComplaintMaxLength}/
+                              {maxCharactersLeft(
+                                this.chiefComplaintMaxLength,
+                                this.state.chief_complaint
+                              )}
+                            </small>
                           </div>
                         </div>
                       </div>
@@ -591,9 +606,17 @@ class BasicSubjective extends Component {
                           value={this.state.significant_signs}
                           name="significant_signs"
                           onChange={this.textAreaEvent.bind(this)}
+                          maxLength={this.significantSignsLength}
                         >
                           {this.state.significant_signs}
                         </textarea>
+                        <small className="float-right">
+                          Max characters {this.significantSignsLength}/
+                          {maxCharactersLeft(
+                            this.significantSignsLength,
+                            this.state.significant_signs
+                          )}
+                        </small>
                       </div>
                     </div>
                   </div>
@@ -614,9 +637,17 @@ class BasicSubjective extends Component {
                           value={this.state.other_signs}
                           name="other_signs"
                           onChange={this.textAreaEvent.bind(this)}
+                          maxLength={this.otherConditionMaxLength}
                         >
                           {this.state.other_signs}
                         </textarea>
+                        <small className="float-right">
+                          Max characters {this.otherConditionMaxLength}/
+                          {maxCharactersLeft(
+                            this.otherConditionMaxLength,
+                            this.state.other_signs
+                          )}
+                        </small>
                       </div>
                     </div>
                   </div>

@@ -482,3 +482,8 @@ function IDGenerator() {
     return id;
   };
 }
+
+export function maxCharactersLeft(maxLength, value) {
+  const left = value !== undefined && value !== null ? value.length : 0;
+  return maxLength - left;
+}
