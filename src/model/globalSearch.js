@@ -9,7 +9,6 @@ import _ from "lodash";
 let searchData = (req, res, next) => {
   const _mysql = new algaehMysql({ path: keyPath });
   try {
-    console.log("ABCD");
     let inputParam = req.query;
     console.log("Query based Parameters", inputParam);
     if (inputParam.searchName == null || inputParam.searchName == "")
@@ -84,6 +83,7 @@ let searchData = (req, res, next) => {
 
 const newSearch = (req, res, next) => {
   let inputParam = req.body;
+
   if (inputParam.searchName == null || inputParam.searchName == "") {
     next(
       httpStatus.generateError(
@@ -116,22 +116,67 @@ const newSearch = (req, res, next) => {
       .includes("WHERE")
   ) {
     _hasQuery += " WHERE ";
-  } else {
-    _hasQuery += " AND ";
   }
-  let _values = [];
 
-  _hasQuery +=
-    "(" +
-    _.map(inputParam.parameters, items => {
-      return _.keysIn(items).map(key => {
-        if (key != null) {
-          _values.push("%" + items[key] + "%");
-          return String("UPPER(`" + key + "`)");
+  let _values = [];
+  let sortedParameters = [];
+  const queryP = queryConfig.inputSequence;
+  if (queryP != null) {
+    for (let p = 0; p < queryP.length; p++) {
+      const finder = _.find(inputParam.parameters, f => f[queryP[p]] != null);
+      if (finder != null) {
+        _values.push(finder[queryP[p]]);
+      }
+    }
+
+    for (let k = 0; k < inputParam.parameters.length; k++) {
+      const items = inputParam.parameters[k];
+      _.keysIn(items).map(key => {
+        const isKeyMatch = _.find(queryP, f => f === key);
+        if (isKeyMatch == null) {
+          sortedParameters.push(items);
         }
       });
-    }).join(" LIKE UPPER(?) OR ") +
-    " LIKE UPPER(?))";
+    }
+  } else {
+    sortedParameters = inputParam.parameters;
+  }
+
+  if (
+    String(_hasQuery)
+      .toLowerCase()
+      .includes("{mapper}")
+  ) {
+    let mapper =
+      "(" +
+      _.map(sortedParameters, items => {
+        return _.keysIn(items).map(key => {
+          // _values.push("%" + items[key] + "%");
+          return (
+            String("UPPER(`" + key + "`)") +
+            " LIKE UPPER('%" +
+            items[key] +
+            "%')"
+          );
+        });
+      }).join(" OR ") +
+      ")";
+
+    _hasQuery = _hasQuery.replace(/{mapper}/g, mapper);
+  } else {
+    _hasQuery +=
+      " AND (" +
+      _.map(sortedParameters, items => {
+        return _.keysIn(items).map(key => {
+          if (key != null) {
+            _values.push("%" + items[key] + "%");
+            return String("UPPER(`" + key + "`)");
+          }
+        });
+      }).join(" LIKE UPPER(?) OR ") +
+      " LIKE UPPER(?))";
+  }
+
   if (queryConfig.groupBy != null) {
     _hasQuery += " " + queryConfig.groupBy;
   }

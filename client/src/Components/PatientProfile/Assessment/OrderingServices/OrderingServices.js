@@ -292,8 +292,7 @@ class OrderingServices extends Component {
                   displayField="service_name"
                   value={this.state.service_name}
                   extraParameters={{
-                    insurance_id: this.state.insurance_provider_id,
-                    insurance_id: this.state.insurance_provider_id
+                    insurance_id: "" //this.state.insurance_provider_id
                   }}
                   searchName="insservicemaster"
                   onClick={serviceHandeler.bind(this, this)}
