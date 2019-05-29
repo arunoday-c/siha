@@ -121,7 +121,8 @@ const ProcessService = ($this, e) => {
                         data.billdetails[i].insurance_service_name =
                           $this.state.insurance_service_name;
 
-                        data.billdetails[0].item_id = $this.state.item_id;
+                        data.billdetails[0].inventory_item_id =
+                          $this.state.inventory_item_id;
                         data.billdetails[0].item_category =
                           $this.state.item_category;
                         data.billdetails[0].item_group_id =
@@ -135,6 +136,8 @@ const ProcessService = ($this, e) => {
                         data.billdetails[0].barcode = $this.state.barcode;
                         data.billdetails[0].inventory_uom_id =
                           $this.state.uom_id;
+                        data.billdetails[0].inventory_location_id =
+                          $this.state.inventory_location_id;
 
                         data.billdetails[i].insurance_network_office_id =
                           $this.state.hims_d_insurance_network_office_id;
@@ -407,8 +410,9 @@ const SaveOrdersServices = ($this, e) => {
     billdetails: $this.state.orderservicesdata
   };
   algaehApiCall({
-    uri: "/orderAndPreApproval/insertOrderedServices",
+    uri: "/orderAndPreApproval/insertInvOrderedServices",
     data: inputObj,
+    module: "clicnicalDesk",
     method: "POST",
     onSuccess: response => {
       if (response.data.success) {
