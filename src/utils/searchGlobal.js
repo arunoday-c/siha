@@ -443,13 +443,17 @@ let algaehSearchConfig = (searchName, req) => {
       {
         searchName: "insservicemaster",
         searchQuery:
-          "select service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval\
-            from hims_d_services where hims_d_services_id not in\
-            (SELECT services_id FROM hims_d_services_insurance where  insurance_id=?)\
+          "select SQL_CALC_FOUND_ROWS service_name,service_type_id,hims_d_services_id,'N' as covered,'N' as pre_approval\
+            from hims_d_services as S,hims_d_service_type as IT where hims_d_services_id not in\
+            (SELECT services_id FROM hims_d_services_insurance as I,hims_d_service_type as T where  \
+            insurance_id=? and {mapper} and I.service_type_id = T.hims_d_service_type_id and \
+            I.service_type_id in (2,5,11,14)) and {mapper} and S.service_type_id = IT.hims_d_service_type_id \
+            and S.service_type_id in (2,5,11,14) \
             union all\
             SELECT service_name,service_type_id,services_id as hims_d_services_id, covered,pre_approval \
-            FROM hims_d_services_insurance where  insurance_id=?",
-        orderBy: "hims_d_services_id desc"
+            FROM hims_d_services_insurance as I,hims_d_service_type as T where  insurance_id=? and {mapper}  and I.service_type_id = T.hims_d_service_type_id and I.service_type_id in (2,5,11,14)",
+        orderBy: "hims_d_services_id desc",
+        inputSequence: ["insurance_id", "insurance_id"]
       }
     ]
   };

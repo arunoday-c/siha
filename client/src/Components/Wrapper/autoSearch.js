@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Search } from "semantic-ui-react";
 import _ from "lodash";
-import { algaehApiCall } from "../../utils/algaehApiCall";
+import { algaehApiCall, cancelRequest } from "../../utils/algaehApiCall";
 import Label from "./label";
 
 export default class AlgaehAutoSearch extends Component {
@@ -16,7 +16,7 @@ export default class AlgaehAutoSearch extends Component {
       pageSize: 100,
       pageNo: 0
     };
-    this.onResultSelectHandler = this.onResultSelectHandler.bind(this);
+    //  this.onResultSelectHandler = this.onResultSelectHandler.bind(this);
   }
 
   componentDidMount() {
@@ -35,26 +35,38 @@ export default class AlgaehAutoSearch extends Component {
   }
 
   handleSearchChange = (e, { value }) => {
-    this.setState(
-      {
-        isLoading: true,
-        value
-      },
-      () => {
-        if (value.length < this.state.minCharacters) {
-          this.setState({ isLoading: false });
-          return;
+    try {
+      this.setState(
+        {
+          isLoading: true,
+          value
+        },
+        () => {
+          const that = this;
+          clearInterval(that.IntervalID);
+          that.IntervalID = setInterval(() => {
+            if (value.length < that.state.minCharacters) {
+              that.setState({ isLoading: false });
+              return;
+            }
+            let _process = true;
+            const _data = that.generateInputParm();
+            if (typeof that.props._validateBeforeServiceCall === "function") {
+              _process = that.props._validateBeforeServiceCall(_data);
+            }
+            if (_process) {
+              cancelRequest("autoSearch_" + that.props.searchName);
+              that.serviceCall(_data);
+            }
+            clearInterval(that.IntervalID);
+          }, 500);
         }
-        let _process = true;
-        const _data = this.generateInputParm();
-        if (typeof this.props._validateBeforeServiceCall === "function") {
-          _process = this.props._validateBeforeServiceCall(_data);
-        }
-        if (_process) {
-          this.serviceCall(_data);
-        }
-      }
-    );
+      );
+    } catch (e) {
+      this.setState({
+        isLoading: false
+      });
+    }
   };
   onResultSelectHandler(e, { result }) {
     this.setState(
@@ -78,7 +90,21 @@ export default class AlgaehAutoSearch extends Component {
       if (f.exclude === undefined || f.exclude !== true)
         return { [f.fieldName]: value };
     });
-    Array.prototype.push.apply(_arrayParam, _exParameters);
+    //  Array.prototype.push.apply(_arrayParam, _exParameters);
+
+    // Object.keys(_exParameters).map((item, index) => {
+    //   const obj = {};
+    //   obj[item] = _exParameters[item];
+    //
+    //   _arrayParam.push(obj);
+    // });
+
+    const exteraParam = Object.keys(_exParameters);
+    for (let i = 0; i < exteraParam.length; i++) {
+      const obj = {};
+      obj[exteraParam[i]] = _exParameters[exteraParam[i]];
+      _arrayParam.push(obj);
+    }
     return {
       parameters: _arrayParam,
       searchName: searchName,
@@ -96,6 +122,7 @@ export default class AlgaehAutoSearch extends Component {
       uri: _uri,
       data: data,
       method: "POST",
+      cancelRequestId: "autoSearch_" + this.props.searchName,
       onSuccess: response => {
         if (response.data.success === true) {
           if (response.data.records !== undefined) {
@@ -136,7 +163,7 @@ export default class AlgaehAutoSearch extends Component {
           })}
           placeholder={this.props.title}
           {..._fluid}
-          onResultSelect={this.onResultSelectHandler}
+          onResultSelect={this.onResultSelectHandler.bind(this)}
           value={value}
           name={this.props.name}
           resultRenderer={this.generateTemplate.bind(this)}
