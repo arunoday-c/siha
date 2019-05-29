@@ -106,7 +106,118 @@ export default [
         ]
       },
       {
-        subitem: "Appointment List",
+        subitem: "Appointment List by Doctor or Status",
+        reportName: "appointmentList",
+        pageSize: "A4",
+        requireIframe:true,
+        pageOrentation: "landscap", //"portrait",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              //uri: "/department/get/subdepartment"
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              module: "masterSettings"
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records.departmets
+              });
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "sub_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                reportState.setState({
+                  sub_department_id: currentEvent.value,
+                  provider_id_list: currentEvent.selected.doctors
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  provider_id_list: []
+                });
+              }
+            }
+          },
+          {
+            type: "dropdown",
+            name: "provider_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter by Doctor",
+            // initialLoad: false,
+            // link: {
+            //   uri: "/department/get/get_All_Doctors_DepartmentWise",
+            //   schema: [{ name: "provider_id", response: "doctors" }]
+            // },
+
+            dataSource: {
+              textField: "full_name",
+              valueField: "employee_id",
+              data: undefined
+            }
+          },
+        {
+            type: "dropdown",
+            name: "status_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter by Status",
+            link: {
+              uri: "/appointment/getAppointmentStatus",
+              module: "frontDesk"
+            },
+            dataSource: {
+              textField: "description",
+              valueField: "hims_d_appointment_status_id",
+              data: undefined
+            }
+          },
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+          // {
+          //   type: "dropdown",
+          //   name: "appt_type",
+          //   initialLoad: true,
+          //   dataSource: {
+          //     textField: "name",
+          //     valueField: "value",
+          //     data: APPT_TYPE
+          //   },
+          //   events: {
+          //     onChange: (reportState, currentValue) => {}
+          //   }
+          // }
+        ]
+      },
+      {
+        subitem: "Appointment Status wise Report",
         reportName: "appointmentList",
         pageSize: "A4",
         requireIframe:true,
@@ -149,90 +260,7 @@ export default [
                 });
               }
             }
-          },
-          {
-            type: "dropdown",
-            name: "provider_id",
-            // initialLoad: false,
-            // link: {
-            //   uri: "/department/get/get_All_Doctors_DepartmentWise",
-            //   schema: [{ name: "provider_id", response: "doctors" }]
-            // },
-
-            dataSource: {
-              textField: "full_name",
-              valueField: "employee_id",
-              data: undefined
-            }
-          },
-          // {
-          //   type: "dropdown",
-          //   name: "provider_id",
-          //   initialLoad: true,
-          //   link: {
-          //     uri: "/department/get/get_All_Doctors_DepartmentWise",
-          //     schema: [{ name: "provider_id", response: "doctors" }]
-          //   },
-          //   events: {
-          //     onChange: (reportState, currentValue) => {}
-          //   },
-          //   dataSource: {
-          //     textField: "full_name",
-          //     valueField: "employee_id",
-          //     data: undefined
-          //   }
-          // },
-          // {
-          //   type: "search",
-          //   name: "patient_code",
-          //   label: "Patient Code",
-          //   search: {
-          //     searchName: "patients",
-          //     columns: FrontDesk,
-          //     schema: [
-          //       { name: "patient_code", response: "patient_code" },
-          //       { name: "hims_d_patient_id", response: "hims_d_patient_id" }
-          //     ]
-          //   }
-          // },
-
-          {
-            type: "date",
-            name: "from_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          },
-          {
-            type: "date",
-            name: "to_date",
-            isImp: true,
-            others: {
-              maxDate: new Date(),
-              minDate: null
-            }
-          }
-          // {
-          //   type: "dropdown",
-          //   name: "appt_type",
-          //   initialLoad: true,
-          //   dataSource: {
-          //     textField: "name",
-          //     valueField: "value",
-          //     data: APPT_TYPE
-          //   },
-          //   events: {
-          //     onChange: (reportState, currentValue) => {}
-          //   }
-          // }
-        ]
-      },
-      {
-        subitem: "Cancelled Appointments",
-        template_name: "appt_availability",
-        reportParameters: []
+          }]
       },
       {
         subitem: "Pending Appointments",

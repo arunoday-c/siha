@@ -19,26 +19,26 @@
                     </tr>
                 </thead>
                 <tbody>
-                  {{#each groupdetails}}
+                    {{#each groupdetails}}
                     <tr>
                         <td colspan="9" class="tableSubHdg">{{doctor_name}} | {{doctor_code}}</td>
                     </tr>
                     {{#each details}}
                     <tr>
-                       <td>{{sql_no}}</td>
+                       <td>{{inc @index}}</td>
                        <td>{{appointment_date}}</td>
                        <td>{{appointment_from_time}} - {{appointment_to_time}}</td>
-                          <td>{{patient_code}}</td>
-                             <td>{{patient_name}}</td>
-                             <td>{{age}}</td>
-                                <td>{{app_status}}</td>
-                                   <td> {{#if app_status “Cancelled”}} {{cancelled_reason}} {{else}} {{appointment_remarks}}</td>
-                             <td>{{updated_by}}</td>
+                    <td>{{patient_code}}</td>
+                    <td>{{patient_name}}</td>
+                    <td>{{age}}</td>
+                    <td>{{app_status}}</td>
+                     <td> {{#if app_status “Cancelled”}} {{cancelled_reason}} {{else}} {{appointment_remarks}}{{/if}}</td>
+                     <td>{{updated_by}}</td>
                     </tr>
-                    {{/each}}
-                    {{/each}}
+                    {{/each }}
+                    {{/each }}
                 </tbody>
-            </table> 
+            </table>
         </section>
         {{!-- <footer>{{{loadPage 'doctor_signature_footer.hbs' header}}}</footer> --}}
     </div>
