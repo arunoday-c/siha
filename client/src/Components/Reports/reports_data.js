@@ -30,7 +30,7 @@ export default [
       },
       {
         subitem: "Doctor and Status wise report",
-        reportName: "appointmentList",
+        reportName: "departmentDoctorConsumption",
         pageSize: "A4",
         requireIframe:true,
         pageOrentation: "landscap", //"portrait",
@@ -1412,6 +1412,98 @@ export default [
   {
     name: "Inventory",
     submenu: [
+      {
+        subitem: "Doctor and Status wise report",
+        reportName: "departmentDoctorConsumption",
+        pageSize: "A4",
+        requireIframe:true,
+        pageOrentation: "landscap", //"portrait",
+        reportParameters: [
+          {
+            type: "dropdown",
+            name: "sub_department_id",
+            initialLoad: true,
+            isImp: true,
+            label: "Select Department",
+            link: {
+              //uri: "/department/get/subdepartment"
+              uri: "/department/get/get_All_Doctors_DepartmentWise",
+              module: "masterSettings"
+            },
+            manupulation: (response, reportState, stateProperty) => {
+              reportState.setState({
+                [stateProperty]: response.records.departmets
+              });
+            },
+            dataSource: {
+              textField: "sub_department_name",
+              valueField: "sub_department_id",
+              data: undefined
+            },
+            events: {
+              onChange: (reportState, currentEvent) => {
+                //provider_id_list CONTROL NAME AND APPEND BY _LIST
+                reportState.setState({
+                  sub_department_id: currentEvent.value,
+                  provider_id_list: currentEvent.selected.doctors
+                });
+              },
+              onClear: (reportState, currentName) => {
+                reportState.setState({
+                  [currentName]: undefined,
+                  provider_id_list: []
+                });
+              }
+            }
+          },
+          {
+            type: "dropdown",
+            name: "provider_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter by Doctor",
+            dataSource: {
+              textField: "full_name",
+              valueField: "employee_id",
+              data: undefined
+            }
+          },
+        {
+            type: "dropdown",
+            name: "status_id",
+            initialLoad: true,
+            isImp: false,
+            label: "Filter by Status",
+            link: {
+              uri: "/appointment/getAppointmentStatus",
+              module: "frontDesk"
+            },
+            dataSource: {
+              textField: "description",
+              valueField: "hims_d_appointment_status_id",
+              data: undefined
+            }
+          },
+          {
+            type: "date",
+            name: "from_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          },
+          {
+            type: "date",
+            name: "to_date",
+            isImp: true,
+            others: {
+              maxDate: new Date(),
+              minDate: null
+            }
+          }
+        ]
+      },
       {
         subitem: " Inventory of Retail Products",
         template_name: "asset_war_exp",
