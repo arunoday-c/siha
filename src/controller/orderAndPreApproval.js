@@ -14,7 +14,9 @@ import {
   selectOrderServicesbyDoctor,
   getMedicationAprovalList,
   updateMedicinePreApproval,
-  updatePrescriptionDetail
+  updatePrescriptionDetail,
+  getVisitConsumable,
+  insertInvOrderedServices
 } from "../model/orderAndPreApproval";
 import { insertRadOrderedServices } from "../model/radiology";
 import { insertLadOrderedServices } from "../model/laboratory";
@@ -107,8 +109,7 @@ export default ({ config, db }) => {
         records: result
       });
       next();
-    },
-    releaseConnection
+    }
   );
 
   //created by Nowshad :to get Ordered Services to Display
@@ -198,6 +199,32 @@ export default ({ config, db }) => {
       next();
     },
     releaseConnection
+  );
+
+  //created by Nowshad :to get Ordered Services which to bill
+  api.get(
+    "/getVisitConsumable",
+    getVisitConsumable,
+    (req, res, next) => {
+      let result = req.records;
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: result
+      });
+      next();
+    },
+    releaseConnection
+  );
+
+  api.post(
+    "/insertInvOrderedServices",
+    insertInvOrderedServices,
+    (req, res, next) => {
+      res.status(httpStatus.ok).json({
+        success: true,
+        records: req.records
+      });
+    }
   );
 
   return api;

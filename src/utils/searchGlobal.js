@@ -461,18 +461,25 @@ let algaehSearchConfig = (searchName, req) => {
         searchQuery:
           "select SQL_CALC_FOUND_ROWS hims_d_inventory_item_master_id, item_description, \
             service_id as services_id,'N' as covered,'N' as pre_approval,IL.batchno,\
-            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom \
+            IL.expirydt,IL.barcode,IL.qtyhand,IL.sales_uom,category_id,group_id,IL.grnno \
             from hims_d_inventory_item_master I, hims_m_inventory_item_location IL \
             where service_id not in (SELECT services_id FROM hims_d_services_insurance where \
-            insurance_id=? and {mapper}) and I.hims_d_inventory_item_master_id = IL.item_id and {mapper}\
+            insurance_id=? and {mapper}) and \
+            I.hims_d_inventory_item_master_id = IL.item_id and {mapper} and IL.inventory_location_id=?\
             union \
             SELECT IM.hims_d_inventory_item_master_id,service_name as item_description,services_id,covered,\
-            pre_approval, ITL.batchno, ITL.expirydt,ITL.barcode, ITL.qtyhand,ITL.sales_uom FROM \
+            pre_approval, ITL.batchno, ITL.expirydt,ITL.barcode, ITL.qtyhand,ITL.sales_uom,\
+            category_id,group_id,ITL.grnno FROM \
             hims_d_services_insurance INS, hims_d_inventory_item_master IM, hims_m_inventory_item_location \
             ITL where INS.services_id = IM.service_id and IM.hims_d_inventory_item_master_id = ITL.item_id and \
-            insurance_id=? and {mapper} and service_type_id=4",
+            insurance_id=? and ITL.inventory_location_id=? and {mapper} and service_type_id=4",
         orderBy: "services_id desc",
-        inputSequence: ["insurance_id", "insurance_id"]
+        inputSequence: [
+          "insurance_id",
+          "inventory_location_id",
+          "insurance_id",
+          "inventory_location_id"
+        ]
       }
     ]
   };

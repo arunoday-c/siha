@@ -16,6 +16,7 @@ module.exports = {
         "inventory_location_id",
         "inventory_uom_id",
         "service_type_id",
+        "item_chargable",
         "batchno",
         "expirydt",
         "grnno",
@@ -94,7 +95,7 @@ module.exports = {
             _mysql
               .executeQuery({
                 query:
-                  "SELECT hims_f_ordered_services_id,services_id,created_date, service_type_id, test_type from hims_f_ordered_services\
+                  "SELECT hims_f_ordered_inventory_id,services_id,created_date, service_type_id from hims_f_ordered_inventory\
                 where `patient_id`=? and `doctor_id`=? and `visit_id`=? and `services_id` in (?)",
                 values: servicesForPreAproval,
                 printQuery: true
@@ -106,11 +107,11 @@ module.exports = {
                     return {
                       ...s,
                       ...{
-                        hims_f_ordered_services_id: new LINQ(
+                        hims_f_ordered_inventory_id: new LINQ(
                           ResultOfFetchOrderIds
                         )
                           .Where(w => w.services_id == s.services_id)
-                          .FirstOrDefault().hims_f_ordered_services_id
+                          .FirstOrDefault().hims_f_ordered_inventory_id
                       }
                     };
                   })
@@ -140,7 +141,8 @@ module.exports = {
                           service_id: "services_id",
                           gross_amt: "ser_gross_amt",
                           net_amount: "ser_net_amount",
-                          ordered_services_id: "hims_f_ordered_services_id"
+                          hims_f_ordered_inventory:
+                            "hims_f_ordered_inventory_id"
                         }
                       ],
                       extraValues: {
@@ -153,7 +155,8 @@ module.exports = {
                       printQuery: true
                     })
                     .then(result => {
-                      _mysql.releaseConnection();
+                      // _mysql.releaseConnection();
+                      req.body.inventory_stock_detail = input.billdetails;
                       req.records = result;
                       next();
                     })
@@ -162,7 +165,8 @@ module.exports = {
                       next(error);
                     });
                 } else {
-                  _mysql.releaseConnection();
+                  // _mysql.releaseConnection();
+                  req.body.inventory_stock_detail = input.billdetails;
                   req.records = { resultOrder, ResultOfFetchOrderIds };
                   next();
                 }
@@ -176,7 +180,8 @@ module.exports = {
                 next(error);
               });
           } else {
-            _mysql.releaseConnection();
+            // _mysql.releaseConnection();
+            req.body.inventory_stock_detail = input.billdetails;
             req.records = { resultOrder, ResultOfFetchOrderIds };
             next();
           }

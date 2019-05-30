@@ -1,9 +1,4 @@
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
-// import _ from "lodash";
-// import {
-//   AlgaehValidation,
-//   AlgaehOpenContainer
-// } from "../../../utils/GlobalFunctions";
 import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 
 import AlgaehSearch from "../../../Wrapper/globalSearch";
@@ -79,6 +74,7 @@ export default function OrderProcedureItemsEvent() {
             $this.state.location_type = $this.state.location_type;
             $this.state.inventory_stock_detail = $this.state.Procedure_items;
             $this.state.transaction_date = new Date();
+            $this.state.provider_id = Window.global["provider_id"];
             algaehApiCall({
               uri: "/inventoryconsumption/addInventoryConsumption",
               module: "inventory",

@@ -1,5 +1,6 @@
 import swal from "sweetalert2";
 import { algaehApiCall, swalMessage } from "../../../../utils/algaehApiCall";
+import AlgaehLoader from "../../../Wrapper/fullPageLoader";
 import extend from "extend";
 import Enumerable from "linq";
 
@@ -25,7 +26,9 @@ const selectItemHandeler = ($this, e) => {
     grnno: e.grnno,
     barcode: e.barcode,
     qtyhand: e.qtyhand,
-    uom_id: e.sales_uom
+    uom_id: e.sales_uom,
+    item_category_id: e.category_id,
+    item_group_id: e.group_id
   });
 };
 
@@ -123,20 +126,34 @@ const ProcessService = ($this, e) => {
 
                         data.billdetails[0].inventory_item_id =
                           $this.state.inventory_item_id;
-                        data.billdetails[0].item_category =
-                          $this.state.item_category;
+
+                        data.billdetails[0].item_id =
+                          $this.state.inventory_item_id;
+                        data.billdetails[0].item_category_id =
+                          $this.state.item_category_id;
                         data.billdetails[0].item_group_id =
                           $this.state.item_group_id;
+
+                        data.billdetails[0].expiry_date = $this.state.expirydt;
                         data.billdetails[0].expirydt = $this.state.expirydt;
                         data.billdetails[0].batchno = $this.state.batchno;
                         data.billdetails[0].uom_id = $this.state.uom_id;
+                        data.billdetails[0].sales_uom = $this.state.uom_id;
                         data.billdetails[0].operation = "-";
-                        data.billdetails[0].grn_no = $this.state.grn_no;
+                        data.billdetails[0].grn_number = $this.state.grnno;
                         data.billdetails[0].qtyhand = $this.state.qtyhand;
                         data.billdetails[0].barcode = $this.state.barcode;
+                        data.billdetails[0].extended_cost =
+                          data.billdetails[0].gross_amount;
+                        data.billdetails[0].net_total =
+                          data.billdetails[0].net_amout;
+
                         data.billdetails[0].inventory_uom_id =
                           $this.state.uom_id;
-                        data.billdetails[0].inventory_location_id =
+                        data.billdetails[0].location_type =
+                          $this.state.location_type;
+
+                        data.billdetails[0].location_id =
                           $this.state.inventory_location_id;
 
                         data.billdetails[i].insurance_network_office_id =
@@ -145,6 +162,8 @@ const ProcessService = ($this, e) => {
                         data.billdetails[i].requested_quantity =
                           data.billdetails[i].quantity;
                         data.billdetails[i].test_type = $this.state.test_type;
+                        data.billdetails[0].item_chargable =
+                          $this.state.item_chargable;
                       }
 
                       $this.setState({
@@ -223,17 +242,26 @@ const ProcessService = ($this, e) => {
               $this.state.insurance_service_name;
             data.billdetails[0].icd_code = "1";
 
-            data.billdetails[0].item_id = $this.state.item_id;
-            data.billdetails[0].item_category = $this.state.item_category;
+            data.billdetails[0].inventory_item_id =
+              $this.state.inventory_item_id;
+            data.billdetails[0].item_id = $this.state.inventory_item_id;
+            data.billdetails[0].item_category_id = $this.state.item_category_id;
             data.billdetails[0].item_group_id = $this.state.item_group_id;
+            data.billdetails[0].expiry_date = $this.state.expirydt;
             data.billdetails[0].expirydt = $this.state.expirydt;
             data.billdetails[0].batchno = $this.state.batchno;
             data.billdetails[0].uom_id = $this.state.uom_id;
+            data.billdetails[0].sales_uom = $this.state.uom_id;
             data.billdetails[0].inventory_uom_id = $this.state.uom_id;
             data.billdetails[0].operation = "-";
-            data.billdetails[0].grn_no = $this.state.grn_no;
+            data.billdetails[0].grn_number = $this.state.grnno;
             data.billdetails[0].qtyhand = $this.state.qtyhand;
             data.billdetails[0].barcode = $this.state.barcode;
+            data.billdetails[0].location_type = $this.state.location_type;
+            data.billdetails[0].location_id = $this.state.inventory_location_id;
+            data.billdetails[0].extended_cost =
+              data.billdetails[0].gross_amount;
+            data.billdetails[0].net_total = data.billdetails[0].net_amout;
 
             data.billdetails[0].insurance_network_office_id =
               $this.state.hims_d_insurance_network_office_id;
@@ -243,6 +271,8 @@ const ProcessService = ($this, e) => {
             data.billdetails[0].doctor_id = Window.global["provider_id"];
             data.billdetails[0].sec_company = $this.state.sec_insured;
             data.billdetails[0].test_type = $this.state.test_type;
+            data.billdetails[0].item_chargable = $this.state.item_chargable;
+
             //If pre-approval required for selected service
 
             if (
@@ -402,6 +432,7 @@ const deleteServices = ($this, row, rowId) => {
 };
 //Save Order
 const SaveOrdersServices = ($this, e) => {
+  AlgaehLoader({ show: true });
   let inputObj = {
     visit_id: $this.state.visit_id,
     patient_id: $this.state.patient_id,
@@ -412,25 +443,45 @@ const SaveOrdersServices = ($this, e) => {
   algaehApiCall({
     uri: "/orderAndPreApproval/insertInvOrderedServices",
     data: inputObj,
-    module: "clicnicalDesk",
+    // module: "clicnicalDesk",
     method: "POST",
     onSuccess: response => {
-      if (response.data.success) {
-        $this.setState(
-          {
-            addNew: true
+      debugger;
+      if (response.data.success === true) {
+        $this.state.transaction_type = "CS";
+        $this.state.location_id = $this.state.inventory_location_id;
+        $this.state.location_type = $this.state.location_type;
+        $this.state.inventory_stock_detail = $this.state.orderservicesdata;
+        $this.state.provider_id = Window.global["provider_id"];
+        $this.state.transaction_date = new Date();
+        algaehApiCall({
+          uri: "/inventoryconsumption/addInventoryConsumption",
+          module: "inventory",
+          data: $this.state,
+          onSuccess: response => {
+            AlgaehLoader({ show: false });
+            if (response.data.success === true) {
+              swalMessage({
+                title: "Saved successfully . .",
+                type: "success"
+              });
+              $this.props.onClose && $this.props.onClose(e);
+            }
           },
-          () => {
-            $this.props.onClose && $this.props.onClose(e);
+          onFailure: err => {
+            AlgaehLoader({ show: false });
+            swalMessage({
+              title: err.message,
+              type: "error"
+            });
           }
-        );
-        swalMessage({
-          title: "Ordered Successfully...",
-          type: "success"
         });
+      } else {
+        AlgaehLoader({ show: false });
       }
     },
     onFailure: error => {
+      AlgaehLoader({ show: false });
       swalMessage({
         title: error.response.data.message,
         type: "error"
@@ -544,6 +595,17 @@ const EditGrid = ($this, cancelRow) => {
   });
 };
 
+const ItemChargable = ($this, e) => {
+  let item_chargable = "N";
+  if (!$this.state.itemchargable === true) {
+    item_chargable = "Y";
+  }
+  $this.setState({
+    item_chargable: item_chargable,
+    itemchargable: !$this.state.itemchargable
+  });
+};
+
 export {
   selectItemHandeler,
   texthandle,
@@ -553,5 +615,6 @@ export {
   calculateAmount,
   updateBillDetail,
   onchangegridcol,
-  EditGrid
+  EditGrid,
+  ItemChargable
 };

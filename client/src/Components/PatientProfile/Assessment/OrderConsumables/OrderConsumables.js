@@ -22,7 +22,8 @@ import {
   calculateAmount,
   updateBillDetail,
   onchangegridcol,
-  EditGrid
+  EditGrid,
+  ItemChargable
 } from "./OrderConsumablesHandaler";
 import "./OrderConsumables.css";
 import "../../../../styles/site.css";
@@ -72,7 +73,9 @@ class OrderConsumables extends Component {
       discount_amount: null,
       net_total: null,
       addNewService: false,
-      inventory_location_id: this.props.inventory_location_id
+      inventory_location_id: this.props.inventory_location_id,
+      item_chargable: "N",
+      itemchargable: false
     };
   }
 
@@ -119,13 +122,13 @@ class OrderConsumables extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    debugger;
     let Location_name =
       this.props.inventorylocations !== undefined &&
       this.props.inventorylocations.length > 0
         ? _.filter(this.props.inventorylocations, f => {
             return (
-              f.hims_d_inventory_location_id ===
-              nextProps.inputsparameters.inventory_location_id
+              f.hims_d_inventory_location_id === nextProps.inventory_location_id
             );
           })
         : [];
@@ -137,6 +140,7 @@ class OrderConsumables extends Component {
       let output = nextProps.existinginsurance[0];
       output.insured = "Y";
       if (Location_name.length > 0) {
+        output.inventory_location_id = nextProps.inventory_location_id;
         output.location_name = Location_name[0].location_description;
         output.location_type = Location_name[0].location_type;
       }
@@ -144,6 +148,7 @@ class OrderConsumables extends Component {
     } else {
       if (Location_name.length > 0) {
         this.setState({
+          inventory_location_id: nextProps.inventory_location_id,
           location_name: Location_name[0].location_description,
           location_type: Location_name[0].location_type
         });
@@ -187,7 +192,9 @@ class OrderConsumables extends Component {
         sec_company_paybale: null,
         sub_total_amount: null,
         discount_amount: null,
-        net_total: null
+        net_total: null,
+        item_chargable: "N",
+        itemchargable: false
       },
       () => {
         this.props.onClose && this.props.onClose(e);
@@ -236,7 +243,8 @@ class OrderConsumables extends Component {
                   displayField="item_description"
                   value={this.state.item_description}
                   extraParameters={{
-                    insurance_id: this.state.insurance_provider_id
+                    insurance_id: this.state.insurance_provider_id,
+                    inventory_location_id: this.state.inventory_location_id
                   }}
                   searchName="insitemmaster"
                   onClick={selectItemHandeler.bind(this, this)}
@@ -244,6 +252,21 @@ class OrderConsumables extends Component {
                     this.attReg = attReg;
                   }}
                 />
+
+                <div
+                  className="customCheckbox col-lg-2"
+                  style={{ border: "none", marginTop: "19px" }}
+                >
+                  <label className="checkbox" style={{ color: "#212529" }}>
+                    <input
+                      type="checkbox"
+                      name="item_chargable"
+                      checked={this.state.itemchargable}
+                      onChange={ItemChargable.bind(this, this)}
+                    />
+                    <span style={{ fontSize: "0.8rem" }}>Not Chargable</span>
+                  </label>
+                </div>
 
                 <div className="col-3">
                   <AlgaehLabel
@@ -265,7 +288,7 @@ class OrderConsumables extends Component {
                     onClick={ProcessService.bind(this, this)}
                     disabled={this.state.addNewService}
                   >
-                    Add New Service
+                    Add Item
                   </button>
                 </div>
               </div>
@@ -639,16 +662,6 @@ class OrderConsumables extends Component {
                       />
                       <h5>{getAmountFormart(this.state.company_payble)}</h5>
                     </div>
-                    {/* <div className="col">
-                      <AlgaehLabel
-                        label={{
-                          fieldName: "sec_co_payable"
-                        }}
-                      />
-                      <h5>
-                        {getAmountFormart(this.state.sec_company_paybale)}
-                      </h5>
-                    </div> */}
                   </div>
                 </div>
               </div>
@@ -685,7 +698,8 @@ function mapStateToProps(state) {
     orderservices: state.orderservices,
     existinginsurance: state.existinginsurance,
     serviceslist: state.serviceslist,
-    orderedList: state.orderedList
+    orderedList: state.orderedList,
+    inventorylocations: state.inventorylocations
   };
 }
 
