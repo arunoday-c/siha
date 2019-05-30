@@ -226,7 +226,7 @@ module.exports = {
           start_month,start_year,loan_tenure,pending_tenure,installment_amount,pending_loan,authorized1_by,authorized1_date,\
           authorized1,authorized2_by,authorized2_date,authorized2 ,E.full_name as employee_name ,E.employee_code from hims_f_loan_application LA  inner join \
           hims_d_loan L on LA.loan_id=L.hims_d_loan_id  inner join hims_d_employee E on LA.employee_id=E.hims_d_employee_id\
-           and E.record_status='A' where L.record_status='A' and hospital_id=? " +
+           and E.record_status='A' where L.record_status='A' and LA.hospital_id=? " +
             employee +
             "" +
             range +
