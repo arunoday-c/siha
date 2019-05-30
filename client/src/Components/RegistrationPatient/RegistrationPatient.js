@@ -426,6 +426,7 @@ class RegistrationPatient extends Component {
 
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
+                        debugger;
                         $this.setState({
                           patient_code: response.data.records.patient_code,
                           bill_number: response.data.records.bill_number,
@@ -565,9 +566,12 @@ class RegistrationPatient extends Component {
 
                       Promise.all(_arrayImages).then(result => {
                         AlgaehLoader({ show: false });
+                        debugger;
                         $this.setState({
                           bill_number: response.data.records.bill_number,
                           receipt_number: response.data.records.receipt_number,
+                          patient_visit_id:
+                            response.data.records.patient_visit_id,
                           saveEnable: true,
                           insuranceYes: true,
                           sec_insuranceYes: true,
@@ -792,14 +796,7 @@ class RegistrationPatient extends Component {
                   }
                 }
               },
-              {
-                label: "Print Receipt",
-                events: {
-                  onClick: () => {
-                    generateReceipt(this, this);
-                  }
-                }
-              },
+
               {
                 label: "ID Card",
                 events: {

@@ -1,7 +1,11 @@
 import React, { Component } from "react";
 import "./PatientHistory.css";
 import { AlgaehModalPopUp, AlgaehLabel } from "../../Wrapper/algaehWrapper";
-import { algaehApiCall, swalMessage } from "../../../utils/algaehApiCall";
+import {
+  algaehApiCall,
+  swalMessage,
+  maxCharactersLeft
+} from "../../../utils/algaehApiCall";
 import { getPatientHistory } from "../PatientProfileHandlers";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -20,6 +24,7 @@ class PatientHistory extends Component {
       birth_history: null,
       openAddModal: false
     };
+    this.socialHistoryMaxLength = 65535;
     getPatientHistory(this);
   }
 
@@ -211,10 +216,17 @@ class PatientHistory extends Component {
                   value={this.state.social_history}
                   name="social_history"
                   onChange={this.textHandle.bind(this)}
+                  maxLength={this.socialHistoryMaxLength}
                 >
                   {this.state.social_history}
                 </textarea>
-
+                <small className="float-right">
+                  Max characters {this.socialHistoryMaxLength}/
+                  {maxCharactersLeft(
+                    this.socialHistoryMaxLength,
+                    this.state.social_history
+                  )}
+                </small>
                 <AlgaehLabel
                   label={{
                     forceLabel: "Medical History"
@@ -272,8 +284,8 @@ class PatientHistory extends Component {
                 </textarea>
               </div>
             </div>
-            <div className="col-8" style={{paddingLeft:0}}>
-              <div className="popRightDiv" style={{paddingLeft:0}}>
+            <div className="col-8" style={{ paddingLeft: 0 }}>
+              <div className="popRightDiv" style={{ paddingLeft: 0 }}>
                 <table className="table table-sm table-bordered customTable">
                   <thead className="">
                     <tr>
@@ -343,7 +355,7 @@ class PatientHistory extends Component {
                 <table className="table table-sm table-bordered customTable">
                   <thead className="">
                     <tr>
-                      <th>Birth History</th>  
+                      <th>Birth History</th>
                       <th>Recorded By</th>
                     </tr>
                   </thead>

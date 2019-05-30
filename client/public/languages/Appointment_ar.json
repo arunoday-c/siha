@@ -188,5 +188,6 @@
   "payby_card": "الدفع عن طريق البطاقة",
   "payby_check": "الدفع عن طريق شيك",
   "NotGenerated": "غير منشأ",
-  "PastVisit": "الزيارة السابقة"
+  "PastVisit": "الزيارة السابقة",
+  "employee_id": "هوية الموظف"
 }

@@ -46,10 +46,19 @@ exports.default = {
   useSSL: false,
   chromePuppeteer: {
     headless: true,
+<<<<<<< HEAD
     // for mac
     //'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     executablePath:
       // for windows
       "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"
+=======
+    executablePath:
+      "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+>>>>>>> 1c45aecd4d70d3494dd1fe11c6b3d416df7836fc
   }
 };
+//for MacOS
+///Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+// for windows
+// "C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe"

@@ -8,14 +8,6 @@ module.exports = {
     try {
       let input = { ...req.body };
 
-      //   let year = moment().format("YYYY");
-
-      //   let today = moment().format("YYYY-MM-DD");
-
-      //   let month = moment().format("MM");
-
-      //   let period = month;
-
       let IncludeValues = [
         "patient_id",
         "visit_id",
