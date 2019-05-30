@@ -56,9 +56,9 @@ class BasicSubjective extends Component {
       isPregnancy: true,
       hims_f_episode_chief_complaint_id: null
     };
-    this.chiefComplaintMaxLength = 200;
-    this.significantSignsLength = 65535;
-    this.otherConditionMaxLength = 300;
+    this.chiefComplaintMaxLength = 250;
+    this.significantSignsLength = 250;
+    this.otherConditionMaxLength = 250;
     this.getMasters();
     this.getPatientEncounterDetails();
 
@@ -486,12 +486,7 @@ class BasicSubjective extends Component {
                             >
                               {this.state.chief_complaint}
                             </textarea>
-                            <small className="float-right">
-                              Max characters {this.chiefComplaintMaxLength}/
-                              {maxCharactersLeft(
-                                this.chiefComplaintMaxLength,
-                                this.state.chief_complaint
-                              )}
+                            <small className="float-right">Max Char. {maxCharactersLeft(this.chiefComplaintMaxLength,this.state.chief_complaint)}/{this.chiefComplaintMaxLength}
                             </small>
                           </div>
                         </div>
@@ -610,12 +605,7 @@ class BasicSubjective extends Component {
                         >
                           {this.state.significant_signs}
                         </textarea>
-                        <small className="float-right">
-                          Max characters {this.significantSignsLength}/
-                          {maxCharactersLeft(
-                            this.significantSignsLength,
-                            this.state.significant_signs
-                          )}
+                        <small className="float-right">Max Char. {maxCharactersLeft(this.significantSignsLength, this.state.significant_signs)}/{this.significantSignsLength}
                         </small>
                       </div>
                     </div>
@@ -641,13 +631,7 @@ class BasicSubjective extends Component {
                         >
                           {this.state.other_signs}
                         </textarea>
-                        <small className="float-right">
-                          Max characters {this.otherConditionMaxLength}/
-                          {maxCharactersLeft(
-                            this.otherConditionMaxLength,
-                            this.state.other_signs
-                          )}
-                        </small>
+                        <small className="float-right">Max Char. {maxCharactersLeft(this.otherConditionMaxLength,this.state.other_signs)}/ {this.otherConditionMaxLength}</small>
                       </div>
                     </div>
                   </div>
