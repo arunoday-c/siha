@@ -1276,15 +1276,15 @@ module.exports = {
 				let hospital = '';
 				let employee_ = '';
 				let selectData = '';
-				if (selectWhere.hospital_id != null) {
+				if (selectWhere.hospital_id >0) {
 					hospital = ' and hospital_id=' + selectWhere.hospital_id;
 					selectData += ' and AM.hospital_id=' + selectWhere.hospital_id;
 				}
-				if (selectWhere.sub_department_id != null) {
+				if (selectWhere.sub_department_id >0) {
 					department = ' and sub_department_id=' + selectWhere.sub_department_id;
 					selectData += ' and AM.sub_department_id=' + selectWhere.sub_department_id;
 				}
-				if (selectWhere.hims_d_employee_id != null) {
+				if (selectWhere.hims_d_employee_id >0) {
 					selectData += ' and AM.employee_id=' + selectWhere.hims_d_employee_id;
 				}
 
@@ -1308,16 +1308,16 @@ module.exports = {
 				//ST---------to fetch employee data
 				let _stringData = '';
 
-				if (selectWhere.hospital_id != null) {
+				if (selectWhere.hospital_id >0) {
 					_stringData += ' and E.hospital_id=?';
 					inputValues.push(selectWhere.hospital_id);
 				}
-				if (selectWhere.sub_department_id != null) {
+				if (selectWhere.sub_department_id >0) {
 					_stringData += ' and E.sub_department_id=? ';
 					inputValues.push(selectWhere.sub_department_id);
 				}
 
-				if (selectWhere.hims_d_employee_id != null) {
+				if (selectWhere.hims_d_employee_id >0) {
 					_stringData += ' and E.hims_d_employee_id=? ';
 					inputValues.push(selectWhere.hims_d_employee_id);
 				}
@@ -1368,7 +1368,7 @@ module.exports = {
 						if (req.query.leave_salary == null || req.query.leave_salary == undefined) {
 							strQuery =
 								"select hims_d_employee_id, employee_code,full_name  as employee_name,\
-            employee_status,date_of_joining ,date_of_resignation ,religion_id,E.sub_department_id,hospital_id,\
+            employee_status,date_of_joining ,date_of_resignation ,religion_id,E.sub_department_id,E.hospital_id,\
             exit_date ,hims_f_employee_yearly_leave_id from hims_d_employee E left join hims_f_employee_annual_leave A on E.hims_d_employee_id=A.employee_id \
             and  A.year=? and A.month=? and A.cancelled='N' left join hims_f_employee_yearly_leave YL on E.hims_d_employee_id=YL.employee_id and  YL.year=?\
             left join hims_f_salary S on E.hims_d_employee_id=S.employee_id and S.year= ? and S.month=?\
@@ -1379,7 +1379,7 @@ module.exports = {
 						} else {
 							strQuery =
 								"select hims_d_employee_id, employee_code,full_name  as employee_name,\
-            employee_status,date_of_joining ,date_of_resignation ,religion_id,E.sub_department_id,hospital_id,\
+            employee_status,date_of_joining ,date_of_resignation ,religion_id,E.sub_department_id,E.hospital_id,\
             exit_date ,hims_f_employee_yearly_leave_id from hims_d_employee E left join hims_f_employee_annual_leave A on E.hims_d_employee_id=A.employee_id \
             and  A.year=? and A.month=? and A.cancelled='N' left join hims_f_employee_yearly_leave YL on E.hims_d_employee_id=YL.employee_id and  YL.year=?\
             left join hims_f_salary S on E.hims_d_employee_id=S.employee_id and S.year= ? and S.month=?\
@@ -1404,12 +1404,12 @@ module.exports = {
 										" as present_month FROM \
                   hims_f_leave_application  LA inner join hims_d_leave L on LA.leave_id=L.hims_d_leave_id\
                   inner join hims_f_employee_monthly_leave  ML on LA.leave_id=ML.leave_id and LA.employee_id=ML.employee_id and ML.year=?\
-                  where  hospital_id=? and status= 'APR' AND ((from_date>= ? and from_date <= ?) or\
+                  where  LA.hospital_id=? and status= 'APR' AND ((from_date>= ? and from_date <= ?) or\
                   (to_date >= ? and to_date <= ?) or (from_date <= ? and to_date >= ?));\
                   select hims_f_pending_leave_id,PL.employee_id,year,month,leave_application_id,adjusted,\
                   adjusted_year,adjusted_month,updaid_leave_duration,status from hims_f_pending_leave PL \
                   inner join hims_f_leave_application LA on  PL.leave_application_id=LA.hims_f_leave_application_id\
-                  where LA.status='APR' and  year=? and month=? and hospital_id=?",
+                  where LA.status='APR' and  year=? and month=? and PL.hospital_id=?",
 									values: inputValues,
 									printQuery: true
 								})
@@ -5951,12 +5951,19 @@ module.exports = {
 			// utilities.logger().log("manual_timesheet_entry:input ", input);
 
 			if (input.manual_timesheet_entry == 'D') {
-				let inputDValue = [ input.branch_id, input.sub_department_id ];
+				let inputDValue = [ input.branch_id ];
 				let strDQuery = '';
-				if (input.employee_id != null) {
+				
+				if (input.employee_id >0) {
 					strDQuery = ' and TS.employee_id = ?';
 					inputDValue.push(input.employee_id);
 				}
+			
+
+
+
+
+
 
 				if (input.select_wise == 'M') {
 					const startOfMonth = moment(new Date(input.yearAndMonth)).startOf('month').format('YYYY-MM-DD');
@@ -5965,17 +5972,17 @@ module.exports = {
 					strDQuery += ' and date(TS.attendance_date) between date (?) and date(?) ';
 					inputDValue.push(startOfMonth, endOfMonth);
 				} else {
-					strDQuery += ' and TS.attendance_date=? ';
-					inputDValue.push(input.attendance_date);
+					strDQuery += ' and TS.attendance_date=? and E.sub_department_id=?';
+					inputDValue.push(input.attendance_date, input.sub_department_id);
 				}
 
 				_mysql
 					.executeQuery({
 						query:
 							"SELECT TS.hims_f_daily_time_sheet_id,TS.attendance_date,TS.employee_id,TS.in_time,TS.out_time,TS.worked_hours,E.employee_code,\
-              E.full_name,E.sub_department_id, year,month, FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
+              E.full_name,E.sub_department_id, year,month FROM hims_f_daily_time_sheet TS, hims_d_employee E where \
               TS.employee_id=E.hims_d_employee_id and (TS.status = 'AB' or TS.status = 'EX') and\
-              E.sub_department_id=? and E.hospital_id=? " +
+              E.hospital_id=? " +
 							strDQuery,
 						values: inputDValue,
 						printQuery: true
@@ -5998,7 +6005,6 @@ module.exports = {
 
 				if (input.select_wise == 'M') {
 					from_date = moment(new Date(input.yearAndMonth)).startOf('month').format('YYYY-MM-DD');
-
 					to_date = moment(new Date(input.yearAndMonth)).endOf('month').format('YYYY-MM-DD');
 				} else {
 					from_date = moment(input.attendance_date).format('YYYY-MM-DD');
