@@ -271,7 +271,7 @@ module.exports = {
       let _stringData = "";
       let inputValues = [];
 
-      _stringData += " and hospital_id=?";
+      _stringData += " and S.hospital_id=?";
       inputValues.push(req.userIdentity.hospital_id);
 
       if (req.query.created_date != null) {
