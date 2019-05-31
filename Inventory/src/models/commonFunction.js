@@ -54,6 +54,7 @@ let updateIntoInvItemLocation = (req, res, next) => {
           transaction_date: req.body.transaction_date,
           from_location_id: s.location_id,
           from_location_type: s.location_type,
+          vendor_batchno: s.vendor_batchno,
           year: req.body.year,
           period: req.body.period,
           to_location_id: s.to_location_id || "~",

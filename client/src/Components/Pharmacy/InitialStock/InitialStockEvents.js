@@ -210,9 +210,9 @@ const getCtrlCode = ($this, docNumber) => {
 const SaveInitialStock = $this => {
   $this.state.posted = "Y";
   $this.state.transaction_type = "INT";
-  $this.state.transaction_id = $this.state.hims_f_pharmacy_stock_header_id;
   $this.state.transaction_date = $this.state.docdate;
 
+  debugger;
   for (let i = 0; i < $this.state.pharmacy_stock_detail.length; i++) {
     $this.state.pharmacy_stock_detail[i].net_total =
       $this.state.pharmacy_stock_detail[i].extended_cost;

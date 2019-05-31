@@ -8,7 +8,7 @@ import {
 } from "../models/inventoryinitialstock";
 
 import { updateIntoInvItemLocation } from "../models/commonFunction";
-import { updateItemMaster } from "../models/inventoryGlobal";
+import { updateInventoryItemMaster } from "../models/inventoryGlobal";
 
 export default () => {
   const api = Router();
@@ -26,7 +26,7 @@ export default () => {
   api.post(
     "/addInventoryInitialStock",
     generateNumber,
-    updateItemMaster,
+    updateInventoryItemMaster,
     addInventoryInitialStock,
     updateIntoInvItemLocation,
     (req, res, next) => {

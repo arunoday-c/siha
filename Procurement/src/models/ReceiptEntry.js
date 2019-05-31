@@ -190,7 +190,8 @@ module.exports = {
                 "total_amount",
                 "batchno_expiry_required",
                 "batchno",
-                "expiry_date"
+                "expiry_date",
+                "vendor_batchno"
               ];
 
               _mysql
