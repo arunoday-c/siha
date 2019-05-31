@@ -18,6 +18,7 @@ const texthandle = ($this, ctrl, e) => {
 const selectItemHandeler = ($this, e) => {
   debugger;
   $this.setState({
+    item_description: e.item_description,
     inventory_item_id: e.hims_d_inventory_item_master_id,
     service_type_id: e.service_type_id,
     services_id: e.services_id,
@@ -36,18 +37,7 @@ const selectItemHandeler = ($this, e) => {
 const ProcessService = ($this, e) => {
   debugger;
 
-  let PreSelectedService = Enumerable.from($this.state.orderservicesdata)
-    .where(
-      w =>
-        w.service_type_id === $this.state.s_service_type &&
-        w.services_id === $this.state.s_service
-    )
-    .toArray();
-
-  if (PreSelectedService.length === 0) {
-  }
-
-  if ($this.state.item_id !== null) {
+  if ($this.state.inventory_item_id !== null) {
     let preserviceInput = $this.state.preserviceInput || [];
     let serviceInput = [
       {
@@ -162,8 +152,8 @@ const ProcessService = ($this, e) => {
                         data.billdetails[i].requested_quantity =
                           data.billdetails[i].quantity;
                         data.billdetails[i].test_type = $this.state.test_type;
-                        data.billdetails[0].item_chargable =
-                          $this.state.item_chargable;
+                        data.billdetails[0].item_notchargable =
+                          $this.state.item_notchargable;
                       }
 
                       $this.setState({
@@ -204,7 +194,9 @@ const ProcessService = ($this, e) => {
                               barcode: null,
                               qtyhand: null,
                               uom_id: null,
-                              inventory_uom_id: null
+                              item_notchargable: "N",
+                              itemchargable: false,
+                              item_description: ""
                             });
                           }
                         },
@@ -271,7 +263,8 @@ const ProcessService = ($this, e) => {
             data.billdetails[0].doctor_id = Window.global["provider_id"];
             data.billdetails[0].sec_company = $this.state.sec_insured;
             data.billdetails[0].test_type = $this.state.test_type;
-            data.billdetails[0].item_chargable = $this.state.item_chargable;
+            data.billdetails[0].item_notchargable =
+              $this.state.item_notchargable;
 
             //If pre-approval required for selected service
 
@@ -327,7 +320,10 @@ const ProcessService = ($this, e) => {
                     grnno: null,
                     barcode: null,
                     qtyhand: null,
-                    uom_id: null
+                    uom_id: null,
+                    item_notchargable: "N",
+                    itemchargable: false,
+                    item_description: ""
                   });
                 }
               },
@@ -596,12 +592,12 @@ const EditGrid = ($this, cancelRow) => {
 };
 
 const ItemChargable = ($this, e) => {
-  let item_chargable = "N";
+  let item_notchargable = "N";
   if (!$this.state.itemchargable === true) {
-    item_chargable = "Y";
+    item_notchargable = "Y";
   }
   $this.setState({
-    item_chargable: item_chargable,
+    item_notchargable: item_notchargable,
     itemchargable: !$this.state.itemchargable
   });
 };

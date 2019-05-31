@@ -16,7 +16,7 @@ module.exports = {
         "inventory_location_id",
         "inventory_uom_id",
         "service_type_id",
-        "item_chargable",
+        "item_notchargable",
         "batchno",
         "expirydt",
         "grnno",

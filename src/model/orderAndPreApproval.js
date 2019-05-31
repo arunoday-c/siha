@@ -602,7 +602,7 @@ let getVisitConsumable = (req, res, next) => {
         OS.`comapany_resp`, OS.`company_payble`, OS.`sec_company`, OS.`sec_deductable_percentage`, OS.`sec_deductable_amount`,\
         OS.`sec_company_res`, OS.`sec_company_tax`, OS.`sec_company_paybale`, OS.`sec_copay_percntage`, OS.`sec_copay_amount`,\
         OS.`created_by`, OS.`created_date`, OS.`updated_by`, OS.`updated_date`, OS.`record_status`,\
-        OS.item_chargable,\
+        OS.item_notchargable,\
         S.`hims_d_services_id`, S.`service_code`, S.`cpt_code`, S.`service_name`, S.`arabic_service_name`, \
         S.`service_desc`, S.`sub_department_id`, S.`hospital_id`, S.`service_type_id`, S.`procedure_type`, \
         S.`standard_fee`, S.`followup_free_fee`, S.`followup_paid_fee`, S.`discount`, S.`vat_applicable`, \
@@ -857,7 +857,7 @@ let insertInvOrderedServices = (req, res, next) => {
       "inventory_location_id",
       "inventory_uom_id",
       "service_type_id",
-      "item_chargable",
+      "item_notchargable",
       "batchno",
       "expirydt",
       "grnno",

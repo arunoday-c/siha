@@ -136,9 +136,10 @@ module.exports = {
               incharge_or_provider, bill_date, advance_amount,advance_adjust, discount_amount, sub_total_amount \
               , total_tax,  billing_status, sheet_discount_amount, sheet_discount_percentage, net_amount, net_total \
               , company_res, sec_company_res, patient_res, patient_payable, company_payable, sec_company_payable \
-              , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,balance_credit \
-              , created_by, created_date, updated_by, updated_date, copay_amount, deductable_amount,hospital_id) VALUES (?,?,?,?\
-                ,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+              , patient_tax, company_tax, sec_company_tax, net_tax, credit_amount, receiveable_amount,\
+              balance_credit , created_by, created_date, updated_by, updated_date, copay_amount,\
+              deductable_amount,hospital_id, ordered_inventory_id, ordered_services_id)\
+               VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
           values: [
             inputParam.patient_id,
             inputParam.visit_id,
@@ -178,7 +179,9 @@ module.exports = {
             new Date(),
             inputParam.copay_amount,
             inputParam.deductable_amount,
-            req.userIdentity.hospital_id
+            req.userIdentity.hospital_id,
+            inputParam.ordered_inventory_id,
+            inputParam.ordered_services_id
           ],
           printQuery: true
         })

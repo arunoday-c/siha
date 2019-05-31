@@ -61,6 +61,75 @@ module.exports = {
     }
   },
 
+  updateOrderedConsumablessBilled: (req, res, next) => {
+    const _options = req.connection == null ? {} : req.connection;
+    const _mysql = new algaehMysql(_options);
+    try {
+      const utilities = new algaehUtilities();
+      utilities.logger().log("updateOrderedServicesBilled: ");
+
+      let OrderServices = new LINQ(req.body.billdetails)
+        .Where(w => w.ordered_inventory_id != null)
+        .Select(s => {
+          return {
+            hims_f_ordered_inventory_id: s.ordered_inventory_id,
+            billed: "Y",
+            updated_date: new Date(),
+            updated_by: req.userIdentity.algaeh_d_app_user_id
+          };
+        })
+        .ToArray();
+
+      let qry = "";
+      if (OrderServices.length > 0) {
+        for (let i = 0; i < OrderServices.length; i++) {
+          utilities.logger().log("billed: ", OrderServices[i].billed);
+          utilities.logger().log("updated_by: ", OrderServices[i].updated_by);
+          utilities
+            .logger()
+            .log("billed: ", OrderServices[i].hims_f_ordered_inventory_id);
+
+          qry += mysql.format(
+            "UPDATE `hims_f_ordered_inventory` SET billed=?,\
+              updated_date=?,updated_by=? where hims_f_ordered_inventory_id=?;",
+            [
+              OrderServices[i].billed,
+              moment().format("YYYY-MM-DD HH:mm"),
+              OrderServices[i].updated_by,
+              OrderServices[i].hims_f_ordered_inventory_id
+            ]
+          );
+        }
+
+        _mysql
+          .executeQuery({
+            query: qry,
+            printQuery: true
+          })
+          .then(updateOrder => {
+            if (req.connection == null) {
+              req.records = updateOrder;
+              next();
+            } else {
+              next();
+            }
+          })
+          .catch(error => {
+            _mysql.rollBackTransaction(() => {
+              next(error);
+            });
+          });
+      } else {
+        utilities.logger().log("Else: ");
+        next();
+      }
+    } catch (e) {
+      _mysql.rollBackTransaction(() => {
+        next(e);
+      });
+    }
+  },
+
   updateOrderedServicesBilled: (req, res, next) => {
     const _options = req.connection == null ? {} : req.connection;
     const _mysql = new algaehMysql(_options);
@@ -69,10 +138,10 @@ module.exports = {
       utilities.logger().log("updateOrderedServicesBilled: ");
 
       let OrderServices = new LINQ(req.body.billdetails)
-        .Where(w => w.hims_f_ordered_services_id != null)
+        .Where(w => w.ordered_services_id != null)
         .Select(s => {
           return {
-            hims_f_ordered_services_id: s.hims_f_ordered_services_id,
+            hims_f_ordered_services_id: s.ordered_services_id,
             billed: "Y",
             updated_date: new Date(),
             updated_by: req.userIdentity.algaeh_d_app_user_id
